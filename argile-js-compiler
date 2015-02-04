@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argile.grammar
+import argile.js
 import argparse
 import os
 
@@ -14,6 +15,8 @@ argile.grammar.source.parseWithTabs()
 project_dirs = args.directory
 output_dir = args.output
 
+generator = argile.js.generator()
+
 def process_file(dirpath, filename):
 	root, ext = os.path.splitext(filename)
 	path = os.path.join(dirpath, filename)
@@ -23,14 +26,23 @@ def process_file(dirpath, filename):
 		with open(path) as f:
 			data = f.read()
 		tree = argile.grammar.parse(data)
-		print tree
+		generator.add_components(com, tree)
 	elif ext == ".js":
+		js = ".".join(dirpath.split(os.path.sep)) + "." + filename
+		print js
 		with open(path) as f:
 			data = f.read()
 		print "including js file...", path
+		generator.add_js(js, data)
 
 
 for project_dir in project_dirs:
 	for dirpath, dirnames, filenames in os.walk(project_dir):
 		for filename in filenames:
 			process_file(dirpath, filename)
+
+print "generating sources..."
+namespace = "qml"
+app = generator.generate(namespace)
+with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
+	f.write(app)

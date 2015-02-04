@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+import compiler.grammar
+import compiler.js
+import argparse
+import os
+
+parser = argparse.ArgumentParser()
+parser.add_argument("directory", nargs='+')
+parser.add_argument("-o", dest="output", default=".")
+args = parser.parse_args()
+
+compiler.grammar.source.parseWithTabs()
+
+project_dirs = args.directory
+output_dir = args.output
+
+generator = compiler.js.generator()
+
+def process_file(dirpath, filename):
+	root, ext = os.path.splitext(filename)
+	path = os.path.join(dirpath, filename)
+	if ext == ".qml":
+		com = ".".join(dirpath.split(os.path.sep) + [root])
+		print "parsing", path, "...", com
+		with open(path) as f:
+			data = f.read()
+		tree = compiler.grammar.parse(data)
+		generator.add_components(com, tree, root[0].isupper())
+	elif ext == ".js":
+		with open(path) as f:
+			data = f.read()
+		print "including js file...", path
+		generator.add_js(path, data)
+
+
+for project_dir in project_dirs:
+	for dirpath, dirnames, filenames in os.walk(project_dir):
+		for filename in filenames:
+			process_file(dirpath, filename)
+
+print "generating sources..."
+namespace = "qml"
+app = generator.generate(namespace)
+with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
+	f.write(app)

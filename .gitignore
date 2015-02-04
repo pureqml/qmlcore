@@ -1,0 +1,3 @@
+*.pyc
+*.pyo
+app/qml.js

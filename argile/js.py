@@ -27,7 +27,7 @@ class component_generator(object):
 	def generate_properties(self):
 		r = []
 		for name, type in self.properties.iteritems():
-			r.append("this.%s = new core.Property('%s');" %(name, type))
+			r.append("core.add_property(this, '%s', '%s');" %(type, name))
 		return "\n".join(r)
 
 	def generate(self):

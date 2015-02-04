@@ -17,7 +17,9 @@ class component_generator(object):
 
 	def generate_properties(self):
 		r = []
-		return ";\n".join(r)
+		for name, property in self.properties.iteritems():
+			r.append("this.%s = Property(value);" %(name));
+		return "\n".join(r)
 
 	def generate(self):
 		return "function() {\n%s\n}" %self.generate_properties()
@@ -50,19 +52,31 @@ class generator(object):
 
 	def generate_components(self):
 		r = []
+		created = set()
+		for name in self.components.iterkeys():
+			path = name.split(".")[:-1]
+			for i in xrange(len(path)):
+				subpath = ".".join(path[0 : i + 1])
+				if subpath in created:
+					continue
+				created.add(subpath)
+				r.append("if (!exports.%s) exports.%s = {};" %(subpath, subpath))
+
 		for name, gen in self.components.iteritems():
-			r.append("'%s': %s" %(name, gen.generate()))
-		return ", ".join(r)
+			code = "//=====[component %s]=====================\n\n" %name
+			code += "exports.%s = %s" %(name, gen.generate())
+			r.append(code)
+		return "\n".join(r)
 
 	def generate_imports(self):
 		r = []
 		for name, code in self.imports.iteritems():
+			code = "//=====[import %s]=====================\n\n" %name + code
 			r.append("'%s': %s()" %(name, self.wrap(code)))
 		return ", ".join(r)
 
 	def generate(self, ns):
 		text = ""
 		text += "var imports = { %s };\n" %self.generate_imports()
-		text += "var components = { %s };\n" %self.generate_components()
-		text += "return imports['core/core.js'].context;\n"
+		text += "%s\n" %self.generate_components()
 		return "%s = %s();\n" %(ns, self.wrap(text))

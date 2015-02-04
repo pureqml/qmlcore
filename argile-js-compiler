@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import argile.grammar
+import argparse
+import os
+
+parser = argparse.ArgumentParser()
+parser.add_argument("directory")
+args = parser.parse_args()
+
+argile.grammar.source.parseWithTabs()
+
+project_dir = args.directory
+for dirpath, dirnames, filenames in os.walk(project_dir):
+	for filename in filenames:
+		with open(os.path.join(dirpath, filename)) as f:
+			data = f.read()
+		tree = argile.grammar.source.parseString(data, parseAll = True)
+		print tree

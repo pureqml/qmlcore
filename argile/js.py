@@ -11,14 +11,15 @@ class component_generator(object):
 		if type(child) is lang.Property:
 			if child.name in self.properties:
 				raise Exception("duplicate property " + child.name)
-			self.properties[child.name] = (child.type, child.value)
+			self.properties[child.name] = child
 		else:
 			print "unhandled", child
 
 	def generate_properties(self):
 		r = []
 		for name, property in self.properties.iteritems():
-			r.append("this.%s = Property(value);" %(name));
+			print property
+			r.append("this.%s = new core.Property(%s);" %(name, "'%s'" %property.type if property.value is None else "'%s', %s" %(property.type, property.value)));
 		return "\n".join(r)
 
 	def generate(self):
@@ -78,5 +79,7 @@ class generator(object):
 	def generate(self, ns):
 		text = ""
 		text += "var imports = { %s };\n" %self.generate_imports()
+		text += "//========================================\n\n"
+		text += "var core = imports['core/core.js'];\n"
 		text += "%s\n" %self.generate_components()
 		return "%s = %s();\n" %(ns, self.wrap(text))

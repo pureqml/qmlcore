@@ -5,4 +5,9 @@ function Context() {
 }
 
 
+exports.Property = function(type, value) {
+	this.type = type;
+	this.value = value;
+}
+
 exports.context = new Context();

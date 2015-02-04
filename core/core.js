@@ -1,6 +1,11 @@
 /* qml.core javascript code */
 
 function Context() {
+	var windowW = $(window).width();
+	var windowH = $(window).height();
+	console.log("window size: " + windowW + "x" + windowH);
+	body.append("<div id='renderer'></div>");
+	$('#renderer').css({width: windowW, height: windowH});
 	console.log("context created");
 }
 
@@ -18,6 +23,7 @@ exports.add_property = function(self, type, name) {
 		},
 		set: function(newValue) {
 			value = newValue;
+			self.update();
 		}
 	});
 }

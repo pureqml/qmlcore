@@ -1,6 +1,7 @@
 class Component(object):
-	def __init__(self, name):
+	def __init__(self, name, children):
 		self.name = name
+		self.children = children
 
 class Property(object):
 	def __init__(self, type, name, value = None):

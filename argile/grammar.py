@@ -3,7 +3,7 @@ import lang
 
 def handle_component_declaration(s, l, t):
 	#print "component>", t
-	return lang.Component(t[0])
+	return lang.Component(t[0], t[1])
 
 def handle_assignment(s, l, t):
 	#print "assignment>", t
@@ -53,7 +53,7 @@ assign_scope.setParseAction(handle_assignment_scope)
 method_declaration = nested_identifier + Literal(":").suppress() + code
 method_declaration.addParseAction(handle_method_declaration)
 
-scope_declaration = Group(event_declaration | property_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope)
+scope_declaration = event_declaration | property_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
 component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
 
 component_declaration << (component_type + component_scope)

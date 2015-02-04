@@ -13,7 +13,9 @@ argile.grammar.source.parseWithTabs()
 project_dir = args.directory
 for dirpath, dirnames, filenames in os.walk(project_dir):
 	for filename in filenames:
-		with open(os.path.join(dirpath, filename)) as f:
+		path = os.path.join(dirpath, filename)
+		print "parsing", path, "..."
+		with open(path) as f:
 			data = f.read()
 		tree = argile.grammar.source.parseString(data, parseAll = True)
 		print tree

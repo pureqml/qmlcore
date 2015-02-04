@@ -3,25 +3,34 @@ from pyparsing import *
 component_type = Word(srange("A-Z"), alphanums)
 identifier = Word(srange("a-z"), alphanums)
 nested_identifier = Word(srange("a-z"), alphanums + ".")
+code = originalTextFor(nestedExpr("{", "}", None, None))
 
-event_declaration = Keyword("event") + identifier
 expression_end = Literal(";").suppress()
 
+event_declaration = Keyword("event") + identifier + expression_end
+
 expression = Forward()
-expression_definition = (dblQuotedString | nested_identifier | Keyword("true") | Keyword("false"))
-expression << (expression_definition + expression_end)
+component_declaration = Forward()
 
-assign_declaration = identifier + Literal(":").suppress() + expression
+assign_declaration = nested_identifier + Literal(":").suppress() + expression + expression_end
+assign_component_declaration = nested_identifier + Literal(":").suppress() + component_declaration
 
-property_declaration = Keyword("property") + identifier + identifier + Optional(Keyword(":") + expression)
+property_declaration = ((Keyword("property") + identifier + identifier + Literal(":").suppress() + expression) | (Keyword("property") + identifier + identifier)) + expression_end
 
-inscope_declaration = event_declaration | assign_declaration | property_declaration
+assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end
+assign_scope = nested_identifier + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
 
-component_scope = Literal("{").suppress() + Group(ZeroOrMore(inscope_declaration)) + Literal("}").suppress()
+method_declaration = nested_identifier + Literal(":").suppress() + code
 
-component_declaration = Group(component_type + component_scope)
+scope_declaration = Group(event_declaration | property_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope)
+component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
+
+component_declaration << Group(component_type + component_scope)
+
+expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier)
+expression << expression_definition
 
 source = OneOrMore(component_declaration)
 source = source.ignore(cStyleComment)
 source = source.ignore(dblSlashComment)
-source.setDefaultWhitespaceChars(" \t\r\f")
+#source.setDefaultWhitespaceChars(" \t\r\f")

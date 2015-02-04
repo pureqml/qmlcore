@@ -1,0 +1,1 @@
+/* qml.core javascript code */

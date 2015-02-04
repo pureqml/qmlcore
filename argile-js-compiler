@@ -28,12 +28,10 @@ def process_file(dirpath, filename):
 		tree = argile.grammar.parse(data)
 		generator.add_components(com, tree)
 	elif ext == ".js":
-		js = ".".join(dirpath.split(os.path.sep)) + "." + filename
-		print js
 		with open(path) as f:
 			data = f.read()
 		print "including js file...", path
-		generator.add_js(js, data)
+		generator.add_js(path, data)
 
 
 for project_dir in project_dirs:

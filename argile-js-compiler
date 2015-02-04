@@ -6,16 +6,19 @@ import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory")
+parser.add_argument("-o", dest="output", default=".")
 args = parser.parse_args()
 
 argile.grammar.source.parseWithTabs()
 
 project_dir = args.directory
+output_dir = args.output
+
 for dirpath, dirnames, filenames in os.walk(project_dir):
 	for filename in filenames:
 		path = os.path.join(dirpath, filename)
 		print "parsing", path, "..."
 		with open(path) as f:
 			data = f.read()
-		tree = argile.grammar.source.parseString(data, parseAll = True)
+		tree = argile.grammar.parse(data)
 		print tree

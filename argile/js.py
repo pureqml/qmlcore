@@ -4,22 +4,30 @@ import lang
 
 class component_generator(object):
 	def __init__(self, component):
-		self.properties = {}
 		self.component = component
+		self.properties = {}
+		self.assignments = {}
+
+	def assign(self, target, value):
+		self.assignments[target] = value
 
 	def add_child(self, child):
-		if type(child) is lang.Property:
+		t = type(child)
+		if t is lang.Property:
 			if child.name in self.properties:
 				raise Exception("duplicate property " + child.name)
-			self.properties[child.name] = child
+			self.properties[child.name] = child.type
+			if child.value is not None:
+				self.assign(child.name, child.value)
+		elif t is lang.Assignment:
+			self.assign(child.target, child.value)
 		else:
 			print "unhandled", child
 
 	def generate_properties(self):
 		r = []
-		for name, property in self.properties.iteritems():
-			print property
-			r.append("this.%s = new core.Property(%s);" %(name, "'%s'" %property.type if property.value is None else "'%s', %s" %(property.type, property.value)));
+		for name, type in self.properties.iteritems():
+			r.append("this.%s = new core.Property('%s');" %(name, type))
 		return "\n".join(r)
 
 	def generate(self):

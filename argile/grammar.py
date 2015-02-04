@@ -1,8 +1,9 @@
 from pyparsing import *
 
-component_type = Word(srange("A-Z"), alphanums)
-identifier = Word(srange("a-z"), alphanums)
-nested_identifier = Word(srange("a-z"), alphanums + ".")
+type = Word(alphas, alphanums)
+component_type = Word(srange("[A-Z]"), alphanums)
+identifier = Word(srange("[a-z]"), alphanums)
+nested_identifier = Word(srange("[a-z]"), alphanums + ".")
 code = originalTextFor(nestedExpr("{", "}", None, None))
 
 expression_end = Literal(";").suppress()
@@ -15,7 +16,8 @@ component_declaration = Forward()
 assign_declaration = nested_identifier + Literal(":").suppress() + expression + expression_end
 assign_component_declaration = nested_identifier + Literal(":").suppress() + component_declaration
 
-property_declaration = ((Keyword("property") + identifier + identifier + Literal(":").suppress() + expression) | (Keyword("property") + identifier + identifier)) + expression_end
+property_declaration = ((Keyword("property") + type + identifier + Literal(":").suppress() + expression) | \
+	(Keyword("property") + type + identifier)) + expression_end
 
 assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end
 assign_scope = nested_identifier + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()

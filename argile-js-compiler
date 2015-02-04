@@ -14,14 +14,23 @@ argile.grammar.source.parseWithTabs()
 project_dirs = args.directory
 output_dir = args.output
 
+def process_file(dirpath, filename):
+	root, ext = os.path.splitext(filename)
+	path = os.path.join(dirpath, filename)
+	if ext == ".qml":
+		com = ".".join(dirpath.split(os.path.sep) + [root])
+		print "parsing", path, "...", com
+		with open(path) as f:
+			data = f.read()
+		tree = argile.grammar.parse(data)
+		print tree
+	elif ext == ".js":
+		with open(path) as f:
+			data = f.read()
+		print "including js file...", path
+
+
 for project_dir in project_dirs:
 	for dirpath, dirnames, filenames in os.walk(project_dir):
 		for filename in filenames:
-			root, ext = os.path.splitext(filename)
-			path = os.path.join(dirpath, filename)
-			com = ".".join(dirpath.split(os.path.sep) + [root])
-			print "parsing", path, "...", com
-			with open(path) as f:
-				data = f.read()
-			tree = argile.grammar.parse(data)
-			print tree
+			process_file(dirpath, filename)

@@ -47,10 +47,20 @@ class component_generator(object):
 
 	def generate(self, registry):
 		base_type = registry.find_component(self.package, self.component.name)
-		ctor  = "\texports.%s = function() {\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties())
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties(), self.generate_creator(registry))
 		code  = "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(self.name, base_type)
 		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(self.name, self.name)
 		return ctor, code
+
+	def generate_creator(self, registry):
+		r = []
+		for target, value in self.assignments.iteritems():
+			t = type(value)
+			if t is str:
+				r.append("\tthis.%s = %s;" %(target, value))
+			else:
+				print "skip assignment", target, value
+		return "\n".join(r)
 
 class generator(object):
 	def __init__(self):

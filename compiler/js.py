@@ -42,11 +42,11 @@ class component_generator(object):
 			r.append("\tcore.addProperty(this, '%s', '%s');" %(type, name))
 		return "\n".join(r)
 
-	def generate_ctor(self):
-		return "\texports.%s.%s.apply(this, arguments);" %(self.package, self.component.name)
+	def generate_ctor(self, registry):
+		return "\texports.%s.apply(this, arguments);" %(registry.find_component(self.package, self.component.name))
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties(), self.generate_creator(registry))
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry))
 		return ctor
 
 	def generate_creator(self, registry):
@@ -99,9 +99,9 @@ class generator(object):
 
 		if package in self.packages and name in self.packages[package]:
 			return "%s.%s" %(package, name)
-		for package, components in self.packages.iteritems():
+		for package_name, components in self.packages.iteritems():
 			if name in components:
-				return "%s.%s" %(package, name)
+				return "%s.%s" %(package_name, name)
 		raise Exception("component %s was not found" %name)
 
 	def generate_components(self):

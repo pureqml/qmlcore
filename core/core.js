@@ -30,7 +30,7 @@ exports.add_property = function(self, type, name) {
 		},
 		set: function(newValue) {
 			value = newValue;
-			self.update();
+			self._update(name, newValue);
 		}
 	});
 }

@@ -103,12 +103,16 @@ exports.Context = function() {
 }
 
 exports.Context.prototype.start = function(name) {
-	console.log('creating component...', name);
-	var path = name.split('.');
-	var proto = _globals;
-	for (var i = 0; i < path.length; ++i)
-		proto = proto[path[i]]
-	console.log(proto);
+	var proto;
+	if (typeof name == 'string') {
+		console.log('creating component...', name);
+		var path = name.split('.');
+		proto = _globals;
+		for (var i = 0; i < path.length; ++i)
+			proto = proto[path[i]]
+	}
+	else
+		proto = name;
 	var instance = Object.create(proto.prototype);
 	proto.apply(instance, [this]);
 	return instance;

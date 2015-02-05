@@ -86,6 +86,7 @@ class generator(object):
 		self.components = {}
 		self.imports = {}
 		self.packages = {}
+		self.startup = []
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -95,6 +96,7 @@ class generator(object):
 
 		if not declaration:
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
+			self.startup.append("qml._context.start(qml.%s)" %name)
 
 		if package not in self.packages:
 			self.packages[package] = set()
@@ -173,3 +175,6 @@ class generator(object):
 		text += "%s\n" %self.generate_components()
 		text += "_globals._context = new core.Context();\n"
 		return "%s = %s();\n" %(ns, self.wrap(text))
+
+	def generate_startup(self):
+		return "\n".join(self.startup)

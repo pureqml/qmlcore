@@ -42,5 +42,6 @@ for project_dir in project_dirs:
 print "generating sources..."
 namespace = "qml"
 app = generator.generate(namespace)
+app += generator.generate_startup()
 with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
 	f.write(app)

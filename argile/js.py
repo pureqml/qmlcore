@@ -10,6 +10,10 @@ class component_generator(object):
 		self.properties = {}
 		self.assignments = {}
 
+	@property
+	def base_type(self):
+		return "%s.%s" %(self.package, self.component.name)
+
 	def assign(self, target, value):
 		self.assignments[target] = value
 
@@ -36,16 +40,22 @@ class component_generator(object):
 		return "\texports.%s.%s.call(this);" %(self.package, self.component.name)
 
 	def generate(self):
-		return "function() {\n%s\n%s\n}" %(self.generate_ctor(), self.generate_properties())
+		code = "";
+		code += "\texports.%s = function() {\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties())
+		code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(self.name, self.base_type)
+		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(self.name, self.name)
+		return code
 
 class generator(object):
 	def __init__(self):
 		self.components = {}
 		self.imports = {}
 
-	def add_component(self, name, component):
+	def add_component(self, name, component, declaration):
 		if name in self.components:
 			raise Exception("duplicate component " + name)
+		if not declaration:
+			return
 
 		gen = component_generator(name, component)
 		self.components[name] = gen
@@ -57,9 +67,9 @@ class generator(object):
 			raise Exception("duplicate js name " + name)
 		self.imports[name] = data
 
-	def add_components(self, name, components):
+	def add_components(self, name, components, declaration):
 		for component in components:
-			self.add_component(name, component)
+			self.add_component(name, component, declaration)
 
 	def wrap(self, code):
 		return "(function() {\nvar exports = {};\n%s\nreturn exports;\n} )" %code
@@ -78,7 +88,7 @@ class generator(object):
 
 		for name, gen in self.components.iteritems():
 			code = "//=====[component %s]=====================\n\n" %name
-			code += "exports.%s = %s" %(name, gen.generate())
+			code += gen.generate()
 			r.append(code)
 		return "\n".join(r)
 

@@ -26,7 +26,7 @@ def process_file(dirpath, filename):
 		with open(path) as f:
 			data = f.read()
 		tree = argile.grammar.parse(data)
-		generator.add_components(com, tree)
+		generator.add_components(com, tree, root[0].isupper())
 	elif ext == ".js":
 		with open(path) as f:
 			data = f.read()

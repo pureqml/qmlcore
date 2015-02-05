@@ -1,5 +1,11 @@
 /* qml.core javascript code */
 
+if (!_globals.core)
+	_globals.core = {}
+
+_globals.core.Object = function() {
+}
+
 function Context() {
 	var windowW = $(window).width();
 	var windowH = $(window).height();

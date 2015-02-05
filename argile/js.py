@@ -3,7 +3,9 @@
 import lang
 
 class component_generator(object):
-	def __init__(self, component):
+	def __init__(self, name, component):
+		self.name = name
+		self.package = ".".join(name.split(".")[:-1])
 		self.component = component
 		self.properties = {}
 		self.assignments = {}
@@ -27,11 +29,14 @@ class component_generator(object):
 	def generate_properties(self):
 		r = []
 		for name, type in self.properties.iteritems():
-			r.append("core.add_property(this, '%s', '%s');" %(type, name))
+			r.append("\tcore.add_property(this, '%s', '%s');" %(type, name))
 		return "\n".join(r)
 
+	def generate_ctor(self):
+		return "\texports.%s.%s.call(this);" %(self.package, self.component.name)
+
 	def generate(self):
-		return "function() {\n%s\n}" %self.generate_properties()
+		return "function() {\n%s\n%s\n}" %(self.generate_ctor(), self.generate_properties())
 
 class generator(object):
 	def __init__(self):
@@ -42,7 +47,7 @@ class generator(object):
 		if name in self.components:
 			raise Exception("duplicate component " + name)
 
-		gen = component_generator(component)
+		gen = component_generator(name, component)
 		self.components[name] = gen
 		for child in component.children:
 			gen.add_child(child)
@@ -86,6 +91,7 @@ class generator(object):
 
 	def generate(self, ns):
 		text = ""
+		text += "var _globals = exports;\n"
 		text += "var imports = { %s };\n" %self.generate_imports()
 		text += "//========================================\n\n"
 		text += "var core = imports['core/core.js'];\n"

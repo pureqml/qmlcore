@@ -5,9 +5,17 @@ if (!_globals.core)
 
 _globals.core.Object = function() {}
 _globals.core.Object.prototype._update = function(name, value) {}
+_globals.core.Object.prototype._ctor = function() {}
+
 
 function setup(context) {
 	_globals.core.Item.prototype.children = []
+
+	_globals.core.Item.prototype._ctor = function(parent) {
+		_globals.core.Object.prototype._ctor.apply(this, arguments);
+		this.element = $('<div/>');
+		parent.element.append(this.element);
+	}
 }
 
 exports.Context = function() {
@@ -32,7 +40,7 @@ exports.Context.prototype.start = function(name) {
 		proto = proto[path[i]]
 	console.log(proto);
 	var instance = Object.create(proto.prototype);
-	proto.apply(instance, this);
+	proto.apply(instance, [this]);
 	return instance;
 }
 

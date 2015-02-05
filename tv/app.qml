@@ -11,6 +11,9 @@ Item {
 		x: 100;
 		y: 100;
 		color: "#0f0";
+
+		border.width: 10;
+		border.color: "#c80";
 	}
 
 	Rectangle {

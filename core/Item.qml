@@ -1,5 +1,4 @@
 Object {
-	property Item parent;
 	property int x;
 	property int y;
 	property int width;

@@ -2,13 +2,20 @@
 
 import lang
 
+def get_package(name):
+	return ".".join(name.split(".")[:-1])
+
+def split_name(name):
+	r = name.split(".")
+	return ".".join(r[:-1]), r[-1]
+
 class component_generator(object):
 	def __init__(self, name, component):
 		self.name = name
-		self.package = ".".join(name.split(".")[:-1])
 		self.component = component
 		self.properties = {}
 		self.assignments = {}
+		self.package = get_package(name)
 
 	@property
 	def base_type(self):
@@ -50,12 +57,18 @@ class generator(object):
 	def __init__(self):
 		self.components = {}
 		self.imports = {}
+		self.packages = {}
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
 			raise Exception("duplicate component " + name)
 		if not declaration:
 			return
+
+		package, component_name = split_name(name)
+		if package not in self.packages:
+			self.packages[package] = set()
+		self.packages[package].add(component_name)
 
 		gen = component_generator(name, component)
 		self.components[name] = gen
@@ -76,15 +89,8 @@ class generator(object):
 
 	def generate_components(self):
 		r = []
-		created = set()
-		for name in self.components.iterkeys():
-			path = name.split(".")[:-1]
-			for i in xrange(len(path)):
-				subpath = ".".join(path[0 : i + 1])
-				if subpath in created:
-					continue
-				created.add(subpath)
-				r.append("if (!exports.%s) exports.%s = {};" %(subpath, subpath))
+		for package in sorted(self.packages.keys()):
+			r.append("if (!exports.%s) exports.%s = {};" %(package, package))
 
 		for name, gen in self.components.iteritems():
 			code = "//=====[component %s]=====================\n\n" %name

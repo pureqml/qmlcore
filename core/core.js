@@ -16,6 +16,23 @@ function setup(context) {
 		this.element = $('<div/>');
 		parent.element.append(this.element);
 	}
+
+	_globals.core.Item.prototype._update = function(name, value) {
+		switch(name) {
+		case 'width': this.element.css('width', value); return;
+		case 'height': this.element.css('height', value); return;
+		case 'x': this.element.css('left', value); return;
+		case 'y': this.element.css('top', value); return;
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+
+	_globals.core.Rectangle.prototype._update = function(name, value) {
+		switch(name) {
+		case 'color': this.element.css('background-color', value); return;
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
 }
 
 exports.Context = function() {

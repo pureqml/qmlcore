@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import argile.grammar
-import argile.js
+import compiler.grammar
+import compiler.js
 import argparse
 import os
 
@@ -10,12 +10,12 @@ parser.add_argument("directory", nargs='+')
 parser.add_argument("-o", dest="output", default=".")
 args = parser.parse_args()
 
-argile.grammar.source.parseWithTabs()
+compiler.grammar.source.parseWithTabs()
 
 project_dirs = args.directory
 output_dir = args.output
 
-generator = argile.js.generator()
+generator = compiler.js.generator()
 
 def process_file(dirpath, filename):
 	root, ext = os.path.splitext(filename)
@@ -25,7 +25,7 @@ def process_file(dirpath, filename):
 		print "parsing", path, "...", com
 		with open(path) as f:
 			data = f.read()
-		tree = argile.grammar.parse(data)
+		tree = compiler.grammar.parse(data)
 		generator.add_components(com, tree, root[0].isupper())
 	elif ext == ".js":
 		with open(path) as f:

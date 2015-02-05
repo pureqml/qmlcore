@@ -17,6 +17,8 @@ class component_generator(object):
 		self.assignments = {}
 		self.package = get_package(name)
 		self.base_type = None
+		self.children = []
+
 		for child in component.children:
 			self.add_child(child)
 
@@ -33,6 +35,8 @@ class component_generator(object):
 				self.assign(child.name, child.value)
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
+		elif t is lang.Component:
+			self.children.append(component_generator("*no name*", child))
 		else:
 			print "unhandled", child
 
@@ -49,14 +53,22 @@ class component_generator(object):
 		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry))
 		return ctor
 
-	def generate_creator(self, registry):
+	def generate_creator(self, registry, target_object = "this", ident = 1):
 		r = []
+		ident = "\t" * ident
 		for target, value in self.assignments.iteritems():
 			t = type(value)
 			if t is str:
-				r.append("\tthis.%s = %s;" %(target, value))
+				r.append("%s%s.%s = %s;" %(ident, target_object, target, value))
 			else:
 				print "skip assignment", target, value
+		idx = 0
+		for gen in self.children:
+			var = "child%d" %idx
+			r.append("\tvar %s = new %s();" %(var, gen.component.name))
+			r.append(gen.generate_creator(registry, var, 2))
+			r.append("\n")
+			idx += 1
 		return "\n".join(r)
 
 class generator(object):

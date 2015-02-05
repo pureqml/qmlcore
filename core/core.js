@@ -19,7 +19,7 @@ function Context() {
 	console.log("context created");
 }
 
-exports.add_property = function(self, type, name) {
+exports.addProperty = function(self, type, name) {
 	var value;
 	switch(type) {
 		case 'int':			value = 0;

@@ -39,7 +39,7 @@ class component_generator(object):
 	def generate_properties(self):
 		r = []
 		for name, type in self.properties.iteritems():
-			r.append("\tcore.add_property(this, '%s', '%s');" %(type, name))
+			r.append("\tcore.addProperty(this, '%s', '%s');" %(type, name))
 		return "\n".join(r)
 
 	def generate_ctor(self):

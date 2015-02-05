@@ -36,7 +36,7 @@ class component_generator(object):
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
 		elif t is lang.Component:
-			self.children.append(component_generator("*no name*", child))
+			self.children.append(component_generator(self.package + ".<anonymous>", child))
 		else:
 			print "unhandled", child
 
@@ -65,9 +65,11 @@ class component_generator(object):
 		idx = 0
 		for gen in self.children:
 			var = "child%d" %idx
-			r.append("\tvar %s = new %s();" %(var, gen.component.name))
+			component = registry.find_component(self.package, gen.component.name)
+			r.append("\tvar %s = new _globals.%s(%s);" %(var, component, target_object))
 			r.append(gen.generate_creator(registry, var, 2))
-			r.append("\n")
+			r.append("\tthis.children.push(%s);" %var);
+			r.append("")
 			idx += 1
 		return "\n".join(r)
 

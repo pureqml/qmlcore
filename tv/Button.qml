@@ -6,7 +6,7 @@
      radius: 9;
      property alias text: label.text;
      border { color: "#B9C5D0"; width: 1; }
-
+/*
      gradient: Gradient {
          GradientStop {color: "#CFF7FF"; position: 0.0; }
          GradientStop {color: "#99C0E5"; position: 0.57; }
@@ -25,5 +25,5 @@
          anchors.fill: parent;
          onClicked: { console.log(text + " clicked"); }
      }
-
+*/
  }

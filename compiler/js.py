@@ -47,11 +47,10 @@ class component_generator(object):
 
 	def generate(self, registry):
 		base_type = registry.find_component(self.package, self.component.name)
-		code = "";
-		code += "\texports.%s = function() {\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties())
-		code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(self.name, base_type)
+		ctor  = "\texports.%s = function() {\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties())
+		code  = "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(self.name, base_type)
 		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(self.name, self.name)
-		return code
+		return ctor, code
 
 class generator(object):
 	def __init__(self):
@@ -66,7 +65,7 @@ class generator(object):
 		package, component_name = split_name(name)
 
 		if not declaration:
-			name += ".Ui%s" %(component_name[0].upper() + component_name[1:])
+			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
 
 		if package not in self.packages:
 			self.packages[package] = set()
@@ -99,15 +98,17 @@ class generator(object):
 		raise Exception("component %s was not found" %name)
 
 	def generate_components(self):
-		r = []
+		r, e = [], []
 		for package in sorted(self.packages.keys()):
 			r.append("if (!exports.%s) exports.%s = {};" %(package, package))
 
 		for name, gen in self.components.iteritems():
 			code = "//=====[component %s]=====================\n\n" %name
-			code += gen.generate(self)
+			c, d = gen.generate(self)
+			code += c
 			r.append(code)
-		return "\n".join(r)
+			e.append(d)
+		return "\n".join(r) + "\n".join(e)
 
 	def generate_imports(self):
 		r = []

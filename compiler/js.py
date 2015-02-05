@@ -46,11 +46,8 @@ class component_generator(object):
 		return "\texports.%s.%s.call(this);" %(self.package, self.component.name)
 
 	def generate(self, registry):
-		base_type = registry.find_component(self.package, self.component.name)
 		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties(), self.generate_creator(registry))
-		code  = "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(self.name, base_type)
-		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(self.name, self.name)
-		return ctor, code
+		return ctor
 
 	def generate_creator(self, registry):
 		r = []
@@ -108,17 +105,35 @@ class generator(object):
 		raise Exception("component %s was not found" %name)
 
 	def generate_components(self):
-		r, e = [], []
+		r, deps = [], []
 		for package in sorted(self.packages.keys()):
 			r.append("if (!exports.%s) exports.%s = {};" %(package, package))
 
 		for name, gen in self.components.iteritems():
 			code = "//=====[component %s]=====================\n\n" %name
-			c, d = gen.generate(self)
-			code += c
+			code += gen.generate(self)
+			base_type = self.find_component(gen.package, gen.component.name)
+
+			for i in xrange(0, len(deps)):
+				t, b = deps[i]
+				if base_type == t: #my base class, append after
+					deps.insert(i + 1, (name, base_type))
+					break
+				if name == b: #me is base class, prepend before
+					deps.insert(i, (name, base_type))
+					break
+			else:
+				deps.append((name, base_type))
+
 			r.append(code)
-			e.append(d)
-		return "\n".join(r) + "\n".join(e)
+
+		for type, base_type in deps:
+			code = ""
+			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_type)
+			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(type, type)
+			r.append(code)
+
+		return "\n".join(r)
 
 	def generate_imports(self):
 		r = []

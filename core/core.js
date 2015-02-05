@@ -5,11 +5,29 @@ if (!_globals.core)
 
 _globals.core.Object = function() {}
 _globals.core.Object.prototype._update = function(name, value) {}
-_globals.core.Object.prototype._ctor = function() {}
+_globals.core.Object.prototype._ctor = function(parent) { this.parent = parent; }
 
 
 function setup(context) {
 	_globals.core.Item.prototype.children = []
+
+	_globals.core.Border.prototype._updateBox = function() {
+		var width = this.width;
+		var parent = this.parent;
+		var x = parent.x;
+		var y = parent.y;
+		var el = parent.element;
+		el.css('border-width', width);
+		el.css('left', x - width);
+		el.css('top', y + width);
+	}
+
+	_globals.core.Border.prototype._update = function(name, value) {
+		switch(name) {
+			case 'width': this._updateBox(); return;
+			case 'color': this.parent.element.css('border-color', value); return;
+		}
+	}
 
 	_globals.core.Item.prototype._ctor = function(parent) {
 		_globals.core.Object.prototype._ctor.apply(this, arguments);
@@ -19,17 +37,33 @@ function setup(context) {
 
 	_globals.core.Item.prototype._update = function(name, value) {
 		switch(name) {
-		case 'width': this.element.css('width', value); return;
-		case 'height': this.element.css('height', value); return;
-		case 'x': this.element.css('left', value); return;
-		case 'y': this.element.css('top', value); return;
+			case 'width':
+				this.element.css('width', value);
+				return;
+			case 'height':
+				this.element.css('height', value);
+				return;
+			case 'x':
+				this.element.css('left', value);
+				if (this.border)
+					this.border._updateBox();
+				return;
+			case 'y':
+				this.element.css('top', value);
+				if (this.border)
+					this.border._updateBox();
+				return;
+			case 'border':
+				if (this.border)
+					this.border._updateBox();
+				return;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	_globals.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
-		case 'color': this.element.css('background-color', value); return;
+			case 'color': this.element.css('background-color', value); return;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
@@ -74,8 +108,9 @@ exports.addProperty = function(self, type, name) {
 			return value;
 		},
 		set: function(newValue) {
+			oldValue = value;
 			value = newValue;
-			self._update(name, newValue);
+			self._update(name, newValue, oldValue);
 		}
 	});
 }

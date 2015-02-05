@@ -57,6 +57,9 @@ function setup(context) {
 				if (this.border)
 					this.border._updateBox();
 				return;
+			case 'radius':
+				this.element.css('border-radius', value);
+				return;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}

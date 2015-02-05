@@ -12,7 +12,8 @@ function Context() {
 	console.log("window size: " + windowW + "x" + windowH);
 	body = $('body');
 	body.append("<div id='renderer'></div>");
-	$('#renderer').css({width: windowW, height: windowH});
+	this.element = $('#renderer')
+	this.element.css({width: windowW, height: windowH});
 	console.log("context created");
 }
 

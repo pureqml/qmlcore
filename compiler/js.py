@@ -17,6 +17,8 @@ class component_generator(object):
 		self.assignments = {}
 		self.package = get_package(name)
 		self.base_type = None
+		for child in component.children:
+			self.add_child(child)
 
 	def assign(self, target, value):
 		self.assignments[target] = value
@@ -60,18 +62,18 @@ class generator(object):
 	def add_component(self, name, component, declaration):
 		if name in self.components:
 			raise Exception("duplicate component " + name)
-		if not declaration:
-			return
 
 		package, component_name = split_name(name)
+
+		if not declaration:
+			name += ".Ui%s" %(component_name[0].upper() + component_name[1:])
+
 		if package not in self.packages:
 			self.packages[package] = set()
 		self.packages[package].add(component_name)
 
 		gen = component_generator(name, component)
 		self.components[name] = gen
-		for child in component.children:
-			gen.add_child(child)
 
 	def add_js(self, name, data):
 		if name in self.imports:

@@ -16,10 +16,7 @@ class component_generator(object):
 		self.properties = {}
 		self.assignments = {}
 		self.package = get_package(name)
-
-	@property
-	def base_type(self):
-		return "%s.%s" %(self.package, self.component.name)
+		self.base_type = None
 
 	def assign(self, target, value):
 		self.assignments[target] = value
@@ -46,10 +43,11 @@ class component_generator(object):
 	def generate_ctor(self):
 		return "\texports.%s.%s.call(this);" %(self.package, self.component.name)
 
-	def generate(self):
+	def generate(self, registry):
+		base_type = registry.find_component(self.package, self.component.name)
 		code = "";
 		code += "\texports.%s = function() {\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties())
-		code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(self.name, self.base_type)
+		code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(self.name, base_type)
 		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(self.name, self.name)
 		return code
 
@@ -87,6 +85,17 @@ class generator(object):
 	def wrap(self, code):
 		return "(function() {\nvar exports = {};\n%s\nreturn exports;\n} )" %code
 
+	def find_component(self, package, name):
+		if name == "Object":
+			return "core.Object"
+
+		if package in self.packages and name in self.packages[package]:
+			return "%s.%s" %(package, name)
+		for package, components in self.packages.iteritems():
+			if name in components:
+				return "%s.%s" %(package, name)
+		raise Exception("component %s was not found" %name)
+
 	def generate_components(self):
 		r = []
 		for package in sorted(self.packages.keys()):
@@ -94,7 +103,7 @@ class generator(object):
 
 		for name, gen in self.components.iteritems():
 			code = "//=====[component %s]=====================\n\n" %name
-			code += gen.generate()
+			code += gen.generate(self)
 			r.append(code)
 		return "\n".join(r)
 

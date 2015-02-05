@@ -4,10 +4,13 @@ if (!_globals.core)
 	_globals.core = {}
 
 _globals.core.Object = function() {}
-
 _globals.core.Object.prototype._update = function(name, value) {}
 
-function Context() {
+function setup(context) {
+	_globals.core.Item.prototype.children = []
+}
+
+exports.Context = function() {
 	var windowW = $(window).width();
 	var windowH = $(window).height();
 	console.log("window size: " + windowW + "x" + windowH);
@@ -17,6 +20,8 @@ function Context() {
 	this.element = div
 	this.element.css({width: windowW, height: windowH});
 	console.log("context created");
+
+	setup(this);
 }
 
 exports.addProperty = function(self, type, name) {
@@ -38,4 +43,3 @@ exports.addProperty = function(self, type, name) {
 	});
 }
 
-_globals._context = new Context();

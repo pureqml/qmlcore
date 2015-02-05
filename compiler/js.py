@@ -149,4 +149,5 @@ class generator(object):
 		text += "//========================================\n\n"
 		text += "var core = imports['core/core.js'];\n"
 		text += "%s\n" %self.generate_components()
+		text += "_globals._context = new core.Context();\n"
 		return "%s = %s();\n" %(ns, self.wrap(text))

@@ -43,7 +43,7 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def generate_ctor(self):
-		return "\texports.%s.%s.call(this);" %(self.package, self.component.name)
+		return "\texports.%s.%s.apply(this, arguments);" %(self.package, self.component.name)
 
 	def generate(self, registry):
 		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(), self.generate_properties(), self.generate_creator(registry))

@@ -64,6 +64,22 @@ function setup(context) {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Font.prototype._update = function(name, value) {
+		switch(name) {
+			case 'pointSize': this.parent.element.css('font-size', value + "pt"); return;
+			case 'pixelSize': this.parent.element.css('font-size', value + "px"); return;
+			case 'italic': this.parent.element.css('font-style', value? 'italic': 'normal'); return;
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+
+	_globals.core.Text.prototype._update = function(name, value) {
+		switch(name) {
+			case 'text': this.element.text(value); return;
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+
 	_globals.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
 			case 'color': this.element.css('background-color', value); return;

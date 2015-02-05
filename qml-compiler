@@ -8,14 +8,14 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", nargs='+')
 parser.add_argument("-o", dest="output", default=".")
+parser.add_argument("-w", dest="wait", default=False, action='store_true')
 args = parser.parse_args()
+print args
 
 compiler.grammar.source.parseWithTabs()
 
 project_dirs = args.directory
 output_dir = args.output
-
-generator = compiler.js.generator()
 
 def process_file(dirpath, filename):
 	root, ext = os.path.splitext(filename)
@@ -34,14 +34,22 @@ def process_file(dirpath, filename):
 		generator.add_js(path, data)
 
 
-for project_dir in project_dirs:
-	for dirpath, dirnames, filenames in os.walk(project_dir):
-		for filename in filenames:
-			process_file(dirpath, filename)
+def process_files(dirs):
+	for project_dir in dirs:
+		for dirpath, dirnames, filenames in os.walk(project_dir):
+			for filename in filenames:
+				process_file(dirpath, filename)
 
-print "generating sources..."
-namespace = "qml"
-app = generator.generate(namespace)
-app += generator.generate_startup()
-with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
-	f.write(app)
+while True:
+	generator = compiler.js.generator()
+
+	process_files(project_dirs)
+	print "generating sources..."
+	namespace = "qml"
+	app = generator.generate(namespace)
+	app += generator.generate_startup()
+	with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
+		f.write(app)
+
+	if not args.wait:
+		break

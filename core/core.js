@@ -38,4 +38,4 @@ exports.addProperty = function(self, type, name) {
 	});
 }
 
-exports.context = new Context();
+_globals._context = new Context();

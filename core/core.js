@@ -3,8 +3,9 @@
 if (!_globals.core)
 	_globals.core = {}
 
-_globals.core.Object = function() {
-}
+_globals.core.Object = function() {}
+
+_globals.core.Object.prototype._update = function(name, value) {}
 
 function Context() {
 	var windowW = $(window).width();

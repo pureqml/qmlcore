@@ -24,4 +24,10 @@ Item {
 		x: 200;
 		color: "#00f";
 	}
+	Text {
+		x: 200;
+		y: 200;
+		text: "Hello, world";
+		font.pointSize: 32;
+	}
 }

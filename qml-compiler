@@ -10,15 +10,30 @@ parser.add_argument("directory", nargs='+')
 parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
 args = parser.parse_args()
-print args
+
+if args.wait:
+	try:
+		import pyinotify
+	except:
+		print "seems that you don't have pyinotify module installed, you can't use -w without it"
 
 compiler.grammar.source.parseWithTabs()
 
 project_dirs = args.directory
 output_dir = args.output
 
-def process_file(dirpath, filename):
+def check_file(filename):
+	if filename[0] == '.':
+		return False
 	root, ext = os.path.splitext(filename)
+	return ext in set([".qml", ".js"])
+
+
+def process_file(generator, dirpath, filename):
+	root, ext = os.path.splitext(filename)
+	if root[0] == '.':
+		return
+
 	path = os.path.join(dirpath, filename)
 	if ext == ".qml":
 		com = ".".join(dirpath.split(os.path.sep) + [root])
@@ -34,16 +49,33 @@ def process_file(dirpath, filename):
 		generator.add_js(path, data)
 
 
-def process_files(dirs):
+notifier = None
+modified = False
+
+if args.wait:
+	from pyinotify import WatchManager
+	wm = WatchManager()
+	mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE
+	for dir in project_dirs:
+		wm.add_watch(dir, mask)
+
+	def process_event(event):
+		global modified
+		if check_file(event.name):
+			modified = True
+
+	notifier = pyinotify.Notifier(wm, process_event)
+
+def process_files(generator, dirs):
 	for project_dir in dirs:
 		for dirpath, dirnames, filenames in os.walk(project_dir):
 			for filename in filenames:
-				process_file(dirpath, filename)
+				process_file(generator, dirpath, filename)
 
-while True:
+def generate():
 	generator = compiler.js.generator()
 
-	process_files(project_dirs)
+	process_files(generator, project_dirs)
 	print "generating sources..."
 	namespace = "qml"
 	app = generator.generate(namespace)
@@ -51,5 +83,28 @@ while True:
 	with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
 		f.write(app)
 
+
+while True:
+	try:
+		generate()
+	except Exception as ex:
+		if not args.wait:
+			raise
+
+		import time, traceback
+		traceback.print_exc()
+		time.sleep(1)
+		continue
+
 	if not args.wait:
 		break
+
+	while True:
+		if notifier.check_events():
+			notifier.read_events()
+			notifier.process_events()
+			if not modified:
+				continue
+			else:
+				modified = False
+				break

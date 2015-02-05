@@ -23,6 +23,9 @@ class component_generator(object):
 			self.add_child(child)
 
 	def assign(self, target, value):
+		t = type(value)
+		if t is lang.Component:
+			value = component_generator(self.package + ".<anonymous>", value)
 		self.assignments[target] = value
 
 	def add_child(self, child):
@@ -58,10 +61,15 @@ class component_generator(object):
 		ident = "\t" * ident
 		for target, value in self.assignments.iteritems():
 			t = type(value)
+			#print self.name, target, value
 			if t is str:
 				r.append("%s%s.%s = %s;" %(ident, target_object, target, value))
+			elif t is component_generator:
+				var = "this.%s" %target
+				r.append("\t%s = new _globals.%s(this);\n" %(var, registry.find_component(value.package, value.component.name)))
+				r.append(value.generate_creator(registry, var, 2))
 			else:
-				print "skip assignment", target, value
+				raise Exception("skip assignment %s = %s" %(target, value))
 		idx = 0
 		for gen in self.children:
 			var = "child%d" %idx

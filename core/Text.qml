@@ -1,6 +1,5 @@
 Item {
 	property string text;
 
-	property Font font;
-	font: Font {}
+	property Font font: Font {}
 }

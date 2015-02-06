@@ -3,8 +3,20 @@
 if (!_globals.core)
 	_globals.core = {}
 
-_globals.core.Object = function(parent) { this.parent = parent; }
+_globals.core.Object = function(parent) {
+	this.parent = parent;
+	this._local = {}
+}
+
 _globals.core.Object.prototype._update = function(name, value) {}
+
+_globals.core.Object.prototype._setId = function (name) {
+	var p = this;
+	while(p) {
+		p._local[name] = this;
+		p = p.parent;
+	}
+}
 
 
 function setup(context) {
@@ -88,6 +100,8 @@ exports.Context = function() {
 	var body = $('body');
 	var div = $("<div id='renderer'></div>");
 	body.append(div)
+	//fixme: derive context from Object
+	this._local = {}
 	this.element = div
 	this.element.css({width: windowW, height: windowH});
 	console.log("context created");

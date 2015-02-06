@@ -38,6 +38,8 @@ class component_generator(object):
 				self.assign(child.name, child.value)
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
+		elif t is lang.IdAssignment:
+			self.assign("id", child.name)
 		elif t is lang.Component:
 			self.children.append(component_generator(self.package + ".<anonymous>", child))
 		else:

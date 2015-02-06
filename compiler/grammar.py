@@ -22,23 +22,38 @@ def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t
 	return lang.AssignmentScope(t[0], t[1])
 
+def handle_nested_identifier_rvalue(s, l, t):
+	print "nested-id>", t
+	return "this.get('%s')" %t[0]
+
+def handle_id_declaration(s, l, t):
+	print "id>", t
+	return lang.IdAssignment(t[0])
+
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z]"), alphanums)
-nested_identifier = Word(srange("[a-z]"), alphanums + ".")
 code = originalTextFor(nestedExpr("{", "}", None, None))
+
+nested_identifier_lvalue = Word(srange("[a-z]"), alphanums + ".")
+
+nested_identifier_rvalue = Word(srange("[a-z]"), alphanums + ".")
+nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
 expression_end = Literal(";").suppress()
 
 event_declaration = Keyword("event") + identifier + expression_end
 
+id_declaration = Keyword("id").suppress() + Literal(":").suppress() + identifier + expression_end
+id_declaration.setParseAction(handle_id_declaration)
+
 expression = Forward()
 component_declaration = Forward()
 
-assign_declaration = nested_identifier + Literal(":").suppress() + expression + expression_end
+assign_declaration = nested_identifier_lvalue + Literal(":").suppress() + expression + expression_end
 assign_declaration.setParseAction(handle_assignment)
 
-assign_component_declaration = nested_identifier + Literal(":").suppress() + component_declaration
+assign_component_declaration = nested_identifier_lvalue + Literal(":").suppress() + component_declaration
 assign_component_declaration.setParseAction(handle_assignment)
 
 property_declaration = (((Keyword("property").suppress() + type + identifier + Literal(":").suppress() + expression) | \
@@ -49,19 +64,19 @@ property_declaration.setParseAction(handle_property_declaration)
 
 assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end
 assign_scope_declaration.setParseAction(handle_assignment)
-assign_scope = nested_identifier + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
+assign_scope = nested_identifier_lvalue + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
 assign_scope.setParseAction(handle_assignment_scope)
 
-method_declaration = nested_identifier + Literal(":").suppress() + code
+method_declaration = nested_identifier_lvalue + Literal(":").suppress() + code
 method_declaration.addParseAction(handle_method_declaration)
 
-scope_declaration = event_declaration | property_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
+scope_declaration = event_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
 component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
 
 component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
 
-expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier)
+expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier_rvalue)
 expression << expression_definition
 
 source = component_declaration

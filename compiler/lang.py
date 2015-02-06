@@ -14,6 +14,10 @@ class Method(object):
 		self.name = name
 		self.code = code
 
+class IdAssignment(object):
+	def __init__(self, name):
+		self.name = name
+
 class Assignment(object):
 	def __init__(self, target, value):
 		self.target = target

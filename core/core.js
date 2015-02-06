@@ -134,9 +134,11 @@ exports.addProperty = function(self, type, name) {
 		},
 		set: function(newValue) {
 			oldValue = value;
-			value = newValue;
-			self._update(name, newValue, oldValue);
-			self._emitChanged(name, newValue);
+			if (oldValue != newValue) {
+				value = newValue;
+				self._update(name, newValue, oldValue);
+				self._emitChanged(name, newValue);
+			}
 		}
 	});
 }

@@ -6,6 +6,7 @@ if (!_globals.core)
 _globals.core.Object = function(parent) {
 	this.parent = parent;
 	this._local = {}
+	this._changedHandlers = {}
 }
 
 _globals.core.Object.prototype._update = function(name, value) {}
@@ -15,6 +16,20 @@ _globals.core.Object.prototype._setId = function (name) {
 	while(p) {
 		p._local[name] = this;
 		p = p.parent;
+	}
+}
+
+_globals.core.Object.prototype.onChanged = function (name, callback) {
+	if (name in this._changedHandlers)
+		this._changedHandlers[name].push(callback);
+	else
+		this._changedHandlers[name] = [callback];
+}
+
+_globals.core.Object.prototype._emitChanged = function (name, value) {
+	if (name in this._changedHandlers) {
+		var handlers = this._changedHandlers[name];
+		handlers.forEach(function(callback) { callback(value); });
 	}
 }
 
@@ -150,6 +165,7 @@ exports.addProperty = function(self, type, name) {
 			oldValue = value;
 			value = newValue;
 			self._update(name, newValue, oldValue);
+			self._emitChanged(name, newValue);
 		}
 	});
 }

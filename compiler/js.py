@@ -50,10 +50,10 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def generate_ctor(self, registry):
-		return "\texports.%s.apply(this, arguments);\n\tthis._ctor.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name))
+		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name))
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry))
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry), self.name)
 		return ctor
 
 	def generate_creator(self, registry, target_object = "this", ident = 1):

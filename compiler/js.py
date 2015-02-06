@@ -62,7 +62,13 @@ class component_generator(object):
 		for target, value in self.assignments.iteritems():
 			t = type(value)
 			#print self.name, target, value
-			if t is str:
+			if target == "id":
+				if "." in value:
+					raiseException("expected identifier, not expression")
+				r.append("%s%s._setId('%s')" %(ident, target_object, value))
+			elif target.endswith(".id"):
+				raise Exception("setting id of the remote object is prohibited")
+			elif t is str:
 				r.append("%s%s.%s = %s;" %(ident, target_object, target, value))
 			elif t is component_generator:
 				var = "this.%s" %target

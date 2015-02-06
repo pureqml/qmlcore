@@ -1,14 +1,16 @@
 Item {
 	Rectangle {
+		id: rect1;
 		width: 100;
 		height: 100;
 		color: "#f00";
 	}
 
 	Rectangle {
+		id: rect2;
 		width: 100;
 		height: 100;
-		x: 100;
+		x: 150;
 		y: 100;
 		color: "#0f0";
 		radius: 20;
@@ -18,10 +20,11 @@ Item {
 	}
 
 	Rectangle {
+		id: rect3;
 		radius: 10;
 		width: 100;
 		height: 100;
-		x: 200;
+		x: 300;
 		color: "#00f";
 	}
 	Text {

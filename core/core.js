@@ -3,9 +3,8 @@
 if (!_globals.core)
 	_globals.core = {}
 
-_globals.core.Object = function() {}
+_globals.core.Object = function(parent) { this.parent = parent; }
 _globals.core.Object.prototype._update = function(name, value) {}
-_globals.core.Object.prototype._ctor = function(parent) { this.parent = parent; }
 
 
 function setup(context) {
@@ -27,12 +26,6 @@ function setup(context) {
 			case 'width': this._updateBox(); return;
 			case 'color': this.parent.element.css('border-color', value); return;
 		}
-	}
-
-	_globals.core.Item.prototype._ctor = function(parent) {
-		_globals.core.Object.prototype._ctor.apply(this, arguments);
-		this.element = $('<div/>');
-		parent.element.append(this.element);
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
@@ -138,3 +131,13 @@ exports.addProperty = function(self, type, name) {
 	});
 }
 
+exports._bootstrap = function(self, name) {
+	switch(name) {
+		case 'core.Item':
+			if (self.element)
+				throw "double ctor call";
+			self.element = $('<div/>');
+			self.parent.element.append(self.element);
+			break;
+	}
+}

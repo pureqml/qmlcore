@@ -41,8 +41,10 @@ assign_declaration.setParseAction(handle_assignment)
 assign_component_declaration = nested_identifier + Literal(":").suppress() + component_declaration
 assign_component_declaration.setParseAction(handle_assignment)
 
-property_declaration = ((Keyword("property").suppress() + type + identifier + Literal(":").suppress() + expression) | \
-	(Keyword("property").suppress() + type + identifier)) + expression_end
+property_declaration = (((Keyword("property").suppress() + type + identifier + Literal(":").suppress() + expression) | \
+		(Keyword("property").suppress() + type + identifier)) + expression_end) | \
+	(Keyword("property").suppress() + type + identifier + Literal(":").suppress() + component_declaration) \
+
 property_declaration.setParseAction(handle_property_declaration)
 
 assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end

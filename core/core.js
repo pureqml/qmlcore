@@ -19,7 +19,6 @@ _globals.core.Object.prototype._setId = function (name) {
 }
 
 _globals.core.Object.prototype.get = function (name) {
-	console.log("GET", name);
 	if (name in this._local)
 		return this._local[name];
 	if (this.hasOwnProperty(name))

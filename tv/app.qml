@@ -33,4 +33,11 @@ Item {
 		text: "Hello, world";
 		font.pointSize: 32;
 	}
+
+	Rectangle {
+		anchors.left: rect1.left;
+		anchors.right: rect3.right;
+		height: 30;
+		color: "#f0f";
+	}
 }

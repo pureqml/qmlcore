@@ -55,10 +55,10 @@ function setup(context) {
 
 	_globals.core.Item.prototype._update = function(name, value) {
 		switch(name) {
-			case 'width': 	this.element.css('width', value); return;
-			case 'height':	this.element.css('height', value); return;
-			case 'x':		this.element.css('left', value); return;
-			case 'y':		this.element.css('top', value); return;
+			case 'width': 	this.element.css('width', value); this.right.value = this.x + value; return;
+			case 'height':	this.element.css('height', value); this.bottom.value = this.y + value; return;
+			case 'x':		this.element.css('left', value); this.left.value = value; this.right.value = value + this.width; return;
+			case 'y':		this.element.css('top', value); this.top.value = value; this.bottom.value = value + this.height; return;
 			case 'radius':	this.element.css('border-radius', value); return;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);

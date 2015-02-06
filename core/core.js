@@ -122,10 +122,10 @@ exports.Context.prototype.start = function(name) {
 exports.addProperty = function(self, type, name) {
 	var value;
 	switch(type) {
-		case 'int':			value = 0;
-		case 'bool':		value = false;
-		case 'real':		value = 0.0;
-		default: if (type[0].toUpperCase() == type[0]) value = null;
+		case 'int':			value = 0; break;
+		case 'bool':		value = false; break;
+		case 'real':		value = 0.0; break;
+		default: if (type[0].toUpperCase() == type[0]) value = null; break;
 	}
 	Object.defineProperty(self, name, {
 		get: function() {

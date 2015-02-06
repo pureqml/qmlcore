@@ -9,7 +9,12 @@ _globals.core.Object = function(parent) {
 	this._changedHandlers = {}
 }
 
-_globals.core.Object.prototype._update = function(name, value) {}
+_globals.core.Object.prototype._update = function(name, value) {
+	if (name in this._changedHandlers) {
+		var handlers = this._changedHandlers[name];
+		handlers.forEach(function(callback) { callback(value); });
+	}
+}
 
 _globals.core.Object.prototype._setId = function (name) {
 	var p = this;
@@ -24,13 +29,6 @@ _globals.core.Object.prototype.onChanged = function (name, callback) {
 		this._changedHandlers[name].push(callback);
 	else
 		this._changedHandlers[name] = [callback];
-}
-
-_globals.core.Object.prototype._emitChanged = function (name, value) {
-	if (name in this._changedHandlers) {
-		var handlers = this._changedHandlers[name];
-		handlers.forEach(function(callback) { callback(value); });
-	}
 }
 
 _globals.core.Object.prototype.get = function (name) {
@@ -51,6 +49,7 @@ function setup(context) {
 			case 'width': this.parent.element.css('border-width', value); return;
 			case 'color': this.parent.element.css('border-color', value); return;
 		}
+		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
@@ -137,7 +136,6 @@ exports.addProperty = function(self, type, name) {
 			if (oldValue != newValue) {
 				value = newValue;
 				self._update(name, newValue, oldValue);
-				self._emitChanged(name, newValue);
 			}
 		}
 	});

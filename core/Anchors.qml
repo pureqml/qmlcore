@@ -1,11 +1,11 @@
 Object {
-	property AnchorLine bottom : AnchorLine { }
-	property AnchorLine verticalCenter : AnchorLine { }
-	property AnchorLine top : AnchorLine { }
+	property AnchorLine bottom;
+	property AnchorLine verticalCenter;
+	property AnchorLine top;
 
-	property AnchorLine left : AnchorLine { }
-	property AnchorLine horizontalCenter : AnchorLine { }
-	property AnchorLine right : AnchorLine { }
+	property AnchorLine left;
+	property AnchorLine horizontalCenter;
+	property AnchorLine right;
 
 	property Item fill;
 	property Item centerIn;

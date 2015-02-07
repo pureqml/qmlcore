@@ -75,8 +75,8 @@ function setup(context) {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.AnchorLine.prototype._update = function(name, value) {
-		_globals.core.Object.prototype._update.apply(this, arguments);
+	_globals.core.AnchorLine.prototype.toScreen = function() {
+		return this.parent.parent.toScreen()[this.boxIndex] + this.value;
 	}
 
 	_globals.core.Anchors.prototype._update = function(name, line) {
@@ -89,10 +89,9 @@ function setup(context) {
 		var bm = anchors.bottomMargin || anchors.margins;
 
 		var update_left = function() {
-			var target_box = target.toScreen();
 			var parent_box = self.parent.toScreen();
 			//console.log(target_box, parent_box);
-			self.x = target_box[0] + lm - parent_box[0];
+			self.x = line.toScreen() + lm - parent_box[0];
 			if (anchors.right) {
 				var right_target_box = anchors.right.parent.toScreen();
 				self.width = (right_target_box[2] - parent_box[0]) - self.x - rm ;
@@ -100,21 +99,19 @@ function setup(context) {
 		};
 
 		var update_right = function() {
-			var target_box = target.toScreen();
 			var parent_box = self.parent.toScreen();
 			//console.log(target_box, parent_box);
 			if (anchors.left) {
 				var left_target_box = anchors.left.parent.toScreen();
-				self.width = target_box[2] - left_target_box[0] - lm - rm;
+				self.width = line.toScreen() - left_target_box[0] - lm - rm;
 			}
-			self.x = (target_box[2] - parent_box[0] - self.width) + lm;
+			self.x = (line.toScreen() - parent_box[0] - self.width) + lm;
 		};
 
 		var update_top = function() {
-			var target_box = target.toScreen();
 			var parent_box = self.parent.toScreen();
 			//console.log(target_box, parent_box);
-			self.y = target_box[1] + tm - parent_box[1];
+			self.y = line.toScreen() + tm - parent_box[1];
 			if (anchors.bottom) {
 				var bottom_target_box = anchors.bottom.parent.toScreen();
 				self.height = (bottom_target_box[3] - parent_box[1]) - self.y - bm;
@@ -122,14 +119,13 @@ function setup(context) {
 		};
 
 		var update_bottom = function() {
-			var target_box = target.toScreen();
 			var parent_box = self.parent.toScreen();
 			//console.log(target_box, parent_box);
 			if (anchors.top) {
 				var top_target_box = anchors.top.parent.toScreen();
-				self.height = target_box[3] - top_target_box[1] - tm - bm;
+				self.height = line.toScreen() - top_target_box[1] - tm - bm;
 			}
-			self.y = (target_box[3] - parent_box[1] - self.height) + tm;
+			self.y = (line.toScreen() - parent_box[1] - self.height) + tm;
 		};
 
 		switch(name) {
@@ -213,6 +209,9 @@ exports.Context = function() {
 exports.Context.prototype = Object.create(_globals.core.Object.prototype);
 exports.Context.prototype.constructor = exports.Context;
 
+exports.Context.prototype.toScreen = function() {
+	return [0, 0, this.width, this.height];
+}
 
 exports.Context.prototype.start = function(name) {
 	var proto;

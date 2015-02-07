@@ -8,8 +8,8 @@ Object {
 
 	property Anchors anchors: Anchors { }
 
-	property AnchorLine top: AnchorLine { }
-	property AnchorLine left: AnchorLine { }
-	property AnchorLine right: AnchorLine { }
-	property AnchorLine bottom: AnchorLine { }
+	property AnchorLine left: AnchorLine	{ boxIndex: 0; }
+	property AnchorLine top: AnchorLine		{ boxIndex: 1; }
+	property AnchorLine right: AnchorLine	{ boxIndex: 2; }
+	property AnchorLine bottom: AnchorLine	{ boxIndex: 3; }
 }

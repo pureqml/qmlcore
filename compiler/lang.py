@@ -27,3 +27,8 @@ class AssignmentScope(object):
 	def __init__(self, target, values):
 		self.target = target
 		self.values = values
+
+class Behavior(object):
+	def __init__(self, target, animation):
+		self.target = target
+		self.animation = animation

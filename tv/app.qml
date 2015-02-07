@@ -7,6 +7,7 @@ Item {
 		width: 100;
 		height: 100;
 		color: "#f00";
+		Behavior on x { Animation { duration: 1000; } }
 	}
 
 	Rectangle {

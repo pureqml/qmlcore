@@ -32,6 +32,10 @@ def handle_id_declaration(s, l, t):
 	#print "id>", t
 	return lang.IdAssignment(t[0])
 
+def handle_behavior_declaration(s, l, t):
+	#print "behavior>", t
+	return lang.Behavior(t[0], t[1])
+
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z]"), alphanums)
@@ -70,13 +74,17 @@ assign_scope = nested_identifier_lvalue + Literal("{").suppress() + Group(OneOrM
 assign_scope.setParseAction(handle_assignment_scope)
 
 method_declaration = nested_identifier_lvalue + Literal(":").suppress() + code
-method_declaration.addParseAction(handle_method_declaration)
+method_declaration.setParseAction(handle_method_declaration)
 
-scope_declaration = event_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
+behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + identifier + Literal("{").suppress() + component_declaration + Literal("}").suppress()
+behavior_declaration.setParseAction(handle_behavior_declaration)
+
+scope_declaration = behavior_declaration | event_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
 component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
 
 component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
+
 
 expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier_rvalue)
 expression << expression_definition

@@ -48,7 +48,6 @@ function setup(context) {
 		var item = this;
 		var x = 0, y = 0;
 		while(item) {
-			console.log(item, item.x, item.y, x, y);
 			x += item.x;
 			y += item.y;
 			item = item.parent;
@@ -87,14 +86,25 @@ function setup(context) {
 		var rm = anchors.rightMargin || anchors.margins;
 
 		var update_left = function() {
-			console.log("left.changed");
 			var target_box = target.toScreen();
 			var parent_box = self.parent.toScreen();
 			console.log(target_box, parent_box);
+			self.x = target_box[0] + lm - parent_box[0];
+			if (anchors.right) {
+				var right_target_box = anchors.right.parent.toScreen();
+				self.width = (right_target_box[2] - parent_box[0]) - self.x - rm ;
+			}
 		};
 
 		var update_right = function() {
-			console.log("right.changed");
+			var target_box = target.toScreen();
+			var parent_box = self.parent.toScreen();
+			console.log(target_box, parent_box);
+			if (anchors.left) {
+				var left_target_box = anchors.left.parent.toScreen();
+				self.width = target_box[2] - left_target_box[0] - lm - rm;
+			}
+			self.x = (target_box[2] - parent_box[0] - self.width) + lm;
 		};
 
 		switch(name) {

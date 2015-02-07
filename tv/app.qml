@@ -38,8 +38,10 @@ Item {
 	}
 
 	Rectangle {
-		anchors.left: rect1.left;
 		anchors.right: rect3.right;
+		anchors.left: rect1.left;
+		anchors.leftMargin: 20;
+		anchors.rightMargin: 20;
 		height: 30;
 		color: "#f0f";
 	}

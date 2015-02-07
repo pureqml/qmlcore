@@ -40,6 +40,10 @@ _globals.core.Object.prototype.get = function (name) {
 	throw ("invalid property requested: '" + name + "' in context of " + this);
 }
 
+_globals.core.Object.prototype.setAnimation = function (name, animation) {
+	console.log("set animation for", name, "in", animation);
+}
+
 
 function setup(context) {
 	_globals.core.Item.prototype.children = []
@@ -247,7 +251,8 @@ exports.addProperty = function(self, type, name) {
 				value = newValue;
 				self._update(name, newValue, oldValue);
 			}
-		}
+		},
+		enumerable: true
 	});
 }
 

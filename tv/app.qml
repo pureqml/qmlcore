@@ -42,7 +42,9 @@ Item {
 		anchors.left: rect1.left;
 		anchors.leftMargin: 20;
 		anchors.rightMargin: 20;
+		anchors.top: rect2.bottom;
 		height: 30;
+		z: -1;
 		color: "#f0f";
 	}
 }

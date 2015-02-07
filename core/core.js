@@ -57,7 +57,7 @@ function setup(context) {
 
 	_globals.core.Border.prototype._update = function(name, value) {
 		switch(name) {
-			case 'width': this.parent.element.css('border-width', value); break;
+			case 'width': this.parent.element.css({'border-width': value, 'margin-left': -value, 'margin-top': -value}); break;
 			case 'color': this.parent.element.css('border-color', value); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);

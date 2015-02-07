@@ -84,11 +84,13 @@ function setup(context) {
 		var anchors = this;
 		var lm = anchors.leftMargin || anchors.margins;
 		var rm = anchors.rightMargin || anchors.margins;
+		var tm = anchors.topMargin || anchors.margins;
+		var bm = anchors.bottomMargin || anchors.margins;
 
 		var update_left = function() {
 			var target_box = target.toScreen();
 			var parent_box = self.parent.toScreen();
-			console.log(target_box, parent_box);
+			//console.log(target_box, parent_box);
 			self.x = target_box[0] + lm - parent_box[0];
 			if (anchors.right) {
 				var right_target_box = anchors.right.parent.toScreen();
@@ -99,7 +101,7 @@ function setup(context) {
 		var update_right = function() {
 			var target_box = target.toScreen();
 			var parent_box = self.parent.toScreen();
-			console.log(target_box, parent_box);
+			//console.log(target_box, parent_box);
 			if (anchors.left) {
 				var left_target_box = anchors.left.parent.toScreen();
 				self.width = target_box[2] - left_target_box[0] - lm - rm;
@@ -107,15 +109,47 @@ function setup(context) {
 			self.x = (target_box[2] - parent_box[0] - self.width) + lm;
 		};
 
+		var update_top = function() {
+			var target_box = target.toScreen();
+			var parent_box = self.parent.toScreen();
+			//console.log(target_box, parent_box);
+			self.y = target_box[1] + tm - parent_box[1];
+			if (anchors.bottom) {
+				var bottom_target_box = anchors.bottom.parent.toScreen();
+				self.height = (bottom_target_box[3] - parent_box[1]) - self.y - bm;
+			}
+		};
+
+		var update_bottom = function() {
+			var target_box = target.toScreen();
+			var parent_box = self.parent.toScreen();
+			//console.log(target_box, parent_box);
+			if (anchors.top) {
+				var top_target_box = anchors.top.parent.toScreen();
+				self.height = target_box[3] - top_target_box[1] - tm - bm;
+			}
+			self.y = (target_box[3] - parent_box[1] - self.height) + tm;
+		};
+
 		switch(name) {
 			case 'left':
-				update_left(target.left.value);
+				update_left();
 				target.left.onChanged('value', update_left);
 				break;
 
 			case 'right':
-				update_right(target.right.value);
-				target.right.onChanged('value', update_left);
+				update_right();
+				target.right.onChanged('value', update_right);
+				break;
+
+			case 'top':
+				update_top();
+				target.top.onChanged('value', update_top);
+				break;
+
+			case 'bottom':
+				update_bottom();
+				target.bottom.onChanged('value', update_bottom);
 				break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);

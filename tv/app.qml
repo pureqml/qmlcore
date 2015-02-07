@@ -1,4 +1,7 @@
 Item {
+	x: 200;
+	y: 100;
+
 	Rectangle {
 		id: rect1;
 		width: 100;

@@ -189,7 +189,12 @@ exports.Context = function() {
 
 	var body = $('body');
 	var div = $("<div id='renderer'></div>");
-	body.append(div)
+	body.append(div);
+	$('head').append($("<style>" +
+		"div#renderer { position: absolute; left: 0px; top: 0px; }" +
+		"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; }" +
+		"</style>"
+	));
 
 	exports.addProperty(this, 'int', 'x');
 	exports.addProperty(this, 'int', 'y');

@@ -63,13 +63,13 @@ class component_generator(object):
 		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry), self.name)
 		return ctor
 
-	def generate_animations(self, registry):
+	def generate_animations(self, registry, target_object):
 		r = []
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + name
 			r.append("\tvar %s = new _globals.%s(%s);" %(var, registry.find_component(self.package, animation.component.name), "this"))
 			r.append(animation.generate_creator(registry, var, 2))
-			r.append("\tthis.setAnimation('%s', %s);\n" %(name, var))
+			r.append("\t%s.setAnimation('%s', %s);\n" %(target_object, name, var))
 		return "\n".join(r)
 
 	def generate_creator(self, registry, target_object = "this", ident = 1):
@@ -101,7 +101,7 @@ class component_generator(object):
 			r.append("\tthis.children.push(%s);" %var);
 			r.append("")
 			idx += 1
-		r.append(self.generate_animations(registry))
+		r.append(self.generate_animations(registry, target_object))
 		return "\n".join(r)
 
 class generator(object):

@@ -7,6 +7,7 @@ _globals.core.Object = function(parent) {
 	this.parent = parent;
 	this._local = {}
 	this._changedHandlers = {}
+	this._animations = {}
 }
 
 _globals.core.Object.prototype._update = function(name, value) {
@@ -41,9 +42,12 @@ _globals.core.Object.prototype.get = function (name) {
 }
 
 _globals.core.Object.prototype.setAnimation = function (name, animation) {
-	console.log("set animation for", name, "in", animation);
+	this._animations[name] = animation;
 }
 
+_globals.core.Object.prototype.getAnimation = function (name, animation) {
+	return this._animations[name] || null;
+}
 
 function setup(context) {
 	_globals.core.Item.prototype.children = []
@@ -235,6 +239,7 @@ exports.Context.prototype.start = function(name) {
 
 exports.addProperty = function(self, type, name) {
 	var value;
+	var timer;
 	switch(type) {
 		case 'int':			value = 0; break;
 		case 'bool':		value = false; break;
@@ -246,10 +251,31 @@ exports.addProperty = function(self, type, name) {
 			return value;
 		},
 		set: function(newValue) {
+			var animation = self.getAnimation(name)
+			if (animation) {
+				var duration = animation.duration;
+				var date = new Date();
+				var started = date.getTime() + date.getMilliseconds() / 1000.0;
+				timer = setInterval(function() {
+					var date = new Date();
+					var now = date.getTime() + date.getMilliseconds() / 1000.0;
+					var t = 1.0 * (now - started) / duration;
+					if (t >= 1)
+						t = 1;
+					console.log(t);
+					self._update(name, t * (newValue - oldValue) + oldValue, oldValue);
+				});
+
+				setTimeout(function() {
+					clearInterval(timer);
+					self._update(name, newValue, oldValue);
+				}, duration);
+			}
 			oldValue = value;
 			if (oldValue != newValue) {
 				value = newValue;
-				self._update(name, newValue, oldValue);
+				if (!animation)
+					self._update(name, newValue, oldValue);
 			}
 		},
 		enumerable: true

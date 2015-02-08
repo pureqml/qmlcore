@@ -10,6 +10,15 @@ Item {
 		Behavior on x { Animation { duration: 1000; } }
 	}
 
+	Timer {
+		running: true;
+		interval: 500;
+		repeat: true;
+
+		property bool value;
+		onTriggered: { value = !value; rect1.x = value? 400: 100 }
+	}
+
 	Rectangle {
 		id: rect2;
 		width: 100;

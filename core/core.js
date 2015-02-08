@@ -50,6 +50,17 @@ _globals.core.Object.prototype.getAnimation = function (name, animation) {
 }
 
 function setup(context) {
+	_globals.core.Timer.prototype._update = function(name, value) {
+		console.log("timer", name, value);
+		switch(name) {
+			case 'running': break;
+			case 'interval': break;
+			case 'repeat': break;
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+
+
 	_globals.core.Item.prototype.children = []
 
 	_globals.core.Item.prototype.toScreen = function() {

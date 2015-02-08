@@ -252,23 +252,24 @@ exports.addProperty = function(self, type, name) {
 		},
 		set: function(newValue) {
 			var animation = self.getAnimation(name)
-			if (animation) {
+			if (animation && value != newValue) {
 				var duration = animation.duration;
 				var date = new Date();
 				var started = date.getTime() + date.getMilliseconds() / 1000.0;
+				var src = value;
+				var dst = newValue;
 				timer = setInterval(function() {
 					var date = new Date();
 					var now = date.getTime() + date.getMilliseconds() / 1000.0;
 					var t = 1.0 * (now - started) / duration;
 					if (t >= 1)
 						t = 1;
-					console.log(t);
-					self._update(name, t * (newValue - oldValue) + oldValue, oldValue);
+					self._update(name, t * (dst - src) + src, src);
 				});
 
 				setTimeout(function() {
 					clearInterval(timer);
-					self._update(name, newValue, oldValue);
+					self._update(name, dst, src);
 				}, duration);
 			}
 			oldValue = value;

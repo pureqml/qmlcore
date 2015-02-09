@@ -70,7 +70,7 @@ _globals.core.Object.prototype.getAnimation = function (name, animation) {
 	return this._animations[name] || null;
 }
 
-function setup(context) {
+exports._setup = function(context) {
 	_globals.core.Timer.prototype._restart = function() {
 		if (this._timeout) {
 			clearTimeout(this._timeout);
@@ -149,7 +149,8 @@ function setup(context) {
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
-		return this.parent.parent.toScreen()[this.boxIndex] + this.value;
+		var box = this.parent.parent? this.parent.parent.toScreen(): [0, 0, this.parent.width, this.parent.height];
+		return box[this.boxIndex] + this.value;
 	}
 
 	_globals.core.Anchors.prototype._update = function(name) {
@@ -252,10 +253,27 @@ function setup(context) {
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
+
+	exports.Context.prototype.start = function(name) {
+		var proto;
+		if (typeof name == 'string') {
+			console.log('creating component...', name);
+			var path = name.split('.');
+			proto = _globals;
+			for (var i = 0; i < path.length; ++i)
+				proto = proto[path[i]]
+		}
+		else
+			proto = name;
+		var instance = Object.create(proto.prototype);
+		proto.apply(instance, [this]);
+		return instance;
+	}
 }
 
 exports.Context = function() {
-	_globals.core.Object.apply(this, null);
+	_globals.core.Item.apply(this, null);
+
 	this._local['renderer'] = this;
 
 	var w = $(window).width();
@@ -271,41 +289,11 @@ exports.Context = function() {
 		"</style>"
 	));
 
-	exports.addProperty(this, 'int', 'x');
-	exports.addProperty(this, 'int', 'y');
-	exports.addProperty(this, 'int', 'width');
-	exports.addProperty(this, 'int', 'height');
-
 	this.element = div
-	this.element.css({width: w, height: h});
 	this.width = w;
 	this.height = h;
 
 	console.log("context created");
-	setup(this);
-}
-
-exports.Context.prototype = Object.create(_globals.core.Object.prototype);
-exports.Context.prototype.constructor = exports.Context;
-
-exports.Context.prototype.toScreen = function() {
-	return [0, 0, this.width, this.height];
-}
-
-exports.Context.prototype.start = function(name) {
-	var proto;
-	if (typeof name == 'string') {
-		console.log('creating component...', name);
-		var path = name.split('.');
-		proto = _globals;
-		for (var i = 0; i < path.length; ++i)
-			proto = proto[path[i]]
-	}
-	else
-		proto = name;
-	var instance = Object.create(proto.prototype);
-	proto.apply(instance, [this]);
-	return instance;
 }
 
 exports.addProperty = function(self, type, name) {
@@ -368,6 +356,8 @@ exports.addProperty = function(self, type, name) {
 exports._bootstrap = function(self, name) {
 	switch(name) {
 		case 'core.Item':
+			if (!self.parent) //top-level item, do not create item
+				return;
 			if (self.element)
 				throw "double ctor call";
 			self.element = $('<div/>');
@@ -378,3 +368,4 @@ exports._bootstrap = function(self, name) {
 			break;
 	}
 }
+

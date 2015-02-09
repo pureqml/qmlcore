@@ -1,6 +1,8 @@
 Item {
-	x: 200;
-	y: 100;
+	id: mainWindow;
+	anchors.fill: renderer;
+	anchors.leftMargin: 200;
+	anchors.topMargin: 100;
 
 	Rectangle {
 		id: rect1;

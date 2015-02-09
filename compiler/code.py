@@ -1,3 +1,5 @@
+import re
+
 def scan(text):
 	str_context = False
 	escape = False
@@ -55,7 +57,19 @@ def scan(text):
 
 	return text, invalid
 
+id_re = re.compile(r'([a-zA-Z]\w*)\.')
+
 def process(text, registry):
+	id_set = registry.id_set
 	text, invalid = scan(text)
-	print invalid
+	def replace_id(m):
+		pos = m.start(0)
+		name = m.group(1)
+		first = text[pos - 1] == "."
+		if name in id_set:
+			return ("this." if first else "") + "get('%s')." %name
+		else:
+			return m.group(0)
+	text = id_re.sub(replace_id, text)
+	#print text
 	return text

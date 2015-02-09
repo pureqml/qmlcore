@@ -6,6 +6,9 @@ Object {
 	property int height;
 	property bool clip;
 
+	property bool visible;
+	property real opacity: 1;
+
 	property Anchors anchors: Anchors { }
 
 	property AnchorLine left: AnchorLine	{ boxIndex: 0; }

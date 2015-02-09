@@ -124,10 +124,29 @@ exports._setup = function(context) {
 
 	_globals.core.Item.prototype._update = function(name, value) {
 		switch(name) {
-			case 'width': 	this.element.css('width', value); this.right.value = this.x + value; break;
-			case 'height':	this.element.css('height', value); this.bottom.value = this.y + value; break;
-			case 'x':		this.element.css('left', value); this.left.value = value; this.right.value = value + this.width; break;
-			case 'y':		this.element.css('top', value); this.top.value = value; this.bottom.value = value + this.height; break;
+			case 'width':
+				this.element.css('width', value);
+				this.right.value = this.left.value + value;
+				this.horizontalCenter.value = (this.right.value + this.left.value) / 2;
+				break;
+			case 'height':
+				this.element.css('height', value);
+				this.bottom.value = this.top.value + value;
+				this.verticalCenter.value = (this.top.value + this.bottom.value) / 2;
+				break;
+			case 'x':
+				this.element.css('left', value);
+				this.left.value = value;
+				this.right.value = value + this.width;
+				this.horizontalCenter.value = (this.right.value + this.left.value) / 2;
+				break;
+			case 'y':
+				this.element.css('top', value);
+				this.top.value = value;
+				this.bottom.value = value + this.height;
+				this.verticalCenter.value = (this.top.value + this.bottom.value) / 2;
+				break;
+
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
 		}
@@ -200,8 +219,15 @@ exports._setup = function(context) {
 			self.y = bottom - parent_box[1] - bm - self.height;
 		}
 
-		var update_h_center = function() {}
-		var update_v_center = function() {}
+		var update_h_center = function() {
+			var hcenter = anchors.horizontalCenter.toScreen();
+			self.x = (hcenter - self.width) / 2 - parent_box[0] + lm - rm;
+		}
+
+		var update_v_center = function() {
+			var vcenter = anchors.verticalCenter.toScreen();
+			self.y = (vcenter - self.height) / 2 - parent_box[1] + tm - bm;
+		}
 
 		switch(name) {
 			case 'left':

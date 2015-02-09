@@ -111,7 +111,7 @@ exports._setup = function(context) {
 			y += item.y;
 			item = item.parent;
 		}
-		return [x, y, x + this.width, y + this.height];
+		return [x, y, x + this.width, y + this.height, x + this.width / 2, y + this.height / 2];
 	}
 
 	_globals.core.Border.prototype._update = function(name, value) {

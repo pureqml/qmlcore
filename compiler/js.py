@@ -150,6 +150,10 @@ class generator(object):
 		self.packages = {}
 		self.startup = []
 		self.id_set = set()
+		self.startup.append("qml._imports['core/core.js'].Context.prototype = Object.create(qml.core.Item.prototype);")
+		self.startup.append("qml._imports['core/core.js'].Context.prototype.constructor = qml._imports['core/core.js'].Context.Context;")
+		self.startup.append("qml._context = new qml._imports['core/core.js'].Context;")
+		self.startup.append("qml._imports['core/core.js']._setup(qml._context);")
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -236,10 +240,10 @@ class generator(object):
 		text = ""
 		text += "var _globals = exports;\n"
 		text += "var imports = { %s };\n" %self.generate_imports()
+		text += "_globals._imports = imports;\n"
 		text += "//========================================\n\n"
 		text += "var core = imports['core/core.js'];\n"
 		text += "%s\n" %self.generate_components()
-		text += "_globals._context = new core.Context();\n"
 		return "%s = %s();\n" %(ns, self.wrap(text))
 
 	def generate_startup(self):

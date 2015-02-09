@@ -42,7 +42,15 @@ Item {
 		height: 100;
 		x: 300;
 		color: "#00f";
+
+		MouseArea {
+			anchors.fill: parent;
+			hoverEnabled: true;
+			onEntered: { rect3.color = "#44f"; }
+			onExited: { rect3.color = "#00f"; }
+		}
 	}
+
 	Text {
 		x: 200;
 		y: 200;

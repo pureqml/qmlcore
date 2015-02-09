@@ -93,16 +93,19 @@ class component_generator(object):
 		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry), self.name)
 		return ctor
 
-	def generate_animations(self, registry, target_object):
+	def generate_animations(self, registry):
 		r = []
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + name
 			r.append("\tvar %s = new _globals.%s(%s);" %(var, registry.find_component(self.package, animation.component.name), "this"))
-			r.append(animation.generate_creator(registry, var, 2))
-			r.append("\t%s.setAnimation('%s', %s);\n" %(target_object, name, var))
+			r.append(animation.generate_creator(registry, 2))
+			r.append("\tthis.setAnimation('%s', %s);\n" %(name, var))
 		return "\n".join(r)
 
-	def generate_creator(self, registry, target_object = "this", ident = 1):
+	def wrap_creator(self, var, code):
+		return "\tfunction setup_%s () {\n%s\n\t}\n\tsetup_%s.call(%s)" %(var, code, var, var)
+
+	def generate_creator(self, registry, ident = 1):
 		r = []
 		ident = "\t" * ident
 		for target, value in self.assignments.iteritems():
@@ -111,33 +114,33 @@ class component_generator(object):
 			if target == "id":
 				if "." in value:
 					raiseException("expected identifier, not expression")
-				r.append("%s%s._setId('%s')" %(ident, target_object, value))
+				r.append("%sthis._setId('%s')" %(ident, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
 			elif t is str:
-				r.append("%s%s.%s = %s;" %(ident, target_object, target, value))
+				r.append("%sthis.%s = %s;" %(ident, target, value))
 			elif t is component_generator:
 				var = "this.%s" %target
 				r.append("\t%s = new _globals.%s(this);" %(var, registry.find_component(value.package, value.component.name)))
-				r.append(value.generate_creator(registry, var, 2))
+				r.append(value.generate_creator(registry, 2))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 		idx = 0
 		for gen in self.children:
 			var = "child%d" %idx
 			component = registry.find_component(self.package, gen.component.name)
-			r.append("\tvar %s = new _globals.%s(%s);" %(var, component, target_object))
-			r.append(gen.generate_creator(registry, var, 2))
+			r.append("\tvar %s = new _globals.%s(this);" %(var, component))
+			r.append(self.wrap_creator(var, gen.generate_creator(registry, 2)))
 			r.append("\tthis.children.push(%s);" %var);
 			r.append("")
 			idx += 1
 		for name, code in self.methods.iteritems():
 			code = process(code, registry)
-			r.append("\t%s.%s = (function() %s ).bind(%s);" %(target_object, name, code, target_object))
+			r.append("%sthis.%s = (function() %s ).bind(this);" %(ident, name, code))
 		for name, code in self.event_handlers.iteritems():
 			code = process(code, registry)
-			r.append("\t%s.on('%s', (function() %s ).bind(%s));" %(target_object, name, code, target_object))
-		r.append(self.generate_animations(registry, target_object))
+			r.append("%sthis.on('%s', (function() %s ).bind(this));" %(ident, name, code))
+		r.append(self.generate_animations(registry))
 		return "\n".join(r)
 
 class generator(object):

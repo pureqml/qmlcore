@@ -223,7 +223,6 @@ function setup(context) {
 				break;
 
 			case 'fill':
-				console.log("fill", this, target, target.left);
 				this.left = target.left;
 				this.right = target.right;
 				this.top = target.top;

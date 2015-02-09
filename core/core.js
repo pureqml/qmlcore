@@ -84,7 +84,7 @@ function setup(context) {
 		if (!this.running)
 			return;
 
-		console.log("starting timer", this.interval, this.repeat);
+		//console.log("starting timer", this.interval, this.repeat);
 		var self = this;
 		if (this.repeat)
 			this._interval = setInterval(function() { self._emitEvent('triggered'); }, this.interval);

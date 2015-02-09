@@ -1,7 +1,7 @@
 Item {
-	event onEntered;
-	event onExited;
-	event onClicked;
+	event entered;
+	event exited;
+	event clicked;
 
 	property bool hoverEnabled;
 	property real mouseX;

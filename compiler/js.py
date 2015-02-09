@@ -149,7 +149,7 @@ class generator(object):
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
-		self.id_set = set()
+		self.id_set = set(['renderer'])
 		self.startup.append("qml._imports['core/core.js'].Context.prototype = Object.create(qml.core.Item.prototype);")
 		self.startup.append("qml._imports['core/core.js'].Context.prototype.constructor = qml._imports['core/core.js'].Context.Context;")
 		self.startup.append("qml._context = new qml._imports['core/core.js'].Context();")

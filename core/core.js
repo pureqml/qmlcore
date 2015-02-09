@@ -152,9 +152,9 @@ function setup(context) {
 		return this.parent.parent.toScreen()[this.boxIndex] + this.value;
 	}
 
-	_globals.core.Anchors.prototype._update = function(name, line) {
+	_globals.core.Anchors.prototype._update = function(name, value) {
 		var self = this.parent;
-		var target = line.parent;
+		var target = (name == 'centerIn' || name == 'fill')? value: value.parent;
 		var anchors = this;
 		var lm = anchors.leftMargin || anchors.margins;
 		var rm = anchors.rightMargin || anchors.margins;
@@ -164,7 +164,7 @@ function setup(context) {
 		var update_left = function() {
 			var parent_box = self.parent.toScreen();
 			//console.log(target_box, parent_box);
-			self.x = line.toScreen() + lm - parent_box[0];
+			self.x = target.left.toScreen() + lm - parent_box[0];
 			if (anchors.right) {
 				var right_target_box = anchors.right.parent.toScreen();
 				self.width = (right_target_box[2] - parent_box[0]) - self.x - rm ;
@@ -176,15 +176,15 @@ function setup(context) {
 			//console.log(target_box, parent_box);
 			if (anchors.left) {
 				var left_target_box = anchors.left.parent.toScreen();
-				self.width = line.toScreen() - left_target_box[0] - lm - rm;
+				self.width = target.right.toScreen() - left_target_box[0] - lm - rm;
 			}
-			self.x = (line.toScreen() - parent_box[0] - self.width) + lm;
+			self.x = (target.right.toScreen() - parent_box[0] - self.width) + lm;
 		};
 
 		var update_top = function() {
 			var parent_box = self.parent.toScreen();
 			//console.log(target_box, parent_box);
-			self.y = line.toScreen() + tm - parent_box[1];
+			self.y = target.top.toScreen() + tm - parent_box[1];
 			if (anchors.bottom) {
 				var bottom_target_box = anchors.bottom.parent.toScreen();
 				self.height = (bottom_target_box[3] - parent_box[1]) - self.y - bm;
@@ -196,10 +196,11 @@ function setup(context) {
 			//console.log(target_box, parent_box);
 			if (anchors.top) {
 				var top_target_box = anchors.top.parent.toScreen();
-				self.height = line.toScreen() - top_target_box[1] - tm - bm;
+				self.height = target.top.toScreen() - top_target_box[1] - tm - bm;
 			}
-			self.y = (line.toScreen() - parent_box[1] - self.height) + tm;
+			self.y = (target.bottom.toScreen() - parent_box[1] - self.height) + tm;
 		};
+		console.log(name, value);
 
 		switch(name) {
 			case 'left':
@@ -220,6 +221,14 @@ function setup(context) {
 			case 'bottom':
 				update_bottom();
 				target.bottom.onChanged('value', update_bottom);
+				break;
+
+			case 'fill':
+				console.log("fill", this, target, target.left);
+				this.left = target.left;
+				this.right = target.right;
+				this.top = target.top;
+				this.bottom = target.bottom;
 				break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);

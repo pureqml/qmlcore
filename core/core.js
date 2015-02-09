@@ -291,6 +291,7 @@ exports.Context.prototype.start = function(name) {
 exports.addProperty = function(self, type, name) {
 	var value;
 	var timer;
+	var timeout;
 	switch(type) {
 		case 'int':			value = 0; break;
 		case 'bool':		value = false; break;
@@ -304,6 +305,10 @@ exports.addProperty = function(self, type, name) {
 		set: function(newValue) {
 			var animation = self.getAnimation(name)
 			if (animation && value != newValue) {
+				if (timer)
+					clearInterval(timer);
+				if (timeout)
+					clearTimeout(timeout);
 				var duration = animation.duration;
 				var date = new Date();
 				var started = date.getTime() + date.getMilliseconds() / 1000.0;

@@ -251,6 +251,7 @@ function setup(context) {
 
 exports.Context = function() {
 	_globals.core.Object.apply(this, null);
+	this._local['renderer'] = this;
 
 	var w = $(window).width();
 	var h = $(window).height();

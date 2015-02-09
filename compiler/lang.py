@@ -32,3 +32,7 @@ class Behavior(object):
 	def __init__(self, target, animation):
 		self.target = target
 		self.animation = animation
+
+class Event(object):
+	def __init__(self, name):
+		self.name = name

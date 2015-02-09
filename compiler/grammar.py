@@ -36,6 +36,9 @@ def handle_behavior_declaration(s, l, t):
 	#print "behavior>", t
 	return lang.Behavior(t[0], t[1])
 
+def handle_event_declaration(s, l, t):
+	return lang.Event(t[0])
+
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z]"), alphanums)
@@ -48,7 +51,8 @@ nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
 expression_end = Literal(";").suppress()
 
-event_declaration = Keyword("event") + identifier + expression_end
+event_declaration = Keyword("event").suppress() + identifier + expression_end
+event_declaration.setParseAction(handle_event_declaration)
 
 id_declaration = Keyword("id").suppress() + Literal(":").suppress() + identifier + expression_end
 id_declaration.setParseAction(handle_id_declaration)

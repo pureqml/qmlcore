@@ -152,7 +152,7 @@ class generator(object):
 		self.id_set = set()
 		self.startup.append("qml._imports['core/core.js'].Context.prototype = Object.create(qml.core.Item.prototype);")
 		self.startup.append("qml._imports['core/core.js'].Context.prototype.constructor = qml._imports['core/core.js'].Context.Context;")
-		self.startup.append("qml._context = new qml._imports['core/core.js'].Context;")
+		self.startup.append("qml._context = new qml._imports['core/core.js'].Context();")
 		self.startup.append("qml._imports['core/core.js']._setup(qml._context);")
 
 	def add_component(self, name, component, declaration):

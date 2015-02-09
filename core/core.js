@@ -134,6 +134,20 @@ function setup(context) {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.MouseArea.prototype._onEnter = function() {
+		if (!this.hoverEnabled)
+			return;
+		this.hovered = true;
+		this._emitEvent('entered')
+	}
+
+	_globals.core.MouseArea.prototype._onExit = function() {
+		if (!this.hoverEnabled)
+			return;
+		this.hovered = false;
+		this._emitEvent('exited')
+	}
+
 	_globals.core.AnchorLine.prototype.toScreen = function() {
 		return this.parent.parent.toScreen()[this.boxIndex] + this.value;
 	}
@@ -352,6 +366,9 @@ exports._bootstrap = function(self, name) {
 				throw "double ctor call";
 			self.element = $('<div/>');
 			self.parent.element.append(self.element);
+			break;
+		case 'core.MouseArea':
+			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self));
 			break;
 	}
 }

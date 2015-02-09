@@ -292,6 +292,7 @@ exports.addProperty = function(self, type, name) {
 	var value;
 	var timer;
 	var timeout;
+	var interpolated_value;
 	switch(type) {
 		case 'int':			value = 0; break;
 		case 'bool':		value = false; break;
@@ -309,10 +310,12 @@ exports.addProperty = function(self, type, name) {
 					clearInterval(timer);
 				if (timeout)
 					clearTimeout(timeout);
+
 				var duration = animation.duration;
 				var date = new Date();
 				var started = date.getTime() + date.getMilliseconds() / 1000.0;
-				var src = value;
+
+				var src = interpolated_value !== undefined? interpolated_value: value;
 				var dst = newValue;
 				timer = setInterval(function() {
 					var date = new Date();
@@ -320,11 +323,14 @@ exports.addProperty = function(self, type, name) {
 					var t = 1.0 * (now - started) / duration;
 					if (t >= 1)
 						t = 1;
-					self._update(name, t * (dst - src) + src, src);
+
+					interpolated_value = t * (dst - src) + src;
+					self._update(name, interpolated_value, src);
 				});
 
-				setTimeout(function() {
+				timeout = setTimeout(function() {
 					clearInterval(timer);
+					interpolated_value = undefined;
 					self._update(name, dst, src);
 				}, duration);
 			}

@@ -200,7 +200,6 @@ function setup(context) {
 			}
 			self.y = (target.bottom.toScreen() - parent_box[1] - self.height) + tm;
 		};
-		console.log(name, value);
 
 		switch(name) {
 			case 'left':

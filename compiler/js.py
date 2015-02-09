@@ -19,6 +19,8 @@ class component_generator(object):
 		self.package = get_package(name)
 		self.base_type = None
 		self.children = []
+		self.methods = {}
+		self.event_handlers = {}
 
 		for child in component.children:
 			self.add_child(child)
@@ -47,6 +49,19 @@ class component_generator(object):
 			if child.target in self.animations:
 				raise Exception("duplicate animation on property " + child.target);
 			self.animations[child.target] = component_generator(self.package + ".<anonymous-animation>", child.animation)
+		elif t is lang.Method:
+			name, code = child.name, child.code
+			if len(name) > 2 and name.startswith("on") and name[2].isupper(): #onXyzzy
+				name = name[2].lower() + name[3:]
+				if name in self.event_handlers:
+					raise Exception("duplicate event handler " + child.name)
+				self.event_handlers[name] = code
+			else:
+				if name in self.methods:
+					raise Exception("duplicate " + name + " method")
+				self.methods[name] = code
+		elif t is lang.Event:
+			pass
 		else:
 			print "unhandled", child
 
@@ -101,6 +116,10 @@ class component_generator(object):
 			r.append("\tthis.children.push(%s);" %var);
 			r.append("")
 			idx += 1
+		for name, code in self.methods.iteritems():
+			r.append("\t%s.%s = (function() %s ).bind(%s);" %(target_object, name, code, target_object))
+		for name, code in self.event_handlers.iteritems():
+			r.append("\t%s.on('%s', (function() %s ).bind(%s));" %(target_object, name, code, target_object))
 		r.append(self.generate_animations(registry, target_object))
 		return "\n".join(r)
 

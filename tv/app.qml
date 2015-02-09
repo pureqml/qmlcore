@@ -44,6 +44,8 @@ Item {
 		color: "#00f";
 
 		MouseArea {
+			width: 100;
+			height: 100;
 			anchors.fill: parent;
 			hoverEnabled: true;
 			onEntered: { rect3.color = "#44f"; }

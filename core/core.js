@@ -152,9 +152,10 @@ function setup(context) {
 		return this.parent.parent.toScreen()[this.boxIndex] + this.value;
 	}
 
-	_globals.core.Anchors.prototype._update = function(name, value) {
+	_globals.core.Anchors.prototype._update = function(name) {
 		var self = this.parent;
-		var target = (name == 'centerIn' || name == 'fill')? value: value.parent;
+		var parent = self.parent;
+
 		var anchors = this;
 		var lm = anchors.leftMargin || anchors.margins;
 		var rm = anchors.rightMargin || anchors.margins;
@@ -162,71 +163,67 @@ function setup(context) {
 		var bm = anchors.bottomMargin || anchors.margins;
 
 		var update_left = function() {
-			var parent_box = self.parent.toScreen();
-			//console.log(target_box, parent_box);
-			self.x = target.left.toScreen() + lm - parent_box[0];
+			var left = anchors.left.toScreen();
+			self.x = left + lm - parent.left.toScreen();
 			if (anchors.right) {
-				var right_target_box = anchors.right.parent.toScreen();
-				self.width = (right_target_box[2] - parent_box[0]) - self.x - rm ;
+				var right = anchors.right.toScreen();
+				self.width = right - left - rm - lm;
 			}
 		};
 
 		var update_right = function() {
-			var parent_box = self.parent.toScreen();
-			//console.log(target_box, parent_box);
+			var right = anchors.right.toScreen();
 			if (anchors.left) {
-				var left_target_box = anchors.left.parent.toScreen();
-				self.width = target.right.toScreen() - left_target_box[0] - lm - rm;
+				var left = anchors.left.toScreen();
+				self.width = right - left - rm;
 			}
-			self.x = (target.right.toScreen() - parent_box[0] - self.width) + lm;
+			self.x = right - parent.right.toScreen() - rm - self.width;
 		};
 
 		var update_top = function() {
-			var parent_box = self.parent.toScreen();
-			//console.log(target_box, parent_box);
-			self.y = target.top.toScreen() + tm - parent_box[1];
+			var top = anchors.top.toScreen()
+			self.y = top + tm - parent.top.toScreen();
 			if (anchors.bottom) {
-				var bottom_target_box = anchors.bottom.parent.toScreen();
-				self.height = (bottom_target_box[3] - parent_box[1]) - self.y - bm;
+				var bottom = anchors.bottom.toScreen();
+				self.height = bottom - top - bm - tm;
 			}
-		};
+		}
 
 		var update_bottom = function() {
-			var parent_box = self.parent.toScreen();
-			//console.log(target_box, parent_box);
+			var bottom = anchors.bottom.toScreen();
 			if (anchors.top) {
-				var top_target_box = anchors.top.parent.toScreen();
-				self.height = target.top.toScreen() - top_target_box[1] - tm - bm;
+				var top = anchors.top.toScreen();
+				self.height = bottom - top - bm - tm;
 			}
-			self.y = (target.bottom.toScreen() - parent_box[1] - self.height) + tm;
-		};
+			self.y = bottom - parent.bottom.toScreen() - bm - self.height;
+		}
 
 		switch(name) {
 			case 'left':
 				update_left();
-				target.left.onChanged('value', update_left);
+				anchors.left.onChanged('value', update_left);
 				break;
 
 			case 'right':
 				update_right();
-				target.right.onChanged('value', update_right);
+				anchors.right.onChanged('value', update_right);
 				break;
 
 			case 'top':
 				update_top();
-				target.top.onChanged('value', update_top);
+				anchors.top.onChanged('value', update_top);
 				break;
 
 			case 'bottom':
 				update_bottom();
-				target.bottom.onChanged('value', update_bottom);
+				anchors.bottom.onChanged('value', update_bottom);
 				break;
 
 			case 'fill':
-				this.left = target.left;
-				this.right = target.right;
-				this.top = target.top;
-				this.bottom = target.bottom;
+				anchors.left = anchors.fill.left;
+				anchors.right = anchors.fill.right;
+				anchors.top = anchors.fill.top;
+				anchors.bottom = anchors.fill.bottom;
 				break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);

@@ -1,4 +1,3 @@
 Object {
-	property real from;
-	property int to;
+	property int duration: 200;
 }

@@ -50,10 +50,14 @@ _globals.core.Object.prototype._emitEvent = function(name) {
 }
 
 _globals.core.Object.prototype.get = function (name) {
-	if (name in this._local)
-		return this._local[name];
 	if (this.hasOwnProperty(name))
 		return this[name];
+	var object = this;
+	while(object) {
+		if (name in object._local)
+			return object._local[name];
+		object = object.parent;
+	}
 	console.log(name, this);
 	throw ("invalid property requested: '" + name + "' in context of " + this);
 }

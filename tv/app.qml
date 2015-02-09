@@ -16,7 +16,10 @@ Item {
 		repeat: true;
 
 		property bool value;
-		onTriggered: { value = !value; rect1.x = value? 400: 100 }
+		onTriggered: {
+			//value = !value; rect1.x = value? 400: 100
+			console.log("triggered");
+		}
 	}
 
 	Rectangle {

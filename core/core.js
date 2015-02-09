@@ -7,14 +7,8 @@ _globals.core.Object = function(parent) {
 	this.parent = parent;
 	this._local = {}
 	this._changedHandlers = {}
+	this._eventHandlers = {}
 	this._animations = {}
-}
-
-_globals.core.Object.prototype._update = function(name, value) {
-	if (name in this._changedHandlers) {
-		var handlers = this._changedHandlers[name];
-		handlers.forEach(function(callback) { callback(value); });
-	}
 }
 
 _globals.core.Object.prototype._setId = function (name) {
@@ -30,6 +24,29 @@ _globals.core.Object.prototype.onChanged = function (name, callback) {
 		this._changedHandlers[name].push(callback);
 	else
 		this._changedHandlers[name] = [callback];
+}
+
+_globals.core.Object.prototype._update = function(name, value) {
+	if (name in this._changedHandlers) {
+		var handlers = this._changedHandlers[name];
+		handlers.forEach(function(callback) { callback(value); });
+	}
+}
+
+_globals.core.Object.prototype.on = function (name, callback) {
+	if (name in this._eventHandlers)
+		this._eventHandlers[name].push(callback);
+	else
+		this._eventHandlers[name] = [callback];
+}
+
+_globals.core.Object.prototype._emitEvent = function(name) {
+	var args = Array.prototype.slice.call(arguments);
+	args.shift();
+	if (name in this._eventHandlers) {
+		var handlers = this._eventHandlers[name];
+		handlers.forEach(function(callback) { callback.apply(this, args); });
+	}
 }
 
 _globals.core.Object.prototype.get = function (name) {
@@ -50,16 +67,35 @@ _globals.core.Object.prototype.getAnimation = function (name, animation) {
 }
 
 function setup(context) {
+	_globals.core.Timer.prototype._restart = function() {
+		if (this._timeout) {
+			clearTimeout(this._timeout);
+			this._timeout = undefined;
+		}
+		if (this._interval) {
+			clearTimeout(this._interval);
+			this._interval = undefined;
+		}
+
+		if (!this.running)
+			return;
+
+		console.log("starting timer", this.interval, this.repeat);
+		var self = this;
+		if (this.repeat)
+			this._interval = setInterval(function() { self._emitEvent('triggered'); }, this.interval);
+		else
+			this._timeout = setTimeout(function() { self._emitEvent('triggered'); }, this.interval);
+	}
+
 	_globals.core.Timer.prototype._update = function(name, value) {
-		console.log("timer", name, value);
 		switch(name) {
-			case 'running': break;
-			case 'interval': break;
-			case 'repeat': break;
+			case 'running': this._restart(); break;
+			case 'interval': this._restart(); break;
+			case 'repeat': this._restart(); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
-
 
 	_globals.core.Item.prototype.children = []
 

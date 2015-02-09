@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import lang
+from code import process
 
 def get_package(name):
 	return ".".join(name.split(".")[:-1])
@@ -21,9 +22,22 @@ class component_generator(object):
 		self.children = []
 		self.methods = {}
 		self.event_handlers = {}
+		self.id = None
 
 		for child in component.children:
 			self.add_child(child)
+
+	def collect_id(self, id_set):
+		if self.id is not None:
+			id_set.add(self.id)
+		for g in self.assignments.itervalues():
+			if type(g) is component_generator and g.id:
+				g.collect_id(id_set)
+		for g in self.animations.itervalues():
+			if type(g) is component_generator and g.id:
+				g.collect_id(id_set)
+		for g in self.children:
+			g.collect_id(id_set)
 
 	def assign(self, target, value):
 		t = type(value)
@@ -42,6 +56,7 @@ class component_generator(object):
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
 		elif t is lang.IdAssignment:
+			self.id = child.name
 			self.assign("id", child.name)
 		elif t is lang.Component:
 			self.children.append(component_generator(self.package + ".<anonymous>", child))
@@ -117,8 +132,10 @@ class component_generator(object):
 			r.append("")
 			idx += 1
 		for name, code in self.methods.iteritems():
+			code = process(code, registry)
 			r.append("\t%s.%s = (function() %s ).bind(%s);" %(target_object, name, code, target_object))
 		for name, code in self.event_handlers.iteritems():
+			code = process(code, registry)
 			r.append("\t%s.on('%s', (function() %s ).bind(%s));" %(target_object, name, code, target_object))
 		r.append(self.generate_animations(registry, target_object))
 		return "\n".join(r)
@@ -129,6 +146,7 @@ class generator(object):
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
+		self.id_set = set()
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -174,6 +192,9 @@ class generator(object):
 		r, deps = [], []
 		for package in sorted(self.packages.keys()):
 			r.append("if (!exports.%s) exports.%s = {};" %(package, package))
+
+		for gen in self.components.itervalues():
+			gen.collect_id(self.id_set)
 
 		for name, gen in self.components.iteritems():
 			code = "//=====[component %s]=====================\n\n" %name

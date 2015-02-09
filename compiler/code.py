@@ -65,7 +65,7 @@ def process(text, registry):
 	def replace_id(m):
 		pos = m.start(0)
 		name = m.group(1)
-		first = text[pos - 1] == "."
+		first = text[pos - 1] != "."
 		if name in id_set:
 			return ("this." if first else "") + "get('%s')." %name
 		else:

@@ -67,9 +67,13 @@ def process(text, registry):
 		name = m.group(1)
 		first = text[pos - 1] != "."
 		if name in id_set:
+			ok = True
+			for b, e in invalid:
+				if pos >= b and pos < e:
+					ok = False
+					break
 			return ("this." if first else "") + "get('%s')." %name
-		else:
-			return m.group(0)
+		return m.group(0)
 	text = id_re.sub(replace_id, text)
 	#print text
 	return text

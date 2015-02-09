@@ -200,6 +200,9 @@ exports._setup = function(context) {
 			self.y = bottom - parent_box[1] - bm - self.height;
 		}
 
+		var update_h_center = function() {}
+		var update_v_center = function() {}
+
 		switch(name) {
 			case 'left':
 				update_left();
@@ -221,11 +224,26 @@ exports._setup = function(context) {
 				anchors.bottom.onChanged('value', update_bottom);
 				break;
 
+			case 'horizontalCenter':
+				update_h_center();
+				anchors.horizontalCenter.onChanged('value', update_h_center);
+				break;
+
+			case 'verticalCenter':
+				update_v_center();
+				anchors.verticalCenter.onChanged('value', update_v_center);
+				break;
+
 			case 'fill':
 				anchors.left = anchors.fill.left;
 				anchors.right = anchors.fill.right;
 				anchors.top = anchors.fill.top;
 				anchors.bottom = anchors.fill.bottom;
+				break;
+
+			case 'centerIn':
+				anchors.horizontalCenter = anchors.centerIn.horizontalCenter;
+				anchors.verticalCenter = anchors.centerIn.verticalCenter;
 				break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);

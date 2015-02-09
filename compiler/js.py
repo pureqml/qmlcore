@@ -90,7 +90,7 @@ class component_generator(object):
 		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name))
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry), self.name)
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry, "this"), self.name)
 		return ctor
 
 	def generate_animations(self, registry):
@@ -98,14 +98,14 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + name
 			r.append("\tvar %s = new _globals.%s(%s);" %(var, registry.find_component(self.package, animation.component.name), "this"))
-			r.append(animation.generate_creator(registry, 2))
+			r.append(animation.generate_creator(registry, var, 2))
 			r.append("\tthis.setAnimation('%s', %s);\n" %(name, var))
 		return "\n".join(r)
 
 	def wrap_creator(self, var, code):
 		return "\tfunction setup_%s () {\n%s\n\t}\n\tsetup_%s.call(%s)" %(var, code, var, var)
 
-	def generate_creator(self, registry, ident = 1):
+	def generate_creator(self, registry, parent, ident = 1):
 		r = []
 		ident = "\t" * ident
 		for target, value in self.assignments.iteritems():
@@ -121,16 +121,16 @@ class component_generator(object):
 				r.append("%sthis.%s = %s;" %(ident, target, value))
 			elif t is component_generator:
 				var = "this.%s" %target
-				r.append("\t%s = new _globals.%s(this);" %(var, registry.find_component(value.package, value.component.name)))
-				r.append(value.generate_creator(registry, 2))
+				r.append("\t%s = new _globals.%s(%s);" %(var, registry.find_component(value.package, value.component.name), parent))
+				r.append(value.generate_creator(registry, var, 2))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 		idx = 0
 		for gen in self.children:
-			var = "child%d" %idx
+			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
-			r.append("\tvar %s = new _globals.%s(this);" %(var, component))
-			r.append(self.wrap_creator(var, gen.generate_creator(registry, 2)))
+			r.append("\tvar %s = new _globals.%s(%s);" %(var, component, parent))
+			r.append(self.wrap_creator(var, gen.generate_creator(registry, var, 2)))
 			r.append("\tthis.children.push(%s);" %var);
 			r.append("")
 			idx += 1

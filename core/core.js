@@ -161,10 +161,11 @@ function setup(context) {
 		var rm = anchors.rightMargin || anchors.margins;
 		var tm = anchors.topMargin || anchors.margins;
 		var bm = anchors.bottomMargin || anchors.margins;
+		var parent_box = parent.toScreen();
 
 		var update_left = function() {
 			var left = anchors.left.toScreen();
-			self.x = left + lm - parent.left.toScreen();
+			self.x = left + lm - parent_box[0];
 			if (anchors.right) {
 				var right = anchors.right.toScreen();
 				self.width = right - left - rm - lm;
@@ -177,12 +178,12 @@ function setup(context) {
 				var left = anchors.left.toScreen();
 				self.width = right - left - rm;
 			}
-			self.x = right - parent.right.toScreen() - rm - self.width;
+			self.x = right - parent_box[0] - rm - self.width;
 		};
 
 		var update_top = function() {
 			var top = anchors.top.toScreen()
-			self.y = top + tm - parent.top.toScreen();
+			self.y = top + tm - parent_box[1];
 			if (anchors.bottom) {
 				var bottom = anchors.bottom.toScreen();
 				self.height = bottom - top - bm - tm;
@@ -192,10 +193,10 @@ function setup(context) {
 		var update_bottom = function() {
 			var bottom = anchors.bottom.toScreen();
 			if (anchors.top) {
-				var top = anchors.top.toScreen();
+				var top = anchors.top.toScreen()
 				self.height = bottom - top - bm - tm;
 			}
-			self.y = bottom - parent.bottom.toScreen() - bm - self.height;
+			self.y = bottom - parent_box[1] - bm - self.height;
 		}
 
 		switch(name) {

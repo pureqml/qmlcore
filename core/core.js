@@ -330,6 +330,10 @@ exports.addProperty = function(self, type, name) {
 			return value;
 		},
 		set: function(newValue) {
+			if (!self.getAnimation) {
+				console.log("bound unknown object", self)
+				throw "invalid object";
+			}
 			var animation = self.getAnimation(name)
 			if (animation && value != newValue) {
 				if (timer)

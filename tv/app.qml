@@ -17,7 +17,9 @@ Item {
 
 		property bool value;
 		onTriggered: {
-			this.value = !this.value; rect1.x = this.value? 400: 100
+			console.log("rect1\"");
+			this.value = !this.value; /*rect1*/ rect1.x = this.value? 400: 100;
+			//c-comment
 		}
 	}
 

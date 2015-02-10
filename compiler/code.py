@@ -77,3 +77,15 @@ def process(text, registry):
 	text = id_re.sub(replace_id, text)
 	#print text
 	return text
+
+get_re = re.compile(r'this(\.get\(\'.*\'\))+')
+
+def parse_deps(text):
+	deps = []
+	for m in get_re.finditer(text):
+		gets = m.group(0).split('.')
+		target = gets[-1]
+		target = target[target.index('\'') + 1:target.rindex('\'')]
+		gets = gets[:-1]
+		deps.append((".".join(gets), target))
+	return deps

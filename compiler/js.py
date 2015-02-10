@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import lang
-from code import process
+from code import process, parse_deps
 
 def get_package(name):
 	return ".".join(name.split(".")[:-1])
@@ -125,7 +125,16 @@ class component_generator(object):
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
 			elif t is str:
-				r.append("%sthis.%s = %s;" %(ident, target, value))
+				deps = parse_deps(value)
+				if deps:
+					var = "_update_var_%s__%s" %(parent.replace('.', '_'), target.replace('.', '_'))
+					r.append("%svar %s = (function() { this.%s = %s; }).bind(this);" %(ident, var, target, value))
+					r.append("%s%s();" %(ident, var))
+					for path, dep in deps:
+						r.append("%s%s.onChanged('%s', %s);" %(ident, path, dep, var))
+				else:
+					r.append("%sthis.%s = %s;" %(ident, target, value))
+
 			elif t is component_generator:
 				var = "this.%s" %target
 				r.append("\t%s = new _globals.%s(%s);" %(var, registry.find_component(value.package, value.component.name), parent))

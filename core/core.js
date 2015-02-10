@@ -70,7 +70,7 @@ _globals.core.Object.prototype.getAnimation = function (name, animation) {
 	return this._animations[name] || null;
 }
 
-exports._setup = function(context) {
+exports._setup = function() {
 	_globals.core.Timer.prototype._restart = function() {
 		if (this._timeout) {
 			clearTimeout(this._timeout);
@@ -297,6 +297,9 @@ exports._setup = function(context) {
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
+
+	exports.Context.prototype = Object.create(qml.core.Item.prototype);
+	exports.Context.prototype.constructor = exports.Context;
 
 	exports.Context.prototype.start = function(name) {
 		var proto;

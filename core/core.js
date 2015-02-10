@@ -252,11 +252,13 @@ exports._setup = function() {
 
 			case 'horizontalCenter':
 				update_h_center();
+				self.onChanged('width', update_h_center);
 				anchors.horizontalCenter.onChanged('value', update_h_center);
 				break;
 
 			case 'verticalCenter':
 				update_v_center();
+				self.onChanged('height', update_v_center);
 				anchors.verticalCenter.onChanged('value', update_v_center);
 				break;
 

@@ -3,4 +3,7 @@ Item {
 	property string source;
 	property int paintedWidth;
 	property int paintedHeight;
+
+	width: paintedWidth;
+	height: paintedHeight;
 }

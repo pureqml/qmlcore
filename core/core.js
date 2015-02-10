@@ -298,6 +298,28 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Image.prototype.Null = 0;
+	_globals.core.Image.prototype.Ready = 1;
+	_globals.core.Image.prototype.Loading = 2;
+	_globals.core.Image.prototype.Error = 3;
+
+	_globals.core.Image.prototype._onLoad = function() {
+		this.paintedWidth = this.element.get(0).naturalWidth;
+		this.paintedHeight = this.element.get(0).naturalHeight;
+		this.status = this.Ready;
+	}
+
+	_globals.core.Image.prototype._onError = function() {
+		this.status = this.Error;
+	}
+
+	_globals.core.Image.prototype._update = function(name, value) {
+		switch(name) {
+			case 'source': this.status = value? this.Loading: this.Null; this.element.attr('src', value); break;
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+
 	exports.Context.prototype = Object.create(qml.core.Item.prototype);
 	exports.Context.prototype.constructor = exports.Context;
 
@@ -416,6 +438,13 @@ exports._bootstrap = function(self, name) {
 			break;
 		case 'core.MouseArea':
 			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self));
+			break;
+		case 'core.Image':
+			self.element.remove();
+			self.element = $('<img/>');
+			self.parent.element.append(self.element);
+			self.element.on('load', self._onLoad.bind(self));
+			self.element.on('error', self._onError.bind(self));
 			break;
 	}
 }

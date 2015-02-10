@@ -221,12 +221,12 @@ exports._setup = function() {
 
 		var update_h_center = function() {
 			var hcenter = anchors.horizontalCenter.toScreen();
-			self.x = (hcenter - self.width) / 2 - parent_box[0] + lm - rm;
+			self.x = hcenter - self.width / 2 - parent_box[0] + lm - rm;
 		}
 
 		var update_v_center = function() {
 			var vcenter = anchors.verticalCenter.toScreen();
-			self.y = (vcenter - self.height) / 2 - parent_box[1] + tm - bm;
+			self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm;
 		}
 
 		switch(name) {
@@ -355,6 +355,7 @@ exports.Context = function() {
 	$('head').append($("<style>" +
 		"div#renderer { position: absolute; left: 0px; top: 0px; } " +
 		"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
+		"img { position: absolute; } " +
 		"</style>"
 	));
 

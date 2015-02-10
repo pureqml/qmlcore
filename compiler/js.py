@@ -22,6 +22,7 @@ class component_generator(object):
 		self.children = []
 		self.methods = {}
 		self.event_handlers = {}
+		self.changed_handlers = {}
 		self.id = None
 
 		for child in component.children:
@@ -68,9 +69,15 @@ class component_generator(object):
 			name, code = child.name, child.code
 			if len(name) > 2 and name.startswith("on") and name[2].isupper(): #onXyzzy
 				name = name[2].lower() + name[3:]
-				if name in self.event_handlers:
-					raise Exception("duplicate event handler " + child.name)
-				self.event_handlers[name] = code
+				if name.endswith("Changed"):
+					name = name[:-7]
+					if name in self.changed_handlers:
+						raise Exception("duplicate event handler " + child.name)
+					self.changed_handlers[name] = code
+				else:
+					if name in self.event_handlers:
+						raise Exception("duplicate event handler " + child.name)
+					self.event_handlers[name] = code
 			else:
 				if name in self.methods:
 					raise Exception("duplicate " + name + " method")
@@ -140,6 +147,9 @@ class component_generator(object):
 		for name, code in self.event_handlers.iteritems():
 			code = process(code, registry)
 			r.append("%sthis.on('%s', (function() %s ).bind(this));" %(ident, name, code))
+		for name, code in self.changed_handlers.iteritems():
+			code = process(code, registry)
+			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))
 		r.append(self.generate_animations(registry, parent))
 		return "\n".join(r)
 

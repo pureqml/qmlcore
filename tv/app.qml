@@ -58,6 +58,16 @@ Item {
 		y: 200;
 		text: "Hello, world";
 		font.pointSize: 32;
+		anchors.centerIn: parent;
+	}
+
+	Image {
+		id: img;
+		anchors.centerIn: parent;
+		source: "http://svalko.org/data/2015_02_09_15_54cs625418_vk_me_v625418936_1e700_MscWY8T2f7Y.jpg";
+		onStatusChanged: {
+			console.log("status = " + this.status, this.paintedWidth, this.paintedHeight);
+		}
 	}
 
 	Rectangle {

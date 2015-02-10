@@ -68,6 +68,7 @@ Item {
 		onStatusChanged: {
 			console.log("status = " + this.status, this.paintedWidth, this.paintedHeight);
 		}
+		z: -5;
 	}
 
 	Rectangle {

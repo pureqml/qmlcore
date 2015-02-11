@@ -371,7 +371,7 @@ exports.Context = function() {
 	var win = $(window);
 	var w = win.width();
 	var h = win.height();
-	console.log("window size: " + w + "x" + h);
+	//console.log("window size: " + w + "x" + h);
 
 	var body = $('body');
 	var div = $("<div id='renderer'></div>");
@@ -389,7 +389,7 @@ exports.Context = function() {
 
 	win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 
-	console.log("context created");
+	//console.log("context created");
 }
 
 exports.addProperty = function(self, type, name) {

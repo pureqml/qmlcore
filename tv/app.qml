@@ -72,6 +72,7 @@ Item {
 	}
 
 	Rectangle {
+		id: rect4;
 		anchors.right: rect3.right;
 		anchors.left: rect1.left;
 		anchors.leftMargin: 20;

@@ -141,7 +141,7 @@ class component_generator(object):
 			elif t is component_generator:
 				var = "this.%s" %target
 				r.append("\t%s = new _globals.%s(%s);" %(var, registry.find_component(value.package, value.component.name), parent))
-				r.append(value.generate_creator(registry, var, 2))
+				r.append(self.wrap_creator(var, value.generate_creator(registry, var, 2)))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 		idx = 0

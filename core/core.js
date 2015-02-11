@@ -168,7 +168,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
-		var box = this.parent.parent? this.parent.parent.toScreen(): [0, 0, this.parent.width, this.parent.height];
+		var box = this.parent.parent? this.parent.parent.toScreen(): [0, 0, this.parent.width, this.parent.height, this.parent.width / 2, this.parent.height / 2];
 		return box[this.boxIndex] + this.value;
 	}
 

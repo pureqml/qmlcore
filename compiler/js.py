@@ -110,7 +110,10 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def wrap_creator(self, var, code):
-		return "\tfunction setup_%s () {\n%s\n\t}\n\tsetup_%s.call(%s)" %(var, code, var, var)
+		if not code.strip():
+			return ""
+		safe_var = var.replace('.', '__')
+		return "\tfunction setup_%s () {\n%s\n\t}\n\tsetup_%s.call(%s)" %(safe_var, code, safe_var, var)
 
 	def generate_creator(self, registry, parent, ident = 1):
 		r = []

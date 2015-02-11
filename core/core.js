@@ -175,34 +175,38 @@ exports._setup = function() {
 	_globals.core.Anchors.prototype._update = function(name) {
 		var self = this.parent;
 		var parent = self.parent;
-
 		var anchors = this;
-		var lm = anchors.leftMargin || anchors.margins;
-		var rm = anchors.rightMargin || anchors.margins;
-		var tm = anchors.topMargin || anchors.margins;
-		var bm = anchors.bottomMargin || anchors.margins;
-		var parent_box = parent.toScreen();
 
 		var update_left = function() {
+			var parent_box = parent.toScreen();
 			var left = anchors.left.toScreen();
+			var lm = anchors.leftMargin || anchors.margins;
+			var rm = anchors.rightMargin || anchors.margins;
 			self.x = left + lm - parent_box[0];
 			if (anchors.right) {
 				var right = anchors.right.toScreen();
+				var rm = anchors.rightMargin || anchors.margins;
 				self.width = right - left - rm - lm;
 			}
 		};
 
 		var update_right = function() {
+			var parent_box = parent.toScreen();
 			var right = anchors.right.toScreen();
+			var lm = anchors.leftMargin || anchors.margins;
+			var rm = anchors.rightMargin || anchors.margins;
 			if (anchors.left) {
 				var left = anchors.left.toScreen();
-				self.width = right - left - rm;
+				self.width = right - left - rm - lm;
 			}
 			self.x = right - parent_box[0] - rm - self.width;
 		};
 
 		var update_top = function() {
+			var parent_box = parent.toScreen();
 			var top = anchors.top.toScreen()
+			var tm = anchors.topMargin || anchors.margins;
+			var bm = anchors.bottomMargin || anchors.margins;
 			self.y = top + tm - parent_box[1];
 			if (anchors.bottom) {
 				var bottom = anchors.bottom.toScreen();
@@ -211,7 +215,10 @@ exports._setup = function() {
 		}
 
 		var update_bottom = function() {
+			var parent_box = parent.toScreen();
 			var bottom = anchors.bottom.toScreen();
+			var tm = anchors.topMargin || anchors.margins;
+			var bm = anchors.bottomMargin || anchors.margins;
 			if (anchors.top) {
 				var top = anchors.top.toScreen()
 				self.height = bottom - top - bm - tm;
@@ -220,12 +227,18 @@ exports._setup = function() {
 		}
 
 		var update_h_center = function() {
+			var parent_box = parent.toScreen();
 			var hcenter = anchors.horizontalCenter.toScreen();
+			var lm = anchors.leftMargin || anchors.margins;
+			var rm = anchors.rightMargin || anchors.margins;
 			self.x = hcenter - self.width / 2 - parent_box[0] + lm - rm;
 		}
 
 		var update_v_center = function() {
+			var parent_box = parent.toScreen();
 			var vcenter = anchors.verticalCenter.toScreen();
+			var tm = anchors.topMargin || anchors.margins;
+			var bm = anchors.bottomMargin || anchors.margins;
 			self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm;
 		}
 
@@ -233,32 +246,40 @@ exports._setup = function() {
 			case 'left':
 				update_left();
 				anchors.left.onChanged('value', update_left);
+				anchors.onChanged('leftMargin', update_left);
 				break;
 
 			case 'right':
 				update_right();
 				anchors.right.onChanged('value', update_right);
+				anchors.onChanged('rightMargin', update_right);
 				break;
 
 			case 'top':
 				update_top();
 				anchors.top.onChanged('value', update_top);
+				anchors.onChanged('topMargin', update_top);
 				break;
 
 			case 'bottom':
 				update_bottom();
 				anchors.bottom.onChanged('value', update_bottom);
+				anchors.onChanged('bottomMargin', update_bottom);
 				break;
 
 			case 'horizontalCenter':
 				update_h_center();
 				self.onChanged('width', update_h_center);
+				anchors.onChanged('leftMargin', update_h_center);
+				anchors.onChanged('rightMargin', update_h_center);
 				anchors.horizontalCenter.onChanged('value', update_h_center);
 				break;
 
 			case 'verticalCenter':
 				update_v_center();
 				self.onChanged('height', update_v_center);
+				anchors.onChanged('topMargin', update_v_center);
+				anchors.onChanged('bottomMargin', update_v_center);
 				anchors.verticalCenter.onChanged('value', update_v_center);
 				break;
 

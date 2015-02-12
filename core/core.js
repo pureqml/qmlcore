@@ -111,7 +111,7 @@ exports._setup = function() {
 			y += item.y;
 			item = item.parent;
 		}
-		return [x, y, x + this.width, y + this.height, x + this.width / 2, y + this.height / 2];
+		return [x, y];
 	}
 
 	_globals.core.Border.prototype._update = function(name, value) {
@@ -168,7 +168,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
-		var box = this.parent.parent? this.parent.parent.toScreen(): [0, 0, this.parent.width, this.parent.height, this.parent.width / 2, this.parent.height / 2];
+		var box = this.parent.parent? this.parent.parent.toScreen(): [0, 0];
 		return box[this.boxIndex] + this.value;
 	}
 
@@ -349,7 +349,7 @@ exports._setup = function() {
 	exports.Context.prototype.start = function(name) {
 		var proto;
 		if (typeof name == 'string') {
-			console.log('creating component...', name);
+			//console.log('creating component...', name);
 			var path = name.split('.');
 			proto = _globals;
 			for (var i = 0; i < path.length; ++i)

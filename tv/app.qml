@@ -1,6 +1,8 @@
 Item {
 	id: mainWindow;
 	anchors.fill: renderer;
+	anchors.topMargin: 100;
+	anchors.leftMargin: 100;
 
 	Button {
 		id: button1;

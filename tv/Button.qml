@@ -24,6 +24,6 @@
 
      MouseArea {
          anchors.fill: parent;
-         onClicked: { console.log(text + " clicked"); }
+         onClicked: { console.log(button.text + " clicked"); }
      }
  }

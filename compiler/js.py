@@ -105,29 +105,47 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + name
 			r.append("\tvar %s = new _globals.%s(%s);" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append(self.wrap_creator(var, animation.generate_creator(registry, var, 2)))
+			r.append(self.wrap_creator("setup", var, animation.generate_creator(registry, var, 2)))
 			r.append("\tthis.setAnimation('%s', %s);\n" %(name, var))
 		return "\n".join(r)
 
-	def wrap_creator(self, var, code):
+	def wrap_creator(self, prefix, var, code):
 		if not code.strip():
 			return ""
 		safe_var = var.replace('.', '__')
-		return "\tfunction setup_%s () {\n%s\n\t}\n\tsetup_%s.call(%s)" %(safe_var, code, safe_var, var)
+		return "\tfunction %s_%s () {\n%s\n\t}\n\t%s_%s.call(%s)" %(prefix, safe_var, code, prefix, safe_var, var)
 
-	def generate_creator(self, registry, parent, ident = 1):
+	def generate_skeleton(self, registry, parent, ident = 1):
 		r = []
 		ident = "\t" * ident
+
+		idx = 0
+		for gen in self.children:
+			var = "%s_child%d" %(parent, idx)
+			component = registry.find_component(self.package, gen.component.name)
+			r.append("\tvar %s = new _globals.%s(%s);" %(var, component, parent))
+			r.append(self.wrap_creator("create", var, gen.generate_skeleton(registry, var, 2)))
+			idx += 1
+
 		for target, value in self.assignments.iteritems():
-			t = type(value)
-			#print self.name, target, value
 			if target == "id":
 				if "." in value:
 					raiseException("expected identifier, not expression")
 				r.append("%sthis._setId('%s')" %(ident, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
-			elif t is str:
+
+		return "\n".join(r)
+
+	def generate_creator_body(self, registry, parent, ident = 1):
+		r = []
+		ident = "\t" * ident
+		for target, value in self.assignments.iteritems():
+			if target == "id":
+				continue
+			t = type(value)
+			#print self.name, target, value
+			if t is str:
 				deps = parse_deps(value)
 				if deps:
 					var = "_update_var_%s__%s" %(parent.replace('.', '_'), target.replace('.', '_'))
@@ -141,15 +159,15 @@ class component_generator(object):
 			elif t is component_generator:
 				var = "this.%s" %target
 				r.append("\t%s = new _globals.%s(%s);" %(var, registry.find_component(value.package, value.component.name), parent))
-				r.append(self.wrap_creator(var, value.generate_creator(registry, var, 2)))
+				r.append(self.wrap_creator("setup", var, value.generate_creator(registry, var, 2))) #fixme: split me
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
+
 		idx = 0
 		for gen in self.children:
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
-			r.append("\tvar %s = new _globals.%s(%s);" %(var, component, parent))
-			r.append(self.wrap_creator(var, gen.generate_creator(registry, var, 2)))
+			r.append(self.wrap_creator("setup", var, gen.generate_creator_body(registry, var, 2)))
 			r.append("\tthis.children.push(%s);" %var);
 			r.append("")
 			idx += 1
@@ -164,6 +182,9 @@ class component_generator(object):
 			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))
 		r.append(self.generate_animations(registry, parent))
 		return "\n".join(r)
+
+	def generate_creator(self, registry, parent, ident = 1):
+		return self.generate_skeleton(registry, parent, ident) + "\n" + self.generate_creator_body(registry, parent, ident)
 
 class generator(object):
 	def __init__(self):

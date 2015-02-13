@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import lang
-from code import process, parse_deps
+from code import process, parse_deps, generate_accessors
 
 def get_package(name):
 	return ".".join(name.split(".")[:-1])
@@ -94,6 +94,14 @@ class component_generator(object):
 
 	def generate_properties(self):
 		r = []
+		for name, target in self.aliases.iteritems():
+			get, pname = generate_accessors(target)
+			r.append("""\
+	core.addAliasProperty(this, '%s',
+		(function() { return %s; }).bind(this),
+		(function() { return %s.get('%s'); }).bind(this),
+		(function(value) { %s.%s = value; }).bind(this));
+""" %(name, get, get, pname, get, pname))
 		for name, type in self.properties.iteritems():
 			r.append("\tcore.addProperty(this, '%s', '%s');" %(type, name))
 		return "\n".join(r)
@@ -102,7 +110,7 @@ class component_generator(object):
 		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name))
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), self.generate_creator(registry, "this"), self.name)
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_skeleton(registry, "this"), self.generate_properties(), self.generate_creator(registry, "this"), self.name)
 		return ctor
 
 	def generate_animations(self, registry, parent):
@@ -110,6 +118,7 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + name
 			r.append("\tvar %s = new _globals.%s(%s);" %(var, registry.find_component(self.package, animation.component.name), parent))
+			r.append(self.wrap_creator("create", var, animation.generate_skeleton(registry, var, 2)))
 			r.append(self.wrap_creator("setup", var, animation.generate_creator(registry, var, 2)))
 			r.append("\tthis.setAnimation('%s', %s);\n" %(name, var))
 		return "\n".join(r)
@@ -142,7 +151,7 @@ class component_generator(object):
 
 		return "\n".join(r)
 
-	def generate_creator_body(self, registry, parent, ident = 1):
+	def generate_creator(self, registry, parent, ident = 1):
 		r = []
 		ident = "\t" * ident
 		for target, value in self.assignments.iteritems():
@@ -164,7 +173,8 @@ class component_generator(object):
 			elif t is component_generator:
 				var = "this.%s" %target
 				r.append("\t%s = new _globals.%s(%s);" %(var, registry.find_component(value.package, value.component.name), parent))
-				r.append(self.wrap_creator("setup", var, value.generate_creator(registry, var, 2))) #fixme: split me
+				r.append(self.wrap_creator("create", var, value.generate_skeleton(registry, var, 2))) #fixme: split me
+				r.append(self.wrap_creator("setup", var, value.generate_creator(registry, var, 2)))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
@@ -172,7 +182,7 @@ class component_generator(object):
 		for gen in self.children:
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
-			r.append(self.wrap_creator("setup", var, gen.generate_creator_body(registry, var, 2)))
+			r.append(self.wrap_creator("setup", var, gen.generate_creator(registry, var, 2)))
 			r.append("\tthis.children.push(%s);" %var);
 			r.append("")
 			idx += 1
@@ -187,9 +197,6 @@ class component_generator(object):
 			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))
 		r.append(self.generate_animations(registry, parent))
 		return "\n".join(r)
-
-	def generate_creator(self, registry, parent, ident = 1):
-		return self.generate_skeleton(registry, parent, ident) + "\n" + self.generate_creator_body(registry, parent, ident)
 
 class generator(object):
 	def __init__(self):

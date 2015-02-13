@@ -458,6 +458,16 @@ exports.addProperty = function(self, type, name) {
 	});
 }
 
+exports.addAliasProperty = function(self, name, getObject, getter, setter) {
+	var target = getObject();
+	target.onChanged(name, function(value) { self._update(name, value); });
+	Object.defineProperty(self, name, {
+		get: getter,
+		set: setter,
+		enumerable: true
+	});
+}
+
 exports._bootstrap = function(self, name) {
 	switch(name) {
 		case 'core.Item':

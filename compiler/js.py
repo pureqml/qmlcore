@@ -25,6 +25,7 @@ class component_generator(object):
 		self.event_handlers = {}
 		self.changed_handlers = {}
 		self.key_handlers = {}
+		self.events = set()
 		self.id = None
 
 		for child in component.children:
@@ -91,10 +92,13 @@ class component_generator(object):
 					self.event_handlers[name] = code
 			else:
 				if name in self.methods:
-					raise Exception("duplicate " + name + " method")
+					raise Exception("duplicate method " + name)
 				self.methods[name] = code
 		elif t is lang.Event:
-			pass
+			name = child.name
+			if name in self.events:
+				raise Exception("duplicate event " + name)
+			self.events.add(name)
 		else:
 			print "unhandled", child
 
@@ -138,6 +142,9 @@ class component_generator(object):
 	def generate_creators(self, registry, parent, ident = 1):
 		r = []
 		ident = "\t" * ident
+
+		for name in self.events:
+			r.append("%sthis.%s = function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitEvent.apply(this, args);/*fixme*/ }" %(ident, name, name))
 
 		idx = 0
 		for gen in self.children:

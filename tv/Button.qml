@@ -7,6 +7,10 @@
      focus: true;
      property alias text: label.text;
      border { color: "#B9C5D0"; width: 1; }
+     onActiveFocusChanged: {
+         console.log("FOCUS", this.activeFocus);
+         this.color = (this.activeFocus)? "purple": "blue";
+     }
 /*
      gradient: Gradient {
          GradientStop {color: "#CFF7FF"; position: 0.0; }

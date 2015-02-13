@@ -89,3 +89,11 @@ def parse_deps(text):
 		gets = gets[:-1]
 		deps.append((".".join(gets), target))
 	return deps
+
+def mangle_path(path):
+	return ["this"] + ["get('%s')"%name for name in path ]
+
+def generate_accessors(target):
+	path = target.split('.')
+	get = ".".join(mangle_path(path[:-1]))
+	return get, path[-1]

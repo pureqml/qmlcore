@@ -8,6 +8,7 @@ _globals.core.Object = function(parent) {
 	this._local = {}
 	this._changedHandlers = {}
 	this._eventHandlers = {}
+	this._pressedHandlers = {}
 	this._animations = {}
 }
 
@@ -24,6 +25,13 @@ _globals.core.Object.prototype.onChanged = function (name, callback) {
 		this._changedHandlers[name].push(callback);
 	else
 		this._changedHandlers[name] = [callback];
+}
+
+_globals.core.Object.prototype.onPressed = function (name, callback) {
+	if (name in this._pressedHandlers)
+		this._pressedHandlers[name].push(callback);
+	else
+		this._pressedHandlers[name] = [callback];
 }
 
 _globals.core.Object.prototype._update = function(name, value) {

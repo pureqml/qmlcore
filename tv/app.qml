@@ -32,4 +32,8 @@ Item {
 			button2.forceActiveFocus();
 		}
 	}
+
+	onCompleted: {
+		button1.forceActiveFocus();
+	}
 }

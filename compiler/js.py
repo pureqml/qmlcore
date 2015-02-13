@@ -204,7 +204,10 @@ class component_generator(object):
 			r.append("%sthis.%s = (function() %s ).bind(this);" %(ident, name, code))
 		for name, code in self.event_handlers.iteritems():
 			code = process(code, registry)
-			r.append("%sthis.on('%s', (function() %s ).bind(this));" %(ident, name, code))
+			if name != "completed":
+				r.append("%sthis.on('%s', (function() %s ).bind(this));" %(ident, name, code))
+			else:
+				r.append("%sqml._context._onCompleted((function() %s ).bind(this));" %(ident, code))
 		for name, code in self.changed_handlers.iteritems():
 			code = process(code, registry)
 			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))

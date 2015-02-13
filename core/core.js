@@ -417,6 +417,15 @@ exports._setup = function() {
 	exports.Context.prototype = Object.create(qml.core.Item.prototype);
 	exports.Context.prototype.constructor = exports.Context;
 
+	exports.Context.prototype._onCompleted = function(callback) {
+		this._completedHandlers.push(callback);
+	}
+
+	exports.Context.prototype._completed = function() {
+		this._completedHandlers.forEach(function(callback) { try { callback(); } catch(ex) { console.log("completed handler failed", ex); }} )
+		this._completedHandlers = [];
+	}
+
 	exports.Context.prototype.start = function(name) {
 		var proto;
 		if (typeof name == 'string') {
@@ -430,6 +439,7 @@ exports._setup = function() {
 			proto = name;
 		var instance = Object.create(proto.prototype);
 		proto.apply(instance, [this]);
+		this._completed();
 		return instance;
 	}
 }
@@ -438,6 +448,7 @@ exports.Context = function() {
 	_globals.core.Item.apply(this, null);
 
 	this._local['renderer'] = this;
+	this._completedHandlers = []
 
 	var win = $(window);
 	var w = win.width();

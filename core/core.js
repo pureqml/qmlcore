@@ -103,9 +103,9 @@ exports._setup = function() {
 		//console.log("starting timer", this.interval, this.repeat);
 		var self = this;
 		if (this.repeat)
-			this._interval = setInterval(function() { self._emitEvent('triggered'); }, this.interval);
+			this._interval = setInterval(function() { self.triggered(); }, this.interval);
 		else
-			this._timeout = setTimeout(function() { self._emitEvent('triggered'); }, this.interval);
+			this._timeout = setTimeout(function() { self.triggered(); }, this.interval);
 	}
 
 	_globals.core.Timer.prototype._update = function(name, value) {

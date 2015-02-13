@@ -129,17 +129,20 @@ exports._setup = function() {
 				this.right.value = this.left.value + value;
 				this.horizontalCenter.value = (this.right.value + this.left.value) / 2;
 				break;
+
 			case 'height':
 				this.element.css('height', value);
 				this.bottom.value = this.top.value + value;
 				this.verticalCenter.value = (this.top.value + this.bottom.value) / 2;
 				break;
+
 			case 'x':
 				this.element.css('left', value);
 				this.left.value = value;
 				this.right.value = value + this.width;
 				this.horizontalCenter.value = (this.right.value + this.left.value) / 2;
 				break;
+
 			case 'y':
 				this.element.css('top', value);
 				this.top.value = value;
@@ -151,6 +154,38 @@ exports._setup = function() {
 			case 'radius':	this.element.css('border-radius', value); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+
+	_globals.core.Item.prototype.forceActiveFocus = function() {
+		var item = this;
+		while(item.parent) {
+			item.parent._focusChild(item);
+			item = item.parent;
+		}
+	}
+
+	_globals.core.Item.prototype._focusTree = function(active) {
+		this.activeFocus = active;
+		if (this.focusedChild)
+			this.focusedChild._focusTree(active);
+	}
+
+	_globals.core.Item.prototype._focusChild = function (child) {
+		if (child.parent !== this)
+			throw "invalid object passed as child";
+		if (this.focusedChild)
+			this.focusedChild._focusTree(false);
+		this.focusedChild = child;
+		if (this.focusedChild)
+			this.focusedChild._focusTree(true);
+	}
+
+	_globals.core.Item.prototype._processKey = function (event) {
+		if (this.focusedChild && this.focusedChild._processKey(event))
+			return true;
+		//bubbling...
+		console.log("check my handlers", this, event);
+		return false;
 	}
 
 	_globals.core.MouseArea.prototype._onEnter = function() {
@@ -393,6 +428,8 @@ exports.Context = function() {
 	this.height = h;
 
 	win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
+	var self = this;
+	$(document).keydown(function(event) { self._processKey(event); } );
 
 	//console.log("context created");
 }

@@ -4,6 +4,7 @@
      color: "blue";
      smooth: true;
      radius: 9;
+     focus: true;
      property alias text: label.text;
      border { color: "#B9C5D0"; width: 1; }
 /*

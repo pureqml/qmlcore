@@ -6,6 +6,10 @@ Object {
 	property int height;
 	property bool clip;
 
+	property bool focus;
+	property bool activeFocus;
+	property Item focusedChild;
+
 	property bool visible;
 	property real opacity: 1;
 

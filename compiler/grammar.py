@@ -14,6 +14,9 @@ def handle_property_declaration(s, l, t):
 	default = t[2] if len(t) > 2 else None
 	return lang.Property(t[0], t[1], default)
 
+def handle_alias_property_declaration(s, l, t):
+	return lang.AliasProperty(t[0], t[1])
+
 def handle_method_declaration(s, l, t):
 	#print "method>", t
 	return lang.Method(t[0], t[1])
@@ -70,6 +73,9 @@ property_declaration = (((Keyword("property").suppress() + type + identifier + L
 		(Keyword("property").suppress() + type + identifier)) + expression_end) | \
 	(Keyword("property").suppress() + type + identifier + Literal(":").suppress() + component_declaration) \
 
+alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() + identifier + Literal(":").suppress() + nested_identifier_lvalue + expression_end
+alias_property_declaration.setParseAction(handle_alias_property_declaration)
+
 property_declaration.setParseAction(handle_property_declaration)
 
 assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end
@@ -83,7 +89,7 @@ method_declaration.setParseAction(handle_method_declaration)
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + identifier + Literal("{").suppress() + component_declaration + Literal("}").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
-scope_declaration = behavior_declaration | event_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
+scope_declaration = behavior_declaration | event_declaration | alias_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
 component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
 
 component_declaration << (component_type + component_scope)

@@ -3,6 +3,14 @@
 if (!_globals.core)
 	_globals.core = {}
 
+var keyCodes = {
+	13: 'Select',
+	37: 'Left',
+	38: 'Up',
+	39: 'Right',
+	40: 'Down'
+}
+
 _globals.core.Object = function(parent) {
 	this.parent = parent;
 	this._local = {}
@@ -192,8 +200,22 @@ exports._setup = function() {
 	_globals.core.Item.prototype._processKey = function (event) {
 		if (this.focusedChild && this.focusedChild._processKey(event))
 			return true;
-		//bubbling...
-		console.log("check my handlers", this, event);
+
+		var key = keyCodes[event.which];
+		if (key) {
+			if (key in this._pressedHandlers) {
+				var self = this;
+				var handlers = this._pressedHandlers[key];
+				for(var i = handlers.length - 1; i >= 0; --i) {
+					var callback = handlers[i];
+					if (callback(event))
+						return true;
+				}
+			}
+		}
+		else {
+			console.log("unhandled key", event.which);
+		}
 		return false;
 	}
 

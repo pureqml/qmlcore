@@ -24,6 +24,7 @@ class component_generator(object):
 		self.methods = {}
 		self.event_handlers = {}
 		self.changed_handlers = {}
+		self.key_handlers = {}
 		self.id = None
 
 		for child in component.children:
@@ -74,7 +75,12 @@ class component_generator(object):
 			name, code = child.name, child.code
 			if len(name) > 2 and name.startswith("on") and name[2].isupper(): #onXyzzy
 				name = name[2].lower() + name[3:]
-				if name.endswith("Changed"):
+				if name.endswith("Pressed"):
+					name = name[0].upper() + name[1:-7]
+					if name in self.key_handlers:
+						raise Exception("duplicate key handler " + child.name)
+					self.key_handlers[name] = code
+				elif name.endswith("Changed"):
 					name = name[:-7]
 					if name in self.changed_handlers:
 						raise Exception("duplicate event handler " + child.name)
@@ -195,6 +201,9 @@ class component_generator(object):
 		for name, code in self.changed_handlers.iteritems():
 			code = process(code, registry)
 			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))
+		for name, code in self.key_handlers.iteritems():
+			code = process(code, registry)
+			r.append("%sthis.onPressed('%s', (function() %s ).bind(this));" %(ident, name, code))
 		r.append(self.generate_animations(registry, parent))
 		return "\n".join(r)
 

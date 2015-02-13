@@ -29,8 +29,9 @@
 
      MouseArea {
          anchors.fill: parent;
-         onClicked: { this._emitEvent('triggered'); }
+         onClicked: { button.triggered(); }
      }
 
-     onTriggered: { console.log(button.text + " clicked"); }
+     onSelectPressed: { this.triggered(); }
+     onTriggered: { console.log(button.text + " triggered"); }
  }

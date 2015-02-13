@@ -17,7 +17,6 @@
      Text {
          id: label;
          anchors.centerIn: parent;
-         text: "Click Me!";
          font.pointSize: 12;
          color: "white";
      }

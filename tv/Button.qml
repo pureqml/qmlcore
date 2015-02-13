@@ -1,5 +1,7 @@
  Rectangle {
      id: button;
+     event triggered;
+
      width: 145; height: 60;
      color: "blue";
      smooth: true;
@@ -8,7 +10,6 @@
      property alias text: label.text;
      border { color: "#B9C5D0"; width: 1; }
      onActiveFocusChanged: {
-         console.log("FOCUS", this.activeFocus);
          this.color = (this.activeFocus)? "purple": "blue";
      }
 /*
@@ -28,6 +29,8 @@
 
      MouseArea {
          anchors.fill: parent;
-         onClicked: { console.log(button.text + " clicked"); }
+         onClicked: { this._emitEvent('triggered'); }
      }
+
+     onTriggered: { console.log(button.text + " clicked"); }
  }

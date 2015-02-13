@@ -167,6 +167,10 @@ exports._setup = function() {
 		this._emitEvent('exited')
 	}
 
+	_globals.core.MouseArea.prototype._onClick = function() {
+		this._emitEvent('clicked')
+	}
+
 	_globals.core.AnchorLine.prototype.toScreen = function() {
 		var box = this.parent.parent? this.parent.parent.toScreen(): [0, 0];
 		return box[this.boxIndex] + this.value;
@@ -466,6 +470,7 @@ exports._bootstrap = function(self, name) {
 			break;
 		case 'core.MouseArea':
 			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self));
+			self.element.on('click', self._onClick.bind(self));
 			break;
 		case 'core.Image':
 			self.element.remove();

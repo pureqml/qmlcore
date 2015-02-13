@@ -1,4 +1,4 @@
 Object {
 	property int width;
-	property Color color;
+	property color color;
 }

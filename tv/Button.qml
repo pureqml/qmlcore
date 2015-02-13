@@ -13,17 +13,17 @@
          GradientStop {color: "#719FCB"; position: 0.9; }
      }
 
+*/
      Text {
          id: label;
          anchors.centerIn: parent;
          text: "Click Me!";
          font.pointSize: 12;
-         color: "blue";
+         color: "white";
      }
 
      MouseArea {
          anchors.fill: parent;
          onClicked: { console.log(text + " clicked"); }
      }
-*/
  }

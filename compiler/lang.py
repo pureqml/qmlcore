@@ -9,6 +9,11 @@ class Property(object):
 		self.name = name
 		self.value = value
 
+class AliasProperty(object):
+	def __init__(self, name, target):
+		self.name = name
+		self.target = target
+
 class Method(object):
 	def __init__(self, name, code):
 		self.name = name

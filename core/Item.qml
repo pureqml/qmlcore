@@ -10,7 +10,7 @@ Object {
 	property bool activeFocus;
 	property Item focusedChild;
 
-	property bool visible;
+	property bool visible: true;
 	property real opacity: 1;
 
 	property Anchors anchors: Anchors { }

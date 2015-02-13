@@ -14,6 +14,7 @@ class component_generator(object):
 	def __init__(self, name, component):
 		self.name = name
 		self.component = component
+		self.aliases = {}
 		self.properties = {}
 		self.assignments = {}
 		self.animations = {}
@@ -49,11 +50,15 @@ class component_generator(object):
 	def add_child(self, child):
 		t = type(child)
 		if t is lang.Property:
-			if child.name in self.properties:
+			if child.name in self.properties or child.name in self.aliases:
 				raise Exception("duplicate property " + child.name)
 			self.properties[child.name] = child.type
 			if child.value is not None:
 				self.assign(child.name, child.value)
+		elif t is lang.AliasProperty:
+			if child.name in self.properties or child.name in self.aliases:
+				raise Exception("duplicate property " + child.name)
+			self.aliases[child.name] = child.target
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
 		elif t is lang.IdAssignment:

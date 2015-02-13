@@ -1,5 +1,5 @@
 Item {
-	property Color color: "#000";
+	property color color: "#000";
 	property real radius;
 
 	property Border border: Border {}

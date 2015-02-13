@@ -310,6 +310,7 @@ exports._setup = function() {
 	_globals.core.Text.prototype._update = function(name, value) {
 		switch(name) {
 			case 'text': this.element.text(value); this.paintedWidth = this.element.width(); this.paintedHeight = this.element.height(); break;
+			case 'color': this.element.css('color', value); break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

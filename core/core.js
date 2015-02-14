@@ -166,6 +166,7 @@ exports._setup = function() {
 				this.verticalCenter.value = (this.top.value + this.bottom.value) / 2;
 				break;
 
+			case 'opacity': if (this.element) /*FIXME*/this.element.css('opacity', value); break;
 			case 'visible':	if (this.element) /*FIXME*/this.element.css('visibility', value? 'visible': 'hidden'); break;
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;

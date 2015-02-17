@@ -22,4 +22,8 @@ Object {
 
 	property AnchorLine horizontalCenter:	AnchorLine	{ boxIndex: 0; }
 	property AnchorLine verticalCenter:		AnchorLine	{ boxIndex: 1; }
+
+	//do not use, view internal
+	property int viewX;
+	property int viewY;
 }

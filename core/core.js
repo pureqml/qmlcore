@@ -204,7 +204,6 @@ exports._setup = function() {
 		var g = Math.floor(blend(dst_c.g, src_c.g, t))
 		var b = Math.floor(blend(dst_c.b, src_c.b, t))
 		var a = Math.floor(blend(dst_c.a, src_c.a, t))
-		console.log("rgba(" + r + "," + g + "," + b + "," + a + ")");
 		return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 	}
 

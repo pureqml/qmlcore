@@ -221,7 +221,7 @@ class component_generator(object):
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
 			r.append(self.wrap_creator("setup", var, gen.generate_setup_code(registry, var, 2)))
-			r.append("\tthis.addChild(%s);" %var);
+			r.append("\t%s.addChild(%s);" %(parent, var));
 			r.append("")
 			idx += 1
 		for name, code in self.methods.iteritems():

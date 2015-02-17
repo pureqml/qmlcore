@@ -158,17 +158,22 @@ class component_generator(object):
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
 
-		for target, value in self.assignments.iteritems():
-			if target == "id":
-				continue
 			if isinstance(value, component_generator):
 				var = "%s_%s" %(parent, target.replace('.', '__'))
 				prologue.append("%svar %s;" %(ident, var))
-				r.append("%s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent))
-				p, code = value.generate_creators(registry, var, ident_n + 1)
-				prologue.append(p)
-				r.append(self.wrap_creator("create", var, code))
-				r.append("%sthis.%s = %s" %(ident, target, var))
+				if target != "delegate":
+					r.append("%s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent))
+					p, code = value.generate_creators(registry, var, ident_n + 1)
+					prologue.append(p)
+					r.append(self.wrap_creator("create", var, code))
+					r.append("%sthis.%s = %s" %(ident, target, var))
+				else:
+					code = "var %s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent)
+					p, c = value.generate_creators(registry, var, ident_n + 1)
+					code += c
+					code += value.generate_setup_code(registry, var, ident_n + 1)
+					r.append("%sthis.%s = function() { %s%sreturn %s }" %(ident, target, code, ident, var))
+					#r.append(self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1)))
 
 		return "\n".join(prologue), "\n".join(r)
 
@@ -204,6 +209,8 @@ class component_generator(object):
 					r.append("%sthis._removeUpdater('%s'); this.%s = %s;" %(ident, target, target, value))
 
 			elif t is component_generator:
+				if target == "delegate":
+					continue
 				var = "%s_%s" %(parent, target.replace('.', '__'))
 				r.append(self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1)))
 			else:

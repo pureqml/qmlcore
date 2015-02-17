@@ -2,37 +2,20 @@ Item {
 	id: mainWindow;
 	anchors.fill: renderer;
 	anchors.margins: 100;
-
-	Button {
-		id: button1;
-		text: "Click me";
-		onDownPressed: {
-			button2.forceActiveFocus();
-		}
+	Column {
+		id: col;
+		Text { text: "line 1"; }
+		Text { text: "line 2"; }
+		Text { text: "line 3"; }
+		Text { text: "line 4"; }
 	}
 
-	Button {
-		id: button2;
-		anchors.top: button1.bottom;
-		anchors.topMargin: 10;
-		text: "Don't click me";
-		onUpPressed: {
-			button1.forceActiveFocus();
-		}
-		onDownPressed: {
-			button3.forceActiveFocus();
-		}
-	}
-
-	Button {
-		id: button3;
-		anchors.top: button2.bottom;
-		anchors.topMargin: 10;
-		text: "JUST DON'T";
-		color: "red";
-		onUpPressed: {
-			button2.forceActiveFocus();
-		}
+	Row {
+		anchors.left: col.right;
+		Text { text: "word 1"; }
+		Text { text: "word 2"; }
+		Text { text: "word 3"; }
+		Text { text: "word 4"; }
 	}
 
 	ListModel {

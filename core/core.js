@@ -18,6 +18,7 @@ _globals.core.Object = function(parent) {
 	this._eventHandlers = {}
 	this._pressedHandlers = {}
 	this._animations = {}
+	this._updaters = {}
 }
 
 _globals.core.Object.prototype._setId = function (name) {
@@ -33,6 +34,28 @@ _globals.core.Object.prototype.onChanged = function (name, callback) {
 		this._changedHandlers[name].push(callback);
 	else
 		this._changedHandlers[name] = [callback];
+}
+
+_globals.core.Object.prototype.removeOnChanged = function (name, callback) {
+	if (name in this._changedHandlers) {
+		var handlers = this._changedHandlers[name];
+		for(var i = 0; i < handlers.length; ) {
+			if (handlers[i] === callback) {
+				handlers.splice(i, 1)
+			} else
+				++i
+		}
+	}
+}
+
+_globals.core.Object.prototype._removeUpdater = function (name, callback) {
+	if (name in this._updaters)
+		this._updaters[name]();
+
+	if (callback) {
+		this._updaters[name] = callback;
+	} else
+		delete this._updaters[name]
 }
 
 _globals.core.Object.prototype.onPressed = function (name, callback) {

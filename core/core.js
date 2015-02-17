@@ -520,19 +520,68 @@ exports._setup = function() {
 	}
 
 	_globals.core.ListView.prototype._onReset = function() {
-		console.log("reset")
+		var model = this.model
+		var items = this._items
+		console.log("reset", model.count)
+		if (items.count > model.count) {
+			this._onRowsRemoved(model.count, items.length)
+		} else {
+			this._onRowsChanged(0, items.length)
+			this._onRowsInserted(items.length, model.count)
+		}
+		this._layout()
 	}
 
 	_globals.core.ListView.prototype._onRowsInserted = function(begin, end) {
 		console.log("rows inserted", begin, end)
+		var items = this._items
+		for(var i = begin; i < end; ++i)
+			items.splice(i, 0, null)
+		this._layout()
 	}
 
 	_globals.core.ListView.prototype._onRowsChanged = function(begin, end) {
 		console.log("rows changed", begin, end)
+		var items = this._items
+		for(var i = begin; i < end; ++i) {
+			items[i].element.remove()
+			items[i] = null
+		}
+		this._layout()
 	}
 
 	_globals.core.ListView.prototype._onRowsRemoved = function(begin, end) {
 		console.log("rows removed", begin, end)
+		var items = this._items
+		for(var i = begin; i < end; ++i) {
+			var item = items[i];
+			if (item)
+			items[i].element.remove()
+			items[i] = null
+		}
+		items.splice(begin, end - begin)
+		this._layout()
+	}
+
+	_globals.core.ListView.prototype._layout = function() {
+		var w = this.width, h = this.height
+		if (!w || !h)
+			return
+
+		var items = this._items
+		var n = items.length
+		console.log("layout " + n + " into " + w + "x" + h)
+		var horizontal = false
+		var p = 0, size = horizontal? w: h
+		for(var i = 0; i < n; ++i) {
+			if (!this._items[i])
+				this._items[i] = this._delegate()
+			var item = this._items[i]
+			p += (horizontal? item.width: item.height)
+			console.log(i, p, size, item)
+			if (p >= size)
+				break
+		}
 	}
 
 	_globals.core.ListView.prototype._attach = function() {
@@ -543,10 +592,16 @@ exports._setup = function() {
 		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
 		this.model.on('rowsRemoved', this._onRowsRemoved.bind(this))
 		this._attached = true
+		this._onReset()
 	}
 
 	_globals.core.ListView.prototype._update = function(name, value) {
 		switch(name) {
+		case 'width':
+		case 'height':
+			_globals.core.Item.prototype._update.apply(this, arguments);
+			this._layout()
+			return;
 		case 'model':
 			this._attach()
 			break
@@ -699,6 +754,9 @@ exports._bootstrap = function(self, name) {
 	switch(name) {
 		case 'core.ListModel':
 			self._rows = []
+			break;
+		case 'core.ListView':
+			self._items = []
 			break;
 		case 'core.Item':
 			if (!self.parent) //top-level item, do not create item

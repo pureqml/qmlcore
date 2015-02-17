@@ -646,9 +646,12 @@ exports.addAliasProperty = function(self, name, getObject, getter, setter) {
 
 exports._bootstrap = function(self, name) {
 	switch(name) {
+		case 'core.ListModel':
+			self._rows = []
+			break;
 		case 'core.Item':
 			if (!self.parent) //top-level item, do not create item
-				return;
+				break;
 			if (self.element)
 				throw "double ctor call";
 			self.element = $('<div/>');

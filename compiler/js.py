@@ -104,14 +104,6 @@ class component_generator(object):
 
 	def generate_properties(self):
 		r = []
-		for name, target in self.aliases.iteritems():
-			get, pname = generate_accessors(target)
-			r.append("""\
-	core.addAliasProperty(this, '%s',
-		(function() { return %s; }).bind(this),
-		(function() { return %s.get('%s'); }).bind(this),
-		(function(value) { %s.%s = value; }).bind(this));
-""" %(name, get, get, pname, get, pname))
 		for name, type in self.properties.iteritems():
 			r.append("\tcore.addProperty(this, '%s', '%s');" %(type, name))
 		return "\n".join(r)
@@ -120,7 +112,7 @@ class component_generator(object):
 		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name))
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_properties(), self.generate_setup_code(registry, "this"), self.name)
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"), self.name)
 		return ctor
 
 	def generate_animations(self, registry, parent):
@@ -166,11 +158,31 @@ class component_generator(object):
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
 
+		for target, value in self.assignments.iteritems():
+			if target == "id":
+				continue
+			if isinstance(value, component_generator):
+				var = "%s_%s" %(parent, target.replace('.', '__'))
+				prologue.append("%svar %s;" %(ident, var))
+				r.append("%s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent))
+				p, code = value.generate_creators(registry, var, ident_n + 1)
+				prologue.append(p)
+				r.append(self.wrap_creator("create", var, code))
+				r.append("%sthis.%s = %s" %(ident, target, var))
+
 		return "\n".join(prologue), "\n".join(r)
 
 	def generate_setup_code(self, registry, parent, ident_n = 1):
 		r = []
 		ident = "\t" * ident_n
+		for name, target in self.aliases.iteritems():
+			get, pname = generate_accessors(target)
+			r.append("""\
+	core.addAliasProperty(this, '%s',
+		(function() { return %s; }).bind(this),
+		(function() { return %s.get('%s'); }).bind(this),
+		(function(value) { %s.%s = value; }).bind(this));
+""" %(name, get, get, pname, get, pname))
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				continue
@@ -192,9 +204,7 @@ class component_generator(object):
 					r.append("%sthis._removeUpdater('%s'); this.%s = %s;" %(ident, target, target, value))
 
 			elif t is component_generator:
-				var = "this.%s" %target
-				r.append("\t%s = new _globals.%s(%s);" %(var, registry.find_component(value.package, value.component.name), parent))
-				r.append(self.wrap_creator("create", var, "\n".join(value.generate_creators(registry, var, ident_n + 1)))) #fixme: split me
+				var = "%s_%s" %(parent, target.replace('.', '__'))
 				r.append(self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1)))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))

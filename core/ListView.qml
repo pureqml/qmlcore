@@ -4,4 +4,7 @@ Item {
 
 	property int count;
 	property int currentIndex;
+
+	property int contentX;
+	property int contentY;
 }

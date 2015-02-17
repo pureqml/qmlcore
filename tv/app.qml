@@ -50,7 +50,7 @@ Item {
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
 		width: 200;
-		delegate: Rectangle { width: 100; height: 100; color: "#f00"; Text { text: /*model.type*/ "Test"; } }
+		delegate: Rectangle { width: 100; height: 100; color: "green"; Text { anchors.centerIn: parent; color: "white"; text: /*model.type*/ "Test"; } }
 	}
 
 	onCompleted: {

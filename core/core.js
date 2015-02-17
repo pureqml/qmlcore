@@ -226,8 +226,8 @@ exports._setup = function() {
 		var item = this;
 		var x = 0, y = 0;
 		while(item) {
-			x += item.x;
-			y += item.y;
+			x += item.x + item.viewX;
+			y += item.y + item.viewY;
 			item = item.parent;
 		}
 		return [x, y];

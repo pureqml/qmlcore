@@ -170,9 +170,10 @@ class component_generator(object):
 				else:
 					code = "var %s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent)
 					p, c = value.generate_creators(registry, var, ident_n + 1)
-					code += c
-					code += value.generate_setup_code(registry, var, ident_n + 1)
-					r.append("%sthis.%s = function() { %s%sreturn %s }" %(ident, target, code, ident, var))
+					code += self.wrap_creator("create", var, c)
+					code += "\n"
+					code += self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1))
+					r.append("%sthis.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(this)" %(ident, target, p, code, ident, var))
 
 		return "\n".join(prologue), "\n".join(r)
 

@@ -293,7 +293,7 @@ class generator(object):
 		raise Exception("component %s was not found" %name)
 
 	def generate_components(self):
-		r, deps = [], []
+		r, base_class = [], {}
 
 		for gen in self.components.itervalues():
 			gen.collect_id(self.id_set)
@@ -303,22 +303,24 @@ class generator(object):
 			code += gen.generate(self)
 			base_type = self.find_component(gen.package, gen.component.name)
 
-			for i in xrange(0, len(deps)):
-				t, b = deps[i]
-				if base_type == t: #my base class, append after
-					deps.insert(i + 1, (name, base_type))
-					break
-				if name == b: #me is base class, prepend before
-					deps.insert(i, (name, base_type))
-					break
-			else:
-				deps.append((name, base_type))
-
+			base_class[name] = base_type
 			r.append(code)
 
-		for type, base_type in deps:
+		deps = []
+		visited = set(['core.Object'])
+		def visit(type):
+			if type in visited:
+				return
+			visit(base_class[type])
+			deps.append(type)
+			visited.add(type)
+
+		for type in base_class.iterkeys():
+			visit(type)
+
+		for type in deps:
 			code = ""
-			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_type)
+			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_class[type])
 			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(type, type)
 			r.append(code)
 

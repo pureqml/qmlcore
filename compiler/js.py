@@ -173,7 +173,6 @@ class component_generator(object):
 					code += c
 					code += value.generate_setup_code(registry, var, ident_n + 1)
 					r.append("%sthis.%s = function() { %s%sreturn %s }" %(ident, target, code, ident, var))
-					#r.append(self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1)))
 
 		return "\n".join(prologue), "\n".join(r)
 

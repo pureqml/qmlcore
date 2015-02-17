@@ -3,6 +3,7 @@ Item {
 	property Item delegate;
 
 	property int orientation;
+	property int spacing;
 
 	property int count;
 	property int currentIndex;

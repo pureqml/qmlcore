@@ -228,8 +228,8 @@ class generator(object):
 		self.packages = {}
 		self.startup = []
 		self.id_set = set(['renderer'])
-		self.startup.append("qml._imports['core/core.js']._setup();")
-		self.startup.append("qml._context = new qml._imports['core/core.js'].Context();")
+		self.startup.append("qml.core.core._setup();")
+		self.startup.append("qml._context = new qml.core.core.Context();")
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -273,8 +273,6 @@ class generator(object):
 
 	def generate_components(self):
 		r, deps = [], []
-		for package in sorted(self.packages.keys()):
-			r.append("if (!exports.%s) exports.%s = {};" %(package, package))
 
 		for gen in self.components.itervalues():
 			gen.collect_id(self.id_set)
@@ -307,18 +305,24 @@ class generator(object):
 
 	def generate_imports(self):
 		r = []
+		for package in sorted(self.packages.keys()):
+			r.append("if (!exports.%s) exports.%s = {};" %(package, package))
+
 		for name, code in self.imports.iteritems():
+			safe_name = name
+			if safe_name.endswith(".js"):
+				safe_name = safe_name[:-3]
+			safe_name = safe_name.replace('/', '.')
 			code = "//=====[import %s]=====================\n\n" %name + code
-			r.append("'%s': %s()" %(name, self.wrap(code)))
-		return ", ".join(r)
+			r.append("_globals.%s = %s()" %(safe_name, self.wrap(code)))
+		return "\n".join(r)
 
 	def generate(self, ns):
 		text = ""
 		text += "var _globals = exports;\n"
-		text += "var imports = { %s };\n" %self.generate_imports()
-		text += "_globals._imports = imports;\n"
+		text += "%s\n" %self.generate_imports()
 		text += "//========================================\n\n"
-		text += "var core = imports['core/core.js'];\n"
+		text += "var core = _globals.core.core;\n"
 		text += "%s\n" %self.generate_components()
 		return "%s = %s();\n" %(ns, self.wrap(text))
 

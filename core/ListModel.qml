@@ -6,10 +6,10 @@ Object {
 
 	property int count;
 
-	reset: {
+	clear: {
 		this._rows = []
 		count = this._rows.length
-		this._emitEvent('reset')
+		this.reset()
 	}
 
 	append : {
@@ -32,6 +32,11 @@ Object {
 		var row = arguments[1]
 		this._rows[idx] = row
 		this.rowChanged(idx, idx + 1)
+	}
+
+	get: {
+		var idx = arguments[0]
+		return this._rows[idx];
 	}
 
 	setProperty: {

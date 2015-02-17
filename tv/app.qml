@@ -35,6 +35,21 @@ Item {
 		}
 	}
 
+	ListModel {
+		id: animalModel;
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		onCompleted: {
+			console.log("hello", this.count);
+		}
+	}
+
+	ListView {
+		model: animalModel;
+		anchors.centerIn: parent;
+		delegate: Rectangle { width: 100; height: 100; color: "green"; Text { /*text: model.type;*/ } }
+	}
+
 	onCompleted: {
 		button1.forceActiveFocus();
 	}

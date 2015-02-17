@@ -519,13 +519,44 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.ListView.prototype._onReset = function() {
+		console.log("reset")
+	}
+
+	_globals.core.ListView.prototype._onRowsInserted = function(begin, end) {
+		console.log("rows inserted", begin, end)
+	}
+
+	_globals.core.ListView.prototype._onRowsChanged = function(begin, end) {
+		console.log("rows changed", begin, end)
+	}
+
+	_globals.core.ListView.prototype._onRowsRemoved = function(begin, end) {
+		console.log("rows removed", begin, end)
+	}
+
+	_globals.core.ListView.prototype._attach = function() {
+		if (this._attached || !this.model || !this._delegate)
+			return
+		this.model.on('reset', this._onReset.bind(this))
+		this.model.on('rowsInserted', this._onRowsInserted.bind(this))
+		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
+		this.model.on('rowsRemoved', this._onRowsRemoved.bind(this))
+		this._attached = true
+	}
+
 	_globals.core.ListView.prototype._update = function(name, value) {
 		switch(name) {
 		case 'model':
-			console.log("model", value)
+			this._attach()
 			break
 		case 'delegate':
-			console.log("delegate", value)
+			if (value) {
+				value.visible = false;
+				this._delegate = value;
+				this.delegate = null;
+			}
+			this._attach()
 			break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);

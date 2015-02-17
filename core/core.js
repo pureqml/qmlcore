@@ -522,6 +522,56 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Row.prototype._layout = function() {
+		var children = this.children;
+		var p = 0
+		var h = 0
+		for(var i = 0; i < children.length; ++i) {
+			var c = children[i]
+			if (!c.hasOwnProperty('height'))
+				continue
+			var b = c.y + c.height
+			if (b > h)
+				h = b
+			c.viewX = p
+			p += c.width + this.spacing
+		}
+		if (p > 0)
+			p -= this.spacing
+		this.width = p
+		this.height = h
+	}
+
+	_globals.core.Row.prototype.addChild = function(child) {
+		_globals.core.Object.prototype.addChild.apply(this, arguments)
+		child.onChanged('width', this._layout.bind(this))
+	}
+
+	_globals.core.Column.prototype._layout = function() {
+		var children = this.children;
+		var p = 0
+		var w = 0
+		for(var i = 0; i < children.length; ++i) {
+			var c = children[i]
+			if (!c.hasOwnProperty('height'))
+				continue
+			var r = c.x + c.width
+			if (r > w)
+				w = r
+			c.viewY = p
+			p += c.height + this.spacing
+		}
+		if (p > 0)
+			p -= this.spacing
+		this.width = w
+		this.height = p
+	}
+
+	_globals.core.Column.prototype.addChild = function(child) {
+		_globals.core.Object.prototype.addChild.apply(this, arguments)
+		child.onChanged('height', this._layout.bind(this))
+	}
+
 	_globals.core.ListView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items

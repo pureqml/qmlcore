@@ -9,10 +9,10 @@
      focus: true;
      property alias text: label.text;
      border { color: "#B9C5D0"; width: 1; }
-     onActiveFocusChanged: {
-         this.color = (this.activeFocus)? "purple": "blue";
-         this.opacity = this.activeFocus? 1: 0.3;
-     }
+
+     color: activeFocus? "purple": "blue";
+     opacity: activeFocus? 1: 0.3;
+
 /*
      gradient: Gradient {
          GradientStop {color: "#CFF7FF"; position: 0.0; }

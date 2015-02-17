@@ -95,9 +95,28 @@ component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)
 component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
 
+def handle_unary_op(s, l, t):
+	print "EXPR", t
+	return " ".join(t[0])
+def handle_binary_op(s, l, t):
+	print "EXPR", t
+	return " ".join(t[0])
+def handle_ternary_op(s, l, t):
+	print "EXPR", t
+	return " ".join(t[0])
 
 expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier_rvalue)
-expression << expression_definition
+
+expression_ops = infixNotation(expression_definition, [
+	('*', 2, opAssoc.LEFT, handle_binary_op),
+	('/', 2, opAssoc.LEFT, handle_binary_op),
+	('+', 2, opAssoc.LEFT, handle_binary_op),
+	('-', 2, opAssoc.LEFT, handle_binary_op),
+	('-', 1, opAssoc.RIGHT, handle_unary_op),
+	(('?', ':'), 3, opAssoc.RIGHT, handle_ternary_op),
+])
+
+expression << expression_ops
 
 source = component_declaration
 source = source.ignore(cStyleComment)

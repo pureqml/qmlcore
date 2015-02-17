@@ -572,6 +572,9 @@ exports._setup = function() {
 		child.onChanged('height', this._layout.bind(this))
 	}
 
+	_globals.core.ListView.prototype.Vertical	= 0
+	_globals.core.ListView.prototype.Horizontal	= 1
+
 	_globals.core.ListView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items
@@ -629,7 +632,7 @@ exports._setup = function() {
 		var items = this._items
 		var n = items.length
 		console.log("layout " + n + " into " + w + "x" + h)
-		var horizontal = false
+		var horizontal = this.orientation === this.Horizontal
 		var p = horizontal? -this.contextX: -this.contentY, size = horizontal? w: h
 		for(var i = 0; i < n; ++i) {
 			if (!this._items[i])

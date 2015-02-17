@@ -15,23 +15,23 @@ Object {
 	append : {
 		var l = this._rows.length
 		this._rows.push(arguments[0])
-		count = this._rows.length
-		rowsInserted(l, l + 1)
+		this.count = this._rows.length
+		this.rowsInserted(l, l + 1)
 	}
 
 	insert : {
 		var idx = arguments[0]
 		var row = arguments[1]
 		this._rows.splice(idx, 0, row)
-		count = this._rows.length
-		rowsInserted(idx, idx + 1)
+		this.count = this._rows.length
+		this.rowsInserted(idx, idx + 1)
 	}
 
 	set: {
 		var idx = arguments[0]
 		var row = arguments[1]
 		this._rows[idx] = row
-		rowChanged(idx, idx + 1)
+		this.rowChanged(idx, idx + 1)
 	}
 
 	setProperty: {
@@ -39,7 +39,7 @@ Object {
 		var name = arguments[1]
 		var value = arguments[2]
 		this._rows[idx][name] = value
-		rowChanged(idx, idx + 1)
+		this.rowChanged(idx, idx + 1)
 	}
 
 	remove: {
@@ -48,7 +48,7 @@ Object {
 		if (n === undefined)
 			n = 1
 		this._rows.splice(idx, n)
-		count = this._rows.length
-		rowsRemoved(idx, n)
+		this.count = this._rows.length
+		this.rowsRemoved(idx, n)
 	}
 }

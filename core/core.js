@@ -257,6 +257,8 @@ exports._setup = function() {
 				break;
 
 			case 'x':
+			case 'viewX':
+				value = this.x + this.viewX
 				this.element.css('left', value);
 				this.left.value = value;
 				this.right.value = value + this.width;
@@ -264,6 +266,8 @@ exports._setup = function() {
 				break;
 
 			case 'y':
+			case 'viewY':
+				value = this.y + this.viewY
 				this.element.css('top', value);
 				this.top.value = value;
 				this.bottom.value = value + this.height;

@@ -30,6 +30,7 @@ Item {
 		anchors.top: button2.bottom;
 		anchors.topMargin: 10;
 		text: "JUST DON'T";
+		color: "red";
 		onUpPressed: {
 			button2.forceActiveFocus();
 		}

@@ -4,3 +4,6 @@ all:
 
 dev:
 		./qml-compiler -w -o app core controls tv
+
+test-dev:
+		./qml-compiler -w -o app core controls test

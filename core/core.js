@@ -568,6 +568,11 @@ exports._setup = function() {
 	}
 
 	_globals.core.ListView.prototype._layout = function() {
+		var model = this.model;
+		if (!model)
+			return
+
+		this.count = model.count
 		var w = this.width, h = this.height
 		if (!w || !h)
 			return
@@ -576,12 +581,18 @@ exports._setup = function() {
 		var n = items.length
 		console.log("layout " + n + " into " + w + "x" + h)
 		var horizontal = false
-		var p = 0, size = horizontal? w: h
+		var p = horizontal? -this.contextX: -this.contentY, size = horizontal? w: h
 		for(var i = 0; i < n; ++i) {
 			if (!this._items[i])
-				this._items[i] = this._delegate()
+				this._items[i] = this.delegate()
 			var item = this._items[i]
-			p += (horizontal? item.width: item.height)
+			if (horizontal)
+				item.viewX = p
+			else
+				item.viewY = p
+			var s = (horizontal? item.width: item.height)
+			item.visible = (p + s >= 0 && p < size)
+			p += s
 			console.log(i, p, size, item)
 			if (p >= size)
 				break
@@ -589,8 +600,9 @@ exports._setup = function() {
 	}
 
 	_globals.core.ListView.prototype._attach = function() {
-		if (this._attached || !this.model || !this._delegate)
+		if (this._attached || !this.model || !this.delegate)
 			return
+
 		this.model.on('reset', this._onReset.bind(this))
 		this.model.on('rowsInserted', this._onRowsInserted.bind(this))
 		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
@@ -604,6 +616,8 @@ exports._setup = function() {
 		case 'width':
 		case 'height':
 			_globals.core.Item.prototype._update.apply(this, arguments);
+		case 'contentX':
+		case 'contentY':
 			this._layout()
 			return;
 		case 'model':
@@ -612,8 +626,6 @@ exports._setup = function() {
 		case 'delegate':
 			if (value) {
 				value.visible = false;
-				this._delegate = value;
-				this.delegate = null;
 			}
 			this._attach()
 			break

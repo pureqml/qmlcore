@@ -519,6 +519,18 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.ListView.prototype._update = function(name, value) {
+		switch(name) {
+		case 'model':
+			console.log("model", value)
+			break
+		case 'delegate':
+			console.log("delegate", value)
+			break
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+
 	exports.Context.prototype = Object.create(qml.core.Item.prototype);
 	exports.Context.prototype.constructor = exports.Context;
 

@@ -644,8 +644,8 @@ exports._setup = function() {
 				item.viewY = p
 			var s = (horizontal? item.width: item.height)
 			item.visible = (p + s >= 0 && p < size)
-			p += s
-			console.log(i, p, size, item)
+			p += s + this.spacing
+
 			if (p >= size)
 				break
 		}

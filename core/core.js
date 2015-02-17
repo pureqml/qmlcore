@@ -216,7 +216,7 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Item.prototype.children = []
+	_globals.core.Object.prototype.children = []
 
 	_globals.core.Item.prototype.toScreen = function() {
 		var item = this;

@@ -1,8 +1,5 @@
 /* qml.core javascript code */
 
-if (!_globals.core)
-	_globals.core = {}
-
 var keyCodes = {
 	13: 'Select',
 	37: 'Left',

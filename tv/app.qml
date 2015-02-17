@@ -46,8 +46,11 @@ Item {
 
 	ListView {
 		model: animalModel;
-		anchors.centerIn: parent;
-		delegate: Rectangle { width: 100; height: 100; color: "green"; Text { /*text: model.type;*/ } }
+		anchors.top: parent.top;
+		anchors.bottom: parent.bottom;
+		anchors.right: parent.right;
+		width: 200;
+		delegate: Rectangle { width: 100; height: 100; color: "#f00"; Text { text: /*model.type*/ "Test"; } }
 	}
 
 	onCompleted: {

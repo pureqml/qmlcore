@@ -38,6 +38,12 @@ _globals.core.Object = function(parent) {
 	this._updaters = {}
 }
 
+_globals.core.Object.prototype.children = []
+
+_globals.core.Object.prototype.addChild = function(child) {
+	this.children.push(child);
+}
+
 _globals.core.Object.prototype._setId = function (name) {
 	var p = this;
 	while(p) {
@@ -127,6 +133,10 @@ _globals.core.Object.prototype.getAnimation = function (name, animation) {
 }
 
 exports._setup = function() {
+	_globals.core.ListModel.prototype.addChild = function(child) {
+		this.append(child)
+	}
+
 	_globals.core.Timer.prototype._restart = function() {
 		if (this._timeout) {
 			clearTimeout(this._timeout);
@@ -212,8 +222,6 @@ exports._setup = function() {
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
-
-	_globals.core.Object.prototype.children = []
 
 	_globals.core.Item.prototype.toScreen = function() {
 		var item = this;

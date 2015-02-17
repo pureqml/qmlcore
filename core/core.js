@@ -11,6 +11,26 @@ var keyCodes = {
 	40: 'Down'
 }
 
+var colorTable = {
+	'maroon':	'800000',
+	'red':		'ff0000',
+	'orange':	'ffA500',
+	'yellow':	'ffff00',
+	'olive':	'808000',
+	'purple':	'800080',
+	'fuchsia':	'ff00ff',
+	'white':	'ffffff',
+	'lime':		'00ff00',
+	'green':	'008000',
+	'navy':		'000080',
+	'blue':		'0000ff',
+	'aqua':		'00ffff',
+	'teal':		'008080',
+	'black':	'000000',
+	'silver':	'c0c0c0',
+	'gray':		'080808'
+}
+
 _globals.core.Object = function(parent) {
 	this.parent = parent;
 	this._local = {}
@@ -129,6 +149,63 @@ exports._setup = function() {
 			this._interval = setInterval(function() { self.triggered(); }, this.interval);
 		else
 			this._timeout = setTimeout(function() { self.triggered(); }, this.interval);
+	}
+
+	var blend = function(dst, src, t) {
+		return t * (dst - src) + src;
+	}
+
+	_globals.core.Animation.prototype.interpolate = blend;
+
+	_globals.core.Color = function(value) {
+		if (value.substring(0, 4) == "rgba") {
+			var b = value.indexOf('('), e = value.lastIndexOf(')')
+			value = value.substring(b + 1, e).split(',')
+			this.r = parseInt(value[0])
+			this.g = parseInt(value[1])
+			this.b = parseInt(value[2])
+			this.a = parseInt(value[3])
+			return
+		}
+		else {
+			var h = value.charAt(0);
+			if (h != '#')
+				triplet = colorTable[value];
+			else
+				triplet = value.substring(1)
+		}
+
+		if (!triplet)
+			throw "invalid color specification: " + value
+
+		var len = triplet.length;
+		if (len == 3 || len == 4) {
+			var r = parseInt(triplet.charAt(0), 16)
+			var g = parseInt(triplet.charAt(1), 16)
+			var b = parseInt(triplet.charAt(2), 16)
+			var a = (len == 4)? parseInt(triplet.charAt(3), 16): 255
+			this.r = (r << 4) | r;
+			this.g = (g << 4) | g;
+			this.b = (b << 4) | b;
+			this.a = (a << 4) | a;
+		} else if (len == 6 || len == 8) {
+			this.r = parseInt(triplet.substring(0, 2), 16)
+			this.g = parseInt(triplet.substring(2, 4), 16)
+			this.b = parseInt(triplet.substring(4, 6), 16)
+			this.a = (len == 8)? parseInt(triplet.substring(6, 8), 16): 255
+		} else
+			throw "invalid color specification: " + value
+	}
+	_globals.core.Color.prototype.constructor = _globals.core.Color;
+
+	_globals.core.ColorAnimation.prototype.interpolate = function(dst, src, t) {
+		var dst_c = new _globals.core.Color(dst), src_c = new _globals.core.Color(src);
+		var r = Math.floor(blend(dst_c.r, src_c.r, t))
+		var g = Math.floor(blend(dst_c.g, src_c.g, t))
+		var b = Math.floor(blend(dst_c.b, src_c.b, t))
+		var a = Math.floor(blend(dst_c.a, src_c.a, t))
+		console.log("rgba(" + r + "," + g + "," + b + "," + a + ")");
+		return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 	}
 
 	_globals.core.Timer.prototype._update = function(name, value) {
@@ -540,7 +617,7 @@ exports.addProperty = function(self, type, name) {
 					if (t >= 1)
 						t = 1;
 
-					interpolated_value = t * (dst - src) + src;
+					interpolated_value = animation.interpolate(dst, src, t);
 					self._update(name, interpolated_value, src);
 				});
 

@@ -30,6 +30,7 @@ var colorTable = {
 
 _globals.core.Object = function(parent) {
 	this.parent = parent;
+	this.children = []
 	this._local = {}
 	this._changedHandlers = {}
 	this._eventHandlers = {}
@@ -37,8 +38,6 @@ _globals.core.Object = function(parent) {
 	this._animations = {}
 	this._updaters = {}
 }
-
-_globals.core.Object.prototype.children = []
 
 _globals.core.Object.prototype.addChild = function(child) {
 	this.children.push(child);

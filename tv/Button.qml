@@ -12,6 +12,7 @@
 
      color: activeFocus? "purple": "blue";
      opacity: activeFocus? 1: 0.3;
+     Behavior on opacity { Animation { duration: 1000; } }
 
 /*
      gradient: Gradient {

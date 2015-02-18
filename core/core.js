@@ -329,11 +329,19 @@ exports._setup = function() {
 		var key = keyCodes[event.which];
 		if (key) {
 			if (key in this._pressedHandlers) {
-				var self = this;
 				var handlers = this._pressedHandlers[key];
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i];
-					if (callback(event))
+					if (callback(key, event))
+						return true;
+				}
+			}
+
+			if ('Key' in this._pressedHandlers) {
+				var handlers = this._pressedHandlers['Key'];
+				for(var i = handlers.length - 1; i >= 0; --i) {
+					var callback = handlers[i];
+					if (callback(key, event))
 						return true;
 				}
 			}

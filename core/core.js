@@ -540,6 +540,10 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignHCenter	= 2
 	_globals.core.Text.prototype.AlignJustify	= 3
 
+	_globals.core.Text.prototype.AlignTop		= 0
+	_globals.core.Text.prototype.AlignBottom	= 1
+	_globals.core.Text.prototype.AlignVCenter	= 2
+
 	_globals.core.Text.prototype._update = function(name, value) {
 		switch(name) {
 			case 'text': this.element.text(value); this.paintedWidth = this.element.width(); this.paintedHeight = this.element.height(); break;

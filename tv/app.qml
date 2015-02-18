@@ -52,16 +52,21 @@ Item {
 		height: parent.height / 9;
 		width: parent.width / 16;
 		text: "Options";
+	    color: activeFocus || options.show ? "#539d00" : "black";
 
 		onRightPressed: { db5.forceActiveFocus(); }
 		onLeftPressed: { db3.forceActiveFocus(); }
+		onUpPressed: {
+			if (options.show)
+				options.forceActiveFocus();
+		}
 
 		onTriggered: {
-			options.showed = !options.showed;
+			options.show = !options.show;
 		}
 	}
 
-	GreenButton {
+	Button {
 		id: db5;
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
@@ -80,8 +85,8 @@ Item {
 		anchors.bottomMargin: 10;
 		anchors.left: db4.left;
 		anchors.right: db4.right;
-		property bool showed;
-		opacity: options.showed ? 1 : 0;
+		property bool show;
+		opacity: options.show ? 1 : 0;
 		
 		Behavior on opacity	{ Animation { duration: 500; } }
 

@@ -535,11 +535,24 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Text.prototype.AlignLeft		= 0
+	_globals.core.Text.prototype.AlignRight		= 1
+	_globals.core.Text.prototype.AlignHCenter	= 2
+	_globals.core.Text.prototype.AlignJustify	= 3
+
 	_globals.core.Text.prototype._update = function(name, value) {
 		switch(name) {
 			case 'text': this.element.text(value); this.paintedWidth = this.element.width(); this.paintedHeight = this.element.height(); break;
 			case 'color': this.element.css('color', value); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
+			case 'horizontalAlignment':
+				switch(value) {
+				case this.AlignLeft:	this.element.css('text-align', 'left'); break
+				case this.AlignRight:	this.element.css('text-align', 'right'); break
+				case this.AlignHCenter:	this.element.css('text-align', 'center'); break
+				case this.AlignJustify:	this.element.css('text-align', 'justify'); break
+				}
+				break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

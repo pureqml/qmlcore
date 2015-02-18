@@ -1,8 +1,8 @@
 Object {
-	event reset;
-	event rowsInserted;
-	event rowsChanged;
-	event rowsRemoved;
+	signal reset;
+	signal rowsInserted;
+	signal rowsChanged;
+	signal rowsRemoved;
 
 	property int count;
 

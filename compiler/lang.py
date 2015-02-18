@@ -38,6 +38,6 @@ class Behavior(object):
 		self.target = target
 		self.animation = animation
 
-class Event(object):
+class Signal(object):
 	def __init__(self, name):
 		self.name = name

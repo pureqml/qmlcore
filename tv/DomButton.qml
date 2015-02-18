@@ -1,6 +1,6 @@
  Rectangle {
      id: domButton;
-     event triggered;
+     signal triggered;
 
      width: 145; height: 60;
      color: "green";

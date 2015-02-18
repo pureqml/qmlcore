@@ -24,7 +24,7 @@ Object {
 	property AnchorLine verticalCenter:		AnchorLine	{ boxIndex: 5; }
 
 	//do not use, view internal
-	event boxChanged;
+	signal boxChanged;
 	property int viewX;
 	property int viewY;
 }

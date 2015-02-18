@@ -1,7 +1,7 @@
 Item {
-	event entered;
-	event exited;
-	event clicked;
+	signal entered;
+	signal exited;
+	signal clicked;
 
 	property bool hoverEnabled;
 	property real mouseX;

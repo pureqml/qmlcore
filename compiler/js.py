@@ -137,7 +137,7 @@ class component_generator(object):
 		ident = "\t" * ident_n
 
 		for name in self.events:
-			r.append("%sthis.%s = function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitEvent.apply(this, args);/*fixme*/ }" %(ident, name, name))
+			r.append("%sthis.%s = (function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitEvent.apply(this, args);/*fixme*/ }).bind(this)" %(ident, name, name))
 
 		idx = 0
 		for gen in self.children:

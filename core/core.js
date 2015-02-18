@@ -306,6 +306,14 @@ exports._setup = function() {
 		return false;
 	}
 
+	_globals.core.Item.prototype._propagateFocusToParents = function() {
+		var item = this;
+		while(item.parent && !item.parent.focusedChild) {
+			item.parent._focusChild(item)
+			item = item.parent
+		}
+	}
+
 	_globals.core.Item.prototype._focusTree = function(active) {
 		this.activeFocus = active;
 		if (this.focusedChild)
@@ -314,12 +322,17 @@ exports._setup = function() {
 
 	_globals.core.Item.prototype._focusChild = function (child) {
 		if (child.parent !== this)
-			throw "invalid object passed as child";
+			throw "invalid object passed as child"
 		if (this.focusedChild)
-			this.focusedChild._focusTree(false);
-		this.focusedChild = child;
+			this.focusedChild._focusTree(false)
+		this.focusedChild = child
 		if (this.focusedChild)
-			this.focusedChild._focusTree(true);
+			this.focusedChild._focusTree(true)
+	}
+
+	_globals.core.Item.prototype.focusChild = function(child) {
+		this._focusChild(child)
+		this._propagateFocusToParents()
 	}
 
 	_globals.core.Item.prototype._processKey = function (event) {

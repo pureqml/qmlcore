@@ -8,9 +8,10 @@
      focus: true;
      property alias text: label.text;
 
-     color: activeFocus? "green": "black";
-     opacity: activeFocus? 1: 0.7;
+     color: activeFocus ? "green": "black";
+     opacity: activeFocus ? 1 : 0.7;
      Behavior on opacity	{ Animation { duration: 300; } }
+     Behavior on height    { Animation { duration: 300; } }
      Behavior on color		{ ColorAnimation { duration: 300; } }
 
      Text {

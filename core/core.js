@@ -241,6 +241,11 @@ exports._setup = function() {
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
+	
+	_globals.core.Item.prototype.addChild = function(child) {
+		_globals.core.Object.prototype.addChild.apply(this, arguments)
+		this._tryFocus(child)
+	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
 		switch(name) {
@@ -282,6 +287,18 @@ exports._setup = function() {
 			item.parent._focusChild(item);
 			item = item.parent;
 		}
+	}
+
+	_globals.core.Item.prototype._tryFocus = function(child) {
+		if (child.focusedChild || child.focus) { //already has focus tree
+			var item = child;
+			while(item.parent && !item.parent.focusedChild) {
+				item.parent._focusChild(item)
+				item = item.parent
+			}
+			return true;
+		}
+		return false;
 	}
 
 	_globals.core.Item.prototype._focusTree = function(active) {
@@ -539,7 +556,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Row.prototype.addChild = function(child) {
-		_globals.core.Object.prototype.addChild.apply(this, arguments)
+		_globals.core.Item.prototype.addChild.apply(this, arguments)
 		child.onChanged('width', this._layout.bind(this))
 	}
 
@@ -564,7 +581,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Column.prototype.addChild = function(child) {
-		_globals.core.Object.prototype.addChild.apply(this, arguments)
+		_globals.core.Item.prototype.addChild.apply(this, arguments)
 		child.onChanged('height', this._layout.bind(this))
 	}
 

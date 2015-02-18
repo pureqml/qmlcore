@@ -46,10 +46,11 @@ Item {
 		text: "Options";
 
 		onTriggered: {
-			if (options.opacity > 0)
-				options.opacity = 0;
-			else
-				opacity.opacity = 1;
+			options.showed = !options.showed;
+			// if (options.opacity > 0)
+			// 	options.opacity = 0;
+			// else
+			// 	opacity.opacity = 1;
 		}
 	}
 
@@ -70,8 +71,8 @@ Item {
 		anchors.bottomMargin: 10;
 		anchors.left: db4.left;
 		anchors.right: db4.right;
-//		property bool showed: true;
-//		opacity: options.showed ? 1 : 0;
+		property bool showed;
+		opacity: options.showed ? 1 : 0;
 		
 		Behavior on opacity	{ Animation { duration: 500; } }
 

@@ -1,4 +1,4 @@
-/* qml.core javascript code */
+var samsung = window.hasOwnProperty('sf')
 
 var keyCodes = {
 	13: 'Select',
@@ -6,6 +6,17 @@ var keyCodes = {
 	38: 'Up',
 	39: 'Right',
 	40: 'Down'
+}
+
+if (samsung) {
+	keyCodes = {}
+	for (var key in sf.key) {
+		var code = sf.key[key]
+		key = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
+		if (key == "Enter")
+			key = "Select"
+		keyCodes[code] = key
+	}
 }
 
 var colorTable = {

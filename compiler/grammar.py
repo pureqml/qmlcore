@@ -18,8 +18,7 @@ def handle_alias_property_declaration(s, l, t):
 	return lang.AliasProperty(t[0], t[1])
 
 def handle_method_declaration(s, l, t):
-	#print "method>", t
-	return lang.Method(t[0], t[1])
+	return lang.Method(t[0], t[1], t[2])
 
 def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t
@@ -83,7 +82,7 @@ assign_scope_declaration.setParseAction(handle_assignment)
 assign_scope = nested_identifier_lvalue + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
 assign_scope.setParseAction(handle_assignment_scope)
 
-method_declaration = nested_identifier_lvalue + Literal(":").suppress() + code
+method_declaration = nested_identifier_lvalue + Group(Optional(Literal("(").suppress() + identifier + ZeroOrMore(Literal(",").suppress() + identifier) + Literal(")").suppress() )) + Literal(":").suppress() + code
 method_declaration.setParseAction(handle_method_declaration)
 
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + identifier + Literal("{").suppress() + component_declaration + Literal("}").suppress()

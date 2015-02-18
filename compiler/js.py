@@ -73,7 +73,7 @@ class component_generator(object):
 				raise Exception("duplicate animation on property " + child.target);
 			self.animations[child.target] = component_generator(self.package + ".<anonymous-animation>", child.animation)
 		elif t is lang.Method:
-			name, code = child.name, child.code
+			name, args, code = child.name, child.args, child.code
 			if len(name) > 2 and name.startswith("on") and name[2].isupper(): #onXyzzy
 				name = name[2].lower() + name[3:]
 				if name.endswith("Pressed"):
@@ -93,7 +93,7 @@ class component_generator(object):
 			else:
 				if name in self.methods:
 					raise Exception("duplicate method " + name)
-				self.methods[name] = code
+				self.methods[name] = args, code
 		elif t is lang.Signal:
 			name = child.name
 			if name in self.signals:
@@ -226,9 +226,10 @@ class component_generator(object):
 			r.append("\t%s.addChild(%s);" %(parent, var));
 			r.append("")
 			idx += 1
-		for name, code in self.methods.iteritems():
+		for name, argscode in self.methods.iteritems():
+			args, code = argscode
 			code = process(code, registry)
-			r.append("%sthis.%s = (function() %s ).bind(this);" %(ident, name, code))
+			r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
 		for name, code in self.signal_handlers.iteritems():
 			code = process(code, registry)
 			if name != "completed":

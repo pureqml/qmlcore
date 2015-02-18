@@ -760,7 +760,7 @@ exports.addProperty = function(self, type, name) {
 	}
 	Object.defineProperty(self, name, {
 		get: function() {
-			return value;
+			return interpolated_value !== undefined? interpolated_value: value;
 		},
 		set: function(newValue) {
 			if (!self.getAnimation) {

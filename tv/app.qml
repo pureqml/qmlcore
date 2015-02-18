@@ -6,7 +6,7 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 40;
 
-	DomButton {
+	GreenButton {
 		id: db1;
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
@@ -17,7 +17,7 @@ Item {
 		onRightPressed: { db2.forceActiveFocus(); }
 	}
 
-	DomButton {
+	GreenButton {
 		id: db2;
 		anchors.bottom: parent.bottom;
 		anchors.left: db1.right;
@@ -30,7 +30,7 @@ Item {
 		onLeftPressed: { db1.forceActiveFocus(); }
 	}
 
-	DomButton {
+	GreenButton {
 		id: db3;
 		anchors.bottom: parent.bottom;
 		anchors.left: db2.right;
@@ -44,7 +44,7 @@ Item {
 		onLeftPressed: { db2.forceActiveFocus(); }
 	}
 
-	DomButton {
+	GreenButton {
 		id: db4;
 		anchors.bottom: parent.bottom;
 		anchors.right: db5.left;
@@ -58,14 +58,10 @@ Item {
 
 		onTriggered: {
 			options.showed = !options.showed;
-			// if (options.opacity > 0)
-			// 	options.opacity = 0;
-			// else
-			// 	opacity.opacity = 1;
 		}
 	}
 
-	DomButton {
+	GreenButton {
 		id: db5;
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
@@ -89,19 +85,19 @@ Item {
 		
 		Behavior on opacity	{ Animation { duration: 500; } }
 
-		DomButton {
+		GreenButton {
 			height: mainWindow.height / 9;
 			width: parent.width;
 			text: "TTX";
 		}
 	
-		DomButton {
+		GreenButton {
 			height: mainWindow.height / 9;
 			width: parent.width;
 			text: "Sub";
 		}
 	
-		DomButton {
+		GreenButton {
 			height: mainWindow.height / 9;
 			width: parent.width;
 			text: "Audio";

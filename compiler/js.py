@@ -112,7 +112,7 @@ class component_generator(object):
 		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name))
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), self.generate_properties(), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"), self.name)
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"), self.name)
 		return ctor
 
 	def generate_animations(self, registry, parent):
@@ -138,6 +138,8 @@ class component_generator(object):
 
 		for name in self.signals:
 			r.append("%sthis.%s = (function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitSignal.apply(this, args);/*fixme*/ }).bind(this)" %(ident, name, name))
+
+		r.append(self.generate_properties())
 
 		idx = 0
 		for gen in self.children:

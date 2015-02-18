@@ -539,6 +539,7 @@ exports._setup = function() {
 		switch(name) {
 			case 'text': this.element.text(value); this.paintedWidth = this.element.width(); this.paintedHeight = this.element.height(); break;
 			case 'color': this.element.css('color', value); break;
+			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

@@ -360,7 +360,7 @@ exports._setup = function() {
 			var left = anchors.left.toScreen();
 			var lm = anchors.leftMargin || anchors.margins;
 			var rm = anchors.rightMargin || anchors.margins;
-			self.x = left + lm - parent_box[0];
+			self.x = left + lm - parent_box[0] - self.viewX;
 			if (anchors.right) {
 				var right = anchors.right.toScreen();
 				var rm = anchors.rightMargin || anchors.margins;
@@ -377,7 +377,7 @@ exports._setup = function() {
 				var left = anchors.left.toScreen();
 				self.width = right - left - rm - lm;
 			}
-			self.x = right - parent_box[0] - rm - self.width;
+			self.x = right - parent_box[0] - rm - self.width - self.viewX;
 		};
 
 		var update_top = function() {
@@ -385,7 +385,7 @@ exports._setup = function() {
 			var top = anchors.top.toScreen()
 			var tm = anchors.topMargin || anchors.margins;
 			var bm = anchors.bottomMargin || anchors.margins;
-			self.y = top + tm - parent_box[1];
+			self.y = top + tm - parent_box[1] - self.viewY;
 			if (anchors.bottom) {
 				var bottom = anchors.bottom.toScreen();
 				self.height = bottom - top - bm - tm;
@@ -401,7 +401,7 @@ exports._setup = function() {
 				var top = anchors.top.toScreen()
 				self.height = bottom - top - bm - tm;
 			}
-			self.y = bottom - parent_box[1] - bm - self.height;
+			self.y = bottom - parent_box[1] - bm - self.height - self.viewY;
 		}
 
 		var update_h_center = function() {
@@ -409,7 +409,7 @@ exports._setup = function() {
 			var hcenter = anchors.horizontalCenter.toScreen();
 			var lm = anchors.leftMargin || anchors.margins;
 			var rm = anchors.rightMargin || anchors.margins;
-			self.x = hcenter - self.width / 2 - parent_box[0] + lm - rm;
+			self.x = hcenter - self.width / 2 - parent_box[0] + lm - rm - self.viewX;
 		}
 
 		var update_v_center = function() {
@@ -417,7 +417,7 @@ exports._setup = function() {
 			var vcenter = anchors.verticalCenter.toScreen();
 			var tm = anchors.topMargin || anchors.margins;
 			var bm = anchors.bottomMargin || anchors.margins;
-			self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm;
+			self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm - self.viewY;
 		}
 
 		switch(name) {

@@ -179,6 +179,12 @@ class component_generator(object):
 
 		return "\n".join(prologue), "\n".join(r)
 
+	def get_target_lvalue(self, target):
+		path = target.split(".")
+		path = ["get('%s')" %x for x in path[:-1]] + [path[-1]]
+		return "this.%s" % ".".join(path)
+
+
 	def generate_setup_code(self, registry, parent, ident_n = 1):
 		r = []
 		ident = "\t" * ident_n
@@ -195,12 +201,13 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
+			target_lvalue = self.get_target_lvalue(target)
 			if t is str:
 				deps = parse_deps(value)
 				if deps:
 					suffix = "_var_%s__%s" %(parent.replace('.', '_'), target.replace('.', '_'))
 					var = "_update" + suffix
-					r.append("%svar %s = (function() { this.%s = (%s); }).bind(this);" %(ident, var, target, value))
+					r.append("%svar %s = (function() { %s = (%s); }).bind(this);" %(ident, var, target_lvalue, value))
 					r.append("%s%s();" %(ident, var))
 					undep = []
 					for path, dep in deps:
@@ -208,7 +215,7 @@ class component_generator(object):
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
 					r.append("%sthis._removeUpdater('%s', (function() { %s }).bind(this));" %(ident, target, ";".join(undep)))
 				else:
-					r.append("%sthis._removeUpdater('%s'); this.%s = (%s);" %(ident, target, target, value))
+					r.append("%sthis._removeUpdater('%s'); %s = (%s);" %(ident, target, target_lvalue, value))
 
 			elif t is component_generator:
 				if target == "delegate":

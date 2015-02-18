@@ -39,6 +39,7 @@ Item {
 		anchors.rightMargin: parent.width / 100;
 		height: activeFocus ? 200 : db1.height;
 		text: "No targets specified and no makefile found.";
+		label.font.pointSize: 40;
 
 		onRightPressed: { db4.forceActiveFocus(); }
 		onLeftPressed: { db2.forceActiveFocus(); }

@@ -13,8 +13,8 @@ Rectangle {
     opacity: activeFocus ? 1 : 0.5;
     textColor: activeFocus ? "black" : "white";
 
-    Behavior on opacity	{ Animation { duration: 400; } }
-    Behavior on color	{ ColorAnimation { duration: 400; } }
+    Behavior on opacity	{ Animation { duration: 300; } }
+    Behavior on color	{ ColorAnimation { duration: 300; } }
 
 /*
      gradient: Gradient {
@@ -30,7 +30,7 @@ Rectangle {
         font.pointSize: 12;
         color: "white";
 
-        Behavior on color   { ColorAnimation { duration: 400; } }
+        Behavior on color   { ColorAnimation { duration: 300; } }
     }
 
     MouseArea {

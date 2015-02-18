@@ -32,7 +32,7 @@ Item {
 		anchors.right: db4.left;
 		anchors.leftMargin: parent.width / 100;
 		anchors.rightMargin: parent.width / 100;
-		height: activeFocus ? 200 : 76;//db1.height;
+		height: activeFocus ? 200 : db1.height;
 		text: "No targets specified and no makefile found.";
 	}
 

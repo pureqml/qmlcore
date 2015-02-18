@@ -1,9 +1,9 @@
 .PHONY: all dev test-dev dist
 all:
-		./qml-compiler -w -o app core controls tv
+		./qml-compiler -w -o app core controls domru tv
 
 dist:
-		./qml-compiler -o app core controls tv
+		./qml-compiler -o app core controls domru tv
 		java -jar compiler/gcc/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --externs compiler/gcc/jquery-1.9.js app/qml.js > app/qml.min.js
 
 

@@ -107,4 +107,11 @@ Item {
 			text: "Audio";
 		}
 	}
+
+	Protocol {
+		id: protocol;
+		clientId: "er_ottweb_device";
+		deviceId: "123";
+		ssoSystem: "er";
+	}
 }

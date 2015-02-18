@@ -33,7 +33,7 @@ _globals.core.Object = function(parent) {
 	this.children = []
 	this._local = {}
 	this._changedHandlers = {}
-	this._eventHandlers = {}
+	this._signalHandlers = {}
 	this._pressedHandlers = {}
 	this._animations = {}
 	this._updaters = {}
@@ -95,17 +95,17 @@ _globals.core.Object.prototype._update = function(name, value) {
 }
 
 _globals.core.Object.prototype.on = function (name, callback) {
-	if (name in this._eventHandlers)
-		this._eventHandlers[name].push(callback);
+	if (name in this._signalHandlers)
+		this._signalHandlers[name].push(callback);
 	else
-		this._eventHandlers[name] = [callback];
+		this._signalHandlers[name] = [callback];
 }
 
-_globals.core.Object.prototype._emitEvent = function(name) {
+_globals.core.Object.prototype._emitSignal = function(name) {
 	var args = Array.prototype.slice.call(arguments);
 	args.shift();
-	if (name in this._eventHandlers) {
-		var handlers = this._eventHandlers[name];
+	if (name in this._signalHandlers) {
+		var handlers = this._signalHandlers[name];
 		handlers.forEach(function(callback) { callback.apply(this, args); });
 	}
 }
@@ -326,18 +326,18 @@ exports._setup = function() {
 		if (!this.hoverEnabled)
 			return;
 		this.hovered = true;
-		this._emitEvent('entered')
+		this.entered()
 	}
 
 	_globals.core.MouseArea.prototype._onExit = function() {
 		if (!this.hoverEnabled)
 			return;
 		this.hovered = false;
-		this._emitEvent('exited')
+		this.exited()
 	}
 
 	_globals.core.MouseArea.prototype._onClick = function() {
-		this._emitEvent('clicked')
+		this.clicked()
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
@@ -411,7 +411,6 @@ exports._setup = function() {
 			var vcenter = anchors.verticalCenter.toScreen();
 			var tm = anchors.topMargin || anchors.margins;
 			var bm = anchors.bottomMargin || anchors.margins;
-			console.log(vcenter, self.height, parent_box[1], self)
 			self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm - self.viewY;
 		}
 

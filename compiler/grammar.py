@@ -39,8 +39,8 @@ def handle_behavior_declaration(s, l, t):
 	#print "behavior>", t
 	return lang.Behavior(t[0], t[1])
 
-def handle_event_declaration(s, l, t):
-	return lang.Event(t[0])
+def handle_signal_declaration(s, l, t):
+	return lang.Signal(t[0])
 
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
@@ -54,8 +54,8 @@ nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
 expression_end = Literal(";").suppress()
 
-event_declaration = Keyword("event").suppress() + identifier + expression_end
-event_declaration.setParseAction(handle_event_declaration)
+signal_declaration = Keyword("signal").suppress() + identifier + expression_end
+signal_declaration.setParseAction(handle_signal_declaration)
 
 id_declaration = Keyword("id").suppress() + Literal(":").suppress() + identifier + expression_end
 id_declaration.setParseAction(handle_id_declaration)
@@ -89,7 +89,7 @@ method_declaration.setParseAction(handle_method_declaration)
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + identifier + Literal("{").suppress() + component_declaration + Literal("}").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
-scope_declaration = behavior_declaration | event_declaration | alias_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
+scope_declaration = behavior_declaration | signal_declaration | alias_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | assign_scope
 component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
 
 component_declaration << (component_type + component_scope)

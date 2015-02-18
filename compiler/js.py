@@ -22,10 +22,10 @@ class component_generator(object):
 		self.base_type = None
 		self.children = []
 		self.methods = {}
-		self.event_handlers = {}
+		self.signal_handlers = {}
 		self.changed_handlers = {}
 		self.key_handlers = {}
-		self.events = set()
+		self.signals = set()
 		self.id = None
 
 		for child in component.children:
@@ -84,21 +84,21 @@ class component_generator(object):
 				elif name.endswith("Changed"):
 					name = name[:-7]
 					if name in self.changed_handlers:
-						raise Exception("duplicate event handler " + child.name)
+						raise Exception("duplicate signal handler " + child.name)
 					self.changed_handlers[name] = code
 				else:
-					if name in self.event_handlers:
-						raise Exception("duplicate event handler " + child.name)
-					self.event_handlers[name] = code
+					if name in self.signal_handlers:
+						raise Exception("duplicate signal handler " + child.name)
+					self.signal_handlers[name] = code
 			else:
 				if name in self.methods:
 					raise Exception("duplicate method " + name)
 				self.methods[name] = code
-		elif t is lang.Event:
+		elif t is lang.Signal:
 			name = child.name
-			if name in self.events:
-				raise Exception("duplicate event " + name)
-			self.events.add(name)
+			if name in self.signals:
+				raise Exception("duplicate signal " + name)
+			self.signals.add(name)
 		else:
 			print "unhandled", child
 
@@ -136,8 +136,8 @@ class component_generator(object):
 		r = []
 		ident = "\t" * ident_n
 
-		for name in self.events:
-			r.append("%sthis.%s = (function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitEvent.apply(this, args);/*fixme*/ }).bind(this)" %(ident, name, name))
+		for name in self.signals:
+			r.append("%sthis.%s = (function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitSignal.apply(this, args);/*fixme*/ }).bind(this)" %(ident, name, name))
 
 		idx = 0
 		for gen in self.children:
@@ -227,7 +227,7 @@ class component_generator(object):
 		for name, code in self.methods.iteritems():
 			code = process(code, registry)
 			r.append("%sthis.%s = (function() %s ).bind(this);" %(ident, name, code))
-		for name, code in self.event_handlers.iteritems():
+		for name, code in self.signal_handlers.iteritems():
 			code = process(code, registry)
 			if name != "completed":
 				r.append("%sthis.on('%s', (function() %s ).bind(this));" %(ident, name, code))

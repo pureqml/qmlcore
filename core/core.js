@@ -81,10 +81,15 @@ _globals.core.Object.prototype._removeUpdater = function (name, callback) {
 }
 
 _globals.core.Object.prototype.onPressed = function (name, callback) {
-	if (name in this._pressedHandlers)
-		this._pressedHandlers[name].push(callback);
+	if (name != 'Key')
+		wrapper = function() { callback(); return true; }
 	else
-		this._pressedHandlers[name] = [callback];
+		wrapper = callback;
+
+	if (name in this._pressedHandlers)
+		this._pressedHandlers[name].push(wrapper);
+	else
+		this._pressedHandlers[name] = [wrapper];
 }
 
 _globals.core.Object.prototype._update = function(name, value) {

@@ -223,14 +223,15 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype.toScreen = function() {
-		var item = this;
-		var x = 0, y = 0;
+		var item = this
+		var x = 0, y = 0
+		var w = this.width, h = this.height
 		while(item) {
-			x += item.x + item.viewX;
-			y += item.y + item.viewY;
-			item = item.parent;
+			x += item.x + item.viewX
+			y += item.y + item.viewY
+			item = item.parent
 		}
-		return [x, y];
+		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
 	_globals.core.Border.prototype._update = function(name, value) {
@@ -244,33 +245,27 @@ exports._setup = function() {
 	_globals.core.Item.prototype._update = function(name, value) {
 		switch(name) {
 			case 'width':
-				this.element.css('width', value);
-				this.right.value = this.left.value + value;
-				this.horizontalCenter.value = (this.right.value + this.left.value) / 2;
+				this.element.css('width', value)
+				this.boxChanged()
 				break;
 
 			case 'height':
 				this.element.css('height', value);
-				this.bottom.value = this.top.value + value;
-				this.verticalCenter.value = (this.top.value + this.bottom.value) / 2;
+				this.boxChanged()
 				break;
 
 			case 'x':
 			case 'viewX':
 				value = this.x + this.viewX
 				this.element.css('left', value);
-				this.left.value = value;
-				this.right.value = value + this.width;
-				this.horizontalCenter.value = (this.right.value + this.left.value) / 2;
+				this.boxChanged()
 				break;
 
 			case 'y':
 			case 'viewY':
 				value = this.y + this.viewY
 				this.element.css('top', value);
-				this.top.value = value;
-				this.bottom.value = value + this.height;
-				this.verticalCenter.value = (this.top.value + this.bottom.value) / 2;
+				this.boxChanged()
 				break;
 
 			case 'opacity': if (this.element) /*FIXME*/this.element.css('opacity', value); break;
@@ -346,8 +341,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
-		var box = this.parent.parent? this.parent.parent.toScreen(): [0, 0];
-		return box[this.boxIndex] + this.value;
+		return this.parent.toScreen()[this.boxIndex]
 	}
 
 	_globals.core.Anchors.prototype._update = function(name) {
@@ -417,31 +411,34 @@ exports._setup = function() {
 			var vcenter = anchors.verticalCenter.toScreen();
 			var tm = anchors.topMargin || anchors.margins;
 			var bm = anchors.bottomMargin || anchors.margins;
+			console.log(vcenter, self.height, parent_box[1], self)
 			self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm - self.viewY;
 		}
 
 		switch(name) {
 			case 'left':
 				update_left();
-				anchors.left.onChanged('value', update_left);
+				anchors.left.parent.on('boxChanged', update_left);
 				anchors.onChanged('leftMargin', update_left);
 				break;
 
 			case 'right':
-				update_right();
-				anchors.right.onChanged('value', update_right);
-				anchors.onChanged('rightMargin', update_right);
+				update_right()
+				self.onChanged('width', update_right)
+				anchors.right.parent.on('boxChanged', update_right)
+				anchors.onChanged('rightMargin', update_right)
 				break;
 
 			case 'top':
-				update_top();
-				anchors.top.onChanged('value', update_top);
-				anchors.onChanged('topMargin', update_top);
+				update_top()
+				anchors.top.parent.on('boxChanged', update_top)
+				anchors.onChanged('topMargin', update_top)
 				break;
 
 			case 'bottom':
 				update_bottom();
-				anchors.bottom.onChanged('value', update_bottom);
+				self.onChanged('height', update_bottom)
+				anchors.bottom.parent.on('boxChanged', update_bottom);
 				anchors.onChanged('bottomMargin', update_bottom);
 				break;
 
@@ -450,15 +447,15 @@ exports._setup = function() {
 				self.onChanged('width', update_h_center);
 				anchors.onChanged('leftMargin', update_h_center);
 				anchors.onChanged('rightMargin', update_h_center);
-				anchors.horizontalCenter.onChanged('value', update_h_center);
+				anchors.horizontalCenter.parent.on('boxChanged', update_h_center);
 				break;
 
 			case 'verticalCenter':
-				update_v_center();
-				self.onChanged('height', update_v_center);
-				anchors.onChanged('topMargin', update_v_center);
-				anchors.onChanged('bottomMargin', update_v_center);
-				anchors.verticalCenter.onChanged('value', update_v_center);
+				update_v_center()
+				self.onChanged('height', update_v_center)
+				anchors.onChanged('topMargin', update_v_center)
+				anchors.onChanged('bottomMargin', update_v_center)
+				anchors.verticalCenter.parent.on('boxChanged', update_v_center)
 				break;
 
 			case 'fill':

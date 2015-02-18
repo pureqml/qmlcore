@@ -240,7 +240,7 @@ class component_generator(object):
 			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))
 		for name, code in self.key_handlers.iteritems():
 			code = process(code, registry)
-			r.append("%sthis.onPressed('%s', (function() %s ).bind(this));" %(ident, name, code))
+			r.append("%sthis.onPressed('%s', (function(key, event) %s ).bind(this));" %(ident, name, code))
 		r.append(self.generate_animations(registry, parent))
 		return "\n".join(r)
 

@@ -755,6 +755,13 @@ exports.addProperty = function(self, type, name) {
 		case 'real':		value = 0.0; break;
 		default: if (type[0].toUpperCase() == type[0]) value = null; break;
 	}
+	var convert = function(value) {
+		switch(type) {
+		case 'int':		return Math.floor(value);
+		case 'bool':	return value? true: false;
+		default:		return value;
+		}
+	}
 	Object.defineProperty(self, name, {
 		get: function() {
 			return value;
@@ -764,6 +771,7 @@ exports.addProperty = function(self, type, name) {
 				console.log("bound unknown object", self)
 				throw "invalid object";
 			}
+			newValue = convert(newValue)
 			var animation = self.getAnimation(name)
 			if (animation && value != newValue) {
 				if (timer)
@@ -784,7 +792,7 @@ exports.addProperty = function(self, type, name) {
 					if (t >= 1)
 						t = 1;
 
-					interpolated_value = animation.interpolate(dst, src, t);
+					interpolated_value = convert(animation.interpolate(dst, src, t));
 					self._update(name, interpolated_value, src);
 				});
 

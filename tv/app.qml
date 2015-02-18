@@ -44,6 +44,13 @@ Item {
 		height: parent.height / 9;
 		width: parent.width / 16;
 		text: "Options";
+
+		onTriggered: {
+			if (options.opacity > 0)
+				options.opacity = 0;
+			else
+				opacity.opacity = 1;
+		}
 	}
 
 	DomButton {
@@ -54,5 +61,36 @@ Item {
 		height: parent.height / 9;
 		width: parent.width / 16;
 		text: "EXIT";
+	}
+
+	Column {
+		id: options;
+		spacing: 10;
+		anchors.bottom: db4.top;
+		anchors.bottomMargin: 10;
+		anchors.left: db4.left;
+		anchors.right: db4.right;
+//		property bool showed: true;
+//		opacity: options.showed ? 1 : 0;
+		
+		Behavior on opacity	{ Animation { duration: 500; } }
+
+		DomButton {
+			height: mainWindow.height / 9;
+			width: parent.width;
+			text: "TTX";
+		}
+	
+		DomButton {
+			height: mainWindow.height / 9;
+			width: parent.width;
+			text: "Sub";
+		}
+	
+		DomButton {
+			height: mainWindow.height / 9;
+			width: parent.width;
+			text: "Audio";
+		}
 	}
 }

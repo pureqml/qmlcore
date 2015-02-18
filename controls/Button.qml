@@ -27,7 +27,7 @@ Rectangle {
     Text {
         id: label;
         anchors.centerIn: parent;
-        font.pointSize: 12;
+        font.pointSize: 18;
         color: "white";
 
         Behavior on color   { ColorAnimation { duration: 300; } }

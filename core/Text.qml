@@ -1,7 +1,9 @@
 Item {
 	property string text;
 	property color color;
+
 	property bool wrap;
+	property int horizontalAlignment;
 
 	property Font font: Font {}
 	property int paintedWidth;

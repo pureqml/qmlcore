@@ -1,19 +1,20 @@
- Rectangle {
-     id: button;
-     signal triggered;
+Rectangle {
+    id: button;
+    signal triggered;
 
-     width: 145; height: 60;
-     color: "blue";
-     smooth: true;
-     radius: 9;
-     focus: true;
-     property alias text: label.text;
-     border { color: "#B9C5D0"; width: 1; }
+    width: 145; height: 60;
+    color: "blue";
+    smooth: true;
+    focus: true;
+    property alias text: label.text;
+    property alias textColor: label.color;
 
-     color: activeFocus? "purple": "blue";
-     opacity: activeFocus? 1: 0.3;
-     Behavior on opacity	{ Animation { duration: 1000; } }
-     Behavior on color		{ ColorAnimation { duration: 1000; } }
+    color: activeFocus ? "red": "blue";
+    opacity: activeFocus ? 1 : 0.5;
+    textColor: activeFocus ? "black" : "white";
+
+    Behavior on opacity	{ Animation { duration: 400; } }
+    Behavior on color	{ ColorAnimation { duration: 400; } }
 
 /*
      gradient: Gradient {
@@ -23,18 +24,22 @@
      }
 
 */
-     Text {
-         id: label;
-         anchors.centerIn: parent;
-         font.pointSize: 12;
-         color: "white";
-     }
+    Text {
+        id: label;
+        anchors.centerIn: parent;
+        font.pointSize: 12;
+        color: "white";
 
-     MouseArea {
-         anchors.fill: parent;
-         onClicked: { button.triggered(); }
-     }
+        Behavior on color   { ColorAnimation { duration: 400; } }
+    }
 
-     onSelectPressed: { this.triggered(); }
-     onTriggered: { console.log(button.text + " triggered"); }
- }
+    MouseArea {
+        anchors.fill: parent;
+        hoverEnabled: true;
+        onClicked: { button.triggered(); }
+        onEntered: { button.forceActiveFocus(); }
+    }
+
+    onSelectPressed: { this.triggered(); }
+    onTriggered: { console.log(button.text + " triggered"); }
+}

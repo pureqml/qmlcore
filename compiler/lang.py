@@ -15,8 +15,9 @@ class AliasProperty(object):
 		self.target = target
 
 class Method(object):
-	def __init__(self, name, code):
+	def __init__(self, name, args, code):
 		self.name = name
+		self.args = args
 		self.code = code
 
 class IdAssignment(object):

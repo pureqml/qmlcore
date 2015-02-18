@@ -13,6 +13,8 @@ Item {
 		height: parent.height / 9;
 		width: parent.width / 8;
 		text: "15:20";
+
+		onRightPressed: { db2.forceActiveFocus(); }
 	}
 
 	DomButton {
@@ -23,6 +25,9 @@ Item {
 		height: parent.height / 9;
 		width: parent.width / 8;
 		text: "015 Россия HD";
+
+		onRightPressed: { db3.forceActiveFocus(); }
+		onLeftPressed: { db1.forceActiveFocus(); }
 	}
 
 	DomButton {
@@ -34,6 +39,9 @@ Item {
 		anchors.rightMargin: parent.width / 100;
 		height: activeFocus ? 200 : db1.height;
 		text: "No targets specified and no makefile found.";
+
+		onRightPressed: { db4.forceActiveFocus(); }
+		onLeftPressed: { db2.forceActiveFocus(); }
 	}
 
 	DomButton {
@@ -44,6 +52,9 @@ Item {
 		height: parent.height / 9;
 		width: parent.width / 16;
 		text: "Options";
+
+		onRightPressed: { db5.forceActiveFocus(); }
+		onLeftPressed: { db3.forceActiveFocus(); }
 
 		onTriggered: {
 			options.showed = !options.showed;
@@ -62,6 +73,8 @@ Item {
 		height: parent.height / 9;
 		width: parent.width / 16;
 		text: "EXIT";
+
+		onLeftPressed: { db4.forceActiveFocus(); }
 	}
 
 	Column {

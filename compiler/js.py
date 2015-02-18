@@ -198,7 +198,7 @@ class component_generator(object):
 				if deps:
 					suffix = "_var_%s__%s" %(parent.replace('.', '_'), target.replace('.', '_'))
 					var = "_update" + suffix
-					r.append("%svar %s = (function() { this.%s = %s; }).bind(this);" %(ident, var, target, value))
+					r.append("%svar %s = (function() { this.%s = (%s); }).bind(this);" %(ident, var, target, value))
 					r.append("%s%s();" %(ident, var))
 					undep = []
 					for path, dep in deps:
@@ -206,7 +206,7 @@ class component_generator(object):
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
 					r.append("%sthis._removeUpdater('%s', (function() { %s }).bind(this));" %(ident, target, ";".join(undep)))
 				else:
-					r.append("%sthis._removeUpdater('%s'); this.%s = %s;" %(ident, target, target, value))
+					r.append("%sthis._removeUpdater('%s'); this.%s = (%s);" %(ident, target, target, value))
 
 			elif t is component_generator:
 				if target == "delegate":

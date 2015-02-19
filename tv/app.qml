@@ -6,19 +6,18 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
-	Item {
-		//TODO: use Column instead.
+	Column {
 		id: bottomPanel;
-		property int spacing: 8;
-		height: 68;
+		property int innerHeight: 68;
 		anchors.bottom: parent.bottom;
 		anchors.bottomMargin: footer.top;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
+		spacing: 8;
 
 		GreenButton {
 			id: timePanel;
-			height: parent.height;
+			height: bottomPanel.innerHeight;
 			width: 144;
 			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
@@ -40,13 +39,11 @@ Item {
 				color: "#ccc";
 				text: "22 сентября Пн";
 			}
-
-			onRightPressed: { channelPanel.forceActiveFocus(); }
 		}
 
 		GreenButton {
 			id: channelPanel;
-			height: parent.height;
+			height: bottomPanel.innerHeight;
 			width: 144;
 			anchors.bottom: parent.bottom;
 			anchors.left: timePanel.right;
@@ -60,14 +57,11 @@ Item {
 				color: "#ccc";
 				text: "015";
 			}
-
-			onRightPressed: { programPanel.forceActiveFocus(); }
-			onLeftPressed: { timePanel.forceActiveFocus(); }
 		}
 
 		GreenButton {
 			id: programPanel;
-			height: parent.height;
+			height: bottomPanel.innerHeight;
 			width: 675;
 			anchors.bottom: parent.bottom;
 			anchors.left: channelPanel.right;
@@ -94,32 +88,24 @@ Item {
 				color: "#ccc";
 				text: "8:45 - 9:00, Россия 2, Спорт, 18";
 			}
-
-			onRightPressed: { settingsButton.forceActiveFocus(); }
-			onLeftPressed: { channelPanel.forceActiveFocus(); }
 		}
 
 		GreenButton {
 			id: settingsButton;
-			height: parent.height;
+			height: bottomPanel.innerHeight;
 			width: height;
 			anchors.bottom: parent.bottom;
 			anchors.left: programPanel.right;
 			anchors.leftMargin: bottomPanel.spacing;
-
-			onRightPressed: { exitButton.forceActiveFocus(); }
-			onLeftPressed: { programPanel.forceActiveFocus(); }
 		}
 
 		GreenButton {
 			id: exitButton;
-			height: parent.height;
+			height: bottomPanel.innerHeight;
 			width: height;
 			anchors.bottom: parent.bottom;
 			anchors.left: settingsButton.right;
 			anchors.leftMargin: bottomPanel.spacing;
-
-			onLeftPressed: { settingsButton.forceActiveFocus(); }
 		}
 	}
 

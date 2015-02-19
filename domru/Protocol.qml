@@ -30,16 +30,16 @@ Object {
 		});
 	}
 
-	getToken(clientId, deviceId): {
+	getToken(clientId, deviceId, callback): {
 		var data = {
 			client_id: clientId,
 			timestamp: (new Date()).getTime(),
 			device_id: deviceId
 		}
-		this.request("/token/device", data, function(res) { console.log("TOKEN", res.token); });
+		this.request("/token/device", data, callback);
 	}
 
-	onCompleted: {
-		//this.getToken(this.clientId, this.deviceId);
+	getRegionList(callback): {
+		this.request("/er/misc/domains/", {}, callback);
 	}
 }

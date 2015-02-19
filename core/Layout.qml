@@ -1,6 +1,6 @@
 Item {
-	property int childrenWidth;
-	property int childrenHeight;
+	property int contentWidth;
+	property int contentHeight;
 
 	property int spacing;
 	property bool handleNavigationKeys: true;
@@ -21,8 +21,8 @@ Item {
 		this.focusChild(this.children[idx])
 	}
 
-	width: childrenWidth;
-	height: childrenHeight;
+	width: contentWidth;
+	height: contentHeight;
 
 	onCompleted: { this._layout(); }
 }

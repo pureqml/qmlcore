@@ -4,7 +4,7 @@ ListModel {
 	onCompleted: {
 		if (!this.protocol)
 			return;
-		console.log("COMPLETED", this.protocol)
+
 		var model = this
 		var list = this.protocol.getRegionList(function(res) {
 			console.log(res)

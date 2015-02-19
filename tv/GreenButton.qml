@@ -3,6 +3,7 @@ Button {
 	property bool isGreen;
 	opacity: activeFocus ? 1 : 0.6;
 	textColor: "white";
+    isGreen: activeFocus;
 
 	gradient: Gradient {
 		GradientStop { color: buttonItem.isGreen ? "#326b01" : "grey"; position: 0; }

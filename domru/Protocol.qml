@@ -84,7 +84,9 @@ Object {
 	}
 
 	getAsset(id, callback): {
-		this.requestWithToken("/collection/vod.asset/query/dimension/id/in/" + id, {}, callback)
+		this.requestWithToken("/collection/vod.asset/query/dimension/id/in/" + id, {}, function(res) {
+			callback(res.collection[0])
+		})
 	}
 
 	onAuthTokenChanged: {

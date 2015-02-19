@@ -30,7 +30,7 @@ Object {
 	set(idx, row): {
 		row.index = idx
 		this._rows[idx] = row
-		this.rowChanged(idx, idx + 1)
+		this.rowsChanged(idx, idx + 1)
 	}
 
 	get(idx): {
@@ -42,7 +42,7 @@ Object {
 
 	setProperty(idx, name, value): {
 		this._rows[idx][name] = value
-		this.rowChanged(idx, idx + 1)
+		this.rowsChanged(idx, idx + 1)
 	}
 
 	remove(idx, n): {

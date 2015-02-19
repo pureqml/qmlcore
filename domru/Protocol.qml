@@ -16,7 +16,7 @@ Object {
 		}
 	}
 
-	request(url, data, callback): {
+	request(url, data, callback, type): {
 		console.log("request", url, data)
 		var self = this;
 		$.ajax({
@@ -26,7 +26,7 @@ Object {
 				if (self.checkResponse(res))
 					callback(res)
 			},
-			type: 'GET'
+			type: type || 'GET'
 		});
 	}
 

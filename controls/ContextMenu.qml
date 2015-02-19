@@ -9,7 +9,7 @@ ListView {
 	delegate: Item {
 		id: contextItemProto;
 		height: 20;
-		width: height + contextText.width + 10;
+		width: height + contextText.paintedWidth + 10;
 
 		Rectangle {
 			id: contextColorRectangle;

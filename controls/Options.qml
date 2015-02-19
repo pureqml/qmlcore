@@ -1,13 +1,15 @@
 ListView {
 	id: options;
-	width: contentWidth;
+	//TODO: use contentWidth instead!
+	width: 200;
 	height: parent.height;
 	anchors.right: parent.right;
 	anchors.bottom: parent.bottom;
 	orientation: 1;
+	spacing: 10;
 	model: optionsModel;
 	delegate: Item {
-		width: icon.width + optionText.width + 10;
+		width: icon.width + optionText.paintedWidth + 10;
 		height: parent.height;
 
 		Image {

@@ -731,7 +731,9 @@ exports._setup = function() {
 		console.log("rows changed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
-			items[i].element.remove()
+			var item = items[i];
+			if (item && item.element)
+				item.element.remove()
 			items[i] = null
 		}
 		this._layout()
@@ -742,8 +744,8 @@ exports._setup = function() {
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
 			var item = items[i];
-			if (item)
-			items[i].element.remove()
+			if (item && item.element)
+				item.element.remove()
 			items[i] = null
 		}
 		items.splice(begin, end - begin)

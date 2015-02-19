@@ -743,8 +743,12 @@ exports._setup = function() {
 		var horizontal = this.orientation === this.Horizontal
 		var p = horizontal? -this.contextX: -this.contentY, size = horizontal? w: h
 		for(var i = 0; i < n; ++i) {
-			if (!this._items[i])
+			if (!this._items[i]) {
+				var row = this.model.get(i)
+				this._local['model'] = row
 				this._items[i] = this.delegate()
+				delete this._local['model']
+			}
 			var item = this._items[i]
 			if (horizontal)
 				item.viewX = p

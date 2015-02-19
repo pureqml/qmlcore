@@ -117,6 +117,13 @@ Item {
 				color: "#ccc";
 				text: "8:45 - 9:00, Россия 2, Спорт, 18";
 			}
+
+			ProgressBar {
+				anchors.bottom: parent.bottom;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				progress: 0.5;
+			}
 		}
 
 		GreenButton {

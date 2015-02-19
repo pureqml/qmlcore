@@ -138,6 +138,10 @@ Item {
 		}
 	}
 
+	ChannelListLayout {
+		anchors.fill: parent;
+	}
+
 	Item {
 		id: footer;
 		height: 20;
@@ -186,5 +190,4 @@ Item {
 
 		Options { model: optionsModel; }
 	}
-
 }

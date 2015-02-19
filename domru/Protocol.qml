@@ -88,6 +88,9 @@ Object {
 			callback(res.collection[0])
 		})
 	}
+	getUrl(sessionId, assetId, streamId, callback): {
+		this.requestWithToken("/resource/get_url/" + assetId + "/" + streamId + "?er_multiscreen_session_id=" + sessionId, {}, callback)
+	}
 
 	onAuthTokenChanged: {
 		if (this._pending) {

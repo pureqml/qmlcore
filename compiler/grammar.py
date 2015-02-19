@@ -27,7 +27,7 @@ def handle_assignment_scope(s, l, t):
 def handle_nested_identifier_rvalue(s, l, t):
 	#print "nested-id>", t
 	path = t[0].split(".")
-	path = ["get('%s')" %x for x in path]
+	path = ["_get('%s')" %x for x in path]
 	return "this.%s" % ".".join(path)
 
 def handle_id_declaration(s, l, t):

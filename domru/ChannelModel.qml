@@ -4,9 +4,6 @@ ListModel {
 		list.channels.forEach(function(id) { model.append({id: id}); } )
 	}
 	get(idx): {
-		if (typeof idx == 'string')
-			return _globals.core.Object.prototype.get.apply(this, arguments)
-
 		var row = this._rows[idx]
 		if (row.asset)
 			return row;

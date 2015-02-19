@@ -72,13 +72,13 @@ def process(text, registry):
 				if pos >= b and pos < e:
 					ok = False
 					break
-			return ("this." if first else "") + "get('%s')." %name
+			return ("this." if first else "") + "_get('%s')." %name
 		return m.group(0)
 	text = id_re.sub(replace_id, text)
 	#print text
 	return text
 
-gets_re = re.compile(r'this(\.get\(\'.*?\'\))+')
+gets_re = re.compile(r'this(\._get\(\'.*?\'\))+')
 
 def parse_deps(text):
 	deps = []
@@ -91,7 +91,7 @@ def parse_deps(text):
 	return deps
 
 def mangle_path(path):
-	return ["this"] + ["get('%s')"%name for name in path ]
+	return ["this"] + ["_get('%s')"%name for name in path ]
 
 def generate_accessors(target):
 	path = target.split('.')

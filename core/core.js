@@ -838,6 +838,7 @@ exports.Context = function() {
 		"body { overflow: hidden; }" +
 		"div#renderer { position: absolute; left: 0px; top: 0px; } " +
 		"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
+		"input { position: absolute; } " +
 		"img { position: absolute; } " +
 		"</style>"
 	));
@@ -961,6 +962,11 @@ exports._bootstrap = function(self, name) {
 			self.parent.element.append(self.element);
 			self.element.on('load', self._onLoad.bind(self));
 			self.element.on('error', self._onError.bind(self));
+			break;
+		case 'core.TextEdit':
+			self.element.remove();
+			self.element = $('<input type="text" />')
+			self.parent.element.append(self.element)
 			break;
 	}
 }

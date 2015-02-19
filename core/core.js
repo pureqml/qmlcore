@@ -807,7 +807,7 @@ exports.Context = function() {
 
 	win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 	var self = this;
-	$(document).keydown(function(event) { self._processKey(event); } );
+	$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
 
 	//console.log("context created");
 }

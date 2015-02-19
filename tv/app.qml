@@ -197,4 +197,18 @@ Item {
 
 		Options { model: optionsModel; }
 	}
+
+	Protocol {
+		id : proto;
+	}
+
+	ChannelModel {
+		id: channelModel;
+		protocol: proto;
+	}
+
+	ChannelListModel {
+		protocol : proto;
+		onCountChanged: { console.log("loaded " + this.count + " channel lists, using 0"); channelModel.setList(this.get(0)); }
+	}
 }

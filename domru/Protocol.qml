@@ -8,6 +8,7 @@ Object {
 	property string username: "590014831333";
 	property string password: "590014831333";
 	property string region: "perm";
+	property bool enabled;
 
 	signal error;
 
@@ -21,6 +22,8 @@ Object {
 	}
 
 	request(url, data, callback, type, headers): {
+		if (!this.enabled)
+			return;
 		console.log("request", url, data)
 		var self = this;
 		$.ajax({
@@ -38,6 +41,8 @@ Object {
 	}
 
 	requestWithToken(url, data, callback, type): {
+		if (!this.enabled)
+			return;
 		if (!this.authToken)
 		{
 			console.log("no token, scheduling request")
@@ -78,11 +83,17 @@ Object {
 		this.requestWithToken("/channel_list/lists", {}, callback)
 	}
 
+	getAsset(id, callback): {
+		this.requestWithToken("/collection/vod.asset/query/dimension/id/in/" + id, {}, callback)
+	}
+
 	onAuthTokenChanged: {
 		if (this._pending) {
 			console.log("executing pending requests")
 			this._pending.forEach(function(callback) { callback(); })
 		}
+		//this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("res", res); })
+		//this.requestWithToken("/resource/get_url/48100", {}, function(res) {console.log("res", res); })
 	}
 
 	onCompleted: {

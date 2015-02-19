@@ -4,116 +4,130 @@ Item {
 	anchors.leftMargin: 75;
 	anchors.rightMargin: 75;
 	anchors.bottomMargin: 40;
-	anchors.topMargin: 40;
+	anchors.topMargin: 42;
 
-	GreenButton {
-		id: db1;
+	Item {
+		//TODO: use Column instead.
+		id: bottomPanel;
+		property int spacing: 8;
+		height: 68;
+		anchors.bottom: parent.bottom;
+		anchors.bottomMargin: footer.top;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+
+		GreenButton {
+			id: timePanel;
+			height: parent.height;
+			width: 144;
+			anchors.bottom: parent.bottom;
+			anchors.left: parent.left;
+
+			Text {
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				anchors.topMargin: 12;
+				anchors.leftMargin: 10;
+				color: "#fff";
+				text: "15:19";
+			}
+
+			Text {
+				anchors.bottom: parent.bottom;
+				anchors.left: parent.left;
+				anchors.bottomMargin: 12;
+				anchors.leftMargin: 10;
+				color: "#ccc";
+				text: "22 сентября Пн";
+			}
+
+			onRightPressed: { channelPanel.forceActiveFocus(); }
+		}
+
+		GreenButton {
+			id: channelPanel;
+			height: parent.height;
+			width: 144;
+			anchors.bottom: parent.bottom;
+			anchors.left: timePanel.right;
+			anchors.leftMargin: bottomPanel.spacing;
+
+			Text {
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				anchors.topMargin: 12;
+				anchors.leftMargin: 10;
+				color: "#ccc";
+				text: "015";
+			}
+
+			onRightPressed: { programPanel.forceActiveFocus(); }
+			onLeftPressed: { timePanel.forceActiveFocus(); }
+		}
+
+		GreenButton {
+			id: programPanel;
+			height: parent.height;
+			width: 675;
+			anchors.bottom: parent.bottom;
+			anchors.left: channelPanel.right;
+			anchors.leftMargin: bottomPanel.spacing;
+
+			Text {
+				id: programText;
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				anchors.topMargin: 12;
+				anchors.leftMargin: 10;
+				anchors.rightMargin: 10;
+				color: "#fff";
+				text: "Название текущей передачи";
+			}
+
+			Text {
+				anchors.top: programText.bottom;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				anchors.leftMargin: 10;
+				anchors.rightMargin: 10;
+				color: "#ccc";
+				text: "8:45 - 9:00, Россия 2, Спорт, 18";
+			}
+
+			onRightPressed: { settingsButton.forceActiveFocus(); }
+			onLeftPressed: { channelPanel.forceActiveFocus(); }
+		}
+
+		GreenButton {
+			id: settingsButton;
+			height: parent.height;
+			width: height;
+			anchors.bottom: parent.bottom;
+			anchors.left: programPanel.right;
+			anchors.leftMargin: bottomPanel.spacing;
+
+			onRightPressed: { exitButton.forceActiveFocus(); }
+			onLeftPressed: { programPanel.forceActiveFocus(); }
+		}
+
+		GreenButton {
+			id: exitButton;
+			height: parent.height;
+			width: height;
+			anchors.bottom: parent.bottom;
+			anchors.left: settingsButton.right;
+			anchors.leftMargin: bottomPanel.spacing;
+
+			onLeftPressed: { settingsButton.forceActiveFocus(); }
+		}
+	}
+
+	Item {
+		id: footer;
+		height: 20;
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
-		height: parent.height / 9;
-		width: parent.width / 8;
-		text: "15:20";
-
-		onRightPressed: { db2.forceActiveFocus(); }
-	}
-
-	GreenButton {
-		id: db2;
-		anchors.bottom: parent.bottom;
-		anchors.left: db1.right;
-		anchors.leftMargin: parent.width / 100;
-		height: parent.height / 9;
-		width: parent.width / 8;
-		text: "015 Россия HD";
-
-		onRightPressed: { db3.forceActiveFocus(); }
-		onLeftPressed: { db1.forceActiveFocus(); }
-	}
-
-	GreenButton {
-		id: db3;
-		anchors.bottom: parent.bottom;
-		anchors.left: db2.right;
-		anchors.right: db4.left;
-		anchors.leftMargin: parent.width / 100;
-		anchors.rightMargin: parent.width / 100;
-		height: activeFocus ? 200 : db1.height;
-	
-		Text {
-			anchors.fill: parent;
-			anchors.margins: 10;
-			text: "No targets specified and no makefile found.";
-			font.pointSize: 40;
-			color: "white";
-			wrap: true;
-		}
-
-		onRightPressed: { db4.forceActiveFocus(); }
-		onLeftPressed: { db2.forceActiveFocus(); }
-	}
-
-	Column {
-		id: options;
-		spacing: 10;
-		anchors.bottom: parent.bottom;
-		anchors.right: db5.left;
-		anchors.rightMargin: parent.width / 100;
-		width: parent.width / 16;
-		property bool show;
-		handleNavigationKeys: true;
-
-		Behavior on opacity	{ Animation { duration: 500; } }
-
-		GreenButton {
-			height: mainWindow.height / 9;
-			width: parent.width;
-			text: "TTX";
-			opacity: options.show ? 1 : 0;
-		}
-		
-		GreenButton {
-			height: mainWindow.height / 9;
-			width: parent.width;
-			text: "Sub";
-			opacity: options.show ? 1 : 0;
-		}
-		
-		GreenButton {
-			height: mainWindow.height / 9;
-			width: parent.width;
-			text: "Audio";
-			opacity: options.show ? 1 : 0;
-		}
-
-		GreenButton {
-			id: db4;
-			height: mainWindow.height / 9;
-			width: parent.width;// / 16;
-			text: "Options";
-			color: activeFocus || options.show ? "#539d00" : "black";
-
-			onTriggered: { options.show = !options.show; }
-		}
-
-		onRightPressed: { db5.forceActiveFocus(); }
-		onLeftPressed: { db3.forceActiveFocus(); }
-	}
-
-	Button {
-		id: db5;
-		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
-		height: parent.height / 9;
-		width: parent.width / 16;
-		text: "EXIT";
-
-		onLeftPressed: { db4.forceActiveFocus(); }
-	}
-
-	Protocol {
-		id: protocol;
-		clientId: "er_ottweb_device";
-		deviceId: "123";
-		ssoSystem: "er";
 	}
 }

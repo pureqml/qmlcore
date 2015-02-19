@@ -752,6 +752,7 @@ exports._setup = function() {
 		var horizontal = this.orientation === this.Horizontal
 		var p = horizontal? -this.contentX: -this.contentY
 		var size = horizontal? w: h
+		var maxW = 0, maxH = 0
 		for(var i = 0; i < n; ++i) {
 			if (!this._items[i]) {
 				var row = this.model.get(i)
@@ -759,7 +760,13 @@ exports._setup = function() {
 				this._items[i] = this.delegate()
 				delete this._local['model']
 			}
+
 			var item = this._items[i]
+			if (item.x + item.width > maxW)
+				maxW = item.width + item.x
+			if (item.y + item.height > maxH)
+				maxH = item.height + item.y
+
 			if (horizontal)
 				item.viewX = p
 			else
@@ -767,6 +774,16 @@ exports._setup = function() {
 			var s = (horizontal? item.width: item.height)
 			item.visible = (p + s >= 0 && p < size)
 			p += s + this.spacing
+		}
+		if (p > 0)
+			p -= this.spacing;
+
+		if (horizontal) {
+			this.contentWidth = p
+			this.contentHeight = maxH
+		} else {
+			this.contentWidth = maxW
+			this.contentHeight = p
 		}
 	}
 

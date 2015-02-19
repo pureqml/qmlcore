@@ -10,4 +10,6 @@ Item {
 
 	property int contentX;
 	property int contentY;
+	property int contentWidth;
+	property int contentHeight;
 }

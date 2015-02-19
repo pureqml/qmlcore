@@ -34,6 +34,6 @@ Item {
 		anchors.right: parent.right;
 		width: 200;
 		contentY: 50;
-		delegate: Rectangle { width: 100; height: 100; color: "green"; Text { anchors.centerIn: parent; color: "white"; text: /*model.type*/ "Test"; } }
+		delegate: Rectangle { width: 100; height: 100; color: "green"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }
 	}
 }

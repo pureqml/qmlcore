@@ -1,8 +1,10 @@
 ListView {
-	height: parent.height;
-	width: 100;
+	width: parent.width;
+	height: 100;
 	spacing: 20;
 	anchors.left: parent.left;
+	orientation: 1;
+
 	delegate: Item {
 		id: contextItemProto;
 		height: 20;

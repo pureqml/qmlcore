@@ -5,6 +5,7 @@ Object {
 	property string ssoSystem: "er";
 	property string ssoKey;
 	property string authToken;
+	property string sessionId;
 	property string username: "590014831333";
 	property string password: "590014831333";
 	property string region: "perm";
@@ -88,8 +89,9 @@ Object {
 			callback(res.collection[0])
 		})
 	}
-	getUrl(sessionId, assetId, streamId, callback): {
-		this.requestWithToken("/resource/get_url/" + assetId + "/" + streamId + "?er_multiscreen_session_id=" + sessionId, {}, callback)
+
+	getUrl(assetId, streamId, callback): {
+		this.requestWithToken("/resource/get_url/" + assetId + "/" + streamId + "?er_multiscreen_session_id=" + this.sessionId, {}, callback)
 	}
 
 	onAuthTokenChanged: {
@@ -112,6 +114,10 @@ Object {
 				self.getSubscriberDeviceToken(authToken, self.ssoSystem, self.ssoKey, function(res) {
 					console.log("DEVICE TOKEN", JSON.stringify(res));
 					self.authToken = res.token;
+					self.requestWithToken('/er/multiscreen/ottweb/session/open/', {}, function(res) {
+						console.log("SESSION", res)
+						self.sessionId = res.session_id
+					}, 'POST')
 				})
 			})
 		})

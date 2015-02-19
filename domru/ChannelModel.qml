@@ -4,7 +4,7 @@ ListModel {
 		list.channels.forEach(function(id) { model.append({id: id}); } )
 	}
 	prepare(asset): { }
-	getUrl(idx): {
+	getUrl(idx, callback): {
 		var row = this.get(idx)
 		var id = 0
 		row.asset.resources.forEach(function(res) {
@@ -14,8 +14,8 @@ ListModel {
 		if (!id)
 			throw "no hls stream found"
 
-		this.protocol.getUrl('', row.id, id, function(res) {
-			console.log('URL', res)
+		this.protocol.getUrl(row.id, id, function(res) {
+			callback(res.url)
 		})
 	}
 	get(idx): {

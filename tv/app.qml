@@ -52,69 +52,62 @@ Item {
 		onLeftPressed: { db2.forceActiveFocus(); }
 	}
 
-	GreenButton {
-		id: db4;
-		anchors.bottom: parent.bottom;
-		anchors.right: db5.left;
-		anchors.rightMargin: parent.width / 100;
-		height: parent.height / 9;
-		width: parent.width / 16;
-		text: "Options";
-	    color: activeFocus || options.show ? "#539d00" : "black";
-
-		onRightPressed: { db5.forceActiveFocus(); }
-		onLeftPressed: { db3.forceActiveFocus(); }
-		onUpPressed: {
-			if (options.show)
-				options.forceActiveFocus();
-		}
-
-		onTriggered: {
-			options.show = !options.show;
-		}
-	}
-
-	Button {
-		id: db5;
-		anchors.bottom: parent.bottom;
-		anchors.right: parent.right;
-		anchors.rightMargin: parent.width / 12;
-		height: parent.height / 9;
-		width: parent.width / 16;
-		text: "EXIT";
-
-		onLeftPressed: { db4.forceActiveFocus(); }
-	}
-
 	Column {
 		id: options;
 		spacing: 10;
-		anchors.bottom: db4.top;
-		anchors.bottomMargin: 10;
-		anchors.left: db4.left;
-		anchors.right: db4.right;
+		anchors.bottom: parent.bottom;
+		anchors.right: db5.left;
+		anchors.rightMargin: parent.width / 100;
+		width: parent.width / 16;
 		property bool show;
-		opacity: options.show ? 1 : 0;
-		
+		handleNavigationKeys: true;
+
 		Behavior on opacity	{ Animation { duration: 500; } }
 
 		GreenButton {
 			height: mainWindow.height / 9;
 			width: parent.width;
 			text: "TTX";
+			opacity: options.show ? 1 : 0;
 		}
-	
+		
 		GreenButton {
 			height: mainWindow.height / 9;
 			width: parent.width;
 			text: "Sub";
+			opacity: options.show ? 1 : 0;
 		}
-	
+		
 		GreenButton {
 			height: mainWindow.height / 9;
 			width: parent.width;
 			text: "Audio";
+			opacity: options.show ? 1 : 0;
 		}
+
+		GreenButton {
+			id: db4;
+			height: mainWindow.height / 9;
+			width: parent.width;// / 16;
+			text: "Options";
+			color: activeFocus || options.show ? "#539d00" : "black";
+
+			onTriggered: { options.show = !options.show; }
+		}
+
+		onRightPressed: { db5.forceActiveFocus(); }
+		onLeftPressed: { db3.forceActiveFocus(); }
+	}
+
+	Button {
+		id: db5;
+		anchors.bottom: parent.bottom;
+		anchors.right: parent.right;
+		height: parent.height / 9;
+		width: parent.width / 16;
+		text: "EXIT";
+
+		onLeftPressed: { db4.forceActiveFocus(); }
 	}
 
 	Protocol {

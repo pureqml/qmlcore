@@ -1,8 +1,9 @@
 ListView {
 	width: parent.width;
-	height: 100;
-	spacing: 20;
+	height: parent.height;
 	anchors.left: parent.left;
+	anchors.bottom: parent.bottom;
+	spacing: 20;
 	orientation: 1;
 
 	delegate: Item {
@@ -27,9 +28,8 @@ ListView {
 			anchors.left: contextColorRectangle.right;
 			anchors.verticalCenter: parent.verticalCenter;
 			anchors.leftMargin: 8;
-			//color: "#fff";
+			color: "#fff";
 			text: model.text;
-			color: "#000";
 		}
 	} 
 }

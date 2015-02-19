@@ -6,11 +6,40 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
-	Column {
+	Item {
+		height: channelNumber.height;
+		anchors.top: parent.top;
+		anchors.right: parent.right;
+		anchors.left: parent.left;
+
+		Image {
+			id: logo;
+			anchors.top: parent.top;
+			anchors.left: parent.left;
+		}
+
+		Rectangle {
+			id: channelNumber;
+			width: 125;
+			height: 68;
+			anchors.top: parent.top;
+			anchors.right: parent.right;
+			color: "#000c";
+		}
+
+		Text {
+			anchors.centerIn: channelNumber;
+			font.pointSize: 24;
+			text: "14";
+			color: "#fff";
+		}
+	}
+
+	Row {
 		id: bottomPanel;
 		property int innerHeight: 68;
-		anchors.bottom: parent.bottom;
-		anchors.bottomMargin: footer.top;
+		anchors.bottom: footer.top;
+		anchors.bottomMargin: 35;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		spacing: 8;
@@ -115,25 +144,75 @@ Item {
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-	}
 
-	ListModel {
-		id: contextModel;
-		property string text;
-		property Color color;
+		ListModel {
+			id: contextModel;
+			property string text;
+			property Color color;
 
-		ListElement {
-			text: "ТВ Гид";
-			color: "#f00";
+			ListElement {
+				text: "ТВ Гид";
+				color: "#f00";
+			}
+
+			ListElement {
+				text: "Список каналов";
+				color: "#00ab5f";
+			}
 		}
 
-		ListElement {
-			text: "Список каналов";
-			color: "#0f0";
+		ContextMenu { model: contextModel; }
+
+		ListModel {
+			id: optionsModel;
+			property string text;
+			property string source;
+
+			ListElement {
+				text: "Назад";
+				source: "";
+			}
+
+			ListElement {
+				text: "ТВ меню";
+				source: "";
+			}
+
+			ListElement {
+				text: "Выход";
+				source: "";
+			}
+		}
+
+		ListView {
+			id: options;
+			width: contentWidth;
+			height: parent.height;
+			anchors.right: parent.right;
+			anchors.bottom: parent.bottom;
+			orientation: 1;
+			model: optionsModel;
+			delegate: Item {
+				width: icon.width + optionText.width + 10;
+				height: parent.height;
+
+				Image {
+					id: icon;
+					source: model.source;
+					anchors.left: parent.left;
+					anchors.verticalCenter: parent.verticalCenter;
+				}
+
+				Text {
+					id: optionText;
+					anchors.left: icon.right;
+					anchors.leftMargin: 10;
+					anchors.verticalCenter: parent.verticalCenter;
+					color: "#fff";
+					text: model.text;
+				}
+			}
 		}
 	}
 
-	ContextMenu {
-		model: contextModel;
-	}
 }

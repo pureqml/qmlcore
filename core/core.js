@@ -96,6 +96,7 @@ _globals.core.Object.prototype._removeUpdater = function (name, callback) {
 }
 
 _globals.core.Object.prototype.onPressed = function (name, callback) {
+	var wrapper
 	if (name != 'Key')
 		wrapper = function() { callback(); return true; }
 	else
@@ -184,6 +185,7 @@ exports._setup = function() {
 	_globals.core.Animation.prototype.interpolate = blend;
 
 	_globals.core.Color = function(value) {
+		var triplet
 		if (value.substring(0, 4) == "rgba") {
 			var b = value.indexOf('('), e = value.lastIndexOf(')')
 			value = value.substring(b + 1, e).split(',')
@@ -959,7 +961,7 @@ exports.addProperty = function(self, type, name) {
 					self._update(name, dst, src);
 				}, duration);
 			}
-			oldValue = value;
+			var oldValue = value;
 			if (oldValue !== newValue) {
 				value = newValue;
 				if (!animation)

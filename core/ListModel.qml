@@ -12,43 +12,37 @@ Object {
 		this.reset()
 	}
 
-	append : {
+	append(row) : {
 		var l = this._rows.length
-		this._rows.push(arguments[0])
+		row.index = l
+		this._rows.push(row)
 		this.count = this._rows.length
 		this.rowsInserted(l, l + 1)
 	}
 
-	insert : {
-		var idx = arguments[0]
-		var row = arguments[1]
+	insert(idx, row) : {
+		row.index = idx
 		this._rows.splice(idx, 0, row)
 		this.count = this._rows.length
 		this.rowsInserted(idx, idx + 1)
 	}
 
-	set: {
-		var idx = arguments[0]
-		var row = arguments[1]
+	set(idx, row): {
+		row.index = idx
 		this._rows[idx] = row
 		this.rowChanged(idx, idx + 1)
 	}
 
-	get: {
-		var idx = arguments[0]
+	get(idx): {
 		return this._rows[idx];
 	}
 
-	setProperty: {
-		var idx = arguments[0]
-		var name = arguments[1]
-		var value = arguments[2]
+	setProperty(idx, name, value): {
 		this._rows[idx][name] = value
 		this.rowChanged(idx, idx + 1)
 	}
 
-	remove: {
-		var idx = arguments[0]
+	remove(idx): {
 		var n = arguments[1]
 		if (n === undefined)
 			n = 1

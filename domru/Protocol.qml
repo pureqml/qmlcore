@@ -7,7 +7,6 @@ Object {
 	signal error;
 
 	checkResponse(res): {
-		console.log("CHECK", res);
 		if (res.result)
 			return true;
 		else {

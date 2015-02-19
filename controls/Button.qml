@@ -6,6 +6,7 @@ Rectangle {
     color: "blue";
     smooth: true;
     focus: true;
+    clip: true;
     property alias text: label.text;
     property alias textColor: label.color;
 

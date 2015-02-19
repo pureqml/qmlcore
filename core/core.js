@@ -301,6 +301,7 @@ exports._setup = function() {
 			case 'visible':	if (this.element) /*FIXME*/this.element.css('visibility', value? 'visible': 'hidden'); break;
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
+			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}

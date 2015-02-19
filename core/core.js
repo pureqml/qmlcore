@@ -646,8 +646,8 @@ exports._setup = function() {
 		}
 		if (p > 0)
 			p -= this.spacing
-		this.width = p
-		this.height = h
+		this.childrenWidth = p
+		this.childrenHeight = h
 	}
 
 	_globals.core.Row.prototype.addChild = function(child) {
@@ -671,8 +671,8 @@ exports._setup = function() {
 		}
 		if (p > 0)
 			p -= this.spacing
-		this.width = w
-		this.height = p
+		this.childrenWidth = w
+		this.childrenHeight = p
 	}
 
 	_globals.core.Column.prototype.addChild = function(child) {

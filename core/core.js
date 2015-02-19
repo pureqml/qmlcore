@@ -5,7 +5,11 @@ var keyCodes = {
 	37: 'Left',
 	38: 'Up',
 	39: 'Right',
-	40: 'Down'
+	40: 'Down',
+	112: 'Red',
+	113: 'Green',
+	114: 'Yellow',
+	115: 'Blue'
 }
 
 if (samsung) {

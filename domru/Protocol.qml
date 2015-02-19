@@ -1,8 +1,13 @@
 Object {
 	property string baseUrl: "http://tv.domru.ru/api/";
-	property string clientId;
-	property string deviceId;
-	property string ssoSystem;
+	property string clientId : "er_ottweb_device";
+	property string deviceId : "123";
+	property string ssoSystem: "er";
+	property string ssoKey;
+	property string authToken;
+	property string username: "590014831333";
+	property string password: "590014831333";
+	property string region: "perm";
 
 	signal error;
 
@@ -21,19 +26,22 @@ Object {
 		$.ajax({
 			url: self.baseUrl + url,
 			data: data,
-			success: function(res) {
-				if (self.checkResponse(res) && callback)
-					callback(res)
-			},
 			type: type || 'GET'
-		});
+		}).done(function(res) {
+			if (self.checkResponse(res) && callback)
+				callback(res)
+		}).fail(function(req, status, err) {
+			console.log(req, status, err)
+			self.error(status)
+		})
 	}
 
-	getToken(clientId, deviceId, callback): {
+	getToken(clientId, deviceId, region, callback): {
 		var data = {
 			client_id: clientId,
 			timestamp: (new Date()).getTime(),
-			device_id: deviceId
+			device_id: deviceId,
+			er_region: region
 		}
 		this.request("/token/device", data, callback);
 	}
@@ -44,5 +52,24 @@ Object {
 
 	getRegionList(callback): {
 		this.request("/er/misc/domains/", {}, callback);
+	}
+
+	getSubscriberDeviceToken(authToken, ssoSystem, ssoKey, callback): {
+		this.request("/token/subscriber_device/by_sso", {sso_system: ssoSystem, auth_token: authToken, sso_key: ssoKey}, callback)
+	}
+
+	onCompleted: {
+		var self = this;
+		self.getToken(this.clientId, this.deviceId, self.region, function(res) {
+			console.log("token", JSON.stringify(res))
+			self.authToken = res.token;
+			self.login(self.username, self.password, self.region, function(res) {
+				console.log("LOGIN", JSON.stringify(res));
+				self.ssoKey = res.sso;
+				self.getSubscriberDeviceToken(self.authToken, self.ssoSystem, self.ssoKey, function(res) {
+					console.log("DEVICE TOKEN", JSON.stringify(res));
+				})
+			})
+		})
 	}
 }

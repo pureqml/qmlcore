@@ -251,4 +251,21 @@ Item {
 		protocol : proto;
 		onCountChanged: { console.log("loaded " + this.count + " channel lists, using 0"); channelModel.setList(this.get(0)); }
 	}
+
+	ListView {
+		anchors.fill: parent;
+		anchors.margins: 100;
+
+		model: channelModel;
+		delegate: Rectangle {
+			width: parent.width;
+			height: 50;
+			color: "white";
+			Text {
+				font.pixelSize: 40;
+				anchors.centerIn: parent;
+				text: model.asset? model.asset.title: "";
+			}
+		}
+	}
 }

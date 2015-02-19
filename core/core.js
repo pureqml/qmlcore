@@ -750,7 +750,8 @@ exports._setup = function() {
 		var n = items.length
 		console.log("layout " + n + " into " + w + "x" + h)
 		var horizontal = this.orientation === this.Horizontal
-		var p = horizontal? -this.contextX: -this.contentY, size = horizontal? w: h
+		var p = horizontal? -this.contentX: -this.contentY
+		var size = horizontal? w: h
 		for(var i = 0; i < n; ++i) {
 			if (!this._items[i]) {
 				var row = this.model.get(i)

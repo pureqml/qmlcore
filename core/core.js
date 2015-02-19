@@ -561,9 +561,39 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Gradient.prototype.addChild = function(child) {
+		this.stops.push(child)
+		this.stops.sort(function(a, b) { return a.position > b.position; })
+		this.parent._update('gradient', this)
+	}
+
+	_globals.core.GradientStop.prototype._getDeclaration = function() {
+		return this.color + " " + Math.floor(100 * this.position) + "%"
+	}
+
+	_globals.core.Gradient.prototype._getDeclaration = function() {
+		var decl = []
+		for(var i = 0; i < this.stops.length; ++i) {
+			var stop = this.stops[i]
+			decl.push(stop._getDeclaration())
+		}
+		return decl.join()
+	}
+
 	_globals.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
 			case 'color': this.element.css('background-color', value); break;
+			case 'gradient': {
+				if (value) {
+					var decl = value._getDeclaration()
+					this.element.css('background-color', '')
+					this.element.css({ background: '-webkit-linear-gradient(left, ' + decl + ')'})
+				} else {
+					this.element.css('background', '')
+					this._update('color', this.color) //restore color
+				}
+				break;
+			}
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
@@ -900,6 +930,9 @@ exports._bootstrap = function(self, name) {
 		case 'core.ListView':
 			self._items = []
 			break;
+		case 'core.Gradient':
+			self.stops = []
+			break
 		case 'core.Item':
 			if (!self.parent) //top-level item, do not create item
 				break;

@@ -1,4 +1,7 @@
 Item {
+	property int childrenWidth;
+	property int childrenHeight;
+
 	property int spacing;
 	property bool handleNavigationKeys: true;
 
@@ -17,6 +20,9 @@ Item {
 		idx = (idx + this.children.length - 1) % this.children.length
 		this.focusChild(this.children[idx])
 	}
+
+	width: childrenWidth;
+	height: childrenHeight;
 
 	onCompleted: { this._layout(); }
 }

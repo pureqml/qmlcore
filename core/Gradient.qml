@@ -1,1 +1,3 @@
-Object { }
+Object {
+	property int orientation;
+}

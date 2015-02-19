@@ -7,13 +7,7 @@ ListModel {
 
 		var model = this
 		var list = this.protocol.getRegionList(function(res) {
-			console.log(res)
-			var domains = res.domains
-			for(var i = 0; i < domains.length; ++i) {
-				var row = domains[i];
-				//console.log(row)
-				model.append(row)
-			}
+			res.domains.forEach(function(row) { model.append(row) })
 		})
 	}
 }

@@ -20,13 +20,14 @@ Object {
 		}
 	}
 
-	request(url, data, callback, type): {
+	request(url, data, callback, type, headers): {
 		console.log("request", url, data)
 		var self = this;
 		$.ajax({
 			url: self.baseUrl + url,
 			data: data,
-			type: type || 'GET'
+			type: type || 'GET',
+			headers: headers || {}
 		}).done(function(res) {
 			if (self.checkResponse(res) && callback)
 				callback(res)
@@ -34,6 +35,21 @@ Object {
 			console.log(req, status, err)
 			self.error(status)
 		})
+	}
+
+	requestWithToken(url, data, callback, type): {
+		if (!this.authToken)
+		{
+			console.log("no token, scheduling request")
+			if (!this._pending)
+				this._pending = []
+
+			var self = this;
+			this._pending.push(function() {
+				self.request(url, data, callback, type, {'X-Auth-Token': self.authToken})
+			})
+		}
+		this.request(url, data, callback, type, {'X-Auth-Token': this.authToken})
 	}
 
 	getToken(clientId, deviceId, region, callback): {
@@ -51,23 +67,35 @@ Object {
 	}
 
 	getRegionList(callback): {
-		this.request("/er/misc/domains/", {}, callback);
+		this.requestWithToken("/er/misc/domains/", {}, callback);
 	}
 
 	getSubscriberDeviceToken(authToken, ssoSystem, ssoKey, callback): {
 		this.request("/token/subscriber_device/by_sso", {sso_system: ssoSystem, auth_token: authToken, sso_key: ssoKey}, callback)
 	}
 
+	getChannelList(callback): {
+		this.requestWithToken("/channel_list/lists", {}, callback)
+	}
+
+	onAuthTokenChanged: {
+		if (this._pending) {
+			console.log("executing pending requests")
+			this._pending.forEach(function(callback) { callback(); })
+		}
+	}
+
 	onCompleted: {
 		var self = this;
 		self.getToken(this.clientId, this.deviceId, self.region, function(res) {
 			console.log("token", JSON.stringify(res))
-			self.authToken = res.token;
+			var authToken = res.token;
 			self.login(self.username, self.password, self.region, function(res) {
 				console.log("LOGIN", JSON.stringify(res));
 				self.ssoKey = res.sso;
-				self.getSubscriberDeviceToken(self.authToken, self.ssoSystem, self.ssoKey, function(res) {
+				self.getSubscriberDeviceToken(authToken, self.ssoSystem, self.ssoKey, function(res) {
 					console.log("DEVICE TOKEN", JSON.stringify(res));
+					self.authToken = res.token;
 				})
 			})
 		})

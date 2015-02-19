@@ -16,6 +16,7 @@ Item {
 			id: logo;
 			anchors.top: parent.top;
 			anchors.left: parent.left;
+			source: "res/logoDomru.png";
 		}
 
 		Rectangle {
@@ -86,6 +87,39 @@ Item {
 				color: "#ccc";
 				text: "015";
 			}
+
+			Image {
+				anchors.right: parent.right;
+				anchors.top: parent.top;
+				anchors.topMargin: 12;
+				anchors.rightMargin: 10;
+				source: "res/chanelLogo.png";
+			}
+
+			Image {
+				id: hdLogo;
+				anchors.left: parent.left;
+				anchors.bottom: parent.bottom;
+				anchors.bottomMargin: 12;
+				anchors.leftMargin: 10;
+				source: "res/hd.png";
+			}
+
+			Image {
+				anchors.left: hdLogo.right;
+				anchors.bottom: parent.bottom;
+				anchors.bottomMargin: 12;
+				anchors.leftMargin: 10;
+				source: "res/3d.png";
+			}
+
+			Image {
+				anchors.right: parent.right;
+				anchors.bottom: parent.bottom;
+				anchors.bottomMargin: 12;
+				anchors.rightMargin: 10;
+				source: "res/lock.png";
+			}
 		}
 
 		GreenButton {
@@ -133,20 +167,26 @@ Item {
 			anchors.bottom: parent.bottom;
 			anchors.left: programPanel.right;
 			anchors.leftMargin: bottomPanel.spacing;
+
+			Image {
+				anchors.centerIn: parent;
+				source: "res/settings.png";
+			}
 		}
 
 		GreenButton {
-			id: exitButton;
+			id: shareButton;
 			height: bottomPanel.innerHeight;
 			width: height;
 			anchors.bottom: parent.bottom;
 			anchors.left: settingsButton.right;
 			anchors.leftMargin: bottomPanel.spacing;
-		}
-	}
 
-	ChannelListLayout {
-		anchors.fill: parent;
+			Image {
+				anchors.centerIn: parent;
+				source: "res/share.png";
+			}
+		}
 	}
 
 	Item {
@@ -181,17 +221,17 @@ Item {
 
 			ListElement {
 				text: "Назад";
-				source: "";
+				source: "res/back.png";
 			}
 
 			ListElement {
 				text: "ТВ меню";
-				source: "";
+				source: "res/qMenu.png";
 			}
 
 			ListElement {
 				text: "Выход";
-				source: "";
+				source: "res/exit.png";
 			}
 		}
 

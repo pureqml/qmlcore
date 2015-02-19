@@ -567,12 +567,21 @@ exports._setup = function() {
 		this.parent._update('gradient', this)
 	}
 
+	_globals.core.GradientStop.prototype._update = function() {
+		this.parent.parent._update('gradient', this.parent)
+	}
+
 	_globals.core.GradientStop.prototype._getDeclaration = function() {
 		return this.color + " " + Math.floor(100 * this.position) + "%"
 	}
 
+	_globals.core.Gradient.prototype.Vertical = 0
+	_globals.core.Gradient.prototype.Horizontal = 1
+
 	_globals.core.Gradient.prototype._getDeclaration = function() {
 		var decl = []
+		var orientation = this.orientation == this.Vertical? 'top': 'left'
+		decl.push(orientation)
 		for(var i = 0; i < this.stops.length; ++i) {
 			var stop = this.stops[i]
 			decl.push(stop._getDeclaration())
@@ -587,7 +596,8 @@ exports._setup = function() {
 				if (value) {
 					var decl = value._getDeclaration()
 					this.element.css('background-color', '')
-					this.element.css({ background: '-webkit-linear-gradient(left, ' + decl + ')'})
+					this.element.css({ background: '-webkit-linear-gradient(' + decl + ')'})
+					this.element.css({ background: 'linear-gradient(' + decl + ')'})
 				} else {
 					this.element.css('background', '')
 					this._update('color', this.color) //restore color

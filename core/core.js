@@ -553,8 +553,17 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignVCenter	= 2
 
 	_globals.core.Text.prototype._updateSize = function() {
-		this.paintedWidth = this.element.width();
-		this.paintedHeight = this.element.height();
+		if (parent.text == "14")
+		var oldW = this.element.css('width')
+		var oldH = this.element.css('height')
+		this.element.css('width', '')
+		this.element.css('height', '')
+		var w = this.element.width();
+		var h = this.element.height();
+		this.element.css('width', oldW)
+		this.element.css('height', oldH)
+		this.paintedWidth = w;
+		this.paintedHeight = h;
 	}
 
 	_globals.core.Text.prototype._update = function(name, value) {

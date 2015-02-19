@@ -528,9 +528,9 @@ exports._setup = function() {
 
 	_globals.core.Font.prototype._update = function(name, value) {
 		switch(name) {
-			case 'pointSize': this.parent.element.css('font-size', value + "pt"); break;
-			case 'pixelSize': this.parent.element.css('font-size', value + "px"); break;
-			case 'italic': this.parent.element.css('font-style', value? 'italic': 'normal'); break;
+			case 'pointSize': this.parent.element.css('font-size', value + "pt"); this.parent._updateSize(); break;
+			case 'pixelSize': this.parent.element.css('font-size', value + "px"); this.parent._updateSize(); break;
+			case 'italic': this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -544,9 +544,14 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignBottom	= 1
 	_globals.core.Text.prototype.AlignVCenter	= 2
 
+	_globals.core.Text.prototype._updateSize = function() {
+		this.paintedWidth = this.element.width();
+		this.paintedHeight = this.element.height();
+	}
+
 	_globals.core.Text.prototype._update = function(name, value) {
 		switch(name) {
-			case 'text': this.element.text(value); this.paintedWidth = this.element.width(); this.paintedHeight = this.element.height(); break;
+			case 'text': this.element.text(value); this._updateSize(); break;
 			case 'color': this.element.css('color', value); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
 			case 'horizontalAlignment':

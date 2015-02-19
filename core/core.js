@@ -917,7 +917,7 @@ exports.addProperty = function(self, type, name) {
 				}, duration);
 			}
 			oldValue = value;
-			if (oldValue != newValue) {
+			if (oldValue !== newValue) {
 				value = newValue;
 				if (!animation)
 					self._update(name, newValue, oldValue);

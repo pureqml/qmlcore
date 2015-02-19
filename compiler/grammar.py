@@ -123,6 +123,7 @@ source = component_declaration
 source = source.ignore(cStyleComment)
 source = source.ignore(dblSlashComment)
 #source.setDefaultWhitespaceChars(" \t\r\f")
+ParserElement.enablePackrat()
 
 def parse(data):
 	tree = source.parseString(data, parseAll = True)

@@ -34,7 +34,10 @@ Object {
 	}
 
 	get(idx): {
-		return this._rows[idx];
+		if (typeof idx != 'string')
+			return this._rows[idx];
+		else
+			return _globals.core.Object.prototype.get.apply(this, arguments);
 	}
 
 	setProperty(idx, name, value): {

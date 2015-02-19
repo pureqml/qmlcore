@@ -22,7 +22,7 @@ Object {
 			url: self.baseUrl + url,
 			data: data,
 			success: function(res) {
-				if (self.checkResponse(res))
+				if (self.checkResponse(res) && callback)
 					callback(res)
 			},
 			type: type || 'GET'
@@ -36,6 +36,10 @@ Object {
 			device_id: deviceId
 		}
 		this.request("/token/device", data, callback);
+	}
+
+	login(username, password, region, callback): {
+		this.request("/er/ssoauth/auth", {username: username, password: password, region: region}, callback, 'POST')
 	}
 
 	getRegionList(callback): {

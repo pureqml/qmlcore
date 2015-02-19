@@ -181,7 +181,7 @@ class component_generator(object):
 
 	def get_target_lvalue(self, target):
 		path = target.split(".")
-		path = ["get('%s')" %x for x in path[:-1]] + [path[-1]]
+		path = ["_get('%s')" %x for x in path[:-1]] + [path[-1]]
 		return "this.%s" % ".".join(path)
 
 
@@ -193,7 +193,7 @@ class component_generator(object):
 			r.append("""\
 	core.addAliasProperty(this, '%s',
 		(function() { return %s; }).bind(this),
-		(function() { return %s.get('%s'); }).bind(this),
+		(function() { return %s._get('%s'); }).bind(this),
 		(function(value) { %s.%s = value; }).bind(this));
 """ %(name, get, get, pname, get, pname))
 		for target, value in self.assignments.iteritems():

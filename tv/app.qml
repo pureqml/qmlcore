@@ -116,4 +116,24 @@ Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 	}
+
+	ListModel {
+		id: contextModel;
+		property string text;
+		property Color color;
+
+		ListElement {
+			text: "ТВ Гид";
+			color: "#f00";
+		}
+
+		ListElement {
+			text: "Список каналов";
+			color: "#0f0";
+		}
+	}
+
+	ContextMenu {
+		model: contextModel;
+	}
 }

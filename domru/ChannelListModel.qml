@@ -7,7 +7,7 @@ ListModel {
 
 		var model = this;
 		this.protocol.getChannelList(function(res) {
-			res.channel_lists.forEach(function(list) { model.append(list); })
+			res.channel_lists.forEach(function(list) { model.append(list); console.log(JSON.stringify(list)); })
 		})
 	}
 }

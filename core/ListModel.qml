@@ -45,8 +45,7 @@ Object {
 		this.rowChanged(idx, idx + 1)
 	}
 
-	remove(idx): {
-		var n = arguments[1]
+	remove(idx, n): {
 		if (n === undefined)
 			n = 1
 		this._rows.splice(idx, n)

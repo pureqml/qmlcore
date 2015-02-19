@@ -220,6 +220,10 @@ exports._setup = function() {
 	}
 	_globals.core.Color.prototype.constructor = _globals.core.Color;
 
+	_globals.core.Color.prototype.get = function() {
+		return "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
+	}
+
 	_globals.core.ColorAnimation.prototype.interpolate = function(dst, src, t) {
 		var dst_c = new _globals.core.Color(dst), src_c = new _globals.core.Color(src);
 		var r = Math.floor(blend(dst_c.r, src_c.r, t))
@@ -596,7 +600,7 @@ exports._setup = function() {
 
 	_globals.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
-			case 'color': this.element.css('background-color', value); break;
+			case 'color': this.element.css('background-color', (new _globals.core.Color(value)).get()); break;
 			case 'gradient': {
 				if (value) {
 					var decl = value._getDeclaration()

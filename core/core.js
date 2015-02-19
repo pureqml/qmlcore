@@ -795,6 +795,7 @@ exports.Context = function() {
 	var div = $("<div id='renderer'></div>");
 	body.append(div);
 	$('head').append($("<style>" +
+		"body { overflow: hidden; }" +
 		"div#renderer { position: absolute; left: 0px; top: 0px; } " +
 		"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 		"img { position: absolute; } " +

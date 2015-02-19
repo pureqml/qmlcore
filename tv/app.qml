@@ -261,6 +261,7 @@ Item {
 			width: parent.width;
 			height: 50;
 			color: "white";
+			clip: true;
 			Text {
 				font.pixelSize: 40;
 				anchors.centerIn: parent;

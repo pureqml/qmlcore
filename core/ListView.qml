@@ -14,6 +14,7 @@ Item {
 	property int contentHeight;
 
 	property bool handleNavigationKeys: true;
+	property bool keyNavigationWraps: true;
 
 	Behavior on contentX	{ Animation { duration: 300; } }
 	Behavior on contentY	{ Animation { duration: 300; } }

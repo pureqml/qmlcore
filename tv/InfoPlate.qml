@@ -193,7 +193,7 @@ Item {
 
 				Image {
 					anchors.centerIn: parent;
-					source: "res/settings.png";
+					source: "res/ttx.png";
 				}
 			}
 
@@ -205,7 +205,7 @@ Item {
 
 				Image {
 					anchors.centerIn: parent;
-					source: "res/settings.png";
+					source: "res/sub.png";
 				}
 			}
 
@@ -217,7 +217,7 @@ Item {
 
 				Image {
 					anchors.centerIn: parent;
-					source: "res/settings.png";
+					source: "res/audio.png";
 				}
 			}
 

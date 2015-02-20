@@ -1,4 +1,17 @@
 var keyCodes = {
+	// SmartTV keys. TODO: make it platform depending.
+	108: 'Red',
+	20: 'Green',
+	21: 'Yellow',
+	22: 'Blue',
+	4: 'Left',
+	5: 'Right',
+	29461: 'Down',
+	29460: 'Up',
+	29443: 'Select',
+	68: 'PageUp',
+	65: 'PageDown',
+
 	13: 'Select',
 	37: 'Left',
 	33: 'PageUp',

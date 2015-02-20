@@ -15,10 +15,10 @@ Item {
 		Timer {
 			id: hideTimer;
 			interval: 10000;
-//			running: true;
+			running: true;
 
 			onTriggered: {
-				infoPlate.active = !infoPlate.active;
+				infoPlate.active = false;
 			}
 		}
 
@@ -41,7 +41,7 @@ Item {
 
 	onKeyPressed: {
 		infoPlate.active = true;
-		hideTimer.running = true;
+		hideTimer.restart();
 	}
 
 	ListView {

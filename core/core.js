@@ -1,6 +1,8 @@
 var keyCodes = {
 	13: 'Select',
 	37: 'Left',
+	33: 'PageUp',
+	34: 'PageDown',
 	38: 'Up',
 	39: 'Right',
 	40: 'Down',

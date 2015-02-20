@@ -20,20 +20,29 @@ Item {
 
 	ListModel {
 		id: animalModel;
+
 		ListElement { type: "Dog"; age: 8; }
 		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+
 		onCompleted: {
 			console.log("hello", this.count);
 		}
 	}
 
 	ListView {
+		focus: true;
 		model: animalModel;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
 		width: 200;
 		contentY: 50;
-		delegate: Rectangle { width: 100; height: 100; color: "green"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }
+		delegate: Rectangle { width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }
 	}
 }

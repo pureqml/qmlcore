@@ -584,7 +584,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.GradientStop.prototype._getDeclaration = function() {
-		return this.color + " " + Math.floor(100 * this.position) + "%"
+		return (new _globals.core.Color(this.color)).get() + " " + Math.floor(100 * this.position) + "%"
 	}
 
 	_globals.core.Gradient.prototype.Vertical = 0

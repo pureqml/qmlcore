@@ -9,24 +9,15 @@ Item {
 	InfoPlate {
 		id: infoPlate;
 		anchors.fill: parent;
-		property bool active: true;
-		opacity: active ? 1 : 0;
-
-		Timer {
-			id: hideTimer;
-			interval: 10000;
-			running: true;
-
-			onTriggered: {
-				infoPlate.active = false;
-			}
-		}
-
-	    Behavior on opacity	{ Animation { duration: 300; } }
 	}
 
 	Protocol {
 		id : proto;
+	}
+
+	Text {
+		anchors.centerIn: parent;
+		text: "Нажми F2, штоп показать инфобаннер";
 	}
 
 	ChannelModel {

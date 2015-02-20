@@ -7,7 +7,7 @@ Item {
 
 	Timer {
 		id: hideTimer;
-		interval: 5000;
+		interval: 10000;
 		running: true;
 
 		onTriggered: {
@@ -17,23 +17,26 @@ Item {
 
 	show: {
 		infoPlate.active = true;
+		hideTimer.interval = 6000;
 		hideTimer.restart();
 	}
 
-	// MouseArea {
-	// 	anchors.fill: parent;
-	// 	hoverEnabled: true;
+	MouseArea {
+		anchors.fill: parent;
+		hoverEnabled: true;
 
-	// 	onMouseXChanged: {
-	// 		infoPlateItem.active = true;
-	// 		hideTimer.restart();
-	// 	}
+		onMouseXChanged: {
+			infoPlateItem.active = true;
+			hideTimer.interval = 2000;
+			hideTimer.restart();
+		}
 
-	// 	onMouseYChanged: {
-	// 		infoPlateItem.active = true;
-	// 		hideTimer.restart();
-	// 	}
-	// }
+		onMouseYChanged: {
+			infoPlateItem.active = true;
+			hideTimer.interval = 2000;
+			hideTimer.restart();
+		}
+	}
 
 	Rectangle {
 		anchors.bottom: renderer.bottom;

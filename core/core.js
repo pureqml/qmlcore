@@ -394,6 +394,19 @@ exports._setup = function() {
 		this.clicked()
 	}
 
+	_globals.core.MouseArea.prototype._onMove = function(event) {
+		if (!this.hoverEnabled)
+			return
+
+		var box = this.toScreen()
+		var x = event.pageX - box[0]
+		var y = event.pageY - box[1]
+		if (x >= 0 && x < this.width)
+			this.mouseX = x
+		if (y >= 0 && y < this.height)
+			this.mouseY = y
+	}
+
 	_globals.core.AnchorLine.prototype.toScreen = function() {
 		return this.parent.toScreen()[this.boxIndex]
 	}
@@ -1006,8 +1019,9 @@ exports._bootstrap = function(self, name) {
 			self.parent.element.append(self.element);
 			break;
 		case 'core.MouseArea':
-			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self));
-			self.element.on('click', self._onClick.bind(self));
+			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self))
+			self.element.on('click', self._onClick.bind(self))
+			$(document).on('mousemove', self._onMove.bind(self))
 			break;
 		case 'core.Image':
 			self.element.remove();

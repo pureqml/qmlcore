@@ -144,9 +144,10 @@ Item {
 				anchors.top: parent.top;
 				anchors.left: parent.left;
 				anchors.right: parent.right;
-				anchors.topMargin: 12;
+				anchors.topMargin: 4;
 				anchors.leftMargin: 10;
 				anchors.rightMargin: 10;
+				font.pointSize: 18;
 				color: "#fff";
 				text: "Название текущей передачи";
 			}
@@ -157,6 +158,7 @@ Item {
 				anchors.right: parent.right;
 				anchors.leftMargin: 10;
 				anchors.rightMargin: 10;
+				anchors.topMargin: 4;
 				color: "#ccc";
 				text: "8:45 - 9:00, Россия 2, Спорт, 18";
 			}

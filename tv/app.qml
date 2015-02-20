@@ -24,6 +24,7 @@ Item {
 
 	Text {
 		anchors.centerIn: parent;
+		color: "white";
 		text: "Нажми F4 или подергай мышкой, штоп показать инфобаннер";
 	}
 

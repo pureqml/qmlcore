@@ -23,6 +23,7 @@ Item {
 
 	onCompleted: {
 		this._player = $('<video width="' + this.width + '" height="' + this.height + '" ' + (this.autoPlay? "autoplay": "") + '>')
+		this._player.css('background-color', 'black')
 		this.element.append(this._player)
 		this._source = $('<source src="' + this.source + '">')
 		this._player.append(this._source)

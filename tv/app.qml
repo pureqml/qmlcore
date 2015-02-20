@@ -6,6 +6,8 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
+	VideoPlayer { anchors.fill: renderer; }
+
 	CategoriesList {
 		anchors.leftMargin: 60;
 		anchors.rightMargin: 60;

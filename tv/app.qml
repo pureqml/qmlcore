@@ -7,7 +7,9 @@ Item {
 	anchors.topMargin: 42;
 
 	InfoPlate {
+		id: infoPlate;
 		anchors.fill: parent;
+		visible: false;
 	}
 
 	Protocol {
@@ -22,6 +24,10 @@ Item {
 	ChannelListModel {
 		protocol : proto;
 		onCountChanged: { console.log("loaded " + this.count + " channel lists, using 0"); channelModel.setList(this.get(0)); }
+	}
+
+	onKeyPressed: {
+		infoPlate.visible = !infoPlate.visible;
 	}
 
 	ListView {

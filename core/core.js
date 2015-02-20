@@ -899,6 +899,7 @@ exports.addProperty = function(self, type, name) {
 		case 'int':			value = 0; break;
 		case 'bool':		value = false; break;
 		case 'real':		value = 0.0; break;
+		case 'string':		value = ""; break
 		default: if (type[0].toUpperCase() == type[0]) value = null; break;
 	}
 	var convert = function(value) {

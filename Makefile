@@ -1,6 +1,7 @@
 .PHONY: all dev test-dev dist
+
 all:
-		./qml-compiler -w -o app core controls domru tv
+		./qml-compiler -w -o app core controls domru platform/html5 tv
 
 dist:
 		./qml-compiler -o app core controls domru tv

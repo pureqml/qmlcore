@@ -6,36 +6,6 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
-	Item {
-		height: channelNumber.height;
-		anchors.top: parent.top;
-		anchors.right: parent.right;
-		anchors.left: parent.left;
-
-		Image {
-			id: logo;
-			anchors.top: parent.top;
-			anchors.left: parent.left;
-			source: "res/logoDomru.png";
-		}
-
-		Rectangle {
-			id: channelNumber;
-			width: 125;
-			height: 68;
-			anchors.top: parent.top;
-			anchors.right: parent.right;
-			color: "#000c";
-		}
-
-		Text {
-			anchors.centerIn: channelNumber;
-			font.pointSize: 24;
-			text: "14";
-			color: "#fff";
-		}
-	}
-
 	InfoPlate {
 		anchors.fill: parent;
 	}

@@ -1,6 +1,31 @@
 Item {
+	id: infoPlateItem;
 	anchors.fill: parent;
-	
+	property int channelNumber: 20;
+
+	Image {
+		id: logo;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		source: "res/logoDomru.png";
+	}
+
+	Rectangle {
+		id: channelNumber;
+		width: 125;
+		height: 68;
+		anchors.top: parent.top;
+		anchors.right: parent.right;
+		color: "#000c";
+
+		Text {
+			anchors.centerIn: parent;
+			font.pointSize: 32;
+			text: infoPlateItem.channelNumber;
+			color: "#fff";
+		}
+	}
+
 	Row {
 		id: bottomPanel;
 		property int innerHeight: 68;

@@ -338,8 +338,22 @@ class generator(object):
 
 	def generate_imports(self):
 		r = []
+		packages = {}
 		for package in sorted(self.packages.keys()):
-			r.append("if (!exports.%s) exports.%s = {};" %(package, package))
+			path = package.split(".")
+			ns = packages
+			for p in path:
+				if p not in ns:
+					ns[p] = {}
+				ns = ns[p]
+
+		path = "exports"
+		def check(path, packages):
+			for ns in packages.iterkeys():
+				package = path + "." + ns
+				r.append("if (!%s) %s = {}" %(package, package))
+				check(package, packages[ns])
+		check(path, packages)
 
 		for name, code in self.imports.iteritems():
 			safe_name = name

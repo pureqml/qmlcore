@@ -778,6 +778,8 @@ exports._setup = function() {
 				item.viewY = p
 			var s = (horizontal? item.width: item.height)
 			item.visible = (p + s >= 0 && p < size)
+			if (this.currentIndex == i)
+				this.focusChild(item)
 			p += s + this.spacing
 		}
 		if (p > 0)

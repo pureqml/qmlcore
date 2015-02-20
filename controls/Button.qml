@@ -17,14 +17,6 @@ Rectangle {
     Behavior on opacity	{ Animation { duration: 300; } }
     Behavior on color	{ ColorAnimation { duration: 300; } }
 
-/*
-     gradient: Gradient {
-         GradientStop {color: "#CFF7FF"; position: 0.0; }
-         GradientStop {color: "#99C0E5"; position: 0.57; }
-         GradientStop {color: "#719FCB"; position: 0.9; }
-     }
-
-*/
     Text {
         id: label;
         anchors.centerIn: parent;
@@ -38,7 +30,10 @@ Rectangle {
         anchors.fill: parent;
         hoverEnabled: true;
         onClicked: { button.triggered(); }
-        onEntered: { button.forceActiveFocus(); }
+        onEntered: { 
+            if (!button.activeFocus)
+                button.forceActiveFocus(); 
+        }
     }
 
     onSelectPressed: { this.triggered(); }

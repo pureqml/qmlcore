@@ -5,7 +5,7 @@ ListModel {
 	}
 	prepare(asset): { }
 	getUrl(idx, callback): {
-		this.get(idx, function(row) {
+		this.get(idx, (function(row) {
 			var id = 0
 			row.asset.resources.forEach(function(res) {
 				if (res.category == "hls")
@@ -17,7 +17,7 @@ ListModel {
 			this.protocol.getUrl(row.id, id, function(res) {
 				callback(res.url)
 			})
-		})
+		}).bind(this))
 	}
 	get(idx, callback): {
 		var row = this._rows[idx]

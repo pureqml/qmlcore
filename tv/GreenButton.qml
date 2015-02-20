@@ -19,5 +19,4 @@ Button {
     }
 
 	Behavior on height  { Animation { duration: 300; } }
-	Behavior on width  { Animation { duration: 300; } }
 }

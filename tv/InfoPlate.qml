@@ -11,12 +11,12 @@ Item {
 	}
 
 	Rectangle {
-		id: channelNumber;
 		width: 125;
 		height: 68;
 		anchors.top: parent.top;
 		anchors.right: parent.right;
-		color: "#000c";
+		opacity: 0.6;
+		color: "#000000";
 
 		Text {
 			anchors.centerIn: parent;
@@ -26,18 +26,15 @@ Item {
 		}
 	}
 
-	Row {
-		id: bottomPanel;
-		property int innerHeight: 68;
-		anchors.bottom: footer.top;
-		anchors.bottomMargin: 35;
+	Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-		spacing: 8;
+		anchors.bottom: footer.top;
+		anchors.bottomMargin: 35;
 
 		GreenButton {
 			id: timePanel;
-			height: bottomPanel.innerHeight;
+			height: 68;
 			width: 144;
 			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
@@ -63,11 +60,11 @@ Item {
 
 		GreenButton {
 			id: channelPanel;
-			height: bottomPanel.innerHeight;
+			height: 68;
 			width: 144;
 			anchors.bottom: parent.bottom;
 			anchors.left: timePanel.right;
-			anchors.leftMargin: bottomPanel.spacing;
+			anchors.leftMargin: 8;
 
 			Text {
 				anchors.top: parent.top;
@@ -114,11 +111,13 @@ Item {
 
 		GreenButton {
 			id: programPanel;
-			height: bottomPanel.innerHeight;
+			height: 68;
 			width: 675;
 			anchors.bottom: parent.bottom;
 			anchors.left: channelPanel.right;
-			anchors.leftMargin: bottomPanel.spacing;
+			anchors.right: settingsButton.left;
+			anchors.leftMargin: 8;
+			anchors.rightMargin: 8;
 
 			Text {
 				id: programText;
@@ -152,11 +151,11 @@ Item {
 
 		GreenButton {
 			id: settingsButton;
-			height: bottomPanel.innerHeight;
+			height: 68;
 			width: height;
 			anchors.bottom: parent.bottom;
-			anchors.left: programPanel.right;
-			anchors.leftMargin: bottomPanel.spacing;
+			anchors.right: shareButton.left;
+			anchors.rightMargin: 8;
 
 			Image {
 				anchors.centerIn: parent;
@@ -166,11 +165,10 @@ Item {
 
 		GreenButton {
 			id: shareButton;
-			height: bottomPanel.innerHeight;
+			height: 68;//bottomPanel.innerHeight;
 			width: height;
 			anchors.bottom: parent.bottom;
-			anchors.left: settingsButton.right;
-			anchors.leftMargin: bottomPanel.spacing;
+			anchors.right: parent.right;
 
 			Image {
 				anchors.centerIn: parent;

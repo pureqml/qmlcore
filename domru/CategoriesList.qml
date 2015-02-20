@@ -1,6 +1,7 @@
 Item {
 	id: channelList;
 	property Protocol protocol;
+	property bool active: false;
 
 	ChannelListModel {
 		id: channelListModel;
@@ -21,9 +22,8 @@ Item {
 		anchors.right: parent.right;
 		spacing: 10;
 		orientation: 1;
-
+		opacity: channelList.active ? 1.0 : 0.0;
 		model: channelListModel;
-
 		delegate: Item {
 			width: categoryName.paintedWidth + 20;
 			height: parent.height;
@@ -33,22 +33,33 @@ Item {
 				font.pixelSize: 40;
 				anchors.centerIn: parent;
 				text: model.name;
-				color: "#fff";
+				color: "#f00";
 				opacity: parent.activeFocus ? 1.0 : 0.6;
 			}
 		}
+
+		onDownPressed: { channels.forceActiveFocus(); }
+
+		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	ListView {
+		id: channels;
+		anchors.top: categoriesList.bottom;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+		anchors.bottom: parent.bottom;
 		focus: true;
+		opacity: channelList.active ? 1.0 : 0.0;
 		model : channelModel;
-		delegate: Item {
+		delegate: Rectangle {
 			width: categoryName.paintedWidth + 20;
+			color: "#000c";
 			height: 45;
 
 			Text {
 				id: categoryName;
-				font.pixelSize: 40;
+				font.pixelSize: 24;
 				anchors.centerIn: parent;
 				text: model.asset ? model.asset.title : "";
 				color: "#fff";
@@ -56,9 +67,12 @@ Item {
 			}
 		}
 
-		anchors.top: categoriesList.bottom;
-		anchors.left: parent.left;
-		anchors.right: parent.right;
-		anchors.bottom: parent.bottom;
+		Behavior on opacity { Animation { duration: 300; } }
+	}
+
+	toggle: {
+		channelList.active = !channelList.active;
+		if (channelList.active)
+			categoriesList.forceActiveFocus();
 	}
 }

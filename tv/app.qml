@@ -11,6 +11,7 @@ Item {
 	Protocol { id: proto; enabled: true; }
 
 	CategoriesList {
+		id: categories;
 		anchors.leftMargin: 60;
 		anchors.rightMargin: 60;
 		protocol: proto;
@@ -28,7 +29,6 @@ Item {
 		text: "Нажми F4 или подергай мышкой, штоп показать инфобаннер";
 	}
 
-	onBluePressed: {
-		infoPlate.show();
-	}
+	onBluePressed: { infoPlate.show(); }
+	onGreenPressed: { categories.toggle(); }
 }

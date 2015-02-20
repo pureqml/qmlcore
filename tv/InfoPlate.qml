@@ -23,7 +23,7 @@ Item {
 
 	MouseArea {
 		anchors.fill: parent;
-		hoverEnabled: true;
+		hoverEnabled: infoPlateItem.visible;
 
 		onMouseXChanged: {
 			infoPlateItem.active = true;
@@ -36,6 +36,11 @@ Item {
 			hideTimer.interval = 2000;
 			hideTimer.restart();
 		}
+	}
+
+	onActiveChanged: {
+		if (!infoPlateItem.active)
+			settingsColumn.active = false;
 	}
 
 	Rectangle {

@@ -13,6 +13,9 @@ Object {
 
 	signal error;
 
+	LocalStorage { id: authTokenStorage; name: "authToken"; }
+	LocalStorage { id: sessionIdStorage; name: "sessionId"; }
+
 	checkResponse(url, res): {
 		if (res.result)
 			return true;
@@ -99,12 +102,32 @@ Object {
 			console.log("executing pending requests")
 			this._pending.forEach(function(callback) { callback(); })
 		}
-		//this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("res", res); })
+		this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
 		//this.requestWithToken("/resource/get_url/48100", {}, function(res) {console.log("res", res); })
+	}
+
+	openSession: {
+		this.requestWithToken('/er/multiscreen/ottweb/session/open/', {}, (function(res) {
+			console.log("SESSION", res)
+			this.sessionIdStorage.value = res.session_id
+			this.sessionId = res.session_id
+		}).bind(this), 'POST')
 	}
 
 	onCompleted: {
 		var self = this;
+		authTokenStorage.read()
+		sessionIdStorage.read()
+		console.log("stored data", authTokenStorage.value, sessionIdStorage.value)
+		if (sessionIdStorage.value && authTokenStorage.value) {
+			self.sessionId = sessionIdStorage.value
+			self.authToken = authTokenStorage.value
+			return
+		} else if (authTokenStorage.value) {
+			self.authToken = authTokenStorage.value;
+			self.openSession()
+			return
+		} else {
 		self.getToken(this.clientId, this.deviceId, self.region, function(res) {
 			console.log("token", JSON.stringify(res))
 			var authToken = res.token;
@@ -114,12 +137,11 @@ Object {
 				self.getSubscriberDeviceToken(authToken, self.ssoSystem, self.ssoKey, function(res) {
 					console.log("DEVICE TOKEN", JSON.stringify(res));
 					self.authToken = res.token;
-					self.requestWithToken('/er/multiscreen/ottweb/session/open/', {}, function(res) {
-						console.log("SESSION", res)
-						self.sessionId = res.session_id
-					}, 'POST')
+					self.authTokenStorage.value = res.token
+					self.openSession()
 				})
 			})
 		})
+		}
 	}
 }

@@ -753,7 +753,7 @@ exports._setup = function() {
 
 		var items = this._items
 		var n = items.length
-		console.log("layout " + n + " into " + w + "x" + h)
+		//console.log("layout " + n + " into " + w + "x" + h)
 		var horizontal = this.orientation === this.Horizontal
 		var p = horizontal? -this.contentX: -this.contentY
 		var size = horizontal? w: h
@@ -778,6 +778,10 @@ exports._setup = function() {
 				item.viewY = p
 			var s = (horizontal? item.width: item.height)
 			item.visible = (p + s >= 0 && p < size)
+			if (this.currentIndex == i) {
+				this.focusChild(item)
+				this.positionViewAtIndex(i)
+			}
 			p += s + this.spacing
 		}
 		if (p > 0)

@@ -834,7 +834,7 @@ exports._setup = function() {
 	}
 
 	exports.Context.prototype._completed = function() {
-		this._completedHandlers.forEach(function(callback) { try { callback(); } catch(ex) { console.log("completed handler failed", ex); }} )
+		this._completedHandlers.forEach(function(callback) { try { callback(); } catch(ex) { console.log("completed handler failed", ex, ex.stack); }} )
 		this._completedHandlers = [];
 	}
 

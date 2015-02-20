@@ -15,6 +15,9 @@ Item {
 
 	property bool handleNavigationKeys: true;
 
+	Behavior on contentX	{ Animation { duration: 300; } }
+	Behavior on contentY	{ Animation { duration: 300; } }
+
 	onKeyPressed: {
 		var horizontal = this.orientation == this.Horizontal
 		if (horizontal) {

@@ -6,11 +6,15 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
-	VideoPlayer { anchors.fill: renderer; }
+	VideoPlayer { id: videoPlayer; anchors.fill: renderer; }
+
+	Protocol { id: proto; enabled: true; }
 
 	CategoriesList {
 		anchors.leftMargin: 60;
 		anchors.rightMargin: 60;
+		protocol: proto;
+		anchors.fill: parent;
 	}
 
 	InfoPlate {

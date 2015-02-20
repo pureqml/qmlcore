@@ -228,12 +228,14 @@ exports._setup = function() {
 	}
 	_globals.core.Color.prototype.constructor = _globals.core.Color;
 
+	var Color = _globals.core.Color;
+
 	_globals.core.Color.prototype.get = function() {
 		return "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
 	}
 
 	_globals.core.ColorAnimation.prototype.interpolate = function(dst, src, t) {
-		var dst_c = new _globals.core.Color(dst), src_c = new _globals.core.Color(src);
+		var dst_c = new Color(dst), src_c = new Color(src);
 		var r = Math.floor(blend(dst_c.r, src_c.r, t))
 		var g = Math.floor(blend(dst_c.g, src_c.g, t))
 		var b = Math.floor(blend(dst_c.b, src_c.b, t))
@@ -265,7 +267,7 @@ exports._setup = function() {
 	_globals.core.Border.prototype._update = function(name, value) {
 		switch(name) {
 			case 'width': this.parent.element.css({'border-width': value, 'margin-left': -value, 'margin-top': -value}); break;
-			case 'color': this.parent.element.css('border-color', value); break;
+			case 'color': this.parent.element.css('border-color', (new Color(value)).get()); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -587,7 +589,7 @@ exports._setup = function() {
 	_globals.core.Text.prototype._update = function(name, value) {
 		switch(name) {
 			case 'text': this.element.text(value); this._updateSize(); break;
-			case 'color': this.element.css('color', value); break;
+			case 'color': this.element.css('color', (new Color(value)).get()); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
 			case 'horizontalAlignment':
 				switch(value) {
@@ -611,7 +613,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.GradientStop.prototype._getDeclaration = function() {
-		return (new _globals.core.Color(this.color)).get() + " " + Math.floor(100 * this.position) + "%"
+		return (new Color(this.color)).get() + " " + Math.floor(100 * this.position) + "%"
 	}
 
 	_globals.core.Gradient.prototype.Vertical = 0
@@ -636,7 +638,7 @@ exports._setup = function() {
 
 	_globals.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
-			case 'color': this.element.css('background-color', (new _globals.core.Color(value)).get()); break;
+			case 'color': this.element.css('background-color', (new Color(value)).get()); break;
 			case 'gradient': {
 				if (value) {
 					var decl = value._getDeclaration()
@@ -648,7 +650,7 @@ exports._setup = function() {
 					this.element.css('background', '-ms-linear-gradient(' + decl + ')')
 				} else {
 					this.element.css('background', '')
-					this._update('color', this.color) //restore color
+					this._update('color', (new Color(this.color)).get()) //restore color
 				}
 				break;
 			}

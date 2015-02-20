@@ -7,13 +7,33 @@ Item {
 
 	Timer {
 		id: hideTimer;
-		interval: 10000;
+		interval: 5000;
 		running: true;
 
 		onTriggered: {
 			infoPlate.active = false;
 		}
 	}
+
+	show: {
+		infoPlate.active = true;
+		hideTimer.restart();
+	}
+
+	// MouseArea {
+	// 	anchors.fill: parent;
+	// 	hoverEnabled: true;
+
+	// 	onMouseXChanged: {
+	// 		infoPlateItem.active = true;
+	// 		hideTimer.restart();
+	// 	}
+
+	// 	onMouseYChanged: {
+	// 		infoPlateItem.active = true;
+	// 		hideTimer.restart();
+	// 	}
+	// }
 
 	Rectangle {
 		anchors.bottom: renderer.bottom;

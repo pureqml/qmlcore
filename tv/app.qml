@@ -31,8 +31,7 @@ Item {
 	}
 
 	onKeyPressed: {
-		infoPlate.active = true;
-		hideTimer.restart();
+		infoPlate.show();
 	}
 
 	ListView {

@@ -42,6 +42,7 @@ Item {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
+		keyNavigationWraps: false;
 		width: 200;
 		contentY: 50;
 		delegate: Rectangle { width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }

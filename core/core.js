@@ -576,7 +576,6 @@ exports._setup = function() {
 	_globals.core.Gradient.prototype.addChild = function(child) {
 		this.stops.push(child)
 		this.stops.sort(function(a, b) { return a.position > b.position; })
-		this.parent._update('gradient', this)
 	}
 
 	_globals.core.GradientStop.prototype._update = function() {
@@ -592,10 +591,16 @@ exports._setup = function() {
 
 	_globals.core.Gradient.prototype._getDeclaration = function() {
 		var decl = []
-		var orientation = this.orientation == this.Vertical? 'top': 'left'
+		var orientation = this.orientation == this.Vertical? 'bottom': 'right'
 		decl.push(orientation)
-		for(var i = 0; i < this.stops.length; ++i) {
-			var stop = this.stops[i]
+
+		var stops = this.stops
+		var n = stops.length
+		if (n < 2)
+			return
+
+		for(var i = 0; i < n; ++i) {
+			var stop = stops[i]
 			decl.push(stop._getDeclaration())
 		}
 		return decl.join()
@@ -608,8 +613,7 @@ exports._setup = function() {
 				if (value) {
 					var decl = value._getDeclaration()
 					this.element.css('background-color', '')
-					this.element.css({ background: '-webkit-linear-gradient(' + decl + ')'})
-					this.element.css({ background: 'linear-gradient(' + decl + ')'})
+					this.element.css('background', 'linear-gradient(to ' + decl + ')')
 				} else {
 					this.element.css('background', '')
 					this._update('color', this.color) //restore color

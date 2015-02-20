@@ -8,11 +8,12 @@ Item {
 		anchors.bottom: renderer.bottom;
 		anchors.left: renderer.left;
 		anchors.right: renderer.right;
-		height: 210;
+		height: 160;
 
 		gradient: Gradient {
-			GradientStop { color: "#FFFFFFFF"; position: 0; } //TODO: fixme
-			GradientStop { color: "black"; position: 1; }
+			GradientStop { color: "#00000000"; position: 0; }
+			GradientStop { color: "#FF000001"; position: 0.7; }
+			GradientStop { color: "#00000000"; position: 1; }
 		}
 	}
 

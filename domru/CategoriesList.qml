@@ -32,7 +32,7 @@ Item {
 				id: categoryName;
 				font.pixelSize: 40;
 				anchors.centerIn: parent;
-				text: model.asset ? model.asset.title : "";
+				text: model.name;
 				color: "#fff";
 				opacity: parent.activeFocus ? 1.0 : 0.6;
 			}

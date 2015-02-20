@@ -5,23 +5,27 @@ ListModel {
 	}
 	prepare(asset): { }
 	getUrl(idx, callback): {
-		var row = this.get(idx)
-		var id = 0
-		row.asset.resources.forEach(function(res) {
-			if (res.category == "hls")
-				id = res.id
-		})
-		if (!id)
-			throw "no hls stream found"
+		this.get(idx, function(row) {
+			var id = 0
+			row.asset.resources.forEach(function(res) {
+				if (res.category == "hls")
+					id = res.id
+			})
+			if (!id)
+				throw "no hls stream found"
 
-		this.protocol.getUrl(row.id, id, function(res) {
-			callback(res.url)
+			this.protocol.getUrl(row.id, id, function(res) {
+				callback(res.url)
+			})
 		})
 	}
-	get(idx): {
+	get(idx, callback): {
 		var row = this._rows[idx]
-		if (row.asset)
+		if (row.asset) {
+			if (callback)
+				callback(row)
 			return row;
+		}
 
 		var model = this
 		var id = row.id
@@ -29,6 +33,8 @@ ListModel {
 			console.log("asset", id, res)
 			model.prepare(res)
 			model.setProperty(idx, "asset", res)
+			if (callback)
+				callback(this._rows[idx])
 		})
 		return row;
 	}

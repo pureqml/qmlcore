@@ -13,11 +13,11 @@ Object {
 
 	signal error;
 
-	checkResponse(res): {
+	checkResponse(url, res): {
 		if (res.result)
 			return true;
 		else {
-			console.log("failed response", JSON.stringify(res))
+			console.log("failed response", url, JSON.stringify(res))
 			this.error(res.error.message)
 		}
 	}
@@ -33,7 +33,7 @@ Object {
 			type: type || 'GET',
 			headers: headers || {}
 		}).done(function(res) {
-			if (self.checkResponse(res) && callback)
+			if (self.checkResponse(url, res) && callback)
 				callback(res)
 		}).fail(function(req, status, err) {
 			console.log(req, status, err)

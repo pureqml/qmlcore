@@ -1,5 +1,3 @@
-var samsung = window.hasOwnProperty('sf')
-
 var keyCodes = {
 	13: 'Select',
 	37: 'Left',
@@ -10,17 +8,6 @@ var keyCodes = {
 	113: 'Green',
 	114: 'Yellow',
 	115: 'Blue'
-}
-
-if (samsung) {
-	keyCodes = {}
-	for (var key in sf.key) {
-		var code = sf.key[key]
-		key = key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
-		if (key == "Enter")
-			key = "Select"
-		keyCodes[code] = key
-	}
 }
 
 var colorTable = {

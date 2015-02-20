@@ -3,6 +3,19 @@ Item {
 	anchors.fill: parent;
 	property int channelNumber: 20;
 
+
+	Rectangle {
+		anchors.bottom: renderer.bottom;
+		anchors.left: renderer.left;
+		anchors.right: renderer.right;
+		height: 210;
+
+		gradient: Gradient {
+			GradientStop { color: "#FFFFFFFF"; position: 0; } //TODO: fixme
+			GradientStop { color: "black"; position: 1; }
+		}
+	}
+
 	Image {
 		id: logo;
 		anchors.top: parent.top;
@@ -223,6 +236,10 @@ Item {
 			}
 		}
 
-		Options { model: optionsModel; }
+		Options { 
+			model: optionsModel; 
+//			anchors.right: parent.right;
+//			anchors.bottom: parent.bottom;
+		}
 	}	
 }

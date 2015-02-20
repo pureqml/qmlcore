@@ -37,6 +37,7 @@ Item {
 
 	ListView {
 		focus: true;
+		clip: true;
 		model: animalModel;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;

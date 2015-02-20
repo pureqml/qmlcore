@@ -34,6 +34,28 @@ Item {
 		}
 	}
 
+	positionViewAtIndex(idx): {
+		var item = this._items[idx]
+		if (!item)
+			return
+
+		var cx = this.contentX, cy = this.contentY
+		var x = item.viewX + item.x + cx, y = item.viewY + item.y + cy
+		var w = this.width, h = this.height
+		var horizontal = this.orientation == this.Horizontal
+		if (horizontal) {
+			if (x - cx < 0)
+				this.contentX = x
+			else if (x - cx + item.width > w)
+				this.contentX = x + item.width - w
+		} else {
+			if (y - cy < 0)
+				this.contentY = y
+			else if (y - cy + item.height > h)
+				this.contentY = y + item.height - h
+		}
+	}
+
 	focusCurrent: {
 		var n = this.count
 		if (n == 0)
@@ -43,15 +65,11 @@ Item {
 			this.currentIndex = (idx + n) % n
 			return
 		}
-		console.log(this._items, this.count)
 		var item = this._items[idx]
-		if (item)
+		if (item) {
 			this.focusChild(item)
-	}
-
-	onCountChanged: {
-		if (!this.focusedChild)
-			this.focusCurrent()
+			this.positionViewAtIndex(idx)
+		}
 	}
 
 	onCurrentIndexChanged: {

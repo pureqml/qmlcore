@@ -614,6 +614,10 @@ exports._setup = function() {
 					var decl = value._getDeclaration()
 					this.element.css('background-color', '')
 					this.element.css('background', 'linear-gradient(to ' + decl + ')')
+					this.element.css('background', '-o-linear-gradient(' + decl + ')')
+					this.element.css('background', '-moz-linear-gradient(' + decl + ')')
+					//this.element.css('background', '-webkit-linear-gradient(to ' + decl + ')')
+					this.element.css('background', '-ms-linear-gradient(' + decl + ')')
 				} else {
 					this.element.css('background', '')
 					this._update('color', this.color) //restore color

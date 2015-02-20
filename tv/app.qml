@@ -18,11 +18,10 @@ Item {
 
 	Text {
 		anchors.centerIn: parent;
-		text: "Нажми F2, штоп показать инфобаннер";
+		text: "Нажми F4 или подергай мышкой, штоп показать инфобаннер";
 	}
 
-	onKeyPressed: {
-		infoPlate.active = true;
-		hideTimer.restart();
+	onBluePressed: {
+		infoPlate.show();
 	}
 }

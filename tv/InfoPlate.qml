@@ -8,12 +8,12 @@ Item {
 		anchors.bottom: renderer.bottom;
 		anchors.left: renderer.left;
 		anchors.right: renderer.right;
-		height: 160;
+		height: 140;
 
 		gradient: Gradient {
 			GradientStop { color: "#00000000"; position: 0; }
-			GradientStop { color: "#FF000001"; position: 0.7; }
-			GradientStop { color: "#00000000"; position: 1; }
+			GradientStop { color: "#00000001"; position: 0.8; }
+			GradientStop { color: "#00000001"; position: 1; }
 		}
 	}
 
@@ -70,6 +70,9 @@ Item {
 				color: "#ccc";
 				text: "22 сентября Пн";
 			}
+
+			onLeftPressed: { shareButton.forceActiveFocus(); }
+			onRightPressed: { channelPanel.forceActiveFocus(); }
 		}
 
 		GreenButton {
@@ -121,6 +124,9 @@ Item {
 				anchors.rightMargin: 10;
 				source: "res/lock.png";
 			}
+
+			onLeftPressed: { timePanel.forceActiveFocus(); }
+			onRightPressed: { programPanel.forceActiveFocus(); }
 		}
 
 		GreenButton {
@@ -129,7 +135,7 @@ Item {
 			width: 675;
 			anchors.bottom: parent.bottom;
 			anchors.left: channelPanel.right;
-			anchors.right: settingsButton.left;
+			anchors.right: settingsColumn.left;
 			anchors.leftMargin: 8;
 			anchors.rightMargin: 8;
 
@@ -161,21 +167,75 @@ Item {
 				anchors.right: parent.right;
 				progress: 0.5;
 			}
+
+			onLeftPressed: { channelPanel.forceActiveFocus(); }
+			onRightPressed: { settingsButton.forceActiveFocus(); }
 		}
 
-		GreenButton {
-			id: settingsButton;
-			height: 68;
-			width: height;
+
+		Column {
+			id: settingsColumn;
+			width: 68;
 			anchors.bottom: parent.bottom;
 			anchors.right: shareButton.left;
 			anchors.rightMargin: 8;
+			spacing: 8;
+			property bool active;
 
-			Image {
-				anchors.centerIn: parent;
-				source: "res/settings.png";
+				
+			GreenButton {
+				id: ttxButton;
+				height: 68;
+				width: height;
+				visible: settingsColumn.active;
+
+				Image {
+					anchors.centerIn: parent;
+					source: "res/settings.png";
+				}
 			}
+
+			GreenButton {
+				id: subButton;
+				height: 68;
+				width: height;
+				visible: settingsColumn.active;
+
+				Image {
+					anchors.centerIn: parent;
+					source: "res/settings.png";
+				}
+			}
+
+			GreenButton {
+				id: audioButton;
+				height: 68;
+				width: height;
+				visible: settingsColumn.active;
+
+				Image {
+					anchors.centerIn: parent;
+					source: "res/settings.png";
+				}
+			}
+
+			GreenButton {
+				id: settingsButton;
+				height: 68;
+				width: height;
+
+				Image {
+					anchors.centerIn: parent;
+					source: "res/settings.png";
+				}
+
+				onTriggered: { settingsColumn.active = !settingsColumn.active; }
+			}
+
+			onLeftPressed: { programPanel.forceActiveFocus(); }
+			onRightPressed: { shareButton.forceActiveFocus(); }
 		}
+
 
 		GreenButton {
 			id: shareButton;
@@ -188,6 +248,9 @@ Item {
 				anchors.centerIn: parent;
 				source: "res/share.png";
 			}
+
+			onLeftPressed: { settingsButton.forceActiveFocus(); }
+			onRightPressed: { timePanel.forceActiveFocus(); }
 		}
 	}
 
@@ -239,8 +302,6 @@ Item {
 
 		Options { 
 			model: optionsModel; 
-//			anchors.right: parent.right;
-//			anchors.bottom: parent.bottom;
 		}
 	}	
 }

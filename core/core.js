@@ -863,7 +863,8 @@ exports._setup = function() {
 			proto = name;
 		var instance = Object.create(proto.prototype);
 		proto.apply(instance, [this]);
-		this._completed();
+		this._completed()
+		this.boxChanged()
 		return instance;
 	}
 }

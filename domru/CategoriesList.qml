@@ -24,5 +24,18 @@ ListView {
 			opacity: parent.activeFocus ? 1.0 : 0.6;
 		}
 	}
+
+	Rectangle {
+		anchors.top: renderer.top;
+		anchors.left: renderer.left;
+		anchors.right: renderer.right;
+		height: 140;
+
+		gradient: Gradient {
+			GradientStop { color: "#00000001"; position: 0; }
+			GradientStop { color: "#00000001"; position: 0.3; }
+			GradientStop { color: "#00000000"; position: 0.6; }
+		}
+	}
 }
 

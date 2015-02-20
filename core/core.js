@@ -771,6 +771,7 @@ exports._setup = function() {
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = this.delegate()
+				_globals._context._completed()
 				delete this._local['model']
 			}
 

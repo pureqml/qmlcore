@@ -9,7 +9,20 @@ Item {
 	InfoPlate {
 		id: infoPlate;
 		anchors.fill: parent;
-		visible: false;
+		property bool active: true;
+		opacity: active ? 1 : 0;
+
+		Timer {
+			id: hideTimer;
+			interval: 10000;
+//			running: true;
+
+			onTriggered: {
+				infoPlate.active = !infoPlate.active;
+			}
+		}
+
+	    Behavior on opacity	{ Animation { duration: 300; } }
 	}
 
 	Protocol {
@@ -27,7 +40,8 @@ Item {
 	}
 
 	onKeyPressed: {
-		infoPlate.visible = !infoPlate.visible;
+		infoPlate.active = true;
+		hideTimer.running = true;
 	}
 
 	ListView {

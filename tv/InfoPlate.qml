@@ -2,7 +2,18 @@ Item {
 	id: infoPlateItem;
 	anchors.fill: parent;
 	property int channelNumber: 20;
+	property bool active: true;
+	opacity: active ? 1 : 0;
 
+	Timer {
+		id: hideTimer;
+		interval: 10000;
+		running: true;
+
+		onTriggered: {
+			infoPlate.active = false;
+		}
+	}
 
 	Rectangle {
 		anchors.bottom: renderer.bottom;
@@ -305,5 +316,7 @@ Item {
 		Options { 
 			model: optionsModel; 
 		}
-	}	
+	}
+
+	Behavior on opacity	{ Animation { duration: 300; } }
 }

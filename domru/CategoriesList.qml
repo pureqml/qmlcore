@@ -38,13 +38,13 @@ Item {
 			}
 		}
 
-		onDownPressed: { channels.forceActiveFocus(); }
+		onDownPressed: { channelView.forceActiveFocus(); }
 
 		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	ListView {
-		id: channels;
+		id: channelView;
 		anchors.top: categoriesList.bottom;
 		anchors.left: parent.left;
 		anchors.right: parent.right;

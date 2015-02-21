@@ -21,6 +21,10 @@ Object {
 			console.log("failed response", url, JSON.stringify(res))
 			if (res.error.message.indexOf("token") > -1)
 				this.requestNewToken()
+			if (res.error.message === 'no entitlement' && res.error.reason === 'invalid er_multiscreen_session_id') {
+				console.log("session expired")
+				this.openSession()
+			}
 			this.error(res.error.message)
 		}
 	}

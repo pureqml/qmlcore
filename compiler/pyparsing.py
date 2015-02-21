@@ -57,8 +57,8 @@ The pyparsing module handles some of the problems that are typically vexing when
  - embedded comments
 """
 
-__version__ = "2.0.2"
-__versionTime__ = "13 April 2014 12:10"
+__version__ = "2.0.3"
+__versionTime__ = "16 Aug 2014 00:12"
 __author__ = "Paul McGuire <ptmcg@users.sourceforge.net>"
 
 import string
@@ -300,7 +300,7 @@ class ParseResults(object):
             if isinstance(name,int):
                 name = _ustr(name) # will always return a str, but use _ustr for consistency
             self.__name = name
-            if not toklist in (None,'',[]):
+            if not (isinstance(toklist, (type(None), basestring, list)) and toklist in (None,'',[])):
                 if isinstance(toklist,basestring):
                     toklist = [ toklist ]
                 if asList:
@@ -414,11 +414,15 @@ class ParseResults(object):
            supported, just as in dict.pop()."""
         if not args:
             args = [-1]
-        if 'default' in kwargs:
-            args.append(kwargs['default'])
+        for k,v in kwargs.items():
+            if k == 'default':
+                args = (args[0], v)
+            else:
+                raise TypeError("pop() got an unexpected keyword argument '%s'" % k)
         if (isinstance(args[0], int) or 
                         len(args) == 1 or 
                         args[0] in self):
+            index = args[0]
             ret = self[index]
             del self[index]
             return ret
@@ -637,15 +641,25 @@ class ParseResults(object):
            Accepts an optional C{indent} argument so that this string can be embedded
            in a nested display of other data."""
         out = []
+        NL = '\n'
         out.append( indent+_ustr(self.asList()) )
         items = sorted(self.items())
         for k,v in items:
             if out:
-                out.append('\n')
+                out.append(NL)
             out.append( "%s%s- %s: " % (indent,('  '*depth), k) )
             if isinstance(v,ParseResults):
-                if v.haskeys():
-                    out.append( v.dump(indent,depth+1) )
+                if v:
+                    if v.haskeys():
+                        out.append( v.dump(indent,depth+1) )
+                    elif any(isinstance(vv,ParseResults) for vv in v):
+                        for i,vv in enumerate(v):
+                            if isinstance(vv,ParseResults):
+                                out.append("\n%s%s[%d]:\n%s%s%s" % (indent,('  '*(depth+1)),i,indent,('  '*(depth+2)),vv.dump(indent,depth+2) ))
+                            else:
+                                out.append("\n%s%s[%d]:\n%s%s%s" % (indent,('  '*(depth+1)),i,indent,('  '*(depth+2)),_ustr(vv)))
+                    else:
+                        out.append(_ustr(v))
                 else:
                     out.append(_ustr(v))
             else:
@@ -1914,8 +1928,7 @@ class QuotedString(Token):
             self.pattern += (r'|(?:%s)' % re.escape(escQuote))
         if escChar:
             self.pattern += (r'|(?:%s.)' % re.escape(escChar))
-            charset = ''.join(set(self.quoteChar[0]+self.endQuoteChar[0])).replace('^',r'\^').replace('-',r'\-')
-            self.escCharReplacePattern = re.escape(self.escChar)+("([%s])" % charset)
+            self.escCharReplacePattern = re.escape(self.escChar)+"(.)"
         self.pattern += (r')*%s' % re.escape(self.endQuoteChar))
 
         try:
@@ -2338,8 +2351,8 @@ class And(ParseExpression):
     def __init__( self, exprs, savelist = True ):
         super(And,self).__init__(exprs, savelist)
         self.mayReturnEmpty = all(e.mayReturnEmpty for e in self.exprs)
-        self.setWhitespaceChars( exprs[0].whiteChars )
-        self.skipWhitespace = exprs[0].skipWhitespace
+        self.setWhitespaceChars( self.exprs[0].whiteChars )
+        self.skipWhitespace = self.exprs[0].skipWhitespace
         self.callPreparse = True
 
     def parseImpl( self, instring, loc, doActions=True ):
@@ -3228,6 +3241,7 @@ def oneOf( strs, caseless=False, useRegex=True ):
         masks = ( lambda a,b: b.startswith(a) )
         parseElementClass = Literal
 
+    symbols = []
     if isinstance(strs,basestring):
         symbols = strs.split()
     elif isinstance(strs, collections.Sequence):
@@ -3237,6 +3251,8 @@ def oneOf( strs, caseless=False, useRegex=True ):
     else:
         warnings.warn("Invalid argument to oneOf, expected string or list",
                 SyntaxWarning, stacklevel=2)
+    if not symbols:
+        return NoMatch()
 
     i = 0
     while i < len(symbols)-1:

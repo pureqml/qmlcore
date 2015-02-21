@@ -89,7 +89,7 @@ class component_generator(object):
 				else:
 					if name in self.signal_handlers:
 						raise Exception("duplicate signal handler " + child.name)
-					self.signal_handlers[name] = code
+					self.signal_handlers[name] = args, code
 			else:
 				if name in self.methods:
 					raise Exception("duplicate method " + name)
@@ -238,10 +238,11 @@ class component_generator(object):
 			args, code = argscode
 			code = process(code, registry)
 			r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
-		for name, code in self.signal_handlers.iteritems():
+		for name, argscode in self.signal_handlers.iteritems():
+			args, code = argscode
 			code = process(code, registry)
 			if name != "completed":
-				r.append("%sthis.on('%s', (function() %s ).bind(this));" %(ident, name, code))
+				r.append("%sthis.on('%s', (function(%s) %s ).bind(this));" %(ident, name, ",".join(args), code))
 			else:
 				r.append("%sqml._context._onCompleted((function() %s ).bind(this));" %(ident, code))
 		for name, code in self.changed_handlers.iteritems():

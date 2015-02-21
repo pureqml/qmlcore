@@ -17,10 +17,10 @@ Object {
 	LocalStorage { id: sessionIdStorage; name: "sessionId"; }
 
 	checkResponse(url, res): {
-		if (res.result)
-			return true;
-		else {
+		if (!res.result) {
 			console.log("failed response", url, JSON.stringify(res))
+			if (res.error.message.indexOf("token") > -1)
+				this.requestNewToken()
 			this.error(res.error.message)
 		}
 	}
@@ -36,7 +36,8 @@ Object {
 			type: type || 'GET',
 			headers: headers || {}
 		}).done(function(res) {
-			if (self.checkResponse(url, res) && callback)
+			self.checkResponse(url, res)
+			if (callback)
 				callback(res)
 		}).fail(function(req, status, err) {
 			console.log(req, status, err)
@@ -44,22 +45,25 @@ Object {
 		})
 	}
 
-	requestWithToken(url, data, callback, type): {
+	requestWithToken(url, data, callback, type, token): {
 		if (!this.enabled)
 			return;
-		if (!this.authToken)
+		if (!token)
+			token = this.authToken
+
+		var self = this;
+		if (!token)
 		{
-			console.log("no token, scheduling request")
+			console.log("no token, scheduling request " + url)
 			if (!this._pending)
 				this._pending = []
 
-			var self = this;
 			this._pending.push(function(token) {
 				self.request(url, data, callback, type, {'X-Auth-Token': token})
 			})
 			return
 		}
-		this.request(url, data, callback, type, {'X-Auth-Token': this.authToken})
+		this.request(url, data, callback, type, {'X-Auth-Token': token})
 	}
 
 	getToken(clientId, deviceId, region, callback): {
@@ -102,8 +106,9 @@ Object {
 		if (!this.authToken)
 			return
 		if (this._pending) {
+			var self = this
 			console.log("executing pending requests")
-			this._pending.forEach(function(callback) { callback(this.authToken); })
+			this._pending.forEach(function(callback) { callback(self.authToken); })
 		}
 		this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
 		//this.requestWithToken("/resource/get_url/48100", {}, function(res) {console.log("res", res); })
@@ -117,21 +122,9 @@ Object {
 		}).bind(this), 'POST')
 	}
 
-	onCompleted: {
-		var self = this;
-		authTokenStorage.read()
-		sessionIdStorage.read()
-		console.log("stored data", authTokenStorage.value, sessionIdStorage.value)
-		if (sessionIdStorage.value && authTokenStorage.value) {
-			self.sessionId = sessionIdStorage.value
-			self.authToken = authTokenStorage.value
-			return
-		} else if (authTokenStorage.value) {
-			self.authToken = authTokenStorage.value;
-			self.openSession()
-			return
-		} else {
-		self.getToken(this.clientId, this.deviceId, self.region, function(res) {
+	requestNewToken: {
+		var self = this
+		self.getToken(this.clientId, this.deviceId, this.region, function(res) {
 			console.log("token", JSON.stringify(res))
 			var authToken = res.token;
 			self.login(self.username, self.password, self.region, function(res) {
@@ -145,6 +138,23 @@ Object {
 				})
 			})
 		})
+	}
+
+	init: {
+		if (sessionIdStorage.value && authTokenStorage.value) {
+			this.sessionId = sessionIdStorage.value
+			this.authToken = authTokenStorage.value
+		} else if (authTokenStorage.value) {
+			this.authToken = authTokenStorage.value;
+			this.openSession()
+		} else {
+			this.requestNewToken()
 		}
+	}
+
+	onCompleted: {
+		authTokenStorage.read()
+		sessionIdStorage.read()
+		this.init()
 	}
 }

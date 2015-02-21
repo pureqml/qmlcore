@@ -40,5 +40,6 @@ class Behavior(object):
 		self.animation = animation
 
 class Signal(object):
-	def __init__(self, name):
+	def __init__(self, name, args):
 		self.name = name
+		self.args = args

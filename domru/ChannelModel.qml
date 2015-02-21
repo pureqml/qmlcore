@@ -1,7 +1,7 @@
 ListModel {
 	setList(list): {
-		var model = this;
-		list.channels.forEach(function(id) { model.append({id: id}); } )
+		var self = this;
+		list.channels.forEach(function(id) { self.append({id: id}); } )
 	}
 	prepare(asset): { }
 	getUrl(idx, callback): {
@@ -27,12 +27,12 @@ ListModel {
 			return row;
 		}
 
-		var model = this
+		var self = this
 		var id = row.id
 		this.protocol.getAsset(id, function(res) {
 			console.log("asset", id, res)
-			model.prepare(res)
-			model.setProperty(idx, "asset", res)
+			self.prepare(res)
+			self.setProperty(idx, "asset", res)
 			if (callback)
 				callback(this._rows[idx])
 		})

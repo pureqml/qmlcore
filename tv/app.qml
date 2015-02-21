@@ -16,6 +16,10 @@ Item {
 		anchors.rightMargin: 60;
 		protocol: proto;
 		anchors.fill: parent;
+		onActivated(url): {
+			console.log("got url", url)
+			videoPlayer.source = url
+		}
 	}
 
 	InfoPlate {

@@ -93,21 +93,23 @@ Item {
 			anchors.left: parent.left;
 
 			Text {
+				id: timeText;
 				anchors.top: parent.top;
 				anchors.left: parent.left;
 				anchors.topMargin: 12;
 				anchors.leftMargin: 10;
 				color: "#fff";
-				text: "15:19";
+				text: "00:00";
 			}
 
 			Text {
+				id: dateText;
 				anchors.bottom: parent.bottom;
 				anchors.left: parent.left;
 				anchors.bottomMargin: 12;
 				anchors.leftMargin: 10;
 				color: "#ccc";
-				text: "22 сентября Пн";
+				text: "-- ---- --";
 			}
 
 			onLeftPressed: { shareButton.forceActiveFocus(); }
@@ -343,6 +345,36 @@ Item {
 
 		Options { 
 			model: optionsModel; 
+		}
+	}
+
+	Timer {
+		duration: 600;
+		running: infoPlateItem.active;
+
+		onTriggered: {
+			var now = new Date();
+			var minutes = now.getMinutes();
+			minutes = minutes >= 10 ? minutes : "0" + minutes
+			timeText.text = now.getHours() + ":" + minutes
+			//TODO: Move it somethere out there.
+			var monthList = [
+				'январь',
+				'февраль',
+				'март',
+				'апрель',
+				'май',
+				'июнь',
+				'июль',
+				'август',
+				'сентябрь',
+				'октябрь',
+				'ноябрь',
+				'декабрь'
+			]
+			var week = [ 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб' ]
+			var month = monthList[now.getMonth()]
+			dateText.text = now.getDate() + " " + month + " " + week[now.getDay()]
 		}
 	}
 

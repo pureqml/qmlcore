@@ -213,7 +213,7 @@ exports._setup = function() {
 			var r = parseInt(triplet.charAt(0), 16)
 			var g = parseInt(triplet.charAt(1), 16)
 			var b = parseInt(triplet.charAt(2), 16)
-			var a = (len == 4)? parseInt(triplet.charAt(3), 16): 255
+			var a = (len == 4)? parseInt(triplet.charAt(3), 16): 15
 			this.r = (r << 4) | r;
 			this.g = (g << 4) | g;
 			this.b = (b << 4) | b;

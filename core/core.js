@@ -235,7 +235,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Color.prototype.get = function() {
-		return "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
+		return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 	}
 
 	_globals.core.ColorAnimation.prototype.interpolate = function(dst, src, t) {

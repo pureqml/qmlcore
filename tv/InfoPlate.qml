@@ -11,12 +11,12 @@ Item {
 		running: true;
 
 		onTriggered: {
-			infoPlate.active = false;
+			infoPlateItem.active = false;
 		}
 	}
 
 	show: {
-		infoPlate.active = true;
+		infoPlateItem.active = true;
 		hideTimer.interval = 6000;
 		hideTimer.restart();
 	}

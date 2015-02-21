@@ -1,6 +1,7 @@
 Item {
 	id: channelList;
 	signal activated;
+	signal channelSwitched;
 	property Protocol protocol;
 	property bool active: false;
 	opacity: channelList.active ? 1.0 : 0.0;
@@ -77,19 +78,18 @@ Item {
 			opacity: activeFocus ? 1.0 : 0.6;
 
 			Text {
-				id: channelId;
 				anchors.left: parent.left;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 12;
 				font.pixelSize: 24;
-				text: model.asset ? model.asset.epg_channel_id : "";
+				text: model.asset ? model.asset.er_lcn : "";
 				color: "#aaa";
 			}
 
 			Text {
-				anchors.left: channelId.right;
+				anchors.left: parent.left;
 				anchors.verticalCenter: parent.verticalCenter;
-				anchors.leftMargin: 12;
+				anchors.leftMargin: 62;
 				font.pixelSize: 24;
 				text: model.asset ? model.asset.title : "";
 				color: "#fff";
@@ -118,6 +118,20 @@ Item {
 			this.model.getUrl(this.currentIndex, function(url) {
 				activated(url)
 			})
+
+			var curRow = this.model.get(this.currentIndex, function(){})
+			if (!curRow.asset)
+				return;
+
+			var channelInfo = {
+				number: 		curRow.asset.er_lcn,
+				title:			curRow.asset.title,
+				icon: 			"res/chanelLogo.png",
+				description:	curRow.asset.description,
+				isHd:			curRow.asset.traits == "HD",
+				is3d:			curRow.asset.traits == "3D"
+			}
+			channelList.channelSwitched(channelInfo)
 		}
 	}
 

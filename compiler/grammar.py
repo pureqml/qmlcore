@@ -45,12 +45,12 @@ def handle_signal_declaration(s, l, t):
 
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
-identifier = Word(srange("[a-z]"), alphanums)
+identifier = Word(srange("[a-z_]"), alphanums + "_")
 code = originalTextFor(nestedExpr("{", "}", None, None))
 
-nested_identifier_lvalue = Word(srange("[a-z]"), alphanums + ".")
+nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
 
-nested_identifier_rvalue = Word(srange("[a-z]"), alphanums + ".")
+nested_identifier_rvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
 expression_end = Literal(";").suppress()

@@ -51,8 +51,8 @@ Item {
 
 		gradient: Gradient {
 			GradientStop { color: "#00000000"; position: 0; }
-			GradientStop { color: "#00000001"; position: 0.8; }
-			GradientStop { color: "#00000001"; position: 1; }
+			GradientStop { color: "#000000ff"; position: 0.8; }
+			GradientStop { color: "#000000ff"; position: 1; }
 		}
 	}
 

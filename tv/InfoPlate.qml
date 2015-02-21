@@ -1,8 +1,13 @@
 Item {
 	id: infoPlateItem;
-	anchors.fill: parent;
-	property int channelNumber: 20;
 	property bool active: true;
+	property bool isHd: false;
+	property bool is3d: false;
+	property int channelNumber: 0;
+	property string description;
+	property string title;
+	property string logo;
+	anchors.fill: parent;
 	opacity: active ? 1 : 0;
 
 	Timer {
@@ -130,7 +135,7 @@ Item {
 				anchors.topMargin: 12;
 				anchors.leftMargin: 10;
 				color: "#ccc";
-				text: "015";
+				text: infoPlateItem.channelNumber;
 			}
 
 			Image {
@@ -138,7 +143,7 @@ Item {
 				anchors.top: parent.top;
 				anchors.topMargin: 12;
 				anchors.rightMargin: 10;
-				source: "res/chanelLogo.png";
+				source: infoPlateItem.logo;
 			}
 
 			Image {
@@ -148,6 +153,7 @@ Item {
 				anchors.bottomMargin: 12;
 				anchors.leftMargin: 10;
 				source: "res/hd.png";
+				visible: infoPlateItem.isHd;
 			}
 
 			Image {
@@ -156,6 +162,7 @@ Item {
 				anchors.bottomMargin: 12;
 				anchors.leftMargin: 10;
 				source: "res/3d.png";
+				visible: infoPlateItem.is3d;
 			}
 
 			Image {
@@ -190,7 +197,7 @@ Item {
 				anchors.rightMargin: 10;
 				font.pointSize: 18;
 				color: "#fff";
-				text: "Название текущей передачи";
+				text: infoPlateItem.description;
 			}
 
 			Text {
@@ -218,12 +225,12 @@ Item {
 
 		Column {
 			id: settingsColumn;
+			property bool active;
 			width: 68;
 			anchors.bottom: parent.bottom;
 			anchors.right: shareButton.left;
 			anchors.rightMargin: 8;
 			spacing: 8;
-			property bool active;
 
 				
 			GreenButton {

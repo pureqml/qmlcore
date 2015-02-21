@@ -3,6 +3,8 @@ Item {
 	property Protocol protocol;
 	property bool active: false;
 
+	signal activated(url);
+
 	ChannelListModel {
 		id: channelListModel;
 		protocol: channelList.protocol;
@@ -68,6 +70,12 @@ Item {
 		}
 
 		Behavior on opacity { Animation { duration: 300; } }
+		onSelectPressed: {
+			var activated = channelList.activated
+			this.model.getUrl(this.currentIndex, function(url) {
+				activated(url)
+			})
+		}
 	}
 
 	toggle: {

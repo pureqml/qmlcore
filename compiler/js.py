@@ -258,7 +258,6 @@ class generator(object):
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
-		self.id_set = set(['renderer'])
 		self.startup.append("qml.core.core._setup();")
 		self.startup.append("qml._context = new qml.core.core.Context();")
 
@@ -305,10 +304,10 @@ class generator(object):
 	def generate_components(self):
 		r, base_class = [], {}
 
-		for gen in self.components.itervalues():
+		for name, gen in self.components.iteritems():
+			self.id_set = set(['renderer'])
 			gen.collect_id(self.id_set)
 
-		for name, gen in self.components.iteritems():
 			code = "//=====[component %s]=====================\n\n" %name
 			code += gen.generate(self)
 			base_type = self.find_component(gen.package, gen.component.name)

@@ -41,14 +41,11 @@ def handle_behavior_declaration(s, l, t):
 	return lang.Behavior(t[0], t[1])
 
 def handle_signal_declaration(s, l, t):
-	return lang.Signal(t[0], t[1])
+	return lang.Signal(t[0])
 
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z]"), alphanums)
-
-optional_argument_list = Group(Optional(Literal("(").suppress() + identifier + ZeroOrMore(Literal(",").suppress() + identifier) + Literal(")").suppress() ))
-
 code = originalTextFor(nestedExpr("{", "}", None, None))
 
 nested_identifier_lvalue = Word(srange("[a-z]"), alphanums + ".")
@@ -58,7 +55,7 @@ nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
 expression_end = Literal(";").suppress()
 
-signal_declaration = Keyword("signal").suppress() + identifier + optional_argument_list + expression_end
+signal_declaration = Keyword("signal").suppress() + identifier + expression_end
 signal_declaration.setParseAction(handle_signal_declaration)
 
 id_declaration = Keyword("id").suppress() + Literal(":").suppress() + identifier + expression_end
@@ -87,7 +84,7 @@ assign_scope_declaration.setParseAction(handle_assignment)
 assign_scope = nested_identifier_lvalue + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
 assign_scope.setParseAction(handle_assignment_scope)
 
-method_declaration = nested_identifier_lvalue + optional_argument_list + Literal(":").suppress() + code
+method_declaration = nested_identifier_lvalue + Group(Optional(Literal("(").suppress() + identifier + ZeroOrMore(Literal(",").suppress() + identifier) + Literal(")").suppress() )) + Literal(":").suppress() + code
 method_declaration.setParseAction(handle_method_declaration)
 
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + identifier + Literal("{").suppress() + component_declaration + Literal("}").suppress()

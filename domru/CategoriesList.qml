@@ -3,7 +3,7 @@ Item {
 	property Protocol protocol;
 	property bool active: false;
 
-	signal activated(url);
+	signal activated;
 
 	ChannelListModel {
 		id: channelListModel;

@@ -271,7 +271,11 @@ Item {
 				id: subButton;
 				height: 68;
 				width: height;
+				property bool checked;
+				isGreen: subButton.activeFocus || subButton.checked;
 				visible: settingsColumn.active;
+
+				onTriggered: { subButton.checked = !subButton.checked; }
 
 				Image {
 					anchors.centerIn: parent;

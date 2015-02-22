@@ -201,7 +201,7 @@ Item {
 
 		GreenButton {
 			id: programPanel;
-			height: 68;
+			height: activeFocus ? 204 : 68;
 			width: 675;
 			anchors.bottom: parent.bottom;
 			anchors.left: channelPanel.right;
@@ -234,10 +234,19 @@ Item {
 			}
 
 			ProgressBar {
-				anchors.bottom: parent.bottom;
+				id: programProgress;
+				y: 62;//anchors.bottom: parent.bottom;
 				anchors.left: parent.left;
 				anchors.right: parent.right;
 				progress: 0.5;
+			}
+
+			Rectangle {
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				anchors.top: programProgress.bottom;
+				anchors.bottom: parent.bottom;
+				color: "gray";
 			}
 
 			onLeftPressed: { channelPanel.forceActiveFocus(); }

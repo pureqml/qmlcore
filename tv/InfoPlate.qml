@@ -11,6 +11,8 @@ Item {
 	anchors.fill: parent;
 	opacity: active ? 1 : 0;
 
+	signal channelListCalled;
+
 	Timer {
 		id: hideTimer;
 		interval: 10000;
@@ -346,23 +348,91 @@ Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 
-		ListModel {
-			id: contextModel;
-			property string text;
-			property Color color;
+		Item {
+			id: tvGuideContext;
+			height: 20;
+			width: height + contextText.paintedWidth + 10;
 
-			ListElement {
-				text: "ТВ Гид";
+			Rectangle {
+				id: tvRect;
+				height: parent.height;
+				width: height;
+				anchors.left: parent.left;
+				anchors.verticalCenter: parent.verticalCenter;
 				color: "#f00";
+				radius: height / 4;
+				border.width: 2;
+				border.color: "#fff";
 			}
 
-			ListElement {
-				text: "Список каналов";
-				color: "#00ab5f";
+			Text {
+				id: contextText;
+				anchors.left: tvRect.right;
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.leftMargin: 8;
+				color: "#fff";
+				text: "ТВ Гид";
 			}
 		}
 
-		ContextMenu { model: contextModel; }
+		Item {
+			id: listContext;
+			anchors.left: tvGuideContext.right;
+			anchors.leftMargin: 20;
+			height: 20;
+			width: height + contextText.paintedWidth + 10;
+			property bool active;
+
+
+			Rectangle {
+				id: listRect;
+				height: parent.height;
+				width: height;
+				anchors.left: parent.left;
+				anchors.verticalCenter: parent.verticalCenter;
+				color: "#00ab5f";
+				radius: height / 4;
+				border.width: 2;
+				border.color: "#fff";
+			}
+
+			Text {
+				id: contextText;
+				anchors.left: listRect.right;
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.leftMargin: 8;
+				color: "#fff";
+				text: "Список каналов (F2)";
+				font.pointSize: listContext.active ? 16 : 12;
+			}
+
+			MouseArea {
+				anchors.fill: parent;
+				anchors.margins: -20;
+				hoverEnabled: true;
+				onClicked: { infoPlateItem.active = false; infoPlateItem.channelListCalled(); }
+				onEntered: { listContext.active = true; }
+				onExited: { listContext.active = false; }
+			}
+		}
+
+		// ListModel {
+		// 	id: contextModel;
+		// 	property string text;
+		// 	property Color color;
+
+		// 	ListElement {
+		// 		text: "ТВ Гид";
+		// 		color: "#f00";
+		// 	}
+
+		// 	ListElement {
+		// 		text: "Список каналов";
+		// 		color: "#00ab5f";
+		// 	}
+		// }
+
+		// ContextMenu { model: contextModel; }
 
 		ListModel {
 			id: optionsModel;

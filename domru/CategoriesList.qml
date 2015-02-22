@@ -99,7 +99,7 @@ Item {
 				anchors.right: parent.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.rightMargin: 10;
-				source: "res/chanelLogo.png";
+				source: model.asset ? model.asset.pictureUrl + "/30x30:contain": "";
 			}
 
 			Behavior on opacity { Animation { duration: 300; } }

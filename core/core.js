@@ -10,7 +10,7 @@ if ('Common' in window) {
 
 	console.log = function() {
 		var args = Array.prototype.slice.call(arguments)
-		alert("[QML] " + args.join("\t"))
+		alert("[QML] " + args.join(" "))
 	}
 
 	console.log("loading")

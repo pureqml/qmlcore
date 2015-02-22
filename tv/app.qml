@@ -40,7 +40,7 @@ Item {
 	Text {
 		anchors.centerIn: parent;
 		color: "white";
-		text: "Нажми F4 или подергай мышкой, штоп показать инфобаннер";
+		text: "Здравствуйте, Уважаемый, нажмите F4 или подергайте мышкой, штоп показать инфобаннер";
 		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
 
 		Behavior on opacity { Animation { duration: 300; } }

@@ -29,6 +29,8 @@ Rectangle {
     MouseArea {
         anchors.fill: parent;
         hoverEnabled: true;
+
+        z: 100;
         onClicked: { button.triggered(); }
         onEntered: { 
             if (!button.activeFocus)

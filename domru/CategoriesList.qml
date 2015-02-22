@@ -126,7 +126,7 @@ Item {
 			var channelInfo = {
 				number: 		curRow.asset.er_lcn,
 				title:			curRow.asset.title,
-				icon: 			"res/chanelLogo.png",
+				logo: 			curRow.asset.pictureUrl + "/30x30:contain",
 				description:	curRow.asset.description,
 				isHd:			curRow.asset.traits == "HD",
 				is3d:			curRow.asset.traits == "3D"

@@ -41,6 +41,7 @@ Item {
 		visible: !categories.active;
 
 		onChannelListCalled: {
+			infoPlate.permanent = false;
 			categories.toggle();
 		}
 	}
@@ -48,7 +49,7 @@ Item {
 	Text {
 		anchors.centerIn: parent;
 		color: "white";
-		text: "нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
+		text: "Нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
 		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
 
 		Behavior on opacity { Animation { duration: 300; } }

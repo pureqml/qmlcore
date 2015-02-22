@@ -6,7 +6,7 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
-	VideoPlayer { id: videoPlayer; anchors.fill: renderer; }
+	VideoPlayer { id: videoPlayer; anchors.fill: renderer; autoPlay: true; }
 
 	Protocol { id: proto; enabled: true; }
 

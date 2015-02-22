@@ -1,0 +1,53 @@
+#!/bin/bash
+
+ROOT=`dirname $0`
+
+function compiler() {
+	$ROOT/qml-compiler $@
+}
+
+#fix --compilation_level ADVANCED_OPTIMIZATIONS
+function minify() {
+	java -jar compiler/gcc/compiler.jar --externs compiler/gcc/jquery-1.9.js app/qml.js > app/qml.min.js
+}
+
+function package() {
+	platform=$1
+	pkg=`mktemp -d -p .`
+	cp -ra app/* $pkg
+	rm $pkg/app.html $pkg/qml.js
+	cp platform/$platform/dist/* $pkg
+	pushd $pkg >/dev/null
+	zip -r0 ../${platform}.zip *
+	popd >/dev/null
+	rm -rf $pkg
+}
+
+for opt in "$@"; do
+	case $opt in
+		--help)
+			echo "$0 dev      development mode, on-fly build in app/"
+			echo "$0 smarttv  package application for Samsung SmartTv"
+			echo "$0 html5    package html5 application"
+			echo "$0 test     run test app"
+		;;
+		test)
+			compiler -w -o app core controls test
+		;;
+		smarttv)
+			compiler -o app core controls domru platform/smarttv tv
+			minify
+			package smarttv
+		;;
+		html5)
+			compiler -o app core controls domru platform/html5 tv
+			minify
+			package html5
+		;;
+		*) echo "unknown option $opt"; exit;;
+	esac
+done
+
+if [ -z $1 ]; then
+	compiler -w -o app core controls domru platform/html5 tv
+fi

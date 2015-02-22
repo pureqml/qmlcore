@@ -44,13 +44,6 @@ Item {
 			infoPlate.permanent = false;
 			categories.toggle();
 		}
-
-		MouseArea {
-			anchors.fill: parent;
-			onClicked: {
-				categories.toggle()
-			}
-		}
 	}
 
 	Text {

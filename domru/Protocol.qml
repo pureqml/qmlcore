@@ -62,8 +62,8 @@ Object {
 			if (!this._pending)
 				this._pending = []
 
-			this._pending.push(function(token) {
-				self.request(url, data, callback, type, {'X-Auth-Token': token})
+			this._pending.push(function() {
+				self.request(url, data, callback, type, {'X-Auth-Token': self.authToken})
 			})
 			return
 		}
@@ -110,9 +110,8 @@ Object {
 		if (!this.authToken)
 			return
 		if (this._pending) {
-			var self = this
 			console.log("executing pending requests")
-			this._pending.forEach(function(callback) { callback(self.authToken); })
+			this._pending.forEach(function(callback) { callback(); })
 		}
 		this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
 		//this.requestWithToken("/resource/get_url/48100", {}, function(res) {console.log("res", res); })

@@ -113,8 +113,9 @@ Object {
 			console.log("executing pending requests")
 			this._pending.forEach(function(callback) { callback(); })
 		}
-		this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
-		//this.requestWithToken("/resource/get_url/48100", {}, function(res) {console.log("res", res); })
+		//this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
+		var self = this;
+		this.requestWithToken('/resource/get_origin_list/', {}, function(res) { self._origins = res.origins; console.log("origins", self._origins) })
 	}
 
 	openSession: {
@@ -144,6 +145,7 @@ Object {
 	}
 
 	init: {
+		this._origins = []
 		if (sessionIdStorage.value && authTokenStorage.value) {
 			this.sessionId = sessionIdStorage.value
 			this.authToken = authTokenStorage.value

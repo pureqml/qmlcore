@@ -5,7 +5,7 @@ var widgetAPI
 var tvKey
 var pluginAPI
 
-if (Common && Common.API) {
+if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 
 	console.log = function() {

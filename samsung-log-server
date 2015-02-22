@@ -1,0 +1,9 @@
+#!/bin/bash
+
+trap exit SIGINT
+
+while [ true ]
+do
+	echo "starting server"
+	nc -l -p 45634
+done

@@ -20,6 +20,7 @@ Item {
 		onActivated(url): {
 			console.log("got url", url)
 			videoPlayer.source = url
+			videoPlayer.play();
 		}
 
 		onChannelSwitched(channelInfo): {

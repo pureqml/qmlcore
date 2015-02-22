@@ -382,6 +382,8 @@ exports._setup = function() {
 	_globals.core.Item.prototype._focusChild = function (child) {
 		if (child.parent !== this)
 			throw "invalid object passed as child"
+		if (this.focusedChild === child)
+			return
 		if (this.focusedChild)
 			this.focusedChild._focusTree(false)
 		this.focusedChild = child

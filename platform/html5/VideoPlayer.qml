@@ -8,7 +8,7 @@ Item {
 
 	onSourceChanged: {
 		console.log("source changed to", this.source)
-		this._source.attr('src', this.source)
+		this._player.attr('src', this.source)
 	}
 
 	onWidthChanged: {
@@ -22,10 +22,11 @@ Item {
 	}
 
 	onCompleted: {
-		this._player = $('<video width="' + this.width + '" height="' + this.height + '" ' + (this.autoPlay? "autoplay": "") + '>')
+		this._player = $('<video preload="metadata" width="' + this.width +
+			'" height="' + this.height +
+			'" src="' + this.src +
+			'" ' + (this.autoPlay? "autoplay": "") + '>')
 		this._player.css('background-color', 'purple')
 		this.element.append(this._player)
-		this._source = $('<source src="' + this.source + '">')
-		this._player.append(this._source)
 	}
 }

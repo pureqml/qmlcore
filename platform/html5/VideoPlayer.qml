@@ -9,6 +9,8 @@ Item {
 	onSourceChanged: {
 		console.log("source changed to", this.source)
 		this._player.attr('src', this.source)
+		if (this.autoPlay)
+			this.play()
 	}
 
 	onWidthChanged: {
@@ -25,7 +27,8 @@ Item {
 		this._player = $('<video preload="metadata" width="' + this.width +
 			'" height="' + this.height +
 			'" src="' + this.src +
-			'" ' + (this.autoPlay? "autoplay": "") + '>')
+			'" controls ' +
+			' ' + (this.autoPlay? "autoplay": "") + '>')
 		this._player.css('background-color', 'purple')
 		this.element.append(this._player)
 	}

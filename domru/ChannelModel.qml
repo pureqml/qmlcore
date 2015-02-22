@@ -3,18 +3,30 @@ ListModel {
 		var self = this;
 		list.channels.forEach(function(id) { self.append({id: id}); } )
 	}
-	prepare(asset): { }
+
+	prepare(res): {
+		var id = 0, pictureId = 0, pictureUrl
+
+		var self = this
+		res.resources.forEach(function(res) {
+			if (res.category == "hls")
+				id = res.id
+			else if (res.type == "picture") {
+				pictureId = res.id
+				pictureUrl = self.protocol.resolveResource(res)
+			}
+		})
+		if (!id)
+			throw "no hls stream found"
+		res.hlsStreamId = id;
+		res.pictureId = pictureId
+		res.pictureUrl = pictureUrl
+		//console.log("PREPARE", res.hlsId, res.pictureId, res.pictureUrl)
+	}
+
 	getUrl(idx, callback): {
 		this.get(idx, (function(row) {
-			var id = 0
-			row.asset.resources.forEach(function(res) {
-				if (res.category == "hls")
-					id = res.id
-			})
-			if (!id)
-				throw "no hls stream found"
-
-			this.protocol.getUrl(row.id, id, function(res) {
+			this.protocol.getUrl(row.id, row.asset.hlsStreamId, function(res) {
 				callback(res.url)
 			})
 		}).bind(this))

@@ -106,6 +106,19 @@ Object {
 		this.requestWithToken("/resource/get_url/" + assetId + "/" + streamId + "?er_multiscreen_session_id=" + this.sessionId, {}, callback)
 	}
 
+	resolveResource(res): {
+		var grp = res.resource_group_id;
+		var origin;
+		this._origins.forEach(function(o) {
+			if (o.resource_groups.indexOf(grp))
+				origin = o
+		})
+		if (!origin)
+			origin = this._origins[0]
+
+		return origin.url + "/public/r" + res.id
+	}
+
 	onAuthTokenChanged: {
 		if (!this.authToken)
 			return

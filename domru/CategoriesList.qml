@@ -63,19 +63,19 @@ Item {
 
 	ListView {
 		id: channelView;
-		height: 340;
 		anchors.top: categoriesList.bottom;
+		anchors.bottom: parent.bottom;
+		anchors.bottomMargin: 100;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		focus: true;
 		clip: true;
 		opacity: channelList.active ? 1.0 : 0.0;
 		model : channelModel;
-		delegate: Rectangle {
+		delegate: GreenButton {
 			width: 400;
 			color: "#000";
 			height: 45;
-			opacity: activeFocus ? 1.0 : 0.6;
 
 			Text {
 				anchors.left: parent.left;
@@ -101,8 +101,11 @@ Item {
 				anchors.rightMargin: 10;
 				source: model.asset ? model.asset.pictureUrl + "/30x30:contain": "";
 			}
-
-			Behavior on opacity { Animation { duration: 300; } }
+			
+			onTriggered: { 
+//				channelView.currentIndex = model.index;
+				channelView.switchToChannel(); 
+			}
 		}
 
 		onUpPressed: {
@@ -113,6 +116,10 @@ Item {
 		}
 
 		onSelectPressed: {
+			channelView.switchToChannel();
+		}
+
+		switchToChannel: {
 			channelList.active = false;
 			var activated = channelList.activated
 			this.model.getUrl(this.currentIndex, function(url) {

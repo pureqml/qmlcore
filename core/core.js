@@ -399,6 +399,7 @@ exports._setup = function() {
 
 		var key = keyCodes[event.which];
 		if (key) {
+			console.log("pressed key", key)
 			if (key in this._pressedHandlers) {
 				var handlers = this._pressedHandlers[key];
 				for(var i = handlers.length - 1; i >= 0; --i) {

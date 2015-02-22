@@ -40,12 +40,12 @@ Item {
 	Text {
 		anchors.centerIn: parent;
 		color: "white";
-		text: "Здравствуйте, Уважаемый, нажмите F4 или подергайте мышкой, штоп показать инфобаннер";
+		text: "нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
 		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
 
 		Behavior on opacity { Animation { duration: 300; } }
 	}
 
-	onBluePressed: { infoPlate.show(); }
+	onBluePressed: { infoPlate.permanent = true; infoPlate.show(); }
 	onGreenPressed: { categories.toggle(); }
 }

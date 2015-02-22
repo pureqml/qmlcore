@@ -1,6 +1,7 @@
 Item {
 	id: infoPlateItem;
 	property bool active: true;
+	property bool permanent: false;
 	property bool isHd: false;
 	property bool is3d: false;
 	property int channelNumber: 0;
@@ -16,14 +17,26 @@ Item {
 		running: true;
 
 		onTriggered: {
-			infoPlateItem.active = false;
+			if (!infoPlateItem.permanent)
+				infoPlateItem.active = false;
 		}
 	}
 
 	show: {
 		infoPlateItem.active = true;
+		infoPlateItem.forceActiveFocus();
 		hideTimer.interval = 6000;
 		hideTimer.restart();
+	}
+
+	onBackPressed: {
+		infoPlateItem.permanent = false;
+		infoPlateItem.active = false;
+	}
+
+	onBluePressed: {
+		infoPlateItem.active = !infoPlateItem.active;
+		infoPlateItem.permanent = infoPlateItem.active;
 	}
 
 	MouseArea {
@@ -123,7 +136,7 @@ Item {
 
 		GreenButton {
 			id: channelPanel;
-			height: 68;
+			height: channelPanel.activeFocus ? 136 : 68;
 			width: 144;
 			anchors.bottom: parent.bottom;
 			anchors.left: timePanel.right;
@@ -136,6 +149,15 @@ Item {
 				anchors.leftMargin: 10;
 				color: "#ccc";
 				text: infoPlateItem.channelNumber;
+			}
+
+			Text {
+				anchors.centerIn: parent;
+				color: "#ccc";
+				text: infoPlateItem.title;
+				opacity: channelPanel.activeFocus ? 1 : 0;
+
+				Behavior on opacity	{ Animation { duration: 300; } }
 			}
 
 			Image {

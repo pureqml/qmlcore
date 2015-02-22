@@ -1,3 +1,31 @@
+var samsung = false
+
+//samsung guts
+var widgetAPI
+var tvKey
+var pluginAPI
+
+if (Common && Common.API) {
+	alert("[QML] samsung smart tv")
+
+	console.log = function() {
+		var args = Array.prototype.slice.call(arguments)
+		alert("[QML] " + args.join("\t"))
+	}
+
+	console.log("loading")
+	widgetAPI = new Common.API.Widget() // Creates Common module
+	console.log("widget ok")
+	tvKey = new Common.API.TVKeyValue()
+	console.log("tv ok")
+	pluginAPI = new Common.API.Plugin()
+	console.log("plugin ok, sending ready")
+	widgetAPI.sendReadyEvent() // Sends 'ready' message to the Application Manager
+	console.log("registering keys")
+	pluginAPI.registFullWidgetKey()
+	console.log("loaded")
+}
+
 var keyCodes = {
 	// SmartTV keys. TODO: make it platform depending.
 	108: 'Red',
@@ -1056,4 +1084,3 @@ exports._bootstrap = function(self, name) {
 			break;
 	}
 }
-

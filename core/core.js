@@ -560,9 +560,10 @@ exports._setup = function() {
 
 	_globals.core.Font.prototype._update = function(name, value) {
 		switch(name) {
-			case 'pointSize': this.parent.element.css('font-size', value + "pt"); this.parent._updateSize(); break;
-			case 'pixelSize': this.parent.element.css('font-size', value + "px"); this.parent._updateSize(); break;
-			case 'italic': this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break;
+			case 'family':		this.parent.element.css('font-family', value); this.parent._updateSize(); break
+			case 'pointSize':	this.parent.element.css('font-size', value + "pt"); this.parent._updateSize(); break
+			case 'pixelSize':	this.parent.element.css('font-size', value + "px"); this.parent._updateSize(); break
+			case 'italic': 		this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}

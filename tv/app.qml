@@ -29,12 +29,19 @@ Item {
 			infoPlate.title = channelInfo.title;
 			infoPlate.logo = channelInfo.logo;
 			infoPlate.channelNumber = channelInfo.number;
+
+			infoPlate.show();
 		}
 	}
 
 	InfoPlate {
 		id: infoPlate;
 		anchors.fill: parent;
+		visible: !categories.active;
+
+		onChannelListCalled: {
+			categories.toggle();
+		}
 	}
 
 	Text {

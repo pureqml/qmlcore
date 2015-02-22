@@ -128,7 +128,7 @@ _globals.core.Object.prototype._removeUpdater = function (name, callback) {
 _globals.core.Object.prototype.onPressed = function (name, callback) {
 	var wrapper
 	if (name != 'Key')
-		wrapper = function() { callback(); return true; }
+		wrapper = function() { callback(); return true }
 	else
 		wrapper = callback;
 
@@ -141,7 +141,7 @@ _globals.core.Object.prototype.onPressed = function (name, callback) {
 _globals.core.Object.prototype._update = function(name, value) {
 	if (name in this._changedHandlers) {
 		var handlers = this._changedHandlers[name];
-		handlers.forEach(function(callback) { callback(value); });
+		handlers.forEach(function(callback) { try { callback(value)} catch(ex) { console.log("on " + name + " changed callback failed: ", ex) }})
 	}
 }
 
@@ -157,7 +157,7 @@ _globals.core.Object.prototype._emitSignal = function(name) {
 	args.shift();
 	if (name in this._signalHandlers) {
 		var handlers = this._signalHandlers[name];
-		handlers.forEach(function(callback) { callback.apply(this, args); });
+		handlers.forEach(function(callback) { try { callback.apply(this, args) } catch(ex) { console.log("signal " + name + " handler failed:" + ex) } });
 	}
 }
 
@@ -402,18 +402,26 @@ exports._setup = function() {
 			if (key in this._pressedHandlers) {
 				var handlers = this._pressedHandlers[key];
 				for(var i = handlers.length - 1; i >= 0; --i) {
-					var callback = handlers[i];
-					if (callback(key, event))
-						return true;
+					var callback = handlers[i]
+					try {
+						if (callback(key, event))
+							return true;
+					} catch(ex) {
+						console.log("on " + key + " handler failed:", ex)
+					}
 				}
 			}
 
 			if ('Key' in this._pressedHandlers) {
 				var handlers = this._pressedHandlers['Key'];
 				for(var i = handlers.length - 1; i >= 0; --i) {
-					var callback = handlers[i];
-					if (callback(key, event))
-						return true;
+					var callback = handlers[i]
+					try {
+						if (callback(key, event))
+							return true
+					} catch(ex) {
+						console.log("onKeyPressed handler failed:", ex)
+					}
 				}
 			}
 		}

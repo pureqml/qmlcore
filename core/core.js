@@ -849,7 +849,7 @@ exports._setup = function() {
 			if (!item) {
 				if (p >= size && itemsCount > 0)
 					break
-				console.log("creating item", i)
+
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = item = this.delegate()

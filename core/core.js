@@ -1102,7 +1102,7 @@ exports._bootstrap = function(self, name) {
 			self.element = $('<div/>');
 			self.parent.element.append(self.element);
 			self.parent.onChanged('recursiveVisible', function(value) {
-				self.recursiveVisible = value
+				self.recursiveVisible = value && self.visible
 			})
 
 			break;

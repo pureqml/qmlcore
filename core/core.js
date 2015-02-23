@@ -438,6 +438,7 @@ exports._setup = function() {
 	_globals.core.MouseArea.prototype._onClick = function(event) {
 		if (!this.recursiveVisible)
 			return
+
 		var box = this.toScreen()
 		var x = event.pageX - box[0]
 		var y = event.pageY - box[1]
@@ -1107,7 +1108,7 @@ exports._bootstrap = function(self, name) {
 
 			break;
 		case 'core.MouseArea':
-			$(document).on('click', self._onClick.bind(self))
+			self.element.on('click', self._onClick.bind(self))
 			$(document).on('mousemove', self._onMove.bind(self))
 			break;
 		case 'core.Image':

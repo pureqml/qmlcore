@@ -106,6 +106,10 @@ Object {
 		this.requestWithToken("/resource/get_url/" + assetId + "/" + streamId + "?er_multiscreen_session_id=" + this.sessionId, {}, callback)
 	}
 
+	getEpgGenres(callback): {
+		this.requestWithToken("/collection/vod.genre/query/dimension/extid/source/epg", {}, callback);
+	}
+
 	resolveResource(res): {
 		var grp = res.resource_group_id;
 		var origin;

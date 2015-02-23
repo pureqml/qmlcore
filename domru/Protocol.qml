@@ -110,6 +110,10 @@ Object {
 		this.requestWithToken("/collection/vod.genre/query/dimension/extid/source/epg", {}, callback);
 	}
 
+	getEpgProgramByParams(epgChannelId, callback): {
+		this.requestWithToken("/collection/epg.schedule/query/dimension/channel_id/in/" + epgChannelId, {}, callback);
+	}
+
 	resolveResource(res): {
 		var grp = res.resource_group_id;
 		var origin;

@@ -18,6 +18,22 @@ Item {
 		Text { text: "word 4"; }
 	}
 
+	Item {
+		id: visibilityTest;
+		Item {
+			Item {
+				onRecursiveVisibleChanged: {
+					console.log("RECURSIVE VISIBILITY", this.recursiveVisible)
+				}
+			}
+		}
+	}
+
+	onSelectPressed: {
+		console.log("SELECT RV")
+		visibilityTest.visible = !visibilityTest.visible
+	}
+
 	ListModel {
 		id: animalModel;
 

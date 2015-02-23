@@ -11,6 +11,7 @@ Object {
 	property Item focusedChild;
 
 	property bool visible: true;
+	property bool recursiveVisible: true;
 	property real opacity: 1;
 
 	property Anchors anchors: Anchors { }
@@ -27,4 +28,8 @@ Object {
 	signal boxChanged;
 	property int viewX;
 	property int viewY;
+
+	onVisibleChanged: {
+		this.recursiveVisible = this.visible
+	}
 }

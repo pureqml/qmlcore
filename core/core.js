@@ -1099,6 +1099,10 @@ exports._bootstrap = function(self, name) {
 				throw "double ctor call";
 			self.element = $('<div/>');
 			self.parent.element.append(self.element);
+			self.parent.onChanged('recursiveVisible', function(value) {
+				self.recursiveVisible = value
+			})
+
 			break;
 		case 'core.MouseArea':
 			$(document).on('click', self._onClick.bind(self))

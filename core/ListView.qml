@@ -100,6 +100,13 @@ Item {
 			this.focusChild(item)
 	}
 
+	onFocusedChildChanged: {
+		var idx = this._items.indexOf(this.focusedChild)
+		//console.log("focused child", this.focusedChild, idx)
+		if (idx >= 0)
+			this.currentIndex = idx
+	}
+
 	onCurrentIndexChanged: {
 		this.focusCurrent()
 	}

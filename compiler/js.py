@@ -137,7 +137,7 @@ class component_generator(object):
 		ident = "\t" * ident_n
 
 		for name in self.signals:
-			r.append("%sthis.%s = (function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitSignal.apply(this, args);/*fixme*/ }).bind(this)" %(ident, name, name))
+			r.append("%score.addSignal(this, '%s')" %(ident, name))
 
 		r.append(self.generate_properties())
 

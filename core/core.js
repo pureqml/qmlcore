@@ -1077,6 +1077,14 @@ exports.addAliasProperty = function(self, name, getObject, getter, setter) {
 	});
 }
 
+exports.addSignal = function(self, name) {
+	self[name] = (function() {
+		var args = Array.prototype.slice.call(arguments);
+		args.splice(0, 0, name);
+		self._emitSignal.apply(self, args);
+	})
+}
+
 exports._bootstrap = function(self, name) {
 	switch(name) {
 		case 'core.ListModel':

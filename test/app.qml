@@ -29,6 +29,62 @@ Item {
 		ListElement { type: "Cat"; age: 5; }
 		ListElement { type: "Dog"; age: 8; }
 		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
+		ListElement { type: "Dog"; age: 8; }
+		ListElement { type: "Cat"; age: 5; }
 
 		onCompleted: {
 			console.log("hello", this.count);

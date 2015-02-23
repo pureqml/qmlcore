@@ -435,22 +435,16 @@ exports._setup = function() {
 		return false;
 	}
 
-	_globals.core.MouseArea.prototype._onEnter = function() {
-		if (!this.hoverEnabled)
-			return;
-		this.hovered = true;
-		this.entered()
-	}
-
-	_globals.core.MouseArea.prototype._onExit = function() {
-		if (!this.hoverEnabled)
-			return;
-		this.hovered = false;
-		this.exited()
-	}
-
-	_globals.core.MouseArea.prototype._onClick = function() {
-		this.clicked()
+	_globals.core.MouseArea.prototype._onClick = function(event) {
+		var box = this.toScreen()
+		var x = event.pageX - box[0]
+		var y = event.pageY - box[1]
+		if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+		{
+			this.mouseX = x
+			this.mouseY = y
+			this.clicked()
+		}
 	}
 
 	_globals.core.MouseArea.prototype._onMove = function(event) {
@@ -460,10 +454,12 @@ exports._setup = function() {
 		var box = this.toScreen()
 		var x = event.pageX - box[0]
 		var y = event.pageY - box[1]
-		if (x >= 0 && x < this.width)
+		if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
 			this.mouseX = x
-		if (y >= 0 && y < this.height)
 			this.mouseY = y
+			this.hovered = true
+		} else
+			this.hovered = false
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
@@ -1105,8 +1101,7 @@ exports._bootstrap = function(self, name) {
 			self.parent.element.append(self.element);
 			break;
 		case 'core.MouseArea':
-			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self))
-			self.element.on('click', self._onClick.bind(self))
+			$(document).on('click', self._onClick.bind(self))
 			$(document).on('mousemove', self._onMove.bind(self))
 			break;
 		case 'core.Image':

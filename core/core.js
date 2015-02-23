@@ -180,7 +180,8 @@ _globals.core.Object.prototype.setAnimation = function (name, animation) {
 }
 
 _globals.core.Object.prototype.getAnimation = function (name, animation) {
-	return this._animations[name] || null;
+	var a = this._animations[name]
+	return (a && a.enabled())? a: null;
 }
 
 exports._setup = function() {

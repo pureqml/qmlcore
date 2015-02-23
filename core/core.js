@@ -841,15 +841,27 @@ exports._setup = function() {
 		var p = horizontal? -this.contentX: -this.contentY
 		var size = horizontal? w: h
 		var maxW = 0, maxH = 0
+
+		var itemsCount = 0
 		for(var i = 0; i < n; ++i) {
-			if (!this._items[i]) {
+			var item = this._items[i]
+
+			if (!item) {
+				if (p >= size && itemsCount > 0)
+					break
+				console.log("creating item", i)
 				var row = this.model.get(i)
 				this._local['model'] = row
-				this._items[i] = this.delegate()
+				this._items[i] = item = this.delegate()
+				item._local['model'] = row
 				delete this._local['model']
 			}
 
-			var item = this._items[i]
+			++itemsCount
+
+			var s = (horizontal? item.width: item.height)
+			var visible = (p + s >= 0 && p < size)
+
 			if (item.x + item.width > maxW)
 				maxW = item.width + item.x
 			if (item.y + item.height > maxH)
@@ -859,16 +871,23 @@ exports._setup = function() {
 				item.viewX = p
 			else
 				item.viewY = p
-			var s = (horizontal? item.width: item.height)
-			item.visible = (p + s >= 0 && p < size)
+
 			if (this.currentIndex == i) {
 				this.focusChild(item)
 				this.positionViewAtIndex(i)
 			}
+
+			item.visible = visible
 			p += s + this.spacing
+			if (p >= size)
+				break
 		}
 		if (p > 0)
 			p -= this.spacing;
+
+		p += horizontal? this.contentX: this.contentY
+		if (itemsCount)
+			p *= items.length / itemsCount
 
 		if (horizontal) {
 			this.contentWidth = p

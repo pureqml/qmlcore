@@ -436,6 +436,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.MouseArea.prototype._onClick = function(event) {
+		if (!this.recursiveVisible)
+			return
 		var box = this.toScreen()
 		var x = event.pageX - box[0]
 		var y = event.pageY - box[1]
@@ -448,7 +450,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.MouseArea.prototype._onMove = function(event) {
-		if (!this.hoverEnabled)
+		if (!this.hoverEnabled || !this.recursiveVisible)
 			return
 
 		var box = this.toScreen()

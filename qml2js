@@ -54,5 +54,5 @@ for opt in "$@"; do
 done
 
 if [ -z $1 ]; then
-	compiler -w -o app core controls domru platform/html5 tv
+	compiler -w -o app core controls domru platform/html5
 fi

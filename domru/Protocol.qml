@@ -10,6 +10,7 @@ Object {
 	property string password: "590014831333";
 	property string region: "perm";
 	property bool enabled;
+	property array originList;
 
 	signal error;
 
@@ -172,12 +173,12 @@ Object {
 	resolveResource(res): {
 		var grp = res.resource_group_id;
 		var origin;
-		this._origins.forEach(function(o) {
+		this.originList.forEach(function(o) {
 			if (o.resource_groups.indexOf(grp))
 				origin = o
 		})
 		if (!origin)
-			origin = this._origins[0]
+			origin = this.originList[0]
 		if (!origin)
 			return
 
@@ -193,7 +194,7 @@ Object {
 		}
 		//this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
 		var self = this;
-		this.requestWithToken('/resource/get_origin_list/', {}, function(res) { self._origins = res.origins; console.log("origins", self._origins) })
+		this.requestWithToken('/resource/get_origin_list/', {}, function(res) { self.originList = res.origins; console.log("origins", self.originList) })
 	}
 
 	onSessionIdChanged: {
@@ -233,7 +234,6 @@ Object {
 	}
 
 	init: {
-		this._origins = []
 		if (sessionIdStorage.value && authTokenStorage.value) {
 			this.sessionId = sessionIdStorage.value
 			this.authToken = authTokenStorage.value

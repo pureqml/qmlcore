@@ -1,10 +1,34 @@
 ListModel {
+	subscribeOrigins: {
+		if (this._originChangedCallback)
+			return;
+		this._protocol = this.protocol
+		this._originChangedCallback = (function() {
+			this.reset()
+			for(var i = 0; i < this._rows.length; ++i)
+				try { this.prepare(this._rows[i]) } catch(ex) { console.log("prepare failed", ex, ex.stack) }
+		}).bind(this)
+		this.protocol.onChanged('originList', this._originChangedCallback)
+	}
+
+	onProtocolChanged: {
+		if (this._originChangedCallback)
+			this._protocol.removeOnChanged('originList', this._originChangedCallback)
+		this._originChangedCallback = undefined
+
+		if (!this.protocol)
+			return
+
+		this.subscribeOrigins()
+	}
+
 	setList(list): {
 		this.clear()
 		if (!list || !list.channels) {
 			console.log("setList called with empty list.channel", list)
 			return
 		}
+		this.subscribeOrigins()
 		var self = this;
 		this.protocol.getAssets(list.channels, function(assets) {
 			assets.sort(function(a, b) {

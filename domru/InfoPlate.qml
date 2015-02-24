@@ -417,17 +417,21 @@ Item {
 				anchors.left: listRect.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 8;
-				color: "#fff";
+				color: listContext.active ? "#5f6": "#fff";
 				text: "Список каналов (F2)";
-				font.pointSize: listContext.active ? 16 : 12;
+				property int fontSize: listContext.active ? 15 : 12;
+				font.pointSize: fontSize;
+			
+				Behavior on fontSize { Animation { duration: 100; } }
+				Behavior on color  { ColorAnimation { duration: 200; } }
 			}
 
 			MouseArea {
 				anchors.fill: parent;
-				anchors.margins: -20;
+				anchors.margins: -10;
 				hoverEnabled: true;
-				onClicked: { infoPlateItem.active = false; infoPlateItem.channelListCalled(); }
-				onEntered: { listContext.active = true; }
+				onClicked: { infoPlateItem.channelListCalled(); listContext.active = false; }
+				onEntered: { listContext.active = true; }//listContext.forceActiveFocus(); }
 				onExited: { listContext.active = false; }
 			}
 		}

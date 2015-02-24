@@ -178,6 +178,8 @@ Object {
 		})
 		if (!origin)
 			origin = this._origins[0]
+		if (!origin)
+			return
 
 		return origin.url + "/public/r" + res.id
 	}

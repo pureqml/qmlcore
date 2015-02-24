@@ -8,7 +8,7 @@ function compiler() {
 
 #fix --compilation_level ADVANCED_OPTIMIZATIONS
 function minify() {
-	java -jar compiler/gcc/compiler.jar --externs compiler/gcc/jquery-1.9.js app/qml.js > app/qml.min.js
+	java -jar compiler/gcc/compiler.jar --externs compiler/gcc/jquery-1.9.js app/qml.js > app/qml.min.js || die "gcc failed"
 }
 
 function package() {

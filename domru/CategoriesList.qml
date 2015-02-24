@@ -58,7 +58,7 @@ Item {
 		}
 
 		onDownPressed: { channelView.forceActiveFocus(); }
-		onCurrentIndexChanged: { channelModel.setList(this.get(this.currentIndex)); }
+		onCurrentIndexChanged: { channelModel.setList(channelModel.get(this.currentIndex)); }
 	}
 
 	ListView {

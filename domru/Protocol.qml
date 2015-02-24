@@ -72,6 +72,10 @@ Object {
 		this.request(url, data, callback, type, {'X-Auth-Token': token})
 	}
 
+	requestWithTokenAndSession(url, data, callback, type, token): {
+		this.requestWithToken(url + "?er_multiscreen_session_id=" + this.sessionId, data, callback, type, token)
+	}
+
 	getToken(clientId, deviceId, region, callback): {
 		var data = {
 			client_id: clientId,
@@ -111,7 +115,7 @@ Object {
 	}
 
 	getUrl(assetId, streamId, callback): {
-		this.requestWithToken("/resource/get_url/" + assetId + "/" + streamId + "?er_multiscreen_session_id=" + this.sessionId, {}, callback)
+		this.requestWithTokenAndSession("/resource/get_url/" + assetId + "/" + streamId, {}, callback)
 	}
 
 	getEpgGenres(callback): {

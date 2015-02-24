@@ -102,6 +102,12 @@ Object {
 		})
 	}
 
+	getAssets(ids, callback): {
+		this.requestWithToken("/collection/vod.asset/query/dimension/id/in/" + ids.join(','), {}, function(res) {
+			callback(res.collection)
+		})
+	}
+
 	getUrl(assetId, streamId, callback): {
 		this.requestWithToken("/resource/get_url/" + assetId + "/" + streamId + "?er_multiscreen_session_id=" + this.sessionId, {}, callback)
 	}

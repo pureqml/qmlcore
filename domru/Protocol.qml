@@ -1,5 +1,5 @@
 Object {
-	property string baseUrl: "https://tv.domru.ru/api/";
+	property string baseUrl;
 	property string clientId : "er_ottweb_device";
 	property string deviceId : "123";
 	property string ssoSystem: "er";
@@ -11,15 +11,32 @@ Object {
 	property string region: "perm";
 	property bool enabled;
 	property array originList;
+	property array failedRequests;
 
 	signal error;
 
 	LocalStorage { id: authTokenStorage; name: "authToken"; }
 	LocalStorage { id: sessionIdStorage; name: "sessionId"; }
 
+	Timer {
+		repeat: true;
+		interval: 3000;
+		running: true;
+		onTriggered: {
+			var reqs = this.parent.failedRequests
+			this.parent.failedRequests = []
+			var n = reqs.length
+			if (n) {
+				console.log("retrying " + n + " requests")
+				for(var i = 0; i < n; ++i)
+					reqs[i]()
+			}
+		}
+	}
+
 	checkResponse(url, res, request): {
 		if (!res.result) {
-			console.log("failed response", url, JSON.stringify(res))
+			console.log("failed response " + url + " " + JSON.stringify(res))
 			if (res.error.message.indexOf("token") > -1) {
 				this.authToken = ""; //next responses will go to pending
 				if (!this._pendingTokenRequests)
@@ -37,13 +54,14 @@ Object {
 				this.openSession()
 				return false
 			}
+			this.failedRequests.push(request)
 			this.error(res.error.message)
 			return false
 		}
 		return true
 	}
 
-	request(url, data, callback, type, headers): {
+	requestImpl(url, data, callback, type, headers): {
 		if (!this.enabled)
 			return;
 		if (url.charAt(0) === '/')
@@ -58,14 +76,32 @@ Object {
 		}).done(function(res) {
 			if (callback)
 				callback(res)
-		}).fail(function(req, status, err) {
-			console.log(req, status, err)
+		}).fail(function(xhr, status, err) {
+			console.log("ajax request failed: " + JSON.stringify(status) + " status: " + xhr.status + " text: " + xhr.responseText)
+			if (callback)
+				callback({result: 0, error: { message: "ajax error"} })
 			self.error(status)
 		})
 	}
 
 	getTokenHeader(token): {
 		return {'X-Auth-Token': token}
+	}
+
+	request(url, data, callback, type): {
+		if (!this.enabled)
+			return;
+
+		var self = this;
+
+		var do_request = function() {
+			self.requestImpl(url, data, function(res) {
+				if (self.checkResponse(url, res, do_request))
+					callback(res)
+			}, type, {})
+		}
+
+		do_request()
 	}
 
 	requestWithToken(url, data, callback, type): {
@@ -75,7 +111,7 @@ Object {
 		var self = this;
 
 		var do_request = function() {
-			self.request(url, data, function(res) {
+			self.requestImpl(url, data, function(res) {
 				if (self.checkResponse(url, res, do_request))
 					callback(res)
 			}, type, self.getTokenHeader(self.authToken))
@@ -101,17 +137,17 @@ Object {
 		var self = this;
 
 		var do_request = function() {
-			self.request(url + "?er_multiscreen_session_id=" + self.sessionId, data, function(res) {
+			self.requestImpl(url + "?er_multiscreen_session_id=" + self.sessionId, data, function(res) {
 				if (self.checkResponse(url, res, do_request))
 					callback(res)
 			}, type, self.getTokenHeader(self.authToken))
 		}
 
-		if (self.sessionId)
+		if (self.authToken && self.sessionId)
 			do_request()
 		else
 		{
-			console.log("no session, scheduling request " + url)
+			console.log("no session or token, scheduling request " + url)
 
 			if (!this._pendingSessionRequests)
 				this._pendingSessionRequests = []
@@ -246,6 +282,11 @@ Object {
 	}
 
 	onCompleted: {
+		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
+			this.baseUrl = "http://tv.domru.ru/api/" //fixme: find out
+		else
+			this.baseUrl = "https://tv.domru.ru/api/"
+
 		authTokenStorage.read()
 		sessionIdStorage.read()
 		this.init()

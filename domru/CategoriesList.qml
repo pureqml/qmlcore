@@ -49,8 +49,6 @@ Item {
 		spacing: 10;
 		orientation: ListView.Horizontal;
 		model: channelListModel;
-		orientation: 1;
-		handleNavigationKeys: false; //TODO: fix to avoid test list issue
 		delegate: Item {
 			width: categoryName.paintedWidth + 20;
 			height: parent.height;

@@ -32,32 +32,40 @@ Item {
 
 			infoPlate.show();
 		}
-
-		onEpgUpdated(programInfo): {
-			infoPlate.programTitle = programInfo.title;
-			infoPlate.programDescription = programInfo.description;
-
-			var now = new Date();
-			var startTime = new Date(programInfo.startTime * 1000);
-			var endTime = new Date((programInfo.startTime + programInfo.duration) * 1000);
-			var minutes = startTime.getMinutes();
-			minutes = minutes >= 10 ? minutes : "0" + minutes;
-			infoPlate.programInfo = startTime.getHours() + ":" + minutes;
-			var minutes = endTime.getMinutes();
-			minutes = minutes >= 10 ? minutes : "0" + minutes;
-			infoPlate.programInfo += " - " + endTime.getHours() + ":" + minutes;
-			infoPlate.programInfo += ", " + programInfo.channel;
-			infoPlate.programInfo += ", " + programInfo.genre;
-			infoPlate.programInfo += ", " + programInfo.age + "+";
-
-			infoPlate.programProgress = (now - startTime) / (endTime - startTime);
-		}
 	}
 
 	InfoPlate {
 		id: infoPlate;
+		signal epgUpdated;
 		anchors.fill: parent;
 		visible: !categories.active;
+
+		Timer {
+			duration: 5000;
+			reapeat: true;
+			running: infoPlate.active;
+			triggeredOnStart: true;
+
+			onTriggered: {
+				var epgUpdated = infoPlate.epgUpdated;
+				categories.getProgramInfo(function(programInfo) {
+					if (programInfo)
+						epgUpdated(programInfo);
+					else
+						console.log("Failed to get program info");
+				});
+			}
+		}
+
+		onEpgUpdated(programInfo): {
+			infoPlate.programTitle = programInfo.title;
+			infoPlate.programTitle = programInfo.title;
+			infoPlate.programDescription = programInfo.description;
+
+			var now = new Date();
+			infoPlate.programInfo = programInfo.info;
+			infoPlate.programProgress = (now - programInfo.startTime) / (programInfo.endTime - programInfo.startTime);
+		}
 
 		onChannelListCalled: {
 			infoPlate.permanent = false;

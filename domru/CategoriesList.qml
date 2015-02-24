@@ -2,7 +2,6 @@ Item {
 	id: channelList;
 	signal activated;
 	signal channelSwitched;
-	signal epgUpdated;
 	property Protocol protocol;
 	property bool active: false;
 	opacity: channelList.active ? 1.0 : 0.0;
@@ -147,42 +146,6 @@ Item {
 				is3d:			curRow.traits == "3D"
 			}
 			channelList.channelSwitched(channelInfo)
-
-			var epgUpdated = channelList.epgUpdated;
-			var currChannel = curRow.title;
-			channelModel.protocol.getEpgProgramByParams(curRow.epg_channel_id, function(res) {
-				var programs = res.collection;
-				if (!programs)
-					return;
-
-				var currentTime = Math.round(new Date().getTime() / 1000);
-				var currProgram;
-				for (var i in programs) {
-					if (currentTime >= programs[i].start && currentTime <= programs[i].start + programs[i].duration) {
-						currProgram = programs[i];
-						break;
-					}
-				}
-				if (!currProgram) {
-					console.log("Failed to find current programm.");
-					return;
-				}
-				console.log("Current program: ", currProgram.title);
-				var genres = currProgram.program.genres[0].name;
-				for (var i = 1; i < currProgram.program.genres.length; ++i)
-					genres += ", " + currProgram.program.genres[i].name;
-
-				var programInfo = {
-					age:			currProgram.program.age_rating,
-					title:			currProgram.title,
-					genre:			genres,
-					channel:		currChannel,
-					duration:		currProgram.duration,
-					startTime:		currProgram.start,
-					description:	currProgram.description
-				}
-				epgUpdated(programInfo);
-			})
 		}
 	}
 
@@ -193,6 +156,60 @@ Item {
 		channelList.active = !channelList.active;
 		if (channelList.active)
 			categoriesList.forceActiveFocus();
+	}
+
+	getProgramInfo(callback): {
+		var curRow = channelView.model.get(channelView.currentIndex)
+		var currChannel = curRow.title;
+
+		channelModel.protocol.getEpgProgramByParams(curRow.epg_channel_id, function(res) {
+			var programs = res.collection;
+			if (!programs)
+				return;
+
+			var currentTime = Math.round(new Date().getTime() / 1000);
+			var currProgram;
+			for (var i in programs) {
+				if (currentTime >= programs[i].start && currentTime <= programs[i].start + programs[i].duration) {
+					currProgram = programs[i];
+					break;
+				}
+			}
+			if (!currProgram) {
+				console.log("Failed to find current programm.");
+				return;
+			}
+			console.log("Current program: ", currProgram.title);
+			var genres = currProgram.program.genres[0].name;
+			for (var i = 1; i < currProgram.program.genres.length; ++i)
+				genres += ", " + currProgram.program.genres[i].name;
+
+			var startTime = new Date(currProgram.start * 1000);
+			var endTime = new Date((currProgram.start + currProgram.duration) * 1000);
+			var minutes = startTime.getMinutes();
+			minutes = minutes >= 10 ? minutes : "0" + minutes;
+			var info = startTime.getHours() + ":" + minutes;
+			var minutes = endTime.getMinutes();
+			minutes = minutes >= 10 ? minutes : "0" + minutes;
+			info += " - " + endTime.getHours() + ":" + minutes;
+			info += ", " + currChannel;
+			if (genres)
+				info += ", " + genres;
+			if (currProgram.program.age_rating)
+				info += ", " + currProgram.program.age_rating + "+";
+
+			var programInfo = {
+				age:			currProgram.program.age_rating,
+				info:			info,
+				title:			currProgram.title,
+				genre:			genres,
+				endTime:		endTime,
+				duration:		currProgram.duration,	// in seconds
+				startTime:		startTime,
+				description:	currProgram.description
+			}
+			callback(programInfo);
+		})
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

@@ -435,7 +435,7 @@ exports._setup = function() {
 		return false;
 	}
 
-	_globals.core.MouseArea.prototype._onClick = function(event) {
+	_globals.core.MouseArea.prototype._updatePosition = function(event) {
 		if (!this.recursiveVisible)
 			return
 
@@ -446,23 +446,38 @@ exports._setup = function() {
 		{
 			this.mouseX = x
 			this.mouseY = y
-			this.clicked()
 		}
+	}
+
+	_globals.core.MouseArea.prototype._onClick = function(event) {
+		if (!this.recursiveVisible)
+			return
+
+		this._updatePosition(event)
+		this.clicked()
+	}
+
+	_globals.core.MouseArea.prototype._onEnter = function(event) {
+		if (!this.hoverEnabled || !this.recursiveVisible)
+			return
+
+		this._updatePosition(event)
+		this.hovered = true
+	}
+
+	_globals.core.MouseArea.prototype._onExit = function(event) {
+		if (!this.hoverEnabled || !this.recursiveVisible)
+			return
+
+		this._updatePosition(event)
+		this.hovered = false
 	}
 
 	_globals.core.MouseArea.prototype._onMove = function(event) {
 		if (!this.hoverEnabled || !this.recursiveVisible)
 			return
 
-		var box = this.toScreen()
-		var x = event.pageX - box[0]
-		var y = event.pageY - box[1]
-		if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
-			this.mouseX = x
-			this.mouseY = y
-			this.hovered = true
-		} else
-			this.hovered = false
+		this._updatePosition(event)
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
@@ -1111,8 +1126,9 @@ exports._bootstrap = function(self, name) {
 
 			break;
 		case 'core.MouseArea':
-			self.element.on('click', self._onClick.bind(self))
-			$(document).on('mousemove', self._onMove.bind(self))
+			self.element.click(self._onClick.bind(self))
+			self.element.mousemove(self._onMove.bind(self))
+			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
 			break;
 		case 'core.Image':
 			self.element.remove();

@@ -7,7 +7,6 @@ ListView {
 	anchors.bottom: parent.bottom;
 	orientation: ListView.Horizontal;
 	spacing: 25;
-	model: optionsModel;
 	delegate: Item {
 		width: icon.paintedWidth + optionText.paintedWidth * 2; //TODO: image width isn't working
 		height: parent.height;

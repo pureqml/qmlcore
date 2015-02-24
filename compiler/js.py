@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import lang
-from code import process, parse_deps, generate_accessors
+from code import process, parse_deps, generate_accessors, replace_enums
 
 def get_package(name):
 	return ".".join(name.split(".")[:-1])
@@ -203,6 +203,7 @@ class component_generator(object):
 			#print self.name, target, value
 			target_lvalue = self.get_target_lvalue(target)
 			if t is str:
+				value = replace_enums(value, self, registry)
 				deps = parse_deps(value)
 				if deps:
 					suffix = "_var_%s__%s" %(parent.replace('.', '_'), target.replace('.', '_'))
@@ -235,20 +236,20 @@ class component_generator(object):
 			idx += 1
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode
-			code = process(code, registry)
+			code = process(code, self, registry)
 			r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
 		for name, argscode in self.signal_handlers.iteritems():
 			args, code = argscode
-			code = process(code, registry)
+			code = process(code, self, registry)
 			if name != "completed":
 				r.append("%sthis.on('%s', (function(%s) %s ).bind(this));" %(ident, name, ",".join(args), code))
 			else:
 				r.append("%sqml._context._onCompleted((function() %s ).bind(this));" %(ident, code))
 		for name, code in self.changed_handlers.iteritems():
-			code = process(code, registry)
+			code = process(code, self, registry)
 			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))
 		for name, code in self.key_handlers.iteritems():
-			code = process(code, registry)
+			code = process(code, self, registry)
 			r.append("%sthis.onPressed('%s', (function(key, event) %s ).bind(this));" %(ident, name, code))
 		r.append(self.generate_animations(registry, parent))
 		return "\n".join(r)

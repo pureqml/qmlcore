@@ -5,7 +5,7 @@ ListView {
 	height: parent.height;
 	anchors.right: parent.right;
 	anchors.bottom: parent.bottom;
-	orientation: 1;
+	orientation: ListView.Horizontal;
 	spacing: 25;
 	model: optionsModel;
 	delegate: Item {

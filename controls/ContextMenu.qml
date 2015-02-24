@@ -4,7 +4,7 @@ ListView {
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
 	spacing: 20;
-	orientation: 1;
+	orientation: ListView.Horizontal;
 
 	delegate: Item {
 		id: contextItemProto;

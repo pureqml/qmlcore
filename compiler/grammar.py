@@ -47,6 +47,14 @@ def handle_behavior_declaration(s, l, t):
 def handle_signal_declaration(s, l, t):
 	return lang.Signal(t[0])
 
+def handle_builtin(s, l, t):
+	#print "builtin> ", t
+	return "".join(t)
+
+expression = Forward()
+expression_list = Forward()
+component_declaration = Forward()
+
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z_]"), alphanums + "_")
@@ -54,6 +62,9 @@ code = originalTextFor(nestedExpr("{", "}", None, None))
 
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + Word(srange("[A-Z_]"), alphanums)
 enum_value.setParseAction(handle_enum_value)
+
+builtin = Keyword("Math") + Literal(".") + Word(alphanums) + Optional(Literal("(") + expression_list + Literal(")"))
+builtin.setParseAction(handle_builtin)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
 
@@ -68,8 +79,6 @@ signal_declaration.setParseAction(handle_signal_declaration)
 id_declaration = Keyword("id").suppress() + Literal(":").suppress() + identifier + expression_end
 id_declaration.setParseAction(handle_id_declaration)
 
-expression = Forward()
-component_declaration = Forward()
 
 assign_declaration = nested_identifier_lvalue + Literal(":").suppress() + expression + expression_end
 assign_declaration.setParseAction(handle_assignment)
@@ -113,7 +122,7 @@ def handle_ternary_op(s, l, t):
 	#print "EXPR", t
 	return " ".join(t[0])
 
-expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier_rvalue | enum_value)
+expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | nested_identifier_rvalue | enum_value)
 
 expression_ops = infixNotation(expression_definition, [
 	('*', 2, opAssoc.LEFT, handle_binary_op),
@@ -128,6 +137,9 @@ expression_ops = infixNotation(expression_definition, [
 ])
 
 expression << expression_ops
+
+expression_list_definition = expression + ZeroOrMore(Literal(",") + expression)
+expression_list << Optional(expression_list_definition)
 
 source = component_declaration
 source = source.ignore(cStyleComment)

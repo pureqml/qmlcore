@@ -1095,6 +1095,9 @@ exports._bootstrap = function(self, name) {
 		case 'core.Gradient':
 			self.stops = []
 			break
+		case 'core.Animation':
+			this._disabled = 0
+			break
 		case 'core.Item':
 			if (!self.parent) //top-level item, do not create item
 				break;

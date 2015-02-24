@@ -4,8 +4,4 @@ Object {
 	disable:	{ ++this._disable; }
 	enable:		{ --this._disable; }
 	enabled:	{ return this._disabled == 0; }
-
-	onCompleted: {
-		this._disabled = 0;
-	}
 }

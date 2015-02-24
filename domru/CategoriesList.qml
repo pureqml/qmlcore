@@ -20,6 +20,11 @@ Item {
 	ChannelModel {
 		id: channelModel;
 		protocol: channelList.protocol;
+
+		onCountChanged: {
+			if (this.count == 1)
+				channelView.switchToChannel();
+		}
 	}
 
 	Rectangle {

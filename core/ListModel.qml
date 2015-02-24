@@ -8,7 +8,7 @@ Object {
 
 	clear: {
 		this._rows = []
-		count = this._rows.length
+		this.count = this._rows.length
 		this.reset()
 	}
 

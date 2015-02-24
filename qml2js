@@ -34,18 +34,18 @@ for opt in "$@"; do
 			echo "$0 test     run test app"
 		;;
 		dev)
-			compiler -o app core controls domru platform/html5 tv
+			compiler -o app core controls domru platform/html5
 		;;
 		test)
 			compiler -w -o app core controls test
 		;;
 		smarttv)
-			compiler -o app core controls domru platform/smarttv tv
+			compiler -o app core controls domru platform/smarttv
 			minify
 			package smarttv
 		;;
 		html5)
-			compiler -o app core controls domru platform/html5 tv
+			compiler -o app core controls domru platform/html5
 			minify
 			package html5
 		;;

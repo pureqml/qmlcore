@@ -1,5 +1,10 @@
 ListModel {
 	setList(list): {
+		this.clear()
+		if (!list || !list.channels) {
+			console.log("setList called with empty list.channel", list)
+			return
+		}
 		var self = this;
 		this.protocol.getAssets(list.channels, function(assets) {
 			assets.sort(function(a, b) {

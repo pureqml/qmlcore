@@ -734,7 +734,7 @@ exports._setup = function() {
 
 	_globals.core.Image.prototype._update = function(name, value) {
 		switch(name) {
-			case 'source': this.status = value? this.Loading: this.Null; this.element.attr('src', value); break;
+			case 'source': this.status = value? this.Loading: this.Null; this.element.attr('src', value? value: ""); break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

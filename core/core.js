@@ -1045,7 +1045,7 @@ exports.addProperty = function(self, type, name) {
 			}
 			newValue = convert(newValue)
 			var animation = self.getAnimation(name)
-			if (animation && value != newValue) {
+			if (animation && value !== newValue) {
 				if (timer)
 					clearInterval(timer);
 				if (timeout)

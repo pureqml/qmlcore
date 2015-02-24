@@ -2,6 +2,7 @@ Item {
 	id: channelList;
 	signal activated;
 	signal channelSwitched;
+	signal epgUpdated;
 	property Protocol protocol;
 	property bool active: false;
 	opacity: channelList.active ? 1.0 : 0.0;
@@ -139,6 +140,34 @@ Item {
 				is3d:			curRow.asset.traits == "3D"
 			}
 			channelList.channelSwitched(channelInfo)
+
+			var epgUpdated = channelList.epgUpdated;
+			channelModel.protocol.getEpgProgramByParams(curRow.asset.epg_channel_id, function(res) {
+				var programs = res.collection;
+				if (!programs)
+					return;
+
+				var currentTime = Math.round(new Date().getTime() / 1000);
+				var currProgram;
+				for (var i in programs) {
+					if (currentTime >= programs[i].start && currentTime <= programs[i].start + programs[i].duration) {
+						currProgram = programs[i];
+						break;
+					}
+				}
+				if (!currProgram) {
+					console.log("Failed to find current programm.");
+					return;
+				}
+				console.log("Current program: ", currProgram.title);
+				var programInfo = {
+					title:			currProgram.title,
+					duration:		currProgram.duration,
+					startTime:		currProgram.start,
+					description:	currProgram.description
+				}
+				epgUpdated(programInfo);
+			})
 		}
 	}
 

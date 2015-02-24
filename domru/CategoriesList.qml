@@ -83,7 +83,7 @@ Item {
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 12;
 				font.pixelSize: 24;
-				text: model.asset ? model.asset.er_lcn : "";
+				text: model.er_lcn;
 				color: "#aaa";
 			}
 
@@ -92,7 +92,7 @@ Item {
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 62;
 				font.pixelSize: 24;
-				text: model.asset ? model.asset.title : "";
+				text: model.title;
 				color: "#fff";
 			}
 
@@ -100,7 +100,7 @@ Item {
 				anchors.right: parent.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.rightMargin: 10;
-				source: model.asset ? model.asset.pictureUrl + "/30x30:contain": "";
+				source: model.pictureUrl? model.pictureUrl + "/30x30:contain": "";
 			}
 			
 			onTriggered: { 
@@ -127,23 +127,21 @@ Item {
 				activated(url)
 			})
 
-			var curRow = this.model.get(this.currentIndex, function(){})
-			if (!curRow.asset)
-				return;
+			var curRow = this.model.get(this.currentIndex)
 
 			var channelInfo = {
-				number: 		curRow.asset.er_lcn,
-				title:			curRow.asset.title,
-				logo: 			curRow.asset.pictureUrl + "/30x30:contain",
-				description:	curRow.asset.description,
-				isHd:			curRow.asset.traits == "HD",
-				is3d:			curRow.asset.traits == "3D"
+				number: 		curRow.er_lcn,
+				title:			curRow.title,
+				logo: 			curRow.pictureUrl + "/30x30:contain",
+				description:	curRow.description,
+				isHd:			curRow.traits == "HD",
+				is3d:			curRow.traits == "3D"
 			}
 			channelList.channelSwitched(channelInfo)
 
 			var epgUpdated = channelList.epgUpdated;
-			var currChannel = curRow.asset.title;
-			channelModel.protocol.getEpgProgramByParams(curRow.asset.epg_channel_id, function(res) {
+			var currChannel = curRow.title;
+			channelModel.protocol.getEpgProgramByParams(curRow.epg_channel_id, function(res) {
 				var programs = res.collection;
 				if (!programs)
 					return;

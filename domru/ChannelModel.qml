@@ -1,7 +1,17 @@
 ListModel {
 	setList(list): {
 		var self = this;
-		list.channels.forEach(function(id) { self.append({id: id}); } )
+		this.protocol.getAssets(list.channels, function(assets) {
+			assets.sort(function(a, b) {
+				return a.er_lcn - b.er_lcn
+			})
+			assets.forEach(
+				function(asset) {
+					try { self.prepare(asset) } catch(ex) { console.log("prepare failed", ex, ex.stack) }
+					self.append(asset)
+				}
+			)
+		})
 	}
 
 	prepare(res): {
@@ -25,29 +35,9 @@ ListModel {
 	}
 
 	getUrl(idx, callback): {
-		this.get(idx, (function(row) {
-			this.protocol.getUrl(row.id, row.asset.hlsStreamId, function(res) {
-				callback(res.url)
-			})
-		}).bind(this))
-	}
-	get(idx, callback): {
-		var row = this._rows[idx]
-		if (row.asset) {
-			if (callback)
-				callback(row)
-			return row;
-		}
-
-		var self = this
-		var id = row.id
-		this.protocol.getAsset(id, function(res) {
-			console.log("asset", id, res)
-			self.prepare(res)
-			self.setProperty(idx, "asset", res)
-			if (callback)
-				callback(this._rows[idx])
+		var row = this.get(idx)
+		this.protocol.getUrl(row.id, row.hlsStreamId, function(res) {
+			callback(res.url)
 		})
-		return row;
 	}
 }

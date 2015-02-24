@@ -49,7 +49,6 @@ Item {
 		spacing: 10;
 		orientation: ListView.Horizontal;
 		model: channelListModel;
-		orientation: 1;
 		delegate: Item {
 			width: categoryName.paintedWidth + 20;
 			height: parent.height;

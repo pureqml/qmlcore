@@ -1,5 +1,5 @@
 Object {
-	property string baseUrl: "http://tv.domru.ru/api/";
+	property string baseUrl: "https://tv.domru.ru/api/";
 	property string clientId : "er_ottweb_device";
 	property string deviceId : "123";
 	property string ssoSystem: "er";

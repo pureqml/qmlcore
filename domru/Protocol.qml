@@ -32,6 +32,8 @@ Object {
 	request(url, data, callback, type, headers): {
 		if (!this.enabled)
 			return;
+		if (url.charAt(0) === '/')
+			url = url.slice(1)
 		console.log("request", url, data)
 		var self = this;
 		$.ajax({

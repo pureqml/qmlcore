@@ -57,9 +57,19 @@ def scan(text):
 
 	return text, invalid
 
-id_re = re.compile(r'([a-zA-Z]\w*)\.')
+enum_re = re.compile(r'([A-Z]\w*)\.([A-Z]\w*)')
+def replace_enums(text, generator, registry):
+	def replace_enum(m):
+		component = registry.find_component(generator.package, m.group(1))
+		return "_globals.%s.%s" %(component, m.group(2))
 
-def process(text, registry):
+	text = enum_re.sub(replace_enum, text)
+	#print text
+	return text
+
+
+id_re = re.compile(r'([a-z]\w*)\.')
+def process(text, generator, registry):
 	id_set = registry.id_set
 	text, invalid = scan(text)
 	def replace_id(m):
@@ -74,7 +84,9 @@ def process(text, registry):
 					break
 			return ("this." if first else "") + "_get('%s')." %name
 		return m.group(0)
+
 	text = id_re.sub(replace_id, text)
+	text = replace_enums(text, generator, registry)
 	#print text
 	return text
 

@@ -32,6 +32,10 @@ def handle_nested_identifier_rvalue(s, l, t):
 	path = ["_get('%s')" %x for x in path]
 	return "this.%s" % ".".join(path)
 
+def handle_enum_value(s, l, t):
+	#print "enum>", t
+	return "".join(t)
+
 def handle_id_declaration(s, l, t):
 	#print "id>", t
 	return lang.IdAssignment(t[0])
@@ -47,6 +51,9 @@ type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z_]"), alphanums + "_")
 code = originalTextFor(nestedExpr("{", "}", None, None))
+
+enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + Word(srange("[A-Z_]"), alphanums)
+enum_value.setParseAction(handle_enum_value)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
 
@@ -106,7 +113,7 @@ def handle_ternary_op(s, l, t):
 	#print "EXPR", t
 	return " ".join(t[0])
 
-expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier_rvalue)
+expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | nested_identifier_rvalue | enum_value)
 
 expression_ops = infixNotation(expression_definition, [
 	('*', 2, opAssoc.LEFT, handle_binary_op),

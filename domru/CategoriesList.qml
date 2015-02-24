@@ -42,7 +42,7 @@ Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		spacing: 10;
-		orientation: 1;
+		orientation: ListView.Horizontal;
 		model: channelListModel;
 		delegate: Item {
 			width: categoryName.paintedWidth + 20;

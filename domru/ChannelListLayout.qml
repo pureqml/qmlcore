@@ -50,7 +50,7 @@ Item {
 		clip: true;
 		height: 60;
 		spacing: 20;
-		orientation: 1;
+		orientation: ListView.Horizontal;
 		focus: true;
 	 	delegate: Text {
 	 		id: listDelegate;

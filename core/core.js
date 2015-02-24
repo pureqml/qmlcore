@@ -1121,10 +1121,5 @@ exports._bootstrap = function(self, name) {
 			self.element.on('load', self._onLoad.bind(self));
 			self.element.on('error', self._onError.bind(self));
 			break;
-		case 'core.TextEdit':
-			self.element.remove();
-			self.element = $('<input type="text" />')
-			self.parent.element.append(self.element)
-			break;
 	}
 }

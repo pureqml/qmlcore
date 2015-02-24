@@ -1,5 +1,5 @@
 Object {
-	property string baseUrl: "https://tv.domru.ru/api/";
+	property string baseUrl;
 	property string clientId : "er_ottweb_device";
 	property string deviceId : "123";
 	property string ssoSystem: "er";
@@ -282,6 +282,11 @@ Object {
 	}
 
 	onCompleted: {
+		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
+			this.baseUrl = "http://tv.domru.ru/api/" //fixme: find out
+		else
+			this.baseUrl = "https://tv.domru.ru/api/"
+
 		authTokenStorage.read()
 		sessionIdStorage.read()
 		this.init()

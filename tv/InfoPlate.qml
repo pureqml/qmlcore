@@ -5,9 +5,12 @@ Item {
 	property bool isHd: false;
 	property bool is3d: false;
 	property int channelNumber: 0;
-	property string description;
 	property string title;
 	property string logo;
+	property string programTitle;
+	property string programDescription;
+	property string programTime;
+	property real programProgress;
 	anchors.fill: parent;
 	opacity: active ? 1 : 0;
 
@@ -221,7 +224,7 @@ Item {
 				anchors.rightMargin: 10;
 				font.pointSize: 18;
 				color: "#fff";
-				text: infoPlateItem.description;
+				text: infoPlateItem.programTitle;
 			}
 
 			Text {
@@ -232,7 +235,7 @@ Item {
 				anchors.rightMargin: 10;
 				anchors.topMargin: 4;
 				color: "#ccc";
-				text: "8:45 - 9:00, Россия 2, Спорт, 18";
+				text: infoPlateItem.programTime;
 			}
 
 			ProgressBar {
@@ -240,7 +243,7 @@ Item {
 				y: 62;//anchors.bottom: parent.bottom;
 				anchors.left: parent.left;
 				anchors.right: parent.right;
-				progress: 0.5;
+				progress: infoPlateItem.programProgress;
 			}
 
 			Rectangle {
@@ -249,6 +252,18 @@ Item {
 				anchors.top: programProgress.bottom;
 				anchors.bottom: parent.bottom;
 				color: "gray";
+				clip: true;
+
+				Text {
+					id: programDescriptionText;
+					anchors.top: programProgress.bottom;
+					anchors.left: parent.left;
+					anchors.right: parent.right;
+					anchors.bottom: parent.right;
+					anchors.margins: 10;
+					text: infoPlateItem.programDescription;
+					color: "#fff";
+				}
 			}
 
 			onLeftPressed: { channelPanel.forceActiveFocus(); }

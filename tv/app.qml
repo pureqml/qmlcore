@@ -26,12 +26,28 @@ Item {
 		onChannelSwitched(channelInfo): {
 			infoPlate.isHd = channelInfo.isHd;
 			infoPlate.is3d = channelInfo.is3d;
-			infoPlate.description = channelInfo.description;
 			infoPlate.title = channelInfo.title;
 			infoPlate.logo = channelInfo.logo;
 			infoPlate.channelNumber = channelInfo.number;
 
 			infoPlate.show();
+		}
+
+		onEpgUpdated(programInfo): {
+			infoPlate.programTitle = programInfo.title;
+			infoPlate.programDescription = programInfo.description;
+
+			var now = new Date();
+			var startTime = new Date(programInfo.startTime * 1000);
+			var endTime = new Date((programInfo.startTime + programInfo.duration) * 1000);
+			var minutes = startTime.getMinutes();
+			minutes = minutes >= 10 ? minutes : "0" + minutes;
+			infoPlate.programTime = startTime.getHours() + ":" + minutes;
+			var minutes = endTime.getMinutes();
+			minutes = minutes >= 10 ? minutes : "0" + minutes;
+			infoPlate.programTime += " - " + endTime.getHours() + ":" + minutes;
+
+			infoPlate.programProgress = (now - startTime) / (endTime - startTime);
 		}
 	}
 

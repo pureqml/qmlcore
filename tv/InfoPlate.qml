@@ -9,7 +9,7 @@ Item {
 	property string logo;
 	property string programTitle;
 	property string programDescription;
-	property string programTime;
+	property string programInfo;
 	property real programProgress;
 	anchors.fill: parent;
 	opacity: active ? 1 : 0;
@@ -235,7 +235,7 @@ Item {
 				anchors.rightMargin: 10;
 				anchors.topMargin: 4;
 				color: "#ccc";
-				text: infoPlateItem.programTime;
+				text: infoPlateItem.programInfo;
 			}
 
 			ProgressBar {
@@ -262,6 +262,7 @@ Item {
 					anchors.bottom: parent.right;
 					anchors.margins: 10;
 					text: infoPlateItem.programDescription;
+					wrap: true;
 					color: "#fff";
 				}
 			}

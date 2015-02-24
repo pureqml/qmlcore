@@ -42,10 +42,13 @@ Item {
 			var endTime = new Date((programInfo.startTime + programInfo.duration) * 1000);
 			var minutes = startTime.getMinutes();
 			minutes = minutes >= 10 ? minutes : "0" + minutes;
-			infoPlate.programTime = startTime.getHours() + ":" + minutes;
+			infoPlate.programInfo = startTime.getHours() + ":" + minutes;
 			var minutes = endTime.getMinutes();
 			minutes = minutes >= 10 ? minutes : "0" + minutes;
-			infoPlate.programTime += " - " + endTime.getHours() + ":" + minutes;
+			infoPlate.programInfo += " - " + endTime.getHours() + ":" + minutes;
+			infoPlate.programInfo += ", " + programInfo.channel;
+			infoPlate.programInfo += ", " + programInfo.genre;
+			infoPlate.programInfo += ", " + programInfo.age + "+";
 
 			infoPlate.programProgress = (now - startTime) / (endTime - startTime);
 		}

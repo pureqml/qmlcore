@@ -142,6 +142,7 @@ Item {
 			channelList.channelSwitched(channelInfo)
 
 			var epgUpdated = channelList.epgUpdated;
+			var currChannel = curRow.asset.title;
 			channelModel.protocol.getEpgProgramByParams(curRow.asset.epg_channel_id, function(res) {
 				var programs = res.collection;
 				if (!programs)
@@ -160,8 +161,15 @@ Item {
 					return;
 				}
 				console.log("Current program: ", currProgram.title);
+				var genres = currProgram.program.genres[0].name;
+				for (var i = 1; i < currProgram.program.genres.length; ++i)
+					genres += ", " + currProgram.program.genres[i].name;
+
 				var programInfo = {
+					age:			currProgram.program.age_rating,
 					title:			currProgram.title,
+					genre:			genres,
+					channel:		currChannel,
 					duration:		currProgram.duration,
 					startTime:		currProgram.start,
 					description:	currProgram.description

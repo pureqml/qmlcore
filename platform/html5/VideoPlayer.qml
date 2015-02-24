@@ -29,7 +29,7 @@ Item {
 			'" src="' + this.src +
 			'" controls ' +
 			' ' + (this.autoPlay? "autoplay": "") + '>')
-		this._player.css('background-color', 'purple')
+		this._player.css('background-color', 'black')
 		this.element.append(this._player)
 	}
 }

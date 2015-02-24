@@ -16,17 +16,30 @@ Object {
 	LocalStorage { id: authTokenStorage; name: "authToken"; }
 	LocalStorage { id: sessionIdStorage; name: "sessionId"; }
 
-	checkResponse(url, res): {
+	checkResponse(url, res, request): {
 		if (!res.result) {
 			console.log("failed response", url, JSON.stringify(res))
-			if (res.error.message.indexOf("token") > -1)
+			if (res.error.message.indexOf("token") > -1) {
+				this.authToken = ""; //next responses will go to pending
+				if (!this._pendingTokenRequests)
+					this._pendingTokenRequests = []
+				this._pendingTokenRequests.push(request)
 				this.requestNewToken()
+				return false
+			}
 			if (res.error.message === 'no entitlement' && res.error.reason === 'invalid er_multiscreen_session_id') {
 				console.log("session expired")
+				this.sessionId = ""
+				if (!this._pendingSessionRequests)
+					this._pendingSessionRequests = []
+				this._pendingSessionRequests.push(request)
 				this.openSession()
+				return false
 			}
 			this.error(res.error.message)
+			return false
 		}
+		return true
 	}
 
 	request(url, data, callback, type, headers): {
@@ -42,7 +55,6 @@ Object {
 			type: type || 'GET',
 			headers: headers || {}
 		}).done(function(res) {
-			self.checkResponse(url, res)
 			if (callback)
 				callback(res)
 		}).fail(function(req, status, err) {
@@ -51,29 +63,60 @@ Object {
 		})
 	}
 
-	requestWithToken(url, data, callback, type, token): {
-		if (!this.enabled)
-			return;
-		if (!token)
-			token = this.authToken
-
-		var self = this;
-		if (!token)
-		{
-			console.log("no token, scheduling request " + url)
-			if (!this._pending)
-				this._pending = []
-
-			this._pending.push(function() {
-				self.request(url, data, callback, type, {'X-Auth-Token': self.authToken})
-			})
-			return
-		}
-		this.request(url, data, callback, type, {'X-Auth-Token': token})
+	getTokenHeader(token): {
+		return {'X-Auth-Token': token}
 	}
 
-	requestWithTokenAndSession(url, data, callback, type, token): {
-		this.requestWithToken(url + "?er_multiscreen_session_id=" + this.sessionId, data, callback, type, token)
+	requestWithToken(url, data, callback, type): {
+		if (!this.enabled)
+			return;
+
+		var self = this;
+
+		var do_request = function() {
+			self.request(url, data, function(res) {
+				if (self.checkResponse(url, res, do_request))
+					callback(res)
+			}, type, self.getTokenHeader(self.authToken))
+		}
+
+		if (self.authToken)
+			do_request()
+		else
+		{
+			console.log("no token, scheduling request " + url)
+
+			if (!this._pendingTokenRequests)
+				this._pendingTokenRequests = []
+			this._pendingTokenRequests.push(do_request)
+			return
+		}
+	}
+
+	requestWithTokenAndSession(url, data, callback, type): {
+		if (!this.enabled)
+			return;
+
+		var self = this;
+
+		var do_request = function() {
+			self.request(url + "?er_multiscreen_session_id=" + self.sessionId, data, function(res) {
+				if (self.checkResponse(url, res, do_request))
+					callback(res)
+			}, type, self.getTokenHeader(self.authToken))
+		}
+
+		if (self.sessionId)
+			do_request()
+		else
+		{
+			console.log("no session, scheduling request " + url)
+
+			if (!this._pendingSessionRequests)
+				this._pendingSessionRequests = []
+			this._pendingSessionRequests.push(do_request)
+			return
+		}
 	}
 
 	getToken(clientId, deviceId, region, callback): {
@@ -142,13 +185,23 @@ Object {
 	onAuthTokenChanged: {
 		if (!this.authToken)
 			return
-		if (this._pending) {
-			console.log("executing pending requests")
-			this._pending.forEach(function(callback) { callback(); })
+		if (this._pendingTokenRequests) {
+			console.log("executing pending requests(token)")
+			this._pendingTokenRequests.forEach(function(callback) { callback(); })
 		}
 		//this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
 		var self = this;
 		this.requestWithToken('/resource/get_origin_list/', {}, function(res) { self._origins = res.origins; console.log("origins", self._origins) })
+	}
+
+	onSessionIdChanged: {
+		if (!this.sessionId)
+			return
+
+		if (this._pendingSessionRequests) {
+			console.log("executing pending requests(session)")
+			this._pendingSessionRequests.forEach(function(callback) { callback(); })
+		}
 	}
 
 	openSession: {

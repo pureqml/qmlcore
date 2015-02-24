@@ -50,6 +50,7 @@ Item {
 		orientation: ListView.Horizontal;
 		model: channelListModel;
 		orientation: 1;
+		handleNavigationKeys: false; //TODO: fix to avoid test list issue
 		delegate: Item {
 			width: categoryName.paintedWidth + 20;
 			height: parent.height;
@@ -64,8 +65,10 @@ Item {
 			}
 		}
 
-		onDownPressed: { channelView.forceActiveFocus(); }
-		onCurrentIndexChanged: { channelModel.setList(channelModel.get(this.currentIndex)); }
+		onDownPressed: { channelView.forceActiveFocus(); } 
+		onLeftPressed: { channelView.forceActiveFocus(); } //TODO: fixme
+		onRightPressed: { channelView.forceActiveFocus(); } //TODO: fixme
+//		onCurrentIndexChanged: { channelModel.setList(channelModel.get(this.currentIndex)); }//TODO: fixme
 	}
 
 	ListView {

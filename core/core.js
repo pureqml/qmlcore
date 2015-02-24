@@ -795,8 +795,8 @@ exports._setup = function() {
 	_globals.core.ListView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items
-		console.log("reset", model.count)
-		if (items.count > model.count) {
+		console.log("reset", items.length, model.count)
+		if (items.length > model.count) {
 			this._onRowsRemoved(model.count, items.length)
 		} else {
 			this._onRowsChanged(0, items.length)

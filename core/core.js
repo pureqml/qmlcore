@@ -857,7 +857,7 @@ exports._setup = function() {
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		for(var i = 0; i < n; ++i) {
+		for(var i = 0; i < n && p < size; ++i) {
 			var item = this._items[i]
 
 			if (!item) {
@@ -893,8 +893,11 @@ exports._setup = function() {
 
 			item.visible = visible
 			p += s + this.spacing
-			if (p >= size)
-				break
+		}
+		for( ;i < n; ++i) {
+			var item = items[i]
+			if (item)
+				item.visible = false
 		}
 		if (p > 0)
 			p -= this.spacing;

@@ -474,7 +474,7 @@ exports._setup = function() {
 			return
 
 		this._updatePosition(event)
-		this.hovered = true
+		this.containsMouse = true
 	}
 
 	_globals.core.MouseArea.prototype._onExit = function(event) {
@@ -482,7 +482,7 @@ exports._setup = function() {
 			return
 
 		this._updatePosition(event)
-		this.hovered = false
+		this.containsMouse = false
 	}
 
 	_globals.core.MouseArea.prototype._onMove = function(event) {

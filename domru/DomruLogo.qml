@@ -1,9 +1,6 @@
 Item {
-	id: domLogo;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
-	width: 200;
-	height: 60;
 
 	Image {
 		id: logo;

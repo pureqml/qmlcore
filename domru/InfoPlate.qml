@@ -79,11 +79,9 @@ Item {
 		}
 	}
 
-	DomLogo {
+	DomruLogo {
 		anchors.left: parent.left;
 		anchors.top: parent.top;
-		width: 200;
-		height: 60;
 	}
 
 	Rectangle {

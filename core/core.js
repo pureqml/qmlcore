@@ -455,7 +455,10 @@ exports._setup = function() {
 		{
 			this.mouseX = x
 			this.mouseY = y
+			return true
 		}
+		else
+			return false
 	}
 
 	_globals.core.MouseArea.prototype._onClick = function(event) {
@@ -486,7 +489,9 @@ exports._setup = function() {
 		if (!this.hoverEnabled || !this.recursiveVisible)
 			return
 
-		this._updatePosition(event)
+		if (this._updatePosition(event))
+			event.preventDefault()
+	}
 
 	_globals.core.MouseArea.prototype._onDown = function(event) {
 		this.pressed = true

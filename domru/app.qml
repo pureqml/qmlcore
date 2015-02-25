@@ -10,6 +10,14 @@ Item {
 
 	Protocol { id: proto; enabled: true; }
 
+	MouseArea {
+		anchors.fill: parent;
+		hoverEnabled: infoPlateItem.visible;
+
+		onMouseXChanged: { infoPlate.show(2000); }
+		onMouseYChanged: { infoPlate.show(2000); }
+	}
+
 	CategoriesList {
 		id: categories;
 		anchors.leftMargin: 60;
@@ -30,7 +38,7 @@ Item {
 			infoPlate.logo = channelInfo.logo;
 			infoPlate.channelNumber = channelInfo.number;
 
-			infoPlate.show();
+			infoPlate.show(10000);
 		}
 	}
 
@@ -68,13 +76,13 @@ Item {
 		}
 
 		onChannelListCalled: {
-			infoPlate.permanent = false;
 			categories.toggle();
 		}
 	}
 
+
 	Text {
-		anchors.centerIn: parent;
+		anchors.horizontalCenter: parent.horizontalCenter;
 		color: "white";
 		text: "Нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
 		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
@@ -82,6 +90,6 @@ Item {
 		Behavior on opacity { Animation { duration: 300; } }
 	}
 
-	onBluePressed: { infoPlate.permanent = true; infoPlate.show(); }
+	onBluePressed: { infoPlate.show(10000); }
 	onGreenPressed: { categories.toggle(); }
 }

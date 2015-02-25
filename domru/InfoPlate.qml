@@ -1,7 +1,6 @@
 Item {
 	id: infoPlateItem;
 	property bool active: true;
-	property bool permanent: false;
 	property bool isHd: false;
 	property bool is3d: false;
 	property int channelNumber: 0;
@@ -22,48 +21,38 @@ Item {
 		running: true;
 
 		onTriggered: {
-			if (!infoPlateItem.permanent)
-				infoPlateItem.active = false;
+			console.log("Infoplate hideTimer triggered");
+			infoPlateItem.close();
 		}
 	}
 
-	show: {
-		infoPlateItem.active = true;
-		infoPlateItem.forceActiveFocus();
-		hideTimer.interval = 6000;
+	show(ms): {
+		this.active = true;
+		this.forceActiveFocus();
+		hideTimer.interval = ms;
+		console.log("Restarting timer", hideTimer.interval);
 		hideTimer.restart();
 	}
 
+	close: {
+		this.active = false;
+		hideTimer.stop();
+	}
+
 	onBackPressed: {
-		infoPlateItem.permanent = false;
-		infoPlateItem.active = false;
+		if (this.active)
+			this.close();
 	}
 
 	onBluePressed: {
-		infoPlateItem.active = !infoPlateItem.active;
-		infoPlateItem.permanent = infoPlateItem.active;
-	}
-
-	MouseArea {
-		anchors.fill: parent;
-		hoverEnabled: infoPlateItem.visible;
-
-		onMouseXChanged: {
-			infoPlateItem.active = true;
-			hideTimer.interval = 2000;
-			hideTimer.restart();
-		}
-
-		onMouseYChanged: {
-			infoPlateItem.active = true;
-			hideTimer.interval = 2000;
-			hideTimer.restart();
-		}
+		if (this.active)
+			this.close();
+		else
+			this.show(10000);
 	}
 
 	onActiveChanged: {
-		if (!infoPlateItem.active)
-			settingsColumn.active = false;
+		settingsColumn.active = false;
 	}
 
 	Rectangle {

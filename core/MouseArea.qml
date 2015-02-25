@@ -7,6 +7,7 @@ Item {
 	property bool containsMouse;
 	property real mouseX;
 	property real mouseY;
+	property bool pressed;
 
 	onContainsMouseChanged: {
 		if (this.containsMouse)

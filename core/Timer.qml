@@ -6,7 +6,7 @@ Object {
 	property bool running;
 	property bool triggeredOnStart;
 
-	restart:	{ this._restart(); }
+	restart:	{ this._restart(); this.running = true; }
 	start:		{ this.running = true; }
 	stop:		{ this.running = false; }
 }

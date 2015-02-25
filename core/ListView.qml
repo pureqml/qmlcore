@@ -15,9 +15,52 @@ Item {
 
 	property bool handleNavigationKeys: true;
 	property bool keyNavigationWraps: true;
+	property bool dragEnabled: true;
 
 	Behavior on contentX	{ Animation { duration: 300; } }
 	Behavior on contentY	{ Animation { duration: 300; } }
+
+	MouseArea {
+		anchors.fill: parent;
+		hoverEnabled: parent.dragEnabled;
+
+		onPressedChanged: {
+			if (this.pressed) {
+				var idx = this.parent.indexAt(this.mouseX, this.mouseY)
+				this._x = this.mouseX
+				this._y = this.mouseY
+				if (idx >= 0)
+					this.parent.currentIndex = idx
+			}
+		}
+
+		onMouseXChanged: {
+			if (!this.pressed || this.parent.orientation != ListView.Horizontal)
+				return
+			var dx = this.mouseX - this._x
+			this._x = this.mouseX
+			var a = this.parent.getAnimation('contentX')
+			if (a)
+				a.disable()
+			this.parent.contentX -= dx
+			if (a)
+				a.enable()
+		}
+
+		onMouseYChanged: {
+			if (!this.pressed || this.parent.orientation != ListView.Vertical)
+				return
+			var dy = this.mouseY - this._y
+			this._y = this.mouseY
+			var a = this.parent.getAnimation('contentY')
+			if (a)
+				a.disable()
+			this.parent.contentY -= dy
+			if (a)
+				a.enable()
+		}
+		z: parent.dragEnabled? parent.z + 1: -1000;
+	}
 
 	onKeyPressed: {
 		var horizontal = this.orientation == this.Horizontal

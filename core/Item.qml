@@ -29,7 +29,6 @@ Object {
 	property int viewX;
 	property int viewY;
 
-	onVisibleChanged: {
-		this.recursiveVisible = this.visible
-	}
+	onVisibleChanged: { this._updateVisibility() }
+	onOpacityChanged: { this._updateVisibility() }
 }

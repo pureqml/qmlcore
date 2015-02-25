@@ -351,6 +351,10 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Item.prototype._updateVisibility = function() {
+		this.recursiveVisible = this._recursiveVisible && this.visible && this.opacity > 0.004 //~1/255
+	}
+
 	_globals.core.Item.prototype.forceActiveFocus = function() {
 		var item = this;
 		while(item.parent) {
@@ -1129,9 +1133,12 @@ exports._bootstrap = function(self, name) {
 				throw "double ctor call";
 			self.element = $('<div/>');
 			self.parent.element.append(self.element);
-			self.parent.onChanged('recursiveVisible', function(value) {
-				self.recursiveVisible = value && self.visible
-			})
+			var updateVisibility = function(value) {
+				self._recursiveVisible = value
+				self._updateVisibility()
+			}
+			updateVisibility(self.parent.recursiveVisible)
+			self.parent.onChanged('recursiveVisible', updateVisibility)
 
 			break;
 		case 'core.MouseArea':

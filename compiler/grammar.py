@@ -147,6 +147,7 @@ expression_ops = infixNotation(expression_definition, [
 	('===',	2, opAssoc.LEFT, handle_binary_op),
 	('!==',	2, opAssoc.LEFT, handle_binary_op),
 ])
+expression_ops.setParseAction(lambda s, l, t: "(%s)" %t[0])
 
 expression << expression_ops
 

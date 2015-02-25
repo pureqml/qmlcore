@@ -11,7 +11,7 @@ ListModel {
 
 		if (last == this.end - 4) {
 			this.append({ icon: "res/back.png", contextColor: "#f33", widthScale: 2 });
-			this.append({ icon: "res/back.png", contextColor: "#33f", widthScale: 2 });
+			this.append({ text: " ", icon: "res/back.png", contextColor: "#33f", widthScale: 2 });
 		} else if (this.end > letters.length) {
 			this.append({ text: "@", widthScale: 2 });
 			this.append({ text: ".com", widthScale: 3 });

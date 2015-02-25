@@ -1,15 +1,17 @@
 Item {
 	id: textEditProto;
-	property alias text: innerText.text;
-	property Color color: "#fff";
+	property alias text;
+	property Color color: "#000";
 	property bool cursorVisible: true;
+	property Font font: Font {}
 	focus: true;
 
 	Rectangle {
 		id: cursor;
-		x: innerText.paintedWidth;
 		width: 2;
-		height: parent.height;
+		height: innerText.paintedHeight;
+		anchors.verticalCenter: parent.verticalCenter;
+		x: innerText.paintedWidth;
 		color: textEditProto.color;
 		visible: parent.activeFocus && textEditProto.cursorVisible;
 	}
@@ -19,6 +21,8 @@ Item {
 		anchors.verticalCenter: parent.verticalCenter;
 		color: textEditProto.color;
 		text: textEditProto.text;
+		font: textEditProto.font;
+		font.pointSize: 24;
 	}
 
 	Timer {
@@ -41,6 +45,6 @@ Item {
         }
     }
 
-	removeChar: { innerText.text = innerText.text.slice(0, innerText.text.length - 1); }
+	removeChar: { textEditProto.text = textEditProto.text.slice(0, textEditProto.text.length - 1); }
 	onTextChanged: { console.log("TextEdit::TextChanged: ", this.text); }
 }

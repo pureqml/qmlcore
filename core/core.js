@@ -507,6 +507,11 @@ exports._setup = function() {
 		this.pressed = false
 	}
 
+	_globals.core.MouseArea.prototype._onWheel = function(event) {
+		var e = event.originalEvent
+		this.wheelEvent(e.wheelDelta / 120)
+	}
+
 	_globals.core.AnchorLine.prototype.toScreen = function() {
 		return this.parent.toScreen()[this.boxIndex]
 	}
@@ -1165,6 +1170,7 @@ exports._bootstrap = function(self, name) {
 			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
 			self.element.mousedown(self._onDown.bind(self))
 			self.element.mouseup(self._onUp.bind(self))
+			self.element.on('mousewheel', self._onWheel.bind(self))
 			break;
 		case 'core.Image':
 			self.element.remove();

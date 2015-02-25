@@ -100,6 +100,30 @@ Item {
 			this.focusChild(item)
 	}
 
+	indexAt(x, y): {
+		var items = this._items
+		if (this.orientation == ListView.Horizontal) {
+			for (var i = 0; i < items.length; ++i) {
+				var item = items[i]
+				if (!item)
+					continue
+				var vx = item.viewX
+				if (x >= vx && x < vx + item.width)
+					return i
+			}
+		} else {
+			for (var i = 0; i < items.length; ++i) {
+				var item = items[i]
+				if (!item)
+					continue
+				var vy = item.viewY
+				if (y >= vy && y < vy + item.height)
+					return i
+			}
+		}
+		return -1
+	}
+
 	onFocusedChildChanged: {
 		var idx = this._items.indexOf(this.focusedChild)
 		//console.log("focused child", this.focusedChild, idx)

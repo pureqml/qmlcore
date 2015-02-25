@@ -1,6 +1,7 @@
 Item {
 	id: keyboardProto;
 	signal keySelected;
+	signal backspase;
 	width: 420;
 	height: 480;
 
@@ -54,9 +55,17 @@ Item {
 					visible: model.icon;
 				}
 			}
+
 			onLeftPressed: { --this.currentIndex; }
 			onRightPressed: { ++this.currentIndex; }
-			onSelectPressed: { keyboardProto.keySelected(row.text); }
+
+			onSelectPressed: {
+				var row = this.model.get(this.currentIndex);
+				if (row.text)
+					keyboardProto.keySelected(row.text);
+				else
+					keyboardProto.backspase();
+			}
 		}
 	}
 }

@@ -31,8 +31,9 @@ Rectangle {
 			anchors.left: parent.left;
 			anchors.topMargin: 40;
 
-			ListView {
-			//TODO: implement keyboard grid,
+			Keyboard {
+				onKeySelected(key): { inputDialog.text += key; }
+				onBackspase: { inputDialog.removeChar(); }
 			}
 
 			Column {
@@ -49,6 +50,7 @@ Rectangle {
 				}
 
 				Input {
+					id: inputDialog;
 					width: parent.width;
 					height: 50;
 				}

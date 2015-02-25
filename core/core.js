@@ -235,8 +235,13 @@ exports._setup = function() {
 				triplet = value.substring(1)
 		}
 
-		if (!triplet)
-			throw "invalid color specification: " + value
+		if (!triplet) {
+			this.r = 255
+			this.g = 0
+			this.b = 255
+			console.log("invalid color specification: " + value)
+			return
+		}
 
 		var len = triplet.length;
 		if (len == 3 || len == 4) {

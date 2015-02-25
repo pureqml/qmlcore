@@ -79,11 +79,11 @@ Item {
 		}
 	}
 
-	Image {
-		id: logo;
-		anchors.top: parent.top;
+	DomLogo {
 		anchors.left: parent.left;
-		source: "res/logoDomru.png";
+		anchors.top: parent.top;
+		width: 200;
+		height: 60;
 	}
 
 	Rectangle {
@@ -158,7 +158,7 @@ Item {
 
 			Text {
 				anchors.centerIn: parent;
-				color: "#ccc";
+				color: "white";
 				text: infoPlateItem.title;
 				opacity: channelPanel.activeFocus ? 1 : 0;
 

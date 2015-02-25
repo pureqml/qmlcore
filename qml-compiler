@@ -20,6 +20,9 @@ if args.wait:
 		print "seems that you don't have pyinotify module installed, you can't use -w without it"
 
 compiler.grammar.source.parseWithTabs()
+with open(compiler.grammar.__file__, "rb") as f:
+	data = f.read()
+	grammar_digest = hashlib.sha1(data).hexdigest()
 
 project_dirs = args.directory
 output_dir = args.output
@@ -42,7 +45,7 @@ def process_file(generator, dirpath, filename):
 		cached_path = os.path.join(".cache", com)
 		with open(path) as f:
 			data = f.read()
-			h = hashlib.sha1(data).hexdigest()
+			h = hashlib.sha1(grammar_digest + data).hexdigest()
 		try:
 			with open(cached_path) as f:
 				if f.readline().strip() != h:

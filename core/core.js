@@ -483,6 +483,10 @@ exports._setup = function() {
 
 		this._updatePosition(event)
 		this.containsMouse = false
+		if (this.pressed) {
+			this.pressed = false
+			this.canceled()
+		}
 	}
 
 	_globals.core.MouseArea.prototype._onMove = function(event) {
@@ -494,10 +498,12 @@ exports._setup = function() {
 	}
 
 	_globals.core.MouseArea.prototype._onDown = function(event) {
+		this._updatePosition(event)
 		this.pressed = true
 	}
 
 	_globals.core.MouseArea.prototype._onUp = function(event) {
+		this._updatePosition(event)
 		this.pressed = false
 	}
 

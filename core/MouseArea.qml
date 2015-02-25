@@ -2,6 +2,7 @@ Item {
 	signal entered;
 	signal exited;
 	signal clicked;
+	signal canceled;
 
 	property bool hoverEnabled;
 	property bool containsMouse;

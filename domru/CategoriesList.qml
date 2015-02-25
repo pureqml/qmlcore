@@ -18,11 +18,14 @@ Item {
 
 	ChannelModel {
 		id: channelModel;
+		property bool firstTime: true;
 		protocol: channelList.protocol;
 
 		onCountChanged: {
-			if (this.count == 1)
+			if (this.count == 1 && firstTime) {
 				channelView.switchToChannel();
+				firstTime = false;
+			}
 		}
 	}
 
@@ -63,9 +66,13 @@ Item {
 		}
 
 		onDownPressed: { channelView.forceActiveFocus(); } 
-		onLeftPressed: { channelView.forceActiveFocus(); } //TODO: fixme
-		onRightPressed: { channelView.forceActiveFocus(); } //TODO: fixme
-//		onCurrentIndexChanged: { channelModel.setList(channelModel.get(this.currentIndex)); }//TODO: fixme
+		onLeftPressed: { --categoriesList.currentIndex; }
+		onRightPressed: { ++categoriesList.currentIndex; }
+
+		onCurrentIndexChanged: {
+			channelModel.setList(channelListModel.get(this.currentIndex));
+			channelView.currentIndex = 0;
+		}
 	}
 
 	ListView {
@@ -122,9 +129,7 @@ Item {
 				categoriesList.forceActiveFocus();
 		}
 
-		onSelectPressed: {
-			channelView.switchToChannel();
-		}
+		onSelectPressed: { channelView.switchToChannel(); }
 
 		switchToChannel: {
 			channelList.active = false;

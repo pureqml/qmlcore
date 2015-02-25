@@ -4,12 +4,12 @@ Item {
 	signal clicked;
 
 	property bool hoverEnabled;
-	property bool hovered;
+	property bool containsMouse;
 	property real mouseX;
 	property real mouseY;
 
-	onHoveredChanged: {
-		if (this.hovered)
+	onContainsMouseChanged: {
+		if (this.containsMouse)
 			this.entered()
 		else
 			this.exited()

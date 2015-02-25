@@ -59,6 +59,11 @@ Item {
 			if (a)
 				a.enable()
 		}
+
+		onWheelEvent(dp): {
+			this.parent.currentIndex -= Math.round(dp)
+		}
+
 		z: parent.dragEnabled? parent.z + 1: -1000;
 	}
 

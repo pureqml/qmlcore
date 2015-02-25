@@ -3,6 +3,7 @@ Item {
 	signal exited;
 	signal clicked;
 	signal canceled;
+	signal wheelEvent;
 
 	property bool hoverEnabled;
 	property bool containsMouse;

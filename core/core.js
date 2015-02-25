@@ -487,6 +487,13 @@ exports._setup = function() {
 			return
 
 		this._updatePosition(event)
+
+	_globals.core.MouseArea.prototype._onDown = function(event) {
+		this.pressed = true
+	}
+
+	_globals.core.MouseArea.prototype._onUp = function(event) {
+		this.pressed = false
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
@@ -1145,6 +1152,8 @@ exports._bootstrap = function(self, name) {
 			self.element.click(self._onClick.bind(self))
 			$(document).mousemove(self._onMove.bind(self))
 			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
+			self.element.mousedown(self._onDown.bind(self))
+			self.element.mouseup(self._onUp.bind(self))
 			break;
 		case 'core.Image':
 			self.element.remove();

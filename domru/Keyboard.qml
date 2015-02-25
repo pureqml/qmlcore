@@ -2,6 +2,7 @@ Item {
 	id: keyboardProto;
 	signal keySelected;
 	signal backspase;
+	property int currentRow;
 	width: 420;
 	height: 480;
 
@@ -29,6 +30,7 @@ Item {
 			width: parent.width;
 			height: 45;
 			orientation: ListView.Horizontal;
+			keyNavigationWraps: false;
 			model: KeyboardRowModel {
 				parentModel: keyboardModel;
 				begin: model.index * 7;
@@ -58,6 +60,7 @@ Item {
 
 			onLeftPressed: { --this.currentIndex; }
 			onRightPressed: { ++this.currentIndex; }
+			onCurrentIndexChanged: { keyboardProto.currentRow = this.currentIndex; }
 
 			onSelectPressed: {
 				var row = this.model.get(this.currentIndex);
@@ -65,6 +68,11 @@ Item {
 					keyboardProto.keySelected(row.text);
 				else
 					keyboardProto.backspase();
+			}
+
+			onActiveFocusChanged: {
+				if (this.activeFocus)
+					this.currentIndex = keyboardProto.currentRow;
 			}
 		}
 	}

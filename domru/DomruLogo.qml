@@ -1,6 +1,8 @@
 Item {
-	anchors.top: parent.top;
-	anchors.left: parent.left;
+	anchors.top: renderer.top;
+	anchors.left: renderer.left;
+	anchors.leftMargin: 75;
+	anchors.topMargin: 42;
 
 	Image {
 		id: logo;

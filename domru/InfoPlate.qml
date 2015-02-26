@@ -69,10 +69,7 @@ Item {
 		}
 	}
 
-	DomruLogo {
-		anchors.left: parent.left;
-		anchors.top: parent.top;
-	}
+	DomruLogo { }
 
 	Rectangle {
 		width: 125;

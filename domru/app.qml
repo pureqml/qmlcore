@@ -11,6 +11,7 @@ Item {
 	Protocol { id: proto; enabled: true; }
 
 	MouseArea {
+		id: area;
 		anchors.fill: parent;
 		hoverEnabled: infoPlateItem.visible;
 
@@ -88,6 +89,11 @@ Item {
 		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
 
 		Behavior on opacity { Animation { duration: 300; } }
+	}
+
+	Mouse {
+		x: area.mouseX;
+		y: area.mouseY;
 	}
 
 	onBluePressed: { infoPlate.show(10000); }

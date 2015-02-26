@@ -201,5 +201,8 @@ Rectangle {
 				model: loginoptionsModel;
 			}
 		}
+
+		onRedPressed: { inputDialog.removeChar(); }
+		onBluePressed: { inputDialog.text += " "; }
 	}
 }

@@ -11,7 +11,7 @@ def split_name(name):
 	return ".".join(r[:-1]), r[-1]
 
 class component_generator(object):
-	def __init__(self, name, component):
+	def __init__(self, name, component, prototype = False):
 		self.name = name
 		self.component = component
 		self.aliases = {}
@@ -27,6 +27,7 @@ class component_generator(object):
 		self.key_handlers = {}
 		self.signals = set()
 		self.id = None
+		self.prototype = prototype
 
 		for child in component.children:
 			self.add_child(child)
@@ -277,7 +278,7 @@ class generator(object):
 			self.packages[package] = set()
 		self.packages[package].add(component_name)
 
-		gen = component_generator(name, component)
+		gen = component_generator(name, component, True)
 		self.components[name] = gen
 
 	def add_js(self, name, data):

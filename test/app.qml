@@ -115,7 +115,7 @@ Item {
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
 		keyNavigationWraps: false;
-		width: 200;
+		width: contentWidth;
 		contentY: 50;
 		orientation: ListView.Vertical;
 		delegate: Rectangle { width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }

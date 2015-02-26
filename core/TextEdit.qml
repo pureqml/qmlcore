@@ -1,6 +1,6 @@
 Item {
 	id: textEditProto;
-	property alias text;
+	property alias text: innerText.text;
 	property Color color: "#000";
 	property bool cursorVisible: true;
 	property Font font: Font {}
@@ -23,6 +23,9 @@ Item {
 		text: textEditProto.text;
 		font: textEditProto.font;
 		font.pointSize: 24;
+		onCompleted: {
+			this.element.css('white-space', 'pre')
+		}
 	}
 
 	Timer {

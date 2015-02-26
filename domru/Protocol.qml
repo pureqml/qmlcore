@@ -282,8 +282,8 @@ Object {
 	}
 
 	onCompleted: {
-		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
-			this.baseUrl = "http://tv.domru.ru/api/" //fixme: find out
+		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0 || qml.core.vendor == 'samsung')
+			this.baseUrl = "http://tv.domru.ru/api/" //it seems https returns status 0 as cross-site reponse
 		else
 			this.baseUrl = "https://tv.domru.ru/api/"
 

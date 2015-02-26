@@ -1,12 +1,13 @@
-var samsung = false
-
 //samsung guts
 var widgetAPI
 var tvKey
 var pluginAPI
 
+_globals.core.vendor = "webkit"
+
 if ('Common' in window) {
 	alert("[QML] samsung smart tv")
+	_globals.core.vendor = "samsung"
 
 	console.log = function() {
 		var args = Array.prototype.slice.call(arguments)

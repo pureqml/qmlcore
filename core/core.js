@@ -186,6 +186,7 @@ _globals.core.Object.prototype.getAnimation = function (name, animation) {
 }
 
 exports._setup = function() {
+
 	_globals.core.ListModel.prototype.addChild = function(child) {
 		this.append(child)
 	}
@@ -980,19 +981,55 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	exports.Context.prototype = Object.create(qml.core.Item.prototype);
-	exports.Context.prototype.constructor = exports.Context;
+	_globals.core.core.Context = function() {
+		_globals.core.Item.apply(this, null);
+		this._completedHandlers = []
+	}
 
-	exports.Context.prototype._onCompleted = function(callback) {
+	_globals.core.core.Context.prototype = Object.create(_globals.core.Item.prototype);
+	_globals.core.core.Context.prototype.constructor = exports.Context;
+
+	_globals.core.core.Context.prototype.init = function() {
+		this._local['renderer'] = this;
+
+		var win = $(window);
+		var w = win.width();
+		var h = win.height();
+		//console.log("window size: " + w + "x" + h);
+
+		var body = $('body');
+		var div = $("<div id='renderer'></div>");
+		body.append(div);
+		$('head').append($("<style>" +
+			"body { overflow: hidden; }" +
+			"div#renderer { position: absolute; left: 0px; top: 0px; } " +
+			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
+			"input { position: absolute; } " +
+			"img { position: absolute; } " +
+			"</style>"
+		));
+
+		this.element = div
+		this.width = w;
+		this.height = h;
+
+		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
+		var self = this;
+		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
+
+		//console.log("context created");
+	}
+
+	_globals.core.core.Context.prototype._onCompleted = function(callback) {
 		this._completedHandlers.push(callback);
 	}
 
-	exports.Context.prototype._completed = function() {
+	_globals.core.core.Context.prototype._completed = function() {
 		this._completedHandlers.forEach(function(callback) { try { callback(); } catch(ex) { console.log("completed handler failed", ex, ex.stack); }} )
 		this._completedHandlers = [];
 	}
 
-	exports.Context.prototype.start = function(name) {
+	_globals.core.core.Context.prototype.start = function(name) {
 		var proto;
 		if (typeof name == 'string') {
 			//console.log('creating component...', name);
@@ -1009,40 +1046,6 @@ exports._setup = function() {
 		this.boxChanged()
 		return instance;
 	}
-}
-
-exports.Context = function() {
-	_globals.core.Item.apply(this, null);
-
-	this._local['renderer'] = this;
-	this._completedHandlers = []
-
-	var win = $(window);
-	var w = win.width();
-	var h = win.height();
-	//console.log("window size: " + w + "x" + h);
-
-	var body = $('body');
-	var div = $("<div id='renderer'></div>");
-	body.append(div);
-	$('head').append($("<style>" +
-		"body { overflow: hidden; }" +
-		"div#renderer { position: absolute; left: 0px; top: 0px; } " +
-		"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
-		"input { position: absolute; } " +
-		"img { position: absolute; } " +
-		"</style>"
-	));
-
-	this.element = div
-	this.width = w;
-	this.height = h;
-
-	win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
-	var self = this;
-	$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
-
-	//console.log("context created");
 }
 
 exports.addProperty = function(self, type, name) {

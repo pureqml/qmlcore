@@ -133,9 +133,9 @@ Item {
 
 		switchToChannel: {
 			channelList.active = false;
-			var activated = channelList.activated
+			var list = this._get('channelList')
 			this.model.getUrl(this.currentIndex, function(url) {
-				activated(url)
+				list.activated(url)
 			})
 
 			var curRow = this.model.get(this.currentIndex)

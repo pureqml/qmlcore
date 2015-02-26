@@ -182,4 +182,7 @@ Item {
 	onCurrentIndexChanged: {
 		this.focusCurrent()
 	}
+
+	onBoxChanged: { this._layout() }
+	onCompleted: { this._layout() }
 }

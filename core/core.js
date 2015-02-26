@@ -876,14 +876,21 @@ exports._setup = function() {
 			return
 
 		this.count = model.count
-		var w = this.width, h = this.height
-		if (!w || !h)
+		if (!this.count)
 			return
+
+		var horizontal = this.orientation === this.Horizontal
+		if (horizontal && w <= 0)
+			return
+
+		if (!horizontal && h <= 0)
+			return
+
+		var w = this.width, h = this.height
 
 		var items = this._items
 		var n = items.length
 		//console.log("layout " + n + " into " + w + "x" + h)
-		var horizontal = this.orientation === this.Horizontal
 		var p = horizontal? -this.contentX: -this.contentY
 		var size = horizontal? w: h
 		var maxW = 0, maxH = 0

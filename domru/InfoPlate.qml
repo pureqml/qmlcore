@@ -35,6 +35,7 @@ Item {
 	}
 
 	close: {
+		timePanel.forceActiveFocus();
 		this.active = false;
 		hideTimer.stop();
 	}

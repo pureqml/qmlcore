@@ -36,6 +36,10 @@ for opt in "$@"; do
 		dev)
 			compiler -o app core controls domru platform/html5
 		;;
+		dev-mini)
+			compiler -o app core controls domru platform/html5
+			minify
+		;;
 		test)
 			compiler -w -o app core controls test
 		;;

@@ -38,7 +38,6 @@ Item {
         hoverEnabled: true;
         z: parent.z + 1;
 
-		onClicked: { button.triggered(); }
         onEntered: {
 			if (!this.activeFocus)
 				this.forceActiveFocus();

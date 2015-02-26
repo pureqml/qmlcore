@@ -90,7 +90,7 @@ Item {
 			var x = 0, y = 0, w = 0, h = 0
 			for(var i = idx; i >= 0; --i) {
 				if (items[i]) {
-					var item = items[i]
+					item = items[i]
 					x = item.viewX + item.x + cx
 					y = item.viewY + item.y + cy
 					w = item.width

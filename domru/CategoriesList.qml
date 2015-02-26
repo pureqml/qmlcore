@@ -194,7 +194,7 @@ Item {
 			var minutes = startTime.getMinutes();
 			minutes = minutes >= 10 ? minutes : "0" + minutes;
 			var info = startTime.getHours() + ":" + minutes;
-			var minutes = endTime.getMinutes();
+			minutes = endTime.getMinutes();
 			minutes = minutes >= 10 ? minutes : "0" + minutes;
 			info += " - " + endTime.getHours() + ":" + minutes;
 			info += ", " + currChannel;

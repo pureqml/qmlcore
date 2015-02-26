@@ -47,7 +47,7 @@ Item {
 		height: 70;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
-		anchors.right: parent.right;
+		width: contentWidth;
 		spacing: 10;
 		orientation: ListView.Horizontal;
 		model: channelListModel;

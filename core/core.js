@@ -130,7 +130,7 @@ _globals.core.Object.prototype._removeUpdater = function (name, callback) {
 _globals.core.Object.prototype.onPressed = function (name, callback) {
 	var wrapper
 	if (name != 'Key')
-		wrapper = function() { callback(); return true }
+		wrapper = function(key, event) { event.accepted = true; callback(key, event); return event.accepted }
 	else
 		wrapper = callback;
 

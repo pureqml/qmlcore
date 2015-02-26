@@ -58,9 +58,15 @@ Item {
 				}
 			}
 
-			onLeftPressed: { --this.currentIndex; }
-			onRightPressed: { ++this.currentIndex; }
 			onCurrentIndexChanged: { keyboardProto.currentRow = this.currentIndex; }
+			onLeftPressed: { --this.currentIndex; }
+
+			onRightPressed: {
+				if (this.currentIndex == this.count - 1)
+					event.accepted();
+				else
+					++this.currentIndex;
+			}
 
 			onSelectPressed: {
 				var row = this.model.get(this.currentIndex);

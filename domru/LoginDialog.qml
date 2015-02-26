@@ -1,4 +1,8 @@
 Rectangle {
+	id: loginDialogProto;
+	property bool loginPage: true;
+	property string login;
+	property string password;
 	anchors.fill: renderer;
 
 	Item {
@@ -45,7 +49,7 @@ Rectangle {
 				focus: true;
 
 				Text {
-					text: "Введите пароль";
+					text: loginDialogProto.loginPage ? "Введите логин" : "Введите пароль";
 					color: "#fff";
 				}
 
@@ -53,13 +57,24 @@ Rectangle {
 					id: inputDialog;
 					width: parent.width;
 					height: 50;
+					passwordMode: !loginDialogProto.loginPage;
 				}
 
 				Button {
 					color: activeFocus ? "#fff": "#eee";
 					textColor: "black";
-					width: 400;
-					text: "Перейти к вводу пароля";
+					width: label.paintedWidth + 20;
+					text: loginDialogProto.loginPage ? "Перейти к вводу пароля" : "Авторизоваться";
+
+					onTriggered: {
+						if (!loginDialogProto.loginPage) {
+							loginDialogProto.password = inputDialog.text;
+						} else {
+							loginDialogProto.login = inputDialog.text;
+							inputDialog.text = "";
+							loginDialogProto.loginPage = false;
+						}
+					}
 				}
 			}
 		}

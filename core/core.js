@@ -143,7 +143,7 @@ _globals.core.Object.prototype.onPressed = function (name, callback) {
 _globals.core.Object.prototype._update = function(name, value) {
 	if (name in this._changedHandlers) {
 		var handlers = this._changedHandlers[name];
-		handlers.forEach(function(callback) { try { callback(value)} catch(ex) { console.log("on " + name + " changed callback failed: ", ex, ex.stack) }})
+		handlers.forEach(function(callback) { try { callback(value) } catch(ex) { console.log("on " + name + " changed callback failed: ", ex, ex.stack) }})
 	}
 }
 

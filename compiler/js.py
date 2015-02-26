@@ -285,10 +285,6 @@ class generator(object):
 			raise Exception("duplicate js name " + name)
 		self.imports[name] = data
 
-	def add_components(self, name, components, declaration):
-		for component in components:
-			self.add_component(name, component, declaration)
-
 	def wrap(self, code):
 		return "(function() {\n'use strict';\nvar exports = {};\n%s\nreturn exports;\n} )" %code
 

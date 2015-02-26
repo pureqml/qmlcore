@@ -12,7 +12,7 @@ Item {
 	property bool pressed;
 
 	onContainsMouseChanged: {
-		if (this.containsMouse)
+		if (value)
 			this.entered()
 		else
 			this.exited()

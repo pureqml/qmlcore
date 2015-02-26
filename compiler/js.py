@@ -257,7 +257,7 @@ class component_generator(object):
 				r.append("%sqml._context._onCompleted((function() %s ).bind(this));" %(ident, code))
 		for name, code in self.changed_handlers.iteritems():
 			code = process(code, self, registry)
-			r.append("%sthis.onChanged('%s', (function() %s ).bind(this));" %(ident, name, code))
+			r.append("%sthis.onChanged('%s', (function(value) %s ).bind(this));" %(ident, name, code))
 		for name, code in self.key_handlers.iteritems():
 			code = process(code, self, registry)
 			r.append("%sthis.onPressed('%s', (function(key, event) %s ).bind(this));" %(ident, name, code))

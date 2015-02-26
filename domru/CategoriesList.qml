@@ -22,9 +22,9 @@ Item {
 		protocol: channelList.protocol;
 
 		onCountChanged: {
-			if (this.count == 1 && firstTime) {
+			if (this.count == 1 && this.firstTime) {
 				channelView.switchToChannel();
-				firstTime = false;
+				this.firstTime = false;
 			}
 		}
 	}

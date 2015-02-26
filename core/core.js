@@ -15,11 +15,11 @@ if ('Common' in window) {
 	}
 
 	console.log("loading")
-	widgetAPI = new Common.API.Widget() // Creates Common module
+	widgetAPI = new window.Common.API.Widget() // Creates Common module
 	console.log("widget ok")
-	tvKey = new Common.API.TVKeyValue()
+	tvKey = new window.Common.API.TVKeyValue()
 	console.log("tv ok")
-	pluginAPI = new Common.API.Plugin()
+	pluginAPI = new window.Common.API.Plugin()
 	console.log("plugin ok, sending ready")
 	widgetAPI.sendReadyEvent() // Sends 'ready' message to the Application Manager
 	console.log("registering keys")
@@ -526,7 +526,6 @@ exports._setup = function() {
 			var parent_box = parent.toScreen();
 			var left = anchors.left.toScreen();
 			var lm = anchors.leftMargin || anchors.margins;
-			var rm = anchors.rightMargin || anchors.margins;
 			self.x = left + lm - parent_box[0] - self.viewX;
 			if (anchors.right) {
 				var right = anchors.right.toScreen();
@@ -665,7 +664,6 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignVCenter	= 2
 
 	_globals.core.Text.prototype._updateSize = function() {
-		if (parent.text == "14")
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
 		this.element.css('width', '')

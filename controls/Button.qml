@@ -31,7 +31,7 @@ Rectangle {
         hoverEnabled: true;
 
         z: 100;
-        onClicked: { button.triggered(); }
+        onClicked: { this.parent.triggered(); }
         onEntered: { 
             if (!button.activeFocus)
                 button.forceActiveFocus(); 

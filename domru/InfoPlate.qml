@@ -30,7 +30,7 @@ Item {
 		this.active = true;
 		this.forceActiveFocus();
 		hideTimer.interval = ms;
-		console.log("Restarting timer", hideTimer.interval);
+		//console.log("Restarting timer", hideTimer.interval);
 		hideTimer.restart();
 	}
 

@@ -398,7 +398,10 @@ Activity {
 				hoverEnabled: true;
 //				z: 2;
 
-				onClicked: { infoPlateItem.channelListCalled(); }// listContext.active = false; }
+				onClicked: { 
+					infoPlateItem.channelListCalled(); 
+					infoPlateItem.stop();
+				}
 			}
 		}
 

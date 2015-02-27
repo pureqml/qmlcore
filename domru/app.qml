@@ -12,7 +12,7 @@ Item {
 
 	MouseArea {
 		id: area;
-		anchors.fill: parent;
+		anchors.fill: renderer;
 		hoverEnabled: infoPlateItem.visible;
 
 		onMouseXChanged: { infoPlate.show(2000); }
@@ -92,8 +92,9 @@ Item {
 	}
 
 	Mouse {
-		x: area.mouseX;
-		y: area.mouseY;
+		x: area.mouseX - 74;
+		y: area.mouseY - 41;
+		z: 10;
 	}
 
 	onBluePressed: { infoPlate.show(10000); }

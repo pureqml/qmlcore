@@ -26,7 +26,6 @@ BaseView {
 	}
 
 	getItemPosition(idx): {
-		var cx = this.contentX, cy = this.contentY
 		var items = this._items
 		var item = items[idx]
 		if (!item) {
@@ -34,8 +33,8 @@ BaseView {
 			for(var i = idx; i >= 0; --i) {
 				if (items[i]) {
 					item = items[i]
-					x = item.viewX + item.x + cx
-					y = item.viewY + item.y + cy
+					x = item.viewX + item.x
+					y = item.viewY + item.y
 					w = item.width
 					h = item.height
 					break
@@ -49,7 +48,7 @@ BaseView {
 			return [x, y, w, h]
 		}
 		else
-			return [item.viewX + item.x + cx, item.viewY + item.y + cy, item.width, item.height]
+			return [item.viewX + item.x, item.viewY + item.y, item.width, item.height]
 	}
 
 	focusCurrent: {
@@ -73,6 +72,8 @@ BaseView {
 
 	indexAt(x, y): {
 		var items = this._items
+		x += this.contentX
+		y += this.contentY
 		if (this.orientation == ListView.Horizontal) {
 			for (var i = 0; i < items.length; ++i) {
 				var item = items[i]

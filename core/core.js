@@ -881,13 +881,6 @@ exports._setup = function() {
 
 	_globals.core.BaseView.prototype._update = function(name, value) {
 		switch(name) {
-		case 'width':
-		case 'height':
-			_globals.core.Item.prototype._update.apply(this, arguments);
-		case 'contentX':
-		case 'contentY':
-			this._layout()
-			return;
 		case 'model':
 			this._attach()
 			break
@@ -927,21 +920,24 @@ exports._setup = function() {
 		var items = this._items
 		var n = items.length
 		//console.log("layout " + n + " into " + w + "x" + h)
-		var p = horizontal? -this.contentX: -this.contentY
+		var p = 0
+		var c = horizontal? this.content.x: this.content.y
 		var size = horizontal? w: h
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		for(var i = 0; i < n && p < size; ++i) {
+		for(var i = 0; i < n && p + c < size; ++i) {
 			var item = this._items[i]
 
 			if (!item) {
-				if (p >= size && itemsCount > 0)
+				if (p + c >= size && itemsCount > 0)
 					break
 
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = item = this.delegate()
+				item.element.remove()
+				this.content.element.append(item.element)
 				item._local['model'] = row
 				delete this._local['model']
 			}
@@ -949,7 +945,7 @@ exports._setup = function() {
 			++itemsCount
 
 			var s = (horizontal? item.width: item.height)
-			var visible = (p + s >= 0 && p < size)
+			var visible = (p + c + s >= 0 && p + c < size)
 
 			if (item.x + item.width > maxW)
 				maxW = item.width + item.x
@@ -977,7 +973,6 @@ exports._setup = function() {
 		if (p > 0)
 			p -= this.spacing;
 
-		p += horizontal? this.contentX: this.contentY
 		if (itemsCount)
 			p *= items.length / itemsCount
 
@@ -1014,10 +1009,10 @@ exports._setup = function() {
 		var items = this._items
 		var n = items.length
 		//console.log("layout " + n + " into " + w + "x" + h)
-		var x = horizontal? -this.contentX: 0
-		var y = horizontal? 0: -this.contentY
+		var x = 0, y = 0
+		var cx = this.content.x, cy = this.content.y
 
-		var atEnd = function() { return horizontal? x >= w: y >= h }
+		var atEnd = function() { return horizontal? cx + x >= w: cy + y >= h }
 
 		var itemsCount = 0
 		for(var i = 0; i < n && !atEnd(); ++i) {
@@ -1027,13 +1022,15 @@ exports._setup = function() {
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = item = this.delegate()
+				item.element.remove()
+				this.content.element.append(item.element)
 				item._local['model'] = row
 				delete this._local['model']
 			}
 
 			++itemsCount
 
-			var visible = horizontal? (x + item.width >= 0 && x < w): (y + item.height >= 0 && y < h)
+			var visible = horizontal? (cx + x + item.width >= 0 && cx + x < w): (cy + y + item.height >= 0 && cy + y < h)
 
 			item.viewX = x
 			item.viewY = y

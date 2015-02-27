@@ -7,15 +7,12 @@ Item {
 
 	property int contentX;
 	property int contentY;
-	property int contentWidth: 1;
-	property int contentHeight: 1;
+	property alias contentWidth: content.width;
+	property alias contentHeight: content.height;
 
 	property bool handleNavigationKeys: true;
 	property bool keyNavigationWraps: true;
 	property bool dragEnabled: true;
-
-	Behavior on contentX	{ Animation { duration: 300; } }
-	Behavior on contentY	{ Animation { duration: 300; } }
 
 	itemAt(x, y): {
 		var idx = this.indexAt(x, y)
@@ -99,6 +96,16 @@ Item {
 
 		z: parent.dragEnabled? parent.z + 1: -1000;
 	}
+
+	content: Item {
+		Behavior on x	{ Animation { duration: 300; } }
+		Behavior on y	{ Animation { duration: 300; } }
+		onXChanged:		{ this.parent._layout() }
+		onYChanged:		{ this.parent._layout() }
+	}
+
+	onContentXChanged: { this.content.x = -value; }
+	onContentYChanged: { this.content.y = -value; }
 
 	onBoxChanged: { this._layout() }
 	onCompleted: { this._layout() }

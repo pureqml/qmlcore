@@ -114,4 +114,5 @@ BaseView {
 		}
 		return -1
 	}
+	onOrientationChanged: { this._layout() }
 }

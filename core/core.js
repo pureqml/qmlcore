@@ -835,11 +835,17 @@ exports._setup = function() {
 		var model = this.model
 		var items = this._items
 		console.log("reset", items.length, model.count)
+
 		if (items.length > model.count) {
-			this._onRowsRemoved(model.count, items.length)
+			if (model.count != items.length)
+				this._onRowsRemoved(model.count, items.length)
+			if (items.length > 0)
+				this._onRowsChanged(0, items.length)
 		} else {
-			this._onRowsChanged(0, items.length)
-			this._onRowsInserted(items.length, model.count)
+			if (items.length > 0)
+				this._onRowsChanged(0, items.length)
+			if (model.count != items.length)
+				this._onRowsInserted(items.length, model.count)
 		}
 		this._layout()
 	}

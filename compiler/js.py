@@ -110,10 +110,10 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def generate_ctor(self, registry):
-		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name))
+		return "\texports.%s.apply(this, arguments);\n\tcore._bootstrap(this, '%s');\n" %(registry.find_component(self.package, self.component.name), self.name)
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n\tcore._bootstrap(this, '%s');\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"), self.name)
+		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
 		return ctor
 
 	def generate_animations(self, registry, parent):

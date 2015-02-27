@@ -220,6 +220,7 @@ Rectangle {
 
 		onRedPressed: { inputDialog.removeChar(); }
 		onBluePressed: { inputDialog.text += " "; }
+		onGreenPressed: { keyBoard.switchCase();; }
 		onYellowPressed: { keyBoard.switchLanguage(); }
 	}
 }

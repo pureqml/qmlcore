@@ -138,6 +138,11 @@ class component_generator(object):
 		ident = "\t" * ident_n
 		for name in self.signals:
 			r.append("%sexports.%s.prototype.%s = function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitSignal.apply(this, args) }" %(ident, self.name, name, name))
+
+		for name, argscode in self.methods.iteritems():
+			args, code = argscode
+			code = process(code, self, registry)
+			r.append("%sexports.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
 		return "\n".join(r)
 
 	def generate_creators(self, registry, parent, ident_n = 1):
@@ -244,10 +249,11 @@ class component_generator(object):
 			r.append("\t%s.addChild(%s);" %(parent, var));
 			r.append("")
 			idx += 1
-		for name, argscode in self.methods.iteritems():
-			args, code = argscode
-			code = process(code, self, registry)
-			r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
+		if not self.prototype:
+			for name, argscode in self.methods.iteritems():
+				args, code = argscode
+				code = process(code, self, registry)
+				r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
 		for name, argscode in self.signal_handlers.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)

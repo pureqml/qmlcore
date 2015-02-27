@@ -4,6 +4,7 @@ var tvKey
 var pluginAPI
 
 _globals.core.vendor = "webkit"
+_globals.trace = { key: false, focus: false }
 
 if ('Common' in window) {
 	alert("[QML] samsung smart tv")
@@ -423,8 +424,11 @@ exports._setup = function() {
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					try {
-						if (callback(key, event))
+						if (callback(key, event)) {
+							if (_globals.trace.key)
+								console.log("key", key, "handled by", this, new Error().stack)
 							return true;
+						}
 					} catch(ex) {
 						console.log("on " + key + " handler failed:", ex, ex.stack)
 					}
@@ -436,8 +440,11 @@ exports._setup = function() {
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					try {
-						if (callback(key, event))
+						if (callback(key, event)) {
+							if (_globals.trace.key)
+								console.log("key", key, "handled by", this, new Error().stack)
 							return true
+						}
 					} catch(ex) {
 						console.log("onKeyPressed handler failed:", ex, ex.stack)
 					}

@@ -11,6 +11,8 @@ Activity {
 	property real programProgress;
 	anchors.fill: parent;
 	opacity: active ? 1.0 : 0.0;
+	visible: active;
+	name: "infoPlate";
 
 	signal channelListCalled;
 
@@ -400,7 +402,6 @@ Activity {
 
 				onClicked: { 
 					infoPlateItem.channelListCalled(); 
-					infoPlateItem.stop();
 				}
 			}
 		}

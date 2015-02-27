@@ -4,6 +4,7 @@ Activity {
 	signal channelSwitched;
 	property Protocol protocol;
 	opacity: channelList.active ? 1.0 : 0.0;
+	name: "channelList";
 
 	ChannelListModel {
 		id: channelListModel;

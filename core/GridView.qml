@@ -8,8 +8,11 @@ BaseView {
 	property int columns;
 
 	move(dx, dy): {
-		this.contentX += dx
-		this.contentY += dy
+		var horizontal = this.flow == this.FlowLeftToRight
+		if (horizontal)
+			this.contentX += dx
+		else
+			this.contentY += dy
 	}
 
 	onKeyPressed: {
@@ -69,25 +72,15 @@ BaseView {
 
 	indexAt(x, y): {
 		var items = this._items
+		x -= this.content.x
+		y -= this.content.y
 		var horizontal = this.flow == this.FlowLeftToRight
+		x = Math.floor(x / this.cellWidth)
+		y = Math.floor(y / this.cellHeight)
 		if (horizontal) {
-			for (var i = 0; i < items.length; ++i) {
-				var item = items[i]
-				if (!item)
-					continue
-				var vx = item.viewX
-				if (x >= vx && x < vx + item.width)
-					return i
-			}
+			return x * this.rows + y
 		} else {
-			for (var i = 0; i < items.length; ++i) {
-				var item = items[i]
-				if (!item)
-					continue
-				var vy = item.viewY
-				if (y >= vy && y < vy + item.height)
-					return i
-			}
+			return y * this.columns + x
 		}
 		return -1
 	}

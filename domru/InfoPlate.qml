@@ -41,6 +41,8 @@ Activity {
 	onActiveChanged: {
 		timePanel.forceActiveFocus();
 		settingsColumn.active = false;
+		if (!this.active)
+			hideTimer.stop();
 	}
 
 	Rectangle {
@@ -87,24 +89,20 @@ Activity {
 			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
 
-			Text {
-				id: timeText;
+			CurrentTimeText {
 				anchors.top: parent.top;
 				anchors.left: parent.left;
 				anchors.topMargin: 12;
 				anchors.leftMargin: 10;
 				color: "#fff";
-				text: "00:00";
 			}
 
-			Text {
-				id: dateText;
+			CurrentDateText {
 				anchors.bottom: parent.bottom;
 				anchors.left: parent.left;
 				anchors.bottomMargin: 12;
 				anchors.leftMargin: 10;
 				color: "#ccc";
-				text: "-- ---- --";
 			}
 
 			onLeftPressed: { shareButton.forceActiveFocus(); }
@@ -445,36 +443,6 @@ Activity {
 
 		Options { 
 			model: optionsModel; 
-		}
-	}
-
-	Timer {
-		duration: 600;
-		running: infoPlateItem.active;
-
-		onTriggered: {
-			var now = new Date();
-			var minutes = now.getMinutes();
-			minutes = minutes >= 10 ? minutes : "0" + minutes
-			timeText.text = now.getHours() + ":" + minutes
-			//TODO: Move it somethere out there.
-			var monthList = [
-				'январь',
-				'февраль',
-				'март',
-				'апрель',
-				'май',
-				'июнь',
-				'июль',
-				'август',
-				'сентябрь',
-				'октябрь',
-				'ноябрь',
-				'декабрь'
-			]
-			var week = [ 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб' ]
-			var month = monthList[now.getMonth()]
-			dateText.text = now.getDate() + " " + month + " " + week[now.getDay()]
 		}
 	}
 

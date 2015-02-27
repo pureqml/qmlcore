@@ -400,7 +400,7 @@ Item {
 				anchors.left: listRect.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 8;
-				color: listContextMouse.containsMouse ? "#5f6": "#fff";
+				color: listContextMouse.containsMouse && listContext.recursiveVisible ? "#5f6": "#fff";
 				text: "Список каналов (F2)";
 
 				Behavior on color  { ColorAnimation { duration: 200; } }

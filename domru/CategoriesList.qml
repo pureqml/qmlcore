@@ -132,7 +132,7 @@ Activity {
 		onSelectPressed: { channelView.switchToChannel(); }
 
 		switchToChannel: {
-			this.stop();
+			this.parent.stop();
 			var list = this._get('channelList')
 			this.model.getUrl(this.currentIndex, function(url) {
 				list.activated(url)

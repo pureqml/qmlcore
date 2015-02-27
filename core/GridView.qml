@@ -19,17 +19,17 @@ BaseView {
 		var horizontal = this.flow == this.FlowLeftToRight
 		if (horizontal) {
 			switch(key) {
-				case 'Up':		--this.currentIndex; break;
-				case 'Down':	++this.currentIndex; break;
-				case 'Left':	this.currentIndex -= this.rows; break;
-				case 'Right':	this.currentIndex += this.rows; break;
+				case 'Up':		--this.currentIndex; return true;
+				case 'Down':	++this.currentIndex; return true
+				case 'Left':	this.currentIndex -= this.rows; return true
+				case 'Right':	this.currentIndex += this.rows; return true
 			}
 		} else {
 			switch(key) {
-				case 'Left':	--this.currentIndex; break;
-				case 'Right':	++this.currentIndex; break;
-				case 'Up':		this.currentIndex -= this.columns; break;
-				case 'Down':	this.currentIndex += this.columns; break;
+				case 'Left':	--this.currentIndex; return true
+				case 'Right':	++this.currentIndex; return true
+				case 'Up':		this.currentIndex -= this.columns; return true
+				case 'Down':	this.currentIndex += this.columns; return true
 			}
 		}
 	}

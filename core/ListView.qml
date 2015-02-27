@@ -13,15 +13,21 @@ BaseView {
 	onKeyPressed: {
 		var horizontal = this.orientation == this.Horizontal
 		if (horizontal) {
-			if (key == 'Left')
+			if (key == 'Left') {
 				--this.currentIndex;
-			else if (key == 'Right')
+				return true;
+			} else if (key == 'Right') {
 				++this.currentIndex;
+				return true;
+			}
 		} else {
-			if (key == 'Up')
+			if (key == 'Up') {
 				--this.currentIndex;
-			else if (key == 'Down')
+				return true;
+			} else if (key == 'Down') {
 				++this.currentIndex;
+				return true;
+			}
 		}
 	}
 

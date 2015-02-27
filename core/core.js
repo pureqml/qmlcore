@@ -164,7 +164,7 @@ _globals.core.Object.prototype._emitSignal = function(name) {
 }
 
 _globals.core.Object.prototype._get = function (name) {
-	if (this.hasOwnProperty(name))
+	if (name in this)
 		return this[name];
 	var object = this;
 	while(object) {

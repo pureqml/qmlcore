@@ -22,6 +22,26 @@ Item {
 		return idx >= 0? this._items[idx]: null
 	}
 
+	positionViewAtIndex(idx): {
+		var cx = this.contentX, cy = this.contentY
+		var itemBox = this.getItemPosition(idx)
+		var x = itemBox[0], y = itemBox[1]
+		var iw = itemBox[2], ih = itemBox[3]
+		var w = this.width, h = this.height
+		var horizontal = this.orientation == this.Horizontal
+		if (horizontal) {
+			if (x - cx < 0)
+				this.contentX = x
+			else if (x - cx + iw > w)
+				this.contentX = x + iw - w
+		} else {
+			if (y - cy < 0)
+				this.contentY = y
+			else if (y - cy + ih > h)
+				this.contentY = y + ih - h
+		}
+	}
+
 	onFocusedChildChanged: {
 		var idx = this._items.indexOf(this.focusedChild)
 		//console.log("focused child", this.focusedChild, idx)

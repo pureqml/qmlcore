@@ -1151,7 +1151,7 @@ exports._bootstrap = function(self, name) {
 		case 'core.ListModel':
 			self._rows = []
 			break;
-		case 'core.ListView':
+		case 'core.BaseView':
 			self._items = []
 			break;
 		case 'core.Gradient':

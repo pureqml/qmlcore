@@ -1,9 +1,8 @@
-Item {
+Activity {
 	id: channelList;
 	signal activated;
 	signal channelSwitched;
 	property Protocol protocol;
-	property bool active: false;
 	opacity: channelList.active ? 1.0 : 0.0;
 
 	ChannelListModel {
@@ -117,7 +116,6 @@ Item {
 			}
 			
 			onTriggered: { 
-//				channelView.currentIndex = model.index;
 				channelView.switchToChannel(); 
 			}
 		}
@@ -132,7 +130,7 @@ Item {
 		onSelectPressed: { channelView.switchToChannel(); }
 
 		switchToChannel: {
-			channelList.active = false;
+			this.stop();
 			var list = this._get('channelList')
 			this.model.getUrl(this.currentIndex, function(url) {
 				list.activated(url)
@@ -154,13 +152,11 @@ Item {
 
 	onLeftPressed: { --categoriesList.currentIndex; }
 	onRightPressed: { ++categoriesList.currentIndex; }
-	onBackPressed: { this.active = false; }
-	onGreenPressed: { this.active = !this.active; }
-
-	toggle: {
-		channelList.active = !channelList.active;
-		if (channelList.active)
-			categoriesList.forceActiveFocus();
+	onGreenPressed: { 
+		if (this.active)
+			this.stop();
+		else
+			this.start();
 	}
 
 	getProgramInfo(callback): {

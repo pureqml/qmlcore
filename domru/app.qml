@@ -77,7 +77,7 @@ Item {
 		}
 
 		onChannelListCalled: {
-			categories.toggle();
+			categories.start();
 		}
 	}
 
@@ -98,5 +98,5 @@ Item {
 	}
 
 	onBluePressed: { infoPlate.show(10000); }
-	onGreenPressed: { categories.toggle(); }
+	onGreenPressed: { categories.start(); }
 }

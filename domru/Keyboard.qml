@@ -8,26 +8,40 @@ Item {
 
 	ListModel {
 		id: keyboardModel;
-		property bool isEng: false;
+		property int language: 0;
+		property int mode: 0;
 		property string rusLetters: "абвгдеёжзийклмнопрстуфхцчшщъыьэюя.,1234567890";
 		property string engLetters: "abcdefghijklmnopqrstuvwxyz.,1234567890";
-		property string letters: isEng ? engLetters : rusLetters;
+		property string rusLettersUp: "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ.,1234567890";
+		property string engLettersUp: "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,1234567890";
+		property string special: "!#$%&+?/:;_-*@";
+		property string letters: mode == 2 ? special :
+			language == 0 && mode == 0 ? rusLetters :
+			language == 0 && mode == 1 ? rusLettersUp :
+			language == 1 && mode == 0 ? engLetters : engLettersUp;
 
 		fill: {
 			this.clear();
 			this.append({});
 			this.append({});
+			if (this.mode == 2)
+				return;
 			this.append({});
 			this.append({});
 			this.append({});
 			this.append({});
 			this.append({});
-			if (!this.isEng)
+			if (this.language == 0)
 				this.append({});
 		}
 
 		switchLanguage: {
-			this.isEng = !this.isEng;
+			this.language = (++this.language % 2);
+			this.fill();
+		}
+
+		switchCase: {
+			this.mode = (++this.mode % 3);
 			this.fill();
 		}
 
@@ -97,4 +111,5 @@ Item {
 	}
 
 	switchLanguage: { keyboardModel.switchLanguage(); }
+	switchCase: { keyboardModel.switchCase(); }
 }

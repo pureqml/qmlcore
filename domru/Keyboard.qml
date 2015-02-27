@@ -8,17 +8,30 @@ Item {
 
 	ListModel {
 		id: keyboardModel;
+		property bool isEng: false;
 		property string rusLetters: "абвгдеёжзийклмнопрстуфхцчшщъыьэюя.,1234567890";
-		property string engLetters: "abcdefghijklmnopqrstuvwxyz";
+		property string engLetters: "abcdefghijklmnopqrstuvwxyz.,1234567890";
+		property string letters: isEng ? engLetters : rusLetters;
 
-		ListElement { }
-		ListElement { }
-		ListElement { }
-		ListElement { }
-		ListElement { }
-		ListElement { }
-		ListElement { }
-		ListElement { }
+		fill: {
+			this.clear();
+			this.append({});
+			this.append({});
+			this.append({});
+			this.append({});
+			this.append({});
+			this.append({});
+			this.append({});
+			if (!this.isEng)
+				this.append({});
+		}
+
+		switchLanguage: {
+			this.isEng = !this.isEng;
+			this.fill();
+		}
+
+		onCompleted: { this.fill(); }
 	}
 
 	ListView {
@@ -82,4 +95,6 @@ Item {
 			}
 		}
 	}
+
+	switchLanguage: { keyboardModel.switchLanguage(); }
 }

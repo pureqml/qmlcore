@@ -36,6 +36,7 @@ Rectangle {
 			anchors.topMargin: 40;
 
 			Keyboard {
+				id: keyBoard;
 				onKeySelected(key): { inputDialog.text += key; }
 				onBackspase: { inputDialog.removeChar(); }
 			}
@@ -219,5 +220,6 @@ Rectangle {
 
 		onRedPressed: { inputDialog.removeChar(); }
 		onBluePressed: { inputDialog.text += " "; }
+		onYellowPressed: { keyBoard.switchLanguage(); }
 	}
 }

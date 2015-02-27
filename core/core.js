@@ -298,8 +298,12 @@ exports._setup = function() {
 		var x = 0, y = 0
 		var w = this.width, h = this.height
 		while(item) {
-			x += item.x + item.viewX
-			y += item.y + item.viewY
+			x += item.x
+			y += item.y
+			if ('view' in item) {
+				x += item.viewX + item.view.content.x
+				y += item.viewY + item.view.content.y
+			}
 			item = item.parent
 		}
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
@@ -936,6 +940,7 @@ exports._setup = function() {
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = item = this.delegate()
+				item.view = this
 				item.element.remove()
 				this.content.element.append(item.element)
 				item._local['model'] = row
@@ -1022,6 +1027,7 @@ exports._setup = function() {
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = item = this.delegate()
+				item.view = this
 				item.element.remove()
 				this.content.element.append(item.element)
 				item._local['model'] = row

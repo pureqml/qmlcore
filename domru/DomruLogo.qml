@@ -1,4 +1,5 @@
 Item {
+	height: logo.height;
 	anchors.top: renderer.top;
 	anchors.left: renderer.left;
 	anchors.leftMargin: 75;

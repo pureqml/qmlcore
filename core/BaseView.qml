@@ -108,5 +108,5 @@ Item {
 	onContentYChanged: { this.content.y = -value; }
 
 	onBoxChanged: { this._layout() }
-	onCompleted: { this._layout() }
+	onCompleted: { this._attach(); this._layout() }
 }

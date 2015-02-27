@@ -901,14 +901,9 @@ exports._setup = function() {
 
 	_globals.core.BaseView.prototype._update = function(name, value) {
 		switch(name) {
-		case 'model':
-			this._attach()
-			break
 		case 'delegate':
-			if (value) {
-				value.visible = false;
-			}
-			this._attach()
+			if (value)
+				value.visible = false
 			break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);

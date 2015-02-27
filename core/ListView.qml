@@ -1,70 +1,13 @@
-Item {
-	property Object model;
-	property Item delegate;
-
+BaseView {
 	property int orientation;
 	property int spacing;
 
-	property int count;
-	property int currentIndex;
-
-	property int contentX;
-	property int contentY;
-	property int contentWidth: 1;
-	property int contentHeight: 1;
-
-	property bool handleNavigationKeys: true;
-	property bool keyNavigationWraps: true;
-	property bool dragEnabled: true;
-
-	Behavior on contentX	{ Animation { duration: 300; } }
-	Behavior on contentY	{ Animation { duration: 300; } }
-
-	MouseArea {
-		anchors.fill: parent;
-		hoverEnabled: parent.dragEnabled;
-
-		onPressedChanged: {
-			if (this.pressed) {
-				var idx = this.parent.indexAt(this.mouseX, this.mouseY)
-				this._x = this.mouseX
-				this._y = this.mouseY
-				if (idx >= 0)
-					this.parent.currentIndex = idx
-			}
-		}
-
-		onMouseXChanged: {
-			if (!this.pressed || this.parent.orientation != ListView.Horizontal)
-				return
-			var dx = this.mouseX - this._x
-			this._x = this.mouseX
-			var a = this.parent.getAnimation('contentX')
-			if (a)
-				a.disable()
-			this.parent.contentX -= dx
-			if (a)
-				a.enable()
-		}
-
-		onMouseYChanged: {
-			if (!this.pressed || this.parent.orientation != ListView.Vertical)
-				return
-			var dy = this.mouseY - this._y
-			this._y = this.mouseY
-			var a = this.parent.getAnimation('contentY')
-			if (a)
-				a.disable()
-			this.parent.contentY -= dy
-			if (a)
-				a.enable()
-		}
-
-		onWheelEvent(dp): {
-			this.parent.currentIndex -= Math.round(dp)
-		}
-
-		z: parent.dragEnabled? parent.z + 1: -1000;
+	move(dx, dy): {
+		var horizontal = this.orientation == this.Horizontal
+		if (horizontal)
+			this.contentX += dx
+		else
+			this.contentY += dy
 	}
 
 	onKeyPressed: {
@@ -171,18 +114,4 @@ Item {
 		}
 		return -1
 	}
-
-	onFocusedChildChanged: {
-		var idx = this._items.indexOf(this.focusedChild)
-		//console.log("focused child", this.focusedChild, idx)
-		if (idx >= 0)
-			this.currentIndex = idx
-	}
-
-	onCurrentIndexChanged: {
-		this.focusCurrent()
-	}
-
-	onBoxChanged: { this._layout() }
-	onCompleted: { this._layout() }
 }

@@ -382,8 +382,6 @@ Item {
 			anchors.leftMargin: 20;
 			height: 20;
 			width: height + contextText.paintedWidth + 10;
-			property bool active;
-
 
 			Rectangle {
 				id: listRect;
@@ -402,22 +400,20 @@ Item {
 				anchors.left: listRect.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 8;
-				color: listContext.active ? "#5f6": "#fff";
+				color: listContextMouse.containsMouse ? "#5f6": "#fff";
 				text: "Список каналов (F2)";
-				property int fontSize: listContext.active ? 15 : 12;
-				font.pointSize: fontSize;
-			
-				Behavior on fontSize { Animation { duration: 100; } }
+
 				Behavior on color  { ColorAnimation { duration: 200; } }
 			}
 
 			MouseArea {
+				id: listContextMouse;
 				anchors.fill: parent;
 				anchors.margins: -10;
 				hoverEnabled: true;
-				onClicked: { infoPlateItem.channelListCalled(); listContext.active = false; }
-				onEntered: { listContext.active = true; }//listContext.forceActiveFocus(); }
-				onExited: { listContext.active = false; }
+//				z: 2;
+
+				onClicked: { infoPlateItem.channelListCalled(); }// listContext.active = false; }
 			}
 		}
 

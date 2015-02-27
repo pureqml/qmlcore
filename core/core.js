@@ -845,6 +845,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.BaseView.prototype._onRowsInserted = function(begin, end) {
+		if (begin >= end)
+			return
 		console.log("rows inserted", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i)
@@ -853,6 +855,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.BaseView.prototype._onRowsChanged = function(begin, end) {
+		if (begin >= end)
+			return
 		console.log("rows changed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
@@ -865,6 +869,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.BaseView.prototype._onRowsRemoved = function(begin, end) {
+		if (begin >= end)
+			return
 		console.log("rows removed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {

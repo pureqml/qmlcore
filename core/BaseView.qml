@@ -17,6 +17,11 @@ Item {
 	Behavior on contentX	{ Animation { duration: 300; } }
 	Behavior on contentY	{ Animation { duration: 300; } }
 
+	itemAt(x, y): {
+		var idx = this.indexAt(x, y)
+		return idx >= 0? this._items[idx]: null
+	}
+
 	onFocusedChildChanged: {
 		var idx = this._items.indexOf(this.focusedChild)
 		//console.log("focused child", this.focusedChild, idx)
@@ -74,7 +79,6 @@ Item {
 
 		z: parent.dragEnabled? parent.z + 1: -1000;
 	}
-
 
 	onBoxChanged: { this._layout() }
 	onCompleted: { this._layout() }

@@ -56,7 +56,7 @@ Item {
 			anchors.bottom: parent.bottom;
 			currentIndex: menuOptions.currentIndex;
 
-			Item { anchors.fill: parent; }
+			Recomended { anchors.fill: parent; }
 			Item { anchors.fill: parent; }
 			Item { anchors.fill: parent; }
 			SettingsPage { anchors.fill: parent; }

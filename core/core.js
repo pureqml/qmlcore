@@ -937,6 +937,7 @@ exports._setup = function() {
 			return
 
 		//console.log("layout " + n + " into " + w + "x" + h)
+		var created = false
 		var p = 0
 		var c = horizontal? this.content.x: this.content.y
 		var size = horizontal? w: h
@@ -957,6 +958,7 @@ exports._setup = function() {
 				this.content.element.append(item.element)
 				item._local['model'] = row
 				delete this._local['model']
+				created = true
 			}
 
 			++itemsCount
@@ -1004,6 +1006,8 @@ exports._setup = function() {
 			this.contentWidth = maxW
 			this.contentHeight = p
 		}
+		if (created)
+			this._get('renderer')._completed()
 	}
 
 	_globals.core.GridView.prototype.FlowLeftToRight	= 0
@@ -1033,6 +1037,7 @@ exports._setup = function() {
 			return
 
 		//console.log("layout " + n + " into " + w + "x" + h)
+		var created = false
 		var x = 0, y = 0
 		var cx = this.content.x, cy = this.content.y
 
@@ -1051,6 +1056,7 @@ exports._setup = function() {
 				this.content.element.append(item.element)
 				item._local['model'] = row
 				delete this._local['model']
+				created = true
 			}
 
 			++itemsCount
@@ -1097,10 +1103,13 @@ exports._setup = function() {
 			this.contentWidth = this.columns * this.cellWidth
 			this.contentHeight = this.rows * this.cellHeight
 		}
+		if (created)
+			this._get('renderer')._completed()
 	}
 
 	_globals.core.core.Context = function() {
 		_globals.core.Item.apply(this, null);
+		this._started = false
 		this._completedHandlers = []
 	}
 
@@ -1143,6 +1152,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.core.Context.prototype._completed = function() {
+		if (!this._started)
+			return
 		this._completedHandlers.forEach(function(callback) { try { callback(); } catch(ex) { console.log("completed handler failed", ex, ex.stack); }} )
 		this._completedHandlers = [];
 	}
@@ -1160,6 +1171,7 @@ exports._setup = function() {
 			proto = name;
 		var instance = Object.create(proto.prototype);
 		proto.apply(instance, [this]);
+		this._started = true
 		this._completed()
 		this.boxChanged()
 		return instance;

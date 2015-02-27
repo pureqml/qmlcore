@@ -932,7 +932,7 @@ exports._setup = function() {
 
 		var itemsCount = 0
 		for(var i = 0; i < n && p + c < size; ++i) {
-			var item = this._items[i]
+			var item = items[i]
 
 			if (!item) {
 				if (p + c >= size && itemsCount > 0)

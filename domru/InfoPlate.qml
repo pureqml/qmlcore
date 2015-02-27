@@ -1,6 +1,5 @@
-Item {
+Activity {
 	id: infoPlateItem;
-	property bool active: true;
 	property bool isHd: false;
 	property bool is3d: false;
 	property int channelNumber: 0;
@@ -11,7 +10,7 @@ Item {
 	property string programInfo;
 	property real programProgress;
 	anchors.fill: parent;
-	opacity: active ? 1 : 0;
+	opacity: active ? 1.0 : 0.0;
 
 	signal channelListCalled;
 
@@ -22,37 +21,25 @@ Item {
 
 		onTriggered: {
 			console.log("Infoplate hideTimer triggered");
-			infoPlateItem.close();
+			infoPlateItem.stop();
 		}
 	}
 
 	show(ms): {
-		this.active = true;
-		this.forceActiveFocus();
+		this.start();
 		hideTimer.interval = ms;
-		//console.log("Restarting timer", hideTimer.interval);
 		hideTimer.restart();
-	}
-
-	close: {
-		timePanel.forceActiveFocus();
-		this.active = false;
-		hideTimer.stop();
-	}
-
-	onBackPressed: {
-		if (this.active)
-			this.close();
 	}
 
 	onBluePressed: {
 		if (this.active)
-			this.close();
+			this.stop();
 		else
 			this.show(10000);
 	}
 
 	onActiveChanged: {
+		timePanel.forceActiveFocus();
 		settingsColumn.active = false;
 	}
 

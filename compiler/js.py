@@ -134,6 +134,11 @@ class component_generator(object):
 
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
+
+		#HACK HACK: make immutable
+		registry.id_set = set(['renderer'])
+		self.collect_id(registry.id_set)
+
 		r = []
 		ident = "\t" * ident_n
 		for name in self.signals:

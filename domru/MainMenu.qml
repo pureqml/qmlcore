@@ -7,8 +7,6 @@ Item {
 		opacity: 0.7;
 	}
 
-	DomruLogo { id: logo; }
-
 	Item {
 		anchors.fill: parent;
 		anchors.leftMargin: 75;
@@ -16,20 +14,23 @@ Item {
 		anchors.bottomMargin: 40;
 		anchors.topMargin: 42;
 
+		DomruLogo { id: logo; }
+
 		ListView {
 			id: menuOptions;
 			height: 70;
 			anchors.top: logo.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
+			anchors.topMargin: 40;
 			orientation: ListView.Horizontal;
 			model: ListModel {
 				property string text;
 
-				ListElement { text: "Рекомендуем"; }
-				ListElement { text: "Видео"; }
-				ListElement { text: "Новости"; }
-				ListElement { text: "Настройки"; }
+				ListElement { text: "РЕКОМЕНДУЕМ"; }
+				ListElement { text: "ВИДЕО"; }
+				ListElement { text: "НОВОСТИ"; }
+				ListElement { text: "НАСТРОЙКИ"; }
 			}
 			delegate: Item {
 				height: 70;
@@ -43,19 +44,26 @@ Item {
 					text: model.text;
 				}
 			}
+
+			onDownPressed: { optionsPageStack.forceActiveFocus(); }
 		}
 
 		PageStack {
+			id: optionsPageStack;
 			anchors.top: menuOptions.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
 			currentIndex: menuOptions.currentIndex;
 
-			Item {}
-			Item {}
-			Item {}
-			Item {}
+			RecomendedPage { anchors.fill: parent; }
+			VideoPage { anchors.fill: parent; }
+			NewsPage { anchors.fill: parent; }
+			SettingsPage { anchors.fill: parent; }
+
+			onUpPressed: { menuOptions.forceActiveFocus(); }
 		}
 	}
+
+	onCompleted: { menuOptions.forceActiveFocus(); }
 }

@@ -990,6 +990,93 @@ exports._setup = function() {
 		}
 	}
 
+	_globals.core.GridView.prototype.FlowLeftToRight	= 0
+	_globals.core.GridView.prototype.FlowTopToBottom	= 1
+
+	_globals.core.GridView.prototype._layout = function() {
+		var model = this.model;
+		if (!model)
+			return
+
+		this.count = model.count
+		if (!this.count)
+			return
+
+		var horizontal = this.flow == this.FlowLeftToRight
+		if (horizontal && w <= 0)
+			return
+
+		if (!horizontal && h <= 0)
+			return
+
+		var w = this.width, h = this.height
+
+		var items = this._items
+		var n = items.length
+		//console.log("layout " + n + " into " + w + "x" + h)
+		var x = horizontal? -this.contentX: 0
+		var y = horizontal? 0: -this.contentY
+
+		var atEnd = function() { return horizontal? x >= w: y >= h }
+
+		var itemsCount = 0
+		for(var i = 0; i < n && !atEnd(); ++i) {
+			var item = this._items[i]
+
+			if (!item) {
+				var row = this.model.get(i)
+				this._local['model'] = row
+				this._items[i] = item = this.delegate()
+				item._local['model'] = row
+				delete this._local['model']
+			}
+
+			++itemsCount
+
+			var visible = horizontal? (x + item.width >= 0 && x < w): (y + item.height >= 0 && y < h)
+
+			item.viewX = x
+			item.viewY = y
+			if (horizontal) {
+				y += this.cellHeight
+				if (y >= h) {
+					y = 0
+					x += this.cellWidth
+				}
+			} else {
+				x += this.cellWidth
+				if (y >= h) {
+					x = 0
+					y += this.cellHeight
+				}
+			}
+
+			if (this.currentIndex == i) {
+				this.focusChild(item)
+				this.positionViewAtIndex(i)
+			}
+
+			item.visible = visible
+		}
+		for( ;i < n; ++i) {
+			var item = items[i]
+			if (item)
+				item.visible = false
+		}
+
+		if (horizontal) {
+			this.rows = Math.floor((h + this.cellHeight - 1) / this.cellHeight)
+			this.columns = Math.floor((n + this.rows - 1) / this.columns)
+			this.contentWidth = this.columns * this.cellWidth
+			this.contentHeight = this.rows * this.cellHeight
+		} else {
+			this.columns = Math.floor((w + this.cellWidth - 1) / this.cellWidth)
+			this.rows = Math.floor((n + this.columns - 1) / this.rows)
+			this.contentWidth = this.columns * this.cellWidth
+			this.contentHeight = this.rows * this.cellHeight
+		}
+	}
+
 	_globals.core.core.Context = function() {
 		_globals.core.Item.apply(this, null);
 		this._completedHandlers = []

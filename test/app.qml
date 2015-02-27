@@ -107,17 +107,14 @@ Item {
 		}
 	}
 
-	ListView {
+	GridView {
 		focus: true;
 		clip: true;
 		model: animalModel;
-		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
-		anchors.right: parent.right;
+		width: 300;
+		height: 300;
 		keyNavigationWraps: false;
-		width: contentWidth;
-		contentY: 50;
-		orientation: ListView.Vertical;
+
 		delegate: Rectangle { width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }
 	}
 }

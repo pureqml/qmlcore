@@ -15,8 +15,14 @@ Item {
 		anchors.fill: renderer;
 		hoverEnabled: infoPlateItem.visible;
 
-		onMouseXChanged: { infoPlate.show(2000); }
-		onMouseYChanged: { infoPlate.show(2000); }
+		onMouseXChanged: { 
+			if (!categories.active) 
+				infoPlate.show(2000); 
+		}
+		onMouseYChanged: { 
+			if (!categories.active) 
+				infoPlate.show(2000); 
+		}
 	}
 
 	CategoriesList {
@@ -77,6 +83,7 @@ Item {
 		}
 
 		onChannelListCalled: {
+			this.stop();
 			categories.start();
 		}
 	}

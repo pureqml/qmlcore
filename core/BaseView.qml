@@ -7,8 +7,8 @@ Item {
 
 	property int contentX;
 	property int contentY;
-	property alias contentWidth: content.width;
-	property alias contentHeight: content.height;
+	property int contentWidth: 1;
+	property int contentHeight: 1;
 
 	property bool handleNavigationKeys: true;
 	property bool keyNavigationWraps: true;

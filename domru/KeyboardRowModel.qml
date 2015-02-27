@@ -4,7 +4,7 @@ ListModel {
 	property Object parentModel;
 
 	onCompleted: {
-		var letters = this.parentModel.rusLetters;
+		var letters = this.parentModel.letters;
 		var last = letters.length > this.end ? this.end : letters.length;
 		for (var i = this.begin; i < last; ++i)
 			this.append({ text: letters[i] });

@@ -14,6 +14,8 @@ Item {
 	property bool keyNavigationWraps: true;
 	property bool dragEnabled: true;
 
+	property bool trace;
+
 	itemAt(x, y): {
 		var idx = this.indexAt(x, y)
 		return idx >= 0? this._items[idx]: null
@@ -108,5 +110,5 @@ Item {
 	onContentYChanged: { this.content.y = -value; }
 
 	onBoxChanged: { this._layout() }
-	onCompleted: { this._layout() }
+	onCompleted: { this._attach(); this._layout() }
 }

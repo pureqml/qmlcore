@@ -6,8 +6,8 @@ Item {
 		id: weatherPanel;
 		anchors.left: parent.left;
 		anchors.top: parent.top;
+		anchors.bottom: parent.bottom;
 		width: 200;
-		height: recomendedOptions.contentHeight;
 		color: "#000";
 		opacity: 0.7;
 		focus: false;
@@ -26,12 +26,12 @@ Item {
 	ListView {
 		id: recomendedOptions;
 		width: 250;
-		height: contentHeight;
 		anchors.left: recomendedVideoPreview.right;
 		anchors.top: parent.top;
+		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
-		spacing: 10;
-		delegate: OptionsDelegate { width: parent.width; height: recomendedProto.height / 3 - 10; }
+		spacing: 0;
+		delegate: OptionsDelegate { width: parent.width; height: recomendedProto.height / 3; }
 		model: ListModel {
 			property string text;
 			property string additopnalText;
@@ -44,7 +44,7 @@ Item {
 
 	Rectangle {
 		id: smallRecomendedAdPanel;
-		anchors.top: recomendedOptions.bottom;
+		height: parent.height - recomendedOptions.contentHeight;
 		anchors.left: recomendedOptions.left;
 		anchors.right: recomendedOptions.right;
 		anchors.bottom: parent.bottom;

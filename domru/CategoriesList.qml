@@ -22,7 +22,8 @@ Activity {
 
 		onCountChanged: {
 			if (this.count == 1 && this.firstTime) {
-				channelView.switchToChannel();
+				console.log("WTF", channelList)
+				channelList.switchToChannel();
 				this.firstTime = false;
 			}
 		}
@@ -64,7 +65,7 @@ Activity {
 			}
 		}
 
-		onDownPressed: { channelView.forceActiveFocus(); } 
+		onDownPressed: { channelView.forceActiveFocus(); }
 		onLeftPressed: { --categoriesList.currentIndex; }
 		onRightPressed: { ++categoriesList.currentIndex; }
 
@@ -116,7 +117,7 @@ Activity {
 			}
 			
 			onTriggered: { 
-				channelView.switchToChannel(); 
+				channelList.switchToChannel();
 			}
 		}
 
@@ -127,9 +128,10 @@ Activity {
 				categoriesList.forceActiveFocus();
 		}
 
-		onSelectPressed: { channelView.switchToChannel(); }
+		onSelectPressed: { channelList.switchToChannel(); }
 
 		switchToChannel: {
+			console.log("switchtochannel", this)
 			this.stop();
 			var list = this._get('channelList')
 			this.model.getUrl(this.currentIndex, function(url) {

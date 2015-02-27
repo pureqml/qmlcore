@@ -56,9 +56,9 @@ Item {
 			anchors.bottom: parent.bottom;
 			currentIndex: menuOptions.currentIndex;
 
-			Recomended { anchors.fill: parent; }
-			Item { anchors.fill: parent; }
-			Item { anchors.fill: parent; }
+			RecomendedPage { anchors.fill: parent; }
+			VideoPage { anchors.fill: parent; }
+			NewsPage { anchors.fill: parent; }
 			SettingsPage { anchors.fill: parent; }
 
 			onUpPressed: { menuOptions.forceActiveFocus(); }

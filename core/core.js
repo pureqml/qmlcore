@@ -1153,8 +1153,12 @@ exports._setup = function() {
 	_globals.core.core.Context.prototype._completed = function() {
 		if (!this._started)
 			return
-		this._completedHandlers.forEach(function(callback) { try { callback(); } catch(ex) { console.log("completed handler failed", ex, ex.stack); }} )
-		this._completedHandlers = [];
+
+		while(this._completedHandlers.length) {
+			var ch = this._completedHandlers
+			this._completedHandlers = []
+			ch.forEach(function(callback) { callback(); } )
+		}
 	}
 
 	_globals.core.core.Context.prototype.start = function(name) {

@@ -916,13 +916,13 @@ exports._setup = function() {
 			return
 
 		var horizontal = this.orientation === this.Horizontal
+
+		var w = this.width, h = this.height
 		if (horizontal && w <= 0)
 			return
 
 		if (!horizontal && h <= 0)
 			return
-
-		var w = this.width, h = this.height
 
 		var items = this._items
 		var n = items.length
@@ -1002,14 +1002,14 @@ exports._setup = function() {
 		if (!this.count)
 			return
 
+		var w = this.width, h = this.height
 		var horizontal = this.flow == this.FlowLeftToRight
+
 		if (horizontal && w <= 0)
 			return
 
 		if (!horizontal && h <= 0)
 			return
-
-		var w = this.width, h = this.height
 
 		var items = this._items
 		var n = items.length

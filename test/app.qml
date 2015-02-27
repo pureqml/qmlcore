@@ -108,6 +108,7 @@ Item {
 	}
 
 	GridView {
+		anchors.right: parent.right;
 		focus: true;
 		clip: true;
 		model: animalModel;

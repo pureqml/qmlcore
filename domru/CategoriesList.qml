@@ -156,6 +156,8 @@ Item {
 
 	onLeftPressed: { --categoriesList.currentIndex; }
 	onRightPressed: { ++categoriesList.currentIndex; }
+	onBackPressed: { this.active = false; }
+	onGreenPressed: { this.active = !this.active; }
 
 	toggle: {
 		channelList.active = !channelList.active;

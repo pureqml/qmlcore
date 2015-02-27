@@ -1,6 +1,11 @@
-Rectangle {
+Item {
 	anchors.fill: renderer;
-	opacity: 0.7;
+
+	Rectangle {
+		anchors.fill: parent;
+		color: "#000";
+		opacity: 0.7;
+	}
 
 	DomruLogo { id: logo; }
 

@@ -14,6 +14,8 @@ Item {
 	property bool keyNavigationWraps: true;
 	property bool dragEnabled: true;
 
+	property bool trace;
+
 	itemAt(x, y): {
 		var idx = this.indexAt(x, y)
 		return idx >= 0? this._items[idx]: null

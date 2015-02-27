@@ -828,7 +828,9 @@ exports._setup = function() {
 	_globals.core.BaseView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items
-		console.log("reset", items.length, model.count)
+		if (this.trace)
+			console.log("reset", items.length, model.count)
+
 		if (items.length == model.count && items.length == 0)
 			return
 
@@ -849,7 +851,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.BaseView.prototype._onRowsInserted = function(begin, end) {
-		console.log("rows inserted", begin, end)
+		if (this.trace)
+			console.log("rows inserted", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i)
 			items.splice(i, 0, null)
@@ -859,7 +862,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.BaseView.prototype._onRowsChanged = function(begin, end) {
-		console.log("rows changed", begin, end)
+		if (this.trace)
+			console.log("rows changed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
 			var item = items[i];

@@ -821,10 +821,7 @@ exports._setup = function() {
 		child.onChanged('height', this._layout.bind(this))
 	}
 
-	_globals.core.ListView.prototype.Vertical	= 0
-	_globals.core.ListView.prototype.Horizontal	= 1
-
-	_globals.core.ListView.prototype._onReset = function() {
+	_globals.core.BaseView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items
 		console.log("reset", items.length, model.count)
@@ -837,7 +834,7 @@ exports._setup = function() {
 		this._layout()
 	}
 
-	_globals.core.ListView.prototype._onRowsInserted = function(begin, end) {
+	_globals.core.BaseView.prototype._onRowsInserted = function(begin, end) {
 		console.log("rows inserted", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i)
@@ -845,7 +842,7 @@ exports._setup = function() {
 		this._layout()
 	}
 
-	_globals.core.ListView.prototype._onRowsChanged = function(begin, end) {
+	_globals.core.BaseView.prototype._onRowsChanged = function(begin, end) {
 		console.log("rows changed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
@@ -857,7 +854,7 @@ exports._setup = function() {
 		this._layout()
 	}
 
-	_globals.core.ListView.prototype._onRowsRemoved = function(begin, end) {
+	_globals.core.BaseView.prototype._onRowsRemoved = function(begin, end) {
 		console.log("rows removed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
@@ -869,6 +866,45 @@ exports._setup = function() {
 		items.splice(begin, end - begin)
 		this._layout()
 	}
+
+	_globals.core.BaseView.prototype._attach = function() {
+		if (this._attached || !this.model || !this.delegate)
+			return
+
+		this.model.on('reset', this._onReset.bind(this))
+		this.model.on('rowsInserted', this._onRowsInserted.bind(this))
+		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
+		this.model.on('rowsRemoved', this._onRowsRemoved.bind(this))
+		this._attached = true
+		this._onReset()
+	}
+
+	_globals.core.BaseView.prototype._update = function(name, value) {
+		switch(name) {
+		case 'width':
+		case 'height':
+			_globals.core.Item.prototype._update.apply(this, arguments);
+		case 'contentX':
+		case 'contentY':
+			this._layout()
+			return;
+		case 'model':
+			this._attach()
+			break
+		case 'delegate':
+			if (value) {
+				value.visible = false;
+			}
+			this._attach()
+			break
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+
+
+	_globals.core.ListView.prototype.Vertical	= 0
+	_globals.core.ListView.prototype.Horizontal	= 1
+
 
 	_globals.core.ListView.prototype._layout = function() {
 		var model = this.model;
@@ -952,40 +988,6 @@ exports._setup = function() {
 			this.contentWidth = maxW
 			this.contentHeight = p
 		}
-	}
-
-	_globals.core.ListView.prototype._attach = function() {
-		if (this._attached || !this.model || !this.delegate)
-			return
-
-		this.model.on('reset', this._onReset.bind(this))
-		this.model.on('rowsInserted', this._onRowsInserted.bind(this))
-		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
-		this.model.on('rowsRemoved', this._onRowsRemoved.bind(this))
-		this._attached = true
-		this._onReset()
-	}
-
-	_globals.core.ListView.prototype._update = function(name, value) {
-		switch(name) {
-		case 'width':
-		case 'height':
-			_globals.core.Item.prototype._update.apply(this, arguments);
-		case 'contentX':
-		case 'contentY':
-			this._layout()
-			return;
-		case 'model':
-			this._attach()
-			break
-		case 'delegate':
-			if (value) {
-				value.visible = false;
-			}
-			this._attach()
-			break
-		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
 	_globals.core.core.Context = function() {

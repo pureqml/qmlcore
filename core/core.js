@@ -825,6 +825,12 @@ exports._setup = function() {
 		child.onChanged('height', this._layout.bind(this))
 	}
 
+	_globals.core.BaseView.prototype._get = function (name) {
+		if (name == 'model' && 'model' in this._local)
+			return this._local[name]
+
+		return _globals.core.Object.prototype._get.apply(this, arguments)
+	}
 	_globals.core.BaseView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items

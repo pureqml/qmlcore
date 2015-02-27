@@ -759,8 +759,14 @@ exports._setup = function() {
 	_globals.core.Image.prototype.Error = 3;
 
 	_globals.core.Image.prototype._onLoad = function() {
-		this.paintedWidth = this.element.get(0).naturalWidth;
-		this.paintedHeight = this.element.get(0).naturalHeight;
+		var image = this
+		var tmp = new Image()
+		tmp.onload = function() {
+			image.paintedWidth = tmp.naturalWidth
+			image.paintedHeight = tmp.naturalHeight
+			console.log(tmp.naturalWidth, tmp.naturalHeight)
+		}
+		tmp.src = this.source
 		this.status = this.Ready;
 	}
 
@@ -770,7 +776,7 @@ exports._setup = function() {
 
 	_globals.core.Image.prototype._update = function(name, value) {
 		switch(name) {
-			case 'source': this.status = value? this.Loading: this.Null; this.element.attr('src', value? value: ""); break;
+			case 'source': this.status = value? this.Loading: this.Null; this.element.attr('src', value? value: ""); if (value) this._onLoad(); break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

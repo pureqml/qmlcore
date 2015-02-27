@@ -1,28 +1,28 @@
 Item {
-	height: logo.height;
+	height: logoImage.height;
 	anchors.top: renderer.top;
 	anchors.left: renderer.left;
 	anchors.leftMargin: 75;
 	anchors.topMargin: 42;
 
 	Image {
-		id: logo;
+		id: logoImage;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		source: "res/logoDomru.png";
 	}
 
 	CurrentTimeText {
-		anchors.top: logo.top;
-		anchors.left: logo.right;
+		anchors.top: logoImage.top;
+		anchors.left: logoImage.right;
 		anchors.leftMargin: 10;
 		color: "white";
 		font.pointSize: 16;
 	}
 
 	CurrentDateText {
-		anchors.bottom: logo.bottom;
-		anchors.left: logo.right;
+		anchors.bottom: logoImage.bottom;
+		anchors.left: logoImage.right;
 		anchors.leftMargin: 10;
 		color: "#ccc";
 	}

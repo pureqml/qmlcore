@@ -825,16 +825,12 @@ exports._setup = function() {
 		child.onChanged('height', this._layout.bind(this))
 	}
 
-	_globals.core.BaseView.prototype._get = function (name) {
-		if (name == 'model' && 'model' in this._local)
-			return this._local[name]
-
-		return _globals.core.Object.prototype._get.apply(this, arguments)
-	}
 	_globals.core.BaseView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items
 		console.log("reset", items.length, model.count)
+		if (items.length == model.count && items.length == 0)
+			return
 
 		if (items.length > model.count) {
 			if (model.count != items.length)
@@ -847,6 +843,8 @@ exports._setup = function() {
 			if (model.count != items.length)
 				this._onRowsInserted(items.length, model.count)
 		}
+		if (items.length != model.count)
+			throw "reset failed"
 		this._layout()
 	}
 
@@ -855,6 +853,8 @@ exports._setup = function() {
 		var items = this._items
 		for(var i = begin; i < end; ++i)
 			items.splice(i, 0, null)
+		if (items.length != this.model.count)
+			throw "insert failed"
 		this._layout()
 	}
 
@@ -867,6 +867,8 @@ exports._setup = function() {
 				item.element.remove()
 			items[i] = null
 		}
+		if (items.length != this.model.count)
+			throw "change failed"
 		this._layout()
 	}
 
@@ -880,6 +882,8 @@ exports._setup = function() {
 			items[i] = null
 		}
 		items.splice(begin, end - begin)
+		if (items.length != this.model.count)
+			throw "remove failed"
 		this._layout()
 	}
 

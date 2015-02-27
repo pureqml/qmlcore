@@ -909,8 +909,6 @@ exports._setup = function() {
 			return
 
 		this.count = model.count
-		if (!this.count)
-			return
 
 		var horizontal = this.orientation === this.Horizontal
 
@@ -923,6 +921,9 @@ exports._setup = function() {
 
 		var items = this._items
 		var n = items.length
+		if (!n)
+			return
+
 		//console.log("layout " + n + " into " + w + "x" + h)
 		var p = 0
 		var c = horizontal? this.content.x: this.content.y
@@ -936,7 +937,6 @@ exports._setup = function() {
 			if (!item) {
 				if (p + c >= size && itemsCount > 0)
 					break
-
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = item = this.delegate()
@@ -982,9 +982,13 @@ exports._setup = function() {
 			p *= items.length / itemsCount
 
 		if (horizontal) {
+			this.content.width = p
+			this.content.height = maxH
 			this.contentWidth = p
 			this.contentHeight = maxH
 		} else {
+			this.content.width = maxW
+			this.content.height = p
 			this.contentWidth = maxW
 			this.contentHeight = p
 		}
@@ -1013,6 +1017,9 @@ exports._setup = function() {
 
 		var items = this._items
 		var n = items.length
+		if (!n)
+			return
+
 		//console.log("layout " + n + " into " + w + "x" + h)
 		var x = 0, y = 0
 		var cx = this.content.x, cy = this.content.y
@@ -1070,8 +1077,8 @@ exports._setup = function() {
 		if (horizontal) {
 			this.rows = Math.floor((h + this.cellHeight - 1) / this.cellHeight)
 			this.columns = Math.floor((n + this.rows - 1) / this.columns)
-			this.contentWidth = this.columns * this.cellWidth
-			this.contentHeight = this.rows * this.cellHeight
+			this.contentWidth = this.content.width = this.columns * this.cellWidth
+			this.contentHeight = this.content.height = this.rows * this.cellHeight
 		} else {
 			this.columns = Math.floor((w + this.cellWidth - 1) / this.cellWidth)
 			this.rows = Math.floor((n + this.columns - 1) / this.rows)

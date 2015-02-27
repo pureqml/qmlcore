@@ -1,81 +1,41 @@
 Item {
-	anchors.fill: renderer;
+	anchors.fill: parent;
 
 	Rectangle {
 		id: infoPanel;
 		anchors.left: parent.left;
 		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
 		width: 200;
+		height: optionsGrid.contentHeight;
 		color: "#000";
 		opacity: 0.7;
+		focus: false;
 	}
 
-	//TODO: Use GridView whem it's done instead.
-	ListView {
+	GridView {
 		id: optionsGrid;
-		width: 200 * 3 + 2 * spacing;
+		width: 210 * 3;
 		anchors.left: infoPanel.right;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
-		orientation: ListView.Horizontal;
+		cellWidth: 210;
+		cellHeight: 230;
+		rows: 2;
+		columns: 3;
 		spacing: 10;
-
+		delegate: OptionsDelegate { }
 		model: ListModel {
 			property string text;
 			property string additopnalText;
 			property string icon;
 
 			ListElement { text: "Персональная информация"; icon: "res/settings.png"; }
+			ListElement { text: "Пополнить счет банк.картой"; icon: "res/settings.png"; }
 			ListElement { text: "Оповещения"; icon: "res/settings.png"; additopnalText: 5; }
-			ListElement { text: "Управление пакетами"; icon: "res/settings.png"; }
-		}
-		delegate: Rectangle {
-			width: 200;
-			height: 220;
-			border.color: "#fff";
-			border.width: activeFocus ? 10 : 0;
-			gradient: Gradient {
-				GradientStop { 
-					color: "#326b01"; 
-					position: 0; 
-
-					Behavior on color { ColorAnimation { duration: 300; } }
-				}
-				GradientStop { 
-					color: "#438f01"; 
-					position: 1.0;
-
-					Behavior on color { ColorAnimation { duration: 300; } }
-				}
-			}
-
-			Image {
-				anchors.centerIn: parent;
-				anchors.bottomMargin: 20;
-				source: model.icon;
-			}
-
-			Text {
-				anchors.bottom: parent.bottom;
-				anchors.left: parent.left;
-				anchors.right: parent.right;
-				anchors.margins: 20;
-				font.pointSize: 16;
-				color: "#fff";
-				text: model.text;
-				wrap: true;
-			}
-
-			Text {
-				anchors.top: parent.top;
-				anchors.right: parent.right;
-				anchors.margins: 20;
-				font.pointSize: 14;
-				color: "#fff";
-				text: model.additopnalText;
-			}
+			ListElement { text: "Настройки каналов"; icon: "res/settings.png"; }
+			ListElement { text: "Управление услугами"; icon: "res/settings.png"; }
+			ListElement { text: "Помощь"; icon: "res/settings.png"; }
 		}
 	}
 
@@ -83,9 +43,9 @@ Item {
 		id: optionsAdPanel;
 		anchors.left: optionsGrid.right;
 		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
-		anchors.leftMargin: 10;
 		width: 200;
+		height: optionsGrid.contentHeight;
 		color: "#ff0";
+		focus: false;
 	}
 }

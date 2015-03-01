@@ -1,7 +1,7 @@
 Item {
 	id: tvGuideProto;
-	anchors.fill: renderer;
 	property Protocol protocol;
+	anchors.fill: renderer;
 
 	Rectangle {
 		anchors.fill: parent;
@@ -9,15 +9,27 @@ Item {
 		opacity: 0.7;
 	}
 
-	ChannelListModel {
-		protocol: tvGuideProto.protocol;
-
-		onCountChanged: { tvGuideChannelModel.setList(this.get(0)); }
-	}
-
-	ChannelModel {
+	ListModel {
 		id: tvGuideChannelModel;
-		protocol: tvGuideProto.protocol;
+
+		onCompleted: {
+			var startTime = Math.round(new Date().getTime() / 1000);
+			var endTime = startTime;
+			startTime -= 2 * 24 * 3600;
+			endTime += 7 * 24 * 3600;
+
+			var options = {
+				select: 'title,start,duration',
+				startFrom: startTime,
+				startTo: endTime
+			};
+
+			var model = this;
+			tvGuideProto.protocol.getChannelsWithSchedule(options, function(result) {
+				for (var i in result.channels)
+					model.append(result.channels[i])
+			});
+		}
 	}
 	
 	Item {
@@ -39,11 +51,11 @@ Item {
 			spacing: 5;
 			model: tvGuideChannelModel;
 			delegate: Item {
-				//height: activeFocus ? 100 : 50;
 				height: 50;
 				width: parent.width;
 
 				Rectangle {
+					id: channelRect;
 					anchors.left: parent.left;
 					anchors.top: parent.top;
 					anchors.leftMargin: 5;
@@ -58,7 +70,7 @@ Item {
 						anchors.verticalCenter: parent.verticalCenter;
 						anchors.leftMargin: 12;
 						font.pixelSize: 16;
-						text: model.er_lcn;
+						text: model.epg_channel_id;
 						color: "#aaa";
 					}
 
@@ -76,6 +88,34 @@ Item {
 						anchors.verticalCenter: parent.verticalCenter;
 						anchors.rightMargin: 10;
 						source: model.pictureUrl? model.pictureUrl + "/30x30:contain": "";
+					}
+				}
+
+				ListView {
+					height: 50;
+					anchors.left: channelRect.right;
+					anchors.right: parent.right;
+					clip: true;
+					spacing: 10;
+					orientation: ListView.Horizontal;
+					model: ProgramsModel {
+						channelIdx: model.index;
+						parentModel: tvGuideChannelModel;
+					}
+					delegate: Rectangle {
+						width: model.duration / 12;
+						height: 40;
+						color: "#333";
+						clip: true;
+						border.color: "#fff";
+						border.width: parent.activeFocus && activeFocus ? 5 : 0;
+
+						Text {
+							id: programTitleText;
+							anchors.left: parent.left;
+							anchors.verticalCenter: parent.verticalCenter;
+							text: model.title;
+						}
 					}
 				}
 			}

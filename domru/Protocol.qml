@@ -198,8 +198,22 @@ Object {
 		this.requestWithTokenAndSession("/resource/get_url/" + assetId + "/" + streamId, {}, callback)
 	}
 
-	getEpgGenres(callback): {
-		this.requestWithToken("/collection/vod.genre/query/dimension/extid/source/epg", {}, callback);
+	getPrefix(query): {
+		return query.indexOf('?') === -1 ? '?' : '&';
+	}
+
+	getChannelsWithSchedule(options, callback): {
+		var query = '/epg/get_schedule/';
+		if (options && options.startFrom)
+			query += this.getPrefix(query) + 'start_from=' + options.startFrom;
+
+		if (options && options.startTo)
+			query += this.getPrefix(query) + 'start_to=' + options.startTo;
+
+		if (options && options.select)
+			query += this.getPrefix(query) + 'select=' + options.select;
+
+		this.requestWithToken(query, {}, callback);
 	}
 
 	getEpgProgramByParams(epgChannelId, callback): {

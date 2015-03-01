@@ -1,5 +1,6 @@
 Item {
 	height: logoImage.height;
+	width: logoImage.width + logoDateText.paintedWidth;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 
@@ -19,6 +20,7 @@ Item {
 	}
 
 	CurrentDateText {
+		id: logoDateText;
 		anchors.bottom: logoImage.bottom;
 		anchors.left: logoImage.right;
 		anchors.leftMargin: 10;

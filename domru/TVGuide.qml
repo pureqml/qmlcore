@@ -31,7 +31,7 @@ Item {
 			});
 		}
 	}
-	
+
 	Item {
 		anchors.fill: parent;
 		anchors.leftMargin: 75;
@@ -40,6 +40,67 @@ Item {
 		anchors.topMargin: 42;
 
 		DomruLogo { id: logo; }
+
+		ListView {
+			id: dateView;
+			anchors.left: logo.right;
+			anchors.right: tvGuideLabel.left;
+			anchors.top: parent.top;
+			anchors.leftMargin: 20;
+			anchors.rightMargin: 20;
+			orientation: ListView.Horizontal;
+			height: 50;
+			clip: true;
+			model: ListModel {
+				property int dayseBefore: 2;
+				property int dayseAfter: 5;
+
+				onCompleted: {
+					var now = new Date();
+					var week = [ 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб' ];
+					var curDay = now.getDay();
+
+					for (var i = -this.dayseBefore; i < 0; ++i) {
+						var cur = (curDay + i) % 7;
+						this.append({ text: week[cur >= 0 ? cur : 7 + cur] });
+					}
+					this.append({ text: "Сегодня" });
+					this.append({ text: "Завтра" });
+					for (var i = 1; i < this.dayseAfter; ++i) {
+						var cur = (curDay + i) % 7;
+						this.append({ text: week[cur >= 0 ? cur : 7 + cur] });
+					}
+				}
+			}
+			delegate: Item {
+				width: 100;
+				height: parent.height;
+
+				Text {
+					text: model.text;
+					color: "#fff";
+					font.pointSize: 14;
+					anchors.horizontalCenter: parent.horizontalCenter;
+				}
+
+				Rectangle {
+					height: 10;
+					anchors.left: parent.left;
+					anchors.right: parent.right;
+					anchors.bottom: parent.bottom;
+					color: parent.activeFocus ? "#f00" : "#ccc";
+				}
+			}
+		}
+
+		Text {
+			id: tvGuideLabel;
+			text: "ТВ-ГИД";
+			font.pointSize: 32;
+			anchors.right: parent.right;
+			anchors.top: parent.top;
+			color: "#fff";
+		}
 
 		ListView {
 			anchors.top: logo.bottom;

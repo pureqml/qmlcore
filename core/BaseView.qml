@@ -61,8 +61,10 @@ Item {
 				var idx = this.parent.indexAt(this.mouseX, this.mouseY)
 				this._x = this.mouseX
 				this._y = this.mouseY
-				if (idx >= 0)
+				if (idx >= 0) {
 					this.parent.currentIndex = idx
+					this.parent.forceActiveFocus()
+				}
 			}
 		}
 

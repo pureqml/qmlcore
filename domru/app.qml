@@ -6,6 +6,8 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
+	property int activityCount: 0;
+
 	VideoPlayer { id: videoPlayer; anchors.fill: renderer; autoPlay: true; }
 
 	Protocol { id: proto; enabled: true; }
@@ -13,14 +15,14 @@ Item {
 	MouseArea {
 		id: area;
 		anchors.fill: renderer;
-		hoverEnabled: infoPlateItem.visible;
+		hoverEnabled: !categories.active;
 
 		onMouseXChanged: { 
-			if (!categories.active) 
+			if (this.hoverEnabled) 
 				infoPlate.show(2000); 
 		}
-		onMouseYChanged: { 
-			if (!categories.active) 
+		onMouseYChanged: {
+			if (this.hoverEnabled) 
 				infoPlate.show(2000); 
 		}
 	}
@@ -47,13 +49,16 @@ Item {
 
 			infoPlate.show(10000);
 		}
+
+		onStarted: {
+			infoPlate.stop();
+		}
 	}
 
 	InfoPlate {
 		id: infoPlate;
 		signal epgUpdated;
 		anchors.fill: parent;
-		visible: !categories.active;
 
 		Timer {
 			duration: 5000;
@@ -104,6 +109,10 @@ Item {
 		z: 10;
 	}
 
-	onBluePressed: { infoPlate.show(10000); }
+	onBluePressed: { 
+		if (!categories.active)
+			infoPlate.show(10000); 
+	}
+
 	onGreenPressed: { categories.start(); }
 }

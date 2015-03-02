@@ -73,7 +73,8 @@ var colorTable = {
 	'teal':		'008080',
 	'black':	'000000',
 	'silver':	'c0c0c0',
-	'gray':		'080808'
+	'gray':		'080808',
+	'transparent': '0000'
 }
 
 _globals.core.Object = function(parent) {

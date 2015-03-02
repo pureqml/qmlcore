@@ -180,24 +180,26 @@ Activity {
 			onRightPressed: { programPanel.forceActiveFocus(); }
 		}
 
-		Image {
+		FocusableImage {
 			anchors.horizontalCenter: channelPanel.horizontalCenter;
 			anchors.bottom: channelPanel.top;
 			anchors.bottomMargin: 12;
-			source: "res/arrowUp.png";
-			opacity: channelPanel.activeFocus ? 1 : 0;
+			baseSource: "res/arrowUp.png";
+			focusedSource: "res/arrowUpFocused.png";
+//			opacity: channelPanel.activeFocus ? 1 : 0;
 
-			Behavior on opacity	{ Animation { duration: 300; } }
+//			Behavior on opacity	{ Animation { duration: 300; } }
 		}
 
-		Image {
+		FocusableImage {
 			anchors.horizontalCenter: channelPanel.horizontalCenter;
 			anchors.top: channelPanel.bottom;
 			anchors.topMargin: 12;
-			source: "res/arrowDown.png";
-			opacity: channelPanel.activeFocus ? 1 : 0;
+			baseSource: "res/arrowDown.png";
+			focusedSource: "res/arrowDownFocused.png";
+//			opacity: channelPanel.activeFocus ? 1 : 0;
 
-			Behavior on opacity	{ Animation { duration: 300; } }
+//			Behavior on opacity	{ Animation { duration: 300; } }
 		}
 
 		GreenButton {

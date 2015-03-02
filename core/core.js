@@ -389,6 +389,16 @@ exports._setup = function() {
 			item = item.parent
 		}
 	}
+	_globals.core.Item.prototype.hasActiveFocus = function() {
+		var item = this
+		while(item.parent) {
+			if (item.parent.focusedChild != item)
+				return false
+
+			item = item.parent
+		}
+		return true
+	}
 
 	_globals.core.Item.prototype._focusTree = function(active) {
 		this.activeFocus = active;

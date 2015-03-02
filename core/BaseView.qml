@@ -29,11 +29,20 @@ Item {
 		var w = this.width, h = this.height
 		var horizontal = this.orientation == this.Horizontal
 		if (horizontal) {
+			if (iw > w) {
+				this.contentX = x - w / 2 + iw / 2
+				return
+			}
 			if (x - cx < 0)
 				this.contentX = x
 			else if (x - cx + iw > w)
 				this.contentX = x + iw - w
 		} else {
+			if (ih > h) {
+				console.log(y, ih, h)
+				this.contentY = y - h / 2 + ih / 2
+				return
+			}
 			if (y - cy < 0)
 				this.contentY = y
 			else if (y - cy + ih > h)

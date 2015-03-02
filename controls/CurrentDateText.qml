@@ -27,7 +27,6 @@ Text {
 
 		onTriggered: {
 			this.parent.updateText();
-			console.log("CurrentDateText updated")
 		}
 	}
 }

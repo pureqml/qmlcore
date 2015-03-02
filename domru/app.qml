@@ -99,6 +99,11 @@ Item {
 		}
 	}
 
+		onOptionChoosed(text): {
+			//if (text == "ТВ меню")
+				//mainMenu.show();
+		}
+	}
 
 	Text {
 		anchors.horizontalCenter: parent.horizontalCenter;
@@ -108,6 +113,11 @@ Item {
 
 		Behavior on opacity { Animation { duration: 300; } }
 	}
+
+	//MainMenu {
+		//id: mainMenu;
+		//visible: false;
+	//}
 
 	Mouse {
 		x: area.mouseX - 74;

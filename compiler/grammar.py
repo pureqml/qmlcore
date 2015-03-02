@@ -125,7 +125,13 @@ def handle_ternary_op(s, l, t):
 	#print "EXPR", t
 	return " ".join(t[0])
 
-expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | nested_identifier_rvalue | enum_value)
+
+expression_array = Literal("[") + Optional(expression + ZeroOrMore(Literal(",") + expression)) + Literal("]")
+def handle_expression_array(s, l, t):
+	return "".join(t)
+expression_array.setParseAction(handle_expression_array)
+
+expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | nested_identifier_rvalue | enum_value | expression_array)
 
 expression_ops = infixNotation(expression_definition, [
 	('*', 2, opAssoc.LEFT, handle_binary_op),

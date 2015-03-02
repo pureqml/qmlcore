@@ -1005,7 +1005,8 @@ exports._setup = function() {
 
 			if (this.currentIndex == i) {
 				this.focusChild(item)
-				this.positionViewAtIndex(i)
+				if (this.contentFollowsCurrentItem)
+					this.positionViewAtIndex(i)
 			}
 
 			item.visible = visible
@@ -1108,7 +1109,8 @@ exports._setup = function() {
 
 			if (this.currentIndex == i) {
 				this.focusChild(item)
-				this.positionViewAtIndex(i)
+				if (this.contentFollowsCurrentItem)
+					this.positionViewAtIndex(i)
 			}
 
 			item.visible = visible

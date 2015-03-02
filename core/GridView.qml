@@ -51,25 +51,6 @@ BaseView {
 		return [x, y, cw, ch]
 	}
 
-	focusCurrent: {
-		var n = this.count
-		if (n == 0)
-			return
-
-		var idx = this.currentIndex
-		if (idx < 0 || idx >= n) {
-			if (this.keyNavigationWraps)
-				this.currentIndex = (idx + n) % n
-			else
-				this.currentIndex = idx < 0? 0: n - 1
-			return
-		}
-		var item = this._items[idx]
-		this.positionViewAtIndex(idx)
-		if (item)
-			this.focusChild(item)
-	}
-
 	indexAt(x, y): {
 		var items = this._items
 		x -= this.content.x

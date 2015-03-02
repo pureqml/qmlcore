@@ -13,6 +13,7 @@ Item {
 	property bool handleNavigationKeys: true;
 	property bool keyNavigationWraps: true;
 	property bool dragEnabled: true;
+	property bool contentFollowsCurrentItem: true;
 
 	property bool trace;
 
@@ -48,6 +49,26 @@ Item {
 			else if (y - cy + ih > h)
 				this.contentY = y + ih - h
 		}
+	}
+
+	focusCurrent: {
+		var n = this.count
+		if (n == 0)
+			return
+
+		var idx = this.currentIndex
+		if (idx < 0 || idx >= n) {
+			if (this.keyNavigationWraps)
+				this.currentIndex = (idx + n) % n
+			else
+				this.currentIndex = idx < 0? 0: n - 1
+			return
+		}
+		var item = this._items[idx]
+		if (item)
+			this.focusChild(item)
+		if (this.contentFollowsCurrentItem)
+			this.positionViewAtIndex(idx)
 	}
 
 	onFocusedChildChanged: {

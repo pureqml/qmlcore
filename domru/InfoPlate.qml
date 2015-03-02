@@ -129,7 +129,11 @@ Activity {
 			}
 
 			Text {
-				anchors.centerIn: parent;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				anchors.verticalCenter: parent.verticalCenter;
+				horizontalAlignment: 2;
+				wrap: true;
 				color: "white";
 				text: infoPlateItem.title;
 				opacity: channelPanel.activeFocus ? 1 : 0;
@@ -174,6 +178,26 @@ Activity {
 
 			onLeftPressed: { timePanel.forceActiveFocus(); }
 			onRightPressed: { programPanel.forceActiveFocus(); }
+		}
+
+		Image {
+			anchors.horizontalCenter: channelPanel.horizontalCenter;
+			anchors.bottom: channelPanel.top;
+			anchors.bottomMargin: 12;
+			source: "res/arrowUp.png";
+			opacity: channelPanel.activeFocus ? 1 : 0;
+
+			Behavior on opacity	{ Animation { duration: 300; } }
+		}
+
+		Image {
+			anchors.horizontalCenter: channelPanel.horizontalCenter;
+			anchors.top: channelPanel.bottom;
+			anchors.topMargin: 12;
+			source: "res/arrowDown.png";
+			opacity: channelPanel.activeFocus ? 1 : 0;
+
+			Behavior on opacity	{ Animation { duration: 300; } }
 		}
 
 		GreenButton {
@@ -398,7 +422,6 @@ Activity {
 				anchors.fill: parent;
 				anchors.margins: -10;
 				hoverEnabled: true;
-//				z: 2;
 
 				onClicked: { 
 					infoPlateItem.channelListCalled(); 

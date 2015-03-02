@@ -169,7 +169,7 @@ Item {
 						color: "#333";
 						clip: true;
 						border.color: "#fff";
-						border.width: parent.activeFocus && activeFocus ? 5 : 0;
+						border.width: activeFocus ? 5 : 0;
 
 						Text {
 							id: programTitleText;

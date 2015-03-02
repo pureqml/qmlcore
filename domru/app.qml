@@ -6,8 +6,6 @@ Item {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
-	property int activityCount: 0;
-
 	VideoPlayer { id: videoPlayer; anchors.fill: renderer; autoPlay: true; }
 
 	Protocol { id: proto; enabled: true; }

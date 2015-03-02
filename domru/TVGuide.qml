@@ -25,8 +25,6 @@ Item {
 			};
 
 			var model = this;
-			var firstDate = new Date() / 1000 - 2 * 3600 * 24;
-
 			tvGuideProto.protocol.getChannelsWithSchedule(options, function(result) {
 				for (var i in result.channels)
 					model.append(result.channels[i]);
@@ -201,11 +199,14 @@ Item {
 
 				ListView {
 					id: brickWall;
-					height: 50;
+					height: 60;
 					anchors.left: channelRect.right;
 					anchors.right: parent.right;
+					anchors.top: parent.top;
+					anchors.topMargin: -spacing;
 					anchors.leftMargin: spacing;
 					contentX: tvGuideChannels.shift;
+					contentFollowsCurrentItem: false;
 					clip: true;
 					spacing: 5;
 					orientation: ListView.Horizontal;
@@ -219,15 +220,16 @@ Item {
 						id: programDelegate;
 						property int start: model.start;
 						width: model.duration / 10;
-						height: 40;
+						height: 50;
+						anchors.verticalCenter: parent.verticalCenter;
 						color: "#333";
 						clip: true;
 						border.color: "#fff";
 						border.width: parent.activeFocus && activeFocus ? 5 : 0;
 
-						Text {
-							id: programTitleText;
+						ThreeDotsText {
 							anchors.left: parent.left;
+							anchors.right: parent.right;
 							anchors.verticalCenter: parent.verticalCenter;
 							color: "#fff";
 							text: model.title;
@@ -243,5 +245,11 @@ Item {
 					--this.currentIndex;
 			}
 		}
+	}
+
+	onCompleted: {
+		console.log("onVisibleChanged: " + this.visible);
+		if (this.visible)
+			dateView.currentIndex = 2;
 	}
 }

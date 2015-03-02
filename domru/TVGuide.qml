@@ -25,9 +25,11 @@ Item {
 			};
 
 			var model = this;
+			var firstDate = new Date() / 1000 - 2 * 3600 * 24;
+
 			tvGuideProto.protocol.getChannelsWithSchedule(options, function(result) {
 				for (var i in result.channels)
-					model.append(result.channels[i])
+					model.append(result.channels[i]);
 			});
 		}
 	}
@@ -43,44 +45,46 @@ Item {
 
 		ListView {
 			id: dateView;
-			anchors.left: logo.right;
+			anchors.left: parent.left;
 			anchors.right: tvGuideLabel.left;
 			anchors.top: parent.top;
-			anchors.leftMargin: 20;
+			anchors.leftMargin: 200;
 			anchors.rightMargin: 20;
 			orientation: ListView.Horizontal;
 			height: 50;
 			clip: true;
 			model: ListModel {
-				property int dayseBefore: 2;
-				property int dayseAfter: 5;
+				property int daysBefore: 2;
+				property int daysAfter: 5;
 
 				onCompleted: {
 					var now = new Date();
 					var week = [ 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб' ];
 					var curDay = now.getDay();
 
-					for (var i = -this.dayseBefore; i < 0; ++i) {
+					for (var i = -this.daysBefore; i < 0; ++i) {
 						var cur = (curDay + i) % 7;
 						this.append({ text: week[cur >= 0 ? cur : 7 + cur] });
 					}
 					this.append({ text: "Сегодня" });
 					this.append({ text: "Завтра" });
-					for (var i = 1; i < this.dayseAfter; ++i) {
+					for (var i = 2; i <= this.daysAfter; ++i) {
 						var cur = (curDay + i) % 7;
 						this.append({ text: week[cur >= 0 ? cur : 7 + cur] });
 					}
 				}
 			}
 			delegate: Item {
-				width: 100;
+				width: dayDelegateText.paintedWidth + 60;
 				height: parent.height;
 
 				Text {
+					id: dayDelegateText;
 					text: model.text;
 					color: "#fff";
 					font.pointSize: 14;
 					anchors.horizontalCenter: parent.horizontalCenter;
+					opacity: parent.activeFocus ? 1.0 : 0.6;
 				}
 
 				Rectangle {
@@ -91,6 +95,46 @@ Item {
 					color: parent.activeFocus ? "#f00" : "#ccc";
 				}
 			}
+
+			onDownPressed: { tvGuideChannels.forceActiveFocus(); }
+			onCurrentIndexChanged: { this._get("tvGuideChannels").shift = this.currentIndex * 24 * 360; }
+		}
+
+		Item {
+			id: programmsHead;
+			height: 50;
+			anchors.top: logo.bottom;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			anchors.topMargin: 40;
+
+			Rectangle {
+				id: headChannelsRect;
+				width: 200;
+				height: parent.height;
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				color: "#333";
+
+				Text {
+					anchors.centerIn: parent;
+					font.pixelSize: 16;
+					text: "Все каналы";
+					color: "#aaa";
+				}
+			}
+
+			Rectangle {
+				height: parent.height;
+				anchors.top: parent.top;
+				anchors.left: headChannelsRect.right;
+				anchors.right: parent.right;
+				anchors.leftMargin: tvGuideChannels.spacing;
+				color: headChannelsRect.color;
+			}
+
+			//ListView {
+			//}
 		}
 
 		Text {
@@ -103,11 +147,14 @@ Item {
 		}
 
 		ListView {
-			anchors.top: logo.bottom;
+			id: tvGuideChannels;
+			property int shift;
+			anchors.top: programmsHead.bottom;
 			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
-			anchors.margins: 20;
+			anchors.topMargin: spacing;
+			anchors.leftMargin: -spacing;
 			clip: true;
 			spacing: 5;
 			model: tvGuideChannelModel;
@@ -121,7 +168,7 @@ Item {
 					anchors.top: parent.top;
 					anchors.leftMargin: 5;
 					height: parent.height;
-					width: 300;
+					width: 200;
 					color: "#333";
 					border.color: "#fff";
 					border.width: parent.activeFocus ? 5 : 0;
@@ -144,41 +191,56 @@ Item {
 						color: "#fff";
 					}
 
-					Image {
-						anchors.right: parent.right;
-						anchors.verticalCenter: parent.verticalCenter;
-						anchors.rightMargin: 10;
-						source: model.pictureUrl? model.pictureUrl + "/30x30:contain": "";
-					}
+					//Image {
+						//anchors.right: parent.right;
+						//anchors.verticalCenter: parent.verticalCenter;
+						//anchors.rightMargin: 10;
+						//source: model.pictureUrl? model.pictureUrl + "/30x30:contain": "";
+					//}
 				}
 
 				ListView {
+					id: brickWall;
 					height: 50;
 					anchors.left: channelRect.right;
 					anchors.right: parent.right;
+					anchors.leftMargin: spacing;
+					contentX: tvGuideChannels.shift;
 					clip: true;
-					spacing: 10;
+					spacing: 5;
 					orientation: ListView.Horizontal;
 					model: ProgramsModel {
 						channelIdx: model.index;
+						daysBefore: 2;
+						daysAfter: 5;
 						parentModel: tvGuideChannelModel;
 					}
 					delegate: Rectangle {
-						width: model.duration / 12;
+						id: programDelegate;
+						property int start: model.start;
+						width: model.duration / 10;
 						height: 40;
 						color: "#333";
 						clip: true;
 						border.color: "#fff";
-						border.width: activeFocus ? 5 : 0;
+						border.width: parent.activeFocus && activeFocus ? 5 : 0;
 
 						Text {
 							id: programTitleText;
 							anchors.left: parent.left;
 							anchors.verticalCenter: parent.verticalCenter;
+							color: "#fff";
 							text: model.title;
 						}
 					}
 				}
+			}
+
+			onUpPressed: {
+				if (this.currentIndex == 0)
+					dateView.forceActiveFocus();
+				else
+					--this.currentIndex;
 			}
 		}
 	}

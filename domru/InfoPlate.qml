@@ -1,5 +1,6 @@
 Activity {
 	id: infoPlateItem;
+	signal optionChoosed;
 	property bool isHd: false;
 	property bool is3d: false;
 	property int channelNumber: 0;
@@ -342,7 +343,6 @@ Activity {
 			onRightPressed: { shareButton.forceActiveFocus(); }
 		}
 
-
 		GreenButton {
 			id: shareButton;
 			height: 68;//bottomPanel.innerHeight;
@@ -358,6 +358,8 @@ Activity {
 			onLeftPressed: { settingsButton.forceActiveFocus(); }
 			onRightPressed: { timePanel.forceActiveFocus(); }
 		}
+
+		onDownPressed: { infoPlateOptions.forceActiveFocus(); }
 	}
 
 	Item {
@@ -475,8 +477,13 @@ Activity {
 			}
 		}
 
-		Options { 
+		Options {
+			id: infoPlateOptions;
 			model: optionsModel; 
+
+			onUpPressed: { timePanel.forceActiveFocus(); }
+			onCurrentIndexChanged: { hideTimer.restart(); }
+			onOptionChoosed(text): { infoPlateItem.optionChoosed(text); }
 		}
 	}
 

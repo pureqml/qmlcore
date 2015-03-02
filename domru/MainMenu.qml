@@ -65,5 +65,10 @@ Item {
 		}
 	}
 
+	show: {
+		this.visible = true;
+		this.forceActiveFocus();
+	}
+
 	onCompleted: { menuOptions.forceActiveFocus(); }
 }

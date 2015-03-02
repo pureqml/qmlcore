@@ -1,15 +1,16 @@
 ListView {
 	id: options;
-	//TODO: use contentWidth instead!
-	width: 335;
+	signal optionChoosed;
+	width: contentWidth;
 	height: parent.height;
 	anchors.right: parent.right;
 	anchors.bottom: parent.bottom;
 	orientation: ListView.Horizontal;
 	spacing: 25;
 	delegate: Item {
-		width: icon.paintedWidth + optionText.paintedWidth * 2; //TODO: image width isn't working
+		width: icon.paintedWidth + optionText.paintedWidth * 2;
 		height: parent.height;
+		opacity: activeFocus ? 1.0 : 0.6;
 
 		Image {
 			id: icon;
@@ -26,5 +27,10 @@ ListView {
 			color: "#fff";
 			text: model.text;
 		}
+	}
+
+	onSelectPressed: {
+		var text = this.model.get(this.currentIndex).text;
+		this.optionChoosed(text);
 	}
 }

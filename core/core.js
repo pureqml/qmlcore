@@ -415,12 +415,12 @@ exports._setup = function() {
 			this.focusedChild._focusTree(false)
 		this.focusedChild = child
 		if (this.focusedChild)
-			this.focusedChild._focusTree(true)
+			this.focusedChild._focusTree(this.hasActiveFocus())
 	}
 
 	_globals.core.Item.prototype.focusChild = function(child) {
-		this._focusChild(child)
 		this._propagateFocusToParents()
+		this._focusChild(child)
 	}
 
 	_globals.core.Item.prototype._processKey = function (event) {

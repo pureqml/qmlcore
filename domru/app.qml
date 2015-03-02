@@ -89,6 +89,14 @@ Item {
 			this.stop();
 			categories.start();
 		}
+
+		onChannelUp: {
+			console.log("onChannelUp called");
+		}
+
+		onChannelDown: {
+			console.log("onChannelDown called");
+		}
 	}
 
 

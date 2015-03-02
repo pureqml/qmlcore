@@ -15,6 +15,9 @@ Activity {
 	name: "infoPlate";
 
 	signal channelListCalled;
+	signal channelUp;
+	signal channelDown;
+
 
 	Timer {
 		id: hideTimer;
@@ -178,6 +181,8 @@ Activity {
 
 			onLeftPressed: { timePanel.forceActiveFocus(); }
 			onRightPressed: { programPanel.forceActiveFocus(); }
+			onUpPressed: { infoPlateItem.channelUp(); }
+			onDownPressed: { infoPlateItem.channelDown(); }
 		}
 
 		FocusableImage {

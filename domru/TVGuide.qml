@@ -168,6 +168,7 @@ Item {
 					height: parent.height;
 					width: 200;
 					color: "#333";
+					clip: true;
 					border.color: "#fff";
 					border.width: parent.activeFocus ? 5 : 0;
 
@@ -227,7 +228,7 @@ Item {
 						border.color: "#fff";
 						border.width: parent.activeFocus && activeFocus ? 5 : 0;
 
-						ThreeDotsText {
+						EllipsisText {
 							anchors.left: parent.left;
 							anchors.right: parent.right;
 							anchors.verticalCenter: parent.verticalCenter;
@@ -248,7 +249,6 @@ Item {
 	}
 
 	onCompleted: {
-		console.log("onVisibleChanged: " + this.visible);
 		if (this.visible)
 			dateView.currentIndex = 2;
 	}

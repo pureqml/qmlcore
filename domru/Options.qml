@@ -29,8 +29,11 @@ ListView {
 		}
 	}
 
-	onSelectPressed: {
+	chooseCurrent: {
 		var text = this.model.get(this.currentIndex).text;
 		this.optionChoosed(text);
 	}
+
+	onSelectPressed: { this.chooseCurrent(); }
+	onClicked: { this.chooseCurrent(); }
 }

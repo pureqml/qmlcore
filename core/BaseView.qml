@@ -17,6 +17,8 @@ Item {
 
 	property bool trace;
 
+	signal clicked;
+
 	itemAt(x, y): {
 		var idx = this.indexAt(x, y)
 		return idx >= 0? this._items[idx]: null
@@ -126,6 +128,10 @@ Item {
 
 		onWheelEvent(dp): {
 			this.parent.currentIndex -= Math.round(dp)
+		}
+
+		onClicked: {
+			this.parent.clicked();
 		}
 
 		z: parent.dragEnabled? parent.z + 1: -1000;

@@ -1,5 +1,6 @@
 Item {
 	id: recomendedProto;
+	signal focusReturned;
 	signal recomendedItemChoosed;
 	anchors.fill: parent;
 
@@ -14,14 +15,14 @@ Item {
 		focus: false;
 	}
 
-	Rectangle {
+	Image {
 		id: recomendedVideoPreview;
 		anchors.left: weatherPanel.right;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
 		width: height;
-		color: "#faa";
+		source: "res/preview1.png";
 	}
 
 	ListView {
@@ -42,29 +43,34 @@ Item {
 			ListElement { text: "ТВ гид"; icon: "res/settings.png"; }
 		}
 
+		onUpPressed: {
+			if (this.currentIndex)
+				this.currentIndex--;
+			else
+				recomendedProto.focusReturned();
+		}
+
 		onSelectPressed: { recomendedProto.recomendedItemChoosed(this.model.get(this.currentIndex).text); }
 	}
 
-	Rectangle {
+	Image {
 		id: smallRecomendedAdPanel;
 		height: parent.height - recomendedOptions.contentHeight - recomendedOptions.spacing;
 		anchors.left: recomendedOptions.left;
 		anchors.right: recomendedOptions.right;
 		anchors.bottom: parent.bottom;
 		anchors.topMargin: 10;
-		color: "#ff0";
-		focus: false;
+		source: "res/ad3.png";
 	}
 
-	Rectangle {
+	Image {
 		id: recomendedAdPanel;
 		anchors.left: recomendedOptions.right;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
-		width: 200;
-		color: "#ff0";
-		focus: false;
+		width: 160;
+		source: "res/ad1.png";
 	}
 
 	onActiveFocusChanged: {

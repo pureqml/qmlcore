@@ -468,20 +468,9 @@ Activity {
 			property string text;
 			property string source;
 
-			ListElement {
-				text: "Назад";
-				source: "res/back.png";
-			}
-
-			ListElement {
-				text: "ТВ меню";
-				source: "res/qMenu.png";
-			}
-
-			ListElement {
-				text: "Выход";
-				source: "res/exit.png";
-			}
+			ListElement { text: "Назад"; source: "res/back.png"; }
+			ListElement { text: "ТВ меню"; source: "res/qMenu.png"; }
+			ListElement { text: "Выход"; source: "res/exit.png"; }
 		}
 
 		Options {

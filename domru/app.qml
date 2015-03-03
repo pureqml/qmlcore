@@ -45,6 +45,7 @@ Item {
 
 			onChannelSwitched(channelInfo): {
 				infoPlate.fillChannelInfo(channelInfo);
+				infoPlate.updateEpg();
 				infoPlate.show(10000);
 			}
 
@@ -64,15 +65,17 @@ Item {
 				running: infoPlate.active;
 				triggeredOnStart: true;
 
-				onTriggered: {
-					var epgUpdated = infoPlate.epgUpdated;
-					categories.getProgramInfo(function(programInfo) {
-						if (programInfo)
-							epgUpdated(programInfo);
-						else
-							console.log("Failed to get program info");
-					});
-				}
+				onTriggered: { infoPlate.updateEpg(); }
+			}
+
+			updateEpg: {
+				var epgUpdated = infoPlate.epgUpdated;
+				categories.getProgramInfo(function(programInfo) {
+					if (programInfo)
+						epgUpdated(programInfo);
+					else
+						console.log("Failed to get program info");
+				});
 			}
 
 			onEpgUpdated(programInfo): { infoPlate.fillProgramInfo(programInfo); }
@@ -82,13 +85,13 @@ Item {
 				categories.start();
 			}
 
-			onChannelUp: {
-				console.log("onChannelUp called");
+			onTvGuideCalled: {
+				this.stop();
+				tvGuide.show();
 			}
 
-			onChannelDown: {
-				console.log("onChannelDown called");
-			}
+			onChannelUp: { categories.channelUp(); }
+			onChannelDown: { categories.channelDown(); }
 
 			onOptionChoosed(text): {
 				if (text == "ТВ меню")

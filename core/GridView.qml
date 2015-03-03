@@ -10,26 +10,26 @@ BaseView {
 	move(dx, dy): {
 		var horizontal = this.flow == this.FlowLeftToRight
 		if (horizontal)
-			this.contentX += dx
-		else
 			this.contentY += dy
+		else
+			this.contentX += dx
 	}
 
 	onKeyPressed: {
 		var horizontal = this.flow == this.FlowLeftToRight
 		if (horizontal) {
 			switch(key) {
-				case 'Up':		--this.currentIndex; return true;
-				case 'Down':	++this.currentIndex; return true
-				case 'Left':	this.currentIndex -= this.rows; return true
-				case 'Right':	this.currentIndex += this.rows; return true
-			}
-		} else {
-			switch(key) {
 				case 'Left':	--this.currentIndex; return true
 				case 'Right':	++this.currentIndex; return true
 				case 'Up':		this.currentIndex -= this.columns; return true
 				case 'Down':	this.currentIndex += this.columns; return true
+			}
+		} else {
+			switch(key) {
+				case 'Up':		--this.currentIndex; return true;
+				case 'Down':	++this.currentIndex; return true
+				case 'Left':	this.currentIndex -= this.rows; return true
+				case 'Right':	this.currentIndex += this.rows; return true
 			}
 		}
 	}

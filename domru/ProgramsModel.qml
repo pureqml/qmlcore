@@ -8,12 +8,12 @@ ListModel {
 		var daysBefore = 2;
 		var startTime = Math.round(new Date().getTime() / 1000) - daysBefore * 24 * 3600;
 		var delta = row[0].start - startTime;
-		var newRow;
 		if (delta > 0)
 			this.append({
 				title: "Нет информации",
 				start: startTime,
-				duration: delta
+				duration: delta,
+				empty: true
 			});
 		this.append({
 			title: row[0].title,
@@ -22,5 +22,16 @@ ListModel {
 		});
 		for (var i = 1; i < row.length; ++i)
 			this.append(row[i]);
+
+		var daysAfter = 5;
+		var endTime = Math.round(new Date().getTime() / 1000) - daysAfter * 24 * 3600;
+		var delta = row[row.length - 1].start - endTime;
+		if (delta > 0)
+			this.append({
+				title: "Нет информации",
+				start: row[row.length - 1].start,
+				duration: delta,
+				empty: true
+			});
 	}
 }

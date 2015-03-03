@@ -1102,16 +1102,16 @@ exports._setup = function() {
 			item.viewX = x
 			item.viewY = y
 			if (horizontal) {
+				x += this.cellWidth
+				if (x >= w) {
+					x = 0
+					y += this.cellHeight
+				}
+			} else {
 				y += this.cellHeight
 				if (y >= h) {
 					y = 0
 					x += this.cellWidth
-				}
-			} else {
-				x += this.cellWidth
-				if (y >= h) {
-					x = 0
-					y += this.cellHeight
 				}
 			}
 

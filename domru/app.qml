@@ -13,12 +13,13 @@ Item {
 	MouseArea {
 		id: area;
 		anchors.fill: renderer;
-		hoverEnabled: !categories.active;
+		hoverEnabled: !categories.active && !tvGuide.visible && !mainMenu.visible;
 
 		onMouseXChanged: { 
 			if (this.hoverEnabled) 
 				infoPlate.show(2000); 
 		}
+
 		onMouseYChanged: {
 			if (this.hoverEnabled) 
 				infoPlate.show(2000); 
@@ -43,12 +44,7 @@ Item {
 			}
 
 			onChannelSwitched(channelInfo): {
-				infoPlate.isHd = channelInfo.isHd;
-				infoPlate.is3d = channelInfo.is3d;
-				infoPlate.title = channelInfo.title;
-				infoPlate.logo = channelInfo.logo;
-				infoPlate.channelNumber = channelInfo.number;
-
+				infoPlate.fillChannelInfo(channelInfo);
 				infoPlate.show(10000);
 			}
 
@@ -79,15 +75,7 @@ Item {
 				}
 			}
 
-			onEpgUpdated(programInfo): {
-				infoPlate.programTitle = programInfo.title;
-				infoPlate.programTitle = programInfo.title;
-				infoPlate.programDescription = programInfo.description;
-
-				var now = new Date();
-				infoPlate.programInfo = programInfo.info;
-				infoPlate.programProgress = (now - programInfo.startTime) / (programInfo.endTime - programInfo.startTime);
-			}
+			onEpgUpdated(programInfo): { infoPlate.fillProgramInfo(programInfo); }
 
 			onChannelListCalled: {
 				this.stop();

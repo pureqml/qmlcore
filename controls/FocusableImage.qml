@@ -1,21 +1,28 @@
-Image {
+MouseArea {
 	property string focusedSource;
 	property string baseSource;
+	hoverEnabled: parent.recursiveVisible;
 	
 	signal triggered;
 
-	source: imageMouseArea.containsMouse ? focusedSource : baseSource;
-	opacity: imageMouseArea.containsMouse ? 1 : 0.5;
+	Image{
+		anchors.centerIn: parent;
+		source: parent.baseSource;
+		opacity: parent.containsMouse ? 0 : 1;
 
-	MouseArea {
-		id: imageMouseArea;
-		anchors.fill: parent;
-		anchors.margins: -5;
-		hoverEnabled: parent.recursiveVisible;
+		Behavior on opacity	{ Animation { duration: 300; } }
+	}
 
-		onClicked: { this.parent.triggered(); }
-		onEntered: {
-			console.log("imageMouseArea onEntered")
-		}
+	Image{
+		anchors.centerIn: parent;
+		source: parent.focusedSource;
+		opacity: parent.containsMouse ? 1 : 0;
+
+		Behavior on opacity	{ Animation { duration: 300; } }
+	}
+
+	onClicked: { this.triggered(); }
+	onEntered: {
+		console.log("imageMouseArea onEntered")
 	}
 }

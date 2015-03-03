@@ -192,9 +192,10 @@ Activity {
 			anchors.bottomMargin: 12;
 			baseSource: "res/arrowUp.png";
 			focusedSource: "res/arrowUpFocused.png";
-//			opacity: channelPanel.activeFocus ? 1 : 0;
 
-//			Behavior on opacity	{ Animation { duration: 300; } }
+			onTriggered: {
+				infoPlateItem.channelUp();
+			}
 		}
 
 		FocusableImage {
@@ -203,9 +204,10 @@ Activity {
 			anchors.topMargin: 12;
 			baseSource: "res/arrowDown.png";
 			focusedSource: "res/arrowDownFocused.png";
-//			opacity: channelPanel.activeFocus ? 1 : 0;
 
-//			Behavior on opacity	{ Animation { duration: 300; } }
+			onTriggered: {
+				infoPlateItem.channelDown();
+			}
 		}
 
 		GreenButton {

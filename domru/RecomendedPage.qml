@@ -1,5 +1,6 @@
 Item {
 	id: recomendedProto;
+	signal recomendedItemChoosed;
 	anchors.fill: parent;
 
 	Rectangle {
@@ -40,6 +41,8 @@ Item {
 			ListElement { text: "Телевидение"; icon: "res/settings.png"; }
 			ListElement { text: "ТВ гид"; icon: "res/settings.png"; }
 		}
+
+		onSelectPressed: { recomendedProto.recomendedItemChoosed(this.model.get(this.currentIndex).text); }
 	}
 
 	Rectangle {

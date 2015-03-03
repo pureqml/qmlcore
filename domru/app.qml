@@ -25,109 +25,126 @@ Item {
 		}
 	}
 
-	CategoriesList {
-		id: categories;
-		anchors.leftMargin: 60;
-		anchors.rightMargin: 60;
-		protocol: proto;
+	Item {
 		anchors.fill: parent;
+		visible: !mainMenu.visible;	//TODO: use some kind of activity manager instead.
 
-		onActivated(url): {
-			console.log("got url", url)
-			videoPlayer.source = url
-			videoPlayer.play();
-		}
+		CategoriesList {
+			id: categories;
+			anchors.leftMargin: 60;
+			anchors.rightMargin: 60;
+			protocol: proto;
+			anchors.fill: parent;
 
-		onChannelSwitched(channelInfo): {
-			infoPlate.isHd = channelInfo.isHd;
-			infoPlate.is3d = channelInfo.is3d;
-			infoPlate.title = channelInfo.title;
-			infoPlate.logo = channelInfo.logo;
-			infoPlate.channelNumber = channelInfo.number;
+			onActivated(url): {
+				console.log("got url", url)
+				videoPlayer.source = url
+				videoPlayer.play();
+			}
 
-			infoPlate.show(10000);
-		}
+			onChannelSwitched(channelInfo): {
+				infoPlate.isHd = channelInfo.isHd;
+				infoPlate.is3d = channelInfo.is3d;
+				infoPlate.title = channelInfo.title;
+				infoPlate.logo = channelInfo.logo;
+				infoPlate.channelNumber = channelInfo.number;
 
-		onStarted: {
-			infoPlate.stop();
-		}
-	}
+				infoPlate.show(10000);
+			}
 
-	InfoPlate {
-		id: infoPlate;
-		signal epgUpdated;
-		anchors.fill: parent;
-
-		Timer {
-			duration: 5000;
-			reapeat: true;
-			running: infoPlate.active;
-			triggeredOnStart: true;
-
-			onTriggered: {
-				var epgUpdated = infoPlate.epgUpdated;
-				categories.getProgramInfo(function(programInfo) {
-					if (programInfo)
-						epgUpdated(programInfo);
-					else
-						console.log("Failed to get program info");
-				});
+			onStarted: {
+				infoPlate.stop();
 			}
 		}
 
-		onEpgUpdated(programInfo): {
-			infoPlate.programTitle = programInfo.title;
-			infoPlate.programTitle = programInfo.title;
-			infoPlate.programDescription = programInfo.description;
+		InfoPlate {
+			id: infoPlate;
+			signal epgUpdated;
+			anchors.fill: parent;
 
-			var now = new Date();
-			infoPlate.programInfo = programInfo.info;
-			infoPlate.programProgress = (now - programInfo.startTime) / (programInfo.endTime - programInfo.startTime);
+			Timer {
+				duration: 5000;
+				reapeat: true;
+				running: infoPlate.active;
+				triggeredOnStart: true;
+
+				onTriggered: {
+					var epgUpdated = infoPlate.epgUpdated;
+					categories.getProgramInfo(function(programInfo) {
+						if (programInfo)
+							epgUpdated(programInfo);
+						else
+							console.log("Failed to get program info");
+					});
+				}
+			}
+
+			onEpgUpdated(programInfo): {
+				infoPlate.programTitle = programInfo.title;
+				infoPlate.programTitle = programInfo.title;
+				infoPlate.programDescription = programInfo.description;
+
+				var now = new Date();
+				infoPlate.programInfo = programInfo.info;
+				infoPlate.programProgress = (now - programInfo.startTime) / (programInfo.endTime - programInfo.startTime);
+			}
+
+			onChannelListCalled: {
+				this.stop();
+				categories.start();
+			}
+
+			onChannelUp: {
+				console.log("onChannelUp called");
+			}
+
+			onChannelDown: {
+				console.log("onChannelDown called");
+			}
+
+			onOptionChoosed(text): {
+				if (text == "ТВ меню")
+					mainMenu.show();
+			}
 		}
 
-		onChannelListCalled: {
-			this.stop();
-			categories.start();
+		Text {
+			anchors.horizontalCenter: parent.horizontalCenter;
+			color: "white";
+			text: "Нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
+			opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
+
+			Behavior on opacity { Animation { duration: 300; } }
 		}
 
-		onChannelUp: {
-			console.log("onChannelUp called");
+		onBluePressed: { 
+			if (!categories.active)
+				infoPlate.show(10000); 
 		}
 
-		onChannelDown: {
-			console.log("onChannelDown called");
-		}
+		onGreenPressed: { categories.start(); }
+		onRedPressed: { tvGuide.show(); }
+	}
 
-		onOptionChoosed(text): {
-			//if (text == "ТВ меню")
-				//mainMenu.show();
+	MainMenu {
+		id: mainMenu;
+		visible: false;
+
+		onTvGuideChoosed: {
+			mainMenu.hide();
+			tvGuide.show();
 		}
 	}
 
-	Text {
-		anchors.horizontalCenter: parent.horizontalCenter;
-		color: "white";
-		text: "Нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
-		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
-
-		Behavior on opacity { Animation { duration: 300; } }
+	TVGuide {
+		id: tvGuide;
+		visible: false;
+		protocol: proto;
 	}
-
-	//MainMenu {
-		//id: mainMenu;
-		//visible: false;
-	//}
 
 	Mouse {
 		x: area.mouseX - 74;
 		y: area.mouseY - 41;
 		z: 10;
 	}
-
-	onBluePressed: { 
-		if (!categories.active)
-			infoPlate.show(10000); 
-	}
-
-	onGreenPressed: { categories.start(); }
 }

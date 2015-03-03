@@ -55,11 +55,14 @@ Item {
 			anchors.top: menuOptions.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
-			anchors.bottom: parent.bottom;
+			anchors.bottom: mainMenuFooter.top;
+			anchors.bottomMargin: 20;
 			currentIndex: menuOptions.currentIndex;
 
 			RecomendedPage {
 				anchors.fill: parent;
+
+				onFocusReturned: { menuOptions.forceActiveFocus(); }
 
 				onRecomendedItemChoosed(text): {
 					if (text == "ТВ гид")
@@ -75,6 +78,34 @@ Item {
 
 			onUpPressed: { menuOptions.forceActiveFocus(); }
 		}
+
+		Item {
+			id: mainMenuFooter;
+			height: 20;
+			anchors.bottom: parent.bottom;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+
+			ListModel {
+				id: mainMenuOptionsModel;
+				property string text;
+				property string source;
+
+				ListElement { text: "Выход"; source: "res/exit.png"; }
+			}
+
+			Options {
+				id: mainMenuOptions;
+				model: mainMenuOptionsModel;
+
+				onUpPressed: { optionsPageStack.forceActiveFocus(); }
+
+				onOptionChoosed(text): {
+					if (text == "Выход")
+						mainMenuProto.hide();
+				}
+			}
+		}
 	}
 
 	show: {
@@ -82,12 +113,7 @@ Item {
 		this.forceActiveFocus();
 	}
 
+	onBackPressed: { mainMenuProto.hide(); }
 	hide: { this.visible = false; }
-
-	onLeftPressed: {
-		console.log("LLLLL");
-		this.visible = false;
-	}
-
 	onCompleted: { menuOptions.forceActiveFocus(); }
 }

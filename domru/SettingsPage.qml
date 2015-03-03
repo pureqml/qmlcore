@@ -1,4 +1,6 @@
 Item {
+	id: settingsPageProto;
+	signal focusReturned;
 	anchors.fill: parent;
 
 	Rectangle {

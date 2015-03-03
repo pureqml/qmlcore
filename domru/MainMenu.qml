@@ -1,4 +1,6 @@
 Item {
+	id: mainMenuProto;
+	signal tvGuideChoosed;
 	anchors.fill: renderer;
 
 	Rectangle {
@@ -56,7 +58,17 @@ Item {
 			anchors.bottom: parent.bottom;
 			currentIndex: menuOptions.currentIndex;
 
-			RecomendedPage { anchors.fill: parent; }
+			RecomendedPage {
+				anchors.fill: parent;
+
+				onRecomendedItemChoosed(text): {
+					if (text == "ТВ гид")
+						mainMenuProto.tvGuideChoosed();
+					else if (text == "Телевидение")
+						mainMenuProto.hide();
+				}
+			}
+
 			VideoPage { anchors.fill: parent; }
 			NewsPage { anchors.fill: parent; }
 			SettingsPage { anchors.fill: parent; }
@@ -68,6 +80,13 @@ Item {
 	show: {
 		this.visible = true;
 		this.forceActiveFocus();
+	}
+
+	hide: { this.visible = false; }
+
+	onLeftPressed: {
+		console.log("LLLLL");
+		this.visible = false;
 	}
 
 	onCompleted: { menuOptions.forceActiveFocus(); }

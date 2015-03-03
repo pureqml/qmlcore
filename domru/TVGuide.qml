@@ -350,6 +350,11 @@ Item {
 		Behavior on x { Animation { duration: 300; } }
 	}
 
+	show: {
+		this.visible = true;
+		dateView.forceActiveFocus();
+	}
+
 	onCompleted: {
 		if (this.visible)
 			dateView.currentIndex = 2;

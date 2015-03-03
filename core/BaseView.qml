@@ -141,6 +141,7 @@ Item {
 	onContentXChanged: { this.content.x = -value; }
 	onContentYChanged: { this.content.y = -value; }
 
+	onRecursiveVisibleChanged: { this._layout() }
 	onBoxChanged: { this._layout() }
 	onCompleted: { this._attach(); this._layout() }
 }

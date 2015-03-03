@@ -943,6 +943,9 @@ exports._setup = function() {
 
 
 	_globals.core.ListView.prototype._layout = function() {
+		if (!this.recursiveVisible)
+			return
+
 		var model = this.model;
 		if (!model)
 			return
@@ -1042,6 +1045,9 @@ exports._setup = function() {
 	_globals.core.GridView.prototype.FlowTopToBottom	= 1
 
 	_globals.core.GridView.prototype._layout = function() {
+		if (!this.recursiveVisible)
+			return
+
 		var model = this.model;
 		if (!model)
 			return

@@ -16,7 +16,7 @@ Item {
 			var startTime = Math.round(new Date().getTime() / 1000);
 			var endTime = startTime;
 			startTime -= 2 * 24 * 3600;
-			endTime += 7 * 24 * 3600;
+			endTime += 5 * 24 * 3600;
 
 			var options = {
 				select: 'title,start,duration',
@@ -95,7 +95,17 @@ Item {
 			}
 
 			onDownPressed: { tvGuideChannels.forceActiveFocus(); }
-			onCurrentIndexChanged: { this._get("tvGuideChannels").shift = this.currentIndex * 24 * 360; }
+
+			onCurrentIndexChanged: {
+				this._get("tvGuideChannels").shift = this.currentIndex * 24 * 360;
+
+				var curMin = new Date().getMinutes();
+				var min = curMin > 30 ? 0 : 30;
+
+				curMin = curMin ? curMin : 60;
+				this._get("timeLineList").shift = (30 - Math.abs(curMin - min) % 60) * 6 - 90;
+				timeLineList.contentX = this.currentIndex * 24 * 360 + this._get("timeLineList").shift;
+			}
 		}
 
 		Item {
@@ -129,10 +139,49 @@ Item {
 				anchors.right: parent.right;
 				anchors.leftMargin: tvGuideChannels.spacing;
 				color: headChannelsRect.color;
-			}
+				clip: true;
 
-			//ListView {
-			//}
+				ListView {
+					id: timeLineList;
+					property int shift;
+					anchors.fill: parent;
+					orientation: ListView.Horizontal;
+					focus: false;
+					contentFollowsCurrentItem: false;
+					model: ListModel {
+						onCompleted: {
+							var daysBefore = 2;
+							var daysAfter = 5;
+							var hours = new Date().getHours();
+							var min = new Date().getMinutes();
+
+							if (min > 30) {
+								++hours;
+								min = 0;
+							} else if (min) {
+								min = 30;
+							}
+
+							for (var i = 0; i < (daysAfter + daysBefore + 1) * 48; ++i) {
+								this.append({ text: hours + ":" + (min ? min : ("0" + min)) });
+								min = min == 0 ? 30 : 0;
+								if (!min)
+									hours = (hours + 1) % 24;
+							}
+						}
+					}
+					delegate: Item {
+						width: 180;	// 6 * 30 = 180, 6pix per minute.
+						height: parent.height;
+
+						Text {
+							anchors.centerIn: parent;
+							text: model.text;
+							color: "#aaa";
+						}
+					}
+				}
+			}
 		}
 
 		Text {
@@ -227,6 +276,7 @@ Item {
 						clip: true;
 						border.color: "#fff";
 						border.width: parent.activeFocus && activeFocus ? 5 : 0;
+						opacity: model.empty ? 0.6 : 1.0;
 
 						EllipsisText {
 							anchors.left: parent.left;
@@ -246,6 +296,17 @@ Item {
 					--this.currentIndex;
 			}
 		}
+	}
+
+	Rectangle {
+		id: currentTimeLine;
+		width: 4;
+		anchors.top: tvGuideChannels.top;
+		anchors.bottom: tvGuideChannels.bottom;
+		x: 80 + headChannelsRect.width + timeLineList.contentX - 2 * 24 * 360 - timeLineList.shift;
+		color: "#f00";
+
+		Behavior on x { Animation { duration: 300; } }
 	}
 
 	onCompleted: {

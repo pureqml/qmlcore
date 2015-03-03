@@ -22,7 +22,4 @@ MouseArea {
 	}
 
 	onClicked: { this.triggered(); }
-	onEntered: {
-		console.log("imageMouseArea onEntered")
-	}
 }

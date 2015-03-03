@@ -192,10 +192,13 @@ Activity {
 			anchors.bottomMargin: 12;
 			baseSource: "res/arrowUp.png";
 			focusedSource: "res/arrowUpFocused.png";
+			opacity: channelPanel.activeFocus ? 1 : 0;
 
 			onTriggered: {
 				infoPlateItem.channelUp();
 			}
+
+			Behavior on opacity { Animation { duration: 300; } }
 		}
 
 		FocusableImage {
@@ -204,10 +207,13 @@ Activity {
 			anchors.topMargin: 12;
 			baseSource: "res/arrowDown.png";
 			focusedSource: "res/arrowDownFocused.png";
+			opacity: channelPanel.activeFocus ? 1 : 0;
 
 			onTriggered: {
 				infoPlateItem.channelDown();
 			}
+
+			Behavior on opacity { Animation { duration: 300; } }
 		}
 
 		GreenButton {
@@ -398,12 +404,13 @@ Activity {
 			}
 		}
 
-		Item {
+		MouseArea {
 			id: listContext;
 			anchors.left: tvGuideContext.right;
 			anchors.leftMargin: 20;
 			height: 20;
 			width: height + contextText.paintedWidth + 10;
+		 	hoverEnabled: recursiveVisible;
 
 			Rectangle {
 				id: listRect;
@@ -422,22 +429,13 @@ Activity {
 				anchors.left: listRect.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 8;
-				color: listContextMouse.containsMouse && listContext.recursiveVisible ? "#5f6": "#fff";
+				color: parent.containsMouse ? "#5f6": "#fff";
 				text: "Список каналов (F2)";
 
 				Behavior on color  { ColorAnimation { duration: 200; } }
 			}
 
-			MouseArea {
-				id: listContextMouse;
-				anchors.fill: parent;
-				anchors.margins: -10;
-				hoverEnabled: true;
-
-				onClicked: { 
-					infoPlateItem.channelListCalled(); 
-				}
-			}
+			onClicked: { infoPlateItem.channelListCalled(); }
 		}
 
 		// ListModel {

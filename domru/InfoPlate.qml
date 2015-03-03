@@ -487,5 +487,23 @@ Activity {
 		}
 	}
 
+	fillChannelInfo(channelInfo): {
+		infoPlateItem.isHd = channelInfo.isHd;
+		infoPlateItem.is3d = channelInfo.is3d;
+		infoPlateItem.title = channelInfo.title;
+		infoPlateItem.logo = channelInfo.logo;
+		infoPlateItem.channelNumber = channelInfo.number;
+	}
+
+	fillProgramInfo(programInfo): {
+		infoPlateItem.programTitle = programInfo.title;
+		infoPlateItem.programTitle = programInfo.title;
+		infoPlateItem.programDescription = programInfo.description;
+
+		var now = new Date();
+		infoPlateItem.programInfo = programInfo.info;
+		infoPlateItem.programProgress = (now - programInfo.startTime) / (programInfo.endTime - programInfo.startTime);
+	}
+
 	Behavior on opacity	{ Animation { duration: 300; } }
 }

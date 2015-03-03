@@ -355,7 +355,7 @@ Item {
 		dateView.forceActiveFocus();
 	}
 
-	onCompleted: {
+	onVisibleChanged: {
 		if (this.visible)
 			dateView.currentIndex = 2;
 	}

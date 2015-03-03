@@ -17,4 +17,9 @@ Item {
 		else
 			this.exited()
 	}
+
+	onRecursiveVisibleChanged: {
+		if (!value)
+			this.containsMouse = false
+	}
 }

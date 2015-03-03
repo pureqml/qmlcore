@@ -31,7 +31,7 @@ Item {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
-		spacing: 0;
+		spacing: 10;
 		delegate: OptionsDelegate { width: parent.width; height: recomendedProto.height / 3; }
 		model: ListModel {
 			property string text;
@@ -47,7 +47,7 @@ Item {
 
 	Rectangle {
 		id: smallRecomendedAdPanel;
-		height: parent.height - recomendedOptions.contentHeight;
+		height: parent.height - recomendedOptions.contentHeight - recomendedOptions.spacing;
 		anchors.left: recomendedOptions.left;
 		anchors.right: recomendedOptions.right;
 		anchors.bottom: parent.bottom;

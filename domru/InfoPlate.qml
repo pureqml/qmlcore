@@ -1,6 +1,5 @@
 Activity {
 	id: infoPlateItem;
-	signal optionChoosed;
 	property bool isHd: false;
 	property bool is3d: false;
 	property int channelNumber: 0;
@@ -10,12 +9,15 @@ Activity {
 	property string programDescription;
 	property string programInfo;
 	property real programProgress;
+	property Protocol protocol;
 	anchors.fill: parent;
 	opacity: active ? 1.0 : 0.0;
 	visible: active;
 	name: "infoPlate";
 
+	signal optionChoosed;
 	signal channelListCalled;
+	signal tvGuideCalled;
 	signal channelUp;
 	signal channelDown;
 
@@ -377,10 +379,11 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 
-		Item {
+		MouseArea {
 			id: tvGuideContext;
 			height: 20;
 			width: height + contextText.paintedWidth + 10;
+			hoverEnabled: recursiveVisible;
 
 			Rectangle {
 				id: tvRect;
@@ -399,9 +402,13 @@ Activity {
 				anchors.left: tvRect.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 8;
-				color: "#fff";
+				color: parent.containsMouse ? "#f00": "#fff";
 				text: "ТВ Гид";
+
+				Behavior on color  { ColorAnimation { duration: 200; } }
 			}
+
+			onClicked: { infoPlateItem.tvGuideCalled(); }
 		}
 
 		MouseArea {

@@ -214,5 +214,15 @@ Activity {
 		})
 	}
 
+	channelUp: {
+		channelView.currentIndex--;
+		channelView.switchToChannel();
+	}
+
+	channelDown: {
+		channelView.currentIndex++;
+		channelView.switchToChannel();
+	}
+
 	Behavior on opacity { Animation { duration: 300; } }
 }

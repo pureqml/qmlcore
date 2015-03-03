@@ -103,9 +103,49 @@ Item {
 				var min = curMin > 30 ? 0 : 30;
 
 				curMin = curMin ? curMin : 60;
-				this._get("timeLineList").shift = (30 - Math.abs(curMin - min) % 60) * 6 - 90;
+				min = min ? min : 60;
+				console.log("shift: " + (30 - (min - curMin)));
+				this._get("timeLineList").shift = (30 - (min - curMin)) * 6 - 90;
 				timeLineList.contentX = this.currentIndex * 24 * 360 + this._get("timeLineList").shift;
 			}
+		}
+
+		Image {
+			source: "res/nav_up.png";
+			anchors.bottom: programmsHead.top;
+			anchors.horizontalCenter: tvGuideChannels.horizontalCenter;
+			opacity: tvGuideChannels.currentIndex ? 1.0 : 0.0;
+
+			Behavior on opacity { Animation { duration: 300; } }
+		}
+
+		Image {
+			source: "res/nav_down.png";
+			anchors.top: tvGuideChannels.bottom;
+			anchors.horizontalCenter: tvGuideChannels.horizontalCenter;
+			opacity: tvGuideChannels.currentIndex < tvGuideChannels.count - 1 ? 1.0 : 0.0;
+
+			Behavior on opacity { Animation { duration: 300; } }
+		}
+
+		Image {
+			source: "res/nav_left.png";
+			anchors.right: tvGuideChannels.left;
+			anchors.verticalCenter: tvGuideChannels.verticalCenter;
+			visible: tvGuideChannels.count; 
+			opacity: dateView.currentIndex ? 1.0 : 0.0;
+
+			Behavior on opacity { Animation { duration: 300; } }
+		}
+
+		Image {
+			source: "res/nav_right.png";
+			anchors.left: tvGuideChannels.right;
+			anchors.verticalCenter: tvGuideChannels.verticalCenter;
+			visible: tvGuideChannels.count; 
+			opacity: dateView.currentIndex < dateView.count - 1 ? 1.0 : 0.0;
+
+			Behavior on opacity { Animation { duration: 300; } }
 		}
 
 		Item {
@@ -249,7 +289,7 @@ Item {
 
 				ListView {
 					id: brickWall;
-					height: 60;
+					height: parent.height + spacing * 2;
 					anchors.left: channelRect.right;
 					anchors.right: parent.right;
 					anchors.top: parent.top;
@@ -305,6 +345,7 @@ Item {
 		anchors.bottom: tvGuideChannels.bottom;
 		x: 80 + headChannelsRect.width + timeLineList.contentX - 2 * 24 * 360 - timeLineList.shift;
 		color: "#f00";
+		visible: tvGuideChannels.count;
 
 		Behavior on x { Animation { duration: 300; } }
 	}

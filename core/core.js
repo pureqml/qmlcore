@@ -797,7 +797,7 @@ exports._setup = function() {
 		tmp.onload = function() {
 			image.paintedWidth = tmp.naturalWidth
 			image.paintedHeight = tmp.naturalHeight
-			log(tmp.naturalWidth, tmp.naturalHeight)
+			//log(tmp.naturalWidth, tmp.naturalHeight)
 		}
 		tmp.src = this.source
 		this.status = this.Ready;

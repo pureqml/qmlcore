@@ -1,4 +1,4 @@
-Item {
+Activity {
 	id: tvGuideProto;
 	property Protocol protocol;
 	anchors.fill: renderer;
@@ -350,13 +350,15 @@ Item {
 		Behavior on x { Animation { duration: 300; } }
 	}
 
-	show: {
-		this.visible = true;
-		dateView.forceActiveFocus();
+	onActiveChanged: {
+		if (!this.active)
+			this.visible = false;
 	}
 
 	onVisibleChanged: {
-		if (this.visible)
+		if (this.visible) {
 			dateView.currentIndex = 2;
+			dateView.forceActiveFocus();
+		}
 	}
 }

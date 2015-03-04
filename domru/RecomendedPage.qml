@@ -27,7 +27,7 @@ Item {
 
 	ListView {
 		id: recomendedOptions;
-		width: 250;
+		width: 200;
 		anchors.left: recomendedVideoPreview.right;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
@@ -69,7 +69,6 @@ Item {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
-		width: 160;
 		source: "res/ad1.png";
 	}
 

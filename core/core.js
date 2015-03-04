@@ -28,6 +28,13 @@ if ('Common' in window) {
 	log("loaded")
 }
 
+if (navigator.userAgent.indexOf('Android') >= 0) {
+	log = function() {
+		var args = Array.prototype.slice.call(arguments)
+		console.log("[QML] " + args.join(" "))
+	}
+}
+
 var keyCodes = {
 	// SmartTV keys. TODO: make it platform depending.
 	108: 'Red',

@@ -1,4 +1,4 @@
-Item {
+Activity {
 	id: mainMenuProto;
 	signal tvGuideChoosed;
 	anchors.fill: renderer;
@@ -52,11 +52,10 @@ Item {
 
 		PageStack {
 			id: optionsPageStack;
+			height: 440;
 			anchors.top: menuOptions.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
-			anchors.bottom: mainMenuFooter.top;
-			anchors.bottomMargin: 20;
 			currentIndex: menuOptions.currentIndex;
 
 			RecomendedPage {
@@ -68,7 +67,7 @@ Item {
 					if (text == "ТВ гид")
 						mainMenuProto.tvGuideChoosed();
 					else if (text == "Телевидение")
-						mainMenuProto.hide();
+						mainMenuProto.stop();
 				}
 			}
 
@@ -102,18 +101,28 @@ Item {
 
 				onOptionChoosed(text): {
 					if (text == "Выход")
-						mainMenuProto.hide();
+						mainMenuProto.stop();
 				}
 			}
 		}
 	}
 
-	show: {
-		this.visible = true;
-		this.forceActiveFocus();
+	Rectangle {
+		width: 1280;
+		height: 720;
+		anchors.top: renderer.top;
+		anchors.left: renderer.left;
+		color: "#0000";
+		border.color: "#f00";
+		border.width: 2;
 	}
 
-	onBackPressed: { mainMenuProto.hide(); }
-	hide: { this.visible = false; }
-	onCompleted: { menuOptions.forceActiveFocus(); }
+	onActiveChanged: {
+		if (!this.active) {
+			this.visible = false;
+		} else {
+			menuOptions.currentIndex = 0;
+			menuOptions.forceActiveFocus();
+		}
+	}
 }

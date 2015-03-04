@@ -13,7 +13,7 @@ Item {
 	MouseArea {
 		id: area;
 		anchors.fill: renderer;
-		hoverEnabled: !categories.active && !tvGuide.visible && !mainMenu.visible;
+		hoverEnabled: !categories.active && !tvGuide.active && !mainMenu.active;	//TODO: implement method in Activity for considered cases.
 
 		onMouseXChanged: { 
 			if (this.hoverEnabled) 
@@ -28,7 +28,6 @@ Item {
 
 	Item {
 		anchors.fill: parent;
-		visible: !mainMenu.visible;	//TODO: use some kind of activity manager instead.
 
 		CategoriesList {
 			id: categories;
@@ -87,15 +86,17 @@ Item {
 
 			onTvGuideCalled: {
 				this.stop();
-				tvGuide.show();
+				tvGuide.start();
 			}
 
 			onChannelUp: { categories.channelUp(); }
 			onChannelDown: { categories.channelDown(); }
 
 			onOptionChoosed(text): {
-				if (text == "ТВ меню")
-					mainMenu.show();
+				if (text == "ТВ меню") {
+					infoPlate.stop();
+					mainMenu.start();
+				}
 			}
 		}
 
@@ -114,8 +115,12 @@ Item {
 				infoPlate.show(10000); 
 		}
 
+		onRedPressed: {
+			infoPlate.stop();
+			tvGuide.start();
+		}
+
 		onGreenPressed: { categories.start(); }
-		onRedPressed: { tvGuide.show(); }
 	}
 
 	MainMenu {
@@ -123,8 +128,8 @@ Item {
 		visible: false;
 
 		onTvGuideChoosed: {
-			mainMenu.hide();
-			tvGuide.show();
+			mainMenu.stop();
+			tvGuide.start();
 		}
 	}
 

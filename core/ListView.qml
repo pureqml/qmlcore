@@ -4,10 +4,22 @@ BaseView {
 
 	move(dx, dy): {
 		var horizontal = this.orientation == this.Horizontal
-		if (horizontal)
-			this.contentX += dx
-		else
-			this.contentY += dy
+		var x, y
+		if (horizontal && this.contentWidth > this.width) {
+			x = this.contentX + dx
+			if (x < 0)
+				x = 0
+			else if (x > this.contentWidth - this.width)
+				x = this.contentWidth - this.width
+			this.contentX = x
+		} else if (!horizontal && this.contentHeight > this.height) {
+			y = this.contentY + dy
+			if (y < 0)
+				y = 0
+			else if (y > this.contentHeight - this.height)
+				y = this.contentHeight - this.height
+			this.contentY = y
+		}
 	}
 
 	onKeyPressed: {

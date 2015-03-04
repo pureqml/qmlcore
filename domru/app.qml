@@ -110,18 +110,18 @@ Item {
 		}
 	}
 
-		onBluePressed: { 
-			if (!categories.active)
-				infoPlate.show(10000); 
-		}
-
-		onRedPressed: {
-			infoPlate.stop();
-			tvGuide.start();
-		}
-
-		onGreenPressed: { categories.start(); }
+	onBluePressed: {
+		log("onBluePressed");
+		if (!categories.active)
+			infoPlate.show(10000);
 	}
+
+	onRedPressed: {
+		infoPlate.stop();
+		tvGuide.start();
+	}
+
+	onGreenPressed: { categories.start(); }
 
 	MainMenu {
 		id: mainMenu;

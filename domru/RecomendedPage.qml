@@ -67,7 +67,6 @@ Item {
 		id: recomendedAdPanel;
 		anchors.left: recomendedOptions.right;
 		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
 		source: "res/ad1.png";
 	}

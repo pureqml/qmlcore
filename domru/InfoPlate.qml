@@ -479,7 +479,13 @@ Activity {
 
 			onUpPressed: { timePanel.forceActiveFocus(); }
 			onCurrentIndexChanged: { hideTimer.restart(); }
-			onOptionChoosed(text): { infoPlateItem.optionChoosed(text); }
+
+			onOptionChoosed(text): {
+				if (text == "Выход")
+					infoPlateItem.stop();
+				else
+					infoPlateItem.optionChoosed(text);
+			}
 		}
 	}
 

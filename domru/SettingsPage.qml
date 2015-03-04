@@ -3,15 +3,12 @@ Item {
 	signal focusReturned;
 	anchors.fill: parent;
 
-	Rectangle {
+	Image {
 		id: infoPanel;
 		anchors.left: parent.left;
 		anchors.top: parent.top;
-		width: 200;
-		height: optionsGrid.contentHeight;
-		color: "#000";
-		opacity: 0.7;
-		focus: false;
+		anchors.leftMargin: 10;
+		source: "res/ad2.png";
 	}
 
 	GridView {
@@ -41,13 +38,10 @@ Item {
 		}
 	}
 
-	Rectangle {
+	Image {
 		id: optionsAdPanel;
 		anchors.left: optionsGrid.right;
 		anchors.top: parent.top;
-		width: 200;
-		height: optionsGrid.contentHeight;
-		color: "#ff0";
-		focus: false;
+		source: "res/ad1.png";
 	}
 }

@@ -10,7 +10,7 @@ Item {
 			this.visible = true;
 			this.active = true;
 			this.forceActiveFocus();
-			console.log ("Activity started: ", this.name);
+			log ("Activity started: ", this.name);
 		}
 	}
 
@@ -18,7 +18,7 @@ Item {
 		if (this.active) {
 			this.active = false;
 			this.stopped();
-			console.log ("Activity stopped: ", this.name);
+			log ("Activity stopped: ", this.name);
 		}
 	}
 

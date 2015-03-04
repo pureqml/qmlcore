@@ -6,7 +6,7 @@ ListModel {
 		this._originChangedCallback = (function() {
 			this.reset()
 			for(var i = 0; i < this._rows.length; ++i)
-				try { this.prepare(this._rows[i]) } catch(ex) { console.log("prepare failed", ex, ex.stack) }
+				try { this.prepare(this._rows[i]) } catch(ex) { log("prepare failed", ex, ex.stack) }
 		}).bind(this)
 		this.protocol.onChanged('originList', this._originChangedCallback)
 	}
@@ -25,7 +25,7 @@ ListModel {
 	setList(list): {
 		this.clear()
 		if (!list || !list.channels) {
-			console.log("setList called with empty list.channel", list)
+			log("setList called with empty list.channel", list)
 			return
 		}
 		this.subscribeOrigins()
@@ -36,7 +36,7 @@ ListModel {
 			})
 			assets.forEach(
 				function(asset) {
-					try { self.prepare(asset) } catch(ex) { console.log("prepare failed", ex, ex.stack) }
+					try { self.prepare(asset) } catch(ex) { log("prepare failed", ex, ex.stack) }
 					self.append(asset)
 				}
 			)
@@ -60,7 +60,7 @@ ListModel {
 		res.hlsStreamId = id;
 		res.pictureId = pictureId
 		res.pictureUrl = pictureUrl
-		//console.log("PREPARE", res.hlsId, res.pictureId, res.pictureUrl)
+		//log("PREPARE", res.hlsId, res.pictureId, res.pictureUrl)
 	}
 
 	getUrl(idx, callback): {

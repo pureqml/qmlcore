@@ -8,7 +8,7 @@ Object {
 
 	onValueChanged: {
 		this.init()
-		//console.log("localStorage: write", this.name, this.value)
+		//log("localStorage: write", this.name, this.value)
 		this._storage.setItem(this.name, this.value)
 	}
 
@@ -17,7 +17,7 @@ Object {
 		var value = this.name? this._storage.getItem(this.name): "";
 		if (value !== null && value !== undefined)
 			this.value = value
-		//console.log("localStorage: read", this.name, this.value)
+		//log("localStorage: read", this.name, this.value)
 	}
 
 	init: {

@@ -48,5 +48,5 @@ Item {
     }
 
 	removeChar: { textEditProto.text = textEditProto.text.slice(0, textEditProto.text.length - 1); }
-	onTextChanged: { console.log("TextEdit::TextChanged: ", this.text); }
+	onTextChanged: { log("TextEdit::TextChanged: ", this.text); }
 }

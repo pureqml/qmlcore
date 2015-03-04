@@ -11,7 +11,7 @@ Activity {
 		protocol: channelList.protocol;
 
 		onCountChanged: {
-			console.log("loaded " + this.count + " channel lists, using 0");
+			log("loaded " + this.count + " channel lists, using 0");
 			channelModel.setList(this.get(0));
 		}
 	}
@@ -180,10 +180,10 @@ Activity {
 				}
 			}
 			if (!currProgram) {
-				console.log("Failed to find current programm.");
+				log("Failed to find current programm.");
 				return;
 			}
-			console.log("Current program: ", currProgram.title);
+			log("Current program: ", currProgram.title);
 			var genres = currProgram.program.genres[0].name;
 			for (var i = 1; i < currProgram.program.genres.length; ++i)
 				genres += ", " + currProgram.program.genres[i].name;

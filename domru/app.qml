@@ -37,7 +37,7 @@ Item {
 			anchors.fill: parent;
 
 			onActivated(url): {
-				console.log("got url", url)
+				log("got url", url)
 				videoPlayer.source = url
 				videoPlayer.play();
 			}
@@ -73,7 +73,7 @@ Item {
 					if (programInfo)
 						epgUpdated(programInfo);
 					else
-						console.log("Failed to get program info");
+						log("Failed to get program info");
 				});
 			}
 

@@ -23,14 +23,14 @@ Item {
 		Item {
 			Item {
 				onRecursiveVisibleChanged: {
-					console.log("RECURSIVE VISIBILITY", this.recursiveVisible)
+					log("RECURSIVE VISIBILITY", this.recursiveVisible)
 				}
 			}
 		}
 	}
 
 	onSelectPressed: {
-		console.log("SELECT RV")
+		log("SELECT RV")
 		visibilityTest.visible = !visibilityTest.visible
 	}
 
@@ -103,7 +103,7 @@ Item {
 		ListElement { type: "Cat"; age: 5; }
 
 		onCompleted: {
-			console.log("hello", this.count);
+			log("hello", this.count);
 		}
 	}
 

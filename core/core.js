@@ -10,22 +10,22 @@ if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 	_globals.core.vendor = "samsung"
 
-	console.log = function() {
+	log = function() {
 		var args = Array.prototype.slice.call(arguments)
 		alert("[QML] " + args.join(" "))
 	}
 
-	console.log("loading")
+	log("loading")
 	widgetAPI = new window.Common.API.Widget() // Creates Common module
-	console.log("widget ok")
+	log("widget ok")
 	tvKey = new window.Common.API.TVKeyValue()
-	console.log("tv ok")
+	log("tv ok")
 	pluginAPI = new window.Common.API.Plugin()
-	console.log("plugin ok, sending ready")
+	log("plugin ok, sending ready")
 	widgetAPI.sendReadyEvent() // Sends 'ready' message to the Application Manager
-	console.log("registering keys")
+	log("registering keys")
 	pluginAPI.registFullWidgetKey()
-	console.log("loaded")
+	log("loaded")
 }
 
 var keyCodes = {
@@ -145,7 +145,7 @@ _globals.core.Object.prototype.onPressed = function (name, callback) {
 _globals.core.Object.prototype._update = function(name, value) {
 	if (name in this._changedHandlers) {
 		var handlers = this._changedHandlers[name];
-		handlers.forEach(function(callback) { try { callback(value) } catch(ex) { console.log("on " + name + " changed callback failed: ", ex, ex.stack) }})
+		handlers.forEach(function(callback) { try { callback(value) } catch(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) }})
 	}
 }
 
@@ -161,7 +161,7 @@ _globals.core.Object.prototype._emitSignal = function(name) {
 	args.shift();
 	if (name in this._signalHandlers) {
 		var handlers = this._signalHandlers[name];
-		handlers.forEach(function(callback) { try { callback.apply(this, args) } catch(ex) { console.log("signal " + name + " handler failed:", ex, ex.stack) } });
+		handlers.forEach(function(callback) { try { callback.apply(this, args) } catch(ex) { log("signal " + name + " handler failed:", ex, ex.stack) } });
 	}
 }
 
@@ -174,7 +174,7 @@ _globals.core.Object.prototype._get = function (name) {
 			return object._local[name];
 		object = object.parent;
 	}
-	console.log(name, this);
+	log(name, this);
 	throw ("invalid property requested: '" + name + "' in context of " + this);
 }
 
@@ -206,7 +206,7 @@ exports._setup = function() {
 		if (!this.running)
 			return;
 
-		//console.log("starting timer", this.interval, this.repeat);
+		//log("starting timer", this.interval, this.repeat);
 		var self = this;
 		if (this.repeat)
 			this._interval = setInterval(function() { self.triggered(); }, this.interval);
@@ -244,7 +244,7 @@ exports._setup = function() {
 			this.r = 255
 			this.g = 0
 			this.b = 255
-			console.log("invalid color specification: " + value)
+			log("invalid color specification: " + value)
 			return
 		}
 
@@ -439,11 +439,11 @@ exports._setup = function() {
 					try {
 						if (callback(key, event)) {
 							if (_globals.trace.key)
-								console.log("key", key, "handled by", this, new Error().stack)
+								log("key", key, "handled by", this, new Error().stack)
 							return true;
 						}
 					} catch(ex) {
-						console.log("on " + key + " handler failed:", ex, ex.stack)
+						log("on " + key + " handler failed:", ex, ex.stack)
 					}
 				}
 			}
@@ -455,17 +455,17 @@ exports._setup = function() {
 					try {
 						if (callback(key, event)) {
 							if (_globals.trace.key)
-								console.log("key", key, "handled by", this, new Error().stack)
+								log("key", key, "handled by", this, new Error().stack)
 							return true
 						}
 					} catch(ex) {
-						console.log("onKeyPressed handler failed:", ex, ex.stack)
+						log("onKeyPressed handler failed:", ex, ex.stack)
 					}
 				}
 			}
 		}
 		else {
-			console.log("unhandled key", event.which);
+			log("unhandled key", event.which);
 		}
 		return false;
 	}
@@ -784,7 +784,7 @@ exports._setup = function() {
 		tmp.onload = function() {
 			image.paintedWidth = tmp.naturalWidth
 			image.paintedHeight = tmp.naturalHeight
-			console.log(tmp.naturalWidth, tmp.naturalHeight)
+			log(tmp.naturalWidth, tmp.naturalHeight)
 		}
 		tmp.src = this.source
 		this.status = this.Ready;
@@ -855,7 +855,7 @@ exports._setup = function() {
 		var model = this.model
 		var items = this._items
 		if (this.trace)
-			console.log("reset", items.length, model.count)
+			log("reset", items.length, model.count)
 
 		if (items.length == model.count && items.length == 0)
 			return
@@ -878,7 +878,7 @@ exports._setup = function() {
 
 	_globals.core.BaseView.prototype._onRowsInserted = function(begin, end) {
 		if (this.trace)
-			console.log("rows inserted", begin, end)
+			log("rows inserted", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i)
 			items.splice(i, 0, null)
@@ -889,7 +889,7 @@ exports._setup = function() {
 
 	_globals.core.BaseView.prototype._onRowsChanged = function(begin, end) {
 		if (this.trace)
-			console.log("rows changed", begin, end)
+			log("rows changed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
 			var item = items[i];
@@ -903,7 +903,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.BaseView.prototype._onRowsRemoved = function(begin, end) {
-		console.log("rows removed", begin, end)
+		log("rows removed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
 			var item = items[i];
@@ -968,7 +968,7 @@ exports._setup = function() {
 		if (!n)
 			return
 
-		//console.log("layout " + n + " into " + w + "x" + h)
+		//log("layout " + n + " into " + w + "x" + h)
 		var created = false
 		var p = 0
 		var c = horizontal? this.content.x: this.content.y
@@ -1072,7 +1072,7 @@ exports._setup = function() {
 		if (!n)
 			return
 
-		//console.log("layout " + n + " into " + w + "x" + h)
+		//log("layout " + n + " into " + w + "x" + h)
 		var created = false
 		var x = 0, y = 0
 		var cx = this.content.x, cy = this.content.y
@@ -1159,7 +1159,7 @@ exports._setup = function() {
 		var win = $(window);
 		var w = win.width();
 		var h = win.height();
-		//console.log("window size: " + w + "x" + h);
+		//log("window size: " + w + "x" + h);
 
 		var body = $('body');
 		var div = $("<div id='renderer'></div>");
@@ -1181,7 +1181,7 @@ exports._setup = function() {
 		var self = this;
 		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
 
-		//console.log("context created");
+		//log("context created");
 	}
 
 	_globals.core.core.Context.prototype._onCompleted = function(callback) {
@@ -1202,7 +1202,7 @@ exports._setup = function() {
 	_globals.core.core.Context.prototype.start = function(name) {
 		var proto;
 		if (typeof name == 'string') {
-			//console.log('creating component...', name);
+			//log('creating component...', name);
 			var path = name.split('.');
 			proto = _globals;
 			for (var i = 0; i < path.length; ++i)
@@ -1245,7 +1245,7 @@ exports.addProperty = function(self, type, name) {
 		},
 		set: function(newValue) {
 			if (!self.getAnimation) {
-				console.log("bound unknown object", self)
+				log("bound unknown object", self)
 				throw "invalid object";
 			}
 			newValue = convert(newValue)

@@ -27,7 +27,7 @@ Object {
 			this.parent.failedRequests = []
 			var n = reqs.length
 			if (n) {
-				console.log("retrying " + n + " requests")
+				log("retrying " + n + " requests")
 				for(var i = 0; i < n; ++i)
 					reqs[i]()
 			}
@@ -36,7 +36,7 @@ Object {
 
 	checkResponse(url, res, request): {
 		if (!res.result) {
-			console.log("failed response " + url + " " + JSON.stringify(res))
+			log("failed response " + url + " " + JSON.stringify(res))
 			if (res.error.message.indexOf("token") > -1) {
 				this.authToken = ""; //next responses will go to pending
 				if (!this._pendingTokenRequests)
@@ -46,7 +46,7 @@ Object {
 				return false
 			}
 			if (res.error.message === 'no entitlement' && res.error.reason === 'invalid er_multiscreen_session_id') {
-				console.log("session expired")
+				log("session expired")
 				this.sessionId = ""
 				if (!this._pendingSessionRequests)
 					this._pendingSessionRequests = []
@@ -66,7 +66,7 @@ Object {
 			return;
 		if (url.charAt(0) === '/')
 			url = url.slice(1)
-		console.log("request", url, data)
+		log("request", url, data)
 		var self = this;
 		$.ajax({
 			url: self.baseUrl + url,
@@ -77,7 +77,7 @@ Object {
 			if (callback)
 				callback(res)
 		}).fail(function(xhr, status, err) {
-			console.log("ajax request failed: " + JSON.stringify(status) + " status: " + xhr.status + " text: " + xhr.responseText)
+			log("ajax request failed: " + JSON.stringify(status) + " status: " + xhr.status + " text: " + xhr.responseText)
 			if (callback)
 				callback({result: 0, error: { message: "ajax error"} })
 			self.error(status)
@@ -121,7 +121,7 @@ Object {
 			do_request()
 		else
 		{
-			console.log("no token, scheduling request " + url)
+			log("no token, scheduling request " + url)
 
 			if (!this._pendingTokenRequests)
 				this._pendingTokenRequests = []
@@ -147,7 +147,7 @@ Object {
 			do_request()
 		else
 		{
-			console.log("no session or token, scheduling request " + url)
+			log("no session or token, scheduling request " + url)
 
 			if (!this._pendingSessionRequests)
 				this._pendingSessionRequests = []
@@ -239,12 +239,12 @@ Object {
 		if (!this.authToken)
 			return
 		if (this._pendingTokenRequests) {
-			console.log("executing pending requests(token)")
+			log("executing pending requests(token)")
 			this._pendingTokenRequests.forEach(function(callback) { callback(); })
 		}
-		//this.requestWithToken("/er/multiscreen/status", {}, function(res) {console.log("multiscreen status", res); })
+		//this.requestWithToken("/er/multiscreen/status", {}, function(res) {log("multiscreen status", res); })
 		var self = this;
-		this.requestWithToken('/resource/get_origin_list/', {}, function(res) { self.originList = res.origins; console.log("origins", self.originList) })
+		this.requestWithToken('/resource/get_origin_list/', {}, function(res) { self.originList = res.origins; log("origins", self.originList) })
 	}
 
 	onSessionIdChanged: {
@@ -252,14 +252,14 @@ Object {
 			return
 
 		if (this._pendingSessionRequests) {
-			console.log("executing pending requests(session)")
+			log("executing pending requests(session)")
 			this._pendingSessionRequests.forEach(function(callback) { callback(); })
 		}
 	}
 
 	openSession: {
 		this.requestWithToken('/er/multiscreen/ottweb/session/open/', {}, (function(res) {
-			console.log("SESSION", res)
+			log("SESSION", res)
 			this.sessionIdStorage.value = res.session_id
 			this.sessionId = res.session_id
 		}).bind(this), 'POST')
@@ -268,13 +268,13 @@ Object {
 	requestNewToken: {
 		var self = this
 		self.getToken(this.clientId, this.deviceId, this.region, function(res) {
-			console.log("token", JSON.stringify(res))
+			log("token", JSON.stringify(res))
 			var authToken = res.token;
 			self.login(self.username, self.password, self.region, function(res) {
-				console.log("LOGIN", JSON.stringify(res));
+				log("LOGIN", JSON.stringify(res));
 				self.ssoKey = res.sso;
 				self.getSubscriberDeviceToken(authToken, self.ssoSystem, self.ssoKey, function(res) {
-					console.log("DEVICE TOKEN", JSON.stringify(res));
+					log("DEVICE TOKEN", JSON.stringify(res));
 					self.authToken = res.token;
 					self.authTokenStorage.value = res.token
 					self.openSession()

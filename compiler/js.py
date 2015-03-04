@@ -308,7 +308,7 @@ class generator(object):
 		self.imports[name] = data
 
 	def wrap(self, code):
-		return "(function() {\n'use strict';\nvar exports = {};\n%s\nreturn exports;\n} )" %code
+		return "(function() {\n'use strict';\nvar log = console.log.bind(console)\nvar exports = {};\n%s\nreturn exports;\n} )" %code
 
 	def find_component(self, package, name):
 		if name == "Object":

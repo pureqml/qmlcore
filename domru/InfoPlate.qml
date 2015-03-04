@@ -28,7 +28,7 @@ Activity {
 		running: true;
 
 		onTriggered: {
-			console.log("Infoplate hideTimer triggered");
+			log("Infoplate hideTimer triggered");
 			infoPlateItem.stop();
 		}
 	}

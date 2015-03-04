@@ -42,7 +42,6 @@ Item {
 				this.contentX = x + iw - w
 		} else {
 			if (ih > h) {
-				console.log(y, ih, h)
 				this.contentY = y - h / 2 + ih / 2
 				return
 			}
@@ -75,7 +74,6 @@ Item {
 
 	onFocusedChildChanged: {
 		var idx = this._items.indexOf(this.focusedChild)
-		//console.log("focused child", this.focusedChild, idx)
 		if (idx >= 0)
 			this.currentIndex = idx
 	}

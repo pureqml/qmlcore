@@ -39,5 +39,5 @@ Rectangle {
     }
 
     onSelectPressed: { this.triggered(); }
-    onTriggered: { console.log(button.text + " triggered"); }
+    onTriggered: { log(button.text + " triggered"); }
 }

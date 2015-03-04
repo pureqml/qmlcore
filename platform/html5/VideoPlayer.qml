@@ -7,7 +7,7 @@ Item {
 	}
 
 	onSourceChanged: {
-		console.log("source changed to", this.source)
+		log("source changed to", this.source)
 		this._player.attr('src', this.source)
 		if (this.autoPlay)
 			this.play()

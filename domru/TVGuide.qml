@@ -104,7 +104,7 @@ Activity {
 
 				curMin = curMin ? curMin : 60;
 				min = min ? min : 60;
-				console.log("shift: " + (30 - (min - curMin)));
+				log("shift: " + (30 - (min - curMin)));
 				this._get("timeLineList").shift = (30 - (min - curMin)) * 6 - 90;
 				timeLineList.contentX = this.currentIndex * 24 * 360 + this._get("timeLineList").shift;
 			}

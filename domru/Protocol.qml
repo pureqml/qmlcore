@@ -210,6 +210,9 @@ Object {
 		if (options && options.startTo)
 			query += this.getPrefix(query) + 'start_to=' + options.startTo;
 
+		if (options && options.category)
+			query += this.getPrefix(query) + 'category_id=' + options.category;
+
 		if (options && options.select)
 			query += this.getPrefix(query) + 'select=' + options.select;
 

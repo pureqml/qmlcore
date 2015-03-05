@@ -23,6 +23,9 @@ BaseView {
 	}
 
 	onKeyPressed: {
+		if (!this.handleNavigationKeys)
+			return false;
+
 		var horizontal = this.orientation == this.Horizontal
 		if (horizontal) {
 			if (key == 'Left') {

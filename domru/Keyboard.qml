@@ -58,6 +58,7 @@ Item {
 			height: 45;
 			orientation: ListView.Horizontal;
 			keyNavigationWraps: false;
+			handleNavigationKeys: false;
 			model: KeyboardRowModel {
 				parentModel: keyboardModel;
 				begin: model.index * 7;

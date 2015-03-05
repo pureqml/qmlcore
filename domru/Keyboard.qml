@@ -91,7 +91,7 @@ Item {
 
 			onRightPressed: {
 				if (this.currentIndex == this.count - 1)
-					event.accepted();
+					event.accepted = false;
 				else
 					++this.currentIndex;
 			}

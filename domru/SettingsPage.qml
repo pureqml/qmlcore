@@ -20,8 +20,8 @@ Item {
 		anchors.leftMargin: 10;
 		cellWidth: 210;
 		cellHeight: 230;
-		rows: 2;
-		columns: 3;
+		keyNavigationWraps: false;
+		handleNavigationKeys: false;
 		spacing: 10;
 		delegate: OptionsDelegate { }
 		model: ListModel {
@@ -36,6 +36,23 @@ Item {
 			ListElement { text: "Управление услугами"; icon: "res/settings.png"; }
 			ListElement { text: "Помощь"; icon: "res/settings.png"; }
 		}
+
+		onUpPressed: {
+			if (this.currentIndex < 3)
+				event.accepted = false;
+			else
+				this.currentIndex -= 3;
+		}
+
+		onDownPressed: {
+			if (this.currentIndex >= 3 && this.currentIndex < 6)
+				event.accepted = false;
+			else
+				this.currentIndex += 3;
+		}
+
+		onLeftPressed: { this.currentIndex--; }
+		onRightPressed: { this.currentIndex++; }
 	}
 
 	Image {

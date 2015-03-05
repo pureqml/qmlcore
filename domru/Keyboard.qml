@@ -109,6 +109,41 @@ Item {
 					this.currentIndex = keyboardProto.currentRow;
 			}
 		}
+
+		//TODO: Try something better this hardcode.
+		onDownPressed: {
+			if (keyboardModel.mode != 2 && this.currentIndex == this.count - 3) {
+				if (keyboardProto.currentRow == 3 || keyboardProto.currentRow == 4)
+					keyboardProto.currentRow = 3;
+				if (keyboardProto.currentRow == 5 || keyboardProto.currentRow == 6)
+					keyboardProto.currentRow = 4;
+			} else if (keyboardModel.mode != 2 && this.currentIndex == this.count - 2) {
+				if (keyboardProto.currentRow == 0 || keyboardProto.currentRow == 1)
+					keyboardProto.currentRow = 0;
+				if (keyboardProto.currentRow == 2 || keyboardProto.currentRow == 3)
+					keyboardProto.currentRow = 1;
+				if (keyboardProto.currentRow == 4)
+					keyboardProto.currentRow = 2;
+			}
+			this.currentIndex++;
+		}
+
+		onUpPressed: {
+			if (keyboardModel.mode != 2 && this.currentIndex == this.count - 1) {
+				if (keyboardProto.currentRow == 0)
+					keyboardProto.currentRow = 0;
+				if (keyboardProto.currentRow == 1)
+					keyboardProto.currentRow = 3;
+				if (keyboardProto.currentRow == 2)
+					keyboardProto.currentRow = 4;
+			} else if (keyboardModel.mode != 2 && this.currentIndex == this.count - 2) {
+				if (keyboardProto.currentRow == 3)
+					keyboardProto.currentRow = 3;
+				if (keyboardProto.currentRow == 4)
+					keyboardProto.currentRow = 5;
+			}
+			this.currentIndex--;
+		}
 	}
 
 	switchLanguage: { keyboardModel.switchLanguage(); }

@@ -28,6 +28,9 @@ BaseView {
 	}
 
 	onKeyPressed: {
+		if (!this.handleNavigationKeys)
+			return false;
+
 		var horizontal = this.flow == this.FlowLeftToRight
 		if (horizontal) {
 			switch(key) {

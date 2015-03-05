@@ -61,8 +61,6 @@ Activity {
 			RecomendedPage {
 				anchors.fill: parent;
 
-				onFocusReturned: { menuOptions.forceActiveFocus(); }
-
 				onRecomendedItemChoosed(text): {
 					if (text == "ТВ гид")
 						mainMenuProto.tvGuideChoosed();
@@ -76,6 +74,7 @@ Activity {
 			SettingsPage { anchors.fill: parent; }
 
 			onUpPressed: { menuOptions.forceActiveFocus(); }
+			onDownPressed: { mainMenuOptions.forceActiveFocus(); }
 		}
 
 		Item {

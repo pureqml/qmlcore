@@ -1,6 +1,5 @@
 Item {
 	id: recomendedProto;
-	signal focusReturned;
 	signal recomendedItemChoosed;
 	anchors.fill: parent;
 
@@ -32,6 +31,7 @@ Item {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
+		handleNavigationKeys: false;
 		spacing: 10;
 		delegate: OptionsDelegate { width: parent.width; height: recomendedProto.height / 3; }
 		model: ListModel {
@@ -47,7 +47,14 @@ Item {
 			if (this.currentIndex)
 				this.currentIndex--;
 			else
-				recomendedProto.focusReturned();
+				event.accepted = false;
+		}
+
+		onDownPressed: {
+			if (this.currentIndex < this.count - 1)
+				this.currentIndex++;
+			else
+				event.accepted = false;
 		}
 
 		onSelectPressed: { recomendedProto.recomendedItemChoosed(this.model.get(this.currentIndex).text); }

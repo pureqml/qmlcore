@@ -3,6 +3,16 @@ Activity {
 	property Protocol protocol;
 	anchors.fill: renderer;
 
+	ChannelListModel {
+		id: tvGuideChannelListModel;
+		protocol: tvGuideProto.protocol;
+
+		onCountChanged: {
+			if (this.count == 1)
+				tvGuideChannelModel.update();
+		}
+	}
+
 	Rectangle {
 		anchors.fill: parent;
 		color: "#000";
@@ -12,16 +22,22 @@ Activity {
 	ListModel {
 		id: tvGuideChannelModel;
 
-		onCompleted: {
+		update: {
+			if (!tvGuideChannelListModel.count) {
+				log("No channels list found.");
+				return;
+			}
 			var startTime = Math.round(new Date().getTime() / 1000);
 			var endTime = startTime;
 			startTime -= 2 * 24 * 3600;
 			endTime += 5 * 24 * 3600;
 
+			var cat = tvGuideLists.model.get(tvGuideLists.currentIndex);
 			var options = {
 				select: 'title,start,duration',
 				startFrom: startTime,
-				startTo: endTime
+				startTo: endTime,
+				category: cat.id
 			};
 
 			var model = this;
@@ -30,6 +46,8 @@ Activity {
 					model.append(result.channels[i]);
 			});
 		}
+
+		onCompleted: { this.update(); }
 	}
 
 	Item {
@@ -336,18 +354,77 @@ Activity {
 					--this.currentIndex;
 			}
 		}
-	}
 
-	Rectangle {
-		id: currentTimeLine;
-		width: 4;
-		anchors.top: tvGuideChannels.top;
-		anchors.bottom: tvGuideChannels.bottom;
-		x: 80 + headChannelsRect.width + timeLineList.contentX - 2 * 24 * 360 - timeLineList.shift;
-		color: "#f00";
-		visible: tvGuideChannels.count;
+		Rectangle {
+			id: currentTimeLine;
+			width: 4;
+			anchors.top: tvGuideChannels.top;
+			anchors.bottom: tvGuideChannels.bottom;
+			x: 80 + headChannelsRect.width + timeLineList.contentX - 2 * 24 * 360 - timeLineList.shift;
+			color: "#f00";
+			visible: tvGuideChannels.count;
 
-		Behavior on x { Animation { duration: 300; } }
+			Behavior on x { Animation { duration: 300; } }
+		}
+
+		//TODO: Move to separate file.
+		Item {
+			id: tvGuideListsItem;
+			anchors.fill: parent;
+			visible: false;
+
+			Rectangle {
+				anchors.top: renderer.top;
+				anchors.left: renderer.left;
+				anchors.right: renderer.right;
+				height: 120;
+
+				gradient: Gradient {
+					GradientStop { color: "#000"; position: 0; }
+					GradientStop { color: "#000"; position: 0.6; }
+					GradientStop { color: "#0000"; position: 1; }
+				}
+			}
+
+			ListView {
+				id: tvGuideLists;
+				height: 70;
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				width: contentWidth;
+				spacing: 10;
+				orientation: ListView.Horizontal;
+				model: tvGuideChannelListModel;
+				delegate: Item {
+					width: categoryNameTvGuide.paintedWidth + 20;
+					height: parent.height;
+
+					Text {
+						id: categoryNameTvGuide;
+						font.pixelSize: 40;
+						anchors.centerIn: parent;
+						text: model.name;
+						color: "#fff";
+						opacity: parent.activeFocus ? 1.0 : 0.6;
+					}
+				}
+			}
+
+			hide: {
+				tvGuideListsItem.visible = false;
+				dateView.forceActiveFocus();
+			}
+
+			onSelectPressed: {
+				tvGuideListsItem.hide();
+				tvGuideChannelModel.update();
+			}
+
+			onBackPressed: {
+				this.visible = false;
+				dateView.forceActiveFocus();
+			}
+		}
 	}
 
 	onActiveChanged: {
@@ -359,6 +436,15 @@ Activity {
 		if (this.visible) {
 			dateView.currentIndex = 2;
 			dateView.forceActiveFocus();
+		}
+	}
+
+	onRedPressed: {
+		if (tvGuideListsItem.visible) {
+			tvGuideListsItem.hide();
+		} else {
+			tvGuideListsItem.visible = true;
+			tvGuideLists.forceActiveFocus();
 		}
 	}
 }

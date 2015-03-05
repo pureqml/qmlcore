@@ -25,5 +25,8 @@ Item {
 	onBackPressed: {
 		if (this.active)
 			this.stop();
+		else
+			event.accepted = false;
+		log("onBackPressed");
 	}
 }

@@ -133,6 +133,13 @@ Item {
 		}
 	}
 
+	//TODO: make it more platform independing.
+	onBackPressed: {
+		//TODO: use activitymanager when it's done.
+		if (_globals.core.vendor == "samsung" && !infoPlate.active && !tvGuide.active && !mainMenu.active && !categories.active)
+			widgetAPI.sendExitEvent();
+	}
+
 	TVGuide {
 		id: tvGuide;
 		visible: false;

@@ -1,5 +1,8 @@
 Activity {
 	id: infoPlateItem;
+	signal optionChoosed;
+	signal channelUp;
+	signal channelDown;
 	property bool isHd: false;
 	property bool is3d: false;
 	property int channelNumber: 0;
@@ -14,13 +17,6 @@ Activity {
 	opacity: active ? 1.0 : 0.0;
 	visible: active;
 	name: "infoPlate";
-
-	signal optionChoosed;
-	signal channelListCalled;
-	signal tvGuideCalled;
-	signal channelUp;
-	signal channelDown;
-
 
 	Timer {
 		id: hideTimer;
@@ -196,9 +192,7 @@ Activity {
 			focusedSource: "res/arrowUpFocused.png";
 			opacity: channelPanel.activeFocus ? 1 : 0;
 
-			onTriggered: {
-				infoPlateItem.channelUp();
-			}
+			onTriggered: { infoPlateItem.channelUp(); }
 
 			Behavior on opacity { Animation { duration: 300; } }
 		}
@@ -211,9 +205,7 @@ Activity {
 			focusedSource: "res/arrowDownFocused.png";
 			opacity: channelPanel.activeFocus ? 1 : 0;
 
-			onTriggered: {
-				infoPlateItem.channelDown();
-			}
+			onTriggered: { infoPlateItem.channelDown(); }
 
 			Behavior on opacity { Animation { duration: 300; } }
 		}
@@ -285,7 +277,6 @@ Activity {
 			onRightPressed: { settingsButton.forceActiveFocus(); }
 		}
 
-
 		Column {
 			id: settingsColumn;
 			property bool active;
@@ -295,7 +286,6 @@ Activity {
 			anchors.rightMargin: 8;
 			spacing: 8;
 
-				
 			GreenButton {
 				id: ttxButton;
 				height: 68;
@@ -310,9 +300,9 @@ Activity {
 
 			GreenButton {
 				id: subButton;
+				property bool checked;
 				height: 68;
 				width: height;
-				property bool checked;
 				isGreen: subButton.activeFocus || subButton.checked;
 				visible: settingsColumn.active;
 
@@ -369,7 +359,12 @@ Activity {
 			onRightPressed: { timePanel.forceActiveFocus(); }
 		}
 
-		onDownPressed: { infoPlateOptions.forceActiveFocus(); }
+		onDownPressed: {
+			if (timePanel.activeFocus)
+				infoPlateContextMenu.forceActiveFocus();
+			else
+				infoPlateOptions.forceActiveFocus();
+		}
 	}
 
 	Item {
@@ -379,89 +374,32 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 
-		MouseArea {
-			id: tvGuideContext;
-			height: 20;
-			width: height + contextText.paintedWidth + 10;
-			hoverEnabled: recursiveVisible;
+		ListModel {
+			id: contextModel;
+			property string text;
+			property Color color;
 
-			Rectangle {
-				id: tvRect;
-				height: parent.height;
-				width: height;
-				anchors.left: parent.left;
-				anchors.verticalCenter: parent.verticalCenter;
-				color: "#f00";
-				radius: height / 4;
-				border.width: 2;
-				border.color: "#fff";
-			}
-
-			Text {
-				id: contextText;
-				anchors.left: tvRect.right;
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.leftMargin: 8;
-				color: parent.containsMouse ? "#f00": "#fff";
-				text: "ТВ Гид";
-
-				Behavior on color  { ColorAnimation { duration: 200; } }
-			}
-
-			onClicked: { infoPlateItem.tvGuideCalled(); }
+			ListElement { text: "ТВ Гид"; color: "#f00"; }
+			ListElement { text: "Список каналов"; color: "#00ab5f"; }
 		}
 
-		MouseArea {
-			id: listContext;
-			anchors.left: tvGuideContext.right;
-			anchors.leftMargin: 20;
-			height: 20;
-			width: height + contextText.paintedWidth + 10;
-		 	hoverEnabled: recursiveVisible;
+		ContextMenu {
+			id: infoPlateContextMenu;
+			model: contextModel;
 
-			Rectangle {
-				id: listRect;
-				height: parent.height;
-				width: height;
-				anchors.left: parent.left;
-				anchors.verticalCenter: parent.verticalCenter;
-				color: "#00ab5f";
-				radius: height / 4;
-				border.width: 2;
-				border.color: "#fff";
+			onOptionChoosed(text): { infoPlateItem.optionChoosed(text); }
+			onCurrentIndexChanged: { hideTimer.restart(); }
+			onUpPressed: { timePanel.forceActiveFocus(); }
+
+			onRightPressed: {
+				if (this.currentIndex < this.count - 1) {
+					this.currentIndex++;
+				} else {
+					infoPlateOptions.currentIndex = 0;
+					infoPlateOptions.forceActiveFocus();
+				}
 			}
-
-			Text {
-				id: contextText;
-				anchors.left: listRect.right;
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.leftMargin: 8;
-				color: parent.containsMouse ? "#5f6": "#fff";
-				text: "Список каналов (F2)";
-
-				Behavior on color  { ColorAnimation { duration: 200; } }
-			}
-
-			onClicked: { infoPlateItem.channelListCalled(); }
 		}
-
-		// ListModel {
-		// 	id: contextModel;
-		// 	property string text;
-		// 	property Color color;
-
-		// 	ListElement {
-		// 		text: "ТВ Гид";
-		// 		color: "#f00";
-		// 	}
-
-		// 	ListElement {
-		// 		text: "Список каналов";
-		// 		color: "#00ab5f";
-		// 	}
-		// }
-
-		// ContextMenu { model: contextModel; }
 
 		ListModel {
 			id: optionsModel;
@@ -479,6 +417,15 @@ Activity {
 
 			onUpPressed: { timePanel.forceActiveFocus(); }
 			onCurrentIndexChanged: { hideTimer.restart(); }
+
+			onLeftPressed: {
+				if (this.currentIndex) {
+					this.currentIndex--;
+				} else {
+					infoPlateContextMenu.currentIndex = infoPlateContextMenu.count - 1;
+					infoPlateContextMenu.forceActiveFocus();
+				}
+			}
 
 			onOptionChoosed(text): {
 				if (text == "Выход")

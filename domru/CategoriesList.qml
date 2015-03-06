@@ -29,52 +29,6 @@ Activity {
 		}
 	}
 
-	Rectangle {
-		anchors.top: renderer.top;
-		anchors.left: renderer.left;
-		anchors.right: renderer.right;
-		height: 120;
-
-		gradient: Gradient {
-			GradientStop { color: "#000"; position: 0; }
-			GradientStop { color: "#000"; position: 0.6; }
-			GradientStop { color: "#0000"; position: 1; }
-		}
-	}
-
-	ListView {
-		id: categoriesList;
-		height: 70;
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		width: contentWidth;
-		spacing: 10;
-		orientation: ListView.Horizontal;
-		model: channelListModel;
-		delegate: Item {
-			width: categoryName.paintedWidth + 20;
-			height: parent.height;
-
-			Text {
-				id: categoryName;
-				font.pixelSize: 40;
-				anchors.centerIn: parent;
-				text: model.name;
-				color: "#fff";
-				opacity: parent.activeFocus ? 1.0 : 0.6;
-			}
-		}
-
-		onDownPressed: { channelView.forceActiveFocus(); } 
-		onLeftPressed: { --categoriesList.currentIndex; }
-		onRightPressed: { ++categoriesList.currentIndex; }
-
-		onCurrentIndexChanged: {
-			channelModel.setList(channelListModel.get(this.currentIndex));
-			channelView.currentIndex = 0;
-		}
-	}
-
 	ListView {
 		id: channelView;
 		anchors.top: categoriesList.bottom;
@@ -148,6 +102,20 @@ Activity {
 				is3d:			curRow.traits == "3D"
 			}
 			channelList.channelSwitched(channelInfo)
+		}
+	}
+
+	ChannelsListView {
+		id: categoriesList;
+		model: channelListModel;
+
+		onDownPressed: { channelView.forceActiveFocus(); }
+		onLeftPressed: { --categoriesList.currentIndex; }
+		onRightPressed: { ++categoriesList.currentIndex; }
+
+		onCurrentIndexChanged: {
+			channelModel.setList(channelListModel.get(this.currentIndex));
+			channelView.currentIndex = 0;
 		}
 	}
 

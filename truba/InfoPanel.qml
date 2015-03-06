@@ -8,8 +8,8 @@ Activity {
 		height: activeFocus ? 200 : 120;
 		width: 230;
 
-		onRightPressed: { programInfo.forceActiveFocus(); }
-		onLeftPressed: { options.forceActiveFocus(); }
+		onRightPressed: { programInfo.focus(); }
+		onLeftPressed: { options.focus(); }
 	}
 
 	FocusablePanel {
@@ -21,8 +21,8 @@ Activity {
 		anchors.bottom: parent.bottom;
 		height: activeFocus ? 200 : 120;
 
-		onRightPressed: { options.forceActiveFocus(); }
-		onLeftPressed: { channelInfo.forceActiveFocus(); }
+		onRightPressed: { options.focus(); }
+		onLeftPressed: { channelInfo.focus(); }
 	}
 
 	FocusablePanel {
@@ -32,12 +32,12 @@ Activity {
 		height: 120;
 		width: 120;
 
-		onRightPressed: { channelInfo.forceActiveFocus(); }
-		onLeftPressed: { programInfo.forceActiveFocus(); }
+		onRightPressed: { channelInfo.focus(); }
+		onLeftPressed: { programInfo.focus(); }
 	}
 
 	onActiveChanged: {
-		channelInfo.forceActiveFocus();
+		channelInfo.focus();
 	}
 
 	Behavior on opacity	{ Animation { duration: 300; } }

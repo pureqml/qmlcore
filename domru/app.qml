@@ -1,4 +1,4 @@
-Item {
+Activity {
 	id: mainWindow;
 	anchors.fill: renderer;
 	anchors.leftMargin: 75;
@@ -26,91 +26,71 @@ Item {
 		}
 	}
 
-	Item {
+	CategoriesList {
+		id: categories;
+		anchors.leftMargin: 60;
+		anchors.rightMargin: 60;
+		protocol: proto;
 		anchors.fill: parent;
 
-		CategoriesList {
-			id: categories;
-			anchors.leftMargin: 60;
-			anchors.rightMargin: 60;
-			protocol: proto;
-			anchors.fill: parent;
-
-			onActivated(url): {
-				log("got url", url)
-				videoPlayer.source = url
-				videoPlayer.play();
-			}
-
-			onChannelSwitched(channelInfo): {
-				infoPlate.fillChannelInfo(channelInfo);
-				infoPlate.updateEpg();
-				infoPlate.show(10000);
-			}
-
-			onStarted: {
-				infoPlate.stop();
-			}
+		onActivated(url): {
+			log("got url", url)
+			videoPlayer.source = url
+			videoPlayer.play();
 		}
 
-		InfoPlate {
-			id: infoPlate;
-			signal epgUpdated;
-			anchors.fill: parent;
+		onChannelSwitched(channelInfo): {
+			infoPlate.fillChannelInfo(channelInfo);
+			infoPlate.updateEpg();
+			infoPlate.show(10000);
+		}
+	}
 
-			Timer {
-				duration: 5000;
-				reapeat: true;
-				running: infoPlate.active;
-				triggeredOnStart: true;
+	InfoPlate {
+		id: infoPlate;
+		signal epgUpdated;
+		anchors.fill: parent;
 
-				onTriggered: { infoPlate.updateEpg(); }
-			}
+		Timer {
+			duration: 5000;
+			reapeat: true;
+			running: infoPlate.active;
+			triggeredOnStart: true;
 
-			updateEpg: {
-				var epgUpdated = infoPlate.epgUpdated;
-				categories.getProgramInfo(function(programInfo) {
-					if (programInfo)
-						epgUpdated(programInfo);
-					else
-						log("Failed to get program info");
-				});
-			}
+			onTriggered: { infoPlate.updateEpg(); }
+		}
 
-			onEpgUpdated(programInfo): { infoPlate.fillProgramInfo(programInfo); }
+		updateEpg: {
+			var epgUpdated = infoPlate.epgUpdated;
+			categories.getProgramInfo(function(programInfo) {
+				if (programInfo)
+					epgUpdated(programInfo);
+				else
+					log("Failed to get program info");
+			});
+		}
 
-			onChannelListCalled: {
-				this.stop();
-				categories.start();
-			}
+		onEpgUpdated(programInfo): { infoPlate.fillProgramInfo(programInfo); }
+		onChannelUp: { categories.channelUp(); }
+		onChannelDown: { categories.channelDown(); }
 
-			onTvGuideCalled: {
-				this.stop();
+		onOptionChoosed(text): {
+			if (text == "ТВ меню")
+				mainMenu.start();
+			else if (text == "ТВ Гид")
 				tvGuide.start();
-			}
-
-			onChannelUp: { categories.channelUp(); }
-			onChannelDown: { categories.channelDown(); }
-
-			onOptionChoosed(text): {
-				infoPlate.stop();
-				if (text == "ТВ меню")
-					mainMenu.start();
-				else if (text == "ТВ Гид")
-					tvGuide.start();
-				else if (text == "Список каналов")
-					categories.start();
-			}
+			else if (text == "Список каналов")
+				categories.start();
 		}
+	}
 
-		Text {
-			anchors.horizontalCenter: parent.horizontalCenter;
-			color: "white";
-			text: "Нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
-			opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
+	Text {
+		anchors.horizontalCenter: parent.horizontalCenter;
+		color: "white";
+		text: "Нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
+		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
 
-			Behavior on opacity { Animation { duration: 300; } }
-		}
+		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	onBluePressed: {
@@ -118,13 +98,6 @@ Item {
 		if (!categories.active)
 			infoPlate.show(10000);
 	}
-
-	onRedPressed: {
-		infoPlate.stop();
-		tvGuide.start();
-	}
-
-	onGreenPressed: { categories.start(); }
 
 	MainMenu {
 		id: mainMenu;
@@ -134,13 +107,6 @@ Item {
 			mainMenu.stop();
 			tvGuide.start();
 		}
-	}
-
-	//TODO: make it more platform independing.
-	onBackPressed: {
-		//TODO: use activitymanager when it's done.
-		if (_globals.core.vendor == "samsung" && !infoPlate.active && !tvGuide.active && !mainMenu.active && !categories.active)
-			widgetAPI.sendExitEvent();
 	}
 
 	TVGuide {
@@ -154,4 +120,14 @@ Item {
 		y: area.mouseY - 41;
 		z: 10;
 	}
+
+	//TODO: make it more platform independing.
+	onBackPressed: {
+		//TODO: use activitymanager when it's done.
+		if (_globals.core.vendor == "samsung" && !infoPlate.active && !tvGuide.active && !mainMenu.active && !categories.active)
+			widgetAPI.sendExitEvent();
+	}
+
+	onRedPressed: { tvGuide.start(); }
+	onGreenPressed: { categories.start(); }
 }

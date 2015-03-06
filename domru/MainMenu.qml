@@ -106,17 +106,6 @@ Activity {
 		}
 	}
 
-	// Uncomment for displaing tv visual area.
-	//Rectangle {
-		//width: 1280;
-		//height: 720;
-		//anchors.top: renderer.top;
-		//anchors.left: renderer.left;
-		//color: "#0000";
-		//border.color: "#f00";
-		//border.width: 2;
-	//}
-
 	onActiveChanged: {
 		if (!this.active) {
 			this.visible = false;

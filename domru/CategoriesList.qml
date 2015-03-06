@@ -153,6 +153,20 @@ Activity {
 		}
 	}
 
+	ChannelsListView {
+		id: categoriesList;
+		model: channelListModel;
+
+		onDownPressed: { channelView.forceActiveFocus(); }
+		onLeftPressed: { --categoriesList.currentIndex; }
+		onRightPressed: { ++categoriesList.currentIndex; }
+
+		onCurrentIndexChanged: {
+			channelModel.setList(channelListModel.get(this.currentIndex));
+			channelView.currentIndex = 0;
+		}
+	}
+
 	onLeftPressed: { --categoriesList.currentIndex; }
 	onRightPressed: { ++categoriesList.currentIndex; }
 	onGreenPressed: { 

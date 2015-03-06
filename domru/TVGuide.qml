@@ -32,7 +32,7 @@ Activity {
 			startTime -= 2 * 24 * 3600;
 			endTime += 5 * 24 * 3600;
 
-			var cat = tvGuideLists.model.get(tvGuideLists.currentIndex);
+			var cat = tvGuideListsItem.model.get(tvGuideListsItem.currentIndex);
 			var options = {
 				select: 'title,start,duration',
 				startFrom: startTime,
@@ -122,7 +122,6 @@ Activity {
 
 				curMin = curMin ? curMin : 60;
 				min = min ? min : 60;
-				log("shift: " + (30 - (min - curMin)));
 				this._get("timeLineList").shift = (30 - (min - curMin)) * 6 - 90;
 				timeLineList.contentX = this.currentIndex * 24 * 360 + this._get("timeLineList").shift;
 			}
@@ -360,58 +359,25 @@ Activity {
 			width: 4;
 			anchors.top: tvGuideChannels.top;
 			anchors.bottom: tvGuideChannels.bottom;
-			x: 80 + headChannelsRect.width + timeLineList.contentX - 2 * 24 * 360 - timeLineList.shift;
+			x: 4 + headChannelsRect.width + timeLineList.contentX - 2 * 24 * 360 - timeLineList.shift;
 			color: "#f00";
 			visible: tvGuideChannels.count;
 
 			Behavior on x { Animation { duration: 300; } }
 		}
 
-		//TODO: Move to separate file.
-		Item {
+		ChannelsListView {
 			id: tvGuideListsItem;
-			anchors.fill: parent;
+			height: 120;
+			model: tvGuideChannelListModel;
 			visible: false;
+			z: tvGuideProto.z + 1;
 
-			Rectangle {
-				anchors.top: renderer.top;
-				anchors.left: renderer.left;
-				anchors.right: renderer.right;
-				height: 120;
+			onLeftPressed: { --tvGuideListsItem.currentIndex; }
+			onRightPressed: { ++tvGuideListsItem.currentIndex; }
 
-				gradient: Gradient {
-					GradientStop { color: "#000"; position: 0; }
-					GradientStop { color: "#000"; position: 0.6; }
-					GradientStop { color: "#0000"; position: 1; }
-				}
-			}
-
-			ListView {
-				id: tvGuideLists;
-				height: 70;
-				anchors.top: parent.top;
-				anchors.left: parent.left;
-				width: contentWidth;
-				spacing: 10;
-				orientation: ListView.Horizontal;
-				model: tvGuideChannelListModel;
-				delegate: Item {
-					width: categoryNameTvGuide.paintedWidth + 20;
-					height: parent.height;
-
-					Text {
-						id: categoryNameTvGuide;
-						font.pixelSize: 40;
-						anchors.centerIn: parent;
-						text: model.name;
-						color: "#fff";
-						opacity: parent.activeFocus ? 1.0 : 0.6;
-					}
-				}
-			}
-
-			hide: {
-				tvGuideListsItem.visible = false;
+			onDownPressed: {
+				this.hide();
 				dateView.forceActiveFocus();
 			}
 
@@ -422,6 +388,11 @@ Activity {
 
 			onBackPressed: {
 				this.visible = false;
+				dateView.forceActiveFocus();
+			}
+
+			hide: {
+				tvGuideListsItem.visible = false;
 				dateView.forceActiveFocus();
 			}
 		}

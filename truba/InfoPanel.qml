@@ -1,5 +1,15 @@
 Activity {
-	opcity: active ? 1.0 : 0.0;
+	opacity: active ? 1.0 : 0.0;
+
+	Timer {
+		id: hideTimer;
+		interval: 10000;
+		running: true;
+
+		onTriggered: {
+			this.parent.stop();
+		}
+	}
 
 	FocusablePanel {
 		id: channelInfo;
@@ -37,7 +47,18 @@ Activity {
 	}
 
 	onActiveChanged: {
+		if (this.active)
+			hideTimer.restart();
+		else
+			hideTimer.stop();
 		channelInfo.focus();
+	}
+
+	onBluePressed: {
+		if (this.active)
+			this.stop();
+		else
+			this.start();
 	}
 
 	Behavior on opacity	{ Animation { duration: 300; } }

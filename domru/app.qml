@@ -93,10 +93,13 @@ Item {
 			onChannelDown: { categories.channelDown(); }
 
 			onOptionChoosed(text): {
-				if (text == "ТВ меню") {
-					infoPlate.stop();
+				infoPlate.stop();
+				if (text == "ТВ меню")
 					mainMenu.start();
-				}
+				else if (text == "ТВ Гид")
+					tvGuide.start();
+				else if (text == "Список каналов")
+					categories.start();
 			}
 		}
 

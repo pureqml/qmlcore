@@ -24,9 +24,11 @@ ListView {
 			anchors.left: icon.right;
 			anchors.leftMargin: 10;
 			anchors.verticalCenter: parent.verticalCenter;
-			color: "#fff";
 			text: model.text;
+			color: "#fff";
 		}
+
+		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	chooseCurrent: {

@@ -1,15 +1,16 @@
 ListView {
+	signal optionChoosed;
 	width: parent.width;
 	height: parent.height;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
 	spacing: 20;
 	orientation: ListView.Horizontal;
-
 	delegate: Item {
 		id: contextItemProto;
-		height: 20;
 		width: height + contextText.paintedWidth + 10;
+		height: 20;
+		opacity: activeFocus ? 1.0 : 0.6;
 
 		Rectangle {
 			id: contextColorRectangle;
@@ -28,9 +29,21 @@ ListView {
 			anchors.left: contextColorRectangle.right;
 			anchors.verticalCenter: parent.verticalCenter;
 			anchors.leftMargin: 8;
-			color: "#fff";
+			color: parent.activeFocus ? model.color : "#fff";
 			text: model.text;
+
+			Behavior on color { Animation { duration: 300; } }
 		}
+
+		Behavior on opacity { Animation { duration: 300; } }
 	} 
+
+	chooseCurrent: {
+		var text = this.model.get(this.currentIndex).text;
+		this.optionChoosed(text);
+	}
+
+	onSelectPressed: { this.chooseCurrent(); }
+	onClicked: { this.chooseCurrent(); }
 }
 

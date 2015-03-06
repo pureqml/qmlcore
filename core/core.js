@@ -20,11 +20,21 @@ if ('Common' in window) {
 	log("widget ok")
 	tvKey = new window.Common.API.TVKeyValue()
 	log("tv ok")
-	pluginAPI = new window.Common.API.Plugin()
-	log("plugin ok, sending ready")
 	widgetAPI.sendReadyEvent() // Sends 'ready' message to the Application Manager
 	log("registering keys")
-	pluginAPI.registFullWidgetKey()
+
+	window.onShow = function() {
+		var NNaviPlugin = document.getElementById("pluginObjectNNavi");
+		pluginAPI = new window.Common.API.Plugin()
+		pluginAPI.registFullWidgetKey()
+		pluginAPI.SetBannerState(1);
+		NNaviPlugin.SetBannerState(2);
+		pluginAPI.unregistKey(tvKey.KEY_VOL_UP);
+		pluginAPI.unregistKey(tvKey.KEY_VOL_DOWN);
+		pluginAPI.unregistKey(tvKey.KEY_MUTE);
+		log("plugin ok, sending ready")
+	}
+
 	log("loaded")
 }
 

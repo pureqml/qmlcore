@@ -81,128 +81,55 @@ Rectangle {
 		}
 
 		Item {
-			id: footer;
 			height: 20;
 			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 
-			Item {
-				id: removeContext;
-				height: 20;
-				width: height + contextText.paintedWidth + 10;
+			ListModel {
+				id: loginContextModel;
+				property string text;
+				property Color color;
 
-				Rectangle {
-					id: bgRect;
-					height: parent.height;
-					width: height;
-					anchors.left: parent.left;
-					anchors.verticalCenter: parent.verticalCenter;
-					color: "#f00";
-					radius: height / 4;
-					border.width: 2;
-					border.color: "#fff";
-				}
-
-				Text {
-					id: contextText;
-					anchors.left: bgRect.right;
-					anchors.verticalCenter: parent.verticalCenter;
-					anchors.leftMargin: 8;
-					color: "#fff";
-					text: "Удалить";
-				}
+				ListElement { text: "Удалить";	color: "#f00"; }
+				ListElement { text: "aA@";		color: "#00ab5f"; }
+				ListElement { text: "Рус/Eng";	color: "#ff0"; }
+				ListElement { text: "Пробел";	color: "#00f"; }
 			}
 
-			Item {
-				id: specialSymbolsContext;
-				anchors.left: removeContext.right;
-				anchors.leftMargin: 20;
-				height: 20;
-				width: height + contextText.paintedWidth + 10;
+			ContextMenu {
+				id: loginContextMenu;
+				model: loginContextModel;
 
-				Rectangle {
-					id: bgRect;
-					height: parent.height;
-					width: height;
-					anchors.left: parent.left;
-					anchors.verticalCenter: parent.verticalCenter;
-					color: "#00ab5f";
-					radius: height / 4;
-					border.width: 2;
-					border.color: "#fff";
+				onOptionChoosed(text): {
+					if (text == "Удалить")
+						this.processRed();
+					else if (text == "aA@")
+						this.processGreen();
+					else if (text == "Рус/Eng")
+						this.processYellow();
+					else if (text == "Пробел")
+						this.processBlue();
 				}
 
-				Text {
-					id: contextText;
-					anchors.left: bgRect.right;
-					anchors.verticalCenter: parent.verticalCenter;
-					anchors.leftMargin: 8;
-					color: "#fff";
-					text: "aA@";
-				}
-			}
-
-			Item {
-				id: langContext;
-				anchors.left: specialSymbolsContext.right;
-				anchors.leftMargin: 20;
-				height: 20;
-				width: height + contextText.paintedWidth + 10;
-
-				Rectangle {
-					id: bgRect;
-					height: parent.height;
-					width: height;
-					anchors.left: parent.left;
-					anchors.verticalCenter: parent.verticalCenter;
-					color: "#ff0";
-					radius: height / 4;
-					border.width: 2;
-					border.color: "#fff";
+				onRightPressed: {
+					if (this.currentIndex < this.count - 1) {
+						this.currentIndex++;
+					} else {
+						loginOptions.currentIndex = 0;
+						loginOptions.forceActiveFocus();
+					}
 				}
 
-				Text {
-					id: contextText;
-					anchors.left: bgRect.right;
-					anchors.verticalCenter: parent.verticalCenter;
-					anchors.leftMargin: 8;
-					color: "#fff";
-					text: "Рус/Eng";
-				}
-			}
-
-			Item {
-				id: spaceContext;
-				anchors.left: langContext.right;
-				anchors.leftMargin: 20;
-				height: 20;
-				width: height + contextText.paintedWidth + 10;
-
-				Rectangle {
-					id: bgRect;
-					height: parent.height;
-					width: height;
-					anchors.left: parent.left;
-					anchors.verticalCenter: parent.verticalCenter;
-					color: "#00f";
-					radius: height / 4;
-					border.width: 2;
-					border.color: "#fff";
-				}
-
-				Text {
-					id: contextText;
-					anchors.left: bgRect.right;
-					anchors.verticalCenter: parent.verticalCenter;
-					anchors.leftMargin: 8;
-					color: "#fff";
-					text: "Пробел";
-				}
+				processRed: { inputDialog.removeChar(); }
+				processBlue: { inputDialog.text += " "; }
+				processGreen: { keyBoard.switchCase(); }
+				processYellow: { keyBoard.switchLanguage(); }
+				onUpPressed: { keyBoard.forceActiveFocus(); }
 			}
 
 			ListModel {
-				id: loginoptionsModel;
+				id: loginOptionsModel;
 				property string text;
 				property string source;
 
@@ -213,14 +140,14 @@ Rectangle {
 			}
 
 			Options {
-				width: 100;
-				model: loginoptionsModel;
+				id: loginOptions;
+				model: loginOptionsModel;
 			}
 		}
 
-		onRedPressed: { inputDialog.removeChar(); }
-		onBluePressed: { inputDialog.text += " "; }
-		onGreenPressed: { keyBoard.switchCase();; }
-		onYellowPressed: { keyBoard.switchLanguage(); }
+		onRedPressed: { loginContextMenu.processRed(); }
+		onBluePressed: { loginContextMenu.processBlue(); }
+		onGreenPressed: { loginContextMenu.processGreen(); }
+		onYellowPressed: { loginContextMenu.processYellow(); }
 	}
 }

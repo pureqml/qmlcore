@@ -74,7 +74,11 @@ Activity {
 			SettingsPage { anchors.fill: parent; }
 
 			onUpPressed: { menuOptions.forceActiveFocus(); }
-			onDownPressed: { mainMenuOptions.forceActiveFocus(); }
+
+			onDownPressed: {
+				mainMenuOptions.currentIndex = 0;
+				mainMenuOptions.forceActiveFocus();
+			}
 		}
 
 		Item {
@@ -83,6 +87,33 @@ Activity {
 			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
+
+			ListModel {
+				id: contextMainMenuModel;
+				property string text;
+				property Color color;
+
+				ListElement { text: "выход из профиля"; color: "#f00"; }
+				ListElement { text: "помощь"; color: "#00ab5f"; }
+			}
+
+			ContextMenu {
+				id: contextMainMenu;
+				model: contextMainMenuModel;
+
+				//TODO: implement.
+				onOptionChoosed(text): { }
+				onUpPressed: { optionsPageStack.forceActiveFocus(); }
+
+				onRightPressed: {
+					if (this.currentIndex < this.count - 1) {
+						this.currentIndex++;
+					} else {
+						mainMenuOptions.currentIndex = 0;
+						mainMenuOptions.forceActiveFocus();
+					}
+				}
+			}
 
 			ListModel {
 				id: mainMenuOptionsModel;
@@ -97,6 +128,11 @@ Activity {
 				model: mainMenuOptionsModel;
 
 				onUpPressed: { optionsPageStack.forceActiveFocus(); }
+
+				onLeftPressed: {
+					contextMainMenu.currentIndex = contextMainMenu.count - 1;
+					contextMainMenu.forceActiveFocus();
+				}
 
 				onOptionChoosed(text): {
 					if (text == "Выход")

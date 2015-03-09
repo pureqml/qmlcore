@@ -254,11 +254,12 @@ Activity {
 			id: tvGuideChannels;
 			property int shift;
 			anchors.top: programmsHead.bottom;
-			anchors.bottom: parent.bottom;
+			anchors.bottom: tvGuideFooter.top;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 			anchors.topMargin: spacing;
 			anchors.leftMargin: -spacing;
+			anchors.bottomMargin: spacing;
 			clip: true;
 			spacing: 5;
 			model: tvGuideChannelModel;
@@ -352,6 +353,15 @@ Activity {
 				else
 					--this.currentIndex;
 			}
+
+			onDownPressed: {
+				if (this.currentIndex == this.count - 1) {
+					tvGuideContextMenu.currentIndex = 0;
+					tvGuideContextMenu.forceActiveFocus();
+				} else {
+					++this.currentIndex;
+				}
+			}
 		}
 
 		Rectangle {
@@ -398,6 +408,92 @@ Activity {
 		}
 	}
 
+	Item {
+		id: tvGuideFooter;
+		height: 20;
+		anchors.bottom: parent.bottom;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+
+		ListModel {
+			id: tvGuideContextModel;
+			property string text;
+			property Color color;
+
+			ListElement { text: "список задач"; color: "#f00"; }
+			ListElement { text: "сейчас"; color: "#00ab5f"; }
+			ListElement { text: "списки каналов"; color: "#ff0"; }
+			ListElement { text: "помощь"; color: "#00f"; }
+		}
+
+		ContextMenu {
+			id: tvGuideContextMenu;
+			model: tvGuideContextModel;
+
+			onUpPressed: { tvGuideChannels.forceActiveFocus(); }
+			processRed: {}
+			processBlue: {}
+			processGreen: {}
+
+			processYellow: {
+				if (tvGuideListsItem.visible) {
+					tvGuideListsItem.hide();
+				} else {
+					tvGuideListsItem.visible = true;
+					tvGuideLists.forceActiveFocus();
+				}
+			}
+
+			onOptionChoosed(text): {
+				if (text == "список задач")
+					this.processRed();
+				else if (text == "сейчас")
+					this.processGreen();
+				else if (text == "списки каналов")
+					this.processYellow();
+				else if (text == "помощь")
+					this.processBlue();
+			}
+
+			onRightPressed: {
+				if (this.currentIndex < this.count - 1) {
+					this.currentIndex++;
+				} else {
+					tvguideOptions.currentIndex = 0;
+					tvguideOptions.forceActiveFocus();
+				}
+			}
+		}
+
+		ListModel {
+			id: tvguideOptionsModel;
+			property string text;
+			property string source;
+
+			ListElement { text: "Назад"; source: "res/back.png"; }
+			ListElement { text: "Выход"; source: "res/exit.png"; }
+		}
+
+		Options {
+			id: tvguideOptions;
+			model: tvguideOptionsModel;
+
+			onUpPressed: { timePanel.forceActiveFocus(); }
+			onCurrentIndexChanged: { hideTimer.restart(); }
+
+			onLeftPressed: {
+				if (this.currentIndex) {
+					this.currentIndex--;
+				} else {
+					tvGuideContextMenu.currentIndex = tvGuideContextMenu.count - 1;
+					tvGuideContextMenu.forceActiveFocus();
+				}
+			}
+
+			onOptionChoosed(text): { tvGuideProto.stop(); }
+		}
+	}
+
 	onActiveChanged: {
 		if (!this.active)
 			this.visible = false;
@@ -410,12 +506,5 @@ Activity {
 		}
 	}
 
-	onRedPressed: {
-		if (tvGuideListsItem.visible) {
-			tvGuideListsItem.hide();
-		} else {
-			tvGuideListsItem.visible = true;
-			tvGuideLists.forceActiveFocus();
-		}
-	}
+	onYellowPressed: { tvGuideContextMenu.processYellow(); }
 }

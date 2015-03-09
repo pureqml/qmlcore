@@ -41,6 +41,7 @@ Activity {
 			};
 
 			var model = this;
+			model.reset();
 			tvGuideProto.protocol.getChannelsWithSchedule(options, function(result) {
 				for (var i in result.channels)
 					model.append(result.channels[i]);
@@ -278,6 +279,7 @@ Activity {
 					clip: true;
 					border.color: "#fff";
 					border.width: parent.activeFocus ? 5 : 0;
+					focus: true;
 
 					Text {
 						anchors.left: parent.left;
@@ -303,6 +305,8 @@ Activity {
 						//anchors.rightMargin: 10;
 						//source: model.pictureUrl? model.pictureUrl + "/30x30:contain": "";
 					//}
+
+					onRightPressed: { this._get("brickWall").forceActiveFocus(); }
 				}
 
 				ListView {
@@ -333,15 +337,27 @@ Activity {
 						color: "#333";
 						clip: true;
 						border.color: "#fff";
-						border.width: parent.activeFocus && activeFocus ? 5 : 0;
+						border.width: activeFocus ? 5 : 0;
 						opacity: model.empty ? 0.6 : 1.0;
 
 						EllipsisText {
 							anchors.left: parent.left;
 							anchors.right: parent.right;
 							anchors.verticalCenter: parent.verticalCenter;
+							anchors.rightMargin: 5;
 							color: "#fff";
 							text: model.title;
+						}
+					}
+
+					onActiveFocusChanged: {
+						if (!this.activeFocus)
+							return;
+						for (var i in this._items) {
+							if (this._items[i].viewX >= this.contentX) {
+								this.currentIndex = i;
+								break;
+							}
 						}
 					}
 				}

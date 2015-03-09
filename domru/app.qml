@@ -13,7 +13,7 @@ Activity {
 	MouseArea {
 		id: area;
 		anchors.fill: renderer;
-		hoverEnabled: !categories.active && !tvGuide.active && !mainMenu.active;	//TODO: implement method in Activity for considered cases.
+		hoverEnabled: !parent.hasAnyActiveChild || parent.currentActivity == "infoPlate";
 
 		onMouseXChanged: { 
 			if (this.hoverEnabled) 

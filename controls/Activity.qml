@@ -1,10 +1,21 @@
 Item {
 	property bool active;
+	property bool hasAnyActiveChild: false;
+	property string currentActivity: "";
 	property string name;
 	signal started;
 	signal stopped;
 
 	isActivity(obj): { return obj instanceof qml.controls.Activity; }
+
+	isAnyActiveInContext: {
+		var childrens = this.parent.children;
+		for (var i in childrens)
+			if (this != childrens[i] && this.isActivity(childrens[i]))
+				if (childrens[i].active)
+					return true;
+		return false;
+	}
 
 	closeAll: {
 		var childrens = this.parent.children;
@@ -17,22 +28,31 @@ Item {
 		if (this.active)
 			return;
 
-		if (this.parent && this.isActivity(this.parent))
+		if (this.parent && this.isActivity(this.parent)) {
 			this.closeAll();
+			this.parent.hasAnyActiveChild = true;
+			this.parent.currentActivity = this.name;
+		}
 
 		this.started();
 		this.visible = true;
 		this.active = true;
 		this.forceActiveFocus();
-		log ("Activity started: ", this.name);
+		log("Activity started: ", this.name);
 	}
 
 	stop: {
-		if (this.active) {
-			this.active = false;
-			this.stopped();
-			log ("Activity stopped: ", this.name);
+		if (!this.active)
+			return;
+
+		if (this.parent && this.isActivity(this.parent)) {
+			this.parent.currentActivity = "";
+			this.parent.hasAnyActiveChild = this.isAnyActiveInContext();
 		}
+
+		this.active = false;
+		this.stopped();
+		log("Activity stopped: ", this.name);
 	}
 
 	onBackPressed: {

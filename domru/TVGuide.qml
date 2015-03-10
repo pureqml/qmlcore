@@ -116,15 +116,8 @@ Activity {
 			onDownPressed: { tvGuideChannels.forceActiveFocus(); }
 
 			onCurrentIndexChanged: {
-				this._get("tvGuideChannels").shift = this.currentIndex * 24 * 360;
-
-				var curMin = new Date().getMinutes();
-				var min = curMin > 30 ? 0 : 30;
-
-				curMin = curMin ? curMin : 60;
-				min = min ? min : 60;
-				this._get("timeLineList").shift = (30 - (min - curMin)) * 6 - 90;
-				timeLineList.contentX = this.currentIndex * 24 * 360 + this._get("timeLineList").shift;
+				if (!this._get("tvGuideChannels").activeFocus)
+					this._get("tvGuideChannels").shift = this.currentIndex * 24 * 360;
 			}
 		}
 
@@ -204,6 +197,7 @@ Activity {
 					property int shift;
 					anchors.fill: parent;
 					orientation: ListView.Horizontal;
+					contentX: tvGuideChannels.shift;
 					focus: false;
 					contentFollowsCurrentItem: false;
 					model: ListModel {
@@ -350,6 +344,29 @@ Activity {
 						}
 					}
 
+					onLeftPressed: {
+						this.currentIndex--;
+						var viewX = this._items[this.currentIndex].viewX;
+
+						if (viewX - this.width / 2 < this.contentX)
+							tvGuideChannels.shift = viewX;
+					}
+
+					onRightPressed: {
+						this.currentIndex++;
+						var viewX = this._items[this.currentIndex].viewX;
+
+						if (viewX + this.width / 2 > this.contentX + this.width)
+							tvGuideChannels.shift = viewX;
+					}
+
+					onCurrentIndexChanged: {
+						var daysInterval = 7
+						var dayWidth = this.contentWidth / daysInterval;
+						var viewX = this._items[this.currentIndex].viewX;
+						dateView.currentIndex = Math.round(viewX / dayWidth);
+					}
+
 					onActiveFocusChanged: {
 						if (!this.activeFocus)
 							return;
@@ -385,9 +402,9 @@ Activity {
 			width: 4;
 			anchors.top: tvGuideChannels.top;
 			anchors.bottom: tvGuideChannels.bottom;
-			x: 4 + headChannelsRect.width + timeLineList.contentX - 2 * 24 * 360 - timeLineList.shift;
+			x: 4 + headChannelsRect.width - (timeLineList.contentX - 2 * 24 * 360);
 			color: "#f00";
-			visible: tvGuideChannels.count;
+			visible: tvGuideChannels.count && x >= headChannelsRect.width + 4 && x <= tvGuideChannels.width;
 
 			Behavior on x { Animation { duration: 300; } }
 		}
@@ -494,8 +511,8 @@ Activity {
 			id: tvguideOptions;
 			model: tvguideOptionsModel;
 
-			onUpPressed: { timePanel.forceActiveFocus(); }
-			onCurrentIndexChanged: { hideTimer.restart(); }
+			onUpPressed: { tvGuideChannels.forceActiveFocus(); }
+			onOptionChoosed(text): { tvGuideProto.stop(); }
 
 			onLeftPressed: {
 				if (this.currentIndex) {
@@ -505,8 +522,6 @@ Activity {
 					tvGuideContextMenu.forceActiveFocus();
 				}
 			}
-
-			onOptionChoosed(text): { tvGuideProto.stop(); }
 		}
 	}
 

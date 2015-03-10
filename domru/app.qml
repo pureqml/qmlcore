@@ -114,8 +114,10 @@ Activity {
 
 	//TODO: make it more platform independing.
 	onBackPressed: {
-		//TODO: use activitymanager when it's done.
-		if (_globals.core.vendor == "samsung" && !infoPlate.active && !tvGuide.active && !mainMenu.active && !categories.active)
+		// Crunch for compiler.
+		if (!widgetAPI)
+			var widgetAPI = {};
+		if (_globals.core.vendor == "samsung" && !this.isAnyActiveInContext())
 			widgetAPI.sendExitEvent();
 	}
 

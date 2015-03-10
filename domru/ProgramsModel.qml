@@ -25,7 +25,7 @@ ListModel {
 
 		var daysAfter = 5;
 		var endTime = Math.round(new Date().getTime() / 1000) - daysAfter * 24 * 3600;
-		var delta = row[row.length - 1].start - endTime;
+		delta = row[row.length - 1].start - endTime;
 		if (delta > 0)
 			this.append({
 				title: "Нет информации",

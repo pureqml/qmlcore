@@ -473,7 +473,7 @@ Activity {
 					tvGuideListsItem.hide();
 				} else {
 					tvGuideListsItem.visible = true;
-					tvGuideLists.forceActiveFocus();
+					tvGuideListsItem.forceActiveFocus();
 				}
 			}
 

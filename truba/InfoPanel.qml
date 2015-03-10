@@ -1,4 +1,5 @@
 Activity {
+	name: "infoPanel";
 	opacity: active ? 1.0 : 0.0;
 
 	Timer {

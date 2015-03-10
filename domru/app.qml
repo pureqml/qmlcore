@@ -84,15 +84,6 @@ Activity {
 		}
 	}
 
-	Text {
-		anchors.horizontalCenter: parent.horizontalCenter;
-		color: "white";
-		text: "Нажмите F4 или двигайте мышкой, чтобы показать инфопанель";
-		opacity: infoPlate.active || categories.active ? 0.0 : 1.0;
-
-		Behavior on opacity { Animation { duration: 300; } }
-	}
-
 	onBluePressed: {
 		log("onBluePressed");
 		if (!categories.active)

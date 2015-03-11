@@ -52,7 +52,9 @@ Activity {
 	}
 
 	ChannelsPanel { id: channalsPanel; }
+	EPGPanel { id: epgPanel; }
 
 	onBluePressed: { infoPanel.start(); }
 	onGreenPressed: { channalsPanel.start(); }
+	onYellowPressed: { epgPanel.start(); }
 }

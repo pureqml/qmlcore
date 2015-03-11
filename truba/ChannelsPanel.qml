@@ -3,7 +3,7 @@ Activity {
 	anchors.bottom: parent.bottom;
 	anchors.left: parent.left;
 	active: false;
-	visible: active;
+	opacity: active ? 1.0 : 0.0;
 
 	Rectangle {
 		anchors.fill: channelsPanelChannels;
@@ -64,4 +64,6 @@ Activity {
 
 		onRightPressed: { channelsPanelChannels.forceActiveFocus(); }
 	}
+
+	Behavior on opacity { Animation { duration: 300; } }
 }

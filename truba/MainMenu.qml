@@ -2,7 +2,7 @@ Activity {
 
 	Column{
 		anchors.left: parent.left;
-		anchors.verticaCenter: parent.verticaCenter;
+		anchors.verticalCenter: parent.verticalCenter;
 		width: 250;
 
 		FocusablePanel {

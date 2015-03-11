@@ -19,8 +19,8 @@ Activity {
 		height: activeFocus ? 200 : 100;
 		width: 240;
 
-		onRightPressed: { programInfo.focus(); }
-		onLeftPressed: { options.focus(); }
+		onRightPressed: { programInfo.forceActiveFocus(); }
+		onLeftPressed: { options.forceActiveFocus(); }
 	}
 
 	FocusablePanel {
@@ -32,8 +32,8 @@ Activity {
 		anchors.bottom: parent.bottom;
 		height: activeFocus ? 200 : 100;
 
-		onRightPressed: { options.focus(); }
-		onLeftPressed: { channelInfo.focus(); }
+		onRightPressed: { options.forceActiveFocus(); }
+		onLeftPressed: { channelInfo.forceActiveFocus(); }
 	}
 
 	FocusablePanel {
@@ -43,8 +43,8 @@ Activity {
 		height: 100;
 		width: 100;
 
-		onRightPressed: { channelInfo.focus(); }
-		onLeftPressed: { programInfo.focus(); }
+		onRightPressed: { channelInfo.forceActiveFocus(); }
+		onLeftPressed: { programInfo.forceActiveFocus(); }
 	}
 
 	onActiveChanged: {
@@ -52,7 +52,7 @@ Activity {
 			hideTimer.restart();
 		else
 			hideTimer.stop();
-		channelInfo.focus();
+		channelInfo.forceActiveFocus();
 	}
 
 	onBluePressed: {

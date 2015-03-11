@@ -53,11 +53,12 @@ for opt in "$@"; do
 			minify
 			package html5
 		;;
-
 		truba)
 			compiler -w -o app core controls truba platform/html5
 		;;
-
+		truba-dev)
+			compiler -o app core controls truba platform/html5
+		;;
 		truba-html5)
 			compiler -o app core controls domru platform/html5
 			minify

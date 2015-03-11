@@ -53,4 +53,6 @@ Activity {
 	onBluePressed: {
 		infoPanel.start();
 	}
+
+	ChannelsPanel {}
 }

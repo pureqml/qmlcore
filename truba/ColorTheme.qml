@@ -5,7 +5,7 @@ Item {
 
 	property Color textColor:				"#fff";
 	property Color accentTextColor:			"#fff";
-	property Color focusedTextColorp:		"#fff";
+	property Color focusedTextColor:		"#fff";
 	property Color focusedAccentTextColor:	"#fff";
 	property Color disabledTextColor:		"#fff";
 }

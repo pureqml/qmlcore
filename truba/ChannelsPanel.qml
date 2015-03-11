@@ -2,6 +2,8 @@ Activity {
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 	anchors.left: parent.left;
+	active: false;
+	visible: active;
 
 	Rectangle {
 		anchors.fill: channelsPanelChannels;

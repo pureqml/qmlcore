@@ -51,9 +51,8 @@ Activity {
 		anchors.bottom: parent.bottom;
 	}
 
-	onBluePressed: {
-		infoPanel.start();
-	}
+	ChannelsPanel { id: channalsPanel; }
 
-	ChannelsPanel {}
+	onBluePressed: { infoPanel.start(); }
+	onGreenPressed: { channalsPanel.start(); }
 }

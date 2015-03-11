@@ -23,5 +23,5 @@ Rectangle {
 		source: model.source;
 	}
 
-	Behavior on color { Animation { duration: 300; } }
+	Behavior on color { ColorAnimation { duration: 300; } }
 }

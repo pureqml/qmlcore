@@ -16,8 +16,8 @@ Activity {
 		id: channelInfo;
 		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
-		height: activeFocus ? 200 : 120;
-		width: 230;
+		height: activeFocus ? 200 : 100;
+		width: 240;
 
 		onRightPressed: { programInfo.focus(); }
 		onLeftPressed: { options.focus(); }
@@ -30,7 +30,7 @@ Activity {
 		anchors.leftMargin: 8;
 		anchors.rightMargin: 8;
 		anchors.bottom: parent.bottom;
-		height: activeFocus ? 200 : 120;
+		height: activeFocus ? 200 : 100;
 
 		onRightPressed: { options.focus(); }
 		onLeftPressed: { channelInfo.focus(); }
@@ -40,8 +40,8 @@ Activity {
 		id: options;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
-		height: 120;
-		width: 120;
+		height: 100;
+		width: 100;
 
 		onRightPressed: { channelInfo.focus(); }
 		onLeftPressed: { programInfo.focus(); }

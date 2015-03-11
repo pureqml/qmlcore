@@ -14,9 +14,13 @@ Activity {
 			anchors.left: parent.left;
 			height: 120;
 			width: parent.width;
+			clip: true;
 
 			Text {
-				anchors.centerIn: parent;
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				horizontalAlignment: 2;
 				text: "Список каналов";
 				font.pointSize: 20;
 				color: "white";
@@ -28,9 +32,13 @@ Activity {
 			anchors.left: parent.left;
 			height: 120;
 			width: parent.width;
+			clip: true;
 
 			Text {
-				anchors.centerIn: parent;
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				horizontalAlignment: 2;
 				text: "Телегид";
 				font.pointSize: 20;
 				color: "white";
@@ -42,9 +50,13 @@ Activity {
 			anchors.left: parent.left;
 			height: 120;
 			width: parent.width;
+			clip: true;
 
 			Text {
-				anchors.centerIn: parent;
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				horizontalAlignment: 2;
 				text: "Настройки";
 				font.pointSize: 20;
 				color: "white";

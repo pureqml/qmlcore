@@ -6,6 +6,7 @@ Activity {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
+	ColorTheme { id: colorTheme; }
 
 	// MouseArea {
 	// 	anchors.left: renderer.left;

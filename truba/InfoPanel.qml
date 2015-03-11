@@ -1,6 +1,17 @@
 Activity {
 	name: "infoPanel";
 	opacity: active ? 1.0 : 0.0;
+	signal menuCalled;
+
+	MenuButton {
+		id: menuButton;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+
+		onClicked: {
+			this.parent.menuCalled();
+		}
+	}
 
 	Timer {
 		id: hideTimer;

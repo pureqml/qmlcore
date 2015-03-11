@@ -2,10 +2,22 @@ Activity {
 	name: "mainMenu";
 	opacity: active ? 1.0 : 0.0;
 
+	MenuButton {
+		id: menuButton;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		source: "res/trubaback.png";
+
+		onClicked: {
+			if (this.parent.active)
+				this.parent.stop();
+		}
+	}
+
 	Column{
 		anchors.left: parent.left;
-		anchors.top: parent.top;
-//		anchors.verticalCenter: parent.verticalCenter;
+		anchors.top: menuButton.bottom;
+		anchors.topMargin: 20;
 		width: parent.active ? 240 : 0;
 		spacing: 8;
 

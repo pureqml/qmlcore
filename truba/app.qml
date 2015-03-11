@@ -27,27 +27,30 @@ Activity {
 	InfoPanel {
 		id: infoPanel;
 		anchors.fill: parent;
-	}
 
-	MenuButton {
-		id: menuButton;
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		opacity: parent.hasAnyActiveChild ? 1 : 0;
-
-		onClicked: {
-			if (mainMenu.active)
-				mainMenu.stop();
-			else
-				mainMenu.start();
+		onMenuCalled: {
+			mainMenu.start();
 		}
 	}
+
+	// MenuButton {
+	// 	id: menuButton;
+	// 	anchors.top: parent.top;
+	// 	anchors.left: parent.left;
+	// 	opacity: parent.hasAnyActiveChild ? 1 : 0;
+
+	// 	onClicked: {
+	// 		if (mainMenu.active)
+	// 			mainMenu.stop();
+	// 		else
+	// 			mainMenu.start();
+	// 	}
+	// }
 
 	MainMenu {
 		id: mainMenu;
 		anchors.left: parent.left;
-		anchors.top: menuButton.bottom;
-		anchors.topMargin: 24;
+		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 	}
 

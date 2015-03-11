@@ -33,6 +33,7 @@ Activity {
 		id: menuButton;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
+		opacity: parent.hasAnyActiveChild ? 1 : 0;
 
 		onClicked: {
 			if (mainMenu.active)
@@ -46,7 +47,7 @@ Activity {
 		id: mainMenu;
 		anchors.left: parent.left;
 		anchors.top: menuButton.bottom;
-		anchors.topMargin: 20;
+		anchors.topMargin: 24;
 		anchors.bottom: parent.bottom;
 	}
 

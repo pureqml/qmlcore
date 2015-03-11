@@ -5,7 +5,6 @@ MouseArea {
 	property Color color: activeFocus ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 	hoverEnabled: recursiveVisible;
 
-
 	Rectangle {
 		anchors.fill: parent;
 		color: parent.color;

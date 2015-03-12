@@ -52,6 +52,13 @@ Activity {
 		anchors.left: parent.left;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
+
+		onOptionChoosed(option): {
+			if (option == "Телегид")
+				epgPanel.start();
+			else if (option == "Список каналов")
+				channalsPanel.start();
+		}
 	}
 
 	ChannelsPanel { id: channalsPanel; }

@@ -736,6 +736,12 @@ exports._setup = function() {
 				case this.AlignHCenter:	this.element.css('text-align', 'center'); break
 				case this.AlignJustify:	this.element.css('text-align', 'justify'); break
 				}
+			case 'verticalAlignment':
+				switch(value) {
+				case this.AlignTop:		this.element.css('margin-top', 0); break
+				case this.AlignBottom:	this.element.css('margin-top', this.parent.element.height() - this.element.height()); break
+				case this.AlignVCenter:	this.element.css('margin-top', this.parent.element.height() / 2 - this.element.height() / 2); break
+				}
 				break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);

@@ -1,4 +1,6 @@
 Activity {
+	id: mainMenuProto;
+	signal optionChoosed;
 	name: "mainMenu";
 	opacity: active ? 1.0 : 0.0;
 
@@ -37,6 +39,9 @@ Activity {
 				font.pointSize: 20;
 				color: "white";
 			}
+
+			onSelectPressed: { mainMenuProto.optionChoosed("Список каналов"); }
+			onClicked: { mainMenuProto.optionChoosed("Список каналов"); }
 		}
 
 		FocusablePanel {
@@ -55,6 +60,9 @@ Activity {
 				font.pointSize: 20;
 				color: "white";
 			}
+
+			onSelectPressed: { mainMenuProto.optionChoosed("Телегид"); }
+			onClicked: { mainMenuProto.optionChoosed("Телегид"); }
 		}
 
 		FocusablePanel {
@@ -73,6 +81,9 @@ Activity {
 				font.pointSize: 20;
 				color: "white";
 			}
+
+			onSelectPressed: { mainMenuProto.optionChoosed("Настройки"); }
+			onClicked: { mainMenuProto.optionChoosed("Настройки"); }
 		}
 
 		Behavior on width { Animation { duration: 300; } }

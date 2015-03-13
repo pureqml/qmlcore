@@ -33,20 +33,6 @@ Activity {
 		}
 	}
 
-	// MenuButton {
-	// 	id: menuButton;
-	// 	anchors.top: parent.top;
-	// 	anchors.left: parent.left;
-	// 	opacity: parent.hasAnyActiveChild ? 1 : 0;
-
-	// 	onClicked: {
-	// 		if (mainMenu.active)
-	// 			mainMenu.stop();
-	// 		else
-	// 			mainMenu.start();
-	// 	}
-	// }
-
 	MainMenu {
 		id: mainMenu;
 		anchors.left: parent.left;
@@ -54,14 +40,14 @@ Activity {
 		anchors.bottom: parent.bottom;
 
 		onOptionChoosed(option): {
-			if (option == "Телегид")
+			if (option == "epg")
 				epgPanel.start();
-			else if (option == "Список каналов")
-				channalsPanel.start();
+			else if (option == "channelList")
+				channelsPanel.start();
 		}
 	}
 
-	ChannelsPanel { id: channalsPanel; }
+	ChannelsPanel { id: channelsPanel; }
 	EPGPanel { id: epgPanel; }
 	VODPanel { id: vodPanel; }
 

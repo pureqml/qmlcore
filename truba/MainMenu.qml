@@ -47,6 +47,17 @@ Activity {
 		}
 
 		MenuButton {
+			id: movies;
+			anchors.left: parent.left;
+			height: 120;
+			width: parent.width;
+			source: "res/pipeline.png";
+			text: "Кино";
+
+			onTriggered: { mainMenuProto.optionChoosed("movies"); }
+		}
+
+		MenuButton {
 			id: settings;
 			anchors.left: parent.left;
 			height: 120;

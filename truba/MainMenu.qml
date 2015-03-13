@@ -9,6 +9,7 @@ Activity {
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		source: "res/trubaback.png";
+		text: "TRUBA\.TV";
 
 		onClicked: {
 			if (this.parent.active)
@@ -23,67 +24,37 @@ Activity {
 		width: parent.active ? 240 : 0;
 		spacing: 8;
 
-		FocusablePanel {
+		MenuButton {
 			id: channelList;
 			anchors.left: parent.left;
 			height: 120;
 			width: parent.width;
-			clip: true;
+			source: "res/pipeline.png";
+			text: "Список каналов";
 
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.right: parent.right;
-				horizontalAlignment: 2;
-				text: "Список каналов";
-				font.pointSize: 20;
-				color: "white";
-			}
-
-			onSelectPressed: { mainMenuProto.optionChoosed("Список каналов"); }
-			onClicked: { mainMenuProto.optionChoosed("Список каналов"); }
+			onTriggered: { mainMenuProto.optionChoosed("Список каналов"); }
 		}
 
-		FocusablePanel {
+		MenuButton {
 			id: epg;
 			anchors.left: parent.left;
 			height: 120;
 			width: parent.width;
-			clip: true;
+			source: "res/pipeline.png";
+			text: "Телегид";
 
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.right: parent.right;
-				horizontalAlignment: 2;
-				text: "Телегид";
-				font.pointSize: 20;
-				color: "white";
-			}
-
-			onSelectPressed: { mainMenuProto.optionChoosed("Телегид"); }
-			onClicked: { mainMenuProto.optionChoosed("Телегид"); }
+			onTriggered: { mainMenuProto.optionChoosed("Телегид"); }
 		}
 
-		FocusablePanel {
+		MenuButton {
 			id: settings;
 			anchors.left: parent.left;
 			height: 120;
 			width: parent.width;
-			clip: true;
+			source: "res/pipeline.png";
+			text: "Настройки";
 
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.right: parent.right;
-				horizontalAlignment: 2;
-				text: "Настройки";
-				font.pointSize: 20;
-				color: "white";
-			}
-
-			onSelectPressed: { mainMenuProto.optionChoosed("Настройки"); }
-			onClicked: { mainMenuProto.optionChoosed("Настройки"); }
+			onTriggered: { mainMenuProto.optionChoosed("Настройки"); }
 		}
 
 		Behavior on width { Animation { duration: 300; } }

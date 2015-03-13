@@ -7,6 +7,8 @@ Activity {
 		id: menuButton;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
+		source: "res/pipeline.png";
+		text: "TRUBA\.TV";
 
 		onClicked: {
 			this.parent.menuCalled();

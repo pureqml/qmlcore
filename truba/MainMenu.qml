@@ -32,7 +32,7 @@ Activity {
 			source: "res/pipeline.png";
 			text: "Список каналов";
 
-			onTriggered: { mainMenuProto.optionChoosed("Список каналов"); }
+			onTriggered: { mainMenuProto.optionChoosed("channelList"); }
 		}
 
 		MenuButton {
@@ -43,7 +43,7 @@ Activity {
 			source: "res/pipeline.png";
 			text: "Телегид";
 
-			onTriggered: { mainMenuProto.optionChoosed("Телегид"); }
+			onTriggered: { mainMenuProto.optionChoosed("epg"); }
 		}
 
 		MenuButton {
@@ -54,7 +54,7 @@ Activity {
 			source: "res/pipeline.png";
 			text: "Настройки";
 
-			onTriggered: { mainMenuProto.optionChoosed("Настройки"); }
+			onTriggered: { mainMenuProto.optionChoosed("settings"); }
 		}
 
 		Behavior on width { Animation { duration: 300; } }

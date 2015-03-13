@@ -1,9 +1,13 @@
 Activity {
+	id: channelsPanelProto;
+	property Protocol protocol;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 	anchors.left: parent.left;
 	active: false;
 	opacity: active ? 1.0 : 0.0;
+
+	CategoriesModel { id: categoriesModel; protocol: channelsPanelProto.protocol; }
 
 	Rectangle {
 		anchors.fill: channelsPanelChannels;
@@ -63,6 +67,11 @@ Activity {
 		}
 
 		onRightPressed: { channelsPanelChannels.forceActiveFocus(); }
+	}
+
+	onActiveChanged: {
+		if (this.active)
+			categoriesModel.update();
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

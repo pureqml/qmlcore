@@ -1,6 +1,6 @@
 FocusablePanel {
-	width: 240;
-	height: 90;
+	width: 260;
+	height: 100;
 	clip: true;
 
 	property string source;

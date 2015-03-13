@@ -10,7 +10,7 @@ Activity {
 		source: "res/pipeline.png";
 		text: "TRUBA\.TV";
 
-		onClicked: {
+		onTriggered: {
 			this.parent.menuCalled();
 		}
 	}

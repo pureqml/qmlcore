@@ -60,7 +60,7 @@ for opt in "$@"; do
 			compiler -o app core controls truba platform/html5
 		;;
 		truba-html5)
-			compiler -o app core controls platform/html5
+			compiler -o app core controls truba platform/html5
 			minify
 			package html5
 		;;

@@ -7,6 +7,7 @@ Activity {
 	anchors.topMargin: 42;
 
 	ColorTheme { id: colorTheme; }
+	Protocol { id: protocol; enabled: true; }
 
 	MouseArea {
 		anchors.fill: renderer;
@@ -51,7 +52,7 @@ Activity {
 		}
 	}
 
-	ChannelsPanel { id: channelsPanel; }
+	ChannelsPanel { id: channalsPanel; protocol: parent.protocol; }
 	EPGPanel { id: epgPanel; }
 	VODPanel { id: vodPanel; }
 

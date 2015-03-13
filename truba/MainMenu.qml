@@ -11,9 +11,8 @@ Activity {
 		source: "res/trubaback.png";
 		text: "TRUBA\.TV";
 
-		onClicked: {
-			if (this.parent.active)
-				this.parent.stop();
+		onTriggered: {
+			this.parent.stop();
 		}
 	}
 
@@ -21,13 +20,12 @@ Activity {
 		anchors.left: parent.left;
 		anchors.top: menuButton.bottom;
 		anchors.topMargin: 20;
-		width: parent.active ? 240 : 0;
-		spacing: 8;
+		width: parent.active ? 260 : 0;
+		spacing: 4;
 
 		MenuButton {
 			id: channelList;
 			anchors.left: parent.left;
-			height: 120;
 			width: parent.width;
 			source: "res/pipeline.png";
 			text: "Список каналов";
@@ -38,7 +36,6 @@ Activity {
 		MenuButton {
 			id: epg;
 			anchors.left: parent.left;
-			height: 120;
 			width: parent.width;
 			source: "res/pipeline.png";
 			text: "Телегид";
@@ -49,7 +46,6 @@ Activity {
 		MenuButton {
 			id: movies;
 			anchors.left: parent.left;
-			height: 120;
 			width: parent.width;
 			source: "res/pipeline.png";
 			text: "Кино";
@@ -60,7 +56,6 @@ Activity {
 		MenuButton {
 			id: settings;
 			anchors.left: parent.left;
-			height: 120;
 			width: parent.width;
 			source: "res/pipeline.png";
 			text: "Настройки";

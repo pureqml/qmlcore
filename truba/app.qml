@@ -52,7 +52,7 @@ Activity {
 		}
 	}
 
-	ChannelsPanel { id: channalsPanel; protocol: parent.protocol; }
+	ChannelsPanel { id: channelsPanel; protocol: parent.protocol; }
 	EPGPanel { id: epgPanel; }
 	VODPanel { id: vodPanel; }
 

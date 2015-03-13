@@ -63,7 +63,9 @@ Activity {
 
 	ChannelsPanel { id: channalsPanel; }
 	EPGPanel { id: epgPanel; }
+	VODPanel { id: vodPanel; }
 
+	onRedPressed: { vodPanel.start(); }
 	onBluePressed: { infoPanel.start(); }
 	onGreenPressed: { channalsPanel.start(); }
 	onYellowPressed: { epgPanel.start(); }

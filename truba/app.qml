@@ -40,10 +40,14 @@ Activity {
 		anchors.bottom: parent.bottom;
 
 		onOptionChoosed(option): {
-			if (option == "epg")
+			if (option === "epg")
 				epgPanel.start();
-			else if (option == "channelList")
+			else if (option === "channelList")
 				channelsPanel.start();
+			else if (option === "movies")
+				vodPanel.start();
+			// else if (option === "settings")
+			// 	settings.start();
 		}
 	}
 

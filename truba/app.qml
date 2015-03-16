@@ -6,6 +6,12 @@ Activity {
 	anchors.bottomMargin: 40;
 	anchors.topMargin: 42;
 
+	VideoPlayer {
+		id: videoPlayer;
+		anchors.fill: renderer;
+		source: "http://hlsstr02.svc.iptv.rt.ru/hls/CH_1TV/variant.m3u8?version=2";
+		autoPlay: true;
+	}
 	ColorTheme { id: colorTheme; }
 	Protocol { id: protocol; enabled: true; }
 

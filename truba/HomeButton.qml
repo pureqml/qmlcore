@@ -1,7 +1,6 @@
 BaseButton {
-	width: 100;
-	height: 100;
-	radius: height / 2;
+	width: 260;
+	height: 80;
 
 	property string source;
 	property string text;

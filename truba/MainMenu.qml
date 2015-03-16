@@ -11,7 +11,7 @@ Item {
 		id: menuButton;
 		anchors.left: parent.left;
 		anchors.top: parent.top;
-		height: 80;
+		height: 70;
 		text: "Truba\.TV";
 		z: 10;
 
@@ -21,8 +21,21 @@ Item {
 			}
 			else {
 				mainMenuProto.open = false;
-				mainMenuProto.closeAll();
 			}
+		}
+	}
+
+	MenuButton {
+		id: exitButton;
+		anchors.right: parent.right;
+		anchors.top: parent.top;
+		height: 70;
+		text: "Exit";
+		z: 10;
+
+		onTriggered: {
+			mainMenuProto.open = false;
+			mainMenuProto.closeAll();
 		}
 	}
 

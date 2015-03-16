@@ -4,7 +4,7 @@ Activity {
 	// anchors.leftMargin: 75;
 	// anchors.rightMargin: 75;
 	// anchors.bottomMargin: 40;
-	// anchors.topMargin: 42;
+	anchors.topMargin: 70;
 
 	VideoPlayer {
 		id: videoPlayer;
@@ -51,7 +51,8 @@ Activity {
 	MainMenu {
 		id: mainMenu;
 		anchors.left: parent.left;
-		anchors.top: parent.top;
+		anchors.right: parent.right;
+		anchors.top: renderer.top;
 	 	active: parent.hasAnyActiveChild;
 
 		onOptionChoosed(option): {
@@ -66,7 +67,10 @@ Activity {
 		}
 
 		onCloseAll: {
-			infoPanel.start();
+			if (infoPanel.active)
+				infoPanel.stop();
+			else
+				infoPanel.start();
 		}
 	}
 

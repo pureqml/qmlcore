@@ -1,15 +1,38 @@
-Activity {
+Item {
 	id: mainMenuProto;
 	signal optionChoosed;
+	signal closeAll;
 	name: "mainMenu";
-	opacity: active ? 1.0 : 0.0;
+	property bool active;
+	property bool open;
+	opacity: active ? 1 : 0;
+
+	MenuButton {
+		id: menuButton;
+		anchors.left: parent.left;
+		anchors.top: parent.top;
+		height: 80;
+		text: "Truba\.TV";
+		z: 10;
+
+		onTriggered: {
+			if (!mainMenuProto.open) {
+				mainMenuProto.open = true;
+			}
+			else {
+				mainMenuProto.open = false;
+				mainMenuProto.closeAll();
+			}
+		}
+	}
 
 	Column{
 		anchors.left: parent.left;
-		anchors.top: parent.top;
-		anchors.topMargin: 20;
-		width: parent.active ? 260 : 0;
-		spacing: 4;
+		anchors.top: menuButton.bottom;
+		anchors.topMargin: mainMenuProto.open && mainMenuProto.active ? 2 : -500;
+		width: 260;
+		spacing: 2;
+		z: 9;
 
 		MenuButton {
 			id: channelList;
@@ -18,7 +41,7 @@ Activity {
 			source: "res/pipeline.png";
 			text: "Список каналов";
 
-			onTriggered: { mainMenuProto.optionChoosed("channelList"); }
+			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("channelList"); }
 		}
 
 		MenuButton {
@@ -38,7 +61,7 @@ Activity {
 			source: "res/pipeline.png";
 			text: "Кино";
 
-			onTriggered: { mainMenuProto.optionChoosed("movies"); }
+			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("movies"); }
 		}
 
 		MenuButton {
@@ -48,10 +71,10 @@ Activity {
 			source: "res/pipeline.png";
 			text: "Настройки";
 
-			onTriggered: { mainMenuProto.optionChoosed("settings"); }
+			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("settings"); }
 		}
 
-		Behavior on width { Animation { duration: 300; } }
+		Behavior on y { Animation { duration: 200; } }
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

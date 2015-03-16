@@ -1,10 +1,10 @@
 Activity {
 	id: mainWindow;
 	anchors.fill: renderer;
-	anchors.leftMargin: 75;
-	anchors.rightMargin: 75;
-	anchors.bottomMargin: 40;
-	anchors.topMargin: 42;
+	// anchors.leftMargin: 75;
+	// anchors.rightMargin: 75;
+	// anchors.bottomMargin: 40;
+	// anchors.topMargin: 42;
 
 	VideoPlayer {
 		id: videoPlayer;
@@ -38,12 +38,21 @@ Activity {
 		onMenuCalled: { mainMenu.start(); }
 	}
 
+	ChannelsPanel {
+		id: channelsPanel;
+		protocol: parent.protocol;
+
+		onChannelSwitched(url): { videoPlayer.source = url; }
+	}
+
+	EPGPanel { id: epgPanel; }
+	VODPanel { id: vodPanel; }
 
 	MainMenu {
 		id: mainMenu;
 		anchors.left: parent.left;
-		anchors.top: homeButton.bottom;
-		anchors.bottom: parent.bottom;
+		anchors.top: parent.top;
+	 	active: parent.hasAnyActiveChild;
 
 		onOptionChoosed(option): {
 			if (option === "epg")
@@ -55,30 +64,9 @@ Activity {
 			// else if (option === "settings")
 			// 	settings.start();
 		}
-	}
 
-	ChannelsPanel {
-		id: channelsPanel;
-		protocol: parent.protocol;
-
-		onChannelSwitched(url): { videoPlayer.source = url; }
-	}
-
-	EPGPanel { id: epgPanel; }
-	VODPanel { id: vodPanel; }
-
-	HomeButton {
-		id: homeButton;
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		visible: parent.hasAnyActiveChild;
-		z: 100;
-
-		onTriggered: {
-			if (mainMenu.active)
-				mainMenu.stop();
-			else
-				mainMenu.start();
+		onCloseAll: {
+			infoPanel.start();
 		}
 	}
 

@@ -1,5 +1,6 @@
 Activity {
 	id: channelsPanelProto;
+	signal channelSwitched;
 	property Protocol protocol;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
@@ -8,6 +9,7 @@ Activity {
 	opacity: active ? 1.0 : 0.0;
 
 	CategoriesModel { id: categoriesModel; protocol: channelsPanelProto.protocol; }
+	ChannelsModel { id: channelsModel; protocol: channelsPanelProto.protocol; }
 
 	Rectangle {
 		anchors.fill: channelsPanelChannels;
@@ -18,9 +20,10 @@ Activity {
 		id: channelsPanelChannels;
 		anchors.left: channelsPanelCategories.left;
 		anchors.leftMargin: 50;
-		model: ListModel {}
+		model: channelsModel;
 
 		onLeftPressed: { channelsPanelCategories.forceActiveFocus(); }
+		onSelectPressed: { channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
 	}
 
 	Rectangle {
@@ -38,32 +41,15 @@ Activity {
 
 	CategoriesList {
 		id: channelsPanelCategories;
-		model: ListModel {
-			property string text;
-			property string source;
+		model: categoriesModel;
 
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			//ListElement { text: "ololo"; source: "res/scrambled.png"; }
-		}
-
-		onCurrentIndexChanged: {
-			//var list = [
-				//{ text: "ololo", source: "res/scrambled.png" },
-				//{ text: "ololo", source: "res/scrambled.png" },
-				//{ text: "ololo", source: "res/scrambled.png" },
-				//{ text: "ololo", source: "res/scrambled.png" },
-				//{ text: "ololo", source: "res/scrambled.png" },
-				//{ text: "ololo", source: "res/scrambled.png" }
-			//]; 
-			//channelsPanelChannels.setList(list);
+		onCountChanged: {
+			if (this.count == 1) {
+				var self = this;
+				categoriesModel.getList(function(res) {
+					self.channelsModel.setList(res);
+				})
+			}
 		}
 
 		onRightPressed: { channelsPanelChannels.forceActiveFocus(); }

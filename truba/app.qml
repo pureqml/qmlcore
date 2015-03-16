@@ -12,6 +12,7 @@ Activity {
 		source: "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
 	}
+
 	ColorTheme { id: colorTheme; }
 	Protocol { id: protocol; enabled: true; }
 
@@ -30,14 +31,11 @@ Activity {
 		}
 	}
 
-
 	InfoPanel {
 		id: infoPanel;
 		anchors.fill: parent;
 
-		onMenuCalled: {
-			mainMenu.start();
-		}
+		onMenuCalled: { mainMenu.start(); }
 	}
 
 	MainMenu {
@@ -58,7 +56,13 @@ Activity {
 		}
 	}
 
-	ChannelsPanel { id: channelsPanel; protocol: parent.protocol; }
+	ChannelsPanel {
+		id: channelsPanel;
+		protocol: parent.protocol;
+
+		onChannelSwitched(url): { videoPlayer.source = url; }
+	}
+
 	EPGPanel { id: epgPanel; }
 	VODPanel { id: vodPanel; }
 

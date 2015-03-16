@@ -4,10 +4,12 @@ MouseArea {
 	clip: true;
 	property Color color: activeFocus ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 	hoverEnabled: recursiveVisible;
+	property real radius;
 
 	Rectangle {
 		anchors.fill: parent;
 		color: parent.color;
+		radius: parent.radius;
 
 		Behavior on color	{ ColorAnimation { duration: 300; } }
 	}

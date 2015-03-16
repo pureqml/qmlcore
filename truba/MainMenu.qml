@@ -64,7 +64,7 @@ Item {
 			source: "res/pipeline.png";
 			text: "Телегид";
 
-			onTriggered: { mainMenuProto.optionChoosed("epg"); }
+			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("epg"); }
 		}
 
 		MenuButton {

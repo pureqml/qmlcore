@@ -452,7 +452,7 @@ exports._setup = function() {
 	_globals.core.Item.prototype._processKey = function (event) {
 		if (this.focusedChild && this.focusedChild._processKey(event))
 			return true;
-
+		log("event.which: " + event.which);
 		var key = keyCodes[event.which];
 		if (key) {
 			if (key in this._pressedHandlers) {

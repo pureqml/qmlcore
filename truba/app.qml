@@ -38,10 +38,11 @@ Activity {
 		onMenuCalled: { mainMenu.start(); }
 	}
 
+
 	MainMenu {
 		id: mainMenu;
 		anchors.left: parent.left;
-		anchors.top: parent.top;
+		anchors.top: homeButton.bottom;
 		anchors.bottom: parent.bottom;
 
 		onOptionChoosed(option): {
@@ -65,6 +66,21 @@ Activity {
 
 	EPGPanel { id: epgPanel; }
 	VODPanel { id: vodPanel; }
+
+	HomeButton {
+		id: homeButton;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		visible: parent.hasAnyActiveChild;
+		z: 100;
+
+		onTriggered: {
+			if (mainMenu.active)
+				mainMenu.stop();
+			else
+				mainMenu.start();
+		}
+	}
 
 	onRedPressed: { vodPanel.start(); }
 	onBluePressed: { infoPanel.start(); }

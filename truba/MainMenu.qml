@@ -4,21 +4,9 @@ Activity {
 	name: "mainMenu";
 	opacity: active ? 1.0 : 0.0;
 
-	MenuButton {
-		id: menuButton;
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		source: "res/trubaback.png";
-		text: "TRUBA\.TV";
-
-		onTriggered: {
-			this.parent.stop();
-		}
-	}
-
 	Column{
 		anchors.left: parent.left;
-		anchors.top: menuButton.bottom;
+		anchors.top: parent.top;
 		anchors.topMargin: 20;
 		width: parent.active ? 260 : 0;
 		spacing: 4;

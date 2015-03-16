@@ -1,12 +1,9 @@
-FocusablePanel {
+BaseButton {
 	width: 260;
 	height: 100;
-	clip: true;
 
 	property string source;
 	property string text;
-
-	signal triggered;
 
 	Image {
 		id: buttonImage;
@@ -26,7 +23,4 @@ FocusablePanel {
 		color: "white";
 		wrap: true;
 	}
-
-	onSelectPressed: { this.triggered(); }
-	onClicked: { this.triggered(); }
 }

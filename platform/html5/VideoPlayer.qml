@@ -56,6 +56,9 @@ Item {
 	}
 
 	onCompleted: {
+		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
+			this.flash = false
+
 		if (!this.flash) {
 			this._player = $('<video preload="metadata" width="' + this.width +
 				'" height="' + this.height +

@@ -1,14 +1,19 @@
 ListModel {
 	property Protocol protocol;
 
-	update: {
+
+	getList(callback): {
 		if (!this.protocol)
-			return
-	
-		var self = this;
+			return;
+
 		this.protocol.getChannels(function(res) {
-			//log("res " + res);
+			callback(res);
 		})
+	}
+
+	update: {
+		this.clear();
+		this.append({ text: "Все", source: "res/scrambled.png" });
 	}
 
 	onProtocolChanged: { this.update(); }

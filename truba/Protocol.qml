@@ -36,9 +36,10 @@ Object {
 		var self = this;
 
 		var do_request = function() {
-			log("UR11L : "  + url);
 			self.requestImpl(url, data, function(res) {
-				if (self.checkResponse(url, res, do_request))
+				if (res.error)
+					log("Request failed: " + res.error.message);
+				else
 					callback(res)
 			}, type, {})
 		}
@@ -46,12 +47,5 @@ Object {
 		do_request()
 	}
 
-	onCompleted: {
-		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0 || qml.core.vendor == 'samsung')
-			this.baseUrl = "http://truba.tv:8080/api/";
-		else
-			this.baseUrl = "https://truba.tv:8080/api/";
-
-		log("URL: " + this.baseUrl);
-	}
+	onCompleted: { this.baseUrl = "http://truba.tv/api/"; }
 }

@@ -9,7 +9,7 @@ Activity {
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.fill: renderer;
-		source: "http://hlsstr02.svc.iptv.rt.ru/hls/CH_1TV/variant.m3u8?version=2";
+		source: "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
 	}
 	ColorTheme { id: colorTheme; }

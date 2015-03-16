@@ -23,7 +23,9 @@ Activity {
 		model: channelsModel;
 
 		onLeftPressed: { channelsPanelCategories.forceActiveFocus(); }
-		onSelectPressed: { channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
+		switchTuCurrent: { channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
+		onSelectPressed: { this.switchTuCurrent(); }
+		onClicked: { this.switchTuCurrent(); }
 	}
 
 	Rectangle {

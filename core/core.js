@@ -1208,12 +1208,6 @@ exports._setup = function() {
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		var self = this;
 		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
-
-		$(document).ready(function() {
-			document.addEventListener("backbutton", function() {
-				self._processKey({ which: 27 });
-			}, false);
-		});
 	}
 
 	_globals.core.core.Context.prototype._onCompleted = function(callback) {

@@ -11,7 +11,7 @@ Activity {
 	}
 
 	onStopped: {
-		window.location.href = this.originalLocation;
+//		window.location.href = this.originalLocation; //this one causes page reload 
 		log("Change location to: " + window.location);
 	}
 

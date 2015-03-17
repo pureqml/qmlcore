@@ -11,7 +11,7 @@ MouseArea {
 		color: parent.color;
 		radius: parent.radius;
 
-		Behavior on color	{ ColorAnimation { duration: 300; } }
+		Behavior on color	{ ColorAnimation { duration: 250; } }
 	}
 
 	onEntered: { 
@@ -19,6 +19,6 @@ MouseArea {
 			this.forceActiveFocus(); 
 	}
 
-	Behavior on opacity	{ Animation { duration: 300; } }
-	Behavior on height	{ Animation { duration: 300; } }
+	Behavior on opacity	{ Animation { duration: 250; } }
+	Behavior on height	{ Animation { duration: 250; } }
 }

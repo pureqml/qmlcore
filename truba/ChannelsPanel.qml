@@ -1,4 +1,4 @@
-Activity {
+FragmentActivity {
 	id: channelsPanelProto;
 	signal channelSwitched;
 	property Protocol protocol;
@@ -7,6 +7,7 @@ Activity {
 	anchors.left: parent.left;
 	active: false;
 	opacity: active ? 1.0 : 0.0;
+	name: "channelspart";
 
 	CategoriesModel { id: categoriesModel; protocol: channelsPanelProto.protocol; }
 	ChannelsModel { id: channelsModel; protocol: channelsPanelProto.protocol; }

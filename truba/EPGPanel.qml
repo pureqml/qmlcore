@@ -1,7 +1,8 @@
-Activity {
+FragmentActivity {
 	anchors.fill: parent;
 	active: false;
 	opacity: active ? 1.0 : 0.0;
+	name: "epgpanel";
 
 	Rectangle {
 		anchors.fill: epgPanelChannels;

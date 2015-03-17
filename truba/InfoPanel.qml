@@ -37,12 +37,20 @@ Activity {
 		onLeftPressed: { channelInfo.forceActiveFocus(); }
 	}
 
-	FocusablePanel {
+	BaseButton {
 		id: options;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
 		height: 100;
 		width: 100;
+
+		Text {
+			anchors.centerIn: parent;
+			text: "Fullscreen";
+			color: "white";
+		}
+
+		onTriggered: {}
 
 		onRightPressed: { channelInfo.forceActiveFocus(); }
 		onLeftPressed: { programInfo.forceActiveFocus(); }

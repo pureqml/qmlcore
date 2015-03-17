@@ -1,6 +1,6 @@
 BaseButton {
 	width: 260;
-	height: 100;
+	height: 80;
 
 	property string source;
 	property string text;
@@ -15,11 +15,10 @@ BaseButton {
 
 	Text {
 		anchors.verticalCenter: parent.verticalCenter;
-		anchors.right: parent.right;
 		anchors.left: buttonImage.right;
-		horizontalAlignment: Text.AlignHCenter;
+		anchors.leftMargin: 8;
 		text: parent.text;
-		font.pointSize: 20;
+		font.pointSize: 18;
 		color: "white";
 		wrap: true;
 	}

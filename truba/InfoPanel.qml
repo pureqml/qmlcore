@@ -46,16 +46,8 @@ Activity {
 
 		Text {
 			anchors.centerIn: parent;
-			text: "Fullscreen";
+			text: "Options";
 			color: "white";
-		}
-
-		onTriggered: {
-			console.log("entering fullscreen mode");
-			if (renderer.inFullscreenMode())
-				renderer.exitFullscreenMode();
-			else
-				renderer.enterFullscreenMode();
 		}
 
 		onRightPressed: { channelInfo.forceActiveFocus(); }

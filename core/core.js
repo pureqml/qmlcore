@@ -1247,6 +1247,13 @@ exports._setup = function() {
 			console.log("no exitFullscreen api")
 	}
 
+	_globals.core.core.Context.prototype.inFullscreenMode = function() {
+		return !!(document.fullscreenElement ||    // alternative standard method
+			document.mozFullScreenElement ||
+			document.webkitFullscreenElement ||
+			document.msFullscreenElement)
+	}
+
 	_globals.core.core.Context.prototype._completed = function() {
 		if (!this._started)
 			return

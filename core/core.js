@@ -452,7 +452,6 @@ exports._setup = function() {
 	_globals.core.Item.prototype._processKey = function (event) {
 		if (this.focusedChild && this.focusedChild._processKey(event))
 			return true;
-		log("event.which: " + event.which);
 		var key = keyCodes[event.which];
 		if (key) {
 			if (key in this._pressedHandlers) {
@@ -1210,7 +1209,11 @@ exports._setup = function() {
 		var self = this;
 		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
 
-		//log("context created");
+		$(document).ready(function() {
+			document.addEventListener("backbutton", function() {
+				self._processKey({ which: 27 });
+			}, false);
+		});
 	}
 
 	_globals.core.core.Context.prototype._onCompleted = function(callback) {

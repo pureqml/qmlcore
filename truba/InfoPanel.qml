@@ -50,7 +50,10 @@ Activity {
 			color: "white";
 		}
 
-		onTriggered: {}
+		onTriggered: {
+			console.log("entering fullscreen mode")
+			renderer.enterFullscreenMode()
+		}
 
 		onRightPressed: { channelInfo.forceActiveFocus(); }
 		onLeftPressed: { programInfo.forceActiveFocus(); }

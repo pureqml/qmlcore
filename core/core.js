@@ -1220,6 +1220,33 @@ exports._setup = function() {
 		this._completedHandlers.push(callback);
 	}
 
+	_globals.core.core.Context.prototype.enterFullscreenMode = function() {
+		var elem = this.element.get(0)
+		if (elem.requestFullscreen)
+			elem.requestFullscreen()
+		else if (elem.msRequestFullscreen)
+			elem.msRequestFullscreen()
+		else if (elem.mozRequestFullScreen)
+			elem.mozRequestFullScreen()
+		else if (elem.webkitRequestFullscreen)
+			elem.webkitRequestFullscreen()
+		else
+			console.log("no requestFullscreen api: ", elem)
+	}
+
+	_globals.core.core.Context.prototype.exitFullscreenMode = function() {
+		if (document.exitFullscreen)
+			document.exitFullscreen()
+		else if (document.msExitFullscreen)
+			document.msExitFullscreen();
+		else if (document.mozCancelFullScreen)
+			document.mozCancelFullScreen()
+		else if (document.webkitExitFullscreen)
+			document.webkitExitFullscreen()
+		else
+			console.log("no exitFullscreen api")
+	}
+
 	_globals.core.core.Context.prototype._completed = function() {
 		if (!this._started)
 			return

@@ -1,4 +1,4 @@
-FragmentActivity {
+Activity {
 	id: channelsPanelProto;
 	signal channelSwitched;
 	property Protocol protocol;

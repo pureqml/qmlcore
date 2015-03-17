@@ -51,8 +51,11 @@ Activity {
 		}
 
 		onTriggered: {
-			console.log("entering fullscreen mode")
-			renderer.enterFullscreenMode()
+			console.log("entering fullscreen mode");
+			if (renderer.inFullscreenMode())
+				renderer.exitFullscreenMode();
+			else
+				renderer.enterFullscreenMode();
 		}
 
 		onRightPressed: { channelInfo.forceActiveFocus(); }

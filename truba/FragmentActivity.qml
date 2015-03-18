@@ -11,8 +11,10 @@ Activity {
 	}
 
 	onStopped: {
-//		window.location.href = this.originalLocation; //this one causes page reload 
-		log("Change location to: " + window.location);
+		if (window.location.href != this.originalLocation) {
+			window.location.href = this.originalLocation;
+			log("Change location to: " + window.location);
+		}
 	}
 
 	updateLocation: { 
@@ -21,6 +23,11 @@ Activity {
 	}
 
 	onCompleted: {
+		if (!this.parent.parent) {
+			this.originalLocation = window.location.href.substring(0, window.location.href.length);
+			window.location.href += "#" + this.name;
+			log("Change location to: " + window.location.href);
+		}
 		var self = this;
 		$(window).on('popstate', function(e) {
 			if (self.active)

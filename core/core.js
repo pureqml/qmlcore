@@ -738,8 +738,8 @@ exports._setup = function() {
 			case 'verticalAlignment':
 				switch(value) {
 				case this.AlignTop:		this.element.css('margin-top', 0); break
-				case this.AlignBottom:	this.element.css('margin-top', this.element.height() - this.paintedHeight); break
-				case this.AlignVCenter:	this.element.css('margin-top', (this.element.height() - this.paintedHeight) / 2); break
+				case this.AlignBottom:	this.element.css('margin-top', this.parent.element.height() - this.paintedHeight); break
+				case this.AlignVCenter:	this.element.css('margin-top', (this.parent.element.height() - this.paintedHeight) / 2); break
 				}
 				break
 		}

@@ -23,7 +23,7 @@ Activity {
 	}
 
 	onCompleted: {
-		if (!this.parent.parent) {
+		if (!this.parent.parent && window.location.href.indexOf(this.name) < 0) {
 			this.originalLocation = window.location.href.substring(0, window.location.href.length);
 			window.location.href += "#" + this.name;
 			log("Change location to: " + window.location.href);

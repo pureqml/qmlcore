@@ -18,7 +18,7 @@ Item {
 	}
 
 	closeAll: {
-		var childrens = this.parent.children;
+		var childrens = this.parent ? this.parent.children : this.children;
 		for (var i in childrens)
 			if (this != childrens[i] && this.isActivity(childrens[i]))
 				childrens[i].stop();

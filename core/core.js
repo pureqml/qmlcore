@@ -735,11 +735,12 @@ exports._setup = function() {
 				case this.AlignHCenter:	this.element.css('text-align', 'center'); break
 				case this.AlignJustify:	this.element.css('text-align', 'justify'); break
 				}
+				break
 			case 'verticalAlignment':
 				switch(value) {
 				case this.AlignTop:		this.element.css('margin-top', 0); break
-				case this.AlignBottom:	this.element.css('margin-top', this.parent.element.height() - this.paintedHeight); break
-				case this.AlignVCenter:	this.element.css('margin-top', (this.parent.element.height() - this.paintedHeight) / 2); break
+				case this.AlignBottom:	this.element.css('margin-top', this.height - this.paintedHeight); break
+				case this.AlignVCenter:	this.element.css('margin-top', (this.height - this.paintedHeight) / 2); break
 				}
 				break
 		}

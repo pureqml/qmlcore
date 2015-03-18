@@ -1,11 +1,10 @@
 BaseButton {
-	width: 140;
 	height: 60;
 	property string text;
-//	width: internalText.width + 30; //causes page crash 
+	width: innerText.width + height / 2;
 
 	Text {
-		id: internalText;
+		id: innerText;
 		anchors.centerIn: parent;
 		text: parent.text;
 		font.pointSize: 16;

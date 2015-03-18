@@ -4,111 +4,40 @@ Item {
 	signal closeAll;
 	name: "mainMenu";
 	property bool active;
-	property bool open;
 	opacity: active ? 1 : 0;
 
-	onActiveChanged: {
-		if (!this.active)
-			this.open = false;
-	}
+	Row {
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		anchors.right: fullscreenButton.left;
+		height: 60;
 
-	Column{
-		anchors.top: menuButton.bottom;
-		x: mainMenuProto.open && mainMenuProto.active ? 0 : -width;
-		anchors.topMargin: mainMenuProto.open && mainMenuProto.active ? 2 : -500;
-		width: 240;
-
-		MenuButton {
+		TextButton {
 			id: channelList;
-			anchors.left: parent.left;
-			width: parent.width;
-			source: "res/pipeline.png";
 			text: "Каналы";
 
-			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("channelList"); }
+			onTriggered: { mainMenuProto.optionChoosed("channelList"); }
 		}
 
-		MenuButton {
+		TextButton {
 			id: epg;
-			anchors.left: parent.left;
-			width: parent.width;
-			source: "res/pipeline.png";
 			text: "Телегид";
 
-			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("epg"); }
+			onTriggered: { mainMenuProto.optionChoosed("epg"); }
 		}
 
-		MenuButton {
+		TextButton {
 			id: movies;
-			anchors.left: parent.left;
-			width: parent.width;
-			source: "res/pipeline.png";
 			text: "Кино";
 
-			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("movies"); }
+			onTriggered: { mainMenuProto.optionChoosed("movies"); }
 		}
 
-		MenuButton {
+		TextButton {
 			id: settings;
-			anchors.left: parent.left;
-			width: parent.width;
-			source: "res/pipeline.png";
 			text: "Настройки";
 
-			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("settings"); }
-		}
-
-		Behavior on x { Animation { duration: 250; } }
-	}
-
-	FocusablePanel {
-		id: menuButton;
-		anchors.left: parent.left;
-		anchors.top: parent.top;
-		height: 60;
-		width: 180;
-		focusOnHover: true;
-
-		Text {
-			anchors.verticalCenter: parent.verticalCenter;
-			anchors.left: parent.left;
-			anchors.leftMargin: 20;
-			font.pointSize: 18;
-			text: "Truba\.TV";
-			color: "white";
-		}
-
-		Rectangle {
-			anchors.right: parent.right;
-			anchors.rightMargin: 20;
-			anchors.top: parent.top;
-			anchors.topMargin: 20;
-			width: 25;
-			height: 2;
-			color: "white";
-		}
-
-		Rectangle {
-			anchors.right: parent.right;
-			anchors.rightMargin: 20;
-			anchors.verticalCenter: parent.verticalCenter;
-			width: 25;
-			height: 2;
-			color: "white";
-		}
-
-		Rectangle {
-			anchors.right: parent.right;
-			anchors.rightMargin: 20;
-			anchors.bottom: parent.bottom;
-			anchors.bottomMargin: 20;
-			width: 25;
-			height: 2;
-			color: "white";
-		}
-
-		onClicked: {
-			mainMenuProto.open = !mainMenuProto.open;
+			onTriggered: { mainMenuProto.optionChoosed("settings"); }
 		}
 	}
 
@@ -117,11 +46,10 @@ Item {
 		anchors.right: exitButton.left;
 		anchors.top: parent.top;
 		height: 60;
-		width: 145;
 		focusOnHover: true;
 		text: "Fullscreen";
 
-		onClicked: {
+		onTriggered: {
 			console.log("entering fullscreen mode");
 			if (renderer.inFullscreenMode())
 				renderer.exitFullscreenMode();
@@ -135,12 +63,10 @@ Item {
 		anchors.right: parent.right;
 		anchors.top: parent.top;
 		height: 60;
+		focusOnHover: true;
 		text: "Exit";
 
-		onClicked: {
-			mainMenuProto.open = false;
-			mainMenuProto.closeAll();
-		}
+		onTriggered: { mainMenuProto.closeAll(); }
 	}
 
 	Behavior on opacity { Animation { duration: 250; } }

@@ -54,7 +54,7 @@ FragmentActivity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.top: renderer.top;
-	 	active: parent.hasAnyActiveChild || open;
+	 	active: parent.hasAnyActiveChild;
 	 	z: 10;
 
 		onOptionChoosed(option): {

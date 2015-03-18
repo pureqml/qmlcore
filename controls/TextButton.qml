@@ -7,7 +7,7 @@ BaseButton {
 	Text {
 		id: internalText;
 		anchors.fill: parent;
-		horizontalAlignment: 2;
+		horizontalAlignment: Text.AlignHCenter;
 		verticalAlignment: Text.AlignVCenter;
 		text: parent.text;
 		font.pointSize: 16;

@@ -13,11 +13,10 @@ Item {
 	}
 
 	Column{
-		anchors.left: parent.left;
-		anchors.top: panelRect.bottom;
+		anchors.top: menuButton.bottom;
+		x: mainMenuProto.open && mainMenuProto.active ? 0 : -width;
 		anchors.topMargin: mainMenuProto.open && mainMenuProto.active ? 2 : -500;
-		width: 260;
-		spacing: 2;
+		width: 240;
 
 		MenuButton {
 			id: channelList;
@@ -59,132 +58,90 @@ Item {
 			onTriggered: { mainMenuProto.open = false; mainMenuProto.optionChoosed("settings"); }
 		}
 
-		Behavior on y { Animation { duration: 250; } }
+		Behavior on x { Animation { duration: 250; } }
 	}
 
-	Rectangle {
-		id: panelRect;
+	FocusablePanel {
+		id: menuButton;
+		anchors.left: parent.left;
 		anchors.top: parent.top;
-		anchors.left: parent.left;
-		anchors.right: parent.right;
 		height: 60;
-		color: "#424242";
+		width: 180;
+		focusOnHover: true;
 
-		FocusablePanel {
-			id: menuButton;
+		Text {
+			anchors.verticalCenter: parent.verticalCenter;
 			anchors.left: parent.left;
-			anchors.top: parent.top;
-			anchors.bottom: parent.bottom;
-			width: 180;
-			color: containsMouse ? "#212121" : "#424242";
-
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.leftMargin: 20;
-				font.pointSize: 18;
-				text: "Truba\.TV";
-				color: parent.containsMouse ? "red" : "white";
-				Behavior on color	{ ColorAnimation { duration: 250; } }
-			}
-
-			Rectangle {
-				anchors.right: parent.right;
-				anchors.rightMargin: 20;
-				anchors.top: parent.top;
-				anchors.topMargin: 20;
-				width: 25;
-				height: 2;
-				color: parent.containsMouse ? "red" : "white";
-				Behavior on color	{ ColorAnimation { duration: 250; } }
-			}
-
-			Rectangle {
-				anchors.right: parent.right;
-				anchors.rightMargin: 20;
-				anchors.verticalCenter: parent.verticalCenter;
-				width: 25;
-				height: 2;
-				color: parent.containsMouse ? "red" : "white";
-				Behavior on color	{ ColorAnimation { duration: 250; } }
-			}
-
-			Rectangle {
-				anchors.right: parent.right;
-				anchors.rightMargin: 20;
-				anchors.bottom: parent.bottom;
-				anchors.bottomMargin: 20;
-				width: 25;
-				height: 2;
-				color: parent.containsMouse ? "red" : "white";
-				Behavior on color	{ ColorAnimation { duration: 250; } }
-			}
-
-			onClicked: {
-				mainMenuProto.open = !mainMenuProto.open;
-			}
+			anchors.leftMargin: 20;
+			font.pointSize: 18;
+			text: "Truba\.TV";
+			color: "white";
 		}
 
-		FocusablePanel {
-			id: fullscreenButton;
-			anchors.right: exitButton.left;
-			anchors.top: parent.top;
-			anchors.bottom: parent.bottom;
-			width: 145;
-			color: containsMouse ? "#212121" : "#424242";
-
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.right: parent.right;
-				anchors.rightMargin: 18;
-				font.pointSize: 16;
-				text: "Fullscreen";
-				color: parent.containsMouse ? "red" : "white";
-				Behavior on color	{ ColorAnimation { duration: 250; } }
-			}
-
-			onClicked: {
-				console.log("entering fullscreen mode");
-				if (renderer.inFullscreenMode())
-					renderer.exitFullscreenMode();
-				else
-					renderer.enterFullscreenMode();
-			}
-		}
-
-		FocusablePanel {
-			id: exitButton;
+		Rectangle {
 			anchors.right: parent.right;
+			anchors.rightMargin: 20;
 			anchors.top: parent.top;
+			anchors.topMargin: 20;
+			width: 25;
+			height: 2;
+			color: "white";
+		}
+
+		Rectangle {
+			anchors.right: parent.right;
+			anchors.rightMargin: 20;
+			anchors.verticalCenter: parent.verticalCenter;
+			width: 25;
+			height: 2;
+			color: "white";
+		}
+
+		Rectangle {
+			anchors.right: parent.right;
+			anchors.rightMargin: 20;
 			anchors.bottom: parent.bottom;
-			width: 78;
-			color: containsMouse ? "#212121" : "#424242";
+			anchors.bottomMargin: 20;
+			width: 25;
+			height: 2;
+			color: "white";
+		}
 
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.right: parent.right;
-				anchors.rightMargin: 18;
-				font.pointSize: 16;
-				text: "Exit";
-				color: parent.containsMouse ? "red" : "white";
-				Behavior on color	{ ColorAnimation { duration: 250; } }
-			}
-
-			onClicked: {
-				mainMenuProto.open = false;
-				mainMenuProto.closeAll();
-			}
+		onClicked: {
+			mainMenuProto.open = !mainMenuProto.open;
 		}
 	}
 
-	Rectangle {
-		anchors.left: parent.left;
-		anchors.right: parent.right;
-		anchors.top: panelRect.bottom;
-		width: 1;
-		color: "#F5F5F5";
+	TextButton {
+		id: fullscreenButton;
+		anchors.right: exitButton.left;
+		anchors.top: parent.top;
+		height: 60;
+		width: 145;
+		focusOnHover: true;
+		text: "Fullscreen";
+
+		onClicked: {
+			console.log("entering fullscreen mode");
+			if (renderer.inFullscreenMode())
+				renderer.exitFullscreenMode();
+			else
+				renderer.enterFullscreenMode();
+		}
 	}
 
+	TextButton {
+		id: exitButton;
+		anchors.right: parent.right;
+		anchors.top: parent.top;
+		height: 60;
+		text: "Exit";
+
+		onClicked: {
+			mainMenuProto.open = false;
+			mainMenuProto.closeAll();
+		}
+	}
 
 	Behavior on opacity { Animation { duration: 250; } }
 }

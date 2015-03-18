@@ -1,6 +1,6 @@
 BaseButton {
-	width: 260;
-	height: 80;
+	width: 240;
+	height: 70;
 
 	property string source;
 	property string text;

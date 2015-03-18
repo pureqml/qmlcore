@@ -10,12 +10,16 @@ Item {
 	property real mouseX;
 	property real mouseY;
 	property bool pressed;
+	property string cursorUrl: "res/mouse.png";
 
 	onContainsMouseChanged: {
-		if (value)
+		if (value) {
+			this.element.css('cursor', 'url("' + this.cursorUrl + '"), auto' );
 			this.entered()
-		else
+		} else {
+			this.element.css('cursor', 'default');
 			this.exited()
+		}
 	}
 
 	onRecursiveVisibleChanged: {

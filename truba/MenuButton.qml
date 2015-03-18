@@ -1,6 +1,6 @@
 BaseButton {
-	width: 240;
-	height: 70;
+	width: innerText.width * 2;
+	height: 60;
 
 	property string source;
 	property string text;
@@ -14,6 +14,7 @@ BaseButton {
 	}
 
 	Text {
+		id: innerText;
 		anchors.verticalCenter: parent.verticalCenter;
 		anchors.left: buttonImage.right;
 		anchors.leftMargin: 8;

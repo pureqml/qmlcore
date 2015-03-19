@@ -1,18 +1,9 @@
 ListView {
-	width: 600;
+	height: 50;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
-	anchors.bottom: parent.bottom;
-	clip: true;
+	anchors.right: parent.right;
+	spacing: 2;
+	orientation: ListView.Horizontal;
 	delegate: IconTextDelegate { }
-
-	setList(list): {
-		var model = this.model;
-		model.clear();
-
-		for (var i in list)
-			model.append(list[i]);
-
-		this.currentIndex = 0;
-	}
 }

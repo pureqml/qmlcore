@@ -1,8 +1,5 @@
-FragmentActivity {
+Item {
 	anchors.fill: parent;
-	active: false;
-	opacity: active ? 1.0 : 0.0;
-	name: "vodpanel";
 
 	GridView {
 		anchors.centerIn: parent;

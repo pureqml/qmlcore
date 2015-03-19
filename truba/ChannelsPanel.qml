@@ -1,41 +1,11 @@
-FragmentActivity {
+Item {
 	id: channelsPanelProto;
 	signal channelSwitched;
 	property Protocol protocol;
-	anchors.top: parent.top;
-	anchors.bottom: parent.bottom;
-	anchors.left: parent.left;
-	active: false;
-	opacity: active ? 1.0 : 0.0;
-	name: "channelspart";
+	anchors.fill: parent;
 
 	CategoriesModel { id: categoriesModel; protocol: channelsPanelProto.protocol; }
 	ChannelsModel { id: channelsModel; protocol: channelsPanelProto.protocol; }
-
-	Rectangle {
-		anchors.fill: channelsPanelChannels;
-		color: colorTheme.backgroundColor;
-	}
-
-	ChannelsList {
-		id: channelsPanelChannels;
-		anchors.left: channelsPanelCategories.left;
-		anchors.leftMargin: 50;
-		model: channelsModel;
-
-		onLeftPressed: { channelsPanelCategories.forceActiveFocus(); }
-		switchTuCurrent: { channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
-		onSelectPressed: { this.switchTuCurrent(); }
-		onClicked: { this.switchTuCurrent(); }
-	}
-
-	Rectangle {
-		anchors.fill: channelsPanelChannels;
-		color: "#000";
-		opacity: channelsPanelChannels.activeFocus ? 0.0 : 0.6;
-
-		Behavior on opacity { Animation { duration: 300; } }
-	}
 
 	Rectangle {
 		anchors.fill: channelsPanelCategories;
@@ -55,12 +25,25 @@ FragmentActivity {
 			}
 		}
 
-		onRightPressed: { channelsPanelChannels.forceActiveFocus(); }
+		onDownPressed: { channelsPanelChannels.forceActiveFocus(); }
+		onUpPressed: { channelsPanelProto.toMenuReturned(); }
 	}
 
-	onActiveChanged: {
-		if (this.active)
-			categoriesModel.update();
+	Rectangle {
+		anchors.fill: channelsPanelChannels;
+		color: colorTheme.backgroundColor;
+	}
+
+	ChannelsList {
+		id: channelsPanelChannels;
+		anchors.top: channelsPanelCategories.bottom;
+		anchors.topMargin: 1;
+		model: channelsModel;
+
+		onUpPressed: { channelsPanelCategories.forceActiveFocus(); }
+		switchTuCurrent: { channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
+		onSelectPressed: { this.switchTuCurrent(); }
+		onClicked: { this.switchTuCurrent(); }
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

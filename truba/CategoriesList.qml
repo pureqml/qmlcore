@@ -1,8 +1,9 @@
 ListView {
-	width: activeFocus ? 300 : 50;
+	height: 50;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
-	anchors.bottom: parent.bottom;
+	anchors.right: parent.right;
+	orientation: ListView.Horizontal;
 	clip: true;
 	delegate: IconTextDelegate { }
 

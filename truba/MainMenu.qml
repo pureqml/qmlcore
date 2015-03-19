@@ -5,39 +5,40 @@ Item {
 	name: "mainMenu";
 	property bool active;
 	opacity: active ? 1 : 0;
+	height: 60;
 
 	Row {
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.right: fullscreenButton.left;
-		height: 60;
+		height: parent.height;
 
 		TextButton {
 			id: channelList;
 			text: "Каналы";
 
-			onTriggered: { mainMenuProto.optionChoosed("channelList"); }
+			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("channelList"); }
 		}
 
 		TextButton {
 			id: epg;
 			text: "Телегид";
 
-			onTriggered: { mainMenuProto.optionChoosed("epg"); }
+			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("epg"); }
 		}
 
 		TextButton {
 			id: movies;
 			text: "Кино";
 
-			onTriggered: { mainMenuProto.optionChoosed("movies"); }
+			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("movies"); }
 		}
 
 		TextButton {
 			id: settings;
 			text: "Настройки";
 
-			onTriggered: { mainMenuProto.optionChoosed("settings"); }
+			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("settings"); }
 		}
 	}
 

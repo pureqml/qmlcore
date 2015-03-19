@@ -39,16 +39,6 @@ FragmentActivity {
 		onMenuCalled: { mainMenu.start(); }
 	}
 
-	ChannelsPanel {
-		id: channelsPanel;
-		protocol: parent.protocol;
-
-		onChannelSwitched(url): { videoPlayer.source = url; }
-	}
-
-	EPGPanel { id: epgPanel; }
-	VODPanel { id: vodPanel; }
-
 	MainMenu {
 		id: mainMenu;
 		anchors.left: parent.left;
@@ -59,14 +49,16 @@ FragmentActivity {
 
 		onOptionChoosed(option): {
 			if (option === "epg")
-				epgPanel.start();
+				mainPageStack.currentIndex = 1;
 			else if (option === "channelList")
-				channelsPanel.start();
+				mainPageStack.currentIndex = 0;
 			else if (option === "movies")
-				vodPanel.start();
-			// else if (option === "settings")
-			// 	settings.start();
+				mainPageStack.currentIndex = 2;
+			else if (option === "settings")
+				mainPageStack.currentIndex = 3;
 		}
+
+		onDownPressed: { mainPageStack.forceActiveFocus(); }
 
 		onCloseAll: {
 			if (infoPanel.active)
@@ -74,6 +66,29 @@ FragmentActivity {
 			else
 				infoPanel.start();
 		}
+	}
+
+	PageStack {
+		id: mainPageStack;
+		anchors.top: mainMenu.bottom;
+		anchors.bottom: parent.bottom;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+		anchors.topMargin: 1;
+		visible: mainMenu.activeFocus || activeFocus;
+
+		ChannelsPanel {
+			id: channelsPanel;
+			protocol: parent.protocol;
+
+			onChannelSwitched(url): { videoPlayer.source = url; }
+		}
+
+		EPGPanel { id: epgPanel; }
+		VODPanel { id: vodPanel; }
+		SettingsPanel { }
+
+		onUpPressed: { mainMenu.forceActiveFocus(); }
 	}
 
 	onRedPressed: { vodPanel.start(); }

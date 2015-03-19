@@ -1,10 +1,11 @@
 Rectangle {
-	width: parent.width;
+	width: delegateText.paintedWidth + delegateIcon.paintedWidth + 30;
 	color: activeFocus ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 	height: 50;
 	clip: true;
 
 	Text {
+		id: delegateText;
 		anchors.left: parent.left;
 		anchors.right: delegateIcon.left;
 		anchors.verticalCenter: parent.verticalCenter;

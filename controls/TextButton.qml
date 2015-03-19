@@ -1,11 +1,13 @@
 BaseButton {
 	height: 60;
 	property string text;
-	width: innerText.width + height / 2;
+	width: innerText.paintedWidth + height / 2;
 
 	Text {
 		id: innerText;
-		anchors.centerIn: parent;
+		anchors.fill: parent;
+		verticalAlignment: Text.AlignVCenter;
+		horizontalAlignment: Text.AlignHCenter;
 		text: parent.text;
 		font.pointSize: 16;
 		color: "white";

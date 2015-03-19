@@ -14,7 +14,10 @@ Item {
 
 	onContainsMouseChanged: {
 		if (value) {
-			this.element.css('cursor', 'url("' + this.cursorUrl + '"), auto' );
+			if (this.cursorUrl)
+				this.element.css('cursor', 'url("' + this.cursorUrl + '"), auto' );
+			else
+				this.element.css('cursor', 'pointer');
 			this.entered()
 		} else {
 			this.element.css('cursor', 'default');

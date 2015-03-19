@@ -721,6 +721,11 @@ exports._setup = function() {
 		this.element.css('height', oldH)
 		this.paintedWidth = w;
 		this.paintedHeight = h;
+		switch(this.verticalAlignment) {
+		case this.AlignTop:		this.element.css('margin-top', 0); break
+		case this.AlignBottom:	this.element.css('margin-top', this.height - this.paintedHeight); break
+		case this.AlignVCenter:	this.element.css('margin-top', (this.height - this.paintedHeight) / 2); break
+		}
 	}
 
 	_globals.core.Text.prototype._update = function(name, value) {
@@ -728,19 +733,13 @@ exports._setup = function() {
 			case 'text': this.element.text(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
+			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
 				switch(value) {
 				case this.AlignLeft:	this.element.css('text-align', 'left'); break
 				case this.AlignRight:	this.element.css('text-align', 'right'); break
 				case this.AlignHCenter:	this.element.css('text-align', 'center'); break
 				case this.AlignJustify:	this.element.css('text-align', 'justify'); break
-				}
-				break
-			case 'verticalAlignment':
-				switch(value) {
-				case this.AlignTop:		this.element.css('margin-top', 0); break
-				case this.AlignBottom:	this.element.css('margin-top', this.height - this.paintedHeight); break
-				case this.AlignVCenter:	this.element.css('margin-top', (this.height - this.paintedHeight) / 2); break
 				}
 				break
 		}

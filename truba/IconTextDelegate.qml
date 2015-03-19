@@ -1,6 +1,6 @@
-Rectangle {
+BaseButton {
 	width: delegateText.paintedWidth + delegateIcon.paintedWidth + 30;
-	color: activeFocus ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
+//	color: activeFocus ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 	height: 50;
 	clip: true;
 
@@ -23,6 +23,4 @@ Rectangle {
 		anchors.rightMargin: 10;
 		source: model.source;
 	}
-
-	Behavior on color { ColorAnimation { duration: 300; } }
 }

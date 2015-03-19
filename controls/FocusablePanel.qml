@@ -22,5 +22,5 @@ MouseArea {
 	}
 
 	Behavior on opacity	{ Animation { duration: 250; } }
-	Behavior on height	{ Animation { duration: 250; } }
+	Behavior on color { ColorAnimation { duration: 300; } }
 }

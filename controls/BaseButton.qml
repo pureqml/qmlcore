@@ -2,6 +2,13 @@ FocusablePanel {
 	signal triggered;
 	clip: true;
 
-	onSelectPressed: { this.triggered(); }
-	onClicked: { this.triggered(); }	
+	onSelectPressed: { 
+		this.makeBlink();
+		this.triggered(); 
+	}
+
+	onClicked: { 
+		this.makeBlink();
+		this.triggered(); 
+	}	
 }

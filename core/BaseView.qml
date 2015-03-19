@@ -1,4 +1,5 @@
 Item {
+	id: baseViewProto;
 	property Object model;
 	property Item delegate;
 
@@ -130,6 +131,11 @@ Item {
 
 		onClicked: {
 			this.parent.clicked();
+		}
+
+		onEntered: {
+			baseViewProto.forceActiveFocus();
+			baseViewProto.focusCurrent()
 		}
 
 		z: parent.dragEnabled? parent.z + 1: -1000;

@@ -1,7 +1,11 @@
 Activity {
+	id: infoPanelProto;
+	signal menuCalled;
+	property string channelIcon;
+	property string channelName;
+	property int channelNumber;
 	name: "infoPanel";
 	opacity: active ? 1.0 : 0.0;
-	signal menuCalled;
 
 	Timer {
 		id: hideTimer;
@@ -20,6 +24,11 @@ Activity {
 		height: activeFocus ? 200 : 100;
 		width: 240;
 
+		Image {
+			anchors.centerIn: parent;
+			source: infoPanelProto.channelIcon;
+		}
+
 		onRightPressed: { programInfo.forceActiveFocus(); }
 		onLeftPressed: { options.forceActiveFocus(); }
 	}
@@ -32,6 +41,15 @@ Activity {
 		anchors.rightMargin: 8;
 		anchors.bottom: parent.bottom;
 		height: activeFocus ? 200 : 100;
+
+		Text {
+			anchors.top: parent.top;
+			anchors.left: parent.left;
+			anchors.margins: 10;
+			text: infoPanelProto.channelName;
+			font.pointSize: 24;
+			color: colorTheme.textColor;
+		}
 
 		onRightPressed: { options.forceActiveFocus(); }
 		onLeftPressed: { channelInfo.forceActiveFocus(); }
@@ -52,6 +70,16 @@ Activity {
 
 		onRightPressed: { channelInfo.forceActiveFocus(); }
 		onLeftPressed: { programInfo.forceActiveFocus(); }
+	}
+
+	fillChannelInfo(channel): {
+		if (!channel) {
+			log("InfoPanel: Empty channel info.");
+			return;
+		}
+
+		this.channelIcon = channel.source;
+		this.channelName = channel.text;
 	}
 
 	onActiveChanged: {

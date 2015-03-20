@@ -36,7 +36,7 @@ Item {
 		model: channelsModel;
 
 		onUpPressed:		{ channelsPanelCategories.forceActiveFocus(); }
-		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
+		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
 		onSelectPressed:	{ this.switchTuCurrent(); }
 		onClicked:			{ this.switchTuCurrent(); }
 	}

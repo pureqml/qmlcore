@@ -68,7 +68,14 @@ Activity {
 			id: channelsPanel;
 			protocol: parent.protocol;
 
-			onChannelSwitched(url): { videoPlayer.source = url; }
+			onChannelSwitched(channel): {
+				if (!channel) {
+					log("App: Empty channel info.");
+					return;
+				}
+				videoPlayer.source = channel.url;
+				infoPanel.fillChannelInfo(channel);
+			}
 		}
 
 		EPGPanel { id: epgPanel; }

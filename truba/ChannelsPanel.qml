@@ -35,10 +35,10 @@ Item {
 		anchors.topMargin: 1;
 		model: channelsModel;
 
-		onUpPressed: { channelsPanelCategories.forceActiveFocus(); }
-		switchTuCurrent: { channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
-		onSelectPressed: { this.switchTuCurrent(); }
-		onClicked: { this.switchTuCurrent(); }
+		onUpPressed:		{ channelsPanelCategories.forceActiveFocus(); }
+		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex).url); }
+		onSelectPressed:	{ this.switchTuCurrent(); }
+		onClicked:			{ this.switchTuCurrent(); }
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

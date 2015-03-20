@@ -20,12 +20,12 @@ Activity {
 
 		onMouseXChanged: { 
 			if (this.hoverEnabled)
-				infoPanel.start();
+				infoPanel.active = true;
 		}
 
 		onMouseYChanged: {
 			if (this.hoverEnabled) 
-				infoPanel.start();
+				infoPanel.active = true;
 		}
 	}
 
@@ -41,18 +41,13 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.top: renderer.top;
-		active: parent.hasAnyActiveChild || mainPageStack.activeFocus;
+		active: infoPanel.active || mainPageStack.activeFocus;
 	 	z: 10;
 
 		onDownPressed: { mainPageStack.forceActiveFocus(); }
 		onOptionChoosed(idx): { mainPageStack.currentIndex = idx; }
 
-		onCloseAll: {
-			if (infoPanel.active)
-				infoPanel.stop();
-			else
-				infoPanel.start();
-		}
+		onCloseAll: { infoPanel.active = !infoPanel.active; }
 	}
 
 	PageStack {
@@ -75,6 +70,7 @@ Activity {
 				}
 				videoPlayer.source = channel.url;
 				infoPanel.fillChannelInfo(channel);
+				infoPanel.active = true;
 			}
 		}
 
@@ -91,7 +87,7 @@ Activity {
 	}
 
 	onBluePressed: {
-		infoPanel.start();
+		infoPanel.active = true;
 	}
 
 	onGreenPressed: {

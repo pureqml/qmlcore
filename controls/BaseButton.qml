@@ -32,6 +32,7 @@ FocusablePanel {
 	onSelectPressed: { 
 		this.makeBlink();
 		this.triggered(); 
+		event.accepted = false;
 	}
 
 	onClicked: { 

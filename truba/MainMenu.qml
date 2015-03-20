@@ -23,7 +23,9 @@ Item {
 			ListElement { text: "Настройки"; }
 		}
 		delegate: TextButton { text: model.text; }
-		onClicked: { mainMenuProto.optionChoosed(this.currentIndex); }
+
+		onClicked:			{ mainMenuProto.optionChoosed(this.currentIndex); }
+		onSelectPressed:	{ mainMenuProto.optionChoosed(this.currentIndex); }
 	}
 
 	TextButton {

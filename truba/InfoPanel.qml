@@ -1,9 +1,10 @@
-Activity {
+Item {
 	id: infoPanelProto;
 	signal menuCalled;
 	property string channelIcon;
 	property string channelName;
 	property int channelNumber;
+	property bool active;
 	name: "infoPanel";
 	opacity: active ? 1.0 : 0.0;
 
@@ -12,9 +13,7 @@ Activity {
 		interval: 10000;
 		running: true;
 
-		onTriggered: {
-			this.parent.stop();
-		}
+		onTriggered: { this.parent.active = false; }
 	}
 
 	FocusablePanel {
@@ -82,21 +81,9 @@ Activity {
 		this.channelName = channel.text;
 	}
 
-	onActiveChanged: {
-		if (this.active) {
-			channelInfo.forceActiveFocus();
-			hideTimer.restart();
-		} else {
-			hideTimer.stop();
-		}
-	}
-
-	onBluePressed: {
-		if (this.active)
-			this.stop();
-		else
-			this.start();
-	}
+	onActiveFocusChanged:	{ channelInfo.forceActiveFocus(); }
+	onActiveChanged:		{ hideTimer.active = this.active; }
+	onBluePressed:			{ this.active = !this.active; }
 
 	Behavior on opacity	{ Animation { duration: 300; } }
 }

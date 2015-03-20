@@ -57,7 +57,7 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 1;
-		visible: mainMenu.activeFocus || activeFocus;
+		visible: mainMenu.active && (mainMenu.activeFocus || activeFocus);
 
 		ChannelsPanel {
 			id: channelsPanel;

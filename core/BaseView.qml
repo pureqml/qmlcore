@@ -1,5 +1,4 @@
 Item {
-	id: baseViewProto;
 	property Object model;
 	property Item delegate;
 
@@ -100,6 +99,10 @@ Item {
 		}
 
 		onMouseXChanged: {
+			var idx = this.parent.indexAt(this.mouseX, this.mouseY)
+			if (this.parent._items[idx] instanceof qml.core.MouseArea)
+				this.parent._items[idx].entered();
+
 			if (!this.pressed)
 				return
 			var dx = this.mouseX - this._x
@@ -113,6 +116,10 @@ Item {
 		}
 
 		onMouseYChanged: {
+			var idx = this.parent.indexAt(this.mouseX, this.mouseY)
+			if (this.parent._items[idx] instanceof qml.core.MouseArea)
+				this.parent._items[idx].entered();
+
 			if (!this.pressed)
 				return
 			var dy = this.mouseY - this._y
@@ -134,8 +141,8 @@ Item {
 		}
 
 		onEntered: {
-			baseViewProto.forceActiveFocus();
-			baseViewProto.focusCurrent()
+			this.parent.forceActiveFocus();
+			this.parent.focusCurrent()
 		}
 
 		z: parent.dragEnabled? parent.z + 1: -1000;

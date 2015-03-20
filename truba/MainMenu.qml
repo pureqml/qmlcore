@@ -1,45 +1,28 @@
 Item {
 	id: mainMenuProto;
-	signal optionChoosed;
 	signal closeAll;
-	name: "mainMenu";
 	property bool active;
+	property alias currentIndex: mainManuListView.currentIndex;
+	name: "mainMenu";
 	opacity: active ? 1 : 0;
 	height: 60;
 
-	Row {
+	ListView {
+		id: mainManuListView;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.right: fullscreenButton.left;
 		height: parent.height;
+		orientation: ListView.Horizontal;
+		model: ListModel {
+			property string text;
 
-		TextButton {
-			id: channelList;
-			text: "Каналы";
-
-			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("channelList"); }
+			ListElement { text: "Каналы"; }
+			ListElement { text: "Телегид"; }
+			ListElement { text: "Кино"; }
+			ListElement { text: "Настройки"; }
 		}
-
-		TextButton {
-			id: epg;
-			text: "Телегид";
-
-			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("epg"); }
-		}
-
-		TextButton {
-			id: movies;
-			text: "Кино";
-
-			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("movies"); }
-		}
-
-		TextButton {
-			id: settings;
-			text: "Настройки";
-
-			onActiveFocusChanged: { if (this.activeFocus) mainMenuProto.optionChoosed("settings"); }
-		}
+		delegate: TextButton { text: model.text; }
 	}
 
 	TextButton {

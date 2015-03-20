@@ -44,17 +44,6 @@ Activity {
 	 	active: parent.hasAnyActiveChild;
 	 	z: 10;
 
-		onOptionChoosed(option): {
-			if (option === "epg")
-				mainPageStack.currentIndex = 1;
-			else if (option === "channelList")
-				mainPageStack.currentIndex = 0;
-			else if (option === "movies")
-				mainPageStack.currentIndex = 2;
-			else if (option === "settings")
-				mainPageStack.currentIndex = 3;
-		}
-
 		onDownPressed: { mainPageStack.forceActiveFocus(); }
 
 		onCloseAll: {
@@ -72,6 +61,7 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 1;
+		currentIndex: mainMenu.currentIndex;
 		visible: mainMenu.activeFocus || activeFocus;
 
 		ChannelsPanel {
@@ -88,8 +78,22 @@ Activity {
 		onUpPressed: { mainMenu.forceActiveFocus(); }
 	}
 
-	onRedPressed: { vodPanel.start(); }
-	onBluePressed: { infoPanel.start(); }
-	onGreenPressed: { channelsPanel.start(); }
-	onYellowPressed: { epgPanel.start(); }
+	onRedPressed: {
+		mainPageStack.currentIndex = 2;
+		mainPageStack.forceActiveFocus();
+	}
+
+	onBluePressed: {
+		infoPanel.start();
+	}
+
+	onGreenPressed: {
+		mainPageStack.currentIndex = 0;
+		mainPageStack.forceActiveFocus();
+	}
+
+	onYellowPressed: {
+		mainPageStack.currentIndex = 1;
+		mainPageStack.forceActiveFocus();
+	}
 }

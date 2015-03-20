@@ -33,8 +33,13 @@ Item {
 		anchors.right: exitButton.left;
 		anchors.top: parent.top;
 		height: 60;
+		width: 100;
 		focusOnHover: true;
-		text: "Fullscreen";
+
+		Image {
+			anchors.centerIn: parent;
+			source: "res/fullscreen.png";
+		}
 
 		onTriggered: {
 			console.log("entering fullscreen mode");
@@ -50,8 +55,13 @@ Item {
 		anchors.right: parent.right;
 		anchors.top: parent.top;
 		height: 60;
+		width: 100;
 		focusOnHover: true;
-		text: "Exit";
+
+		Image {
+			anchors.centerIn: parent;
+			source: "res/close.png";
+		}
 
 		onTriggered: { mainMenuProto.closeAll(); }
 	}

@@ -45,6 +45,7 @@ Activity {
 	 	z: 10;
 
 		onDownPressed: { mainPageStack.forceActiveFocus(); }
+		onOptionChoosed(idx): { mainPageStack.currentIndex = idx; }
 
 		onCloseAll: {
 			if (infoPanel.active)
@@ -61,7 +62,6 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 1;
-		currentIndex: mainMenu.currentIndex;
 		visible: mainMenu.activeFocus || activeFocus;
 
 		ChannelsPanel {

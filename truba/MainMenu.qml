@@ -1,8 +1,8 @@
 Item {
 	id: mainMenuProto;
 	signal closeAll;
+	signal optionChoosed;
 	property bool active;
-	property alias currentIndex: mainManuListView.currentIndex;
 	name: "mainMenu";
 	opacity: active ? 1 : 0;
 	height: 60;
@@ -23,6 +23,7 @@ Item {
 			ListElement { text: "Настройки"; }
 		}
 		delegate: TextButton { text: model.text; }
+		onClicked: { mainMenuProto.optionChoosed(this.currentIndex); }
 	}
 
 	TextButton {

@@ -29,11 +29,6 @@ Item {
 		onUpPressed: { channelsPanelProto.toMenuReturned(); }
 	}
 
-	Rectangle {
-		anchors.fill: channelsPanelChannels;
-		color: colorTheme.backgroundColor;
-	}
-
 	ChannelsList {
 		id: channelsPanelChannels;
 		anchors.top: channelsPanelCategories.bottom;

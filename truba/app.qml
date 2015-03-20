@@ -41,7 +41,7 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.top: renderer.top;
-	 	active: parent.hasAnyActiveChild;
+		active: parent.hasAnyActiveChild || mainPageStack.activeFocus;
 	 	z: 10;
 
 		onDownPressed: { mainPageStack.forceActiveFocus(); }

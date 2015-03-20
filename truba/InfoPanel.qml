@@ -55,11 +55,12 @@ Activity {
 	}
 
 	onActiveChanged: {
-		if (this.active)
+		if (this.active) {
+			channelInfo.forceActiveFocus();
 			hideTimer.restart();
-		else
+		} else {
 			hideTimer.stop();
-		channelInfo.forceActiveFocus();
+		}
 	}
 
 	onBluePressed: {

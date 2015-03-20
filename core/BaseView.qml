@@ -138,6 +138,8 @@ Item {
 
 		onClicked: {
 			this.parent.clicked();
+			if (this.parent._items[this.parent.currentIndex] instanceof qml.core.MouseArea)
+				this.parent._items[this.parent.currentIndex].clicked();
 		}
 
 		onEntered: {

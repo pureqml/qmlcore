@@ -11,7 +11,7 @@ Item {
 		id: mainManuListView;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
-		anchors.right: fullscreenButton.left;
+		anchors.right: searchButton.left;
 		height: parent.height;
 		orientation: ListView.Horizontal;
 		model: ListModel {
@@ -26,6 +26,24 @@ Item {
 
 		onClicked:			{ mainMenuProto.optionChoosed(this.currentIndex); }
 		onSelectPressed:	{ mainMenuProto.optionChoosed(this.currentIndex); }
+	}
+
+	TextButton {
+		id: searchButton;
+		anchors.right: fullscreenButton.left;
+		anchors.top: parent.top;
+		height: 60;
+		width: 100;
+		focusOnHover: true;
+
+		Image {
+			anchors.centerIn: parent;
+			source: "res/search.png";
+		}
+
+		onTriggered: {
+			console.log("not implemented");
+		}
 	}
 
 	TextButton {

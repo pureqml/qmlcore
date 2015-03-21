@@ -2,6 +2,8 @@ Item {
 	id: threeDotsTextProto;
 	property string text;
 	property color color;
+	property int pointSize;
+	property bool reachedParentWidth: width < elipsisInnerText.paintedWidth;
 	height: elipsisInnerText.paintedHeight;
 	anchors.left: parent.left;
 	anchors.right: parent.right;
@@ -11,6 +13,7 @@ Item {
 		anchors.fill: parent;
 		color: threeDotsTextProto.color;
 		text: threeDotsTextProto.text;
+		font.pointSize: threeDotsTextProto.pointSize;
 	}
 
 	onTextChanged: {

@@ -1,10 +1,11 @@
 Item {
 	id: infoPanelProto;
 	signal menuCalled;
-	property string channelIcon;
-	property string channelName;
-	property int channelNumber;
-	property bool active;
+	property color	channelColor;
+	property string	channelIcon;
+	property string	channelName;
+	property int	channelNumber;
+	property bool	active;
 	name: "infoPanel";
 	opacity: active ? 1.0 : 0.0;
 
@@ -21,6 +22,7 @@ Item {
 		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
 		height: activeFocus ? 200 : 100;
+		color: infoPanelProto.channelColor;
 		width: 240;
 
 		Image {
@@ -78,6 +80,7 @@ Item {
 		}
 
 		this.channelIcon = channel.source;
+		this.channelColor = channel.color;
 		this.channelName = channel.text;
 	}
 

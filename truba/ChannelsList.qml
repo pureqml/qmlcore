@@ -33,12 +33,16 @@ ListView {
 			visible: !delegateText.reachedParentWidth;
 		}
 
-		Image {
-			id: delegateIcon;
+		Item {
 			anchors.top: parent.top;
+			anchors.bottom: parent.bottom;
+			anchors.bottomMargin: 20;
 			anchors.horizontalCenter: parent.horizontalCenter;
-			anchors.topMargin: 10;
-			source: model.source;
+
+			Image {
+				anchors.centerIn: parent;
+				source: model.source;
+			}
 		}
 	}
 }

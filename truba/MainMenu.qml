@@ -2,6 +2,7 @@ Item {
 	id: mainMenuProto;
 	signal closeAll;
 	signal optionChoosed;
+	signal searchCalled;
 	property bool active;
 	name: "mainMenu";
 	opacity: active ? 1 : 0;
@@ -41,9 +42,7 @@ Item {
 			source: "res/search.png";
 		}
 
-		onTriggered: {
-			console.log("not implemented");
-		}
+		onTriggered: { mainMenuProto.searchCalled(); }
 	}
 
 	TextButton {

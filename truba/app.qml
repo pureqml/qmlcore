@@ -47,6 +47,12 @@ Activity {
 		onDownPressed: { mainPageStack.forceActiveFocus(); }
 		onOptionChoosed(idx): { mainPageStack.currentIndex = idx; }
 
+		onSearchCalled: {
+			this.active = false;
+			infoPanel.active = false;
+			searchPanel.start();
+		}
+
 		onCloseAll: { infoPanel.active = !infoPanel.active; }
 	}
 
@@ -63,15 +69,7 @@ Activity {
 			id: channelsPanel;
 			protocol: parent.protocol;
 
-			onChannelSwitched(channel): {
-				if (!channel) {
-					log("App: Empty channel info.");
-					return;
-				}
-				videoPlayer.source = channel.url;
-				infoPanel.fillChannelInfo(channel);
-				infoPanel.active = true;
-			}
+			onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		}
 
 		EPGPanel { id: epgPanel; }
@@ -79,6 +77,23 @@ Activity {
 		SettingsPanel { }
 
 		onUpPressed: { mainMenu.forceActiveFocus(); }
+	}
+
+	SearchPanel {
+		id: searchPanel;
+		protocol: parent.protocol;
+
+		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
+	}
+
+	switchToChannel(channel): {
+		if (!channel) {
+			log("App: Empty channel info.");
+			return;
+		}
+		videoPlayer.source = channel.url;
+		infoPanel.fillChannelInfo(channel);
+		infoPanel.active = true;
 	}
 
 	onRedPressed: {

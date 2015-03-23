@@ -45,7 +45,15 @@ Activity {
 	 	z: 10;
 
 		onDownPressed: { mainPageStack.forceActiveFocus(); }
-		onOptionChoosed(idx): { mainPageStack.currentIndex = idx; }
+		onOptionChoosed(idx): {
+			if (idx !== mainPageStack.currentIndex || !mainPageStack.active) {
+				mainPageStack.active = true;
+				mainPageStack.currentIndex = idx;
+			}
+			else {
+				mainPageStack.active = false;
+			}
+		}
 
 		onSearchCalled: {
 			this.active = false;
@@ -53,7 +61,10 @@ Activity {
 			searchPanel.start();
 		}
 
-		onCloseAll: { infoPanel.active = !infoPanel.active; }
+		onCloseAll: { 
+			infoPanel.active = !infoPanel.active; 
+			mainPageStack.active = false;
+		}
 	}
 
 	PageStack {
@@ -63,7 +74,9 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 1;
-		visible: mainMenu.active && (mainMenu.activeFocus || activeFocus);
+		property bool active: false;
+		opacity: active ? 1 : 0;
+//		visible: mainMenu.active && (mainMenu.activeFocus || activeFocus);
 
 		ChannelsPanel {
 			id: channelsPanel;

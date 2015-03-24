@@ -10,6 +10,7 @@ Item {
 	CategoriesList {
 		id: channelsPanelCategories;
 		model: categoriesModel;
+		spacing: 1;
 
 		onCountChanged: {
 			if (this.count > 1 && !channelsPanelChannels.count)
@@ -27,6 +28,7 @@ Item {
 		id: channelsPanelChannels;
 		anchors.top: channelsPanelCategories.bottom;
 		anchors.topMargin: 1;
+		spacing: 1;
 		model: channelsModel;
 
 		onUpPressed:		{ channelsPanelCategories.forceActiveFocus(); }

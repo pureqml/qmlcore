@@ -81,7 +81,8 @@ Item {
 
 		this.channelIcon = channel.source;
 		this.channelColor = channel.color;
-		this.channelName = channel.text;
+		this.channelNumber = channel.lcn;
+		this.channelName = this.channelNumber + ". " + channel.text;
 	}
 
 	onActiveFocusChanged:	{ channelInfo.forceActiveFocus(); }

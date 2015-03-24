@@ -7,11 +7,6 @@ Item {
 	CategoriesModel { id: categoriesModel; protocol: channelsPanelProto.protocol; }
 	ChannelsModel { id: channelsModel; protocol: channelsPanelProto.protocol; }
 
-	Rectangle {
-		anchors.fill: channelsPanelCategories;
-		color: colorTheme.backgroundColor;
-	}
-
 	CategoriesList {
 		id: channelsPanelCategories;
 		model: categoriesModel;

@@ -55,10 +55,12 @@ Activity {
 			}
 		}
 
-		onSearchCalled: {
+		onSearchRequest(request): {
 			this.active = false;
 			infoPanel.active = false;
 			searchPanel.start();
+			searchPanel.searchRequest = request;
+			searchPanel.search();
 		}
 
 		onCloseAll: { 

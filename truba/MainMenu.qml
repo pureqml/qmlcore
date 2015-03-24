@@ -15,6 +15,7 @@ Item {
 		anchors.right: searchButton.left;
 		height: parent.height;
 		orientation: ListView.Horizontal;
+		spacing: 1;
 		model: ListModel {
 			property string text;
 
@@ -32,6 +33,7 @@ Item {
 	TextButton {
 		id: searchButton;
 		anchors.right: fullscreenButton.left;
+		anchors.rightMargin: 1;
 		anchors.top: parent.top;
 		height: 60;
 		width: 100;
@@ -48,6 +50,7 @@ Item {
 	TextButton {
 		id: fullscreenButton;
 		anchors.right: exitButton.left;
+		anchors.rightMargin: 1;
 		anchors.top: parent.top;
 		height: 60;
 		width: 100;

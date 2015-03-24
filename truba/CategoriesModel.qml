@@ -1,20 +1,34 @@
 ListModel {
 	property Protocol protocol;
 
+	update: {
+		var self = this;
+		this.protocol.getChannels(function(list) {
+			self.clear();
 
-	getList(callback): {
-		if (!this.protocol)
-			return;
+			var map = {};
+			var defaultName = "Разное";
+			for (var i in list)
+			{
+				if (list[i].genre)
+				{
+					if (!map[list[i].genre])
+						map[list[i].genre] = [];
+					map[list[i].genre].push(list[i]);
+				}
+				else
+				{
+					if (!map[defaultName])
+						map[defaultName] = [];
+					map[defaultName].push(list[i]);
+				}
+			}
 
-		this.protocol.getChannels(function(res) {
-			callback(res);
+			for (var genre in map)
+				self.append({ text: genre, list: map[genre] });
 		})
 	}
 
-	update: {
-		this.clear();
-		this.append({ text: "Все", source: "res/scrambled.png" });
-	}
-
 	onProtocolChanged: { this.update(); }
+	onCompleted: { this.update(); }
 }

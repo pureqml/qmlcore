@@ -12,16 +12,15 @@ Item {
 		model: categoriesModel;
 
 		onCountChanged: {
-			if (this.count == 1) {
-				var self = this;
-				categoriesModel.getList(function(res) {
-					self.channelsModel.setList(res);
-				})
-			}
+			if (this.count > 1 && !channelsPanelChannels.count)
+				channelsModel.setList(categoriesModel.get(0).list);
 		}
 
-		onDownPressed: { channelsPanelChannels.forceActiveFocus(); }
-		onUpPressed: { channelsPanelProto.toMenuReturned(); }
+		onDownPressed:		{ channelsPanelChannels.forceActiveFocus(); }
+		onUpPressed:		{ channelsPanelProto.toMenuReturned(); }
+		onClicked:			{ this.updateList(); }
+		onSelectPressed:	{ this.updateList(); }
+		updateList:			{ channelsModel.setList(categoriesModel.get(this.currentIndex).list); }
 	}
 
 	ChannelsList {

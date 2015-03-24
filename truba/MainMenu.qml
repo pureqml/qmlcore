@@ -2,7 +2,7 @@ Item {
 	id: mainMenuProto;
 	signal closeAll;
 	signal optionChoosed;
-	signal searchCalled;
+	signal searchRequest;
 	property bool active;
 	name: "mainMenu";
 	opacity: active ? 1 : 0;
@@ -10,9 +10,9 @@ Item {
 
 	ListView {
 		id: mainManuListView;
+		width: contentWidth;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
-		anchors.right: searchButton.left;
 		height: parent.height;
 		orientation: ListView.Horizontal;
 		spacing: 1;
@@ -30,21 +30,39 @@ Item {
 		onSelectPressed:	{ mainMenuProto.optionChoosed(this.currentIndex); }
 	}
 
-	TextButton {
-		id: searchButton;
-		anchors.right: fullscreenButton.left;
-		anchors.rightMargin: 1;
+	Rectangle {
+		height: mainManuListView.height;
 		anchors.top: parent.top;
-		height: 60;
-		width: 100;
-		focusOnHover: true;
+		anchors.left: mainManuListView.right;
+		anchors.right: fullscreenButton.left;
+		anchors.leftMargin: 1;
+		anchors.rightMargin: 1;
+		color: colorTheme.backgroundColor;
 
-		Image {
-			anchors.centerIn: parent;
-			source: "res/search.png";
+		TextInput {
+			id: searchInput;
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: parent.left;
+			anchors.leftMargin: 20;
 		}
 
-		onTriggered: { mainMenuProto.searchCalled(); }
+		TextButton {
+			height: 50;
+			width: 50;
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: searchInput.right;
+			focusOnHover: true;
+
+			Image {
+				anchors.centerIn: parent;
+				source: "res/search.png";
+			}
+
+			onTriggered: {
+				console.log("entering fullscreen mode");
+				mainMenuProto.searchRequest(searchInput.text);
+			}
+		}
 	}
 
 	TextButton {

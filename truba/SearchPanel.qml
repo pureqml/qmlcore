@@ -2,46 +2,17 @@ Activity {
 	id: searchPanelProto;
 	signal channelSwitched;
 	property Protocol protocol;
+	property string searchRequest;
 	property Array channels;
 	anchors.fill: parent;
 	visible: active;
 	name: "search";
-
-	TextInput {
-		id: searchInput;
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		anchors.leftMargin: 10;
-
-		onTextChanged: { this.parent.search(); }
-	}
-
-	//Input {
-		//id: inputDialog;
-		//height: 50;
-		//width: 345;
-		//anchors.left: keyBoard.left;
-
-		//onTextChanged: { this.parent.search(); }
-	//}
-
-	//Keyboard {
-		//id: keyBoard;
-		//anchors.top: inputDialog.bottom;
-		//anchors.right: parent.right;
-		//anchors.topMargin: 5;
-
-		//onKeySelected(key): { inputDialog.text += key; }
-		//onBackspase: { inputDialog.removeChar(); }
-		//onUpPressed: { inputDialog.forceActiveFocus(); }
-	//}
 
 	ListModel { id: foundChannelModel; }
 
 	Column {
 		anchors.top: parent.top;
 		anchors.left: parent.left;
-		//anchors.right: keyBoard.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 30;
 		anchors.leftMargin: 10;
@@ -104,15 +75,16 @@ Activity {
 
 	search: {
 		foundChannelModel.clear();
-
-		var request = searchInput.text.toLowerCase();
+		var request = searchPanelProto.searchRequest.toLowerCase();
 		if (!request.length)
 			return;
 
-		if (!this.channels.length) {
+		if (!this.channels || !this.channels.length) {
 			log("There are no channels.");
 			return;
 		}
+
+		log("Search: " + request);
 
 		var list = this.channels;
 		for (var i in list)
@@ -127,11 +99,13 @@ Activity {
 	}
 
 	onVisibleChanged: {
-		if (!this.visible)
+		if (!this.visible) {
+			this.searchRequest = "";
 			return;
+		}
 
-		//inputDialog.text = "";
 		foundChannelModel.clear();
+		foundChannelsResult.contentX = 0;
 
 		var protocol = this.protocol;
 		if (!protocol)
@@ -140,6 +114,7 @@ Activity {
 		var self = this;
 		protocol.getChannels(function(res) {
 			self.channels = res;
+			self.search();
 		})
 	}
 }

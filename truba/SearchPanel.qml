@@ -7,55 +7,43 @@ Activity {
 	visible: active;
 	name: "search";
 
-	Input {
-		id: inputDialog;
-		height: 50;
-		width: 345;
-		anchors.left: keyBoard.left;
+	TextInput {
+		id: searchInput;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		anchors.leftMargin: 10;
 
 		onTextChanged: { this.parent.search(); }
 	}
 
-	Keyboard {
-		id: keyBoard;
-		anchors.top: inputDialog.bottom;
-		anchors.right: parent.right;
-		anchors.topMargin: 5;
+	//Input {
+		//id: inputDialog;
+		//height: 50;
+		//width: 345;
+		//anchors.left: keyBoard.left;
 
-		onKeySelected(key): { inputDialog.text += key; }
-		onBackspase: { inputDialog.removeChar(); }
-		onUpPressed: { inputDialog.forceActiveFocus(); }
-	}
+		//onTextChanged: { this.parent.search(); }
+	//}
 
-	search: {
-		foundChannelModel.clear();
+	//Keyboard {
+		//id: keyBoard;
+		//anchors.top: inputDialog.bottom;
+		//anchors.right: parent.right;
+		//anchors.topMargin: 5;
 
-		var request = inputDialog.text;
-		if (!request.length)
-			return;
-
-		if (!this.channels.length) {
-			log("There are no channels.");
-			return;
-		}
-
-		var list = this.channels;
-		for (var i in list)
-			if (list[i].title.toLowerCase().indexOf(request) >= 0)
-				foundChannelModel.append({
-					text:	list[i].title,
-					url:	list[i].url,
-					lcn:	list[i].url,
-					source:	list[i].icon ? "http://truba.tv" + list[i].icon.source : "",
-					color:	list[i].icon ? list[i].icon.color : "#0000"
-				});
-	}
+		//onKeySelected(key): { inputDialog.text += key; }
+		//onBackspase: { inputDialog.removeChar(); }
+		//onUpPressed: { inputDialog.forceActiveFocus(); }
+	//}
 
 	ListModel { id: foundChannelModel; }
 
 	Column {
+		anchors.top: parent.top;
 		anchors.left: parent.left;
-		anchors.right: keyBoard.left;
+		//anchors.right: keyBoard.left;
+		anchors.right: parent.right;
+		anchors.topMargin: 30;
 		anchors.leftMargin: 10;
 		anchors.rightMargin: 10;
 		spacing: 10;
@@ -90,6 +78,8 @@ Activity {
 				onClicked:			{ this.switchTuCurrent(); }
 
 				switchTuCurrent:	{
+					if (!this.count)
+						return;
 					searchPanelProto.stop();
 					searchPanelProto.channelSwitched(this.model.get(this.currentIndex));
 				}
@@ -112,9 +102,36 @@ Activity {
 		}
 	}
 
+	search: {
+		foundChannelModel.clear();
+
+		var request = searchInput.text.toLowerCase();
+		if (!request.length)
+			return;
+
+		if (!this.channels.length) {
+			log("There are no channels.");
+			return;
+		}
+
+		var list = this.channels;
+		for (var i in list)
+			if (list[i].title.toLowerCase().indexOf(request) >= 0)
+				foundChannelModel.append({
+					text:	list[i].title,
+					url:	list[i].url,
+					lcn:	list[i].url,
+					source:	list[i].icon ? "http://truba.tv" + list[i].icon.source : "",
+					color:	list[i].icon ? list[i].icon.color : "#0000"
+				});
+	}
+
 	onVisibleChanged: {
 		if (!this.visible)
 			return;
+
+		//inputDialog.text = "";
+		foundChannelModel.clear();
 
 		var protocol = this.protocol;
 		if (!protocol)

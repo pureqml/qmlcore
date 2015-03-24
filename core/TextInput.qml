@@ -2,7 +2,6 @@ Item {
 	property string text;
 
 	onCompleted: {
-		log("onComplete");
 		var input = $('<input type="text">');
 		this.element.append(input)
 

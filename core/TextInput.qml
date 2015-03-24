@@ -1,4 +1,6 @@
 Item {
+	height: 20;
+	width: 173;
 	property string text;
 
 	onCompleted: {

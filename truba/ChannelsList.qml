@@ -4,6 +4,5 @@ ListView {
 	anchors.left: parent.left;
 	anchors.right: parent.right;
 	orientation: ListView.Horizontal;
-	spacing: 1;
 	delegate: ChannelDelegate { }
 }

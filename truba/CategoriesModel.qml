@@ -8,19 +8,18 @@ ListModel {
 
 			var map = {};
 			var defaultName = "Разное";
-			for (var i in list)
-			{
-				if (list[i].genre)
-				{
-					if (!map[list[i].genre])
-						map[list[i].genre] = [];
-					map[list[i].genre].push(list[i]);
-				}
-				else
-				{
+			for (var i in list) {
+				if (!list[i].genres || list[i].genres.length == 0) {
 					if (!map[defaultName])
 						map[defaultName] = [];
 					map[defaultName].push(list[i]);
+				} else {
+					for (var j in list[i].genres) {
+						var genre = list[i].genres[j];
+						if (!map[genre])
+							map[genre] = [];
+						map[genre].push(list[i]);
+					}
 				}
 			}
 

@@ -1,5 +1,7 @@
-Item {
+Activity {
 	anchors.fill: parent;
+	visible: active;
+	name: "epg";
 
 	Rectangle {
 		anchors.fill: epgPanelChannels;

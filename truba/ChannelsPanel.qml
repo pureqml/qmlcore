@@ -1,8 +1,10 @@
-Item {
+Activity {
 	id: channelsPanelProto;
 	signal channelSwitched;
 	property Protocol protocol;
+	visible: active;
 	anchors.fill: parent;
+	name: "channelspanel";
 
 	CategoriesModel { id: categoriesModel; protocol: channelsPanelProto.protocol; }
 	ChannelsModel { id: channelsModel; protocol: channelsPanelProto.protocol; }

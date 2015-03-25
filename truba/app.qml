@@ -41,18 +41,31 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.top: renderer.top;
-		active: infoPanel.active || mainPageStack.activeFocus;
+		active: infoPanel.active || parent.hasAnyActiveChild;
 	 	z: 10;
 
-		onDownPressed: { mainPageStack.forceActiveFocus(); }
+		onDownPressed: {
+			if (channelsPanel.active)
+				channelsPanel.forceActiveFocus();
+			else if (epgPanel.active)
+				epgPanel.forceActiveFocus();
+			else if (vodPanel.active)
+				vodPanel.forceActiveFocus();
+			else if (settings.active)
+				settings.forceActiveFocus();
+			else
+				infoPanel.forceActiveFocus();
+		}
+
 		onOptionChoosed(idx): {
-			if (idx !== mainPageStack.currentIndex || !mainPageStack.active) {
-				mainPageStack.active = true;
-				mainPageStack.currentIndex = idx;
-			}
-			else {
-				mainPageStack.active = false;
-			}
+			if (idx == 0)
+				channelsPanel.start();
+			else if (idx == 1)
+				epgPanel.start();
+			else if (idx == 2)
+				vodPanel.start();
+			else if (idx == 3)
+				settings.start();
 		}
 
 		onSearchRequest(request): {
@@ -63,33 +76,44 @@ Activity {
 			searchPanel.search();
 		}
 
-		onCloseAll: { 
-			infoPanel.active = !infoPanel.active; 
-			mainPageStack.active = false;
-		}
+		onCloseAll: { infoPanel.active = !infoPanel.active; }
 	}
 
-	PageStack {
-		id: mainPageStack;
+	Item {
+		id: activityArea;
 		anchors.top: mainMenu.bottom;
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 1;
-		property bool active: false;
-		opacity: active ? 1 : 0;
-//		visible: mainMenu.active && (mainMenu.activeFocus || activeFocus);
+	}
 
-		ChannelsPanel {
-			id: channelsPanel;
-			protocol: parent.protocol;
+	ChannelsPanel {
+		id: channelsPanel;
+		protocol: parent.protocol;
+		anchors.fill: activityArea;
 
-			onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		}
+		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
+		onUpPressed: { mainMenu.forceActiveFocus(); }
+	}
 
-		EPGPanel { id: epgPanel; }
-		VODPanel { id: vodPanel; }
-		SettingsPanel { }
+	EPGPanel {
+		id: epgPanel;
+		anchors.fill: activityArea;
+
+		onUpPressed: { mainMenu.forceActiveFocus(); }
+	}
+
+	VODPanel {
+		id: vodPanel;
+		anchors.fill: activityArea;
+
+		onUpPressed: { mainMenu.forceActiveFocus(); }
+	}
+
+	SettingsPanel {
+		id: settings;
+		anchors.fill: activityArea;
 
 		onUpPressed: { mainMenu.forceActiveFocus(); }
 	}
@@ -97,8 +121,10 @@ Activity {
 	SearchPanel {
 		id: searchPanel;
 		protocol: parent.protocol;
+		anchors.fill: activityArea;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
+		onUpPressed: { mainMenu.forceActiveFocus(); }
 	}
 
 	switchToChannel(channel): {
@@ -111,22 +137,8 @@ Activity {
 		infoPanel.active = true;
 	}
 
-	onRedPressed: {
-		mainPageStack.currentIndex = 2;
-		mainPageStack.forceActiveFocus();
-	}
-
-	onBluePressed: {
-		infoPanel.active = true;
-	}
-
-	onGreenPressed: {
-		mainPageStack.currentIndex = 0;
-		mainPageStack.forceActiveFocus();
-	}
-
-	onYellowPressed: {
-		mainPageStack.currentIndex = 1;
-		mainPageStack.forceActiveFocus();
-	}
+	onRedPressed: { vodPanel.start(); }
+	onBluePressed: { infoPanel.active = true; }
+	onGreenPressed: { channelsPanel.start(); }
+	onYellowPressed: { epgPanel.start(); }
 }

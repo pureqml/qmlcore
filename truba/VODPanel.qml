@@ -1,5 +1,7 @@
-Item {
+Activity {
 	anchors.fill: parent;
+	visible: active;
+	name: "vodpanel";
 
 	GridView {
 		anchors.centerIn: parent;

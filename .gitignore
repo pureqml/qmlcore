@@ -1,3 +1,5 @@
+*.swp
+*.swo
 *.pyc
 *.pyo
 app/qml.js

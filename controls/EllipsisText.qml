@@ -11,6 +11,7 @@ Item {
 	Text {
 		id: elipsisInnerText;
 		anchors.fill: parent;
+		horizontalAlignment: Text.AlignHCenter;
 		color: threeDotsTextProto.color;
 		text: threeDotsTextProto.text;
 		font.pointSize: threeDotsTextProto.pointSize;

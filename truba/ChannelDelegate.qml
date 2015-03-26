@@ -1,7 +1,7 @@
 BaseButton {
 	width: height;
 	height: parent.height;
-	clip: true;
+	clip: false;
 
 	EllipsisText {
 		id: delegateText;
@@ -14,6 +14,8 @@ BaseButton {
 		pointSize: 14;
 		text: model.text;
 		color: colorTheme.focusedTextColor;
+		cut: !parent.activeFocus;
+		bgcolor: parent.color;
 	}
 
 	Item {

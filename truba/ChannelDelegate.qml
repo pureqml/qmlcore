@@ -14,17 +14,6 @@ BaseButton {
 		pointSize: 14;
 		text: model.text;
 		color: colorTheme.focusedTextColor;
-		visible: reachedParentWidth;
-	}
-
-	Text {
-		anchors.bottom: parent.bottom;
-		anchors.horizontalCenter: parent.horizontalCenter;
-		anchors.bottomMargin: 5;
-		pointSize: 14;
-		text: model.text;
-		color: colorTheme.focusedTextColor;
-		visible: !delegateText.reachedParentWidth;
 	}
 
 	Item {

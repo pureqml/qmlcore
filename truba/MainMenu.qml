@@ -4,7 +4,6 @@ Item {
 	signal optionChoosed;
 	signal searchRequest;
 	property bool active;
-	name: "mainMenu";
 	opacity: active ? 1 : 0;
 	height: 60;
 

@@ -1,12 +1,13 @@
 Item {
 	id: infoPanelProto;
 	signal menuCalled;
+	signal volumeDecreased;
+	signal volumeIncreased;
 	property color	channelColor;
 	property string	channelIcon;
 	property string	channelName;
 	property int	channelNumber;
 	property bool	active;
-	name: "infoPanel";
 	opacity: active ? 1.0 : 0.0;
 
 	Timer {
@@ -56,21 +57,49 @@ Item {
 		onLeftPressed: { channelInfo.forceActiveFocus(); }
 	}
 
-	BaseButton {
+	TextButton {
 		id: options;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
-		height: 100;
+		height: activeFocus ? 200 : 100;
+		focusOnHover: true;
 		width: 100;
 
-		Text {
-			anchors.centerIn: parent;
-			text: "Options";
-			color: "white";
+		Image {
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.top: parent.top;
+			anchors.topMargin: 20;
+			source: "res/nav_up.png";
+			opacity: parent.activeFocus ? 1.0 : 0;
+
+			Behavior on opacity	{ Animation { duration: 300; } }
 		}
 
-		onRightPressed: { channelInfo.forceActiveFocus(); }
-		onLeftPressed: { programInfo.forceActiveFocus(); }
+		Image {
+			anchors.centerIn: parent;
+			source: "res/volume.png";
+		}
+
+		MouseArea {
+			anchors.fill: volumeDown;
+			onClicked: { log("dsdsd"); }
+		}
+
+		Image {
+			id: volumeDown;
+			anchors.horizontalCenter: options.horizontalCenter;
+			anchors.bottom: options.bottom;
+			anchors.bottomMargin: 20;
+			source: "res/nav_down.png";
+			opacity: options.activeFocus ? 1.0 : 0;
+
+			Behavior on opacity	{ Animation { duration: 300; } }
+		}
+
+		onRightPressed:	{ channelInfo.forceActiveFocus(); }
+		onLeftPressed:	{ programInfo.forceActiveFocus(); }
+		onUpPressed:	{ infoPanelProto.volumeIncreased(); }
+		onDownPressed:	{ infoPanelProto.volumeDecreased(); }
 	}
 
 	fillChannelInfo(channel): {

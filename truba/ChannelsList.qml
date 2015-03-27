@@ -1,8 +1,10 @@
-ListView {
-	height: 130;
-	anchors.top: parent.top;
-	anchors.left: parent.left;
-	anchors.right: parent.right;
+GridView {
+	height: parent.height;
+	flow: GridView.FlowTopToBottom;
+	cellWidth: 130;
+	cellHeight: cellWidth;
+	anchors.fill: parent;
+	anchors.rightMargin: cellWidth;
 	orientation: ListView.Horizontal;
-	delegate: ChannelDelegate { }
+	delegate: ChannelDelegate { height: parent.cellHeight; }
 }

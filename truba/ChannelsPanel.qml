@@ -20,7 +20,6 @@ Activity {
 		}
 
 		onDownPressed:		{ channelsPanelChannels.forceActiveFocus(); }
-		onUpPressed:		{ channelsPanelProto.toMenuReturned(); }
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
 		updateList:			{ channelsModel.setList(categoriesModel.get(this.currentIndex).list); }
@@ -33,10 +32,16 @@ Activity {
 		spacing: 1;
 		model: channelsModel;
 
-		onUpPressed:		{ channelsPanelCategories.forceActiveFocus(); }
 		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
 		onSelectPressed:	{ this.switchTuCurrent(); }
 		onClicked:			{ this.switchTuCurrent(); }
+
+		onUpPressed: {
+			if (this.currentIndex - this.columns >= 0)
+				this.currentIndex -= this.columns;
+			else
+				channelsPanelCategories.forceActiveFocus();
+		}
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

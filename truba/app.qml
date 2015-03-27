@@ -16,7 +16,7 @@ Activity {
 
 	MouseArea {
 		anchors.fill: renderer;
-		hoverEnabled: !parent.hasAnyActiveChild || parent.currentActivity == "infoPanel";
+		hoverEnabled: !parent.hasAnyActiveChild;
 
 		onMouseXChanged: { 
 			if (this.hoverEnabled)
@@ -34,6 +34,8 @@ Activity {
 		anchors.fill: parent;
 
 		onMenuCalled: { mainMenu.start(); }
+		onVolumeDecreased: { videoPlayer.volumeDown(); }
+		onVolumeIncreased: { videoPlayer.volumeUp(); }
 	}
 
 	MainMenu {

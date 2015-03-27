@@ -3,6 +3,7 @@ Item {
 	property string	source;
 
 	property bool	flash : true;
+	property float	volumeShift: 0.1;
 
 	play: {
 		if (!this.source)
@@ -113,5 +114,25 @@ Item {
 				return document.embeds[name];
 		} else
 			return document.getElementById(name);
+	}
+
+	volumeUp: {
+		if (this.flash) {
+			log("Not implemented.");
+		} else {
+			var volume = this._player.get(0).volume;
+			var delta = this.volumeShift;
+			this._player.get(0).volume = volume + delta > 1 ? 1 : volume + delta;
+		}
+	}
+
+	volumeDown: {
+		if (this.flash) {
+			log("Not implemented.");
+		} else {
+			var volume = this._player.get(0).volume;
+			var delta = this.volumeShift;
+			this._player.get(0).volume = volume - delta < 0 ? 0 : volume - delta;
+		}
 	}
 }

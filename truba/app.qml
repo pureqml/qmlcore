@@ -33,9 +33,9 @@ Activity {
 		id: infoPanel;
 		anchors.fill: parent;
 
-		onMenuCalled: { mainMenu.start(); }
-		onVolumeDecreased: { videoPlayer.volumeDown(); }
-		onVolumeIncreased: { videoPlayer.volumeUp(); }
+		onMenuCalled:		{ mainMenu.start(); }
+		onVolumeDecreased:	{ videoPlayer.volumeDown(); }
+		onVolumeIncreased:	{ videoPlayer.volumeUp(); }
 	}
 
 	MainMenu {
@@ -84,7 +84,7 @@ Activity {
 	Item {
 		id: activityArea;
 		anchors.top: mainMenu.bottom;
-		anchors.bottom: parent.bottom;
+		anchors.bottom: infoPanel.top;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 1;
@@ -139,8 +139,10 @@ Activity {
 		infoPanel.active = true;
 	}
 
-	onRedPressed: { vodPanel.start(); }
-	onBluePressed: { infoPanel.active = true; }
-	onGreenPressed: { channelsPanel.start(); }
-	onYellowPressed: { epgPanel.start(); }
+	onUpPressed:		{ videoPlayer.volumeUp(); }
+	onDownPressed:		{ videoPlayer.volumeDown(); }
+	onRedPressed:		{ vodPanel.start(); }
+	onBluePressed:		{ infoPanel.active = true; }
+	onGreenPressed:		{ channelsPanel.start(); }
+	onYellowPressed:	{ epgPanel.start(); }
 }

@@ -3,7 +3,7 @@ Item {
 	property string	source;
 
 	property bool	flash : true;
-	property float	volumeShift: 0.1;
+	property float	volume: 1.0;
 
 	play: {
 		if (!this.source)
@@ -116,23 +116,25 @@ Item {
 			return document.getElementById(name);
 	}
 
-	volumeUp: {
+	//TODO: move logic to core.
+	onVolumeChanged: {
+		var volume = this.volume;
+		if (volume > 1.0)
+			volume = 1.0;
+		else if (volume < 0.0)
+			volume = 0.0;
+		log("Set volume: " + volume);
+
 		if (this.flash) {
-			log("Not implemented.");
+			var player = this.getObject('videoPlayer')
+			if (!player || !player.playerLoad)
+				return
+			player.playerVolume(100 * volume)
 		} else {
-			var volume = this._player.get(0).volume;
-			var delta = this.volumeShift;
-			this._player.get(0).volume = volume + delta > 1 ? 1 : volume + delta;
+			this._player.get(0).volume = volume;
 		}
 	}
 
-	volumeDown: {
-		if (this.flash) {
-			log("Not implemented.");
-		} else {
-			var volume = this._player.get(0).volume;
-			var delta = this.volumeShift;
-			this._player.get(0).volume = volume - delta < 0 ? 0 : volume - delta;
-		}
-	}
+	volumeUp:	{ this.volume += 0.1; }
+	volumeDown:	{ this.volume -= 0.1; }
 }

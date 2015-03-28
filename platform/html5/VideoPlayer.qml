@@ -116,25 +116,6 @@ Item {
 			return document.getElementById(name);
 	}
 
-	//TODO: move logic to core.
-	onVolumeChanged: {
-		var volume = this.volume;
-		if (volume > 1.0)
-			volume = 1.0;
-		else if (volume < 0.0)
-			volume = 0.0;
-		log("Set volume: " + volume);
-
-		if (this.flash) {
-			var player = this.getObject('videoPlayer')
-			if (!player || !player.playerLoad)
-				return
-			player.playerVolume(100 * volume)
-		} else {
-			this._player.get(0).volume = volume;
-		}
-	}
-
 	volumeUp:	{ this.volume += 0.1; }
 	volumeDown:	{ this.volume -= 0.1; }
 }

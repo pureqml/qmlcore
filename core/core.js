@@ -829,6 +829,27 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	_globals.platform.html5.VideoPlayer.prototype._update = function(name, value) {
+		switch(name) {
+			case 'volume':
+				if (this.volume > 1.0)
+					this.volume = 1.0;
+				else if (this.volume < 0.0)
+					this.volume = 0.0;
+				log("Set volume: " + this.volume);
+
+				if (this.flash) {
+					var player = this.getObject('videoPlayer')
+					if (!player || !player.playerLoad)
+						return
+					player.playerVolume(100 * this.volume)
+				} else if (this._player) {
+					this._player.get(0).volume = this.volume;
+				}
+			break;
+		}
+		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
 	_globals.core.Row.prototype._layout = function() {
 		var children = this.children;
 		var p = 0

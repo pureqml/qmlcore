@@ -22,6 +22,8 @@ Item {
 		}
 		else
 			this._player.get(0).play()
+
+		this.applyVolume();
 	}
 
 	onAutoPlayChanged: {
@@ -89,6 +91,7 @@ Item {
 			this.play()
 
 		volumeStorage.read();
+
 		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0;
 	}
 
@@ -122,7 +125,7 @@ Item {
 			return document.getElementById(name);
 	}
 
-	onVolumeChanged: {
+	applyVolume: {
 		if (this.volume > 1.0)
 			this.volume = 1.0;
 		else if (this.volume < 0.0)
@@ -140,6 +143,7 @@ Item {
 		}
 	}
 
-	volumeUp:	{ this.volume += 0.1; }
-	volumeDown:	{ this.volume -= 0.1; }
+	volumeUp:			{ this.volume += 0.1; }
+	volumeDown:			{ this.volume -= 0.1; }
+	onVolumeChanged:	{ this.applyVolume(); }
 }

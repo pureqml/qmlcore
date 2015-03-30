@@ -5,6 +5,8 @@ Item {
 	property bool	flash : true;
 	property float	volume: 1.0;
 
+	LocalStorage { id: volumeStorage; name: "volume"; }
+
 	play: {
 		if (!this.source)
 			return
@@ -85,12 +87,16 @@ Item {
 		this.element.append(this._player)
 		if (this.autoPlay)
 			this.play()
+
+		volumeStorage.read();
+		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0;
 	}
 
 	Timer {
 		interval: 100;
 		repeat: true;
 		running: true; //fixme: rewrite as 'parent.flash && !parent.flashReady'
+
 		onTriggered: {
 			var parent = this.parent
 			if (!parent.flash)
@@ -121,7 +127,8 @@ Item {
 			this.volume = 1.0;
 		else if (this.volume < 0.0)
 			this.volume = 0.0;
-		log("Set volume: " + this.volume);
+
+		volumeStorage.value = this.volume;
 
 		if (this.flash) {
 			var player = this.getObject('videoPlayer')

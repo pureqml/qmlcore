@@ -130,12 +130,7 @@ Activity {
 		onUpPressed: { mainMenu.forceActiveFocus(); }
 	}
 
-	Image {
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		source: "res/mute.png";
-		visible: videoPlayer.volume <= 0;
-	}
+	MuteIcon { mute: videoPlayer.volume <= 0; }
 
 	switchToChannel(channel): {
 		if (!channel) {

@@ -32,6 +32,7 @@ Activity {
 	InfoPanel {
 		id: infoPanel;
 		anchors.fill: parent;
+		volume: videoPlayer.volume;
 
 		onMenuCalled:		{ mainMenu.start(); }
 		onVolumeDecreased:	{ videoPlayer.volumeDown(); }
@@ -127,6 +128,13 @@ Activity {
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		onUpPressed: { mainMenu.forceActiveFocus(); }
+	}
+
+	Image {
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		source: "res/mute.png";
+		visible: videoPlayer.volume <= 0;
 	}
 
 	switchToChannel(channel): {

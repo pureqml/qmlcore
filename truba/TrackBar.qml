@@ -2,6 +2,7 @@ MouseArea {
 	property float value: 0;
 	width: 30;
 	height: 100;
+	hoverEnabled: true;
 
 	Rectangle {
 		width: 5;
@@ -18,5 +19,8 @@ MouseArea {
 		color: "#fff";
 	}
 
-	onClicked: { this.value = 1.0 - this.mouseY / this.height; }
+	onMouseYChanged: {
+		if (this.pressed)
+			this.value = 1.0 - this.mouseY / this.height;
+	}
 }

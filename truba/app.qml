@@ -35,8 +35,7 @@ Activity {
 		volume: videoPlayer.volume;
 
 		onMenuCalled:		{ mainMenu.start(); }
-		onVolumeDecreased:	{ videoPlayer.volumeDown(); }
-		onVolumeIncreased:	{ videoPlayer.volumeUp(); }
+		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
 	}
 
 	MainMenu {

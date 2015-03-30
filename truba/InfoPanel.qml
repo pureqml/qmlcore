@@ -1,8 +1,7 @@
 Item {
 	id: infoPanelProto;
 	signal menuCalled;
-	signal volumeDecreased;
-	signal volumeIncreased;
+	signal volumeUpdated;
 	property color	channelColor;
 	property string	channelIcon;
 	property string	channelName;
@@ -58,63 +57,35 @@ Item {
 		onLeftPressed: { channelInfo.forceActiveFocus(); }
 	}
 
-	Item {
+	FocusablePanel {
 		id: options;
+		property int spacing: (100 - volumeIcon.height) / 2;
+		height: activeFocus ? 100 + spacing + volumeTrackBar.height : 100;
+		width: 100;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
-		height: activeFocus ? 200 : 100;
-		width: 100;
+		clip: true;
 
-		TextButton {
-			height: parent.height / 2;
-			anchors.top: parent.top;
-			anchors.left: parent.left;
-			anchors.right: parent.right;
-			focusOnHover: true;
+		TrackBar {
+			id: volumeTrackBar;
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.bottom: volumeIcon.top;
+			anchors.bottomMargin: options.spacing;
+			visible: parent.activeFocus;
 
-			Image {
-				anchors.horizontalCenter: parent.horizontalCenter;
-				anchors.top: parent.top;
-				anchors.topMargin: 20;
-				source: "res/nav_up.png";
-				opacity: parent.activeFocus ? 1.0 : 0;
-
-				Behavior on opacity	{ Animation { duration: 300; } }
-			}
-
-			onClicked: { infoPanelProto.volumeIncreased(); }
-		}
-
-		TextButton {
-			height: parent.height / 2;
-			anchors.bottom: parent.bottom;
-			anchors.left: parent.left;
-			anchors.right: parent.right;
-			focusOnHover: true;
-
-			Image {
-				id: volumeDown;
-				anchors.horizontalCenter: options.horizontalCenter;
-				anchors.bottom: parent.bottom;
-				anchors.bottomMargin: 20;
-				source: "res/nav_down.png";
-				opacity: parent.activeFocus ? 1.0 : 0;
-
-				Behavior on opacity	{ Animation { duration: 300; } }
-			}
-
-			onClicked: { infoPanelProto.volumeDecreased(); }
+			onValueChanged: { infoPanelProto.volumeUpdated(this.value); }
 		}
 
 		Image {
-			anchors.centerIn: parent;
+			id: volumeIcon;
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.bottom: parent.bottom;
+			anchors.bottomMargin: options.spacing;
 			source: infoPanelProto.volume > 0.6 ? "res/volume.png" : infoPanelProto.volume > 0.3 ? "res/volume_mid.png" : "res/volume_min.png";
 		}
 
 		onRightPressed:	{ channelInfo.forceActiveFocus(); }
 		onLeftPressed:	{ programInfo.forceActiveFocus(); }
-		onUpPressed:	{ infoPanelProto.volumeIncreased(); }
-		onDownPressed:	{ infoPanelProto.volumeDecreased(); }
 	}
 
 	fillChannelInfo(channel): {
@@ -132,6 +103,7 @@ Item {
 	onActiveFocusChanged:	{ channelInfo.forceActiveFocus(); }
 	onActiveChanged:		{ hideTimer.active = this.active; }
 	onBluePressed:			{ this.active = !this.active; }
+	onVolumeChanged:		{ volumeTrackBar.value = infoPanelProto.volume; }
 
 	Behavior on opacity	{ Animation { duration: 300; } }
 }

@@ -116,6 +116,23 @@ Item {
 			return document.getElementById(name);
 	}
 
+	onVolumeChanged: {
+		if (this.volume > 1.0)
+			this.volume = 1.0;
+		else if (this.volume < 0.0)
+			this.volume = 0.0;
+		log("Set volume: " + this.volume);
+
+		if (this.flash) {
+			var player = this.getObject('videoPlayer')
+			if (!player || !player.playerLoad)
+				return
+			player.playerVolume(100 * this.volume)
+		} else if (this._player) {
+			this._player.get(0).volume = this.volume;
+		}
+	}
+
 	volumeUp:	{ this.volume += 0.1; }
 	volumeDown:	{ this.volume -= 0.1; }
 }

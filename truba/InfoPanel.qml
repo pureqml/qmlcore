@@ -8,6 +8,7 @@ Item {
 	property string	channelName;
 	property int	channelNumber;
 	property bool	active;
+	property float	volume;
 	opacity: active ? 1.0 : 0.0;
 
 	Timer {
@@ -57,43 +58,57 @@ Item {
 		onLeftPressed: { channelInfo.forceActiveFocus(); }
 	}
 
-	TextButton {
+	Item {
 		id: options;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
 		height: activeFocus ? 200 : 100;
-		focusOnHover: true;
 		width: 100;
 
-		Image {
-			anchors.horizontalCenter: parent.horizontalCenter;
+		TextButton {
+			height: parent.height / 2;
 			anchors.top: parent.top;
-			anchors.topMargin: 20;
-			source: "res/nav_up.png";
-			opacity: parent.activeFocus ? 1.0 : 0;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			focusOnHover: true;
 
-			Behavior on opacity	{ Animation { duration: 300; } }
+			Image {
+				anchors.horizontalCenter: parent.horizontalCenter;
+				anchors.top: parent.top;
+				anchors.topMargin: 20;
+				source: "res/nav_up.png";
+				opacity: parent.activeFocus ? 1.0 : 0;
+
+				Behavior on opacity	{ Animation { duration: 300; } }
+			}
+
+			onClicked: { infoPanelProto.volumeIncreased(); }
+		}
+
+		TextButton {
+			height: parent.height / 2;
+			anchors.bottom: parent.bottom;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			focusOnHover: true;
+
+			Image {
+				id: volumeDown;
+				anchors.horizontalCenter: options.horizontalCenter;
+				anchors.bottom: parent.bottom;
+				anchors.bottomMargin: 20;
+				source: "res/nav_down.png";
+				opacity: parent.activeFocus ? 1.0 : 0;
+
+				Behavior on opacity	{ Animation { duration: 300; } }
+			}
+
+			onClicked: { infoPanelProto.volumeDecreased(); }
 		}
 
 		Image {
 			anchors.centerIn: parent;
-			source: "res/volume.png";
-		}
-
-		MouseArea {
-			anchors.fill: volumeDown;
-			onClicked: { log("dsdsd"); }
-		}
-
-		Image {
-			id: volumeDown;
-			anchors.horizontalCenter: options.horizontalCenter;
-			anchors.bottom: options.bottom;
-			anchors.bottomMargin: 20;
-			source: "res/nav_down.png";
-			opacity: options.activeFocus ? 1.0 : 0;
-
-			Behavior on opacity	{ Animation { duration: 300; } }
+			source: infoPanelProto.volume > 0.6 ? "res/volume.png" : infoPanelProto.volume > 0.3 ? "res/volume_mid.png" : "res/volume_min.png";
 		}
 
 		onRightPressed:	{ channelInfo.forceActiveFocus(); }

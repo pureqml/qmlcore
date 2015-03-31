@@ -5,6 +5,7 @@ MouseArea {
 	hoverEnabled: true;
 
 	Rectangle {
+		id: volumeBg;
 		width: 5;
 		height: parent.height;
 		anchors.horizontalCenter: parent.horizontalCenter;
@@ -12,6 +13,15 @@ MouseArea {
 	}
 
 	Rectangle {
+		height: parent.height - volumeCursor.y;
+		anchors.bottom: volumeBg.bottom;
+		anchors.left: volumeBg.left;
+		anchors.right: volumeBg.right;
+		color: "#f00";
+	}
+
+	Rectangle {
+		id: volumeCursor;
 		y: parent.height * (1.0 - parent.value) - height / 2;
 		height: 10;
 		width: parent.width;
@@ -19,8 +29,11 @@ MouseArea {
 		color: "#fff";
 	}
 
+	updatePosition:	{ this.value = 1.0 - this.mouseY / this.height; }
+	onClicked:		{ this.updatePosition(); }
+
 	onMouseYChanged: {
 		if (this.pressed)
-			this.value = 1.0 - this.mouseY / this.height;
+			this.updatePosition();
 	}
 }

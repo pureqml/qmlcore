@@ -119,6 +119,7 @@ Activity {
 	SettingsPanel {
 		id: settings;
 		anchors.fill: activityArea;
+		protocol: parent.protocol;
 
 		onUpPressed: { mainMenu.forceActiveFocus(); }
 	}

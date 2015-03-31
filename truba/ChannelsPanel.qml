@@ -30,7 +30,7 @@ Activity {
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
 
-		updateList:			{
+		updateList: {
 			categoriesModel.setGenres(providersModel.get(this.currentIndex).genres);
 			channelsModel.setList(categoriesModel.get(0).list);
 		}

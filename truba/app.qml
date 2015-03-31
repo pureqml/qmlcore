@@ -31,7 +31,10 @@ Activity {
 
 	InfoPanel {
 		id: infoPanel;
-		anchors.fill: parent;
+		height: 250;
+		anchors.bottom: parent.bottom;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
 		volume: videoPlayer.volume;
 
 		onMenuCalled:		{ mainMenu.start(); }

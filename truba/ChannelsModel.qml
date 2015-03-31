@@ -1,8 +1,7 @@
 ListModel {
-	property Protocol protocol;
-
 	setList(list): {
 		this.clear();
+
 		for (var i in list)
 			this.append({
 				text:	list[i].title,

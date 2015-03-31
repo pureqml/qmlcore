@@ -30,7 +30,11 @@ ListModel {
 			}
 
 			for (var provider in map) {
-				self.append({ text: provider, genres: map[provider] });
+				self.append({
+					text: provider,
+					source:	"res/providers/" + provider + ".png",
+					genres: map[provider]
+				});
 			}
 		})
 	}

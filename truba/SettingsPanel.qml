@@ -5,7 +5,11 @@ Activity {
 	visible: active;
 	name: "settings";
 
-	ProvidersModel	{ id: settingsProvidersModel; protocol: settingsPanel.protocol; showActivatedOnly: false; }
+	ProvidersModel {
+		id: settingsProvidersModel;
+		protocol: settingsPanel.protocol;
+		showActivatedOnly: false;
+	}
 
 	ListView {
 		width: 600;
@@ -44,7 +48,7 @@ Activity {
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.right: parent.right;
 				anchors.rightMargin: 10;
-				source: model.activated ? "res/checked.png" : "res/add.png";
+				source: model.authorized ? "res/checked.png" : "res/add.png";
 			}
 		}
 

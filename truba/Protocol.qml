@@ -6,6 +6,10 @@ Object {
 		this.request("/channels", {}, callback)
 	}
 
+	getProviders(callback): {
+		this.request("/providers", {}, callback)
+	}
+
 	requestImpl(url, data, callback, type, headers): {
 		if (!this.enabled)
 			return;

@@ -1,5 +1,7 @@
 ListModel {
-	property Protocol protocol;
+	property Protocol	protocol;
+	property Object		allProviders;
+	property bool		showActivatedOnly: true;
 
 	update: {
 		var self = this;
@@ -30,15 +32,50 @@ ListModel {
 			}
 
 			for (var provider in map) {
-				self.append({
-					text: provider,
-					source:	"res/providers/" + provider + ".png",
-					genres: map[provider]
-				});
+				if (self.showActivatedOnly)
+					self.append({
+						text: provider,
+						genres: map[provider]
+					});
+				else
+					self.allProviders[provider].activated = true;
 			}
+
+			if (self.showActivatedOnly)
+				return;
+
+			for (var i in self.allProviders)
+				self.append(self.allProviders[i]);
 		})
 	}
 
-	onProtocolChanged:	{ this.update(); }
-	onCompleted:		{ this.update(); }
+	onProtocolChanged:			{ this.update(); }
+	onShowActivatedOnlyChanged:	{ this.update(); }
+
+	onCompleted: {
+		this.allProviders = {};
+
+		this.allProviders["rt"] = {
+			text: "Ростелеком",
+			icon: "res/providers/rt.png",
+			activated: false
+		};
+		this.allProviders["public"] = {
+			text: "Public domain",
+			icon: "res/providers/public.png",
+			activated: false
+		};
+		this.allProviders["dom"] = {
+			text: "Дом.ру",
+			icon: "res/providers/dom.png",
+			activated: false
+		};
+		this.allProviders["interz"] = {
+			text: "Inter Z",
+			icon: "res/providers/izet.png",
+			activated: false
+		};
+
+		this.update();
+	}
 }

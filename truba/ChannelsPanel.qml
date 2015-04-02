@@ -48,7 +48,11 @@ Activity {
 				channelsModel.setList(categoriesModel.get(0).list);
 		}
 
-		onDownPressed:		{ channelsPanelChannels.forceActiveFocus(); }
+		onRightPressed: {
+			channelsPanelChannels.currentIndex = 0;
+			channelsPanelChannels.forceActiveFocus();
+		}
+
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
 		updateList:			{ channelsModel.setList(categoriesModel.get(this.currentIndex).list); }
@@ -56,8 +60,9 @@ Activity {
 
 	ChannelsList {
 		id: channelsPanelChannels;
-		anchors.top: channelsPanelCategories.bottom;
-		anchors.topMargin: 1;
+		anchors.top: channelsPanelCategories.top;
+		anchors.left: channelsPanelCategories.right;
+		anchors.margins: 1;
 		spacing: 1;
 		model: channelsModel;
 

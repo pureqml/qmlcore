@@ -1,11 +1,10 @@
 ListView {
-	height: 50;
+	width: 250;
 	anchors.top: parent.top;
+	anchors.bottom: parent.bottom;
 	anchors.left: parent.left;
-	anchors.right: parent.right;
-	orientation: ListView.Horizontal;
 	clip: true;
-	delegate: IconTextDelegate { }
+	delegate: IconTextDelegate { width: parent.width; }
 
 	Behavior on width { Animation { duration: 300; } }
 }

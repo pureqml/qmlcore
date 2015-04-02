@@ -11,6 +11,7 @@ ListModel {
 				providers[result[i].alias]['name'] = result[i].alias;
 				providers[result[i].alias]['authorized'] = result[i].authorized;
 				providers[result[i].alias]['genres'] = [];
+				providers[result[i].alias]['icon'] = result[i].icon;
 			}
 
 			self.protocol.getChannels(function(list) {
@@ -44,7 +45,7 @@ ListModel {
 					var activated = providers[p].authorized === false || providers[p].authorized === true ? providers[p].authorized : true;
 					self.append({
 						text: p,
-						icon: providers[p].icon,
+						icon: "http://truba.tv" + providers[p].icon,
 						authorized: activated,
 						genres: providers[p].genres
 					});

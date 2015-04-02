@@ -46,6 +46,7 @@ Activity {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.top: renderer.top;
+		anchors.bottom: infoPanel.top;
 		active: infoPanel.active || parent.hasAnyActiveChild;
 	 	z: 10;
 
@@ -81,16 +82,20 @@ Activity {
 			searchPanel.search();
 		}
 
-		onCloseAll: { infoPanel.active = !infoPanel.active; }
+		onCloseAll: {
+			infoPanel.active = !infoPanel.active;
+			mainWindow.closeAll();
+		}
 	}
 
 	Item {
 		id: activityArea;
-		anchors.top: mainMenu.bottom;
+		anchors.top: renderer.top;
 		anchors.bottom: infoPanel.top;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-		anchors.topMargin: 1;
+		anchors.topMargin: 62;
+		anchors.leftMargin: 102;
 	}
 
 	ChannelsPanel {

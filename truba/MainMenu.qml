@@ -5,44 +5,30 @@ Item {
 	signal searchRequest;
 	property bool active;
 	opacity: active ? 1 : 0;
-	height: 60;
-
-	ListView {
-		id: mainManuListView;
-		width: contentWidth;
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		height: parent.height;
-		orientation: ListView.Horizontal;
-		spacing: 1;
-		model: ListModel {
-			property string text;
-
-			ListElement { text: "Каналы"; }
-			ListElement { text: "Телегид"; }
-			ListElement { text: "Кино"; }
-			ListElement { text: "Настройки"; }
-		}
-		delegate: TextButton { text: model.text; }
-
-		onClicked:			{ mainMenuProto.optionChoosed(this.currentIndex); }
-		onSelectPressed:	{ mainMenuProto.optionChoosed(this.currentIndex); }
-	}
 
 	Rectangle {
-		height: mainManuListView.height;
-		anchors.top: parent.top;
-		anchors.left: mainManuListView.right;
+		id: menuTopPanel;
+		height: 60;
 		anchors.right: fullscreenButton.left;
-		anchors.leftMargin: 1;
-		anchors.rightMargin: 1;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		anchors.margins: 1;
 		color: colorTheme.backgroundColor;
+
+		Text {
+			anchors.left: parent.left;
+			anchors.leftMargin: 20;
+			anchors.verticalCenter: parent.verticalCenter;
+			text: "TRUBATV";
+			font.pointSize: 32;
+			color: colorTheme.textColor;
+		}
 
 		TextInput {
 			id: searchInput;
 			anchors.verticalCenter: parent.verticalCenter;
 			anchors.left: parent.left;
-			anchors.leftMargin: 20;
+			anchors.leftMargin: 250;
 		}
 
 		TextButton {
@@ -58,10 +44,55 @@ Item {
 			}
 
 			onTriggered: {
-				console.log("entering fullscreen mode");
+				console.log("search: " + searchInput.text);
 				mainMenuProto.searchRequest(searchInput.text);
 			}
 		}
+	}
+
+	ListView {
+		id: mainManuListView;
+		width: activeFocus ? 250 : 100;
+		anchors.top: menuTopPanel.bottom;
+		anchors.left: parent.left;
+		anchors.bottom: parent.bottom;
+		anchors.margins: 1;
+		spacing: 1;
+		model: ListModel {
+			property string text;
+
+			ListElement { text: "Каналы"; source: "res/menu/channels.png"; }
+			ListElement { text: "Телегид"; source: "res/menu/epg.png"; }
+			ListElement { text: "Кино"; source: "res/menu/vod.png"; }
+			ListElement { text: "Настройки"; source: "res/menu/settings.png"; }
+		}
+		delegate: BaseButton {
+			width: parent.width;
+			height: 100;
+
+			Image {
+				id: menuItemIcon;
+				anchors.left: parent.left;
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.leftMargin: 10;
+				source: model.source;
+			}
+
+			Text {
+				anchors.left: menuItemIcon.right;
+				anchors.leftMargin: 10;
+				anchors.verticalCenter: parent.verticalCenter;
+				text: model.text;
+				font.pointSize: 16;
+				color: colorTheme.textColor;
+				visible: parent.parent.activeFocus;
+			}
+		}
+
+		onClicked:			{ mainMenuProto.optionChoosed(this.currentIndex); }
+		onSelectPressed:	{ mainMenuProto.optionChoosed(this.currentIndex); }
+
+		Behavior on width { Animation { duration: 250; } }
 	}
 
 	TextButton {

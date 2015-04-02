@@ -41,10 +41,10 @@ ListModel {
 				for (var p in providers) {
 					if (self.showActivatedOnly && providers[p]['authorized'] === false)
 						continue;
-					var activated = providers[p]['authorized'] === false || providers[p]['authorized'] === true ? providers[p]['authorized'] : true;
+					var activated = providers[p].authorized === false || providers[p].authorized === true ? providers[p].authorized : true;
 					self.append({
 						text: p,
-						icon: "res/providers/" + p + ".png",
+						icon: providers[p].icon,
 						authorized: activated,
 						genres: providers[p].genres
 					});

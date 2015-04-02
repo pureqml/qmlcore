@@ -14,13 +14,10 @@ Activity {
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-		anchors.topMargin: 30;
-		anchors.leftMargin: 10;
-		anchors.rightMargin: 10;
-		spacing: 10;
+		spacing: 1;
 
 		Rectangle {
-			height: 130;
+			height: 100;
 			width: parent.width;
 			color: colorTheme.backgroundColor;
 
@@ -58,7 +55,7 @@ Activity {
 		}
 
 		Rectangle {
-			height: 130;
+			height: 100;
 			width: parent.width;
 			color: colorTheme.backgroundColor;
 
@@ -68,7 +65,37 @@ Activity {
 				anchors.leftMargin: 10;
 				color: colorTheme.textColor;
 				font.pointSize: 32;
-				text: "Видео:";
+				text: "Передачи:";
+			}
+		}
+
+		Rectangle {
+			height: 100;
+			width: parent.width;
+			color: colorTheme.backgroundColor;
+
+			Text {
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.left: parent.left;
+				anchors.leftMargin: 10;
+				color: colorTheme.textColor;
+				font.pointSize: 32;
+				text: "Кино:";
+			}
+		}
+
+		Rectangle {
+			height: 100;
+			width: parent.width;
+			color: colorTheme.backgroundColor;
+
+			Text {
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.left: parent.left;
+				anchors.leftMargin: 10;
+				color: colorTheme.textColor;
+				font.pointSize: 32;
+				text: "Провайдеры:";
 			}
 		}
 	}

@@ -14,9 +14,9 @@ Activity {
 	ListView {
 		width: 600;
 		anchors.top: parent.top;
+		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
-		anchors.horizontalCenter: parent.horizontalCenter;
-		spasing: 1;
+		spacing: 1;
 		clip: true;
 		model: settingsProvidersModel;
 		delegate: BaseButton {

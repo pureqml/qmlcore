@@ -29,7 +29,7 @@ Activity {
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.left: parent.left;
 				anchors.leftMargin: 10;
-				source: model.icon;
+				source: model.source;
 			}
 
 			Text {

@@ -12,13 +12,13 @@ Activity {
 
 	ListView {
 		id: channelsPanelProviders;
-		height: 50;
+		width: 100;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
-		anchors.right: parent.right;
-		orientation: ListView.Horizontal;
+		anchors.bottom: parent.bottom;
+		spacing: 1;
 		clip: true;
-		delegate: IconTextDelegate { }
+		delegate: ChannelDelegate { height: 100; }
 		model: providersModel;
 
 		onCountChanged: {
@@ -26,7 +26,7 @@ Activity {
 				categoriesModel.setGenres(providersModel.get(0).genres);
 		}
 
-		onDownPressed:		{ channelsPanelCategories.forceActiveFocus(); }
+		onRightPressed:		{ channelsPanelCategories.forceActiveFocus(); }
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
 
@@ -38,8 +38,9 @@ Activity {
 
 	CategoriesList {
 		id: channelsPanelCategories;
-		anchors.top: channelsPanelProviders.bottom;
-		anchors.topMargin: 1;
+		anchors.top: parent.top;
+		anchors.left: channelsPanelProviders.right;
+		anchors.leftMargin: 1;
 		model: categoriesModel;
 		spacing: 1;
 
@@ -53,6 +54,7 @@ Activity {
 			channelsPanelChannels.forceActiveFocus();
 		}
 
+		onLeftPressed:		{ channelsPanelProviders.forceActiveFocus(); }
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
 		updateList:			{ channelsModel.setList(categoriesModel.get(this.currentIndex).list); }
@@ -62,7 +64,7 @@ Activity {
 		id: channelsPanelChannels;
 		anchors.top: channelsPanelCategories.top;
 		anchors.left: channelsPanelCategories.right;
-		anchors.margins: 1;
+		anchors.leftMargin: 1;
 		spacing: 1;
 		model: channelsModel;
 
@@ -70,9 +72,10 @@ Activity {
 		onSelectPressed:	{ this.switchTuCurrent(); }
 		onClicked:			{ this.switchTuCurrent(); }
 
-		onUpPressed: {
-			if (this.currentIndex - this.columns >= 0)
-				this.currentIndex -= this.columns;
+		onLeftPressed: {
+			log(this.currentIndex % this.columns);
+			if (this.currentIndex % this.columns)
+				this.currentIndex--;
 			else
 				channelsPanelCategories.forceActiveFocus();
 		}

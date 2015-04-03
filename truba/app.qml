@@ -41,61 +41,14 @@ Activity {
 		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
 	}
 
-	MainMenu {
-		id: mainMenu;
-		anchors.left: parent.left;
-		anchors.right: parent.right;
-		anchors.top: renderer.top;
-		anchors.bottom: infoPanel.top;
-		active: infoPanel.active || parent.hasAnyActiveChild;
-	 	z: 10;
-
-		onDownPressed: {
-			if (channelsPanel.active)
-				channelsPanel.forceActiveFocus();
-			else if (epgPanel.active)
-				epgPanel.forceActiveFocus();
-			else if (vodPanel.active)
-				vodPanel.forceActiveFocus();
-			else if (settings.active)
-				settings.forceActiveFocus();
-			else
-				infoPanel.forceActiveFocus();
-		}
-
-		onOptionChoosed(idx): {
-			if (idx == 0)
-				channelsPanel.start();
-			else if (idx == 1)
-				epgPanel.start();
-			else if (idx == 2)
-				vodPanel.start();
-			else if (idx == 3)
-				settings.start();
-		}
-
-		onSearchRequest(request): {
-			this.active = false;
-			infoPanel.active = false;
-			searchPanel.start();
-			searchPanel.searchRequest = request;
-			searchPanel.search();
-		}
-
-		onCloseAll: {
-			infoPanel.active = !infoPanel.active;
-			mainWindow.closeAll();
-		}
-	}
-
 	Item {
 		id: activityArea;
-		anchors.top: renderer.top;
+		anchors.top: topMenu.bottom;
 		anchors.bottom: infoPanel.top;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-		anchors.topMargin: 62;
-		anchors.leftMargin: 102;
+		anchors.topMargin: 2;
+		anchors.leftMargin: 101;
 	}
 
 	ChannelsPanel {
@@ -136,6 +89,57 @@ Activity {
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		onUpPressed: { mainMenu.forceActiveFocus(); }
+	}
+
+	TopMenu {
+		id: topMenu;
+		active: infoPanel.active || parent.hasAnyActiveChild;
+
+		onSearchRequest(request): {
+			this.active = false;
+			infoPanel.active = false;
+			searchPanel.start();
+			searchPanel.searchRequest = request;
+			searchPanel.search();
+		}
+
+		onCloseAll: {
+			infoPanel.active = !infoPanel.active;
+			mainWindow.closeAll();
+		}
+	}
+
+	MainMenu {
+		id: mainMenu;
+		anchors.left: renderer.left;
+		anchors.top: topMenu.bottom;
+		anchors.bottom: infoPanel.top;
+		anchors.topMargin: 2;
+		active: infoPanel.active || parent.hasAnyActiveChild;
+
+		onDownPressed: {
+			if (channelsPanel.active)
+				channelsPanel.forceActiveFocus();
+			else if (epgPanel.active)
+				epgPanel.forceActiveFocus();
+			else if (vodPanel.active)
+				vodPanel.forceActiveFocus();
+			else if (settings.active)
+				settings.forceActiveFocus();
+			else
+				infoPanel.forceActiveFocus();
+		}
+
+		onOptionChoosed(idx): {
+			if (idx == 0)
+				channelsPanel.start();
+			else if (idx == 1)
+				epgPanel.start();
+			else if (idx == 2)
+				vodPanel.start();
+			else if (idx == 3)
+				settings.start();
+		}
 	}
 
 	MuteIcon { mute: videoPlayer.volume <= 0; }

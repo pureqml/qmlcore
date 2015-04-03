@@ -1,6 +1,5 @@
 BaseButton {
 	width: delegateText.paintedWidth + delegateIcon.paintedWidth + 30;
-//	color: activeFocus ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 	height: 50;
 	clip: true;
 

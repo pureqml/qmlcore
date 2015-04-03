@@ -45,7 +45,7 @@ ListModel {
 					var activated = providers[p].authorized === false || providers[p].authorized === true ? providers[p].authorized : true;
 					self.append({
 						text: p,
-						icon: "http://truba.tv" + providers[p].icon,
+						source: "http://truba.tv" + providers[p].icon,
 						authorized: activated,
 						genres: providers[p].genres
 					});

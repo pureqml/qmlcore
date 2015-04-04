@@ -12,7 +12,7 @@ ListModel {
 				self.append({
 					text: providers[p].alias,
 					source: "http://truba.tv" + providers[p].icon,
-					authorized: activated,
+					authorized: activated
 				});
 			}
 		})

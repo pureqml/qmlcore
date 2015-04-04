@@ -137,6 +137,7 @@ Activity {
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
+		protocol: parent.protocol;
 		volume: videoPlayer.volume;
 
 		onMenuCalled:		{ mainMenu.start(); }

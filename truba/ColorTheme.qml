@@ -4,7 +4,7 @@ Item {
 	property Color disabledBackgroundColor:	"#263238";
 
 	property Color textColor:				"#fff";
-	property Color accentTextColor:			"#fff";
+	property Color accentTextColor:			"#FF5722";
 	property Color focusedTextColor:		"#fff";
 	property Color focusedAccentTextColor:	"#fff";
 	property Color disabledTextColor:		"#fff";

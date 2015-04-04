@@ -2,6 +2,10 @@ Object {
 	signal error;
 	property string baseUrl;
 
+	getPrograms(callback): {
+		this.request("/programs", {}, callback)
+	}
+
 	getChannels(callback): {
 		this.request("/channels", {}, callback)
 	}

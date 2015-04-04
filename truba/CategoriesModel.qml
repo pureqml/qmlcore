@@ -1,16 +1,6 @@
 ListModel {
 	property Protocol	protocol;
 
-	setGenres(map): {
-		this.clear();
-		for (var genre in map) {
-			this.append({
-				text:	genre,
-				list:	map[genre]
-			});
-		}
-	}
-
 	update: {
 		var self = this;
 		this.protocol.getChannels(function(list) {

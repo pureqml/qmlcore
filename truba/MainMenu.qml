@@ -2,10 +2,10 @@ ListView {
 	id: mainMenuProto;
 	signal optionChoosed;
 	property bool active;
+	height: 404;
 	width: activeFocus ? 250 : 100;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
-	anchors.bottom: parent.bottom;
 	spacing: 1;
 	opacity: active ? 1 : 0;
 	model: ListModel {

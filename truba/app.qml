@@ -29,24 +29,12 @@ Activity {
 		}
 	}
 
-	InfoPanel {
-		id: infoPanel;
-		height: 250;
-		anchors.bottom: parent.bottom;
-		anchors.left: parent.left;
-		anchors.right: parent.right;
-		volume: videoPlayer.volume;
-
-		onMenuCalled:		{ mainMenu.start(); }
-		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
-	}
-
 	Item {
 		id: activityArea;
 		anchors.top: topMenu.bottom;
-		anchors.bottom: infoPanel.top;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
+		anchors.bottom: infoPanel.top;
 		anchors.topMargin: 2;
 		anchors.leftMargin: 101;
 	}
@@ -113,7 +101,6 @@ Activity {
 		id: mainMenu;
 		anchors.left: renderer.left;
 		anchors.top: topMenu.bottom;
-		anchors.bottom: infoPanel.top;
 		anchors.topMargin: 2;
 		active: infoPanel.active || parent.hasAnyActiveChild;
 
@@ -143,6 +130,18 @@ Activity {
 	}
 
 	MuteIcon { mute: videoPlayer.volume <= 0; }
+
+	InfoPanel {
+		id: infoPanel;
+		height: 200;
+		anchors.bottom: parent.bottom;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+		volume: videoPlayer.volume;
+
+		onMenuCalled:		{ mainMenu.start(); }
+		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
+	}
 
 	switchToChannel(channel): {
 		if (!channel) {

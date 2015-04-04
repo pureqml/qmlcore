@@ -10,30 +10,30 @@ Activity {
 		cellWidth: 150;
 		cellHeight: 200;
 		model: ListModel {
-			property string name;
-			property string poster;
+			//property string name;
+			//property string poster;
 
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
+			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
 		}
 		delegate: Rectangle {
 			width: parent.cellWidth;

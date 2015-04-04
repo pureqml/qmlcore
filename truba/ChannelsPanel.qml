@@ -13,6 +13,7 @@ Activity {
 		id: channelsPanelCategories;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
+		anchors.bottom: parent.bottom;
 		model: categoriesModel;
 		spacing: 1;
 
@@ -26,7 +27,6 @@ Activity {
 			channelsPanelChannels.forceActiveFocus();
 		}
 
-		onLeftPressed:		{ /*channelsPanelProviders.forceActiveFocus();*/ }
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
 		updateList:			{ channelsModel.setList(categoriesModel.get(this.currentIndex).list); }

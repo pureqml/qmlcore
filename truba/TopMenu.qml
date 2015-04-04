@@ -24,7 +24,7 @@ Item {
 			anchors.verticalCenter: parent.verticalCenter;
 			text: "TRUBATV";
 			font.pointSize: 32;
-			color: colorTheme.textColor;
+			color: colorTheme.accentTextColor;
 		}
 
 		TextInput {

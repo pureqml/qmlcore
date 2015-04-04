@@ -141,7 +141,7 @@ Item {
 		this.channelNumber = channel.lcn;
 		this.channelName = this.channelNumber + ". " + channel.text;
 
-		var program = infoPanelEpgModel.getProgramInfo(channel.text);
+		var program = infoPanelEpgModel.getProgramInfo(channel.text)[0];
 		if (!program)
 			return;
 		this.programName = program.title;

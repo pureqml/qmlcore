@@ -26,7 +26,7 @@ Activity {
 			channelsPanelChannels.forceActiveFocus();
 		}
 
-		onLeftPressed:		{ channelsPanelProviders.forceActiveFocus(); }
+		onLeftPressed:		{ /*channelsPanelProviders.forceActiveFocus();*/ }
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
 		updateList:			{ channelsModel.setList(categoriesModel.get(this.currentIndex).list); }

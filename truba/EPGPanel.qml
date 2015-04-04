@@ -1,140 +1,98 @@
 Activity {
-	anchors.fill: parent;
+	id: epgPanelProto;
+	signal channelSwitched;
+	property Protocol protocol;
 	visible: active;
-	name: "epg";
+	anchors.fill: parent;
+	name: "epgpanel";
 
-	Rectangle {
-		anchors.fill: epgPanelChannels;
-		color: colorTheme.backgroundColor;
-	}
+	CategoriesModel	{ id: epgCategoriesModel; protocol: channelsPanelProto.protocol; }
+	EPGModel		{ id: epgPanelEpgModel; protocol: channelsPanelProto.protocol; }
+	ChannelsModel	{ id: epgChannelsModel; }
 
-	ChannelsList {
-		id: epgPanelChannels;
-		width: 400;
-		anchors.left: epgPanelCategories.left;
-		anchors.leftMargin: 50;
-		model: ListModel {}
+	CategoriesList {
+		id: epgCategories;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		anchors.bottom: parent.bottom;
+		model: epgCategoriesModel;
+		spacing: 1;
 
-		onLeftPressed: { epgPanelCategories.forceActiveFocus(); }
-		onRightPressed: { programsList.forceActiveFocus(); }
-
-		onCurrentIndexChanged: {
-			var programs = [
-				{ programName: "Менты-14", startTime: "12:00" },
-				{ programName: "Менты-14", startTime: "13:00" },
-				{ programName: "Менты-14", startTime: "14:00" },
-				{ programName: "Менты-14", startTime: "15:00" },
-				{ programName: "Менты-14", startTime: "16:00" },
-				{ programName: "Менты-14", startTime: "17:00" }
-			];
-			programsList.fillPrograms(programs);
+		onCountChanged: {
+			if (this.count > 1 && !epgPanelChannels.count)
+				epgChannelsModel.setList(epgCategoriesModel.get(0).list);
 		}
-	}
 
-	Rectangle {
-		anchors.fill: programsList;
-		color: colorTheme.backgroundColor;
+		onRightPressed: {
+			epgPanelChannels.currentIndex = 0;
+			epgPanelChannels.forceActiveFocus();
+		}
+
+		onClicked:			{ this.updateList(); }
+		onSelectPressed:	{ this.updateList(); }
+		updateList:			{ epgChannelsModel.setList(epgCategoriesModel.get(this.currentIndex).list); }
 	}
 
 	ListView {
-		id: programsList;
+		id: epgPanelChannels;
+		width: 100;
+		anchors.top: channelsPanelCategories.top;
+		anchors.left: channelsPanelCategories.right;
+		anchors.bottom: channelsPanelCategories.bottom;
+		anchors.leftMargin: 1;
+		spacing: 1;
+		clip: true;
+		model: epgChannelsModel;
+		delegate: ChannelDelegate {
+			widith: 100;
+			height: 100;
+		}
+
+		switchTuCurrent:	{ epgPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
+		onSelectPressed:	{ this.switchTuCurrent(); }
+		onClicked:			{ this.switchTuCurrent(); }
+		onLeftPressed:		{ epgCategories.forceActiveFocus(); }
+		onRightPressed:		{ epgPanelProgramsList.forceActiveFocus(); }
+
+		onCurrentIndexChanged: {
+			var channel = this.model.get(this.currentIndex).text;
+			epgPanelEpgModel.getEPGForChannel(channel);
+		}
+	}
+
+	ListView {
+		id: epgPanelProgramsList;
+		anchors.top: channelsPanelCategories.top;
 		anchors.left: epgPanelChannels.right;
 		anchors.right: parent.right;
-		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
-		delegate: Rectangle {
+		anchors.bottom: channelsPanelCategories.bottom;
+		anchors.leftMargin: 1;
+		spacing: 1;
+		clip: true;
+		model: epgPanelEpgModel;
+		delegate: BaseButton {
 			width: parent.width;
 			height: 50;
-			color: activeFocus ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 
 			Text {
-				id: startTimeDelegateText;
+				id: epgDelegaetTimeText;
 				anchors.left: parent.left;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 10;
-				text: model.startTime;
-				color: colorTheme.accentTextColor;
-				font.pointSize: 18;
+				color: colorTheme.textColor;
+				text: model.start;
 			}
 
 			Text {
-				anchors.left: startTimeDelegateText.right;
-				anchors.right: parent.right;
+				anchors.left: epgDelegaetTimeText.right;
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.leftMargin: 10;
-				font.pointSize: 18;
-				clip: true;
-				text: model.programName;
-				color: colorTheme.accentTextColor;
+				color: colorTheme.textColor;
+				text: model.title;
 			}
-		}
-		model: ListModel { }
-
-		fillPrograms(programs): {
-			var model = this.model;
-			model.clear();
-
-			for (var i in programs)
-				model.append(programs[i]);
-
-			this.currentIndex = 0;
 		}
 
 		onLeftPressed: { epgPanelChannels.forceActiveFocus(); }
-	}
-
-	Rectangle {
-		anchors.left: epgPanelChannels.left;
-		anchors.top: epgPanelChannels.top;
-		anchors.bottom: epgPanelChannels.bottom;
-		anchors.right: programsList.right;
-		color: "#000";
-		opacity: epgPanelChannels.activeFocus || programsList.activeFocus ? 0.0 : 0.6;
-
-		Behavior on opacity { Animation { duration: 300; } }
-	}
-
-	Rectangle {
-		anchors.fill: epgPanelCategories;
-		color: colorTheme.backgroundColor;
-	}
-
-	CategoriesList {
-		id: epgPanelCategories;
-		model: ListModel {
-			property string text;
-			property string source;
-
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-			ListElement { text: "ololo"; source: "res/scrambled.png"; }
-		}
-
-		onCurrentIndexChanged: {
-			var list = [
-				{ text: "ololo", source: "res/scrambled.png" },
-				{ text: "ololo", source: "res/scrambled.png" },
-				{ text: "ololo", source: "res/scrambled.png" },
-				{ text: "ololo", source: "res/scrambled.png" },
-				{ text: "ololo", source: "res/scrambled.png" },
-				{ text: "ololo", source: "res/scrambled.png" }
-			]; 
-			epgPanelChannels.setList(list);
-		}
-
-		onRightPressed: { epgPanelChannels.forceActiveFocus(); }
-	}
-
-	onActiveChanged: {
-		if (this.active)
-			epgPanelCategories.forceActiveFocus();
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

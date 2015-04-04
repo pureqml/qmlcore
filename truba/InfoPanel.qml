@@ -2,13 +2,20 @@ Item {
 	id: infoPanelProto;
 	signal menuCalled;
 	signal volumeUpdated;
-	property color	channelColor;
-	property string	channelIcon;
-	property string	channelName;
-	property int	channelNumber;
-	property bool	active;
-	property float	volume;
+	property color		channelColor;
+	property string		channelIcon;
+	property string		channelName;
+	property string		programName;
+	property string		programDescription;
+	property string		programTimeInterval;
+	property float		programDuration;
+	property float		volume;
+	property int		channelNumber;
+	property bool		active;
+	property Protocol	protocol;
 	opacity: active ? 1.0 : 0.0;
+
+	EPGModel { id: infoPanelEpgModel; protocol: infoPanelProto.protocol; }
 
 	Timer {
 		id: hideTimer;
@@ -45,12 +52,43 @@ Item {
 		height: activeFocus ? 200 : 100;
 
 		Text {
+			id: channelTitle;
 			anchors.top: parent.top;
 			anchors.left: parent.left;
 			anchors.margins: 10;
 			text: infoPanelProto.channelName;
 			font.pointSize: 24;
+			color: parent.activeFocus ? colorTheme.textColor : colorTheme.accentTextColor;
+		}
+
+		Text {
+			id: programTitle;
+			anchors.top: channelTitle.bottom;
+			anchors.left: channelTitle.left;
+			font.pointSize: 14;
+			text: infoPanelProto.programName;
 			color: colorTheme.textColor;
+		}
+
+		Text {
+			id: programTime;
+			anchors.top: programTitle.bottom;
+			anchors.left: programTitle.left;
+			font.pointSize: 14;
+			text: infoPanelProto.programTimeInterval;
+			color: colorTheme.textColor;
+			visible: parent.activeFocus;
+		}
+
+		Text {
+			id: programDescription;
+			anchors.top: programTime.bottom;
+			anchors.left: programTime.left;
+			font.pointSize: 14;
+			text: infoPanelProto.programDescription;
+			color: colorTheme.textColor;
+			visible: parent.activeFocus;
+			wrap: true;
 		}
 
 		onRightPressed: { options.forceActiveFocus(); }
@@ -89,6 +127,10 @@ Item {
 	}
 
 	fillChannelInfo(channel): {
+		this.programName = "";
+		this.programDescription = "";
+		this.programTimeInterval = "";
+
 		if (!channel) {
 			log("InfoPanel: Empty channel info.");
 			return;
@@ -98,6 +140,13 @@ Item {
 		this.channelColor = channel.color;
 		this.channelNumber = channel.lcn;
 		this.channelName = this.channelNumber + ". " + channel.text;
+
+		var program = infoPanelEpgModel.getProgramInfo(channel.text);
+		if (!program)
+			return;
+		this.programName = program.title;
+		this.programDescription = program.description;
+		this.programTimeInterval = program.start + " - " + program.stop;
 	}
 
 	onActiveFocusChanged:	{ channelInfo.forceActiveFocus(); }

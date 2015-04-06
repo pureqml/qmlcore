@@ -52,6 +52,7 @@ Activity {
 		id: epgPanel;
 		anchors.fill: activityArea;
 
+		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		onUpPressed: { mainMenu.forceActiveFocus(); }
 	}
 

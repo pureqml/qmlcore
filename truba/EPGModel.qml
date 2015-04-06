@@ -19,7 +19,7 @@ ListModel {
 		})
 	}
 
-	getProgramInfo(channel): 	{ return this.channelMap[channel]; }
+	getProgramInfo(channel): 	{ return this.channelMap[channel] ? this.channelMap[channel][0] : ""; }
 	onCompleted:				{ this.update(); }
 	onProtocolChanged:			{ this.update(); }
 }

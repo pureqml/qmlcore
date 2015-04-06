@@ -15,8 +15,6 @@ Item {
 	property Protocol	protocol;
 	opacity: active ? 1.0 : 0.0;
 
-	EPGModel { id: infoPanelEpgModel; protocol: infoPanelProto.protocol; }
-
 	Timer {
 		id: hideTimer;
 		interval: 10000;
@@ -141,12 +139,21 @@ Item {
 		this.channelNumber = channel.lcn;
 		this.channelName = this.channelNumber + ". " + channel.text;
 
-		var program = infoPanelEpgModel.getProgramInfo(channel.text);
-		if (!program)
-			return;
-		this.programName = program.title;
-		this.programDescription = program.description;
-		this.programTimeInterval = program.start + " - " + program.stop;
+		var curChannel = channel.text;
+		self = this;
+		var program = this.protocol.getCurrentPrograms(function(programs){
+			for (var i in programs) {
+				if (curChannel == programs[i].channel) {
+					self.programName = programs[i].title;
+					self.programDescription = programs[i].description;
+					var start = new Date(programs[i].start);
+					var stop = new Date(programs[i].stop);
+					self.programTimeInterval = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes() + " - ";
+					self.programTimeInterval += stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
+					break;
+				}
+			}
+		});
 	}
 
 	onActiveFocusChanged:	{ channelInfo.forceActiveFocus(); }

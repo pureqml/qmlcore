@@ -1,6 +1,5 @@
 Activity {
 	id: epgPanelProto;
-	signal channelSwitched;
 	property Protocol protocol;
 	visible: active;
 	anchors.fill: parent;
@@ -48,13 +47,12 @@ Activity {
 			height: 100;
 		}
 
-		switchTuCurrent:	{ epgPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
-		onSelectPressed:	{ this.switchTuCurrent(); }
-		onClicked:			{ this.switchTuCurrent(); }
+		onSelectPressed:	{ this.updateEPG(); }
+		onClicked:			{ this.updateEPG(); }
 		onLeftPressed:		{ epgCategories.forceActiveFocus(); }
 		onRightPressed:		{ epgPanelProgramsList.forceActiveFocus(); }
 
-		onCurrentIndexChanged: {
+		updateEPG: {
 			var channel = this.model.get(this.currentIndex).text;
 			epgPanelEpgModel.getEPGForChannel(channel);
 		}
@@ -93,6 +91,36 @@ Activity {
 		}
 
 		onLeftPressed: { epgPanelChannels.forceActiveFocus(); }
+	}
+
+	Rectangle {
+		height: 150;
+		width: 300;
+		anchors.centerIn: epgPanelProgramsList;
+		radius: 16;
+		color: colorTheme.backgroundColor;
+		opacity: !epgPanelEpgModel.isBusy && !epgPanelProgramsList.count;
+
+		Text {
+			width: parent.width;
+			height: parent.height;
+			verticalAlignment: Text.AlignVCenter;
+			horizontalAlignment: Text.AlignHCenter;
+			color: colorTheme.textColor;
+			text: "Не удалось загрузить программу передач";
+			font.pointSize: 18;
+			wrap: true;
+		}
+
+		Behavior on opacity { Animation { duration: 300; } }
+	}
+
+	Image {
+		anchors.centerIn: epgPanelProgramsList;
+		source: "res/spinner.png";
+		opacity: epgPanelEpgModel.isBusy && !epgPanelProgramsList.count;
+
+		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

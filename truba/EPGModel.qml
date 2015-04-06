@@ -1,25 +1,24 @@
 ListModel {
-	property Object channelMap;
+	property string	channel;
+	property bool	isBusy: false;
 
 	getEPGForChannel(channel): {
+		this.channel = channel;
 		this.clear();
-		for (var i in this.channelMap[channel])
-			this.append(this.channelMap[channel][i]);
-	}
-
-	update: {
+		this.isBusy = true;
 		var self = this;
-		this.protocol.getPrograms(function(programs) {
-			self.channelMap = {}
+		this.protocol.getProgramsAtDate(new Date(), function(programs) {
 			for (var i in programs) {
-				if (!self.channelMap[programs[i].channel])
-					self.channelMap[programs[i].channel] = [];
-				self.channelMap[programs[i].channel].push(programs[i]);
+				if (programs[i].channel == self.channel) {
+					var start = new Date(programs[i].start)
+					start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+					self.append({
+						title: programs[i].title,
+						start: start
+					});
+				}
 			}
+			self.isBusy = false;
 		})
 	}
-
-	getProgramInfo(channel): 	{ return this.channelMap[channel] ? this.channelMap[channel][0] : ""; }
-	onCompleted:				{ this.update(); }
-	onProtocolChanged:			{ this.update(); }
 }

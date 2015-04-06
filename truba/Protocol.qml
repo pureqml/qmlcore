@@ -2,7 +2,13 @@ Object {
 	signal error;
 	property string baseUrl;
 
-	getPrograms(callback): {
+	getProgramsAtDate(date, callback): {
+		if (!date.getFullYear() || !date.getMonth() || !date.getDate())
+			return;
+		this.request("/programs/" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(), {}, callback)
+	}
+
+	getCurrentPrograms(callback): {
 		this.request("/programs", {}, callback)
 	}
 

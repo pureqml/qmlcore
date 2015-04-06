@@ -65,4 +65,24 @@ Activity {
 		}
 	}
 
+	Rectangle {
+		height: 150;
+		width: 300;
+		anchors.centerIn: parent;
+		radius: 16;
+		color: colorTheme.backgroundColor;
+
+		Text {
+			width: parent.width;
+			height: parent.height;
+			verticalAlignment: Text.AlignVCenter;
+			horizontalAlignment: Text.AlignHCenter;
+			color: colorTheme.textColor;
+			text: "Раздел находиться в разработке";
+			font.pointSize: 18;
+			wrap: true;
+		}
+
+		Behavior on opacity { Animation { duration: 300; } }
+	}
 }

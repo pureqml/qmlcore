@@ -18,7 +18,14 @@ Item {
 	}
 
 	closeAll: {
-		var childrens = this.parent ? this.parent.children : this.children;
+		var childrens = this.children;
+		for (var i in childrens)
+			if (this != childrens[i] && this.isActivity(childrens[i]))
+				childrens[i].stop();
+	}
+
+	closeParentActivities: {
+		var childrens = this.parent.children ? this.parent.children : this.children;
 		for (var i in childrens)
 			if (this != childrens[i] && this.isActivity(childrens[i]))
 				childrens[i].stop();
@@ -29,7 +36,7 @@ Item {
 			return;
 
 		if (this.parent && this.isActivity(this.parent)) {
-			this.closeAll();
+			this.closeParentActivities();
 			this.parent.hasAnyActiveChild = true;
 			this.parent.currentActivity = this.name;
 		}

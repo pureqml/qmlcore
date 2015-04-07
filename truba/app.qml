@@ -104,6 +104,7 @@ Activity {
 		anchors.top: topMenu.bottom;
 		anchors.topMargin: 2;
 		active: infoPanel.active || parent.hasAnyActiveChild;
+		z: 100500;
 
 		onDownPressed: {
 			if (channelsPanel.active)

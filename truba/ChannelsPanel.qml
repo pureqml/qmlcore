@@ -45,7 +45,6 @@ Activity {
 		onClicked:			{ this.switchTuCurrent(); }
 
 		onLeftPressed: {
-			log(this.currentIndex % this.columns);
 			if (this.currentIndex % this.columns)
 				this.currentIndex--;
 			else

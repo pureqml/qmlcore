@@ -45,7 +45,8 @@ Activity {
 		anchors.fill: activityArea;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		onUpPressed: { mainMenu.forceActiveFocus(); }
+		onLeftPressed:	{ mainMenu.forceActiveFocus(); }
+		onUpPressed:	{ mainMenu.forceActiveFocus(); }
 	}
 
 	EPGPanel {
@@ -53,14 +54,16 @@ Activity {
 		anchors.fill: activityArea;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		onUpPressed: { mainMenu.forceActiveFocus(); }
+		onLeftPressed:	{ mainMenu.forceActiveFocus(); }
+		onUpPressed:	{ topMenu.forceActiveFocus(); }
 	}
 
 	VODPanel {
 		id: vodPanel;
 		anchors.fill: activityArea;
 
-		onUpPressed: { mainMenu.forceActiveFocus(); }
+		onLeftPressed:	{ mainMenu.forceActiveFocus(); }
+		onUpPressed:	{ topMenu.forceActiveFocus(); }
 	}
 
 	SettingsPanel {
@@ -68,7 +71,8 @@ Activity {
 		anchors.fill: activityArea;
 		protocol: parent.protocol;
 
-		onUpPressed: { mainMenu.forceActiveFocus(); }
+		onLeftPressed:	{ mainMenu.forceActiveFocus(); }
+		onUpPressed:	{ topMenu.forceActiveFocus(); }
 	}
 
 	SearchPanel {
@@ -77,7 +81,7 @@ Activity {
 		anchors.fill: activityArea;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		onUpPressed: { mainMenu.forceActiveFocus(); }
+		onUpPressed: { topMenu.forceActiveFocus(); }
 	}
 
 	TopMenu {
@@ -96,6 +100,11 @@ Activity {
 			infoPanel.active = !infoPanel.active;
 			mainWindow.closeAll();
 		}
+
+		onDownPressed: {
+			if (mainMenu.active)
+				mainMenu.forceActiveFocus();
+		}
 	}
 
 	MainMenu {
@@ -106,7 +115,7 @@ Activity {
 		active: infoPanel.active || parent.hasAnyActiveChild;
 		z: 100500;
 
-		onDownPressed: {
+		onRightPressed: {
 			if (channelsPanel.active)
 				channelsPanel.forceActiveFocus();
 			else if (epgPanel.active)
@@ -115,8 +124,6 @@ Activity {
 				vodPanel.forceActiveFocus();
 			else if (settings.active)
 				settings.forceActiveFocus();
-			else
-				infoPanel.forceActiveFocus();
 		}
 
 		onOptionChoosed(idx): {
@@ -128,6 +135,20 @@ Activity {
 				vodPanel.start();
 			else if (idx == 3)
 				settings.start();
+		}
+
+		onUpPressed: {
+			if (this.currentIndex <= 0)
+				topMenu.forceActiveFocus();
+			else
+				this.currentIndex--;
+		}
+
+		onDownPressed: {
+			if (this.currentIndex >= this.count - 1)
+				infoPanel.forceActiveFocus();
+			else
+				this.currentIndex++;
 		}
 	}
 
@@ -144,6 +165,11 @@ Activity {
 
 		onMenuCalled:		{ mainMenu.start(); }
 		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
+
+		onUpPressed: {
+			if (mainMenu.active)
+				mainMenu.forceActiveFocus();
+		}
 	}
 
 	switchToChannel(channel): {

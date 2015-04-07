@@ -1,4 +1,4 @@
-ListView {
+ScrollableListView {
 	width: 250;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;

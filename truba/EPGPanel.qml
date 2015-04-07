@@ -32,7 +32,7 @@ Activity {
 		updateList:			{ epgChannelsModel.setList(epgCategoriesModel.get(this.currentIndex).list); }
 	}
 
-	ListView {
+	ScrollableListView {
 		id: epgPanelChannels;
 		width: 100;
 		anchors.top: channelsPanelCategories.top;
@@ -41,6 +41,7 @@ Activity {
 		anchors.leftMargin: 1;
 		spacing: 1;
 		clip: true;
+		scrollbarWidth: 10;
 		model: epgChannelsModel;
 		delegate: ChannelDelegate {
 			widith: 100;
@@ -58,7 +59,7 @@ Activity {
 		}
 	}
 
-	ListView {
+	ScrollableListView {
 		id: epgPanelProgramsList;
 		anchors.top: channelsPanelCategories.top;
 		anchors.left: epgPanelChannels.right;

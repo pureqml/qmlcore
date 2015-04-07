@@ -68,6 +68,11 @@ for opt in "$@"; do
 			minify
 			package html5
 		;;
+		truba-smarttv)
+			compiler -o app core controls truba platform/smarttv
+			minify
+			package smarttv
+		;;
 
 		*) echo "unknown option $opt"; exit;;
 	esac

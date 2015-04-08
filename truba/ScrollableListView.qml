@@ -10,7 +10,7 @@ ListView {
 		anchors.right: parent.right;
 		anchors.left: parent.left;
 		hoverEnabled: true;
-		visible: parent.contentHeight > parent.height && parent.contentY > 0;
+		visible: parent.contentHeight > parent.height && parent.contentY > 0 && parent.count;
 		z: parent.z + 1;
 
 		Rectangle {
@@ -48,7 +48,7 @@ ListView {
 		anchors.right: parent.right;
 		anchors.left: parent.left;
 		hoverEnabled: true;
-		visible: parent.contentHeight > parent.height && parent.contentY < parent.contentHeight - parent.height;
+		visible: parent.contentHeight > parent.height && parent.contentY < parent.contentHeight - parent.height && parent.count;
 		z: parent.z + 1;
 
 		Rectangle {

@@ -1,6 +1,7 @@
 Activity {
 	id: epgPanelProto;
 	property Protocol protocol;
+	signal channelSwitched;
 	visible: active;
 	anchors.fill: parent;
 	name: "epgpanel";
@@ -48,14 +49,22 @@ Activity {
 			height: 100;
 		}
 
-		onSelectPressed:	{ this.updateEPG(); }
-		onClicked:			{ this.updateEPG(); }
+		onSelectPressed:	{ this.switchTuCurrent(); }
+		onClicked:			{ this.switchTuCurrent(); }
 		onLeftPressed:		{ epgCategories.forceActiveFocus(); }
 		onRightPressed:		{ epgPanelProgramsList.forceActiveFocus(); }
+		switchTuCurrent:	{ epgPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
 
-		updateEPG: {
-			var channel = this.model.get(this.currentIndex).text;
-			epgPanelEpgModel.getEPGForChannel(channel);
+		onCurrentIndexChanged:	{ delayTimer.restart(); }
+
+		Timer {
+			id: delayTimer;
+			interval: 500;
+
+			onTriggered: {
+				var channel = epgPanelChannels.model.get(epgPanelChannels.currentIndex).text;
+				epgPanelEpgModel.getEPGForChannel(channel);
+			}
 		}
 	}
 

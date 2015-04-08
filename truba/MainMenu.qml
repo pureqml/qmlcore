@@ -41,6 +41,7 @@ ListView {
 
 	onClicked:			{ mainMenuProto.optionChoosed(this.currentIndex); }
 	onSelectPressed:	{ mainMenuProto.optionChoosed(this.currentIndex); }
+	onBackPressed:		{ this.active = false; }
 
 	Behavior on width { Animation { duration: 250; } }
 	Behavior on opacity { Animation { duration: 250; } }

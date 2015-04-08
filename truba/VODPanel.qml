@@ -9,32 +9,7 @@ Activity {
 		height: parent.height - 100;
 		cellWidth: 150;
 		cellHeight: 200;
-		model: ListModel {
-			//property string name;
-			//property string poster;
-
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-			//ListElement { name: "The Movie"; poster: "res/poster.jpg"; }
-		}
+		model: ListModel { }
 		delegate: Rectangle {
 			width: parent.cellWidth;
 			height: parent.cellHeight;
@@ -66,17 +41,11 @@ Activity {
 	}
 
 	Rectangle {
-		height: 150;
-		width: 300;
-		anchors.centerIn: parent;
-		radius: 16;
+		anchors.fill: parent;
 		color: colorTheme.backgroundColor;
 
 		Text {
-			width: parent.width;
-			height: parent.height;
-			verticalAlignment: Text.AlignVCenter;
-			horizontalAlignment: Text.AlignHCenter;
+			anchors.centerIn: parent;
 			color: colorTheme.textColor;
 			text: "Раздел находиться в разработке";
 			font.pointSize: 18;

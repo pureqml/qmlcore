@@ -58,6 +58,7 @@ if (_globals.core.vendor == "samsung")
 		65: 'PageDown',
 		88: 'Back',
 		108: 'Red',
+		262: 'Menu',
 		29461: 'Down',
 		29460: 'Up',
 		29443: 'Select'

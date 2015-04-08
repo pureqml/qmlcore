@@ -95,18 +95,12 @@ Activity {
 	}
 
 	Rectangle {
-		height: 150;
-		width: 300;
-		anchors.centerIn: epgPanelProgramsList;
-		radius: 16;
+		anchors.fill: epgPanelProgramsList;
 		color: colorTheme.backgroundColor;
 		opacity: !epgPanelEpgModel.isBusy && !epgPanelProgramsList.count;
 
 		Text {
-			width: parent.width;
-			height: parent.height;
-			verticalAlignment: Text.AlignVCenter;
-			horizontalAlignment: Text.AlignHCenter;
+			anchors.centerIn: parent;
 			color: colorTheme.textColor;
 			text: "Не удалось загрузить программу передач";
 			font.pointSize: 18;

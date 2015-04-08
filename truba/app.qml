@@ -86,7 +86,7 @@ Activity {
 
 	TopMenu {
 		id: topMenu;
-		active: infoPanel.active || parent.hasAnyActiveChild;
+		active: mainMenu.active;
 
 		onSearchRequest(request): {
 			this.active = false;
@@ -145,10 +145,12 @@ Activity {
 		}
 
 		onDownPressed: {
-			if (this.currentIndex >= this.count - 1)
+			if (this.currentIndex >= this.count - 1) {
+				infoPanel.active = true;
 				infoPanel.forceActiveFocus();
-			else
+			} else {
 				this.currentIndex++;
+			}
 		}
 	}
 
@@ -188,4 +190,26 @@ Activity {
 	onBluePressed:		{ infoPanel.active = true; }
 	onGreenPressed:		{ channelsPanel.start(); }
 	onYellowPressed:	{ epgPanel.start(); }
+
+	onBackPressed: {
+		if (!infoPanel.active && !mainMenu.active && !mainWindow.hasAnyActiveChild) {
+			event.accepted = false;
+			return true;
+		}
+		if (mainWindow.hasAnyActiveChild)
+			mainWindow.closeAll();
+		if (infoPanel.active)
+			infoPanel.active = false;
+		if (mainMenu.active)
+			mainMenu.active = false;
+	}
+
+	onMenuPressed: {
+		if (mainMenu.active) {
+			mainMenu.active = false;
+		} else {
+			mainMenu.active = true;
+			mainMenu.forceActiveFocus();
+		}
+	}
 }

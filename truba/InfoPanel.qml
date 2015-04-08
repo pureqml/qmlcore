@@ -156,10 +156,16 @@ Item {
 		});
 	}
 
-	onActiveFocusChanged:	{ channelInfo.forceActiveFocus(); }
+	onActiveFocusChanged: {
+		if (this.activeFocus)
+			channelInfo.forceActiveFocus();
+		hideTimer.restart();
+	}
+
 	onActiveChanged:		{ hideTimer.active = this.active; }
 	onBluePressed:			{ this.active = !this.active; }
 	onVolumeChanged:		{ volumeTrackBar.value = infoPanelProto.volume; }
+	onBackPressed:			{ this.active = false; }
 
 	Behavior on opacity	{ Animation { duration: 300; } }
 }

@@ -13,8 +13,8 @@ ListView {
 
 		ListElement { text: "Каналы"; source: "res/menu/channels.png"; }
 		ListElement { text: "Телегид"; source: "res/menu/epg.png"; }
-		//ListElement { text: "Кино"; source: "res/menu/vod.png"; }
-		//ListElement { text: "Настройки"; source: "res/menu/settings.png"; }
+		ListElement { text: "Кино"; source: "res/menu/vod.png"; }
+		ListElement { text: "Настройки"; source: "res/menu/settings.png"; }
 	}
 	delegate: BaseButton {
 		width: parent.width;

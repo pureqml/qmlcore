@@ -27,30 +27,30 @@ Item {
 			color: colorTheme.accentTextColor;
 		}
 
-		//TextInput {
-			//id: searchInput;
-			//anchors.verticalCenter: parent.verticalCenter;
-			//anchors.left: parent.left;
-			//anchors.leftMargin: 250;
-		//}
+		TextInput {
+			id: searchInput;
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: parent.left;
+			anchors.leftMargin: 250;
+		}
 
-		//TextButton {
-			//height: 50;
-			//width: 50;
-			//anchors.verticalCenter: parent.verticalCenter;
-			//anchors.left: searchInput.right;
-			//focusOnHover: true;
+		TextButton {
+			height: 50;
+			width: 50;
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: searchInput.right;
+			focusOnHover: true;
 
-			//Image {
-				//anchors.centerIn: parent;
-				//source: "res/search.png";
-			//}
+			Image {
+				anchors.centerIn: parent;
+				source: "res/search.png";
+			}
 
-			//onTriggered: {
-				//console.log("search: " + searchInput.text);
-				//mainMenuProto.searchRequest(searchInput.text);
-			//}
-		//}
+			onTriggered: {
+				console.log("search: " + searchInput.text);
+				mainMenuProto.searchRequest(searchInput.text);
+			}
+		}
 	}
 
 	TextButton {

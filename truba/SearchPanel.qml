@@ -3,125 +3,166 @@ Activity {
 	signal channelSwitched;
 	property Protocol protocol;
 	property string searchRequest;
-	property Array channels;
 	anchors.fill: parent;
 	visible: active;
 	name: "search";
 
 	ListModel { id: foundChannelModel; }
+	ListModel { id: foundProgramsModel; }
 
-	Column {
-		anchors.top: parent.top;
-		anchors.left: parent.left;
-		anchors.right: parent.right;
-		spacing: 1;
+	Rectangle {
+		id: foundChannelsPanel;
+		height: 100;
+		width: parent.width;
+		color: colorTheme.backgroundColor;
 
-		Rectangle {
-			height: 100;
-			width: parent.width;
-			color: colorTheme.backgroundColor;
-
-			Text {
-				id: foundChannelsLabel;
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.leftMargin: 10;
-				color: colorTheme.textColor;
-				font.pointSize: 32;
-				text: "Каналы:";
-			}
-
-			ListView {
-				id: foundChannelsResult;
-				height: parent.height;
-				anchors.left: foundChannelsLabel.right;
-				anchors.right: parent.right;
-				anchors.leftMargin: 10;
-				orientation: ListView.Horizontal;
-				clip: true;
-				model: foundChannelModel;
-				delegate: ChannelDelegate { }
-
-				onSelectPressed:	{ this.switchTuCurrent(); }
-				onClicked:			{ this.switchTuCurrent(); }
-
-				switchTuCurrent:	{
-					if (!this.count)
-						return;
-					searchPanelProto.stop();
-					searchPanelProto.channelSwitched(this.model.get(this.currentIndex));
-				}
-			}
+		Text {
+			id: foundChannelsLabel;
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: parent.left;
+			anchors.leftMargin: 10;
+			color: colorTheme.textColor;
+			font.pointSize: 32;
+			text: "Каналы:";
 		}
 
-		Rectangle {
-			height: 100;
-			width: parent.width;
-			color: colorTheme.backgroundColor;
+		ListView {
+			id: foundChannelsResult;
+			height: parent.height;
+			anchors.top: parent.top;
+			anchors.left: foundChannelsLabel.right;
+			anchors.right: parent.right;
+			anchors.leftMargin: 10;
+			orientation: ListView.Horizontal;
+			clip: true;
+			model: foundChannelModel;
+			delegate: ChannelDelegate { }
 
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.leftMargin: 10;
-				color: colorTheme.textColor;
-				font.pointSize: 32;
-				text: "Передачи:";
-			}
-		}
+			onSelectPressed:	{ this.switchTuCurrent(); }
+			onClicked:			{ this.switchTuCurrent(); }
 
-		Rectangle {
-			height: 100;
-			width: parent.width;
-			color: colorTheme.backgroundColor;
-
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.leftMargin: 10;
-				color: colorTheme.textColor;
-				font.pointSize: 32;
-				text: "Кино:";
-			}
-		}
-
-		Rectangle {
-			height: 100;
-			width: parent.width;
-			color: colorTheme.backgroundColor;
-
-			Text {
-				anchors.verticalCenter: parent.verticalCenter;
-				anchors.left: parent.left;
-				anchors.leftMargin: 10;
-				color: colorTheme.textColor;
-				font.pointSize: 32;
-				text: "Провайдеры:";
+			switchTuCurrent:	{
+				if (!this.count)
+					return;
+				searchPanelProto.stop();
+				searchPanelProto.channelSwitched(this.model.get(this.currentIndex));
 			}
 		}
 	}
 
-	search: {
+	Rectangle {
+		id: foundProgramsPanel;
+		height: 100;
+		width: parent.width;
+		anchors.top: foundChannelsPanel.bottom;
+		anchors.topMargin: 1;
+		color: colorTheme.backgroundColor;
+
+		Text {
+			id: programsLabel;
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: parent.left;
+			anchors.leftMargin: 10;
+			color: colorTheme.textColor;
+			font.pointSize: 32;
+			text: "Передачи:";
+		}
+
+		ListView {
+			id: foundProgramsResult;
+			height: parent.height;
+			anchors.top: parent.top;
+			anchors.left: programsLabel.right;
+			anchors.right: parent.right;
+			anchors.leftMargin: 10;
+			orientation: ListView.Horizontal;
+			clip: true;
+			model: foundProgramsModel;
+			delegate: BaseButton {
+				width: foundProgramText.paintedWidth + 10;
+				height: parent.height;
+
+				Text {
+					id: foundProgramText;
+					anchors.top: parent.top;
+					text: model.title;
+					color: colorTheme.textColor;
+				}
+
+				Text {
+					anchors.top: foundProgramText.bottom;
+					anchors.horizontalCenter: parent.horizontalCenter;
+					text: model.start;
+					color: colorTheme.textColor;
+				}
+
+				Text {
+					anchors.bottom: parent.bottom;
+					anchors.horizontalCenter: parent.horizontalCenter;
+					text: model.channel;
+					color: colorTheme.textColor;
+				}
+			}
+
+			//onSelectPressed:	{ this.switchTuCurrent(); }
+			//onClicked:			{ this.switchTuCurrent(); }
+
+			//switchTuCurrent:	{
+				//if (!this.count)
+					//return;
+				//searchPanelProto.stop();
+				//searchPanelProto.channelSwitched(this.model.get(this.currentIndex));
+			//}
+		}
+	}
+
+	searchPrograms(programs): {
+		foundProgramsModel.clear();
+		var request = searchPanelProto.searchRequest.toLowerCase();
+		if (!request.length)
+			return;
+
+		if (!programs || !programs.length) {
+			log("There are no programs.");
+			return;
+		}
+
+		log("Search in programs: " + request);
+
+		for (var i in programs)
+			if (programs[i].title.toLowerCase().indexOf(request) >= 0) {
+				var start = new Date(programs[i].start);
+				start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+				foundProgramsModel.append({
+					title: programs[i].title,
+					channel: programs[i].channel,
+					start: start
+				});
+			}
+
+	}
+
+	searchChannels(channels): {
 		foundChannelModel.clear();
 		var request = searchPanelProto.searchRequest.toLowerCase();
 		if (!request.length)
 			return;
 
-		if (!this.channels || !this.channels.length) {
+		if (!channels || !channels.length) {
 			log("There are no channels.");
 			return;
 		}
 
 		log("Search: " + request);
 
-		var list = this.channels;
-		for (var i in list)
-			if (list[i].title.toLowerCase().indexOf(request) >= 0)
+		for (var i in channels)
+			if (channels[i].title.toLowerCase().indexOf(request) >= 0)
 				foundChannelModel.append({
-					text:	list[i].title,
-					url:	list[i].url,
-					lcn:	list[i].lcn,
-					source:	list[i].icon ? "http://truba.tv" + list[i].icon.source : "",
-					color:	list[i].icon ? list[i].icon.color : "#0000"
+					text:	channels[i].title,
+					url:	channels[i].url,
+					lcn:	channels[i].lcn,
+					source:	channels[i].icon ? "http://truba.tv" + channels[i].icon.source : "",
+					color:	channels[i].icon ? channels[i].icon.color : "#0000"
 				});
 	}
 
@@ -140,8 +181,12 @@ Activity {
 
 		var self = this;
 		protocol.getChannels(function(res) {
-			self.channels = res;
-			self.search();
+			self.searchChannels(res);
+		})
+
+		var self = this;
+		protocol.getProgramsAtDate(new Date(), function(res) {
+			self.searchPrograms(res);
 		})
 	}
 }

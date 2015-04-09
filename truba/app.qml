@@ -89,7 +89,6 @@ Activity {
 		active: mainMenu.active;
 
 		onSearchRequest(request): {
-			this.active = false;
 			infoPanel.active = false;
 			searchPanel.start();
 			searchPanel.searchRequest = request;

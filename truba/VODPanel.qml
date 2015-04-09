@@ -47,7 +47,7 @@ Activity {
 		Text {
 			anchors.centerIn: parent;
 			color: colorTheme.textColor;
-			text: "Раздел находиться в разработке";
+			text: "Раздел находится в разработке";
 			font.pointSize: 18;
 			wrap: true;
 		}

@@ -82,25 +82,35 @@ Activity {
 				width: foundProgramText.paintedWidth + 10;
 				height: parent.height;
 
-				Text {
-					id: foundProgramText;
-					anchors.top: parent.top;
-					text: model.title;
-					color: colorTheme.textColor;
-				}
+				Item {
+					height: foundProgramText.paintedHeight + foundProgramTimeText.paintedHeight + foundProgramChannelText.paintedHeight;
+					width: parent.width;
+					anchors.centerIn: parent;
 
-				Text {
-					anchors.top: foundProgramText.bottom;
-					anchors.horizontalCenter: parent.horizontalCenter;
-					text: model.start;
-					color: colorTheme.textColor;
-				}
+					Text {
+						id: foundProgramText;
+						anchors.top: parent.top;
+						anchors.left: parent.left;
+						anchors.leftMargin: 5;
+						text: model.title;
+						color: colorTheme.textColor;
+					}
 
-				Text {
-					anchors.bottom: parent.bottom;
-					anchors.horizontalCenter: parent.horizontalCenter;
-					text: model.channel;
-					color: colorTheme.textColor;
+					Text {
+						id: foundProgramTimeText;
+						anchors.top: foundProgramText.bottom;
+						anchors.horizontalCenter: parent.horizontalCenter;
+						text: model.start;
+						color: colorTheme.textColor;
+					}
+
+					Text {
+						id: foundProgramChannelText;
+						anchors.bottom: parent.bottom;
+						anchors.horizontalCenter: parent.horizontalCenter;
+						text: model.channel;
+						color: colorTheme.textColor;
+					}
 				}
 			}
 
@@ -132,7 +142,7 @@ Activity {
 		for (var i in programs)
 			if (programs[i].title.toLowerCase().indexOf(request) >= 0) {
 				var start = new Date(programs[i].start);
-				start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+				start = start.getDate() + "." + (start.getMonth() < 10 ? "0" + start.getMonth() : start.getMonth()) + "." + start.getFullYear() + " " + start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
 				foundProgramsModel.append({
 					title: programs[i].title,
 					channel: programs[i].channel,

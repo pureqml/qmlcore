@@ -1,7 +1,8 @@
 ListModel {
-	property Protocol	protocol;
-
 	update: {
+		if (!this.protocol)
+			return;
+
 		var self = this;
 		this.protocol.getChannels(function(list) {
 			self.clear();
@@ -36,5 +37,4 @@ ListModel {
 
 	onCompleted:				{ this.update(); }
 	onProtocolChanged:			{ this.update(); }
-	onShowActivatedOnlyChanged:	{ this.update(); }
 }

@@ -11,8 +11,10 @@ Activity {
 		autoPlay: true;
 	}
 
-	ColorTheme { id: colorTheme; }
-	Protocol { id: protocol; enabled: true; }
+	Protocol		{ id: protocol; enabled: true; }
+	ColorTheme		{ id: colorTheme; }
+	EPGModel		{ id: epgModel; protocol: protocol; }
+	CategoriesModel	{ id: categoriesModel; protocol: protocol; }
 
 	MouseArea {
 		anchors.fill: renderer;

@@ -1,12 +1,10 @@
 Activity {
 	id: channelsPanelProto;
 	signal channelSwitched;
-	property Protocol protocol;
 	visible: active;
 	anchors.fill: parent;
 	name: "channelspanel";
 
-	CategoriesModel	{ id: categoriesModel; protocol: channelsPanelProto.protocol; }
 	ChannelsModel	{ id: channelsModel; }
 
 	CategoriesList {
@@ -19,7 +17,7 @@ Activity {
 
 		onCountChanged: {
 			if (this.count > 1 && !channelsPanelChannels.count)
-				channelsModel.setList(categoriesModel.get(0).list);
+				channelsModel.setList(channelsPanelCategories.model.get(0).list);
 		}
 
 		onRightPressed: {
@@ -29,7 +27,7 @@ Activity {
 
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
-		updateList:			{ channelsModel.setList(categoriesModel.get(this.currentIndex).list); }
+		updateList:			{ channelsModel.setList(channelsPanelCategories.model.get(this.currentIndex).list); }
 	}
 
 	ChannelsList {

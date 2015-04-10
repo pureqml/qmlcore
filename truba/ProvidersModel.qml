@@ -3,6 +3,9 @@ ListModel {
 	property bool		showActivatedOnly: true;
 
 	update: {
+		if (!this.protocol)
+			return;
+
 		var self = this;
 		this.protocol.getProviders(function(providers) {
 			for (var p in providers) {

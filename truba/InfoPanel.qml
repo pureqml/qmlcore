@@ -2,7 +2,7 @@ Item {
 	id: infoPanelProto;
 	signal menuCalled;
 	signal volumeUpdated;
-	property color		channelColor;
+	property color		channelColor: colorTheme.backgroundColor;
 	property string		channelIcon;
 	property string		channelName;
 	property string		programName;

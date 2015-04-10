@@ -1,26 +1,23 @@
 Activity {
 	id: epgPanelProto;
-	property Protocol protocol;
 	signal channelSwitched;
 	visible: active;
 	anchors.fill: parent;
 	name: "epgpanel";
 
-	CategoriesModel	{ id: epgCategoriesModel; protocol: channelsPanelProto.protocol; }
-	EPGModel		{ id: epgPanelEpgModel; protocol: channelsPanelProto.protocol; }
-	ChannelsModel	{ id: epgChannelsModel; }
+	ChannelsModel { id: epgChannelsModel; }
 
 	CategoriesList {
 		id: epgCategories;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
-		model: epgCategoriesModel;
+		model: categoriesModel;
 		spacing: 1;
 
 		onCountChanged: {
 			if (this.count > 1 && !epgPanelChannels.count)
-				epgChannelsModel.setList(epgCategoriesModel.get(0).list);
+				epgChannelsModel.setList(epgCategories.model.get(0).list);
 		}
 
 		onRightPressed: {
@@ -30,7 +27,7 @@ Activity {
 
 		onClicked:			{ this.updateList(); }
 		onSelectPressed:	{ this.updateList(); }
-		updateList:			{ epgChannelsModel.setList(epgCategoriesModel.get(this.currentIndex).list); }
+		updateList:			{ epgChannelsModel.setList(epgCategories.model.get(this.currentIndex).list); }
 	}
 
 	ScrollableListView {
@@ -63,7 +60,7 @@ Activity {
 
 			onTriggered: {
 				var channel = epgPanelChannels.model.get(epgPanelChannels.currentIndex).text;
-				epgPanelEpgModel.getEPGForChannel(channel);
+				epgPanelProgramsList.model.getEPGForChannel(channel);
 			}
 		}
 	}
@@ -77,7 +74,7 @@ Activity {
 		anchors.leftMargin: 1;
 		spacing: 1;
 		clip: true;
-		model: epgPanelEpgModel;
+		model: epgModel;
 		delegate: BaseButton {
 			width: parent.width;
 			height: 50;
@@ -106,7 +103,7 @@ Activity {
 	Rectangle {
 		anchors.fill: epgPanelProgramsList;
 		color: colorTheme.backgroundColor;
-		opacity: !epgPanelEpgModel.isBusy && !epgPanelProgramsList.count;
+		opacity: !epgModel.isBusy && !epgPanelProgramsList.count;
 
 		Text {
 			anchors.centerIn: parent;
@@ -122,7 +119,7 @@ Activity {
 	Image {
 		anchors.centerIn: epgPanelProgramsList;
 		source: "res/spinner.png";
-		opacity: epgPanelEpgModel.isBusy && !epgPanelProgramsList.count;
+		opacity: epgModel.isBusy && !epgPanelProgramsList.count;
 
 		Behavior on opacity { Animation { duration: 300; } }
 	}

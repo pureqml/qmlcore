@@ -16,6 +16,17 @@ Activity {
 	EPGModel		{ id: epgModel; protocol: protocol; }
 	CategoriesModel	{ id: categoriesModel; protocol: protocol; }
 
+	Timer {
+		id: updateTimer;
+		interval: 24 * 3600 * 1000;
+		repeat: true;
+
+		onTriggered: {
+			categoriesModel.update();
+			epgModel.update();
+		}
+	}
+
 	MouseArea {
 		anchors.fill: renderer;
 		hoverEnabled: !parent.hasAnyActiveChild;

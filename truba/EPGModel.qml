@@ -3,6 +3,22 @@ ListModel {
 	property Object epgMap;
 	property bool	isBusy: false;
 
+	getEPGForSearchRequest(request): {
+		this.clear();
+		for (var channel in this.epgMap) {
+			for (var i in this.epgMap[channel]) {
+				if (this.epgMap[channel][i].title.toLowerCase().indexOf(request) >= 0) {
+					var start = this.epgMap[channel][i].start;
+					start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+					this.append({
+						title: this.epgMap[channel][i].title,
+						start: start
+					});
+				}
+			}
+		}
+	}
+
 	getEPGForChannel(channel): {
 		this.channel = channel;
 		this.clear();

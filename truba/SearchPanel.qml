@@ -8,7 +8,6 @@ Activity {
 	name: "search";
 
 	ListModel { id: foundChannelModel; }
-	ListModel { id: foundProgramsModel; }
 
 	Rectangle {
 		id: foundChannelsPanel;
@@ -77,7 +76,7 @@ Activity {
 			anchors.leftMargin: 10;
 			orientation: ListView.Horizontal;
 			clip: true;
-			model: foundProgramsModel;
+			model: epgModel;
 			delegate: BaseButton {
 				width: foundProgramText.paintedWidth + 10;
 				height: parent.height;
@@ -126,32 +125,6 @@ Activity {
 		}
 	}
 
-	searchPrograms(programs): {
-		foundProgramsModel.clear();
-		var request = searchPanelProto.searchRequest.toLowerCase();
-		if (!request.length)
-			return;
-
-		if (!programs || !programs.length) {
-			log("There are no programs.");
-			return;
-		}
-
-		log("Search in programs: " + request);
-
-		for (var i in programs)
-			if (programs[i].title.toLowerCase().indexOf(request) >= 0) {
-				var start = new Date(programs[i].start);
-				start = start.getDate() + "." + (start.getMonth() < 10 ? "0" + start.getMonth() : start.getMonth()) + "." + start.getFullYear() + " " + start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
-				foundProgramsModel.append({
-					title: programs[i].title,
-					channel: programs[i].channel,
-					start: start
-				});
-			}
-
-	}
-
 	searchChannels(channels): {
 		foundChannelModel.clear();
 		var request = searchPanelProto.searchRequest.toLowerCase();
@@ -176,7 +149,7 @@ Activity {
 				});
 	}
 
-	onVisibleChanged: {
+	search: {
 		if (!this.visible) {
 			this.searchRequest = "";
 			return;
@@ -194,9 +167,7 @@ Activity {
 			self.searchChannels(res);
 		})
 
-		var self = this;
-		protocol.getProgramsAtDate(new Date(), function(res) {
-			self.searchPrograms(res);
-		})
+		foundProgramsResult.model.clear();
+		foundProgramsResult.model.getEPGForSearchRequest(this.searchRequest);
 	}
 }

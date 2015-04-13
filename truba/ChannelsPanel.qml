@@ -36,6 +36,7 @@ Activity {
 		anchors.left: channelsPanelCategories.right;
 		anchors.leftMargin: 1;
 		spacing: 1;
+		visible: categoriesModel.count;
 		model: channelsModel;
 
 		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }

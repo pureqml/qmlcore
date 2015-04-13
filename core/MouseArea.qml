@@ -10,7 +10,8 @@ Item {
 	property real mouseX;
 	property real mouseY;
 	property bool pressed;
-	property string cursorUrl: "res/mouse.png";
+	//property string cursorUrl: "res/mouse.png";
+	property string cursorUrl: "";
 
 	onContainsMouseChanged: {
 		if (value) {

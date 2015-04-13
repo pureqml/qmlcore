@@ -13,18 +13,34 @@ Activity {
 
 	Protocol		{ id: protocol; enabled: true; }
 	ColorTheme		{ id: colorTheme; }
-	EPGModel		{ id: epgModel; protocol: protocol; }
-	CategoriesModel	{ id: categoriesModel; protocol: protocol; }
+
+	ProvidersModel {
+		id: providersModel;
+		protocol: protocol;
+	}
+
+	EPGModel {
+		id: epgModel;
+		protocol: protocol;
+	}
+
+	CategoriesModel {
+		id: categoriesModel;
+		protocol: protocol;
+		providers: providersModel.providers;
+	}
 
 	Timer {
 		id: updateTimer;
 		interval: 24 * 3600 * 1000;
 		repeat: true;
 
-		onTriggered: {
+		updateImpl: {
 			categoriesModel.update();
 			epgModel.update();
 		}
+
+		onTriggered: { this.updateImpl(); }
 	}
 
 	MouseArea {
@@ -86,6 +102,11 @@ Activity {
 
 		onLeftPressed:	{ mainMenu.forceActiveFocus(); }
 		onUpPressed:	{ topMenu.forceActiveFocus(); }
+
+		onActiveChanged: {
+			if (!this.active)
+				updateTimer.updateImpl();
+		}
 	}
 
 	SearchPanel {

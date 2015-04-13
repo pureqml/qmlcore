@@ -1,4 +1,6 @@
 ListModel {
+	property string providers;
+
 	update: {
 		if (!this.protocol)
 			return;
@@ -7,10 +9,14 @@ ListModel {
 		this.protocol.getChannels(function(list) {
 			self.clear();
 
+			var providersMap = JSON.parse(self.providers);
 			var defaultGenre = "Разное";
 			var map = {};
 
 			for (var i in list) {
+				if (providersMap && !providersMap[list[i].provider])
+					continue;
+
 				if (!map[defaultGenre])
 					map[defaultGenre] = [];
 

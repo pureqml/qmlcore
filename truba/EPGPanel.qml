@@ -103,7 +103,7 @@ Activity {
 	Rectangle {
 		anchors.fill: epgPanelProgramsList;
 		color: colorTheme.backgroundColor;
-		opacity: !epgModel.isBusy && !epgPanelProgramsList.count;
+		opacity: !epgModel.isBusy && !epgPanelProgramsList.count && epgCategories.count;
 
 		Text {
 			anchors.centerIn: parent;
@@ -119,7 +119,7 @@ Activity {
 	Image {
 		anchors.centerIn: epgPanelProgramsList;
 		source: "res/spinner.png";
-		opacity: epgModel.isBusy && !epgPanelProgramsList.count;
+		opacity: epgModel.isBusy && !epgPanelProgramsList.count && epgCategories.count;
 
 		Behavior on opacity { Animation { duration: 300; } }
 	}

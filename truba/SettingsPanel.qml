@@ -5,12 +5,6 @@ Activity {
 	visible: active;
 	name: "settings";
 
-	ProvidersModel {
-		id: settingsProvidersModel;
-		protocol: settingsPanel.protocol;
-		showActivatedOnly: false;
-	}
-
 	ListView {
 		width: 600;
 		anchors.top: parent.top;
@@ -18,7 +12,7 @@ Activity {
 		anchors.bottom: parent.bottom;
 		spacing: 1;
 		clip: true;
-		model: settingsProvidersModel;
+		model: providersModel;
 		delegate: BaseButton {
 			width: parent.width;
 			height: 100;
@@ -48,9 +42,18 @@ Activity {
 				anchors.verticalCenter: parent.verticalCenter;
 				anchors.right: parent.right;
 				anchors.rightMargin: 10;
-				source: model.authorized ? "res/checked.png" : "res/add.png";
+				source: model.authorized ? (model.enabled ? "res/checked.png" : "res/unchecked.png") : "res/add.png";
 			}
 		}
+
+		process: {
+			var idx = this.currentIndex;
+			this.model.enable(idx);
+			this._onRowsChanged(idx, idx + 1);
+		}
+
+		onClicked:			{ this.process(); }
+		onSelectPressed:	{ this.process(); }
 
 		Behavior on width { Animation { duration: 300; } }
 	}

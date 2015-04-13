@@ -7,7 +7,7 @@ Activity {
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.fill: renderer;
-		source: "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
+		source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
 	}
 
@@ -41,6 +41,13 @@ Activity {
 		}
 
 		onTriggered: { this.updateImpl(); }
+	}
+
+	LocalStorage {
+		id: lastChannel;
+		name: "lastChannel";
+
+		onCompleted: { this.read(); }
 	}
 
 	MouseArea {
@@ -212,6 +219,7 @@ Activity {
 			log("App: Empty channel info.");
 			return;
 		}
+		lastChannel.value = channel.url;
 		videoPlayer.source = channel.url;
 		infoPanel.fillChannelInfo(channel);
 		infoPanel.active = true;

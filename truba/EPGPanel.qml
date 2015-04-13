@@ -39,7 +39,7 @@ Activity {
 		anchors.leftMargin: 1;
 		spacing: 1;
 		clip: true;
-		scrollbarWidth: 10;
+		visible: categoriesModel.count;
 		model: epgChannelsModel;
 		delegate: ChannelDelegate {
 			widith: 100;

@@ -51,6 +51,7 @@ Activity {
 		anchors.topMargin: fullscreen ? 0 : 20;
 		source: "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
+		z: 10000;
 	}
 
 	ControlsSmall {
@@ -59,6 +60,7 @@ Activity {
 		anchors.bottom: videoPlayer.bottom;
 		volume: videoPlayer.volume;
 		visible: !videoPlayer.fullscreen;
+		z: videoPlayer.z + 1;
 
 		onFullScreenClicked: {
 			videoPlayer.fullscreen = true;

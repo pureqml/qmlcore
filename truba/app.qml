@@ -43,8 +43,8 @@ Activity {
 	VideoPlayer {
 		id: videoPlayer;
 		property bool fullscreen: false;
-		width: fullscreen ? renderer.width : 520;
-		height: fullscreen ? renderer.height : 400;
+		width: fullscreen ? renderer.width : renderer.width / 3;
+		height: fullscreen ? renderer.height : width * 2 / 3;
 		anchors.top: renderer.top;
 		anchors.right: renderer.right;
 		anchors.rightMargin: fullscreen ? 0 : 20;
@@ -76,6 +76,8 @@ Activity {
 		anchors.topMargin: 2;
 		protocol: parent.protocol;
 
+		onFocusPropagated: { channelInfo.forceActiveFocus(); }
+
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
 
@@ -96,6 +98,8 @@ Activity {
 		anchors.top: videoPlayer.bottom;
 		anchors.bottom: renderer.bottom;
 		anchors.topMargin: 10;
+
+		onLeftPressed: { channelsPanel.forceActiveFocus(); }
 	}
 
 	onBackPressed: {

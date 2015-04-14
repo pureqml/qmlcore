@@ -1,6 +1,7 @@
 Item {
 	id: channelsPanelProto;
 	signal channelSwitched;
+	signal focusPropagated;
 
 	Rectangle {
 		width: categoriesList.width;
@@ -54,6 +55,13 @@ Item {
 		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
 		onSelectPressed:	{ this.switchTuCurrent(); }
 		onClicked:			{ this.switchTuCurrent(); }
+
+		onRightPressed: {
+			if ((this.currentIndex % this.columns) == (this.columns - 1))
+				channelsPanelProto.focusPropagated();
+			else
+				this.currentIndex++;
+		}
 
 		onLeftPressed: {
 			if (this.currentIndex % this.columns)

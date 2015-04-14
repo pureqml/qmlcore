@@ -2,25 +2,26 @@ Item {
 	id: mainMenuProto;
 	signal closeAll;
 	signal searchRequest;
-	property bool active;
-	height: 60;
+	height: 50;
 	anchors.top: renderer.top;
 	anchors.left: renderer.left;
 	anchors.right: renderer.right;
-	opacity: active ? 1 : 0;
 
-	Rectangle {
+	//Rectangle {
+	Item {
 		id: menuTopPanel;
 		height: parent.height;
-		anchors.right: fullscreenButton.left;
+		width: renderer.width - 640;
+		//anchors.right: fullscreenButton.left;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.margins: 1;
-		color: colorTheme.backgroundColor;
+		//color: colorTheme.backgroundColor;
 
 		Text {
+			id: topMenuCaption;
 			anchors.left: parent.left;
-			anchors.leftMargin: 20;
+			anchors.leftMargin: 10;
 			anchors.verticalCenter: parent.verticalCenter;
 			text: "TRUBATV";
 			font.pointSize: 32;
@@ -51,47 +52,6 @@ Item {
 				mainMenuProto.searchRequest(searchInput.text);
 			}
 		}
-	}
-
-	TextButton {
-		id: fullscreenButton;
-		anchors.right: exitButton.left;
-		anchors.top: parent.top;
-		anchors.rightMargin: 1;
-		anchors.topMargin: 1;
-		height: parent.height;
-		width: 100;
-		focusOnHover: true;
-
-		Image {
-			anchors.centerIn: parent;
-			source: "res/fullscreen.png";
-		}
-
-		onTriggered: {
-			console.log("entering fullscreen mode");
-			if (renderer.inFullscreenMode())
-				renderer.exitFullscreenMode();
-			else
-				renderer.enterFullscreenMode();
-		}
-	}
-
-	TextButton {
-		id: exitButton;
-		anchors.right: parent.right;
-		anchors.top: parent.top;
-		anchors.topMargin: 1;
-		height: parent.height;
-		width: 100;
-		focusOnHover: true;
-
-		Image {
-			anchors.centerIn: parent;
-			source: "res/close.png";
-		}
-
-		onTriggered: { mainMenuProto.closeAll(); }
 	}
 
 	Behavior on opacity { Animation { duration: 250; } }

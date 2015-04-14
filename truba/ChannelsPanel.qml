@@ -1,14 +1,18 @@
-Activity {
+Item {
 	id: channelsPanelProto;
 	signal channelSwitched;
-	visible: active;
-	anchors.fill: parent;
-	name: "channelspanel";
 
-	ChannelsModel	{ id: channelsModel; }
+	Rectangle {
+		width: categoriesList.width;
+		anchors.top: renderer.top;
+		anchors.left: renderer.left;
+		anchors.bottom: renderer.bottom;
+		color: colorTheme.backgroundColor;
+		opacity: 0.3;
+	}
 
 	CategoriesList {
-		id: channelsPanelCategories;
+		id: categoriesList;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
@@ -16,27 +20,35 @@ Activity {
 		spacing: 1;
 
 		onCountChanged: {
-			if (this.count > 1 && !channelsPanelChannels.count)
-				channelsModel.setList(channelsPanelCategories.model.get(0).list);
+			if (this.count > 1 && !channels.count)
+				channelsModel.setList(categoriesList.model.get(0).list);
 		}
 
 		onRightPressed: {
-			channelsPanelChannels.currentIndex = 0;
-			channelsPanelChannels.forceActiveFocus();
+			channels.currentIndex = 0;
+			channels.forceActiveFocus();
 		}
 
-		onClicked:			{ this.updateList(); }
-		onSelectPressed:	{ this.updateList(); }
-		updateList:			{ channelsModel.setList(channelsPanelCategories.model.get(this.currentIndex).list); }
+		onCurrentIndexChanged: { updateCategoryTimer.restart(); }
 	}
 
+	Timer {
+		id: updateCategoryTimer;
+		interval: 400;
+
+		onTriggered: { channelsModel.setList(categoriesList.model.get(categoriesList.currentIndex).list); }
+	}
+
+	ChannelsModel { id: channelsModel; }
+
 	ChannelsList {
-		id: channelsPanelChannels;
-		anchors.top: channelsPanelCategories.top;
-		anchors.left: channelsPanelCategories.right;
+		id: channels;
+		anchors.top: categoriesList.top;
+		anchors.left: categoriesList.right;
+		anchors.right: videoPlayer.left;
 		anchors.leftMargin: 1;
+		anchors.rightMargin: cellWidth;
 		spacing: 1;
-		visible: categoriesModel.count;
 		model: channelsModel;
 
 		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
@@ -47,9 +59,7 @@ Activity {
 			if (this.currentIndex % this.columns)
 				this.currentIndex--;
 			else
-				channelsPanelCategories.forceActiveFocus();
+				categoriesList.forceActiveFocus();
 		}
 	}
-
-	Behavior on opacity { Animation { duration: 300; } }
 }

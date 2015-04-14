@@ -78,7 +78,6 @@ BaseView {
 		} else {
 			return y * this.columns + x
 		}
-		return -1
 	}
 
 	positionViewAtIndex(idx): {

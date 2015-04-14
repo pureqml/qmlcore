@@ -14,7 +14,7 @@ ListModel {
 			var map = {};
 
 			for (var i in list) {
-				if (providersMap && !providersMap[list[i].provider])
+				if (providersMap && providersMap[list[i].provider] === false)
 					continue;
 
 				if (!map[defaultGenre])

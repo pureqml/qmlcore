@@ -15,21 +15,7 @@ ListView {
 
 		Rectangle {
 			anchors.fill: parent;
-			gradient: Gradient {
-				GradientStop {
-					color: scrollUpArea.containsMouse ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
-					position: 0.0;
-
-					Behavior on color { ColorAnimation { duration: 300; } }
-				}
-
-				GradientStop {
-					color: "#0000";
-					position: 1.0;
-
-					Behavior on color { ColorAnimation { duration: 300; } }
-				}
-			}
+			color: scrollUpArea.containsMouse ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 		}
 
 		Image {
@@ -53,21 +39,7 @@ ListView {
 
 		Rectangle {
 			anchors.fill: parent;
-			gradient: Gradient {
-				GradientStop {
-					color: "#0000";
-					position: 0.0;
-
-					Behavior on color { ColorAnimation { duration: 300; } }
-				}
-
-				GradientStop {
-					color: scrollDownArea.containsMouse ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
-					position: 1.0;
-
-					Behavior on color { ColorAnimation { duration: 300; } }
-				}
-			}
+			color: scrollDownArea.containsMouse ? colorTheme.activeBackgroundColor : colorTheme.backgroundColor;
 		}
 
 		Image {

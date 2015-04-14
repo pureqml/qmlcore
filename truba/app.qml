@@ -6,8 +6,22 @@ Activity {
 
 	Protocol		{ id: protocol; enabled: true; }
 	ColorTheme		{ id: colorTheme; }
-	EPGModel		{ id: epgModel; protocol: protocol; }
-	CategoriesModel	{ id: categoriesModel; protocol: protocol; }
+
+	ProvidersModel {
+		id: providersModel;
+		protocol: protocol;
+	}
+
+	CategoriesModel	{
+		id: categoriesModel;
+		protocol: protocol;
+		providers: providersModel.providers;
+	}
+
+	EPGModel {
+		id: epgModel;
+		protocol: protocol;
+	}
 
 	Timer {
 		id: updateTimer;
@@ -20,15 +34,21 @@ Activity {
 		}
 	}
 
+	Rectangle {
+		id: background;
+		anchors.fill: renderer;
+		color: colorTheme.disabledBackgroundColor;
+	}
+
 	VideoPlayer {
 		id: videoPlayer;
-		property bool fullscreen;
+		property bool fullscreen: false;
+		width: fullscreen ? renderer.width : 520;
+		height: fullscreen ? renderer.height : 400;
 		anchors.top: renderer.top;
 		anchors.right: renderer.right;
-		anchors.rightMargin: fullscreen ? 0 : 40;
-		anchors.topMargin: fullscreen ? 0 : 50;
-		width: fullscreen ? renderer.width : 470;
-		height: fullscreen ? renderer.width : 350;
+		anchors.rightMargin: fullscreen ? 0 : 20;
+		anchors.topMargin: fullscreen ? 0 : 20;
 		source: "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
 	}
@@ -46,51 +66,34 @@ Activity {
 		}
 	}
 
-	ChannelsModel	{ id: channelsModel; }
-
-	CategoriesList {
-		id: categoriesList;
-		anchors.top: renderer.top;
+	ChannelsPanel {
+		id: channelsPanel;
+		anchors.top: topMenu.bottom;
 		anchors.left: renderer.left;
 		anchors.bottom: renderer.bottom;
-		model: categoriesModel;
-		spacing: 1;
+		anchors.topMargin: 2;
+		protocol: parent.protocol;
 
-		onCountChanged: {
-			if (this.count > 1 && !channels.count)
-				channelsModel.setList(categoriesList.model.get(0).list);
-		}
-
-		onRightPressed: {
-			channels.currentIndex = 0;
-			channels.forceActiveFocus();
-		}
-
-		onClicked:			{ this.updateList(); }
-		onSelectPressed:	{ this.updateList(); }
-		updateList:			{ channelsModel.setList(categoriesList.model.get(this.currentIndex).list); }
+		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
 
-	ChannelsList {
-		id: channels;
-		anchors.top: categoriesList.top;
-		anchors.left: categoriesList.right;
-		anchors.right: videoPlayer.left;
-		anchors.leftMargin: 1;
-		anchors.rightMargin: cellWidth;
-		spacing: 1;
-		model: channelsModel;
+	TopMenu {
+		id: topMenu;
 
-		//switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
-		onSelectPressed:	{ this.switchTuCurrent(); }
-		onClicked:			{ this.switchTuCurrent(); }
-
-		onLeftPressed: {
-			if (this.currentIndex % this.columns)
-				this.currentIndex--;
-			else
-				categoriesList.forceActiveFocus();
+		onSearchRequest(request): {
+		//TODO: impl
 		}
+
+		onDownPressed: { channelsPanel.forceActiveFocus(); }
+	}
+
+	ChannelInfo {
+		id: channelInfo;
+		anchors.left: videoPlayer.left;
+		anchors.right: videoPlayer.right;
+		anchors.top: videoPlayer.bottom;
+		anchors.bottom: renderer.bottom;
+		anchors.topMargin: 10;
 	}
 
 	onBackPressed: {
@@ -115,43 +118,6 @@ Activity {
 		//}
 	//}
 
-	//Item {
-		//id: activityArea;
-		//anchors.top: topMenu.bottom;
-		//anchors.left: parent.left;
-		//anchors.right: parent.right;
-		//anchors.bottom: infoPanel.top;
-		//anchors.topMargin: 2;
-		//anchors.leftMargin: 101;
-	//}
-
-	//ChannelsPanel {
-		//id: channelsPanel;
-		//protocol: parent.protocol;
-		//anchors.fill: activityArea;
-
-		//onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		//onLeftPressed:	{ mainMenu.forceActiveFocus(); }
-		//onUpPressed:	{ mainMenu.forceActiveFocus(); }
-	//}
-
-	//EPGPanel {
-		//id: epgPanel;
-		//anchors.fill: activityArea;
-
-		//onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		//onLeftPressed:	{ mainMenu.forceActiveFocus(); }
-		//onUpPressed:	{ topMenu.forceActiveFocus(); }
-	//}
-
-	//VODPanel {
-		//id: vodPanel;
-		//anchors.fill: activityArea;
-
-		//onLeftPressed:	{ mainMenu.forceActiveFocus(); }
-		//onUpPressed:	{ topMenu.forceActiveFocus(); }
-	//}
-
 	//SettingsPanel {
 		//id: settings;
 		//anchors.fill: activityArea;
@@ -168,75 +134,6 @@ Activity {
 
 		//onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		//onUpPressed: { topMenu.forceActiveFocus(); }
-	//}
-
-	//TopMenu {
-		//id: topMenu;
-		//active: mainMenu.active;
-
-		//onSearchRequest(request): {
-			//infoPanel.active = false;
-			//searchPanel.start();
-			//searchPanel.searchRequest = request;
-			//searchPanel.search();
-		//}
-
-		//onCloseAll: {
-			//infoPanel.active = !infoPanel.active;
-			//mainWindow.closeAll();
-		//}
-
-		//onDownPressed: {
-			//if (mainMenu.active)
-				//mainMenu.forceActiveFocus();
-		//}
-	//}
-
-	//MainMenu {
-		//id: mainMenu;
-		//anchors.left: renderer.left;
-		//anchors.top: topMenu.bottom;
-		//anchors.topMargin: 2;
-		//active: infoPanel.active || parent.hasAnyActiveChild;
-		//z: 100500;
-
-		//onRightPressed: {
-			//if (channelsPanel.active)
-				//channelsPanel.forceActiveFocus();
-			//else if (epgPanel.active)
-				//epgPanel.forceActiveFocus();
-			//else if (vodPanel.active)
-				//vodPanel.forceActiveFocus();
-			//else if (settings.active)
-				//settings.forceActiveFocus();
-		//}
-
-		//onOptionChoosed(idx): {
-			//if (idx == 0)
-				//channelsPanel.start();
-			//else if (idx == 1)
-				//epgPanel.start();
-			//else if (idx == 2)
-				//vodPanel.start();
-			//else if (idx == 3)
-				//settings.start();
-		//}
-
-		//onUpPressed: {
-			//if (this.currentIndex <= 0)
-				//topMenu.forceActiveFocus();
-			//else
-				//this.currentIndex--;
-		//}
-
-		//onDownPressed: {
-			//if (this.currentIndex >= this.count - 1) {
-				//infoPanel.active = true;
-				//infoPanel.forceActiveFocus();
-			//} else {
-				//this.currentIndex++;
-			//}
-		//}
 	//}
 
 	//MuteIcon { mute: videoPlayer.volume <= 0; }
@@ -259,15 +156,15 @@ Activity {
 		//}
 	//}
 
-	//switchToChannel(channel): {
-		//if (!channel) {
-			//log("App: Empty channel info.");
-			//return;
-		//}
-		//videoPlayer.source = channel.url;
+	switchToChannel(channel): {
+		if (!channel) {
+			log("App: Empty channel info.");
+			return;
+		}
+		videoPlayer.source = channel.url;
+		channelInfo.fillInfo(channel);
 		//infoPanel.fillChannelInfo(channel);
-		//infoPanel.active = true;
-	//}
+	}
 
 	//onUpPressed:		{ videoPlayer.volumeUp(); }
 	//onDownPressed:		{ videoPlayer.volumeDown(); }

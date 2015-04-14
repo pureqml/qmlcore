@@ -1,21 +1,22 @@
-BaseButton {
+Rectangle {
 	width: height;
 	height: parent.height;
-	clip: false;
+	color: activeFocus ? colorTheme.backgroundColor : "#0000";
 
-	EllipsisText {
-		id: delegateText;
-		anchors.left: parent.left;
-		anchors.right: parent.right;
+	Rectangle {
+		width: delegateText.paintedWidth + 10;
+		height: delegateText.paintedHeight;
 		anchors.bottom: parent.bottom;
-		anchors.bottomMargin: 5;
-		anchors.leftMargin: 10;
-		anchors.rightMargin: 10;
-		pointSize: 14;
-		text: model.text;
-		color: colorTheme.focusedTextColor;
-		cut: !parent.activeFocus;
-		bgcolor: parent.color;
+		anchors.horizontalCenter: parent.horizontalCenter;
+		visible: parent.activeFocus;
+		color: parent.color;
+
+		Text {
+			id: delegateText;
+			anchors.centerIn: parent;
+			color: parent.parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+			text: model.text;
+		}
 	}
 
 	Item {

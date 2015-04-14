@@ -1,7 +1,8 @@
-BaseButton {
+Rectangle {
 	width: delegateText.paintedWidth + delegateIcon.paintedWidth + 30;
 	height: 50;
 	clip: true;
+	color: activeFocus ? colorTheme.backgroundColor : "#0000";
 
 	Text {
 		id: delegateText;
@@ -12,7 +13,7 @@ BaseButton {
 		font.pointSize: 18;
 		clip: true;
 		text: model.text;
-		color: colorTheme.focusedTextColor;
+		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 	}
 
 	Image {

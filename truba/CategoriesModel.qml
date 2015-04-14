@@ -9,7 +9,7 @@ ListModel {
 		this.protocol.getChannels(function(list) {
 			self.clear();
 
-			var providersMap = JSON.parse(self.providers);
+			var providersMap = self.providers? JSON.parse(self.providers): {};
 			var defaultGenre = "Разное";
 			var map = {};
 

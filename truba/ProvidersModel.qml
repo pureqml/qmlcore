@@ -8,7 +8,7 @@ ListModel {
 			return;
 
 		providersStorage.read();
-		var providersMap = JSON.parse(providersStorage.value);
+		var providersMap = providersStorage.value? JSON.parse(providersStorage.value): {};
 		var self = this;
 
 		this.protocol.getProviders(function(providers) {

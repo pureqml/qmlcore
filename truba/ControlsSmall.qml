@@ -80,7 +80,7 @@ Item {
 		//this.channelName = this.channelNumber + ". " + channel.text;
 
 		//var curChannel = channel.text;
-		//self = this;
+		//var self = this;
 		//var program = this.protocol.getCurrentPrograms(function(programs){
 			//for (var i in programs) {
 				//if (curChannel == programs[i].channel) {

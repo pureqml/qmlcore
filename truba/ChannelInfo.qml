@@ -23,6 +23,7 @@ Item {
 		this.channelName = channel.text;
 
 		programsList.model.getEPGForChannel(channel.text);
+		programsList.currentIndex = 0;
 	}
 
 	ScrollableListView {
@@ -56,5 +57,10 @@ Item {
 				text: model.title;
 			}
 		}
+	}
+
+	onActiveFocusChanged: {
+		if (this.activeFocus)
+			programsList.forceActiveFocus();
 	}
 }

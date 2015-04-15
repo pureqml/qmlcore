@@ -7,7 +7,7 @@ Item {
 		width: categoriesList.width;
 		anchors.top: renderer.top;
 		anchors.left: renderer.left;
-		anchors.bottom: renderer.bottom;
+		anchors.bottom: parent.bottom;
 		color: colorTheme.backgroundColor;
 		opacity: 0.3;
 	}
@@ -47,8 +47,8 @@ Item {
 		anchors.top: categoriesList.top;
 		anchors.left: categoriesList.right;
 		anchors.right: videoPlayer.left;
-		anchors.leftMargin: 1;
-		anchors.rightMargin: cellWidth;
+		anchors.leftMargin: 10;
+		anchors.rightMargin: 10;
 		spacing: 1;
 		model: channelsModel;
 

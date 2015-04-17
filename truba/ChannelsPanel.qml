@@ -1,7 +1,8 @@
-Item {
+Activity {
 	id: channelsPanelProto;
 	signal channelSwitched;
 	signal focusPropagated;
+	opacity: active ? 1.0 : 0.0;
 
 	Rectangle {
 		width: categoriesList.width;
@@ -70,4 +71,8 @@ Item {
 				categoriesList.forceActiveFocus();
 		}
 	}
+
+	onBackPressed: {}	// Stub prevent activity closing by 'Back' pressing.
+
+	Behavior on opacity { Animation { duration: 250; } }
 }

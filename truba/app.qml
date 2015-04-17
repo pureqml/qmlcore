@@ -98,6 +98,7 @@ Activity {
 		anchors.top: videoPlayer.bottom;
 		anchors.bottom: renderer.bottom;
 		anchors.topMargin: 10;
+		visible: channelsPanel.active;
 
 		onLeftPressed: { channelsPanel.forceActiveFocus(); }
 	}
@@ -200,4 +201,8 @@ Activity {
 			//mainMenu.forceActiveFocus();
 		//}
 	//}
+
+	onCompleted: {
+		channelsPanel.active = true;
+	}
 }

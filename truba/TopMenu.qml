@@ -7,16 +7,13 @@ Item {
 	anchors.left: renderer.left;
 	anchors.right: renderer.right;
 
-	//Rectangle {
 	Item {
 		id: menuTopPanel;
 		height: parent.height;
 		width: renderer.width - 640;
-		//anchors.right: fullscreenButton.left;
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.margins: 1;
-		//color: colorTheme.backgroundColor;
 
 		Text {
 			id: topMenuCaption;
@@ -32,15 +29,20 @@ Item {
 			id: searchInput;
 			anchors.verticalCenter: parent.verticalCenter;
 			anchors.left: parent.left;
-			anchors.leftMargin: 250;
+			anchors.leftMargin: 270;
 		}
 
-		TextButton {
+		MouseArea {
 			height: 50;
 			width: 50;
 			anchors.verticalCenter: parent.verticalCenter;
 			anchors.left: searchInput.right;
-			focusOnHover: true;
+			hoverEnabled: true;
+
+			Rectangle {
+				anchors.fill: parent;
+				color: parent.containsMouse ? colorTheme.backgroundColor : "#0000";
+			}
 
 			Image {
 				anchors.centerIn: parent;
@@ -53,6 +55,4 @@ Item {
 			}
 		}
 	}
-
-	Behavior on opacity { Animation { duration: 250; } }
 }

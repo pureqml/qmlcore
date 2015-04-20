@@ -32,7 +32,7 @@ BaseView {
 			return false;
 
 		var horizontal = this.flow == this.FlowLeftToRight
-		if (!horizontal) {
+		if (horizontal) {
 			switch(key) {
 				case 'Left':	--this.currentIndex; return true
 				case 'Right':	++this.currentIndex; return true

@@ -1160,12 +1160,12 @@ exports._setup = function() {
 
 		if (horizontal) {
 			this.rows = Math.floor((h + this.cellHeight - 1) / this.cellHeight)
-			this.columns = Math.floor((n + this.rows - 1) / this.columns)
+			this.columns = Math.floor((n + this.rows - 1) / this.rows)
 			this.contentWidth = this.content.width = this.columns * this.cellWidth
 			this.contentHeight = this.content.height = this.rows * this.cellHeight
 		} else {
 			this.columns = Math.floor((w + this.cellWidth - 1) / this.cellWidth)
-			this.rows = Math.floor((n + this.columns - 1) / this.rows)
+			this.rows = Math.floor((n + this.columns - 1) / this.columns)
 			this.contentWidth = this.columns * this.cellWidth
 			this.contentHeight = this.rows * this.cellHeight
 		}

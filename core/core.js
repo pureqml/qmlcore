@@ -997,6 +997,7 @@ exports._setup = function() {
 		if (!n)
 			return
 
+		//log("layout " + n + " into " + w + "x" + h)
 		var created = false
 		var p = 0
 		var c = horizontal? this.content.x: this.content.y
@@ -1089,10 +1090,10 @@ exports._setup = function() {
 		var w = this.width, h = this.height
 		var horizontal = this.flow == this.FlowLeftToRight
 
-		if (!horizontal && w <= 0)
+		if (horizontal && w <= 0)
 			return
 
-		if (horizontal && h <= 0)
+		if (!horizontal && h <= 0)
 			return
 
 		var items = this._items
@@ -1105,7 +1106,7 @@ exports._setup = function() {
 		var x = 0, y = 0
 		var cx = this.content.x, cy = this.content.y
 
-		var atEnd = function() { return !horizontal? cx + x >= w: cy + y >= h }
+		var atEnd = function() { return horizontal? cx + x >= w: cy + y >= h }
 
 		var itemsCount = 0
 		for(var i = 0; i < n && !atEnd(); ++i) {
@@ -1129,7 +1130,7 @@ exports._setup = function() {
 
 			item.viewX = x
 			item.viewY = y
-			if (!horizontal) {
+			if (horizontal) {
 				x += this.cellWidth
 				if (x >= w) {
 					x = 0

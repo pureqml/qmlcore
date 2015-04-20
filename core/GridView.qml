@@ -87,7 +87,7 @@ BaseView {
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height
 		var horizontal = this.flow == this.FlowLeftToRight
-		if (horizontal) {
+		if (!horizontal) {
 			if (iw > w) {
 				this.contentX = x - w / 2 + iw / 2
 				return

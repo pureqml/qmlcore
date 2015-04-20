@@ -1211,7 +1211,12 @@ exports._setup = function() {
 		core.addProperty(this, 'bool', 'fullscreen')
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
+
 		var self = this;
+		div.bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e) {
+			var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+			self.fullscreen = state
+		});
 		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
 	}
 

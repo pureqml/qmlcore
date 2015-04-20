@@ -43,32 +43,40 @@ Activity {
 
 	ChannelsModel { id: channelsModel; }
 
-	ChannelsList {
-		id: channels;
+	Item {
 		anchors.top: categoriesList.top;
-		anchors.left: categoriesList.right;
-		anchors.right: videoPlayer.left;
-		anchors.leftMargin: 10;
-		anchors.rightMargin: 10;
-		spacing: 1;
-		model: channelsModel;
+		anchors.left: renderer.left;
+		anchors.right: renderer.right;
+		anchors.bottom: categoriesList.bottom;
+		clip: true;
 
-		switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
-		onSelectPressed:	{ this.switchTuCurrent(); }
-		onClicked:			{ this.switchTuCurrent(); }
+		ChannelsList {
+			id: channels;
+			anchors.top: categoriesList.top;
+			anchors.left: categoriesList.right;
+			anchors.right: videoPlayer.left;
+			anchors.leftMargin: 10;
+			anchors.rightMargin: 10;
+			spacing: 1;
+			model: channelsModel;
 
-		onRightPressed: {
-			if ((this.currentIndex % this.columns) == (this.columns - 1))
-				channelsPanelProto.focusPropagated();
-			else
-				this.currentIndex++;
-		}
+			switchTuCurrent:	{ channelsPanelProto.channelSwitched(this.model.get(this.currentIndex)); }
+			onSelectPressed:	{ this.switchTuCurrent(); }
+			onClicked:			{ this.switchTuCurrent(); }
 
-		onLeftPressed: {
-			if (this.currentIndex % this.columns)
-				this.currentIndex--;
-			else
-				categoriesList.forceActiveFocus();
+			onRightPressed: {
+				if ((this.currentIndex % this.columns) == (this.columns - 1))
+					channelsPanelProto.focusPropagated();
+				else
+					this.currentIndex++;
+			}
+
+			onLeftPressed: {
+				if (this.currentIndex % this.columns)
+					this.currentIndex--;
+				else
+					categoriesList.forceActiveFocus();
+			}
 		}
 	}
 

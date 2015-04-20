@@ -1,7 +1,7 @@
 Item {
 	property bool mute: false;
-	anchors.top: parent.top;
-	anchors.left: parent.left;
+	anchors.top: videoPlayer.top;
+	anchors.left: videoPlayer.left;
 	visible: mute;
 
 	Image {

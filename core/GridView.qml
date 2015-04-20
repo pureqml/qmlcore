@@ -53,15 +53,15 @@ BaseView {
 		var horizontal = this.flow == this.FlowLeftToRight
 		var x, y, cw = this.cellWidth, ch = this.cellHeight
 		if (horizontal) {
+			if (this.columns == 0)
+				return [0, 0, 0, 0]
+			x = (idx % this.columns) * cw
+			y = Math.floor(idx / this.columns) * ch
+		} else {
 			if (this.rows == 0)
 				return [0, 0, 0, 0]
 			x = Math.floor(idx / this.rows) * cw
 			y = (idx % this.rows) * ch
-		} else {
-			if (this.rows == 0)
-				return [0, 0, 0, 0]
-			x = Math.floor(idx / this.columns) * cw
-			y = (idx % this.columns) * ch
 		}
 		return [x, y, cw, ch]
 	}
@@ -73,7 +73,7 @@ BaseView {
 		var horizontal = this.flow == this.FlowLeftToRight
 		x = Math.floor(x / this.cellWidth)
 		y = Math.floor(y / this.cellHeight)
-		if (horizontal) {
+		if (!horizontal) {
 			return x * this.rows + y
 		} else {
 			return y * this.columns + x

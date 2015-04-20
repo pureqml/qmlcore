@@ -1159,7 +1159,7 @@ exports._setup = function() {
 
 		if (horizontal) {
 			this.rows = Math.floor(h / this.cellHeight)
-			this.columns = Math.floor(n / this.rows)
+			this.columns = Math.floor(n / this.columns)
 			this.contentWidth = this.content.width = this.columns * this.cellWidth
 			this.contentHeight = this.content.height = this.rows * this.cellHeight
 		} else {

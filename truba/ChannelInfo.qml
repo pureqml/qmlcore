@@ -18,14 +18,6 @@ Item {
 		font.pointSize: 24;
 	}
 
-	fillInfo(channel): {
-		this.channelIcon = channel.source;
-		this.channelName = channel.text;
-
-		programsList.model.getEPGForChannel(channel.text);
-		programsList.currentIndex = 0;
-	}
-
 	ScrollableListView {
 		id: programsList;
 		anchors.left: parent.left;
@@ -57,6 +49,14 @@ Item {
 				text: model.title;
 			}
 		}
+	}
+
+	fillInfo(channel): {
+		this.channelIcon = channel.source;
+		this.channelName = channel.text;
+
+		programsList.model.getEPGForChannel(channel.text);
+		programsList.currentIndex = 0;
 	}
 
 	onActiveFocusChanged: {

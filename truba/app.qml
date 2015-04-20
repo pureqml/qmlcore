@@ -73,6 +73,8 @@ Activity {
 			videoPlayer.fullscreen = true
 			renderer.fullscreen = true
 		}
+
+		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
 	}
 
 	ChannelsPanel {
@@ -98,43 +100,20 @@ Activity {
 		onDownPressed: { channelsPanel.forceActiveFocus(); }
 	}
 
-	ChannelInfo {
-		id: channelInfo;
-		anchors.left: videoPlayer.left;
-		anchors.right: videoPlayer.right;
-		anchors.top: videoPlayer.bottom;
-		anchors.bottom: renderer.bottom;
-		anchors.topMargin: 10;
-		visible: channelsPanel.active;
+	MouseArea {
+		anchors.fill: renderer;
+		hoverEnabled: !parent.hasAnyActiveChild && videoPlayer.fullscreen;
 
-		onLeftPressed: { channelsPanel.forceActiveFocus(); }
-	}
+		onMouseXChanged: {
+			if (this.hoverEnabled)
+				infoPanel.active = true;
+		}
 
-	function backToWindowedMode() {
-		if (videoPlayer.fullscreen) {
-			renderer.fullscreen = false
-			videoPlayer.fullscreen = false
+		onMouseYChanged: {
+			if (this.hoverEnabled)
+				infoPanel.active = true;
 		}
 	}
-
-	onBackPressed: {
-		this.backToWindowedMode()
-	}
-
-	//MouseArea {
-		//anchors.fill: renderer;
-		//hoverEnabled: !parent.hasAnyActiveChild;
-
-		//onMouseXChanged: { 
-			//if (this.hoverEnabled)
-				//infoPanel.active = true;
-		//}
-
-		//onMouseYChanged: {
-			//if (this.hoverEnabled) 
-				//infoPanel.active = true;
-		//}
-	//}
 
 	//SettingsPanel {
 		//id: settings;
@@ -154,25 +133,34 @@ Activity {
 		//onUpPressed: { topMenu.forceActiveFocus(); }
 	//}
 
-	//MuteIcon { mute: videoPlayer.volume <= 0; }
+	MuteIcon { mute: videoPlayer.fullscreen && videoPlayer.volume <= 0.1; z: videoPlayer.z + 10; }
 
-	//InfoPanel {
-		//id: infoPanel;
-		//height: 200;
-		//anchors.bottom: parent.bottom;
-		//anchors.left: parent.left;
-		//anchors.right: parent.right;
-		//protocol: parent.protocol;
-		//volume: videoPlayer.volume;
+	InfoPanel {
+		id: infoPanel;
+		height: 200;
+		anchors.bottom: videoPlayer.bottom;
+		anchors.left: videoPlayer.left;
+		anchors.right: videoPlayer.right;
+		protocol: parent.protocol;
+		volume: videoPlayer.volume;
+		active: videoPlayer.fullscreen;
+		visible: videoPlayer.fullscreen;
+		z: videoPlayer.z + 1;
 
-		//onMenuCalled:		{ mainMenu.start(); }
-		//onVolumeUpdated(v):	{ videoPlayer.volume = v; }
+		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
+	}
 
-		//onUpPressed: {
-			//if (mainMenu.active)
-				//mainMenu.forceActiveFocus();
-		//}
-	//}
+	ChannelInfo {
+		id: channelInfo;
+		anchors.left: videoPlayer.left;
+		anchors.right: videoPlayer.right;
+		anchors.top: videoPlayer.bottom;
+		anchors.bottom: renderer.bottom;
+		anchors.topMargin: 10;
+		visible: channelsPanel.active;
+
+		onLeftPressed: { channelsPanel.forceActiveFocus(); }
+	}
 
 	switchToChannel(channel): {
 		if (!channel) {
@@ -181,8 +169,10 @@ Activity {
 		}
 		lastChannel.value = channel.url;
 		videoPlayer.source = channel.url;
-		channelInfo.fillInfo(channel);
-		//infoPanel.fillChannelInfo(channel);
+		if (videoPlayer.fullscreen)
+			infoPanel.fillChannelInfo(channel);
+		else
+			channelInfo.fillInfo(channel);
 	}
 
 	//onUpPressed:		{ videoPlayer.volumeUp(); }
@@ -213,6 +203,15 @@ Activity {
 			//mainMenu.forceActiveFocus();
 		//}
 	//}
+
+	function backToWindowedMode() {
+		if (videoPlayer.fullscreen) {
+			renderer.fullscreen = false
+			videoPlayer.fullscreen = false
+		}
+	}
+
+	onBackPressed: { this.backToWindowedMode(); }
 
 	onCompleted: {
 		channelsPanel.active = true;

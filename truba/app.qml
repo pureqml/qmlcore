@@ -7,6 +7,13 @@ Activity {
 	Protocol		{ id: protocol; enabled: true; }
 	ColorTheme		{ id: colorTheme; }
 
+	LocalStorage {
+		id: lastChannel;
+		name: "lastChannel";
+
+		onCompleted: { this.read(); }
+	}
+
 	ProvidersModel {
 		id: providersModel;
 		protocol: protocol;
@@ -49,7 +56,7 @@ Activity {
 		anchors.right: renderer.right;
 		anchors.rightMargin: fullscreen ? 0 : 20;
 		anchors.topMargin: fullscreen ? 0 : 20;
-		source: "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
+		source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
 		z: 10000;
 	}
@@ -168,6 +175,7 @@ Activity {
 			log("App: Empty channel info.");
 			return;
 		}
+		lastChannel.value = channel.url;
 		videoPlayer.source = channel.url;
 		channelInfo.fillInfo(channel);
 		//infoPanel.fillChannelInfo(channel);

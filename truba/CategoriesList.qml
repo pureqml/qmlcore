@@ -1,5 +1,5 @@
 ScrollableListView {
-	width: 250;
+	width: 260;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 	anchors.left: parent.left;

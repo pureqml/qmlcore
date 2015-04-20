@@ -1106,7 +1106,7 @@ exports._setup = function() {
 		var x = 0, y = 0
 		var cx = this.content.x, cy = this.content.y
 
-		var atEnd = function() { return horizontal? cx + x >= w: cy + y >= h }
+		var atEnd = function() { return horizontal? cy + y >= h: cx + x >= w }
 
 		var itemsCount = 0
 		for(var i = 0; i < n && !atEnd(); ++i) {
@@ -1126,10 +1126,11 @@ exports._setup = function() {
 
 			++itemsCount
 
-			var visible = horizontal? (cx + x + item.width >= 0 && cx + x < w): (cy + y + item.height >= 0 && cy + y < h)
+			var visible = horizontal? (cy + y + item.height >= 0 && cy + y < h): (cx + x + item.width >= 0 && cx + x < w)
 
 			item.viewX = x
 			item.viewY = y
+
 			if (horizontal) {
 				x += this.cellWidth
 				if (x >= w) {
@@ -1158,7 +1159,7 @@ exports._setup = function() {
 				item.visible = false
 		}
 
-		if (horizontal) {
+		if (!horizontal) {
 			this.rows = Math.floor((h + this.cellHeight - 1) / this.cellHeight)
 			this.columns = Math.floor((n + this.rows - 1) / this.rows)
 			this.contentWidth = this.content.width = this.columns * this.cellWidth
@@ -1169,6 +1170,7 @@ exports._setup = function() {
 			this.contentWidth = this.columns * this.cellWidth
 			this.contentHeight = this.rows * this.cellHeight
 		}
+		//console.log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		if (created)
 			this._get('renderer')._completed()
 	}

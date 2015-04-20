@@ -80,5 +80,33 @@ BaseView {
 		}
 	}
 
+	positionViewAtIndex(idx): {
+		var cx = this.contentX, cy = this.contentY
+		var itemBox = this.getItemPosition(idx)
+		var x = itemBox[0], y = itemBox[1]
+		var iw = itemBox[2], ih = itemBox[3]
+		var w = this.width, h = this.height
+		var horizontal = this.flow == this.FlowLeftToRight
+		if (horizontal) {
+			if (iw > w) {
+				this.contentX = x - w / 2 + iw / 2
+				return
+			}
+			if (x - cx < 0)
+				this.contentX = x
+			else if (x - cx + iw > w)
+				this.contentX = x + iw - w
+		} else {
+			if (ih > h) {
+				this.contentY = y - h / 2 + ih / 2
+				return
+			}
+			if (y - cy < 0)
+				this.contentY = y
+			else if (y - cy + ih > h)
+				this.contentY = y + ih - h
+		}
+	}
+
 	onFlowChanged: { this._layout() }
 }

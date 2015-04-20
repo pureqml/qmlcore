@@ -1208,6 +1208,8 @@ exports._setup = function() {
 		this.width = w;
 		this.height = h;
 
+		core.addProperty(this, 'bool', 'fullscreen')
+
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		var self = this;
 		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
@@ -1217,7 +1219,14 @@ exports._setup = function() {
 		this._completedHandlers.push(callback);
 	}
 
-	_globals.core.core.Context.prototype.enterFullscreenMode = function() {
+	_globals.core.core.Context.prototype._update = function(name, value) {
+		switch(name) {
+			case 'fullscreen': if (value) this._enterFullscreenMode(); else this._exitFullscreenMode(); break
+		}
+		_globals.core.Object.prototype._update.apply(this, arguments)
+	}
+
+	_globals.core.core.Context.prototype._enterFullscreenMode = function() {
 		var elem = this.element.get(0)
 		if (elem.requestFullscreen)
 			elem.requestFullscreen()
@@ -1231,7 +1240,7 @@ exports._setup = function() {
 			console.log("no requestFullscreen api: ", elem)
 	}
 
-	_globals.core.core.Context.prototype.exitFullscreenMode = function() {
+	_globals.core.core.Context.prototype._exitFullscreenMode = function() {
 		if (document.exitFullscreen)
 			document.exitFullscreen()
 		else if (document.msExitFullscreen)
@@ -1244,7 +1253,7 @@ exports._setup = function() {
 			console.log("no exitFullscreen api")
 	}
 
-	_globals.core.core.Context.prototype.inFullscreenMode = function() {
+	_globals.core.core.Context.prototype._inFullscreenMode = function() {
 		return !!(document.fullscreenElement ||    // alternative standard method
 			document.mozFullScreenElement ||
 			document.webkitFullscreenElement ||

@@ -70,8 +70,8 @@ Activity {
 		z: videoPlayer.z + 1;
 
 		onFullScreenClicked: {
-			videoPlayer.fullscreen = true;
-			renderer.enterFullscreenMode();
+			videoPlayer.fullscreen = true
+			renderer.fullscreen = true
 		}
 	}
 
@@ -112,8 +112,8 @@ Activity {
 
 	onBackPressed: {
 		if (videoPlayer.fullscreen) {
-			renderer.exitFullscreenMode();
-			videoPlayer.fullscreen = false;
+			renderer.fullscreen = false
+			videoPlayer.fullscreen = false
 		}
 	}
 

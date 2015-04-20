@@ -110,11 +110,15 @@ Activity {
 		onLeftPressed: { channelsPanel.forceActiveFocus(); }
 	}
 
-	onBackPressed: {
+	function backToWindowedMode() {
 		if (videoPlayer.fullscreen) {
 			renderer.fullscreen = false
 			videoPlayer.fullscreen = false
 		}
+	}
+
+	onBackPressed: {
+		this.backToWindowedMode()
 	}
 
 	//MouseArea {
@@ -212,5 +216,10 @@ Activity {
 
 	onCompleted: {
 		channelsPanel.active = true;
+		var self = this;
+		renderer.onChanged('fullscreen', function(value) {
+			if (!value)
+				self.backToWindowedMode()
+		})
 	}
 }

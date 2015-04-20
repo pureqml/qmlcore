@@ -1164,7 +1164,7 @@ exports._setup = function() {
 			this.contentHeight = this.content.height = this.rows * this.cellHeight
 		} else {
 			this.columns = Math.floor(w / this.cellWidth)
-			this.rows = Math.floor(n / this.columns)
+			this.rows = Math.floor(n / this.rows)
 			this.contentWidth = this.columns * this.cellWidth
 			this.contentHeight = this.rows * this.cellHeight
 		}

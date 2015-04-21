@@ -1,7 +1,6 @@
 Activity {
 	id: mainWindow;
 	anchors.fill: renderer;
-	anchors.topMargin: 70;
 	name: "root";
 
 	Protocol		{ id: protocol; enabled: true; }
@@ -41,78 +40,80 @@ Activity {
 		}
 	}
 
-	Rectangle {
-		id: background;
-		anchors.fill: renderer;
-		color: colorTheme.disabledBackgroundColor;
-	}
-
 	VideoPlayer {
 		id: videoPlayer;
-		property bool fullscreen: false;
-		width: fullscreen ? renderer.width : renderer.width / 3;
-		height: fullscreen ? renderer.height : width * 2 / 3;
-		anchors.top: renderer.top;
-		anchors.right: renderer.right;
-		anchors.rightMargin: fullscreen ? 0 : 20;
-		anchors.topMargin: fullscreen ? 0 : 20;
+		anchors.fill: renderer;
 		source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
-		z: 10000;
 	}
 
-	ControlsSmall {
-		anchors.left: videoPlayer.left;
-		anchors.right: videoPlayer.right;
-		anchors.bottom: videoPlayer.bottom;
-		volume: videoPlayer.volume;
-		visible: !videoPlayer.fullscreen;
-		z: videoPlayer.z + 1;
+	MouseArea {
+		anchors.fill: renderer;
+		hoverEnabled: !parent.hasAnyActiveChild;
 
-		onFullScreenClicked: {
-			videoPlayer.fullscreen = true
-			renderer.fullscreen = true
+		onMouseXChanged: {
+			if (this.hoverEnabled)
+				controls.show();
 		}
 
-		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
+		onMouseYChanged: {
+			if (this.hoverEnabled)
+				controls.show();
+		}
+	}
+
+	Timer {
+		id: hideControlsTimer;
+		interval: 5000;
+
+		onTriggered: { controls.active = false; }
+	}
+
+	Item {
+		id: controls;
+		property bool active: false;
+		opacity: active ? 1.0 : 0.0;
+
+		RoundButton {
+			id: listsButton;
+			anchors.top: renderer.top;
+			anchors.left: renderer.left;
+			anchors.margins: 30;
+			icon: "res/list.png";
+			visible: !mainWindow.hasAnyActiveChild;
+
+			onToggled: { channelsPanel.start(); }
+		}
+
+		RoundButton {
+			id: fullscreenButton;
+			anchors.bottom: renderer.bottom;
+			anchors.right: renderer.right;
+			anchors.margins: 30;
+			icon: "res/fullscreen.png";
+			visible: !mainWindow.hasAnyActiveChild;
+
+			onToggled: { renderer.fullscreen = true; }
+		}
+
+		show: {
+			this.active = true;
+			hideControlsTimer.restart();
+		}
+
+		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	ChannelsPanel {
 		id: channelsPanel;
-		anchors.top: topMenu.bottom;
+		anchors.top: renderer.top;
 		anchors.left: renderer.left;
 		anchors.bottom: renderer.bottom;
-		anchors.topMargin: 2;
 		protocol: parent.protocol;
 
 		onFocusPropagated: { channelInfo.forceActiveFocus(); }
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-	}
-
-	TopMenu {
-		id: topMenu;
-
-		onSearchRequest(request): {
-		//TODO: impl
-		}
-
-		onDownPressed: { channelsPanel.forceActiveFocus(); }
-	}
-
-	MouseArea {
-		anchors.fill: renderer;
-		hoverEnabled: !parent.hasAnyActiveChild && videoPlayer.fullscreen;
-
-		onMouseXChanged: {
-			if (this.hoverEnabled)
-				infoPanel.active = true;
-		}
-
-		onMouseYChanged: {
-			if (this.hoverEnabled)
-				infoPanel.active = true;
-		}
 	}
 
 	//SettingsPanel {
@@ -133,33 +134,33 @@ Activity {
 		//onUpPressed: { topMenu.forceActiveFocus(); }
 	//}
 
-	MuteIcon { mute: videoPlayer.fullscreen && videoPlayer.volume <= 0.1; z: videoPlayer.z + 10; }
+	MuteIcon { mute: videoPlayer.volume <= 0.1; z: videoPlayer.z + 10; }
 
-	InfoPanel {
-		id: infoPanel;
-		height: 200;
-		anchors.bottom: videoPlayer.bottom;
-		anchors.left: videoPlayer.left;
-		anchors.right: videoPlayer.right;
-		protocol: parent.protocol;
-		volume: videoPlayer.volume;
-		active: videoPlayer.fullscreen;
-		visible: videoPlayer.fullscreen;
-		z: videoPlayer.z + 1;
+	//InfoPanel {
+		//id: infoPanel;
+		//height: 200;
+		//anchors.bottom: videoPlayer.bottom;
+		//anchors.left: videoPlayer.left;
+		//anchors.right: videoPlayer.right;
+		//protocol: parent.protocol;
+		//volume: videoPlayer.volume;
+		//active: videoPlayer.fullscreen;
+		//visible: videoPlayer.fullscreen;
+		//z: videoPlayer.z + 1;
 
-		onVolumeUpdated(v):	{ videoPlayer.volume = v; }
-	}
+		//onVolumeUpdated(v):	{ videoPlayer.volume = v; }
+	//}
 
 	ChannelInfo {
 		id: channelInfo;
-		anchors.left: videoPlayer.left;
-		anchors.right: videoPlayer.right;
-		anchors.top: videoPlayer.bottom;
+		height: renderer.height / 2;
+		anchors.left: renderer.left;
+		anchors.right: channelsPanel.right;
 		anchors.bottom: renderer.bottom;
-		anchors.topMargin: 10;
+		anchors.leftMargin: 260;
 		visible: channelsPanel.active;
 
-		onLeftPressed: { channelsPanel.forceActiveFocus(); }
+		onUpPressed: { channelsPanel.forceActiveFocus(); }
 	}
 
 	switchToChannel(channel): {
@@ -169,10 +170,7 @@ Activity {
 		}
 		lastChannel.value = channel.url;
 		videoPlayer.source = channel.url;
-		if (videoPlayer.fullscreen)
-			infoPanel.fillChannelInfo(channel);
-		else
-			channelInfo.fillInfo(channel);
+		channelInfo.fillInfo(channel);
 	}
 
 	//onUpPressed:		{ videoPlayer.volumeUp(); }
@@ -204,21 +202,8 @@ Activity {
 		//}
 	//}
 
-	function backToWindowedMode() {
-		if (videoPlayer.fullscreen) {
-			renderer.fullscreen = false
-			videoPlayer.fullscreen = false
-		}
-	}
-
-	onBackPressed: { this.backToWindowedMode(); }
-
-	onCompleted: {
-		channelsPanel.active = true;
-		var self = this;
-		renderer.onChanged('fullscreen', function(value) {
-			if (!value)
-				self.backToWindowedMode()
-		})
+	onVisibleChanged: {
+		if (this.visible)
+			controls.show();
 	}
 }

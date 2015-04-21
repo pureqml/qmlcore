@@ -2,7 +2,7 @@ Rectangle {
 	width: delegateText.paintedWidth + delegateIcon.paintedWidth + 30;
 	height: 50;
 	clip: true;
-	color: activeFocus ? colorTheme.backgroundColor : "#0000";
+	color: activeFocus ? colorTheme.activeBackgroundColor : "#0000";
 
 	Text {
 		id: delegateText;

@@ -3,6 +3,16 @@ Activity {
 	signal channelSwitched;
 	signal focusPropagated;
 	opacity: active ? 1.0 : 0.0;
+	width: categoriesList.width + channels.width;
+
+	Rectangle {
+		anchors.top: renderer.top;
+		anchors.left: categoriesList.left;
+		anchors.right: channels.right;
+		anchors.bottom: renderer.bottom;
+		color: "#000";
+		opacity: 0.5;
+	}
 
 	Rectangle {
 		width: categoriesList.width;
@@ -10,12 +20,38 @@ Activity {
 		anchors.left: renderer.left;
 		anchors.bottom: parent.bottom;
 		color: colorTheme.backgroundColor;
-		opacity: 0.3;
+
+		Text {
+			id: channelsPanelCaption;
+			anchors.left: parent.left;
+			anchors.top: parent.top;
+			anchors.margins: 10;
+			text: "TRUBA";
+			font.pointSize: 32;
+			color: colorTheme.accentTextColor;
+		}
+
+		Text {
+			anchors.top: channelsPanelCaption.top;
+			anchors.left: parent.left;
+			anchors.leftMargin: channelsPanelCaption.paintedWidth + 10;
+			text: "TV";
+			font.pointSize: 32;
+			color: colorTheme.textColor;
+		}
+
+		Rectangle {
+			id: channelsPanelSectionLine;
+			anchors.top: channelsPanelCaption.bottom;
+			height: 1;
+			width: categoriesList.width;
+			color: colorTheme.activeBackgroundColor;
+		}
 	}
 
 	CategoriesList {
 		id: categoriesList;
-		anchors.top: parent.top;
+		anchors.top: channelsPanelSectionLine.bottom;
 		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
 		model: categoriesModel;
@@ -44,17 +80,16 @@ Activity {
 	ChannelsModel { id: channelsModel; }
 
 	Item {
+		height: renderer.height / 2 - channelsPanelCaption.paintedHeight;
 		anchors.top: categoriesList.top;
 		anchors.left: renderer.left;
 		anchors.right: renderer.right;
-		anchors.bottom: categoriesList.bottom;
 		clip: true;
 
 		ChannelsList {
 			id: channels;
 			anchors.top: categoriesList.top;
 			anchors.left: categoriesList.right;
-			anchors.right: videoPlayer.left;
 			anchors.leftMargin: 10;
 			anchors.rightMargin: 10;
 			spacing: 1;
@@ -64,12 +99,12 @@ Activity {
 			onSelectPressed:	{ this.switchTuCurrent(); }
 			onClicked:			{ this.switchTuCurrent(); }
 
-			onRightPressed: {
-				if ((this.currentIndex % this.columns) == (this.columns - 1))
-					channelsPanelProto.focusPropagated();
-				else
-					this.currentIndex++;
-			}
+			//onRightPressed: {
+				//if ((this.currentIndex % this.columns) == (this.columns - 1))
+					//channelsPanelProto.focusPropagated();
+				//else
+					//this.currentIndex++;
+			//}
 
 			onLeftPressed: {
 				if (this.currentIndex % this.columns)
@@ -79,8 +114,6 @@ Activity {
 			}
 		}
 	}
-
-	onBackPressed: {}	// Stub prevent activity closing by 'Back' pressing.
 
 	Behavior on opacity { Animation { duration: 250; } }
 }

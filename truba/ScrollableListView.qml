@@ -20,7 +20,7 @@ ListView {
 
 		Image {
 			anchors.centerIn: parent;
-			source: "res/nav_up.png";
+			source: "res/up.png";
 		}
 
 		onClicked: { scrollableListViewProto.currentIndex--; }
@@ -44,7 +44,7 @@ ListView {
 
 		Image {
 			anchors.centerIn: parent;
-			source: "res/nav_down.png";
+			source: "res/down.png";
 		}
 
 		onClicked: { scrollableListViewProto.currentIndex++; }

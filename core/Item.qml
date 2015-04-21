@@ -15,6 +15,7 @@ Object {
 	property real opacity: 1;
 
 	property Anchors anchors: Anchors { }
+	property Effects effects: Effects { }
 
 	property AnchorLine left: AnchorLine	{ boxIndex: 0; }
 	property AnchorLine top: AnchorLine		{ boxIndex: 1; }

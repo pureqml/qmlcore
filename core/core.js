@@ -342,7 +342,33 @@ exports._setup = function() {
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
-	
+
+	_globals.core.Effects.prototype._addStyle = function(property, style, units) {
+		var value = this[property]
+		if (!value)
+			return ''
+		return (style || property) + '(' + value + (units || '') + ') '
+	}
+
+	_globals.core.Effects.prototype._getFilterStyle = function() {
+		var style = []
+		style += this._addStyle('blur', 'blur', 'px')
+		style += this._addStyle('grayscale')
+		style += this._addStyle('sepia')
+		style += this._addStyle('brightness')
+		style += this._addStyle('contrast')
+		style += this._addStyle('hueRotate', 'hue-rotate', 'deg')
+		style += this._addStyle('invert')
+		style += this._addStyle('saturate')
+		return style
+	}
+
+	_globals.core.Effects.prototype._update = function(name, value) {
+		var style = this._getFilterStyle()
+		this.parent.element.css('-webkit-filter', style)
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+
 	_globals.core.Item.prototype.addChild = function(child) {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		this._tryFocus(child)

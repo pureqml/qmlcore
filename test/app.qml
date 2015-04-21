@@ -117,6 +117,9 @@ Item {
 		height: 300;
 		keyNavigationWraps: false;
 
-		delegate: Rectangle { width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }
+		delegate: Rectangle {
+			effects.blur: 2;
+			effects.hueRotate: 90;
+			width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }
 	}
 }

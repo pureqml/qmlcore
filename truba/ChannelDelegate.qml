@@ -1,33 +1,17 @@
-Rectangle {
-	width: height;
-	height: parent.height;
-	color: activeFocus ? colorTheme.backgroundColor : "#0000";
+Item {
+	width: parent.cellWidth;
+	height: parent.cellHeight;
 
 	Rectangle {
-		width: delegateText.paintedWidth + 10;
-		height: delegateText.paintedHeight;
-		anchors.bottom: parent.bottom;
-		anchors.horizontalCenter: parent.horizontalCenter;
-		visible: parent.activeFocus;
-		color: parent.color;
-
-		Text {
-			id: delegateText;
-			anchors.centerIn: parent;
-			color: parent.parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
-			text: model.text;
-		}
+		id: channelDelegateBacground;
+		anchors.fill: parent;
+		anchors.margins: 20;
+		radius: height / 8;
+		color: model.color;
 	}
 
-	Item {
-		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
-		anchors.bottomMargin: 20;
-		anchors.horizontalCenter: parent.horizontalCenter;
-
-		Image {
-			anchors.centerIn: parent;
-			source: model.source;
-		}
+	Image {
+		anchors.centerIn: channelDelegateBacground;
+		source: model.source;
 	}
 }

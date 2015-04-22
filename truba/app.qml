@@ -4,6 +4,7 @@ Activity {
 	name: "root";
 
 	Protocol		{ id: protocol; enabled: true; }
+
 	ColorTheme		{ id: colorTheme; }
 
 	LocalStorage {
@@ -40,127 +41,42 @@ Activity {
 		}
 	}
 
-	VideoPlayer {
-		id: videoPlayer;
-		anchors.fill: renderer;
-		source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
-		autoPlay: true;
-	}
-
-	MouseArea {
-		anchors.fill: renderer;
-		hoverEnabled: !parent.hasAnyActiveChild;
-
-		onMouseXChanged: {
-			if (this.hoverEnabled)
-				controls.show();
-		}
-
-		onMouseYChanged: {
-			if (this.hoverEnabled)
-				controls.show();
-		}
-	}
-
-	Timer {
-		id: hideControlsTimer;
-		interval: 5000;
-
-		onTriggered: { controls.active = false; }
-	}
-
 	Item {
-		id: controls;
-		property bool active: false;
-		opacity: active ? 1.0 : 0.0;
+		effects.blur: channelsPanel.active ? 10 : 0;
 
-		RoundButton {
-			id: listsButton;
-			anchors.top: renderer.top;
-			anchors.left: renderer.left;
-			anchors.margins: 30;
-			icon: "res/list.png";
-			visible: !mainWindow.hasAnyActiveChild;
-
-			onToggled: { channelsPanel.start(); }
+		VideoPlayer {
+			id: videoPlayer;
+			//anchors.fill: renderer;
+			//source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
+			//autoPlay: true;
 		}
 
-		RoundButton {
-			id: fullscreenButton;
-			anchors.bottom: renderer.bottom;
-			anchors.right: renderer.right;
-			anchors.margins: 30;
-			icon: "res/fullscreen.png";
-			visible: !mainWindow.hasAnyActiveChild;
+	Rectangle {
+		anchors.fill: renderer;
+		color: "#aaa";
 
-			onToggled: { renderer.fullscreen = true; }
+		Rectangle {
+			width: 100;
+			height: 100;
+			anchors.centerIn: parent;
+			color: "#f00";
 		}
+	}
 
-		show: {
-			this.active = true;
-			hideControlsTimer.restart();
-		}
+	}
 
-		Behavior on opacity { Animation { duration: 300; } }
+	Controls {
+		showListsButton:		!channelsPanel.active;
+
+		onFullscreenPressed:	{ renderer.fullscreen = true; }
+		onListsToggled:			{ channelsPanel.start(); }
 	}
 
 	ChannelsPanel {
 		id: channelsPanel;
-		anchors.top: renderer.top;
-		anchors.left: renderer.left;
-		anchors.bottom: renderer.bottom;
 		protocol: parent.protocol;
 
-		onFocusPropagated: { channelInfo.forceActiveFocus(); }
-
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-	}
-
-	//SettingsPanel {
-		//id: settings;
-		//anchors.fill: activityArea;
-		//protocol: parent.protocol;
-
-		//onLeftPressed:	{ mainMenu.forceActiveFocus(); }
-		//onUpPressed:	{ topMenu.forceActiveFocus(); }
-	//}
-
-	//SearchPanel {
-		//id: searchPanel;
-		//protocol: parent.protocol;
-		//anchors.fill: activityArea;
-
-		//onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		//onUpPressed: { topMenu.forceActiveFocus(); }
-	//}
-
-	MuteIcon { mute: videoPlayer.volume <= 0.1; z: videoPlayer.z + 10; }
-
-	//InfoPanel {
-		//id: infoPanel;
-		//height: 200;
-		//anchors.bottom: videoPlayer.bottom;
-		//anchors.left: videoPlayer.left;
-		//anchors.right: videoPlayer.right;
-		//protocol: parent.protocol;
-		//volume: videoPlayer.volume;
-		//active: videoPlayer.fullscreen;
-		//visible: videoPlayer.fullscreen;
-		//z: videoPlayer.z + 1;
-
-		//onVolumeUpdated(v):	{ videoPlayer.volume = v; }
-	//}
-
-	ChannelInfo {
-		id: channelInfo;
-		height: renderer.height / 2;
-		anchors.left: renderer.left;
-		anchors.right: channelsPanel.right;
-		anchors.bottom: renderer.bottom;
-		anchors.leftMargin: 260;
-		visible: channelsPanel.active;
-
-		onUpPressed: { channelsPanel.forceActiveFocus(); }
 	}
 
 	switchToChannel(channel): {
@@ -170,40 +86,5 @@ Activity {
 		}
 		lastChannel.value = channel.url;
 		videoPlayer.source = channel.url;
-		channelInfo.fillInfo(channel);
-	}
-
-	//onUpPressed:		{ videoPlayer.volumeUp(); }
-	//onDownPressed:		{ videoPlayer.volumeDown(); }
-	//onRedPressed:		{ vodPanel.start(); }
-	//onBluePressed:		{ infoPanel.active = true; }
-	//onGreenPressed:		{ channelsPanel.start(); }
-	//onYellowPressed:	{ epgPanel.start(); }
-
-	//onBackPressed: {
-		//if (!infoPanel.active && !mainMenu.active && !mainWindow.hasAnyActiveChild) {
-			//event.accepted = false;
-			//return true;
-		//}
-		//if (mainWindow.hasAnyActiveChild)
-			//mainWindow.closeAll();
-		//if (infoPanel.active)
-			//infoPanel.active = false;
-		//if (mainMenu.active)
-			//mainMenu.active = false;
-	//}
-
-	//onMenuPressed: {
-		//if (mainMenu.active) {
-			//mainMenu.active = false;
-		//} else {
-			//mainMenu.active = true;
-			//mainMenu.forceActiveFocus();
-		//}
-	//}
-
-	onVisibleChanged: {
-		if (this.visible)
-			controls.show();
 	}
 }

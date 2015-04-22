@@ -1,7 +1,7 @@
 Item {
-	property Color backgroundColor:			"#F5F5F5";
-	property Color activeBackgroundColor:	"#BDBDBD";
-	property Color disabledBackgroundColor:	"#FAFAFA";
+	property Color backgroundColor:			"#FBFBFB";
+	property Color activeBackgroundColor:	"#b0bec5";
+	property Color disabledBackgroundColor:	"#FBFBFB";
 
 	property Color textColor:				"#000";
 	property Color accentTextColor:			"#D84315";

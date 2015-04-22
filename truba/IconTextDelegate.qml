@@ -13,7 +13,7 @@ Rectangle {
 		font.pointSize: 18;
 		clip: true;
 		text: model.text;
-		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+		color: colorTheme.textColor;
 	}
 
 	Image {

@@ -100,13 +100,21 @@ Activity {
 		onUpPressed: { channels.forceActiveFocus(); }
 	}
 
+	MouseArea {
+		anchors.left: channels.right;
+		anchors.right: renderer.right;
+		anchors.top: parent.top;
+		anchors.bottom: parent.bottom;
+		hoverEnabled: parent.active;
+
+		onClicked: { channelsPanelProto.stop(); }
+	}
+
 	Timer {
 		id: updateCategoryTimer;
 		interval: 400;
 
-		onTriggered: {
-			channelsModel.setList(categoriesList.model.get(categoriesList.currentIndex).list);
-		}
+		onTriggered: { channelsModel.setList(categoriesList.model.get(categoriesList.currentIndex).list); }
 	}
 
 	Behavior on opacity { Animation { duration: 250; } }

@@ -46,29 +46,16 @@ Activity {
 
 		VideoPlayer {
 			id: videoPlayer;
-			//anchors.fill: renderer;
-			//source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
-			//autoPlay: true;
+			anchors.fill: renderer;
+			source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
+			autoPlay: true;
 		}
-
-	Rectangle {
-		anchors.fill: renderer;
-		color: "#aaa";
-
-		Rectangle {
-			width: 100;
-			height: 100;
-			anchors.centerIn: parent;
-			color: "#f00";
-		}
-	}
-
 	}
 
 	Controls {
 		showListsButton:		!channelsPanel.active;
 
-		onFullscreenPressed:	{ renderer.fullscreen = true; }
+		onFullscreenToggled:	{ renderer.fullscreen = true; }
 		onListsToggled:			{ channelsPanel.start(); }
 	}
 

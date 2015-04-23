@@ -46,13 +46,17 @@ Activity {
 
 		VideoPlayer {
 			id: videoPlayer;
-			anchors.fill: renderer;
+			anchors.top: mainWindow.top;
+			anchors.left: mainWindow.left;
+			width: renderer.width;
+			height: renderer.height;
 			source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 			autoPlay: true;
 		}
 	}
 
 	Controls {
+		anchors.bottom: videoPlayer.bottom;
 		showListsButton:		!channelsPanel.active;
 		volume:					videoPlayer.volume;
 

@@ -126,6 +126,10 @@ Item {
 	}
 
 	applyVolume: {
+		for (var i in this._player)
+			log("applyVolume: " + i);
+
+
 		if (this.volume > 1.0)
 			this.volume = 1.0;
 		else if (this.volume < 0.0)

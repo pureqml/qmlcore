@@ -58,7 +58,7 @@ Activity {
 
 		onFullscreenToggled:	{ renderer.fullscreen = true; }
 		onListsToggled:			{ channelsPanel.start(); }
-		onVolumeUpdated:		{ videoPlayer.volume = this.value; }
+		onVolumeUpdated(value):	{ videoPlayer.volume = value; }
 	}
 
 	ChannelsPanel {

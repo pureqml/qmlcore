@@ -1,8 +1,11 @@
 Item {
 	signal fullscreenToggled;
 	signal listsToggled;
+	signal volumeUpdated;
 	property bool showListsButton: true;
 	property bool showFullscreenButton: true;
+	property bool showVolumeButton: true;
+	property float volume;
 	anchors.fill: renderer;
 
 	MouseArea {
@@ -44,6 +47,18 @@ Item {
 		onToggled: { this.parent.fullscreenToggled(); }
 	}
 
+	VolumeControl {
+		id: volumeButton;
+		visible: parent.showVolumeButton;
+		anchors.bottom: parent.bottom;
+		anchors.right: fullscreenButton.left;
+		anchors.rightMargin: 24;
+		anchors.bottomMargin: 47;
+		volume: parent.volume;
+
+		onVolumeUpdated: { this.parent.volumeUpdated(); }
+	}
+
 	Timer {
 		id: hideControlsTimer;
 		interval: 5000;	
@@ -51,12 +66,14 @@ Item {
 		onTriggered: {
 			fullscreenButton.visible = false;
 			listsButton.visible = false;
+			volumeButton.visible = false;
 		}
 	}
 
 	show: {
 		fullscreenButton.visible = this.showFullscreenButton;
 		listsButton.visible = this.showListsButton;
+		volumeButton.visible = this.showVolumeButton;
 		hideControlsTimer.restart();
 	}
 

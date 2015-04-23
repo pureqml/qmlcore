@@ -54,9 +54,11 @@ Activity {
 
 	Controls {
 		showListsButton:		!channelsPanel.active;
+		volume:					videoPlayer.volume;
 
 		onFullscreenToggled:	{ renderer.fullscreen = true; }
 		onListsToggled:			{ channelsPanel.start(); }
+		onVolumeUpdated:		{ videoPlayer.volume = this.value; }
 	}
 
 	ChannelsPanel {

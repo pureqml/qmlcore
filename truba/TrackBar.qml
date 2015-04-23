@@ -1,7 +1,7 @@
 MouseArea {
 	property float value: 0;
 	width: 30;
-	height: 100;
+	height: 120;
 	hoverEnabled: true;
 
 	Rectangle {
@@ -9,7 +9,8 @@ MouseArea {
 		width: 5;
 		height: parent.height;
 		anchors.horizontalCenter: parent.horizontalCenter;
-		color: colorTheme.backgroundColor;
+		color: colorTheme.activeBackgroundColor;
+		opacity: 0.7;
 	}
 
 	Rectangle {
@@ -24,9 +25,9 @@ MouseArea {
 		id: volumeCursor;
 		y: parent.height * (1.0 - parent.value) - height / 2;
 		height: 10;
-		width: parent.width;
+		width: 30;
 		anchors.horizontalCenter: parent.horizontalCenter;
-		color: "#fff";
+		color: colorTheme.activeBackgroundColor;
 	}
 
 	updatePosition:	{ this.value = 1.0 - this.mouseY / this.height; }

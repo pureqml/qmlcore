@@ -56,7 +56,7 @@ Item {
 		anchors.bottomMargin: 47;
 		volume: parent.volume;
 
-		onVolumeUpdated: { this.parent.volumeUpdated(); }
+		onVolumeUpdated(value): { this.parent.volumeUpdated(value); }
 	}
 
 	Timer {

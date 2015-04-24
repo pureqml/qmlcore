@@ -56,8 +56,10 @@ Activity {
 	}
 
 	Controls {
-		anchors.bottom: videoPlayer.bottom;
+		id: controls;
+		anchors.bottom:			videoPlayer.bottom;
 		showListsButton:		!channelsPanel.active;
+		protocol:				protocol;
 		volume:					videoPlayer.volume;
 
 		onFullscreenToggled:	{ renderer.fullscreen = true; }
@@ -72,6 +74,8 @@ Activity {
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
 
+	setProgramInfo(program): { controls.setProgramInfo(program); }
+
 	switchToChannel(channel): {
 		if (!channel) {
 			log("App: Empty channel info.");
@@ -79,5 +83,20 @@ Activity {
 		}
 		lastChannel.value = channel.url;
 		videoPlayer.source = channel.url;
+		controls.setChannelInfo(channel);
+
+		if (!epgModel.protocol)
+			return;
+
+		var self = this;
+		var channelName = channel.text;
+		var program = epgModel.protocol.getCurrentPrograms(function(programs){
+			for (var i in programs) {
+				if (channelName == programs[i].channel) {
+					self.setProgramInfo(programs[i]);
+					break;
+				}
+			}
+		});
 	}
 }

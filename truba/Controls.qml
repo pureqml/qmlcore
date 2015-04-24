@@ -2,9 +2,10 @@ Item {
 	signal fullscreenToggled;
 	signal listsToggled;
 	signal volumeUpdated;
-	property bool showListsButton: true;
-	property bool showFullscreenButton: true;
-	property bool showVolumeButton: true;
+	property bool showListsButton:		true;
+	property bool showFullscreenButton:	true;
+	property bool showVolumeButton:		true;
+	property bool showChannelControl:	true;
 	property float volume;
 	anchors.fill: renderer;
 
@@ -59,6 +60,16 @@ Item {
 		onVolumeUpdated(value): { this.parent.volumeUpdated(value); }
 	}
 
+	ChannelControl {
+		id: channelControl;
+		width: 150;
+		anchors.bottom: parent.bottom;
+		anchors.left: parent.left;
+		anchors.leftMargin: 54;
+		anchors.bottomMargin: 47;
+		visible: parent.showChannelControl;
+	}
+
 	Timer {
 		id: hideControlsTimer;
 		interval: 5000;	
@@ -67,13 +78,18 @@ Item {
 			fullscreenButton.visible = false;
 			listsButton.visible = false;
 			volumeButton.visible = false;
+			channelControl.visible = false;
 		}
 	}
+
+	setChannelInfo(channel): { channelControl.setChannelInfo(channel); }
+	setProgramInfo(program): { channelControl.setProgramInfo(program); }
 
 	show: {
 		fullscreenButton.visible = this.showFullscreenButton;
 		listsButton.visible = this.showListsButton;
 		volumeButton.visible = this.showVolumeButton;
+		channelControl.visible = this.showChannelControl;
 		hideControlsTimer.restart();
 	}
 

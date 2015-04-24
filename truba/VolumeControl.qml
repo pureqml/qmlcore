@@ -1,37 +1,40 @@
 Item {
+	id: volumeButton;
 	signal volumeUpdated;
 	property float volume;
-
-	id: volumeButton;
 	visible: parent.showVolumeButton;
-	anchors.bottom: parent.bottom;
-	anchors.right: fullscreenButton.left;
-	anchors.rightMargin: 24;
-	anchors.bottomMargin: 47;
+
+	MouseArea {
+		id: volumeControlArea;
+		height: volumeInnerButton.height + volumeTrackBar.height;
+		anchors.bottom: parent.bottom;
+		anchors.left: volumeInnerButton.left;
+		anchors.right: volumeInnerButton.right;
+		hoverEnabled: true;
+	}
 
 	Rectangle {
-		height: volumeInnerButton.containsMouse || volumeTrackBar.containsMouse ? volumeTrackBar.height + volumeInnerButton.height / 2 + 35 : 0;
+		property int maxHeight: volumeTrackBar.height + volumeInnerButton.height / 2 + 35;
+		height: volumeInnerButton.containsMouse || volumeTrackBar.containsMouse || volumeControlArea.containsMouse ? maxHeight : 0;
 		width: 50;
-		radius: width / 2;
 		anchors.horizontalCenter: volumeInnerButton.horizontalCenter;
 		anchors.bottom: volumeInnerButton.top;
 		anchors.bottomMargin: -volumeInnerButton.height / 2;
+		clip: true;
+		radius: width / 2;
 		color: "#fff";
 
+		TrackBar {
+			id: volumeTrackBar;
+			width: 50;
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.top: parent.top;
+			anchors.topMargin: 25;
+
+			onValueChanged: { this.parent.volumeUpdated(this.value); }
+		}
+
 		Behavior on height { Animation { duration: 300; } }
-	}
-
-	TrackBar {
-		id: volumeTrackBar;
-		width: 50;
-		anchors.horizontalCenter: volumeInnerButton.horizontalCenter;
-		anchors.bottom: volumeInnerButton.top;
-		anchors.bottomMargin: 10;
-		opacity: volumeInnerButton.containsMouse || containsMouse ? 1.0 : 0.0;
-
-		onValueChanged: { this.parent.volumeUpdated(this.value); }
-
-		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	RoundButton {

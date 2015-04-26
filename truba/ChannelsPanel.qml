@@ -52,7 +52,13 @@ Activity {
 				channels.forceActiveFocus();
 			}
 
-			onCurrentIndexChanged: { updateCategoryTimer.restart(); }
+			updateList: {
+				channelsModel.setList(categoriesList.model.get(categoriesList.currentIndex).list);
+				channels.contentX = 0;
+			}
+
+			onSelectPressed:	{ this.updateList(); }
+			onClicked:			{ this.updateList(); }
 		}
 	}
 
@@ -67,17 +73,19 @@ Activity {
 	}
 
 	Item {
-		width: channels.width;
+		id: channelsArea;
+		width: channels.width + 40;
 		height: channels.height;
 		anchors.top: categoriesList.top;
 		anchors.left: categoriesList.right;
-		clip: true;
 
 		ChannelsList {
 			id: channels;
 			anchors.top: parent.top;
-			anchors.left: parent.left;
+			anchors.horizontalCenter: parent.horizontalCenter;
 			model: channelsModel;
+			contentFollowsCurrentItem: false;
+			clip: true;
 
 			onSelectPressed:	{ this.switchTuCurrent(); }
 			onClicked:			{ this.switchTuCurrent(); }
@@ -86,6 +94,42 @@ Activity {
 				var channel = this.model.get(this.currentIndex);
 				channelInfo.fillInfo(channel);
 				channelsPanelProto.channelSwitched(channel);
+			}
+		}
+
+		Image {
+			id: leftArrow;
+			anchors.right: channels.left;
+			anchors.verticalCenter: channels.verticalCenter;
+			anchors.rightMargin: -20;
+			source: "res/nav_left.png";
+			visible: channels.contentX >= channels.width;
+		}
+
+		Image {
+			id: rightArrow;
+			anchors.left: channels.right;
+			anchors.verticalCenter: channels.verticalCenter;
+			anchors.leftMargin: -20;
+			source: "res/nav_right.png";
+			visible: channels.contentWidth - channels.contentX > channels.width;
+		}
+
+		MouseArea {
+			anchors.fill: rightArrow;
+
+			onClicked: {
+				if (this.rightArrow.visible)
+					channels.contentX += channels.width;
+			}
+		}
+
+		MouseArea {
+			anchors.fill: leftArrow;
+
+			onClicked: {
+				if (this.leftArrow.visible)
+					channels.contentX -= channels.width;
 			}
 		}
 	}
@@ -101,20 +145,13 @@ Activity {
 	}
 
 	MouseArea {
-		anchors.left: channels.right;
+		anchors.left: channelsArea.right;
 		anchors.right: renderer.right;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		hoverEnabled: parent.active;
 
 		onClicked: { channelsPanelProto.stop(); }
-	}
-
-	Timer {
-		id: updateCategoryTimer;
-		interval: 400;
-
-		onTriggered: { channelsModel.setList(categoriesList.model.get(categoriesList.currentIndex).list); }
 	}
 
 	Behavior on opacity { Animation { duration: 250; } }

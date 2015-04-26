@@ -3,6 +3,7 @@ Item {
 	property string	channelColor;
 	property string	channelName;
 	property string	programTitle;
+	property bool	showInfo: false;
 
 	Rectangle {
 		id: programBackGround;
@@ -46,20 +47,13 @@ Item {
 		anchors.left: parent.left;
 		icon: parent.channelIcon;
 		color: parent.channelColor;
-	}
 
-	MouseArea {
-		id: channelControlArea;
-		width: channelControlInnerButton.width * 3;
-		anchors.top: channelControlInnerButton.top;
-		anchors.left: parent.left;
-		anchors.bottom: parent.bottom;
-		hoverEnabled: true;
-
-		onContainsMouseChanged: {
+		onToggled: {
 			var maxText = Math.max(infoControlProgramText.paintedWidth, infoControlChannelText.paintedWidth);
 			maxText += channelControlInnerButton.height;
-			programBackGround.width = channelControlArea.containsMouse ? Math.max(channelControlArea.width, maxText) : 0;
+
+			this.parent.showInfo = !this.parent.showInfo;
+			programBackGround.width = this.parent.showInfo ? Math.max(channelControlInnerButton.width * 3, maxText) : 0;
 		}
 	}
 

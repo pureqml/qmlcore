@@ -74,6 +74,17 @@ Activity {
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
 
+	RoundButton {
+		anchors.right: videoPlayer.right;
+		anchors.top: videoPlayer.top;
+		anchors.rightMargin: 54;
+		anchors.topMargin: 47;
+		visible: parent.hasAnyActiveChild;
+		icon: "res/close.png";
+
+		onToggled: { mainWindow.closeAll(); }
+	}
+
 	setProgramInfo(program): { controls.setProgramInfo(program); }
 
 	switchToChannel(channel): {

@@ -42,7 +42,7 @@ Activity {
 	}
 
 	Item {
-		effects.blur: channelsPanel.active ? 10 : 0;
+		effects.blur: channelsPanel.active ? 3 : 0;
 
 		VideoPlayer {
 			id: videoPlayer;
@@ -72,17 +72,6 @@ Activity {
 		protocol: parent.protocol;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-	}
-
-	RoundButton {
-		anchors.right: videoPlayer.right;
-		anchors.top: videoPlayer.top;
-		anchors.rightMargin: 54;
-		anchors.topMargin: 47;
-		visible: parent.hasAnyActiveChild;
-		icon: "res/close.png";
-
-		onToggled: { mainWindow.closeAll(); }
 	}
 
 	setProgramInfo(program): { controls.setProgramInfo(program); }

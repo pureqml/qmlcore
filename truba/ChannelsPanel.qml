@@ -16,12 +16,27 @@ Activity {
 		anchors.bottom: parent.bottom;
 		color: colorTheme.backgroundColor;
 
-		Image {
-			id: trubaLogo;
+		MouseArea {
+			id: menuButton;
 			anchors.left: parent.left;
 			anchors.top: parent.top;
 			anchors.topMargin: 31;
-			anchors.leftMargin: 27;
+			anchors.leftMargin: 10;
+
+			Image {
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				source: "res/list.png";
+			}
+
+			onClicked: { channelsPanelProto.stop(); }
+		}
+
+		Image {
+			id: trubaLogo;
+			anchors.left: menuButton.right;
+			anchors.top: menuButton.top;
+			anchors.leftMargin: 37;
 			source: "res/logo.png";
 		}
 
@@ -103,7 +118,6 @@ Activity {
 				}
 			}
 		}
-
 
 		Image {
 			id: leftArrow;

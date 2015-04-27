@@ -79,23 +79,31 @@ Activity {
 		anchors.top: categoriesList.top;
 		anchors.left: categoriesList.right;
 
-		ChannelsList {
-			id: channels;
-			anchors.top: parent.top;
-			anchors.horizontalCenter: parent.horizontalCenter;
-			model: channelsModel;
-			contentFollowsCurrentItem: false;
+		Item {
+			anchors.top: renderer.top;
+			anchors.bottom: renderer.bottom;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
 			clip: true;
 
-			onSelectPressed:	{ this.switchTuCurrent(); }
-			onClicked:			{ this.switchTuCurrent(); }
+			ChannelsList {
+				id: channels;
+				anchors.top: channelsArea.top;
+				anchors.horizontalCenter: channelsArea.horizontalCenter;
+				model: channelsModel;
+				contentFollowsCurrentItem: false;
 
-			switchTuCurrent: {
-				var channel = this.model.get(this.currentIndex);
-				channelInfo.fillInfo(channel);
-				channelsPanelProto.channelSwitched(channel);
+				onSelectPressed:	{ this.switchTuCurrent(); }
+				onClicked:			{ this.switchTuCurrent(); }
+
+				switchTuCurrent: {
+					var channel = this.model.get(this.currentIndex);
+					channelInfo.fillInfo(channel);
+					channelsPanelProto.channelSwitched(channel);
+				}
 			}
 		}
+
 
 		Image {
 			id: leftArrow;

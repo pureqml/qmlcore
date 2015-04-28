@@ -14,6 +14,7 @@ Item {
 	property bool keyNavigationWraps: true;
 	property bool dragEnabled: true;
 	property bool contentFollowsCurrentItem: true;
+	property bool pageScrolling: false;
 
 	property bool trace;
 
@@ -133,7 +134,38 @@ Item {
 		}
 
 		onWheelEvent(dp): {
-			this.parent.currentIndex -= Math.round(dp)
+			var horizontal = this.parent.orientation == ListView.Horizontal
+			var itemBox = this.parent.getItemPosition(this.parent.currentIndex)
+			var iw = itemBox[2], ih = itemBox[3]
+
+			if (horizontal) {
+				if (this.parent.pageScrolling) {
+					this.parent.contentX += Math.round(-dp) * this.parent.width;
+				}
+				else {
+					this.parent.contentX += Math.round(-dp) * iw;
+				}
+			}
+			else {
+				if (this.parent.pageScrolling) {
+					this.parent.contentY += Math.round(-dp) * this.parent.height;
+				}
+				else {
+					this.parent.contentY += Math.round(-dp) * ih;
+				}
+
+				if (this.parent.contentY < 0){
+					this.parent.contentY = 0;
+				}
+				else {
+					if (this.parent.contentY > (this.parent.contentHeight - this.parent.height))
+					 	this.parent.contentY = this.parent.contentHeight - this.parent.height;
+				}
+			}
+
+
+
+//			this.parent.currentIndex -= Math.round(dp)
 		}
 
 		onClicked: {

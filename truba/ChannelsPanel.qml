@@ -56,6 +56,7 @@ Activity {
 			anchors.bottom: parent.bottom;
 			model: categoriesModel;
 			spacing: 1;
+			contentFollowsCurrentItem: false;
 
 			onCountChanged: {
 				if (this.count > 1 && !channels.count)
@@ -107,6 +108,7 @@ Activity {
 				anchors.horizontalCenter: channelsArea.horizontalCenter;
 				model: channelsModel;
 				contentFollowsCurrentItem: false;
+				pageScrolling: true;
 
 				onSelectPressed:	{ this.switchTuCurrent(); }
 				onClicked:			{ this.switchTuCurrent(); }

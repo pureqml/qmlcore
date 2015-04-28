@@ -17,10 +17,9 @@ ListModel {
 				if (providersMap && providersMap[list[i].provider] === false)
 					continue;
 
-				if (!map[defaultGenre])
-					map[defaultGenre] = [];
-
 				if (!list[i].genres || list[i].genres.length == 0) {
+					if (!map[defaultGenre])
+						map[defaultGenre] = [];
 					map[defaultGenre].push(list[i]);
 				} else {
 					for (var j in list[i].genres) {

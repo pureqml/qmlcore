@@ -1,7 +1,7 @@
 GridView {
 	id: channelListProto;
 	height: cellHeight * 3;
-	width: cellWidth * 5;
+	width: cellWidth * 4;
 	cellHeight: 140;
 	cellWidth: 200;
 	flow: GridView.FlowTopToBottom;

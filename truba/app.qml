@@ -1,5 +1,6 @@
 Activity {
 	id: mainWindow;
+	property bool portraitOrientation: false;
 	anchors.fill: renderer;
 	name: "root";
 
@@ -52,6 +53,8 @@ Activity {
 			height: renderer.height;
 			source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 			autoPlay: true;
+
+			onWidthChanged: { mainWindow.updateLayout(); }
 		}
 	}
 
@@ -69,9 +72,20 @@ Activity {
 
 	ChannelsPanel {
 		id: channelsPanel;
+		anchors.topMargin: parent.portraitOrientation ? parent.height / 2 : 0;
 		protocol: parent.protocol;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
+	}
+
+	updateLayout: {
+		if (this.width < this.height) {
+			log("Use portrait orientation.");
+			this.portraitOrientation = true;
+		} else {
+			log("Use usual orientation.");
+			this.portraitOrientation = false;
+		}
 	}
 
 	setProgramInfo(program): { controls.setProgramInfo(program); }
@@ -99,4 +113,6 @@ Activity {
 			}
 		});
 	}
+
+	onCompleted: { this.updateLayout(); }
 }

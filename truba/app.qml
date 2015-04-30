@@ -54,7 +54,7 @@ Activity {
 			source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 			autoPlay: true;
 
-			onWidthChanged: { mainWindow.updateLayout(); }
+			onHeightChanged: { mainWindow.updateLayout(); }
 		}
 	}
 
@@ -79,11 +79,11 @@ Activity {
 	}
 
 	updateLayout: {
-		if (this.width < this.height) {
-			log("Use portrait orientation.");
+		if (renderer.width < renderer.height) {
+			log("Layout: w:" + renderer.width + "x" + renderer.height + ". Use portrait orientation.");
 			this.portraitOrientation = true;
 		} else {
-			log("Use usual orientation.");
+			log("Layout: w:" + renderer.width + "x" + renderer.height + ". Use usual orientation.");
 			this.portraitOrientation = false;
 		}
 	}

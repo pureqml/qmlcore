@@ -79,10 +79,10 @@ Activity {
 	}
 
 	Rectangle {
-		anchors.top: renderer.top;
+		anchors.top: parent.top;
 		anchors.left: categoriesList.right;
 		anchors.right: channels.right;
-		anchors.bottom: renderer.bottom;
+		anchors.bottom: parent.bottom;
 		anchors.rightMargin: -20;
 		color: "#000";
 		opacity: 0.5;
@@ -96,8 +96,8 @@ Activity {
 		anchors.left: categoriesList.right;
 
 		Item {
-			anchors.top: renderer.top;
-			anchors.bottom: renderer.bottom;
+			anchors.top: parent.top;
+			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 			clip: true;

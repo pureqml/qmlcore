@@ -33,7 +33,7 @@ GridView {
 			if (!this.model)
 				return;
 
-			for (var i = 0; i <  this.count; ++i)
+			for (var i = 0; i < this.count; ++i)
 				this.model.set(i, {selected: i == idx});
 		}
 

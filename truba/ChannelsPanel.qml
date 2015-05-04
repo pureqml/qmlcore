@@ -96,7 +96,7 @@ Activity {
 		anchors.left: categoriesList.right;
 
 		Item {
-			anchors.top: parent.top;
+			anchors.top: renderer.top;
 			anchors.bottom: parent.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;

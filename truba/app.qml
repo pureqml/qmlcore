@@ -10,9 +10,15 @@ Activity {
 
 	LocalStorage {
 		id: lastChannel;
+		property string source;
 		name: "lastChannel";
 
-		onCompleted: { this.read(); }
+		onCompleted: {
+			this.read();
+			var channelInfo = lastChannel.value ? JSON.parse(lastChannel.value): {};
+			if (channelInfo)
+				mainWindow.switchToChannel(channelInfo);
+		}
 	}
 
 	ProvidersModel {
@@ -51,7 +57,7 @@ Activity {
 			anchors.left: mainWindow.left;
 			width: renderer.width;
 			height: renderer.height;
-			source: lastChannel.value ? lastChannel.value : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
+			source: lastChannel.source ? lastChannel.source : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 			autoPlay: true;
 
 			onHeightChanged: { mainWindow.updateLayout(); }
@@ -95,7 +101,7 @@ Activity {
 			log("App: Empty channel info.");
 			return;
 		}
-		lastChannel.value = channel.url;
+		lastChannel.value = JSON.stringify(channel);
 		videoPlayer.source = channel.url;
 		controls.setChannelInfo(channel);
 

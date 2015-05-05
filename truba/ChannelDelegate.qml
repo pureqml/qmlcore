@@ -21,6 +21,9 @@ Item {
 
 	Image {
 		id: channelDelegateIcon;
+		//TODO: remove this, when PreserveAspectFit fill mode will implemented.
+		height: paintedHeight >= parent.height - 50 ? parent.height - 50 : paintedHeight;
+		width: paintedWidth * (height / paintedHeight);
 		anchors.centerIn: channelDelegateBacground;
 		source: model.source;
 	}

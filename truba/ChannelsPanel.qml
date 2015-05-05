@@ -92,8 +92,9 @@ Activity {
 		id: channelsArea;
 		width: channels.width + 40;
 		height: channels.height;
-		anchors.top: categoriesList.top;
+		anchors.top: parent.top;
 		anchors.left: categoriesList.right;
+		anchors.topMargin: 30;
 
 		Item {
 			anchors.top: renderer.top;

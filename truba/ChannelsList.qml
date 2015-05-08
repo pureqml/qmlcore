@@ -1,8 +1,8 @@
 GridView {
 	id: channelListProto;
 	height: cellHeight * 3;
-	width: cellWidth * 4;
-	cellHeight: renderer.height / 5;
+	width: cellWidth * 4 > renderer.width - 260 ? cellWidth * 3 : cellWidth * 4;
+	cellHeight: cellWidth / 2;
 	cellWidth: renderer.width / 6.5;
 	flow: GridView.FlowTopToBottom;
 	orientation: ListView.Horizontal;

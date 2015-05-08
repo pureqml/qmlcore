@@ -98,14 +98,15 @@ Activity {
 
 		Item {
 			anchors.top: renderer.top;
-			anchors.bottom: parent.bottom;
+			anchors.bottom: renderer.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 			clip: true;
 
 			ChannelsList {
 				id: channels;
-				anchors.top: channelsArea.top;
+				anchors.top: categoriesList.top;
+				anchors.topMargin: -40;
 				anchors.horizontalCenter: channelsArea.horizontalCenter;
 				model: channelsModel;
 				contentFollowsCurrentItem: false;

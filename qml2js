@@ -73,6 +73,9 @@ for opt in "$@"; do
 			minify
 			package smarttv
 		;;
+		truba2-dev)
+			compiler -o app core controls truba2 platform/html5
+		;;
 
 		*) echo "unknown option $opt"; exit;;
 	esac

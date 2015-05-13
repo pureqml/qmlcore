@@ -1,6 +1,7 @@
 Activity {
 	id: mainWindow;
 	property bool portraitOrientation: false;
+	property bool fullScreen: false;
 	anchors.fill: renderer;
 	name: "root";
 
@@ -48,12 +49,20 @@ Activity {
 		}
 	}
 
+	ChannelsPanel {
+		anchors.left: videoPlayer.right;
+		anchors.right: parent.right;
+		anchors.top: parent.top;
+		anchors.bottom: parent.bottom;
+		anchors.margins: 20;
+	}
+
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.top: mainWindow.top;
-		anchors.right: mainWindow.right;
-		width: renderer.width;
-		height: renderer.height;
+		anchors.left: mainWindow.left;
+		width: mainWindow.fullScreen ? renderer.width : parent.width / 2;
+		height: mainWindow.fullScreen ? renderer.height : width / 3 * 2;
 		source: lastChannel.source ? lastChannel.source : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
 

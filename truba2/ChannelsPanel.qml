@@ -14,6 +14,7 @@ Item {
 		anchors.left: parent.left;
 		anchors.top: parent.top;
 		anchors.topMargin: 10;
+		anchors.leftMargin: 10;
 
 		Image {
 			id: listIcon;

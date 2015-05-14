@@ -38,8 +38,6 @@ ListModel {
 			this.getEPGForChannel();
 	}
 
-	//TODO: add epg update after 24 hours.
-
 	update: {
 		if (!this.protocol)
 			return;

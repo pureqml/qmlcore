@@ -1,7 +1,6 @@
 Activity {
 	id: mainWindow;
 	property bool portraitOrientation: false;
-	property bool fullScreen: false;
 	anchors.fill: renderer;
 	name: "root";
 
@@ -55,18 +54,28 @@ Activity {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.margins: 20;
+
+		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
 
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.top: mainWindow.top;
 		anchors.left: mainWindow.left;
-		width: mainWindow.fullScreen ? renderer.width : parent.width / 2;
-		height: mainWindow.fullScreen ? renderer.height : width / 3 * 2;
+		width: renderer.fullscreen ? renderer.width : parent.width / 2;
+		height: renderer.fullscreen ? renderer.height : width / 3 * 2;
 		source: lastChannel.source ? lastChannel.source : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
 
 		onHeightChanged: { mainWindow.updateLayout(); }
+	}
+
+	Controls {
+		id: controls;
+		anchors.fill: videoPlayer;
+
+		onFullscreenToggled:	{ renderer.fullscreen = !renderer.fullscreen; }
+		onVolumeUpdated(value):	{ videoPlayer.volume = value; }
 	}
 
 	updateLayout: {
@@ -80,7 +89,13 @@ Activity {
 	}
 
 	switchToChannel(channel): {
-	
+		if (!channel) {
+			log("App: Empty channel info.");
+			return;
+		}
+		lastChannel.value = JSON.stringify(channel);
+		videoPlayer.source = channel.url;
+		controls.setChannelInfo(channel);
 	}
 
 	onCompleted: { this.updateLayout(); }

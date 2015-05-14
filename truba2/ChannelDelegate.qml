@@ -53,5 +53,6 @@ Item {
 		color: colorTheme.textColor;
 		text: model.programName;
 		font.pointSize: 12;
+		clip: true;
 	}
 }

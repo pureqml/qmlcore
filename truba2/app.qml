@@ -79,5 +79,9 @@ Activity {
 		}
 	}
 
+	switchToChannel(channel): {
+	
+	}
+
 	onCompleted: { this.updateLayout(); }
 }

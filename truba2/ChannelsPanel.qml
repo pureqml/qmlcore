@@ -1,4 +1,7 @@
 Item {
+	id: channelsPanelProto;
+	signal channelSwitched;
+
 	ChannelsModel {
 		id: channelsModel;
 		protocol: protocol;
@@ -44,13 +47,23 @@ Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 10;
+
+		onSelectPressed:	{ this.switchTuCurrent(); }
+		onClicked:			{ this.switchTuCurrent(); }
+
+		switchTuCurrent: {
+			if (categoriesList.active)
+				categoriesList.toggle();
+			var channel = this.model.get(this.currentIndex);
+			channelsPanelProto.channelSwitched(channel);
+		}
 	}
 
 	Rectangle {
 		opacity: categoriesList.active ? 1.0 : 0.0;
 		anchors.left: categoriesList.right;
 		anchors.top: categoriesList.top;
-		width: 40;
+		width: 30;
 		height: categoriesList.height;
 		gradient: Gradient {
 			orientation: 1;

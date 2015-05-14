@@ -6,7 +6,6 @@ ListModel {
 
 	setList(list): {
 		this.clear();
-		var self = this;
 
 		for (var i = 0; i < list.length; ++i) {
 			var channelColor = list[i].icon ? list[i].icon.color : this.getColor();
@@ -20,23 +19,24 @@ ListModel {
 				stop:	"",
 				programName: ""
 			});
+		}
 
-			var curChannel = list[i].title;
-			var curIdx = i;
-			var program = this.protocol.getCurrentPrograms(function(programs){
-				for (var i in programs) {
+		var self = this;
+		this.protocol.getCurrentPrograms(function(programs) {
+			for (var i in programs) {
+				var rows = self._rows;
+				for (var j = 0; j < rows.length; ++j) {
+					var curChannel = self._rows[j].text;
 					if (curChannel == programs[i].channel) {
-						self.programDescription = programs[i].description;
 						var start = new Date(programs[i].start);
 						var stop = new Date(programs[i].stop);
-						self._rows[curIdx].start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
-						self._rows[curIdx].stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
-						self._rows[curIdx].programName = programs[i].title;
-						self.set(curIdx, self._rows[curIdx]);
-						break;
+						rows[j].start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+						rows[j].stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
+						rows[j].programName = programs[i].title;
+						self.set(j, rows[j]);
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 }

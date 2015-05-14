@@ -76,6 +76,11 @@ for opt in "$@"; do
 		truba2-dev)
 			compiler -o app core controls truba2 platform/html5
 		;;
+		truba2-html5)
+			compiler -o app core controls truba2 platform/html5
+			minify
+			package html5
+		;;
 
 		*) echo "unknown option $opt"; exit;;
 	esac

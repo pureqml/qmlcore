@@ -61,7 +61,6 @@ Item {
 
 		onTriggered: {
 			fullscreenButton.visible = false;
-			listsButton.visible = false;
 			volumeButton.visible = false;
 			channelControl.visible = false;
 		}

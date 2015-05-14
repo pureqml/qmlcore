@@ -49,11 +49,11 @@ Activity {
 	}
 
 	ChannelsPanel {
-		anchors.left: videoPlayer.right;
-		anchors.right: parent.right;
+		width: parent.portraitOrientation ? parent.width : parent.width - videoPlayer.width;
+		anchors.left: parent.left;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
-		anchors.margins: 20;
+		anchors.topMargin: parent.portraitOrientation ? videoPlayer.height : 0;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
@@ -61,8 +61,9 @@ Activity {
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.top: mainWindow.top;
-		anchors.left: mainWindow.left;
-		width: renderer.fullscreen ? renderer.width : parent.width / 2;
+		anchors.right: mainWindow.right;
+		width: renderer.fullscreen ? renderer.width : 
+			(mainWindow.portraitOrientation ? parent.width : parent.width / 2);
 		height: renderer.fullscreen ? renderer.height : width / 3 * 2;
 		source: lastChannel.source ? lastChannel.source : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;

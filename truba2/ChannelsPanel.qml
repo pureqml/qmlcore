@@ -63,9 +63,9 @@ Item {
 	Rectangle {
 		opacity: categoriesList.active ? 1.0 : 0.0;
 		anchors.left: categoriesList.right;
-		anchors.top: categoriesList.top;
+		anchors.top: parent.top;
+		anchors.bottom: parent.bottom;
 		width: 30;
-		height: categoriesList.height;
 		gradient: Gradient {
 			orientation: 1;
 
@@ -95,6 +95,7 @@ Item {
 			channelsModel.setList(cat.list);
 			channels.contentX = 0;
 			currentCategoryText.text = cat.text;
+			this.toggle();
 		}
 
 		onSelectPressed:	{ this.updateList(); }

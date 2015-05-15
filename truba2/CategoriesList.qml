@@ -1,7 +1,7 @@
 ListView {
 	property bool active: false;
 	height: parent.height;
-	width: active ? 200 : 0;
+	width: active ? 300 : 0;
 	model: categoriesModel;
 	clip: true;
 	delegate: Rectangle {
@@ -14,6 +14,7 @@ ListView {
 			anchors.leftMargin: 10;
 			anchors.verticalCenter: parent.verticalCenter;
 			text: model.text;
+			font.pointSize: 14;
 		}
 	}
 

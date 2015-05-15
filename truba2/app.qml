@@ -49,10 +49,11 @@ Activity {
 	}
 
 	ChannelsPanel {
-		width: parent.portraitOrientation ? parent.width : parent.width - videoPlayer.width;
+		width: parent.portraitOrientation ? parent.width : parent.width - videoPlayer.width - 20;
 		anchors.left: parent.left;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
+		anchors.leftMargin: 10;
 		anchors.topMargin: parent.portraitOrientation ? videoPlayer.height : 0;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
@@ -62,6 +63,8 @@ Activity {
 		id: videoPlayer;
 		anchors.top: mainWindow.top;
 		anchors.right: mainWindow.right;
+		anchors.rightMargin: renderer.fullscreen ? 0 : 10;
+		anchors.topMargin: renderer.fullscreen ? 0 : 10;
 		width: renderer.fullscreen ? renderer.width : 
 			(mainWindow.portraitOrientation ? parent.width : parent.width / 2);
 		height: renderer.fullscreen ? renderer.height : width / 3 * 2;

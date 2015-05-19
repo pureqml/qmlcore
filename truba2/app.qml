@@ -1,7 +1,10 @@
 Activity {
 	id: mainWindow;
 	property bool portraitOrientation: false;
-	anchors.fill: renderer;
+	anchors.left: renderer.left;
+	anchors.right: renderer.right;
+	width: renderer.width;
+	height: renderer.height;
 	name: "root";
 
 	Protocol		{ id: protocol; enabled: true; }
@@ -70,8 +73,6 @@ Activity {
 		height: renderer.fullscreen ? renderer.height : width / 3 * 2;
 		source: lastChannel.source ? lastChannel.source : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
-
-		onHeightChanged: { mainWindow.updateLayout(); }
 	}
 
 	Controls {
@@ -102,5 +103,6 @@ Activity {
 		controls.setChannelInfo(channel);
 	}
 
-	onCompleted: { this.updateLayout(); }
+	onHeightChanged:	{ this.updateLayout(); }
+	onCompleted:		{ this.updateLayout(); }
 }

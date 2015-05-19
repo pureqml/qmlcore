@@ -101,10 +101,7 @@ Item {
 		repeat: true;
 		running: true;
 
-		onTriggered: {
-			this.parent.ready = this.parent._player.get(0).readyState;
-			log("ready: " + this.parent._player.get(0).readyState);
-		}
+		onTriggered: { this.parent.ready = this.parent._player.get(0).readyState; }
 	}
 
 	Timer {

@@ -73,6 +73,11 @@ Activity {
 		height: renderer.fullscreen ? renderer.height : width / 3 * 2;
 		source: lastChannel.source ? lastChannel.source : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
 		autoPlay: true;
+
+		Preloader {
+			anchors.centerIn: videoPlayer;
+			visible: !videoPlayer.ready;
+		}
 	}
 
 	Controls {

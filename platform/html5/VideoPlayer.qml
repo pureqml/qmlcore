@@ -3,6 +3,7 @@ Item {
 	property string	source;
 
 	property bool	flash : true;
+	property bool	ready : false;
 	property float	volume: 1.0;
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
@@ -96,6 +97,17 @@ Item {
 	}
 
 	Timer {
+		interval: 500;
+		repeat: true;
+		running: true;
+
+		onTriggered: {
+			this.parent.ready = this.parent._player.get(0).readyState;
+			log("ready: " + this.parent._player.get(0).readyState);
+		}
+	}
+
+	Timer {
 		interval: 100;
 		repeat: true;
 		running: true; //fixme: rewrite as 'parent.flash && !parent.flashReady'
@@ -146,4 +158,5 @@ Item {
 	volumeUp:			{ this.volume += 0.1; }
 	volumeDown:			{ this.volume -= 0.1; }
 	onVolumeChanged:	{ this.applyVolume(); }
+	onReadyChanged:		{ log("ReadyState: " + this.ready); }
 }

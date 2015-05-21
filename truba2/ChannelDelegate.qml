@@ -34,6 +34,23 @@ Item {
 		font.bold: true;
 	}
 
+	Image {
+		id: detailsIcon;
+		anchors.verticalCenter: startProgramText.verticalCenter;
+		anchors.right: parent.right;
+		anchors.rightMargin: 10;
+		source: "res/details.png";
+		visible: startProgramText.text != "";
+	}
+
+	MouseArea {
+		anchors.fill: detailsIcon;
+
+		onClicked: {
+			log("ccccccccc");
+		}
+	}
+
 	Text {
 		id: startProgramText;
 		anchors.left: parent.left;
@@ -47,7 +64,7 @@ Item {
 
 	Text {
 		anchors.left: startProgramText.right;
-		anchors.right: parent.right;
+		anchors.right: detailsIcon.left;
 		anchors.top: channelIcon.bottom;
 		anchors.margins: 5;
 		color: colorTheme.textColor;

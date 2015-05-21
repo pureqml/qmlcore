@@ -56,8 +56,21 @@ Item {
 			if (categoriesList.active)
 				categoriesList.toggle();
 			var channel = this.model.get(this.currentIndex);
+			epgpanel.x = this.getCurrentDelegateX();
+			epgpanel.y = this.getCurrentDelegateY() - 20;
+			if (epgpanel.visible)
+				epgpanel.hide();
+			else
+				epgpanel.show(channel);
+
 			channelsPanelProto.channelSwitched(channel);
 		}
+	}
+
+	EPGPanel {
+		id: epgpanel;
+		width: parent.width / 3;
+		height: parent.height / 2;
 	}
 
 	Rectangle {
@@ -98,7 +111,8 @@ Item {
 			this.toggle();
 		}
 
-		onSelectPressed:	{ this.updateList(); }
-		onClicked:			{ this.updateList(); }
+		onCurrentIndexChanged:	{ epgpanel.hide(); }
+		onSelectPressed:		{ this.updateList(); }
+		onClicked:				{ this.updateList(); }
 	}
 }

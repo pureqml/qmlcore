@@ -25,6 +25,9 @@ ListModel {
 		this.clear();
 		for (var i in this.epgMap[channel]) {
 			var start = this.epgMap[channel][i].start;
+			var now = new Date();
+			if (start <= now)
+				continue;
 			start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
 			this.append({
 				title: this.epgMap[channel][i].title,

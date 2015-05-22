@@ -1,24 +1,30 @@
 Item {
-	width: 100;
+	width: 500;
 	height: 100;
-	property bool small: false;
 
-	Rectangle {
-		id: preloadCircle;
-		width: parent.small ? 100 : 10;
-		height: width;
-		color: "#fff";
-		radius: parent.width / 2;
+	Row {
+		id: preloaderRow;
+		width: contentWidth;
+		height: parent.height;
 		anchors.centerIn: parent;
+		orientation: ListView.Horizontal;
+		spacing: 10;
 
-		Behavior on width { Animation { duration: 300; } }
+		PreloaderItem { small: true; }
+		PreloaderItem {}
+		PreloaderItem {}
 	}
 
 	Timer {
-		interval: 1000;
+		property int currentItem;
+		interval: 300;
 		running: parent.visible;
 		repeat: true;
 
-		onTriggered: { this.parent.small = !this.parent.small; }
+		onTriggered: {
+			this.currentItem = (this.currentItem + 1) % preloaderRow.children.length;
+			var idx = this.currentItem;
+			preloaderRow.children[this.currentItem].small = !preloaderRow.children[this.currentItem].small;
+		}
 	}
 }

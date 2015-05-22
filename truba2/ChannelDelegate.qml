@@ -1,6 +1,7 @@
-Item {
+MouseArea {
 	width: parent.cellWidth;
 	height: parent.cellHeight;
+	hoverEnabled: true;
 
 	Rectangle {
 		id: channelIconBackground;
@@ -41,14 +42,9 @@ Item {
 		anchors.rightMargin: 10;
 		source: "res/details.png";
 		visible: startProgramText.text != "";
-	}
+		opacity: parent.activeFocus ? 1.0 : 0.5;
 
-	MouseArea {
-		anchors.fill: detailsIcon;
-
-		onClicked: {
-			log("ccccccccc");
-		}
+		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	Text {
@@ -71,5 +67,13 @@ Item {
 		text: model.programName;
 		font.pointSize: 12;
 		clip: true;
+	}
+
+	onClicked: {
+		var x = this.mouseX;
+		var y = this.mouseY;
+		if (this.mouseX >= detailsIcon.x && this.mouseX <= detailsIcon.x + detailsIcon.width &&
+			this.mouseY >= detailsIcon.y && this.mouseY <= detailsIcon.y + detailsIcon.height)
+			this.parent.detailsRequest();
 	}
 }

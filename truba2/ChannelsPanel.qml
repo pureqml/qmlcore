@@ -49,21 +49,24 @@ Item {
 		anchors.right: parent.right;
 		anchors.topMargin: 10;
 
-		onSelectPressed:	{ this.switchTuCurrent(); }
-		onClicked:			{ this.switchTuCurrent(); }
+		onClicked:				{ this.switchToCurrent(); }
+		onSelectPressed:		{ this.switchToCurrent(); }
+		onCurrentIndexChanged:	{ epgpanel.hide(); }
 
-		switchTuCurrent: {
-			if (categoriesList.active)
-				categoriesList.toggle();
-			var channel = this.model.get(this.currentIndex);
+		onDetailsRequest: {
+			log("ddddddddddd");
 			epgpanel.x = this.getCurrentDelegateX();
 			epgpanel.y = this.getCurrentDelegateY() - 20;
 			if (epgpanel.visible)
 				epgpanel.hide();
 			else
-				epgpanel.show(channel);
+				epgpanel.show(this.model.get(this.currentIndex));
+		}
 
-			channelsPanelProto.channelSwitched(channel);
+		switchToCurrent: {
+			if (categoriesList.active)
+				categoriesList.toggle();
+			channelsPanelProto.channelSwitched(this.model.get(this.currentIndex));
 		}
 	}
 

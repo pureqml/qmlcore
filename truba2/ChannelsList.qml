@@ -1,5 +1,6 @@
 GridView {
 	id: channels;
+	signal detailsRequest;
 	property int collCount: width / cellWidth;
 	cellWidth: width / 3;
 	cellHeight: 150;

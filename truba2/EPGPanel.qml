@@ -3,30 +3,19 @@ Item {
 
 	Rectangle {
 		width: parent.width;
-		height: parent.height;
+		height: programsList.height;
 		color: colorTheme.backgroundColor;
 		visible: epgModel.count && parent.visible;
+		border.width: 1;
+		border.color: colorTheme.activeBackgroundColor;
 		clip: true;
 		
-		Rectangle {
-			width: 1;
-			height: programsList.contentHeight;
-			anchors.top: parent.top;
-			anchors.left: parent.left;
-			color: colorTheme.activeBackgroundColor;
-		}
-
-		Rectangle {
-			width: 1;
-			height: programsList.contentHeight;
-			anchors.top: parent.top;
-			anchors.right: parent.right;
-			color: colorTheme.activeBackgroundColor;
-		}
-
 		ListView {
 			id: programsList;
-			anchors.fill: parent;
+			height: contentHeight;
+			anchors.top: parent.top;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
 			model: epgModel;
 			delegate: Item {
 				width: parent.width;

@@ -12,6 +12,19 @@ Activity {
 	ColorTheme		{ id: colorTheme; }
 
 	LocalStorage {
+		id: choosenProvider;
+		property string choosed: false;
+		name: "choosenProvider";
+
+		onCompleted: {
+			this.read();
+			this.choosed = choosenProvider.value;
+			if (this.choosed)
+				categoriesModel.provider = choosenProvider.value;
+		}
+	}
+
+	LocalStorage {
 		id: lastChannel;
 		property string source;
 		name: "lastChannel";
@@ -32,7 +45,6 @@ Activity {
 	CategoriesModel	{
 		id: categoriesModel;
 		protocol: protocol;
-		providers: providersModel.providers;
 	}
 
 	EPGModel {
@@ -58,6 +70,7 @@ Activity {
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
 		anchors.topMargin: parent.portraitOrientation ? videoPlayer.height + 20 : 0;
+		visible: !providersPanel.active;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
@@ -83,9 +96,27 @@ Activity {
 	Controls {
 		id: controls;
 		anchors.fill: videoPlayer;
+		visible: videoPlayer.visible;
 
 		onFullscreenToggled:	{ renderer.fullscreen = !renderer.fullscreen; }
 		onVolumeUpdated(value):	{ videoPlayer.volume = value; }
+	}
+
+	ProvidersPanel {
+		id: providersPanel;
+		active: !choosenProvider.choosed;
+
+		onChoosed(provider): {
+			choosenProvider.value = provider;
+			categoriesModel.provider = provider;
+		}
+	}
+
+	SettingsButton {
+		anchors.bottom: renderer.bottom;
+		anchors.right: renderer.right;
+
+		onClicked: { providersPanel.start(); }
 	}
 
 	updateLayout: {

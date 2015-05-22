@@ -1,5 +1,5 @@
 ListModel {
-	property string providers;
+	property string provider;
 
 	update: {
 		if (!this.protocol)
@@ -9,12 +9,16 @@ ListModel {
 		this.protocol.getChannels(function(list) {
 			self.clear();
 
-			var providersMap = self.providers? JSON.parse(self.providers): {};
+			if (!self.provider) {
+				log("Provider is undefined.");
+				return;
+			}
+
 			var defaultGenre = "Разное";
 			var map = {};
 
 			for (var i in list) {
-				if (providersMap && providersMap[list[i].provider] === false)
+				if (self.provider != list[i].provider)
 					continue;
 
 				if (!list[i].genres || list[i].genres.length == 0) {
@@ -40,6 +44,7 @@ ListModel {
 		})
 	}
 
+	onProviderChanged:			{ this.update(); }
 	onCompleted:				{ this.update(); }
 	onProtocolChanged:			{ this.update(); }
 }

@@ -104,6 +104,8 @@ Item {
 				channelsModel.setList(cat.list);
 				currentCategoryText.text = cat.text;
 			}
+			if (!this.count)
+				channelsModel.setList("");
 		}
 
 		updateList: {

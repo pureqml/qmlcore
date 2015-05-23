@@ -15,9 +15,12 @@ ListModel {
 				lcn:	list[i].lcn,
 				source:	list[i].icon ? "http://truba.tv" + list[i].icon.source : "",
 				color:	channelColor,
-				start:	"",
-				stop:	"",
-				programName: ""
+				program: {
+					start:			"",
+					stop:			"",
+					description:	"",
+					title: 			""
+				}
 			});
 		}
 
@@ -30,9 +33,10 @@ ListModel {
 					if (curChannel == programs[i].channel) {
 						var start = new Date(programs[i].start);
 						var stop = new Date(programs[i].stop);
-						rows[j].start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
-						rows[j].stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
-						rows[j].programName = programs[i].title;
+						rows[j].program.start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+						rows[j].program.stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
+						rows[j].program.title = programs[i].title;
+						rows[j].program.description = programs[i].description;
 						self.set(j, rows[j]);
 					}
 				}

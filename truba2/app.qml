@@ -37,9 +37,9 @@ Activity {
 		}
 	}
 
-	ProvidersModel	{ id: providersModel; protocol: protocol; }
-	CategoriesModel	{ id: categoriesModel; protocol: protocol; }
-	EPGModel		{ id: epgModel; protocol: protocol; }
+	ProvidersModel	{ id: providersModel;	protocol: protocol; }
+	CategoriesModel	{ id: categoriesModel;	protocol: protocol; }
+	EPGModel		{ id: epgModel;			protocol: protocol; }
 
 	Timer {
 		id: updateTimer;
@@ -58,10 +58,11 @@ Activity {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
-		anchors.topMargin: parent.portraitOrientation ? videoPlayer.height + 20 : 0;
+		anchors.topMargin: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
 		visible: !hintText.visible;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
+		onProgramSelected(program):	{ progrmInfo.setProgram(program); }
 	}
 
 	VideoPlayer {
@@ -92,6 +93,16 @@ Activity {
 		onVolumeUpdated(value):	{ videoPlayer.volume = value; }
 	}
 
+	ProgramInfo {
+		id: progrmInfo;
+		height: parent.portraitOrientation ? videoPlayer.height / 2 : parent.height - videoPlayer.height - 20;
+		anchors.left: videoPlayer.left;
+		anchors.right: videoPlayer.right;
+		anchors.top: videoPlayer.bottom;
+		anchors.margins: 10;
+		visible: !hintText.visible && !renderer.fullscreen;
+	}
+
 	Text {
 		id: hintText;
 		anchors.centerIn: parent;
@@ -103,7 +114,8 @@ Activity {
 
 	SettingsButton {
 		id: settingButton;
-		anchors.bottom: renderer.bottom;
+		anchors.top: parent.top;
+		anchors.topMargin: parent.height - 50;
 		anchors.right: renderer.right;
 
 		onClicked: { providersPanel.start(); }
@@ -140,6 +152,8 @@ Activity {
 		lastChannel.value = JSON.stringify(channel);
 		videoPlayer.source = channel.url;
 		controls.setChannelInfo(channel);
+		progrmInfo.setChannel(channel);
+		progrmInfo.setProgram(channel.program);
 	}
 
 	onHeightChanged:	{ this.updateLayout(); }

@@ -1,8 +1,8 @@
 Activity {
 	id: providersPanelProto;
 	signal choosed;
-	width: renderer.width / 3;
-	height: renderer.height / 3;
+	width: 400;
+	height: 300;
 	visible: active;
 
 	Rectangle {

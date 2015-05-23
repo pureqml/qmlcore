@@ -12,6 +12,7 @@ ListModel {
 					start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
 					this.append({
 						title: this.epgMap[channel][i].title,
+						description: this.epgMap[channel][i].description,
 						channel: this.epgMap[channel][i].channel,
 						start: start
 					});
@@ -31,6 +32,7 @@ ListModel {
 			start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
 			this.append({
 				title: this.epgMap[channel][i].title,
+				description: this.epgMap[channel][i].description,
 				start: start
 			});
 		}
@@ -56,6 +58,7 @@ ListModel {
 				self.epgMap[channel].push({
 					title: programs[i].title,
 					channel: programs[i].channel,
+					description: programs[i].description,
 					start: new Date(programs[i].start),
 					stop: new Date(programs[i].stop)
 				});

@@ -53,7 +53,7 @@ MouseArea {
 		anchors.top: channelIcon.bottom;
 		anchors.margins: 5;
 		color: colorTheme.textColor;
-		text: model.start;
+		text: model.program.start;
 		font.pointSize: 12;
 		font.bold: true;
 	}
@@ -64,7 +64,7 @@ MouseArea {
 		anchors.top: channelIcon.bottom;
 		anchors.margins: 5;
 		color: colorTheme.textColor;
-		text: model.programName;
+		text: model.program.title;
 		font.pointSize: 12;
 		clip: true;
 	}

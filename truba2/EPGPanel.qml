@@ -1,4 +1,6 @@
 Item {
+	id: epgPanelProto;
+	signal programSelected;
 	visible: false;
 
 	Rectangle {
@@ -44,6 +46,9 @@ Item {
 					clip: true;
 				}
 			}
+
+			onSelectPressed:	{ epgPanelProto.programSelected(this.model.get(this.currentIndex)); }
+			onClicked:			{ epgPanelProto.programSelected(this.model.get(this.currentIndex)); }
 		}
 	}
 

@@ -37,20 +37,9 @@ Activity {
 		}
 	}
 
-	ProvidersModel {
-		id: providersModel;
-		protocol: protocol;
-	}
-
-	CategoriesModel	{
-		id: categoriesModel;
-		protocol: protocol;
-	}
-
-	EPGModel {
-		id: epgModel;
-		protocol: protocol;
-	}
+	ProvidersModel	{ id: providersModel; protocol: protocol; }
+	CategoriesModel	{ id: categoriesModel; protocol: protocol; }
+	EPGModel		{ id: epgModel; protocol: protocol; }
 
 	Timer {
 		id: updateTimer;
@@ -70,7 +59,7 @@ Activity {
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
 		anchors.topMargin: parent.portraitOrientation ? videoPlayer.height + 20 : 0;
-		visible: !providersPanel.active;
+		visible: !hintText.visible;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 	}
@@ -85,6 +74,7 @@ Activity {
 			(mainWindow.portraitOrientation ? parent.width - 20 : parent.width / 2);
 		height: renderer.fullscreen ? renderer.height : width / 3 * 2;
 		source: lastChannel.source ? lastChannel.source : "http://hlsstr04.svc.iptv.rt.ru/hls/CH_NICKELODEON/variant.m3u8?version=2";
+		visible: !hintText.visible;
 		autoPlay: true;
 
 		Preloader {
@@ -102,21 +92,34 @@ Activity {
 		onVolumeUpdated(value):	{ videoPlayer.volume = value; }
 	}
 
+	Text {
+		id: hintText;
+		anchors.centerIn: parent;
+		color: colorTheme.disabledTextColor;
+		text: !categoriesModel.count ? "Нет каналов" : (!choosenProvider.choosed ? "Не указан провайдер" : "");
+		font.pointSize: 32;
+		visible: !choosenProvider.choosed || !categoriesModel.count;
+	}
+
+	SettingsButton {
+		id: settingButton;
+		anchors.bottom: renderer.bottom;
+		anchors.right: renderer.right;
+
+		onClicked: { providersPanel.start(); }
+	}
+
 	ProvidersPanel {
 		id: providersPanel;
 		active: !choosenProvider.choosed;
+		anchors.right: parent.right;
+		anchors.bottom: settingButton.top;
+		anchors.bottomMargin: 100;
 
 		onChoosed(provider): {
 			choosenProvider.value = provider;
 			categoriesModel.provider = provider;
 		}
-	}
-
-	SettingsButton {
-		anchors.bottom: renderer.bottom;
-		anchors.right: renderer.right;
-
-		onClicked: { providersPanel.start(); }
 	}
 
 	updateLayout: {

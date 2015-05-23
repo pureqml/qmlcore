@@ -1,6 +1,7 @@
 Item {
 	id: channelsPanelProto;
 	signal channelSwitched;
+	signal programSelected;
 
 	ChannelsModel {
 		id: channelsModel;
@@ -54,7 +55,6 @@ Item {
 		onCurrentIndexChanged:	{ epgpanel.hide(); }
 
 		onDetailsRequest: {
-			log("ddddddddddd");
 			epgpanel.x = this.getCurrentDelegateX();
 			epgpanel.y = this.getCurrentDelegateY() - 20;
 			if (epgpanel.visible)
@@ -74,6 +74,8 @@ Item {
 		id: epgpanel;
 		width: parent.width / 3;
 		height: parent.height / 2;
+
+		onProgramSelected(program): { channelsPanelProto.programSelected(program); }
 	}
 
 	Rectangle {

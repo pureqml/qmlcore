@@ -1,23 +1,18 @@
 Activity {
 	id: providersPanelProto;
 	signal choosed;
-	anchors.left: parent.left;
-	anchors.top: parent.top;
-	anchors.right: parent.right;
-	anchors.bottom: parent.bottom;
+	width: renderer.width / 3;
+	height: renderer.height / 3;
 	visible: active;
 
 	Rectangle {
-		anchors.fill: parent;
-		color: "#000";
-		opacity: 0.7;
-	}
-
-	Rectangle {
-		width: parent.width / 3;
-		height: parent.height / 3;
+		width: parent.width;
+		height: parent.height;
 		anchors.centerIn: parent;
 		color: colorTheme.backgroundColor;
+		//TODO: use shadows instead.
+		border.color: colorTheme.activeBackgroundColor;
+		border.width: 1;
 
 		MouseArea {
 			id: acceptProviderButton;

@@ -66,7 +66,11 @@ Item {
 		switchToCurrent: {
 			if (categoriesList.active)
 				categoriesList.toggle();
-			channelsPanelProto.channelSwitched(this.model.get(this.currentIndex));
+
+			var channel = this.model.get(this.currentIndex);
+
+			channel["categoryIndex"] = categoriesList.currentIndex;
+			channelsPanelProto.channelSwitched(channel);
 		}
 	}
 
@@ -102,7 +106,7 @@ Item {
 
 		onCountChanged: {
 			if (this.count > 1 && !channels.count) {
-				var cat = categoriesList.model.get(0);
+				var cat = categoriesList.model.get(categoriesList.currentIndex);
 				channelsModel.setList(cat.list);
 				currentCategoryText.text = cat.text;
 			}
@@ -122,4 +126,6 @@ Item {
 		onSelectPressed:		{ this.updateList(); }
 		onClicked:				{ this.updateList(); }
 	}
+
+	setCategoryIndex(idx): { categoriesList.currentIndex = idx; }
 }

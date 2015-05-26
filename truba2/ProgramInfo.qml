@@ -51,7 +51,8 @@ Item {
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-		anchors.margins: 10;
+		anchors.topMargin: 10;
+		anchors.bottomMargin: 10;
 		wrap: true;
 	}
 

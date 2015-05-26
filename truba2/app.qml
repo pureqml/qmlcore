@@ -32,8 +32,11 @@ Activity {
 		onCompleted: {
 			this.read();
 			var channelInfo = lastChannel.value ? JSON.parse(lastChannel.value): {};
-			if (channelInfo)
+			if (channelInfo) {
 				mainWindow.switchToChannel(channelInfo);
+				if (channelInfo.categoryIndex)
+					channelsPanel.setCategoryIndex(channelInfo.categoryIndex);
+			}
 		}
 	}
 
@@ -53,6 +56,7 @@ Activity {
 	}
 
 	ChannelsPanel {
+		id: channelsPanel;
 		width: parent.portraitOrientation ? parent.width : parent.width - videoPlayer.width - 20;
 		anchors.left: parent.left;
 		anchors.top: parent.top;

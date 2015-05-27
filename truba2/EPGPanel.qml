@@ -53,7 +53,7 @@ Item {
 	}
 
 	show(channel): {
-		programsList.model.getEPGForChannel(channel.text);
+		programsList.model.getEPGForChannel(channel.id);
 		programsList.currentIndex = 0;
 		this.visible = true;
 	}

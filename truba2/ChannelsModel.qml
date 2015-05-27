@@ -10,6 +10,7 @@ ListModel {
 		for (var i = 0; i < list.length; ++i) {
 			var channelColor = list[i].icon ? list[i].icon.color : this.getColor();
 			this.append({
+				id:	list[i].id,
 				text:	list[i].title,
 				url:	list[i].url,
 				lcn:	list[i].lcn,
@@ -29,7 +30,7 @@ ListModel {
 			for (var i in programs) {
 				var rows = self._rows;
 				for (var j = 0; j < rows.length; ++j) {
-					var curChannel = self._rows[j].text;
+					var curChannel = self._rows[j].id;
 					if (curChannel == programs[i].channel) {
 						var start = new Date(programs[i].start);
 						var stop = new Date(programs[i].stop);

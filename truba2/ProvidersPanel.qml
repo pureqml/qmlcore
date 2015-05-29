@@ -53,7 +53,7 @@ Activity {
 			font.pointSize: 24;
 			font.bold: true;
 			color: colorTheme.textColor;
-			text: "Выберете провайдера";
+			text: "Выберите провайдера";
 		}
 
 		Rectangle {

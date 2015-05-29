@@ -135,6 +135,7 @@ Activity {
 		onChoosed(provider): {
 			choosenProvider.value = provider;
 			categoriesModel.provider = provider;
+			choosenProvider.choosed = provider;
 		}
 	}
 

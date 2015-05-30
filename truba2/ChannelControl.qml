@@ -61,14 +61,17 @@ Item {
 	Image {
 		anchors.fill: channelControlInnerButton;
 		source: "res/blick.png";
+
 	}
 
-	setProgramInfo(program): {
-		if (!program) {
-			log("InfoPanel: Empty program info.");
-			return;
+	MouseArea {
+		anchors.fill: channelControlInnerButton;
+		hoverEnabled: true;
+
+		onClicked: {
+			if (renderer.fullscreen)
+				channelControlInnerButton.toggled();
 		}
-		this.programTitle = program.title;
 	}
 
 	setChannelInfo(channel): {
@@ -84,5 +87,6 @@ Item {
 		this.channelIcon = channel.source;
 		this.channelColor = channel.color;
 		this.channelName = channel.text;
+		this.programTitle = channel.program.title;
 	}
 }

@@ -122,6 +122,7 @@ Activity {
 		anchors.top: parent.top;
 		anchors.topMargin: parent.height - 50;
 		anchors.right: renderer.right;
+		visible: !renderer.fullscreen;
 
 		onClicked: { providersPanel.start(); }
 	}

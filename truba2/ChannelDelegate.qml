@@ -41,7 +41,7 @@ MouseArea {
 		anchors.right: parent.right;
 		anchors.rightMargin: 10;
 		source: "res/details.png";
-		visible: startProgramText.text != "";
+		visible: startProgramText.text != "" && parent.containsMouse;
 		opacity: parent.activeFocus ? 1.0 : 0.5;
 
 		Behavior on opacity { Animation { duration: 300; } }

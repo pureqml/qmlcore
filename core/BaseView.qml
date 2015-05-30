@@ -87,6 +87,19 @@ Item {
 		anchors.fill: parent;
 		hoverEnabled: parent.dragEnabled;
 
+		checkInnerMouseAreas: {
+			var idx = this.parent.indexAt(this.mouseX, this.mouseY)
+			for (var i = 0; i < this.parent._items.length; ++i) {
+				var isMouseArea = this.parent._items[i] instanceof qml.core.MouseArea
+				if (i != idx && isMouseArea && this.parent._items[i].containsMouse) {
+					this.parent._items[i].containsMouse = false
+					break
+				}
+			}
+			if (this.parent._items[idx] instanceof qml.core.MouseArea)
+				this.parent._items[idx].containsMouse = true
+		}
+
 		onPressedChanged: {
 			if (this.pressed) {
 				var idx = this.parent.indexAt(this.mouseX, this.mouseY)
@@ -100,9 +113,7 @@ Item {
 		}
 
 		onMouseXChanged: {
-			var idx = this.parent.indexAt(this.mouseX, this.mouseY)
-			if (this.parent._items[idx] instanceof qml.core.MouseArea)
-				this.parent._items[idx].entered();
+			this.checkInnerMouseAreas();
 
 			if (!this.pressed)
 				return
@@ -117,9 +128,7 @@ Item {
 		}
 
 		onMouseYChanged: {
-			var idx = this.parent.indexAt(this.mouseX, this.mouseY)
-			if (this.parent._items[idx] instanceof qml.core.MouseArea)
-				this.parent._items[idx].entered();
+			this.checkInnerMouseAreas();
 
 			if (!this.pressed)
 				return

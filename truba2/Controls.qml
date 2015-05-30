@@ -4,6 +4,7 @@ Item {
 	property bool showFullscreenButton:	true;
 	property bool showVolumeButton:		true;
 	property bool showChannelControl:	true;
+	property int spacing: width / 24;
 	property float volume;
 
 	MouseArea {
@@ -23,10 +24,11 @@ Item {
 
 	RoundButton {
 		id: fullscreenButton;
+		width: parent.width / 14;
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
-		anchors.rightMargin: 54;
-		anchors.bottomMargin: 47;
+		anchors.rightMargin: parent.spacing;
+		anchors.bottomMargin: parent.spacing;
 		icon: "res/fullscreen.png";
 		visible: parent.showFullscreenButton;
 
@@ -35,11 +37,12 @@ Item {
 
 	VolumeControl {
 		id: volumeButton;
+		width: parent.width / 14;
 		visible: parent.showVolumeButton;
 		anchors.bottom: parent.bottom;
 		anchors.right: fullscreenButton.left;
-		anchors.rightMargin: 24;
-		anchors.bottomMargin: 47;
+		anchors.rightMargin: parent.spacing;
+		anchors.bottomMargin: parent.spacing;
 		volume: parent.volume;
 
 		onVolumeUpdated(value): { this.parent.volumeUpdated(value); }
@@ -47,11 +50,11 @@ Item {
 
 	ChannelControl {
 		id: channelControl;
-		width: 150;
+		width: parent.width / 8;
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
-		anchors.leftMargin: 54;
-		anchors.bottomMargin: 47;
+		anchors.leftMargin: parent.spacing;
+		anchors.bottomMargin: parent.spacing;
 		visible: parent.showChannelControl;
 	}
 

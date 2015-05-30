@@ -8,7 +8,7 @@ Item {
 	Rectangle {
 		property int maxHeight: volumeTrackBar.height + volumeInnerButton.height / 2 + 35;
 		height: parent.showTrackBar ? maxHeight : 0;
-		width: 50;
+		width: parent.width / 2;
 		anchors.horizontalCenter: volumeInnerButton.horizontalCenter;
 		anchors.bottom: volumeInnerButton.top;
 		anchors.bottomMargin: -volumeInnerButton.height / 2;
@@ -18,7 +18,7 @@ Item {
 
 		TrackBar {
 			id: volumeTrackBar;
-			width: 50;
+			width: parent.width;
 			anchors.horizontalCenter: parent.horizontalCenter;
 			anchors.top: parent.top;
 			anchors.topMargin: 25;
@@ -31,6 +31,7 @@ Item {
 
 	RoundButton {
 		id: volumeInnerButton;
+		width: parent.width;
 		anchors.bottom: parent.bottom;
 		anchors.right: parent.right;
 		icon: parent.volume > 0.6 ? "res/volume.png" : parent.volume > 0.3 ? "res/volume_mid.png" : "res/volume_min.png";

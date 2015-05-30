@@ -42,11 +42,12 @@ Item {
 
 	RoundButton {
 		id: channelControlInnerButton;
-		width: 150;
+		width: parent.width;
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
 		icon: parent.channelIcon;
 		color: parent.channelColor;
+		clip: true;
 
 		onToggled: {
 			var maxText = Math.max(infoControlProgramText.paintedWidth, infoControlChannelText.paintedWidth);
@@ -55,6 +56,11 @@ Item {
 			this.parent.showInfo = !this.parent.showInfo;
 			programBackGround.width = this.parent.showInfo ? Math.max(channelControlInnerButton.width * 3, maxText) : 0;
 		}
+	}
+
+	Image {
+		anchors.fill: channelControlInnerButton;
+		source: "res/blick.png";
 	}
 
 	setProgramInfo(program): {

@@ -23,7 +23,7 @@ Item {
 			anchors.top: parent.top;
 			anchors.topMargin: 25;
 
-			onValueChanged: { this.parent.volumeUpdated(this.value); }
+			onValueChanged: { volumeButton.volumeUpdated(this.value); }
 		}
 
 		Behavior on height { Animation { duration: 300; } }

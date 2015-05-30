@@ -105,7 +105,7 @@ Item {
 		anchors.bottom: parent.bottom;
 
 		onCountChanged: {
-			if (this.count > 1 && !channels.count) {
+			if (this.count == this.currentIndex + 1 && !channels.count) {
 				var cat = categoriesList.model.get(categoriesList.currentIndex);
 				channelsModel.setList(cat.list);
 				currentCategoryText.text = cat.text;

@@ -1,7 +1,7 @@
 Item {
 	id: volumeButton;
 	signal volumeUpdated;
-	property float volume;
+	property float volume: 1.0;
 	property bool showTrackBar: false;
 	visible: parent.showVolumeButton;
 
@@ -37,4 +37,6 @@ Item {
 
 		onToggled: { this.parent.showTrackBar = !this.parent.showTrackBar; }
 	}
+
+	onVolumeChanged: { volumeTrackBar.value = value; }
 }

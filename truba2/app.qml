@@ -92,6 +92,7 @@ Activity {
 		id: controls;
 		anchors.fill: videoPlayer;
 		visible: videoPlayer.visible;
+		volume: videoPlayer.volume;
 
 		onFullscreenToggled:	{ renderer.fullscreen = !renderer.fullscreen; }
 		onVolumeUpdated(value):	{ videoPlayer.volume = value; }

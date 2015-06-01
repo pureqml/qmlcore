@@ -536,6 +536,23 @@ exports._setup = function() {
 			return false
 	}
 
+	_globals.core.MouseArea.prototype._onVerticalSwipe = function(event) {
+		if (!this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
+			return
+
+		this.pressed = !event.end;
+
+		var box = this.toScreen()
+		var x = event.x - box[0]
+		var y = event.y - box[1]
+		if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+		{
+			this.mouseX = x
+			this.mouseY = y
+			event.preventDefault()
+		}
+	}
+
 	_globals.core.MouseArea.prototype._onClick = function(event) {
 		if (!this.recursiveVisible)
 			return
@@ -1443,6 +1460,7 @@ exports._bootstrap = function(self, name) {
 			break;
 		case 'core.MouseArea':
 			self.element.click(self._onClick.bind(self))
+			self.element.drag(self._onVerticalSwipe.bind(self))
 			$(document).mousemove(self._onMove.bind(self))
 			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
 			self.element.mousedown(self._onDown.bind(self))

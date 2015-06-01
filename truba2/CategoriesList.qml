@@ -4,6 +4,7 @@ ListView {
 	width: active ? 300 : 0;
 	model: categoriesModel;
 	clip: true;
+	contentFollowsCurrentItem: false;
 	delegate: Rectangle {
 		height: 40;
 		width: parent.width;

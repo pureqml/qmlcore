@@ -8,6 +8,7 @@ GridView {
 	clip: true;
 	model: channelsModel;
 	hoverEnabled: true;
+	contentFollowsCurrentItem: false;
 	delegate: ChannelDelegate {} 
 
 	getCurrentDelegateX: { return this.currentIndex % this.collCount * this.cellWidth; }

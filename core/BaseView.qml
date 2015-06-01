@@ -142,6 +142,18 @@ Item {
 				a.enable()
 		}
 
+		onVerticalSwiped(event): {
+			if (!event)
+				return
+
+			var a = this.parent.getAnimation('contentY')
+			if (a)
+				a.disable()
+			this.parent.move(0, -event.dy)
+			if (a)
+				a.enable()
+		}
+
 		onWheelEvent(dp): {
 			var horizontal = this.parent.orientation == ListView.Horizontal
 			var itemBox = this.parent.getItemPosition(this.parent.currentIndex)

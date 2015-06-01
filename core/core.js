@@ -540,17 +540,9 @@ exports._setup = function() {
 		if (!this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
 			return
 
-		this.pressed = !event.end;
-
-		var box = this.toScreen()
-		var x = event.x - box[0]
-		var y = event.y - box[1]
-		if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-		{
-			this.mouseX = x
-			this.mouseY = y
-			event.preventDefault()
-		}
+		this.pressed = !event.end
+		this.verticalSwiped(event)
+		event.preventDefault()
 	}
 
 	_globals.core.MouseArea.prototype._onClick = function(event) {

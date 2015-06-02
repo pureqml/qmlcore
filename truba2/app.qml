@@ -55,26 +55,12 @@ Activity {
 		}
 	}
 
-	ChannelsPanel {
-		id: channelsPanel;
-		width: parent.portraitOrientation ? parent.width : parent.width - videoPlayer.width - 20;
-		anchors.left: parent.left;
-		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
-		anchors.leftMargin: 10;
-		anchors.topMargin: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
-		visible: !hintText.visible;
-
-		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		onProgramSelected(program):	{ progrmInfo.setProgram(program); }
-	}
-
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.top: mainWindow.top;
 		anchors.right: mainWindow.right;
 		anchors.rightMargin: renderer.fullscreen ? 0 : 10;
-		anchors.topMargin: renderer.fullscreen ? 0 : 10;
+		anchors.topMargin: renderer.fullscreen ? 0 : (mainWindow.portraitOrientation ? 50 : 10);
 		width: renderer.fullscreen ? renderer.width : 
 			(mainWindow.portraitOrientation ? parent.width - 20 : parent.width / 2);
 		height: renderer.fullscreen ? renderer.height : width / 3 * 2;
@@ -92,7 +78,6 @@ Activity {
 		id: controls;
 		anchors.fill: videoPlayer;
 		visible: videoPlayer.visible;
-		volume: videoPlayer.volume;
 
 		onFullscreenToggled:	{ renderer.fullscreen = !renderer.fullscreen; }
 		onVolumeUpdated(value):	{ videoPlayer.volume = value; }
@@ -106,6 +91,21 @@ Activity {
 		anchors.top: videoPlayer.bottom;
 		anchors.margins: 10;
 		visible: !hintText.visible && !renderer.fullscreen;
+	}
+
+	ChannelsPanel {
+		id: channelsPanel;
+		width: parent.portraitOrientation ? parent.width : parent.width - videoPlayer.width - 20;
+		anchors.left: parent.left;
+		anchors.top: parent.top;
+		anchors.bottom: parent.bottom;
+		anchors.leftMargin: 10;
+		//anchors.topMargin: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
+		spacing: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
+		visible: !hintText.visible;
+
+		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
+		onProgramSelected(program):	{ progrmInfo.setProgram(program); }
 	}
 
 	Text {
@@ -122,7 +122,6 @@ Activity {
 		anchors.top: parent.top;
 		anchors.topMargin: parent.height - 50;
 		anchors.right: renderer.right;
-		visible: !renderer.fullscreen;
 
 		onClicked: { providersPanel.start(); }
 	}

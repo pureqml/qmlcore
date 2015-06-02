@@ -7,17 +7,16 @@ MouseArea {
 		id: channelIconBackground;
 		anchors.left: parent.left;
 		anchors.top: parent.top;
-		height: channelIcon.maxHeight;
-		width: channelIcon.maxHeight;
+		height: channelIcon.maxWidth;
+		width: channelIcon.maxWidth;
 		color: model.color;
 	}
 
 	Image {
 		id: channelIcon;
-		property int maxHeight: 50;
-		//TODO: remove this, when PreserveAspectFit fill mode will implemented.
-		height: paintedHeight >= maxHeight ? maxHeight : paintedHeight;
-		width: paintedWidth * (height / paintedHeight);
+		property int maxWidth: 50;
+		width: paintedWidth >= maxWidth ? maxWidth : paintedWidth;
+		height: paintedHeight * (width / paintedWidth);
 		anchors.centerIn: channelIconBackground;
 		source: model.source;
 	}

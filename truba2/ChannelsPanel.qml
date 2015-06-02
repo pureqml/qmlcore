@@ -2,6 +2,7 @@ Item {
 	id: channelsPanelProto;
 	signal channelSwitched;
 	signal programSelected;
+	property int spacing: 0;
 
 	ChannelsModel {
 		id: channelsModel;
@@ -36,7 +37,7 @@ Item {
 		}
 
 		MouseArea {
-			anchors.fill: listIcon;
+			anchors.fill: parent;
 
 			onClicked: { categoriesList.toggle(); }
 		}
@@ -48,7 +49,7 @@ Item {
 		anchors.bottom: parent.bottom;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-		anchors.topMargin: 10;
+		anchors.topMargin: 10 + parent.spacing;
 
 		onClicked:				{ this.switchToCurrent(); }
 		onSelectPressed:		{ this.switchToCurrent(); }

@@ -55,7 +55,7 @@ Item {
 		anchors.left: parent.left;
 		anchors.leftMargin: parent.spacing;
 		anchors.bottomMargin: parent.spacing;
-		visible: parent.showChannelControl;
+		visible: parent.showChannelControl && renderer.fullscreen;
 	}
 
 	Timer {
@@ -75,7 +75,7 @@ Item {
 	show: {
 		fullscreenButton.visible = this.showFullscreenButton;
 		volumeButton.visible = this.showVolumeButton;
-		channelControl.visible = this.showChannelControl;
+		channelControl.visible = this.showChannelControl && renderer.fullscreen;
 		hideControlsTimer.restart();
 	}
 

@@ -25,13 +25,15 @@ MouseArea {
 		id: channelDelegateTitle;
 		anchors.left: channelIconBackground.right;
 		anchors.right: parent.right;
-		anchors.top: channelIcon.top;
-		anchors.topMargin: (channelIcon.height - paintedHeight) / 2;
+		anchors.top: channelIconBackground.top;
+		anchors.topMargin: (channelIconBackground.height - paintedHeight) / 2;
 		anchors.leftMargin: 10;
 		color: colorTheme.textColor;
 		text: model.text;
 		wrap: true;
 		font.bold: true;
+
+		onCompleted: { this._updateSize(); }	//TODO: Crunch for explicitly calculating text size after word wrapping.
 	}
 
 	Image {

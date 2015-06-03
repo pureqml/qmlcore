@@ -59,7 +59,7 @@ Item {
 	setChannel(channel): {
 		programInfoIcon.source = "";
 		programInfoChannel.text = "";
-		programInfoChannelPlate.color = "";
+		programInfoChannelPlate.color = "#fff";
 		programInfoTime.text = "";
 		programInfoProgram.text = "";
 		programInfoDescription.text = "";

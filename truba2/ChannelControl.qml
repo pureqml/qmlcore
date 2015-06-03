@@ -76,7 +76,7 @@ Item {
 
 	setChannelInfo(channel): {
 		this.channelIcon = "";
-		this.channelColor = "";
+		this.channelColor = "#fff";
 		this.channelName = "";
 
 		if (!channel) {

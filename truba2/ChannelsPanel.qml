@@ -118,7 +118,7 @@ Item {
 		updateList: {
 			var cat = categoriesList.model.get(categoriesList.currentIndex);
 			channelsModel.setList(cat.list);
-			channels.contentX = 0;
+			channels.contentY = 0;
 			currentCategoryText.text = cat.text;
 			this.toggle();
 		}

@@ -111,9 +111,8 @@ Activity {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
-		//anchors.topMargin: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
 		spacing: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
-		visible: !hintText.visible;
+		visible: !hintText.visible && !renderer.fullscreen;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		onProgramSelected(program):	{ progrmInfo.setProgram(program); }
@@ -128,26 +127,33 @@ Activity {
 		visible: !choosenProvider.choosed || !categoriesModel.count;
 	}
 
-	SettingsButton {
-		id: settingButton;
-		anchors.top: parent.top;
-		anchors.topMargin: parent.height - 50;
-		anchors.right: renderer.right;
-
-		onClicked: { providersPanel.start(); }
-	}
-
-	ProvidersPanel {
-		id: providersPanel;
+	SettingsPanel {
+		id: settingsPanel;
 		active: !choosenProvider.choosed;
-		anchors.right: parent.right;
-		anchors.bottom: settingButton.top;
-		anchors.bottomMargin: 100;
+		width: active ? (mainWindow.portraitOrientation ? parent.width / 2 : parent.width / 4) : 0;
+		anchors.top: parent.top;
+		anchors.right: renderer.right;
+		anchors.bottom: parent.bottom;
 
 		onChoosed(provider): {
 			choosenProvider.value = provider;
 			categoriesModel.provider = provider;
 			choosenProvider.choosed = provider;
+		}
+	}
+
+	SettingsButton {
+		id: settingButton;
+		anchors.top: parent.top;
+		anchors.topMargin: parent.height - 50;
+		anchors.right: renderer.right;
+		visible: !renderer.fullscreen;
+
+		onClicked: {
+			if (settingsPanel.active)
+				settingsPanel.stop();
+			else
+				settingsPanel.start();
 		}
 	}
 

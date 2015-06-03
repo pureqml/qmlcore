@@ -83,20 +83,11 @@ Item {
 		onProgramSelected(program): { channelsPanelProto.programSelected(program); }
 	}
 
-	Rectangle {
-		opacity: categoriesList.active ? 1.0 : 0.0;
+	Shadow {
+		active: categoriesList.active;
 		anchors.left: categoriesList.right;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
-		width: 30;
-		gradient: Gradient {
-			orientation: 1;
-
-			GradientStop { color: "#0006"; position: 0; }
-			GradientStop { color: "#0000"; position: 1; }
-		}
-
-		Behavior on opacity { Animation { duration: 300; } }
 	}
 
 	CategoriesList {

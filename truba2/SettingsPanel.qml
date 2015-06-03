@@ -1,57 +1,51 @@
 Activity {
-	id: providersPanelProto;
+	id: settingsPanelProto;
 	signal choosed;
-	width: 400;
-	height: 300;
-	visible: active;
+
+	Shadow {
+		id: settingsShadow;
+		active: parent.active;
+		leftToRight: false;
+		anchors.top: parent.top;
+		anchors.right: settingsInnerPanel.left;
+		anchors.bottom: parent.bottom;
+	}
 
 	Rectangle {
-		width: parent.width;
+		id: settingsInnerPanel;
+		width: parent.width - settingsShadow.width;
 		height: parent.height;
-		anchors.centerIn: parent;
+		anchors.right: parent.right;
 		color: colorTheme.backgroundColor;
-		//TODO: use shadows instead.
-		border.color: colorTheme.activeBackgroundColor;
-		border.width: 1;
+		clip: true;
 
-		MouseArea {
-			id: acceptProviderButton;
-			width: parent.width / 4;
-			height: width / 2;
-			anchors.bottom: parent.bottom;
-			anchors.horizontalCenter: parent.horizontalCenter;
-			anchors.bottomMargin: 10;
-			hoverEnabled: true;
+		Text {
+			id: settingsPanelTitle;
+			width: parent.width;
+			anchors.top: parent.top;
+			anchors.left: parent.left;
+			anchors.margins: 10;
+			font.pointSize: 24;
+			color: colorTheme.textColor;
+			text: "Настройки";
+		}
 
-			Rectangle {
-				anchors.fill: parent;
-				color: colorTheme.activeDialogBackground;
-
-				Text {
-					width: parent.width;
-					anchors.verticalCenter: parent.verticalCenter;
-					horizontalAlignment: Text.AlignHCenter;
-					font.pointSize: 24;
-					color: colorTheme.focusedTextColor;
-					text: "OK";
-				}
-			}
-
-			onClicked: {
-				log("Choosed provider: " + selectedProviderText.text);
-				providersPanelProto.choosed(providersList.model.get(providersList.currentIndex).id);
-				providersPanelProto.stop();
-			}
+		Rectangle {
+			height: 1;
+			anchors.top: settingsPanelTitle.bottom;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			anchors.margins: 10;
+			color: "#ccc";
 		}
 
 		Text {
-			id: providersPanelTitle;
-			width: parent.width;
-			anchors.top: parent.top;
-			anchors.topMargin: 10;
-			horizontalAlignment: Text.AlignHCenter;
-			font.pointSize: 24;
-			font.bold: true;
+			id: providerSettingLabel;
+			anchors.top: settingsPanelTitle.bottom;
+			anchors.left: parent.left;
+			anchors.topMargin: 21;
+			anchors.leftMargin: 10;
+			font.pointSize: 16;
 			color: colorTheme.textColor;
 			text: "Выберите провайдера";
 		}
@@ -103,17 +97,17 @@ Activity {
 		}
 
 		Item {
-			anchors.top: providersPanelTitle.bottom;
+			anchors.top: settingsPanelTitle.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
+			anchors.bottom: parent.bottom;
 			anchors.margins: 10;
-			anchors.bottom: acceptProviderButton.top;
 
 			Rectangle {
 				id: selectedProviderLabel;
 				height: 50;
 				width: parent.width;
-				anchors.centerIn: parent;
+				anchors.top: providerSettingLabel.bottom;
 				color: colorTheme.backgroundColor;
 				border.color: colorTheme.activeBackgroundColor;
 				border.width: 2;
@@ -136,6 +130,7 @@ Activity {
 					anchors.rightMargin: 10;
 					anchors.verticalCenter: parent.verticalCenter;
 					source: "res/details.png";
+					opacity: 0.7;
 				}
 
 				MouseArea {
@@ -148,5 +143,30 @@ Activity {
 				}
 			}
 		}
+
+		Button {
+			id: addProviderButton;
+			anchors.top: selectedProviderLabel.bottom;
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.topMargin: 30;
+			text: "Добавить оператора";
+		}
+
+		Button {
+			width: addProviderButton.width;
+			anchors.top: addProviderButton.bottom;
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.topMargin: 20;
+			text: "Нашли ошибку?";
+		}
 	}
+
+	onActiveChanged: {
+		if (!this.active && selectedProviderText.choosed) {
+			log("Choosed provider: " + selectedProviderText.text);
+			settingsPanelProto.choosed(providersList.model.get(providersList.currentIndex).id);
+		}
+	}
+
+	Behavior on width { Animation { duration: 300; } }
 }

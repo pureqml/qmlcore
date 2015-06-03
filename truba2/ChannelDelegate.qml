@@ -51,7 +51,7 @@ MouseArea {
 	Text {
 		id: startProgramText;
 		anchors.left: parent.left;
-		anchors.top: channelIcon.bottom;
+		anchors.top: channelIconBackground.bottom;
 		anchors.margins: 5;
 		color: colorTheme.textColor;
 		text: model.program.start;
@@ -62,7 +62,7 @@ MouseArea {
 	Text {
 		anchors.left: startProgramText.right;
 		anchors.right: detailsIcon.left;
-		anchors.top: channelIcon.bottom;
+		anchors.top: channelIconBackground.bottom;
 		anchors.margins: 5;
 		color: colorTheme.textColor;
 		text: model.program.title;

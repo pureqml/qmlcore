@@ -39,7 +39,7 @@ Activity {
 
 			onClicked: {
 				log("Choosed provider: " + selectedProviderText.text);
-				providersPanelProto.choosed(selectedProviderText.text);
+				providersPanelProto.choosed(providersList.model.get(providersList.currentIndex).id);
 				providersPanelProto.stop();
 			}
 		}

@@ -40,7 +40,18 @@ Activity {
 		}
 	}
 
-	ProvidersModel	{ id: providersModel;	protocol: protocol; }
+	ProvidersModel {
+		id: providersModel;
+		protocol: protocol;
+
+		onDefaultProviderChanged: {
+			if (!choosenProvider.choosed && value) {
+				categoriesModel.provider = value;
+				choosenProvider.choosed = true;
+			}
+		}
+	}
+
 	CategoriesModel	{ id: categoriesModel;	protocol: protocol; }
 	EPGModel		{ id: epgModel;			protocol: protocol; }
 

@@ -17,12 +17,12 @@ ListModel {
 				self.append({
 					id: providers[p].alias,
 					text: providers[p].name,
-					source: "http://truba.tv" + providers[p].icon,
+					source: "http://truba.tv" + providers[p].icon
 				});
 			}
 		})
 	}
 
-	onCompleted:				{ this.update(); }
-	onProtocolChanged:			{ this.update(); }
+	onCompleted:		{ this.update(); }
+	onProtocolChanged:	{ this.update(); }
 }

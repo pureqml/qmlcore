@@ -3,8 +3,8 @@ Item {
 	property Color activeBackgroundColor:	"#b0bec5";
 	property Color disabledBackgroundColor:	"#FBFBFB";
 
-	property Color dialogBackground:		"#b0bec5";
-	property Color activeDialogBackground:	"#333";
+	property Color dialogBackground:		"#FBFBFB";
+	property Color activeDialogBackground:	"#555";
 
 	property Color textColor:				"#000";
 	property Color accentTextColor:			"#D84315";

@@ -1,6 +1,7 @@
 Activity {
 	id: mainWindow;
 	property bool portraitOrientation: false;
+	//TODO: don't update size if 'anchors.fill: renderer;'
 	anchors.left: renderer.left;
 	anchors.right: renderer.right;
 	width: renderer.width;
@@ -140,6 +141,9 @@ Activity {
 			categoriesModel.provider = provider;
 			choosenProvider.choosed = provider;
 		}
+
+		onAddDialogCalled:		{ addProviderDialog.start(); }
+		onFeedBackDialogCalled:	{ addProviderDialog.start(); }
 	}
 
 	SettingsButton {
@@ -156,6 +160,9 @@ Activity {
 				settingsPanel.start();
 		}
 	}
+
+	AddProviderDialog { id: addProviderDialog; }
+	FeedBackDialog { id: feedBackDialog; }
 
 	updateLayout: {
 		if (renderer.width < renderer.height) {

@@ -1,6 +1,8 @@
 Activity {
 	id: settingsPanelProto;
 	signal choosed;
+	signal addDialogCalled;
+	signal feedBackDialogCalled;
 
 	Shadow {
 		id: settingsShadow;
@@ -159,16 +161,14 @@ Activity {
 				anchors.horizontalCenter: parent.horizontalCenter;
 				text: "Добавить оператора";
 
-				onClicked: {
-				}
+				onClicked: { settingsPanelProto.addDialogCalled(); }
 			}
 
 			Button {
 				anchors.horizontalCenter: parent.horizontalCenter;
 				text: "Хотите улучшить сервис?";
 
-				onClicked: {
-				}
+				onClicked: { settingsPanelProto.feedBackDialogCalled(); }
 			}
 		}
 	}

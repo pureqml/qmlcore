@@ -4,18 +4,14 @@ MouseArea {
 	height: buttonInnerText.paintedHeight + 10;
 	hoverEnabled: true;
 
-	Rectangle {
-		anchors.fill: parent;
-		color: colorTheme.activeDialogBackground;
-
-		Text {
-			id: buttonInnerText;
-			width: parent.width;
-			anchors.verticalCenter: parent.verticalCenter;
-			horizontalAlignment: Text.AlignHCenter;
-			font.pointSize: 16;
-			color: colorTheme.focusedTextColor;
-			text: parent.parent.text;
-		}
+	Text {
+		id: buttonInnerText;
+		width: parent.width;
+		anchors.verticalCenter: parent.verticalCenter;
+		horizontalAlignment: Text.AlignHCenter;
+		font.pointSize: 16;
+		font.underline: true;
+		color: colorTheme.textColor;
+		text: parent.text;
 	}
 }

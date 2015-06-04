@@ -50,23 +50,8 @@ Activity {
 			text: "Выберите провайдера";
 		}
 
-		Button {
-			id: addProviderButton;
-			anchors.top: selectedProviderLabel.bottom;
-			anchors.horizontalCenter: parent.horizontalCenter;
-			anchors.topMargin: 30;
-			text: "Добавить оператора";
-		}
-
-		Button {
-			width: addProviderButton.width;
-			anchors.top: addProviderButton.bottom;
-			anchors.horizontalCenter: parent.horizontalCenter;
-			anchors.topMargin: 20;
-			text: "Нашли ошибку?";
-		}
-
 		Rectangle {
+			id: providersListPanel;
 			height: providersList.active ? providersList.count * 50 : 0;
 			anchors.top: selectedProviderLabel.bottom;
 			anchors.left: parent.left;
@@ -86,6 +71,7 @@ Activity {
 				anchors.left: parent.left;
 				anchors.right: parent.right;
 				model: providersModel;
+				z: active ? settingsPanelButtons.z + 1 : parent.z + 1;
 				delegate: Rectangle {
 					height: 50;
 					width: parent.width;
@@ -127,6 +113,7 @@ Activity {
 				color: colorTheme.backgroundColor;
 				border.color: colorTheme.activeBackgroundColor;
 				border.width: 2;
+				clip: true;
 
 				Text {
 					id: selectedProviderText;
@@ -156,6 +143,31 @@ Activity {
 					toggle:				{ providersList.active = !providersList.active; }
 					onClicked:			{ this.toggle(); }
 					onSelectPressed:	{ this.toggle(); }
+				}
+			}
+		}
+
+		Column {
+			id: settingsPanelButtons;
+			anchors.top: selectedProviderLabel.bottom;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			anchors.topMargin: 10;
+			spacing: 10;
+
+			Button {
+				anchors.horizontalCenter: parent.horizontalCenter;
+				text: "Добавить оператора";
+
+				onClicked: {
+				}
+			}
+
+			Button {
+				anchors.horizontalCenter: parent.horizontalCenter;
+				text: "Хотите улучшить сервис?";
+
+				onClicked: {
 				}
 			}
 		}

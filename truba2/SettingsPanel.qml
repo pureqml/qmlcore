@@ -50,6 +50,22 @@ Activity {
 			text: "Выберите провайдера";
 		}
 
+		Button {
+			id: addProviderButton;
+			anchors.top: selectedProviderLabel.bottom;
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.topMargin: 30;
+			text: "Добавить оператора";
+		}
+
+		Button {
+			width: addProviderButton.width;
+			anchors.top: addProviderButton.bottom;
+			anchors.horizontalCenter: parent.horizontalCenter;
+			anchors.topMargin: 20;
+			text: "Нашли ошибку?";
+		}
+
 		Rectangle {
 			height: providersList.active ? providersList.count * 50 : 0;
 			anchors.top: selectedProviderLabel.bottom;
@@ -142,22 +158,6 @@ Activity {
 					onSelectPressed:	{ this.toggle(); }
 				}
 			}
-		}
-
-		Button {
-			id: addProviderButton;
-			anchors.top: selectedProviderLabel.bottom;
-			anchors.horizontalCenter: parent.horizontalCenter;
-			anchors.topMargin: 30;
-			text: "Добавить оператора";
-		}
-
-		Button {
-			width: addProviderButton.width;
-			anchors.top: addProviderButton.bottom;
-			anchors.horizontalCenter: parent.horizontalCenter;
-			anchors.topMargin: 20;
-			text: "Нашли ошибку?";
 		}
 	}
 

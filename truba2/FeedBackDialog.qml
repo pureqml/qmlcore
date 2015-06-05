@@ -13,10 +13,12 @@ Dialog {
 	onAccepted: {
 		var email = emailInput.value;
 		var message = messageInput.value;
-		if (message)
+		if (message) {
 			this.protocol.sendEmail({
 				email: email,
 				message: message
 			}, function() { log("Opinion send"); });
+			this.stop();
+		}
 	}
 }

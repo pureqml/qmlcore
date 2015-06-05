@@ -67,12 +67,20 @@ Activity {
 		}
 	}
 
+	Rectangle {
+		anchors.top: settingButton.bottom;
+		anchors.bottom: renderer.bottom;
+		anchors.left: renderer.left;
+		anchors.right: renderer.right;
+		color: "#eee";
+	}
+
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.top: mainWindow.top;
 		anchors.right: mainWindow.right;
 		anchors.rightMargin: renderer.fullscreen ? 0 : 10;
-		anchors.topMargin: renderer.fullscreen ? 0 : (mainWindow.portraitOrientation ? 50 : 10);
+		anchors.topMargin: renderer.fullscreen ? 0 : 60;
 		width: renderer.fullscreen ? renderer.width : 
 			(mainWindow.portraitOrientation ? parent.width - 20 : parent.width / 2);
 		height: renderer.fullscreen ? renderer.height : width / 3 * 2;
@@ -111,7 +119,7 @@ Activity {
 		anchors.left: parent.left;
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
-		anchors.leftMargin: 10;
+		anchors.margins: 10;
 		spacing: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
 		visible: !hintText.visible && !renderer.fullscreen;
 
@@ -131,7 +139,7 @@ Activity {
 	SettingsPanel {
 		id: settingsPanel;
 		active: !choosenProvider.choosed;
-		width: active ? (mainWindow.portraitOrientation ? parent.width / 2 : parent.width / 4) : 0;
+		width: active ? 340 : 0;
 		anchors.top: parent.top;
 		anchors.right: renderer.right;
 		anchors.bottom: parent.bottom;
@@ -149,8 +157,7 @@ Activity {
 	SettingsButton {
 		id: settingButton;
 		anchors.top: parent.top;
-		anchors.topMargin: parent.height - 50;
-		anchors.right: renderer.right;
+		anchors.right: videoPlayer.right;
 		visible: !renderer.fullscreen;
 
 		onClicked: {

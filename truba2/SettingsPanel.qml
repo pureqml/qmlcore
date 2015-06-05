@@ -157,14 +157,14 @@ Activity {
 			anchors.topMargin: 10;
 			spacing: 10;
 
-			Button {
+			Link {
 				anchors.horizontalCenter: parent.horizontalCenter;
 				text: "Добавить оператора";
 
 				onClicked: { settingsPanelProto.addDialogCalled(); }
 			}
 
-			Button {
+			Link {
 				anchors.horizontalCenter: parent.horizontalCenter;
 				text: "Хотите улучшить сервис?";
 

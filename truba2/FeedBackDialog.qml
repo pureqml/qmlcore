@@ -7,7 +7,7 @@ Dialog {
 		spacing: 20;
 
 		Input { id: emailInput; title: "Ваш Email"; }
-		Input { id: messageInput; title: "Комментарий"; }
+		InputTextArea { id: messageInput; title: "Комментарий"; }
 	}
 
 	onAccepted: {

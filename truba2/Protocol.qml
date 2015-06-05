@@ -21,7 +21,7 @@ Object {
 	}
 
 	sendEmail(data, callback): {
-		this.request("/feedback", data, callback)
+		this.request("/feedback", data, callback, "POST")
 	}
 
 	requestImpl(url, data, callback, type, headers): {

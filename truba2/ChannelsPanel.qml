@@ -14,15 +14,14 @@ Item {
 		width: parent.width / 2;
 		height: currentCategoryText.height;
 		anchors.left: parent.left;
-		anchors.top: parent.top;
-		anchors.topMargin: 10;
+		anchors.top: renderer.top;
+		anchors.topMargin: (50 - listIcon.height) / 2;
 		anchors.leftMargin: 10;
 
 		Image {
 			id: listIcon;
 			source: "res/list.png";
 			anchors.left: parent.left;
-			anchors.top: parent.top;
 		}
 
 		Text {
@@ -50,6 +49,7 @@ Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.topMargin: 10 + parent.spacing;
+		dragEnabled: !parent.parent.hasAnyActiveChild;
 
 		onClicked:				{ this.switchToCurrent(); }
 		onSelectPressed:		{ this.switchToCurrent(); }
@@ -86,8 +86,8 @@ Item {
 	Shadow {
 		active: categoriesList.active;
 		anchors.left: categoriesList.right;
-		anchors.top: parent.top;
-		anchors.bottom: parent.bottom;
+		anchors.top: renderer.top;
+		anchors.bottom: renderer.bottom;
 	}
 
 	CategoriesList {

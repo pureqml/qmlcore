@@ -1,17 +1,22 @@
 MouseArea {
 	property string text;
-	width: buttonInnerText.paintedWidth + 20;
-	height: buttonInnerText.paintedHeight + 10;
+	width: innerText.paintedWidth + 20;
+	height: innerText.paintedHeight + 10;
 	hoverEnabled: true;
 
+	Rectangle {
+		anchors.fill: parent;
+		color: colorTheme.activeDialogBackground;
+	}
+
 	Text {
-		id: buttonInnerText;
+		id: innerText;
 		width: parent.width;
-		anchors.verticalCenter: parent.verticalCenter;
+		height: parent.height;
+		verticalAlignment: Text.AlignVCenter;
 		horizontalAlignment: Text.AlignHCenter;
-		font.pointSize: 16;
-		font.underline: true;
-		color: colorTheme.textColor;
 		text: parent.text;
+		color: colorTheme.focusedTextColor;
+		font.pointSize: 20;
 	}
 }

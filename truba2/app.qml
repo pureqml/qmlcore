@@ -67,12 +67,11 @@ Activity {
 		}
 	}
 
-	Rectangle {
+	Background {
 		anchors.top: settingButton.bottom;
 		anchors.bottom: renderer.bottom;
 		anchors.left: renderer.left;
 		anchors.right: renderer.right;
-		color: "#eee";
 	}
 
 	VideoPlayer {

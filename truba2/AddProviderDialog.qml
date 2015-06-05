@@ -1,12 +1,26 @@
 Dialog {
 	title: "Добавить провайдера";
 
-	Row {
+	Column {
 		anchors.centerIn: innerPanel;
 		visible: parent.visible;
 		spacing: 20;
 
-		Input { id: emailInput; title: "Ваш Email"; }
+		Row {
+			spacing: 10;
+
+			Input { id: emailInput; title: "Ваш Email"; }
+
+			Text {
+				width: 0;
+				text: "Необязательно";
+				anchors.verticalCenter: emailInput.innerTextInput.verticalCenter;
+				font.italic: true;
+				font.pixelSize: 20;
+				color: colorTheme.disabledTextColor;
+			}
+		}
+
 		Input { id: providerInput; title: "Провайдер"; }
 	}
 

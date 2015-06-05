@@ -5,8 +5,8 @@ Activity {
 	property string okText:	"OK";
 	property string cancelText: "Отмена";
 	property string title: "";
-	property int innerWidth: renderer.width / 3;
-	property int innerHeight: renderer.height / 3;
+	property int innerWidth: 500;
+	property int innerHeight: 350;
 	anchors.left: renderer.left;
 	anchors.right: renderer.right;
 	width: renderer.width;

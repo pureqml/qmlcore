@@ -13,10 +13,12 @@ Dialog {
 	onAccepted: {
 		var email = emailInput.value;
 		var providerName = providerInput.value;
-		if (providerName)
+		if (providerName) {
 			this.protocol.sendEmail({
 				email: email,
 				providerName: providerName
 			}, function() { log("Provider send"); });
+			this.stop();
+		}
 	}
 }

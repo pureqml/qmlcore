@@ -20,6 +20,10 @@ Object {
 		this.request("/providers", {}, callback)
 	}
 
+	sendEmail(data, callback): {
+		this.request("/feedback", data, callback)
+	}
+
 	requestImpl(url, data, callback, type, headers): {
 		if (!this.enabled)
 			return;

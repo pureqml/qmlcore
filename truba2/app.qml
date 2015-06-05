@@ -9,7 +9,6 @@ Activity {
 	name: "root";
 
 	Protocol		{ id: protocol; enabled: true; }
-
 	ColorTheme		{ id: colorTheme; }
 
 	LocalStorage {
@@ -150,7 +149,7 @@ Activity {
 		}
 
 		onAddDialogCalled:		{ addProviderDialog.start(); }
-		onFeedBackDialogCalled:	{ addProviderDialog.start(); }
+		onFeedBackDialogCalled:	{ feedBackDialog.start(); }
 	}
 
 	SettingsButton {
@@ -167,8 +166,8 @@ Activity {
 		}
 	}
 
-	AddProviderDialog { id: addProviderDialog; }
-	FeedBackDialog { id: feedBackDialog; }
+	AddProviderDialog { id: addProviderDialog; protocol: protocol; }
+	FeedBackDialog { id: feedBackDialog; protocol: protocol; }
 
 	updateLayout: {
 		if (renderer.width < renderer.height) {

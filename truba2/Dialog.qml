@@ -25,6 +25,7 @@ Activity {
 	}
 
 	Rectangle {
+		id: innerPanel;
 		width: parent.innerWidth;
 		height: parent.innerHeight;
 		color: colorTheme.backgroundColor;

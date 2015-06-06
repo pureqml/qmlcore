@@ -3,6 +3,10 @@ Activity {
 	signal choosed;
 	signal addDialogCalled;
 	signal feedBackDialogCalled;
+	width: active ? 340 : 0;
+	anchors.top: parent.top;
+	anchors.right: renderer.right;
+	anchors.bottom: parent.bottom;
 
 	Shadow {
 		id: settingsShadow;

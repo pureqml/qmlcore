@@ -33,6 +33,7 @@ Activity {
 			this.read();
 			var channelInfo = lastChannel.value ? JSON.parse(lastChannel.value): {};
 			if (channelInfo) {
+				channelInfo.program = {};
 				mainWindow.switchToChannel(channelInfo);
 				if (channelInfo.categoryIndex)
 					channelsPanel.setCategoryIndex(channelInfo.categoryIndex);
@@ -102,7 +103,7 @@ Activity {
 	}
 
 	ProgramInfo {
-		id: progrmInfo;
+		id: programInfo;
 		height: parent.portraitOrientation ? videoPlayer.height / 2 : parent.height - videoPlayer.height - 20;
 		anchors.left: videoPlayer.left;
 		anchors.right: videoPlayer.right;
@@ -118,11 +119,11 @@ Activity {
 		anchors.top: parent.top;
 		anchors.bottom: parent.bottom;
 		anchors.margins: 10;
-		spacing: parent.portraitOrientation ? videoPlayer.height + progrmInfo.height + 20 : 0;
+		spacing: parent.portraitOrientation ? videoPlayer.height + programInfo.height + 20 : 0;
 		visible: !hintText.visible && !renderer.fullscreen;
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
-		onProgramSelected(program):	{ progrmInfo.setProgram(program); }
+		onProgramSelected(program):	{ programInfo.setProgram(program); }
 	}
 
 	Text {
@@ -187,8 +188,8 @@ Activity {
 		lastChannel.value = JSON.stringify(channel);
 		videoPlayer.source = channel.url;
 		controls.setChannelInfo(channel);
-		progrmInfo.setChannel(channel);
-		progrmInfo.setProgram(channel.program);
+		programInfo.setChannel(channel);
+		programInfo.setProgram(channel.program);
 	}
 
 	onHeightChanged:	{ this.updateLayout(); }

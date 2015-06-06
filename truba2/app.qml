@@ -138,10 +138,6 @@ Activity {
 	SettingsPanel {
 		id: settingsPanel;
 		active: !choosenProvider.choosed;
-		width: active ? 340 : 0;
-		anchors.top: parent.top;
-		anchors.right: renderer.right;
-		anchors.bottom: parent.bottom;
 
 		onChoosed(provider): {
 			choosenProvider.value = provider;
@@ -153,11 +149,32 @@ Activity {
 		onFeedBackDialogCalled:	{ feedBackDialog.start(); }
 	}
 
-	SettingsButton {
+	SearchPanel {
+		id: searchPanel;
+	}
+
+	TopMenuButton {
+		id: searchButton;
+		anchors.top: parent.top;
+		anchors.right: settingButton.left;
+		anchors.rightMargin: 10;
+		visible: !renderer.fullscreen && (!parent.hasAnyActiveChild || searchPanel.active);
+		icon: "res/search.png";
+
+		onClicked: {
+			if (searchPanel.active)
+				searchPanel.stop();
+			else
+				searchPanel.start();
+		}
+	}
+
+	TopMenuButton {
 		id: settingButton;
 		anchors.top: parent.top;
 		anchors.right: videoPlayer.right;
-		visible: !renderer.fullscreen;
+		visible: !renderer.fullscreen && (!parent.hasAnyActiveChild || settingsPanel.active);
+		icon: "res/settings.png";
 
 		onClicked: {
 			if (settingsPanel.active)

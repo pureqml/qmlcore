@@ -4,6 +4,11 @@ ListModel {
 	property bool	isBusy: false;
 
 	getEPGForSearchRequest(request): {
+		if (!request)
+			return;
+
+		log("search programs: " + request);
+
 		this.clear();
 		for (var channel in this.epgMap) {
 			for (var i in this.epgMap[channel]) {

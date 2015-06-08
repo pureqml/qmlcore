@@ -7,4 +7,5 @@ Object {
 	property real hueRotate;
 	property real invert;
 	property real saturate;
+	property Shadow shadow : Shadow { }
 }

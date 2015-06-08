@@ -12,7 +12,7 @@ ListView {
 
 		Text {
 			anchors.left: parent.left;
-			anchors.leftMargin: 10;
+			anchors.leftMargin: 20;
 			anchors.verticalCenter: parent.verticalCenter;
 			font.pointSize: 14;
 			text: model.text;

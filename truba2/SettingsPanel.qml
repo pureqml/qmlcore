@@ -8,6 +8,17 @@ Activity {
 	anchors.right: renderer.right;
 	anchors.bottom: parent.bottom;
 
+	MouseArea {
+		anchors.top: renderer.top;
+		anchors.left: renderer.left;
+		anchors.right: settingsShadow.left;
+		anchors.bottom: renderer.bottom;
+		hoverEnabled: parent.active;
+		visible: parent.active;
+
+		onClicked: { this.parent.stop(); }
+	}
+
 	Shadow {
 		id: settingsShadow;
 		active: parent.active;

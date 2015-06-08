@@ -92,9 +92,9 @@ Item {
 
 	CategoriesList {
 		id: categoriesList;
-		anchors.left: parent.left;
+		anchors.left: renderer.left;
 		anchors.top: currentCategory.bottom;
-		anchors.bottom: parent.bottom;
+		anchors.bottom: renderer.bottom;
 
 		onCountChanged: {
 			if (this.count == this.currentIndex + 1 && !channels.count) {

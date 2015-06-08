@@ -120,6 +120,12 @@ Item {
 		delegate: Rectangle {
 			effects.blur: 2;
 			effects.hueRotate: 90;
-			width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; } }
+			width: 100; height: 100; color: activeFocus? "green": "yellow"; Text { anchors.centerIn: parent; color: "white"; text: model.type; }
+		}
+		effects.shadow.x: 5;
+		effects.shadow.y: 5;
+		effects.shadow.color: "red";
+		effects.shadow.spread: 10;
+		effects.shadow.blur: 3;
 	}
 }

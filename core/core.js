@@ -343,6 +343,19 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Shadow.prototype._update = function(name, value) {
+		this.parent._updateStyle()
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+
+	_globals.core.Shadow.prototype._getFilterStyle = function() {
+		var style = this.x + "px " + this.y + "px " + this.blur + "px "
+		if (this.spread > 0)
+			style += this.spread + "px "
+		style += new Color(this.color).get()
+		return style
+	}
+
 	_globals.core.Effects.prototype._addStyle = function(property, style, units) {
 		var value = this[property]
 		if (!value)
@@ -363,11 +376,19 @@ exports._setup = function() {
 		return style
 	}
 
-	_globals.core.Effects.prototype._update = function(name, value) {
+	_globals.core.Effects.prototype._updateStyle = function() {
 		var style = this._getFilterStyle()
-		if (this.parent.element)
-			this.parent.element.css('-webkit-filter', style)
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		var el = this.parent.element
+		if (el) {
+			el.css('-webkit-filter', style)
+			if (this.shadow)
+				el.css('box-shadow', this.shadow._getFilterStyle())
+		}
+	}
+
+	_globals.core.Effects.prototype._update = function(name, value) {
+		this._updateStyle()
+		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 
 	_globals.core.Item.prototype.addChild = function(child) {

@@ -365,7 +365,8 @@ exports._setup = function() {
 
 	_globals.core.Effects.prototype._update = function(name, value) {
 		var style = this._getFilterStyle()
-		this.parent.element.css('-webkit-filter', style)
+		if (this.parent.element)
+			this.parent.element.css('-webkit-filter', style)
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 

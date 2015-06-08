@@ -25,6 +25,9 @@ ListModel {
 			});
 		}
 
+		if (!this.protocol)
+			return;
+
 		var self = this;
 		this.protocol.getCurrentPrograms(function(programs) {
 			for (var i in programs) {

@@ -68,60 +68,127 @@ Activity {
 
 			onClicked: {
 				foundPrograms.model.getEPGForSearchRequest(searchInput.text);
+				var list = this._get("categoriesModel").findChannels(searchInput.text);
+				if (list.length)
+					foundChannelsList.model.setList(list);
 			}
 		}
 
-		ListView {
-			id: foundPrograms;
+		Column {
 			anchors.top: searchInput.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
-			anchors.margins: 10;
-			clip: true;
-			spacing: 10;
-			model: epgModel;
-			delegate: Item {
-				height: foundContent.height;
-				width: parent.width;
-				clip: true;
+			anchors.topMargin: 21;
 
-				Column {
-					id: foundContent;
-					width: parent.width;
-					anchors.verticalCenter: parent.verticalCenter;
+			Column {
+				id: searchChannelsItem;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
 
-					Text {
-						anchors.left: parent.left;
-						anchors.leftMargin: 5;
-						text: model.channel;
-						font.pointSize: 16;
-						font.bold: true;
-					}
+				Text {
+					anchors.left: parent.left;
+					anchors.leftMargin: 10;
+					font.pointSize: 16;
+					color: colorTheme.textColor;
+					text: "Каналы";
+				}
 
-					Item {
-						height: startProgramText.paintedHeight;
-						width: parent.width;
+				ListView {
+					id: foundChannelsList;
+					height: 100;
+					anchors.left: parent.left;
+					anchors.right: parent.right;
+					orientation: ListView.Horizontal;
+					delegate: Item {
+						height: parent.height;
+						width: height;
 
-						Text {
-							id: foundProgramStart;
-							anchors.left: parent.left;
-							anchors.verticalCenter: parent.verticalCenter;
-							anchors.margins: 5;
-							color: colorTheme.textColor;
-							text: model.start;
-							font.pointSize: 12;
-							font.bold: true;
+						Rectangle {
+							anchors.fill: parent;
+							anchors.margins: 10;
+							color: model.color;
 						}
 
-						Text {
-							anchors.left: foundProgramStart.right;
-							anchors.right: parent.right;
+						Image {
+							id: foundChannelDelegate;
+							property int maxWidth: 50;
+							anchors.centerIn: parent;
+							width: paintedWidth >= maxWidth ? maxWidth : paintedWidth;
+							height: paintedHeight * (width / paintedWidth);
+							source: model.source;
+						}
+					}
+					model: ChannelsModel {}
+				}
+			}
+
+			Column {
+				id: searchProgramItem;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+
+				Text {
+					id: searchProgramsLabel;
+					anchors.left: parent.left;
+					anchors.leftMargin: 10;
+					font.pointSize: 16;
+					color: colorTheme.textColor;
+					text: "Программы";
+				}
+
+				ListView {
+					id: foundPrograms;
+					height: parent.parent.height - searchProgramsLabel.paintedHeight - searchChannelsItem.height - 20;
+					anchors.left: parent.left;
+					anchors.right: parent.right;
+					anchors.margins: 10;
+					clip: true;
+					spacing: 10;
+					model: epgModel;
+					delegate: Item {
+						height: foundContent.height;
+						width: parent.width;
+						clip: true;
+
+						Column {
+							id: foundContent;
+							width: parent.width;
 							anchors.verticalCenter: parent.verticalCenter;
-							anchors.margins: 5;
-							color: colorTheme.textColor;
-							text: model.title;
-							font.pointSize: 12;
+
+							Text {
+								anchors.left: parent.left;
+								anchors.leftMargin: 5;
+								text: model.channel;
+								font.pointSize: 16;
+								font.bold: true;
+							}
+
+							Item {
+								height: startProgramText.paintedHeight;
+								width: parent.width;
+
+								Text {
+									id: foundProgramStart;
+									anchors.left: parent.left;
+									anchors.verticalCenter: parent.verticalCenter;
+									anchors.margins: 5;
+									color: colorTheme.textColor;
+									text: model.start;
+									font.pointSize: 12;
+									font.bold: true;
+								}
+
+								Text {
+									anchors.left: foundProgramStart.right;
+									anchors.right: parent.right;
+									anchors.verticalCenter: parent.verticalCenter;
+									anchors.margins: 5;
+									color: colorTheme.textColor;
+									text: model.title;
+									font.pointSize: 12;
+								}
+							}
 						}
 					}
 				}

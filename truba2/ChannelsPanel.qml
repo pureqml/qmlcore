@@ -55,13 +55,26 @@ Item {
 		onSelectPressed:		{ this.switchToCurrent(); }
 		onCurrentIndexChanged:	{ epgpanel.hide(); }
 
-		onDetailsRequest: {
-			epgpanel.x = this.getCurrentDelegateX();
-			epgpanel.y = this.getCurrentDelegateY() - 20;
+		onContentYChanged: {
 			if (epgpanel.visible)
+				epgpanel.y = this.getCurrentDelegateY() - 70;
+		}
+
+		onDetailsRequest: {
+			if (epgpanel.visible) {
 				epgpanel.hide();
-			else
+			} else {
+				epgpanel.x = this.getCurrentDelegateX() + 10;
+
+				var a = epgpanel.getAnimation('y')
+				if (a)
+					a.disable()
+				epgpanel.y = this.getCurrentDelegateY() - 70;
+				if (a)
+					a.enable()
+
 				epgpanel.show(this.model.get(this.currentIndex));
+			}
 		}
 
 		switchToCurrent: {
@@ -75,12 +88,22 @@ Item {
 		}
 	}
 
-	EPGPanel {
-		id: epgpanel;
-		width: parent.width / 3;
-		height: parent.height / 2;
+	Item {
+		anchors.top: channels.top;
+		anchors.bottom: channels.bottom;
+		anchors.left: renderer.left;
+		anchors.right: renderer.right;
+		clip: true;
 
-		onProgramSelected(program): { channelsPanelProto.programSelected(program); }
+		EPGPanel {
+			id: epgpanel;
+			width: channels.width / 3;
+			height: channels.height / 2;
+
+			onProgramSelected(program): { channelsPanelProto.programSelected(program); }
+
+			Behavior on y { Animation { duration: 300; } }
+		}
 	}
 
 	Shadow {

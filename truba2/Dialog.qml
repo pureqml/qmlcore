@@ -25,7 +25,7 @@ Activity {
 		color: colorTheme.backgroundColor;
 		anchors.centerIn: parent;
 		effects.shadow.blur: 20;
-		effects.shadow.spread: 1;
+		effects.shadow.spread: 2;
 
 		Text {
 			anchors.top: parent.top;

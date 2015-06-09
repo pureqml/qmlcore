@@ -10,6 +10,8 @@ Item {
 		visible: epgModel.count && parent.visible;
 		border.width: 1;
 		border.color: colorTheme.activeBackgroundColor;
+		effects.shadow.blur: 20;
+		effects.shadow.spread: 2;
 		clip: true;
 		
 		ListView {

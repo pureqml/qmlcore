@@ -348,6 +348,10 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Shadow.prototype._empty = function() {
+		return !this.x && !this.y && !this.blur && !this.spread;
+	}
+
 	_globals.core.Shadow.prototype._getFilterStyle = function() {
 		var style = this.x + "px " + this.y + "px " + this.blur + "px "
 		if (this.spread > 0)
@@ -381,7 +385,7 @@ exports._setup = function() {
 		var el = this.parent.element
 		if (el) {
 			el.css('-webkit-filter', style)
-			if (this.shadow)
+			if (this.shadow && !this.shadow._empty())
 				el.css('box-shadow', this.shadow._getFilterStyle())
 		}
 	}

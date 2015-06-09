@@ -245,5 +245,12 @@ Activity {
 		}
 	}
 
+	onActiveChanged: {
+		if (this.active) {
+			foundPrograms.model.clear();
+			foundChannelsList.model.clear();
+		}
+	}
+
 	Behavior on width { Animation { duration: 300; } }
 }

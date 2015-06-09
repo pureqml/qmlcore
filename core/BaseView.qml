@@ -160,6 +160,15 @@ Item {
 			var iw = itemBox[2], ih = itemBox[3]
 
 			if (horizontal) {
+				if (this.parent.contentX <= 0 && dp > 0) {
+					this.parent.contentX = 0;
+					return;
+				}
+				if (this.parent.contentX >= (this.parent.contentWidth - this.parent.width) && dp < 0) {
+				 	this.parent.contentX = this.parent.contentWidth - this.parent.width;
+				 	return;
+				}
+
 				if (this.parent.pageScrolling) {
 					this.parent.contentX += Math.round(-dp) * this.parent.width;
 				}
@@ -168,25 +177,22 @@ Item {
 				}
 			}
 			else {
+				if (this.parent.contentY <= 0 && dp > 0) {
+					this.parent.contentY = 0;
+					return;
+				}
+				if (this.parent.contentY >= (this.parent.contentHeight - this.parent.height) && dp < 0) {
+//				 	this.parent.contentY = this.parent.contentHeight - this.parent.height;
+				 	return;
+				}
+
 				if (this.parent.pageScrolling) {
 					this.parent.contentY += Math.round(-dp) * this.parent.height;
 				}
 				else {
 					this.parent.contentY += Math.round(-dp) * ih;
 				}
-
-				if (this.parent.contentY < 0){
-					this.parent.contentY = 0;
-				}
-				else {
-					if (this.parent.contentY > (this.parent.contentHeight - this.parent.height))
-					 	this.parent.contentY = this.parent.contentHeight - this.parent.height;
-				}
 			}
-
-
-
-//			this.parent.currentIndex -= Math.round(dp)
 		}
 
 		onClicked: {

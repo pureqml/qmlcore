@@ -51,7 +51,7 @@ Item {
 		anchors.topMargin: 10 + parent.spacing;
 		dragEnabled: !parent.parent.hasAnyActiveChild;
 
-		onClicked:				{ this.switchToCurrent(); }
+		onClicked:				{ if (this.hoverEnabled) this.switchToCurrent(); }
 		onSelectPressed:		{ this.switchToCurrent(); }
 		onCurrentIndexChanged:	{ epgpanel.hide(); }
 

@@ -70,6 +70,16 @@ MouseArea {
 		clip: true;
 	}
 
+	onMouseXChanged: { this.lockParent(); }
+	onMouseYChanged: { this.lockParent(); }
+
+	lockParent: {
+		var x = this.mouseX;
+		var y = this.mouseY;
+		this.parent.hoverEnabled = !(this.mouseX >= detailsIcon.x && this.mouseX <= detailsIcon.x + detailsIcon.width &&
+			this.mouseY >= detailsIcon.y && this.mouseY <= detailsIcon.y + detailsIcon.height);
+	}
+
 	onClicked: {
 		var x = this.mouseX;
 		var y = this.mouseY;

@@ -1,5 +1,5 @@
 Item {
-	property Color backgroundColor:			"#FBFBFB";
+	property Color backgroundColor:			"#fff";
 	property Color activeBackgroundColor:	"#b0bec5";
 	property Color disabledBackgroundColor:	"#FBFBFB";
 

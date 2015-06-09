@@ -19,17 +19,13 @@ Activity {
 	}
 
 	Rectangle {
-		anchors.fill: parent;
-		color: "#000";
-		opacity: 0.5;
-	}
-
-	Rectangle {
 		id: innerPanel;
 		width: parent.innerWidth;
 		height: parent.innerHeight;
 		color: colorTheme.backgroundColor;
 		anchors.centerIn: parent;
+		effects.shadow.blur: 20;
+		effects.shadow.spread: 1;
 
 		Text {
 			anchors.top: parent.top;

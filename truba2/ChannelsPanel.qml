@@ -92,7 +92,8 @@ Item {
 		anchors.top: channels.top;
 		anchors.bottom: channels.bottom;
 		anchors.left: renderer.left;
-		anchors.right: renderer.right;
+		anchors.right: channels.right;
+		anchors.rightMargni: 20;
 		clip: true;
 
 		EPGPanel {

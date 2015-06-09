@@ -23,9 +23,11 @@ Activity {
 		width: parent.innerWidth;
 		height: parent.innerHeight;
 		color: colorTheme.backgroundColor;
+		radius: 1;
 		anchors.centerIn: parent;
-		effects.shadow.blur: 20;
-		effects.shadow.spread: 2;
+		effects.shadow.blur: 15;
+		effects.shadow.spread: 1;
+		effects.shadow.color: "#0005";
 
 		Text {
 			anchors.top: parent.top;

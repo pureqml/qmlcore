@@ -26,12 +26,14 @@ ListModel {
 				if (!list[i].genres || list[i].genres.length == 0) {
 					if (!map[defaultGenre])
 						map[defaultGenre] = [];
+					list[i].genre = defaultGenre;
 					map[defaultGenre].push(list[i]);
 				} else {
 					for (var j in list[i].genres) {
 						var genre = list[i].genres[j];
 						if (!map[genre])
 							map[genre] = [];
+						list[i].genre = genre;
 						map[genre].push(list[i]);
 					}
 				}

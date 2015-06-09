@@ -11,6 +11,7 @@ ListModel {
 			var channelColor = list[i].icon ? list[i].icon.color : this.getColor();
 			this.append({
 				id:	list[i].id,
+				genre:	list[i].genre,
 				text:	list[i].title,
 				url:	list[i].url,
 				lcn:	list[i].lcn,

@@ -1,5 +1,5 @@
 Activity {
-	width: active ? 340 : 0;
+	width: active ? 400 : 0;
 	anchors.top: parent.top;
 	anchors.right: renderer.right;
 	anchors.bottom: parent.bottom;
@@ -43,14 +43,7 @@ Activity {
 			text: "Поиск";
 		}
 
-		Rectangle {
-			height: 1;
-			anchors.top: searchPanelTitle.bottom;
-			anchors.left: parent.left;
-			anchors.right: parent.right;
-			anchors.margins: 10;
-			color: "#ccc";
-		}
+		SectionLine { anchors.top: searchPanelTitle.bottom; }
 
 		TextInput {
 			id: searchInput;
@@ -68,11 +61,17 @@ Activity {
 
 			onClicked: {
 				foundPrograms.model.getEPGForSearchRequest(searchInput.text);
+
+				foundChannelsList.model.clear();
 				var list = this._get("categoriesModel").findChannels(searchInput.text);
-				if (list.length)
+				if (list.length) {
 					foundChannelsList.model.setList(list);
+					foundChannelsList.contentX = 0;
+				}
 			}
 		}
+
+		SectionLine { anchors.top: searchChannelLabel.bottom; }
 
 		Column {
 			anchors.top: searchInput.bottom;
@@ -80,18 +79,21 @@ Activity {
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
 			anchors.topMargin: 21;
+			spacing: 20;
 
 			Column {
 				id: searchChannelsItem;
 				anchors.left: parent.left;
 				anchors.right: parent.right;
+				spacing: 20;
 
 				Text {
+					id: searchChannelLabel;
 					anchors.left: parent.left;
 					anchors.leftMargin: 10;
 					font.pointSize: 16;
 					color: colorTheme.textColor;
-					text: "Каналы";
+					text: "Каналы" + (foundChannelsList.count ? " (" + foundChannelsList.count + ")" : "");
 				}
 
 				ListView {
@@ -99,34 +101,81 @@ Activity {
 					height: 100;
 					anchors.left: parent.left;
 					anchors.right: parent.right;
+					spacing: 10;
 					orientation: ListView.Horizontal;
+					contentFollowsCurrentItem: false;
+					model: ChannelsModel {}
 					delegate: Item {
 						height: parent.height;
-						width: height;
+						width: (foundChannelHeader.width > foundChannelContent.width ? foundChannelHeader.width : foundChannelContent.width) + 10;
+						clip: true;
 
-						Rectangle {
-							anchors.fill: parent;
-							anchors.margins: 10;
-							color: model.color;
+						Row {
+							id: foundChannelHeader;
+							anchors.left: parent.left;
+							anchors.top: parent.top;
+							anchors.leftMargin: 5;
+							spacing: 5;
+
+							Image {
+								anchors.left: parent.left;
+								anchors.verticalCenter: foundChannelGenreText.verticalCenter;
+								width: foundChannelGenreText.paintedHeight;
+								height: width - 5;
+								source: "res/list.png";
+							}
+
+							Text {
+								id: foundChannelGenreText;
+								text: model.genre;
+								font.bold: true;
+								color: colorTheme.textColor;
+								font.pointSize: 12;
+							}
 						}
 
-						Image {
-							id: foundChannelDelegate;
-							property int maxWidth: 50;
-							anchors.centerIn: parent;
-							width: paintedWidth >= maxWidth ? maxWidth : paintedWidth;
-							height: paintedHeight * (width / paintedWidth);
-							source: model.source;
+						Row {
+							id: foundChannelContent;
+							anchors.top: foundChannelGenreText.bottom;
+							anchors.left: parent.left;
+							anchors.leftMargin: 5;
+							anchors.bottom: parent.bottom;
+							spacing: 5;
+
+							Rectangle {
+								anchors.top: parent.top;
+								anchors.left: parent.left;
+								anchors.bottom: parent.bottom;
+								width: height;
+								color: model.color;
+
+								Image {
+									property int maxWidth: 50;
+									anchors.centerIn: parent;
+									width: paintedWidth >= maxWidth ? maxWidth : paintedWidth;
+									height: paintedHeight * (width / paintedWidth);
+									source: model.source;
+								}
+							}
+
+							Text {
+								anchors.right: parent.right;
+								anchors.verticalCenter: parent.verticalCenter;
+								text: model.text;
+								color: colorTheme.textColor;
+								font.pointSize: 14;
+							}
 						}
 					}
-					model: ChannelsModel {}
 				}
 			}
 
 			Column {
 				id: searchProgramItem;
 				anchors.left: parent.left;
+				spacing: 10;
 				anchors.right: parent.right;
+				spacing: 10;
 
 				Text {
 					id: searchProgramsLabel;
@@ -134,7 +183,7 @@ Activity {
 					anchors.leftMargin: 10;
 					font.pointSize: 16;
 					color: colorTheme.textColor;
-					text: "Программы";
+					text: "Программы" + (foundPrograms.count ? " (" + foundPrograms.count + ")" : "");
 				}
 
 				ListView {

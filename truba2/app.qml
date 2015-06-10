@@ -97,6 +97,8 @@ Activity {
 		id: controls;
 		anchors.fill: videoPlayer;
 		visible: videoPlayer.visible;
+		showMute: videoPlayer.volume <= 0.05;
+		volume: videoPlayer.volume;
 
 		onFullscreenToggled:	{ renderer.fullscreen = !renderer.fullscreen; }
 		onVolumeUpdated(value):	{ videoPlayer.volume = value; }

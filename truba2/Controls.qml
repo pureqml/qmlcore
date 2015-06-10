@@ -4,6 +4,7 @@ Item {
 	property bool showFullscreenButton:	true;
 	property bool showVolumeButton:		true;
 	property bool showChannelControl:	true;
+	property bool showMute:				false;
 	property int spacing: width / 24;
 	property float volume;
 
@@ -20,6 +21,13 @@ Item {
 			if (this.hoverEnabled)
 				this.parent.show();
 		}
+	}
+
+	MuteIcon {
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		anchors.margins: 20;
+		visible: parent.showMute;
 	}
 
 	RoundButton {

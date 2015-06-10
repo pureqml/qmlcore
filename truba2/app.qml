@@ -128,6 +128,14 @@ Activity {
 		onProgramSelected(program):	{ programInfo.setProgram(program); }
 	}
 
+	BetaLink {
+		anchors.top: parent.top;
+		anchors.left: channelsPanel.currentCategory.right;
+		anchors.right: searchButton.left;
+		anchors.rightMargin: 100;
+		anchors.leftMargin: 100;
+	}
+
 	Text {
 		id: hintText;
 		anchors.top: parent.top;

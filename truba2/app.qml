@@ -130,9 +130,15 @@ Activity {
 
 	Text {
 		id: hintText;
-		anchors.centerIn: parent;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		height: renderer.height;
+		width: renderer.width;
+		verticalAlignment: Text.AlignVCenter;
+		horizontalAlignment: Text.AlignHCenter;
 		color: colorTheme.disabledTextColor;
-		text: !categoriesModel.count ? "Нет каналов" : (!choosenProvider.choosed ? "Не указан провайдер" : "");
+		wrap: true;
+		text: categoriesModel.count ? (!choosenProvider.choosed ? "Не указан провайдер" : "") : "Произошло что-то странное, похоже каналы выбранного провайдера вам недоступны, если вы все же к нему подключены и считаете, что ошибка произошла по ошибке, пожалуйста, напишите нам в форме обратной связи, мы все исправим.";
 		font.pointSize: 32;
 		visible: !choosenProvider.choosed || !categoriesModel.count;
 	}

@@ -74,16 +74,19 @@ MouseArea {
 	onMouseYChanged: { this.lockParent(); }
 
 	lockParent: {
+		if (!detailsIcon.visible)
+			return;
+
 		var x = this.mouseX;
 		var y = this.mouseY;
-		this.parent.hoverEnabled = !(this.mouseX >= detailsIcon.x && this.mouseX <= detailsIcon.x + detailsIcon.width &&
+		this.parent.hoverEnabled = !(this.mouseX <= detailsIcon.x + detailsIcon.width &&
 			this.mouseY >= detailsIcon.y && this.mouseY <= detailsIcon.y + detailsIcon.height);
 	}
 
 	onClicked: {
 		var x = this.mouseX;
 		var y = this.mouseY;
-		if (this.mouseX >= detailsIcon.x && this.mouseX <= detailsIcon.x + detailsIcon.width &&
+		if (this.mouseX <= detailsIcon.x + detailsIcon.width &&
 			this.mouseY >= detailsIcon.y && this.mouseY <= detailsIcon.y + detailsIcon.height)
 			this.parent.detailsRequest();
 	}

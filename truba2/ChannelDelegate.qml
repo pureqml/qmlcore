@@ -80,14 +80,14 @@ MouseArea {
 		var x = this.mouseX;
 		var y = this.mouseY;
 		this.parent.hoverEnabled = !(this.mouseX <= detailsIcon.x + detailsIcon.width &&
-			this.mouseY >= detailsIcon.y && this.mouseY <= detailsIcon.y + detailsIcon.height);
+			this.mouseY >= channelIconBackground.y + channelIconBackground.height && this.mouseY <= startProgramText.y + startProgramText.height);
 	}
 
 	onClicked: {
 		var x = this.mouseX;
 		var y = this.mouseY;
 		if (this.mouseX <= detailsIcon.x + detailsIcon.width &&
-			this.mouseY >= detailsIcon.y && this.mouseY <= detailsIcon.y + detailsIcon.height)
+			this.mouseY >= channelIconBackground.y + channelIconBackground.height && this.mouseY <= startProgramText.y + startProgramText.height)
 			this.parent.detailsRequest();
 	}
 }

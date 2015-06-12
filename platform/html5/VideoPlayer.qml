@@ -8,17 +8,29 @@ Item {
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
 
+	getSourceUrl: {
+		if (Array.isArray(this.source)) {
+			var httpSource
+			this.source.forEach(function(value) { if (value.startsWith('http')) httpSource = value })
+			if (httpSource)
+				return httpSource
+			else
+				return this.source[0]
+		}
+		return this.source
+	}
+
 	play: {
 		if (!this.source)
 			return
 
-		console.log("play", this.source)
+		log("play", this.source)
 		if (this.flash) {
 			var player = this.getObject('videoPlayer')
 			if (!player || !player.playerLoad) //flash player is not ready yet
 				return
 
-			player.playerLoad(this.source)
+			player.playerLoad(this.getSourceUrl())
 			player.playerPlay(-1)
 		}
 		else
@@ -33,9 +45,10 @@ Item {
 	}
 
 	onSourceChanged: {
-		log("source changed to", this.source)
+		var source = this.source
+		log("source changed to", source)
 		if (!this.flash) {
-			this._player.attr('src', this.source)
+			this._player.attr('src', this.getSourceUrl())
 		}
 		if (this.autoPlay)
 			this.play()

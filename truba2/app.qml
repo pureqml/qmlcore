@@ -74,6 +74,15 @@ Activity {
 		anchors.right: renderer.right;
 	}
 
+	BetaLink {
+		anchors.top: parent.top;
+		anchors.left: channelsPanel.currentCategory.right;
+		anchors.right: searchButton.left;
+		anchors.rightMargin: 100;
+		anchors.leftMargin: 100;
+		visible: !renderer.fullscreen;
+	}
+
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.top: mainWindow.top;
@@ -126,14 +135,6 @@ Activity {
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		onProgramSelected(program):	{ programInfo.setProgram(program); }
-	}
-
-	BetaLink {
-		anchors.top: parent.top;
-		anchors.left: channelsPanel.currentCategory.right;
-		anchors.right: searchButton.left;
-		anchors.rightMargin: 100;
-		anchors.leftMargin: 100;
 	}
 
 	Text {

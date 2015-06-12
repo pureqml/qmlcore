@@ -10,6 +10,8 @@ Item {
 	property bool draggingHorizontally;
 	property bool draggingVertically;
 
+	clip: true;
+
 	//TODO: Implement.
 	//property bool atXBeginning;
 	//property bool atXEnd;
@@ -58,7 +60,7 @@ Item {
 
 			var dx = this.mouseX - this._x
 			this._x = this.mouseX
-			this.parent.move(-dx, 0);
+			this.parent.move(dx, 0);
 		}
 
 		onMouseYChanged: {
@@ -67,7 +69,7 @@ Item {
 
 			var dy = this.mouseY - this._y
 			this._y = this.mouseY
-			this.parent.move(0, -dy);
+			this.parent.move(0, dy);
 		}
 
 		onPressedChanged: {
@@ -80,10 +82,22 @@ Item {
 
 	move(dx, dy): {
 		var x, y
-		x = this.contentX + dx
-		this.contentX = x
-		y = this.contentY + dy
-		this.contentY = y
+		if (this.contentWidth > this.width) {
+			x = this.contentX + dx
+			if (x > 0)
+				x = 0
+			else if (x < this.width - this.contentWidth)
+				x = this.width - this.contentWidth
+			this.contentX = x
+		}
+		if (this.contentHeight > this.height) {
+			y = this.contentY + dy
+			if (y > 0)
+				y = 0
+			else if (y < this.height - this.contentHeight)
+				y = this.height - this.contentHeight
+			this.contentY = y
+		}
 	}
 
 	onCompleted: {

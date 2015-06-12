@@ -1,10 +1,10 @@
 Item {
-	property Item contentItem: Item {}
+	property Item contentItem;
 
-	property int contentHeight: contentItem.height;
-	property int contentWidth: contentItem.width;
-	property alias contentX: contentItem.x;
-	property alias contentY: contentItem.y;
+	property alias contentHeight: content.height;
+	property alias contentWidth: content.width;
+	property alias contentX: content.x;
+	property alias contentY: content.y;
 
 	property bool dragging;
 	property bool draggingHorizontally;
@@ -42,6 +42,11 @@ Item {
 	//property visibleArea.yPosition : real
 	//property visibleArea.heightRatio : real
 
+	content: Item {
+		Behavior on x	{ Animation { duration: 300; } }
+		Behavior on y	{ Animation { duration: 300; } }
+	}
+
 	MouseArea {
 		anchors.fill: parent;
 		hoverEnabled: parent.dragging;
@@ -61,28 +66,29 @@ Item {
 				return
 
 			var dy = this.mouseY - this._y
-			this._y = this.mouseX
+			this._y = this.mouseY
 			this.parent.move(0, -dy);
+		}
+
+		onPressedChanged: {
+			if (!this.pressed)
+				return
+			this._x = this.mouseX
+			this._y = this.mouseY
 		}
 	}
 
 	move(dx, dy): {
 		var x, y
-		if (this.contentWidth > this.width) {
-			x = this.contentX + dx
-			if (x < 0)
-				x = 0
-			else if (x > this.contentWidth - this.width)
-				x = this.contentWidth - this.width
-			this.contentX = x
-		}
-		if (this.contentHeight > this.height) {
-			y = this.contentY + dy
-			if (y < 0)
-				y = 0
-			else if (y > this.contentHeight - this.height)
-				y = this.contentHeight - this.height
-			this.contentY = y
-		}
+		x = this.contentX + dx
+		this.contentX = x
+		y = this.contentY + dy
+		this.contentY = y
+	}
+
+	onCompleted: {
+		this.content = this.contentItem;
+		this.content.x = 0;
+		this.content.y = 0;
 	}
 }

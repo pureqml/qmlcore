@@ -40,7 +40,6 @@ MouseArea {
 		id: detailsIcon;
 		anchors.verticalCenter: startProgramText.verticalCenter;
 		anchors.right: parent.right;
-		anchors.rightMargin: 10;
 		source: "res/details.png";
 		visible: startProgramText.text != "" && parent.containsMouse;
 		opacity: parent.activeFocus ? 1.0 : 0.5;
@@ -63,7 +62,9 @@ MouseArea {
 		anchors.left: startProgramText.right;
 		anchors.right: detailsIcon.left;
 		anchors.top: channelIconBackground.bottom;
-		anchors.margins: 5;
+		anchors.leftMargin: 5;
+		anchors.rightMargin: -10;
+		anchors.topMargin: 5;
 		color: colorTheme.textColor;
 		text: model.program.title;
 		font.pointSize: 12;

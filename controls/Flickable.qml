@@ -6,6 +6,7 @@ Item {
 	property alias contentX: content.x;
 	property alias contentY: content.y;
 
+	property bool pageScrolling: true;
 	property bool dragging;
 	property bool draggingHorizontally;
 	property bool draggingVertically;
@@ -77,6 +78,31 @@ Item {
 				return
 			this._x = this.mouseX
 			this._y = this.mouseY
+		}
+
+		onVerticalSwiped(event): {
+			if (!event || !this.parent.draggingVertically)
+				return
+
+			var a = this.parent.getAnimation('contentY')
+			if (a)
+				a.disable()
+			this.parent.move(0, event.dy)
+			if (a)
+				a.enable()
+		}
+
+		onWheelEvent(dp): {
+			if (this.parent.contentY <= 0 && dp > 0) {
+				this.parent.contentY = 0;
+				return;
+			}
+			if (this.parent.pageScrolling) {
+				this.parent.contentY += Math.round(-dp) * this.parent.height;
+			} else {
+				var dy = this.parent.contentHeight / 10
+				this.parent.contentY += Math.round(-dp) * dy;
+			}
 		}
 	}
 

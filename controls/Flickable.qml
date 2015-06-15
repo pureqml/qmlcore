@@ -46,8 +46,8 @@ Item {
 	//property visibleArea.heightRatio : real
 
 	content: Item {
-		Behavior on x	{ Animation { duration: 300; } }
-		Behavior on y	{ Animation { duration: 300; } }
+		Behavior on x { Animation { duration: 300; } }
+		Behavior on y { Animation { duration: 300; } }
 	}
 
 	MouseArea {
@@ -93,14 +93,10 @@ Item {
 		}
 
 		onWheelEvent(dp): {
-			var dx = 0
-			var dy = 0
-
-			if (this.parent.draggingHorizontally || this.parent.dragging)
-				dx = this.parent.pageScrolling ? Math.round(dp) * this.parent.height : Math.round(dp) * this.parent.contentWidth / 10
-			if (this.parent.draggingVertically || this.parent.dragging)
-				dy = this.parent.pageScrolling ? Math.round(dp) * this.parent.height : Math.round(dp) * this.parent.contentHeight / 10
-			this.parent.move(dx, dy)
+			if (this.parent.draggingVertically || this.parent.dragging) {
+				var dy = this.parent.pageScrolling ? Math.round(dp) * this.parent.height : Math.round(dp) * this.parent.contentHeight / 10
+				this.parent.move(0, dy)
+			}
 		}
 	}
 

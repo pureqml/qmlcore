@@ -18,7 +18,7 @@ Item {
 		
 		ListView {
 			id: programsList;
-			height: contentHeight;
+			height: 40 * count;
 			anchors.top: parent.top;
 			anchors.left: parent.left;
 			anchors.right: parent.right;

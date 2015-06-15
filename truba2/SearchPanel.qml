@@ -94,6 +94,16 @@ Activity {
 		}
 	}
 
+	TopMenuButton {
+		anchors.top: parent.top;
+		anchors.right: parent.right;
+		anchors.rightMargin: 10;
+		visible: parent.active;
+		icon: "res/close.png";
+
+		onClicked: { this.parent.stop(); }
+	}
+
 	startSearch(searchRequest): {
 		if (!searchRequest) {
 			log("Empty search request.");

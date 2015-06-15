@@ -153,6 +153,15 @@ Activity {
 		visible: !choosenProvider.choosed || !categoriesModel.count;
 	}
 
+	SearchPanel { id: searchPanel; }
+
+	TextInput {
+		id: searchInput;
+		anchors.right: searchButton.left;
+		anchors.rightMargin: 20;
+		anchors.verticalCenter: settingButton.verticalCenter;
+	}
+
 	SettingsPanel {
 		id: settingsPanel;
 		active: !choosenProvider.choosed;
@@ -165,15 +174,6 @@ Activity {
 
 		onAddDialogCalled:		{ addProviderDialog.start(); }
 		onFeedBackDialogCalled:	{ feedBackDialog.start(); }
-	}
-
-	SearchPanel { id: searchPanel; }
-
-	TextInput {
-		id: searchInput;
-		anchors.right: searchButton.left;
-		anchors.rightMargin: 20;
-		anchors.verticalCenter: settingButton.verticalCenter;
 	}
 
 	TopMenuButton {

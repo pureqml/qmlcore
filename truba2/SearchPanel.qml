@@ -32,48 +32,15 @@ Activity {
 		color: colorTheme.backgroundColor;
 		clip: true;
 
-		Text {
-			id: searchPanelTitle;
-			width: parent.width;
+		SectionLine {
+			id: searchPanelSectionLine;
 			anchors.top: parent.top;
-			anchors.left: parent.left;
-			anchors.margins: 10;
-			font.pointSize: 24;
-			color: colorTheme.textColor;
-			text: "Поиск";
-		}
-
-		SectionLine { anchors.top: searchPanelTitle.bottom; }
-
-		TextInput {
-			id: searchInput;
-			anchors.top: searchPanelTitle.bottom;
-			anchors.left: parent.left;
-			anchors.topMargin: 20;
-			anchors.leftMargin: 10;
-		}
-
-		Button {
-			anchors.left: searchInput.right;
-			anchors.top: searchInput.top;
-			innerText.font.pointSize: 10;
-			text: "Поиск";
-
-			onClicked: {
-				this._get("foundPrograms").model.getEPGForSearchRequest(searchInput.text);
-
-				this._get("foundChannelsList").model.clear();
-				var list = this._get("categoriesModel").findChannels(searchInput.text);
-				if (list.length) {
-					this._get("foundChannelsList").model.setList(list);
-					searchContent.contentX = 0;
-				}
-			}
+			anchors.topMargin: 50;
 		}
 
 		Flickable {
 			id: searchContent;
-			anchors.top: searchInput.bottom;
+			anchors.top: searchPanelSectionLine.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
@@ -127,10 +94,23 @@ Activity {
 		}
 	}
 
-	onActiveChanged: {
-		if (this.active) {
-			this._get("foundPrograms").model.clear();
-			this._get("foundChannelsList").model.clear();
+	startSearch(searchRequest): {
+		if (!searchRequest) {
+			log("Empty search request.");
+			return;
+		}
+
+		if (!this.active)
+			this.start();
+
+		this._get("foundPrograms").model.clear();
+		this._get("foundChannelsList").model.clear();
+
+		this._get("foundPrograms").model.getEPGForSearchRequest(searchRequest);
+		var list = this._get("categoriesModel").findChannels(searchRequest);
+		if (list.length) {
+			this._get("foundChannelsList").model.setList(list);
+			searchContent.contentX = 0;
 		}
 	}
 

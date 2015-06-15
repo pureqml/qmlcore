@@ -53,7 +53,6 @@ Item {
 		dragEnabled: !parent.parent.hasAnyActiveChild;
 
 		onClicked:				{ if (this.hoverEnabled) this.switchToCurrent(); }
-		onSelectPressed:		{ this.switchToCurrent(); }
 		onCurrentIndexChanged:	{ epgpanel.hide(); }
 
 		onContentYChanged: {
@@ -145,7 +144,6 @@ Item {
 		}
 
 		onCurrentIndexChanged:	{ epgpanel.hide(); }
-		onSelectPressed:		{ this.updateList(); }
 		onClicked:				{ this.updateList(); }
 	}
 

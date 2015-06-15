@@ -16,6 +16,8 @@ Item {
 	property bool contentFollowsCurrentItem: true;
 	property bool pageScrolling: false;
 
+	property bool pressed: innerMouseArea.pressed;
+
 	property bool trace;
 
 	signal clicked;
@@ -84,6 +86,7 @@ Item {
 	}
 
 	MouseArea {
+		id: innerMouseArea;
 		anchors.fill: parent;
 		hoverEnabled: parent.dragEnabled;
 

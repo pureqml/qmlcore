@@ -84,6 +84,11 @@ MouseArea {
 			this.mouseY >= channelIconBackground.y + channelIconBackground.height && this.mouseY <= startProgramText.y + startProgramText.height);
 	}
 
+	onContainsMouseChanged: {
+		if (!this.containsMouse)
+			this.parent.mouseLeaved = true;
+	}
+
 	onClicked: {
 		var x = this.mouseX;
 		var y = this.mouseY;

@@ -135,6 +135,7 @@ Activity {
 
 		onChannelSwitched(channel): { mainWindow.switchToChannel(channel); }
 		onProgramSelected(program):	{ programInfo.setProgram(program); }
+		onChannelSelected(channel): { programInfo.setChannel(channel); }
 	}
 
 	Text {

@@ -2,6 +2,7 @@ Item {
 	id: channelsPanelProto;
 	signal channelSwitched;
 	signal programSelected;
+	signal channelSelected;
 	property int spacing: 0;
 
 	ChannelsModel {
@@ -74,6 +75,8 @@ Item {
 					a.enable()
 
 				epgpanel.show(this.model.get(this.currentIndex));
+				channelsPanelProto.channelSelected(this.model.get(this.currentIndex));
+				channelsPanelProto.programSelected(this.model.get(this.currentIndex).program);
 			}
 		}
 
@@ -101,7 +104,10 @@ Item {
 			width: channels.width / 3;
 			height: channels.height / 2;
 
-			onProgramSelected(program): { channelsPanelProto.programSelected(program); }
+			onProgramSelected(program): {
+				channelsPanelProto.channelSelected(channels.model.get(channels.currentIndex));
+				channelsPanelProto.programSelected(program);
+			}
 
 			Behavior on y { Animation { duration: 300; } }
 		}

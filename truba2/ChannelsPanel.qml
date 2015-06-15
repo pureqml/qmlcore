@@ -52,7 +52,7 @@ Item {
 		anchors.topMargin: 10 + parent.spacing;
 		dragEnabled: !parent.parent.hasAnyActiveChild;
 
-		onClicked:				{ if (this.hoverEnabled) this.switchToCurrent(); }
+		onChannelSelected:		{ if (this.dragEnabled) this.switchToCurrent(); }
 		onCurrentIndexChanged:	{ epgpanel.hide(); }
 
 		onContentYChanged: {

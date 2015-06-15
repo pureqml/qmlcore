@@ -160,6 +160,8 @@ Activity {
 		anchors.right: searchButton.left;
 		anchors.rightMargin: 20;
 		anchors.verticalCenter: settingButton.verticalCenter;
+
+		onSelectPressed: { searchPanel.startSearch(searchInput.text); }
 	}
 
 	SettingsPanel {

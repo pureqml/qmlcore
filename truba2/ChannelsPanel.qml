@@ -96,7 +96,7 @@ Item {
 		anchors.bottom: channels.bottom;
 		anchors.left: renderer.left;
 		anchors.right: channels.right;
-		anchors.rightMargni: 20;
+		anchors.rightMargin: -40;
 		clip: true;
 
 		EPGPanel {

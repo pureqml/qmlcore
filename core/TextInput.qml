@@ -5,14 +5,11 @@ Item {
 
 	onCompleted: {
 		var input = $('<input type="text">');
+		input.width(this.width);
+		input.height(this.height);
+		var self = this
+		input.keyup(function() { self.text = this.value } );
+		input.keydown(function(event) { if (self._processKey(event)) event.preventDefault();} );
 		this.element.append(input)
-
-		var inputs = document.getElementsByTagName('INPUT');
-		var self = this;
-		var func = function() { 
-			self.text = this.value;
-		}
-
-		inputs[inputs.length - 1].onkeyup = func;
 	}
 }

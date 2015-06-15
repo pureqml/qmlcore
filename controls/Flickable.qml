@@ -6,7 +6,7 @@ Item {
 	property alias contentX: content.x;
 	property alias contentY: content.y;
 
-	property bool pageScrolling: true;
+	property bool pageScrolling: false;
 	property bool dragging;
 	property bool draggingHorizontally;
 	property bool draggingVertically;
@@ -93,16 +93,14 @@ Item {
 		}
 
 		onWheelEvent(dp): {
-			if (this.parent.contentY <= 0 && dp > 0) {
-				this.parent.contentY = 0;
-				return;
-			}
-			if (this.parent.pageScrolling) {
-				this.parent.contentY += Math.round(-dp) * this.parent.height;
-			} else {
-				var dy = this.parent.contentHeight / 10
-				this.parent.contentY += Math.round(-dp) * dy;
-			}
+			var dx = 0
+			var dy = 0
+
+			if (this.parent.draggingHorizontally || this.parent.dragging)
+				dx = this.parent.pageScrolling ? Math.round(dp) * this.parent.height : Math.round(dp) * this.parent.contentWidth / 10
+			if (this.parent.draggingVertically || this.parent.dragging)
+				dy = this.parent.pageScrolling ? Math.round(dp) * this.parent.height : Math.round(dp) * this.parent.contentHeight / 10
+			this.parent.move(dx, dy)
 		}
 	}
 

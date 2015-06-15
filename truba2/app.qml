@@ -77,7 +77,7 @@ Activity {
 	BetaLink {
 		anchors.top: parent.top;
 		anchors.left: channelsPanel.currentCategory.right;
-		anchors.right: searchButton.left;
+		anchors.right: searchInput.left;
 		anchors.rightMargin: 100;
 		anchors.leftMargin: 100;
 		visible: !renderer.fullscreen;
@@ -167,8 +167,13 @@ Activity {
 		onFeedBackDialogCalled:	{ feedBackDialog.start(); }
 	}
 
-	SearchPanel {
-		id: searchPanel;
+	SearchPanel { id: searchPanel; }
+
+	TextInput {
+		id: searchInput;
+		anchors.right: searchButton.left;
+		anchors.rightMargin: 20;
+		anchors.verticalCenter: settingButton.verticalCenter;
 	}
 
 	TopMenuButton {
@@ -179,12 +184,7 @@ Activity {
 		visible: !renderer.fullscreen && (!parent.hasAnyActiveChild || searchPanel.active);
 		icon: "res/search.png";
 
-		onClicked: {
-			if (searchPanel.active)
-				searchPanel.stop();
-			else
-				searchPanel.start();
-		}
+		onClicked: { searchPanel.startSearch(searchInput.text); }
 	}
 
 	TopMenuButton {

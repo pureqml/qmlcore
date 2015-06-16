@@ -13,11 +13,6 @@ GridView {
 	contentFollowsCurrentItem: false;
 	delegate: ChannelDelegate {} 
 
-	onClicked: {
-		if (!this.mouseLeaved)
-			this.channelSelected();
-	}
-
 	onPressedChanged: {
 		if (this.pressed)
 			this.mouseLeaved = false;

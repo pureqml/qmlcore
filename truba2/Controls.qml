@@ -1,12 +1,22 @@
 Item {
+	id: controlsProto;
 	signal fullscreenToggled;
 	signal volumeUpdated;
+	signal pauseActivated;
+	signal playActivated;
 	property bool showFullscreenButton:	true;
 	property bool showVolumeButton:		true;
 	property bool showChannelControl:	true;
 	property bool showMute:				false;
+	property bool paused:				false;
 	property int spacing: width / 24;
 	property float volume;
+
+	Image {
+		anchors.centerIn: parent;
+		source: "res/pause.png";
+		visible: parent.paused;
+	}
 
 	MouseArea {
 		anchors.fill: parent;
@@ -20,6 +30,13 @@ Item {
 		onMouseYChanged: {
 			if (this.hoverEnabled)
 				this.parent.show();
+		}
+
+		onClicked: {
+			if (this.parent.paused)
+				controlsProto.playActivated()
+			else
+				controlsProto.pauseActivated()
 		}
 	}
 

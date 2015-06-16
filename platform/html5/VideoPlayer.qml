@@ -4,6 +4,7 @@ Item {
 
 	property bool	flash : true;
 	property bool	ready : false;
+	property bool	paused: false;
 	property float	volume: 1.0;
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
@@ -114,8 +115,10 @@ Item {
 		repeat: true;
 		running: true;
 
-		onTriggered: { this.parent.ready = this.parent._player.get(0).readyState ||
-			this.parent.flash; }	//TODO: temporary fix.
+		onTriggered: {
+			this.parent.ready = this.parent._player.get(0).readyState || this.parent.flash;	//TODO: temporary fix.
+			this.parent.paused = this.parent.ready && this.parent._player.get(0).paused;
+		}
 	}
 
 	Timer {
@@ -145,7 +148,7 @@ Item {
 			if (document.embeds && document.embeds[name])
 				return document.embeds[name];
 		} else
-			return document.getElementById(name);
+			return document.getElementById(name)
 	}
 
 	applyVolume: {
@@ -154,7 +157,7 @@ Item {
 		else if (this.volume < 0.0)
 			this.volume = 0.0;
 
-		volumeStorage.value = this.volume;
+		volumeStorage.value = this.volume
 
 		if (this.flash) {
 			var player = this.getObject('videoPlayer')
@@ -162,7 +165,16 @@ Item {
 				return
 			player.playerVolume(100 * this.volume)
 		} else if (this._player) {
-			this._player.get(0).volume = this.volume;
+			this._player.get(0).volume = this.volume
+		}
+	}
+
+	pause: {
+		if (this.flash) {
+			var player = this.getObject('videoPlayer')
+			log("not implemented")
+		} else if (this._player) {
+			this._player.get(0).pause()
 		}
 	}
 

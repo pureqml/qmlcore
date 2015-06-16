@@ -95,5 +95,7 @@ MouseArea {
 		if (this.mouseX <= detailsIcon.x + detailsIcon.width &&
 			this.mouseY >= channelIconBackground.y + channelIconBackground.height && this.mouseY <= startProgramText.y + startProgramText.height)
 			this.parent.detailsRequest();
+		else if (!this.parent.mouseLeaved)
+			this.parent.channelSelected();
 	}
 }

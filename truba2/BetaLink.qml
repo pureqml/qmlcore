@@ -9,7 +9,7 @@ MouseArea {
 		anchors.verticalCenter: parent.verticalCenter;
 		verticalAlignment: Text.AlignVCenter;
 		horizontalAlignment: Text.AlignHCenter;
-		text: "beta-truba";
+		text: "Try Beta";
 		font.pixelSize: 24;
 		color: colorTheme.textColor;
 	}

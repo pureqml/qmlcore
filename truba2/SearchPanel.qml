@@ -1,4 +1,5 @@
 Activity {
+	property string searchRequest;
 	width: active ? 400 : 0;
 	anchors.top: parent.top;
 	anchors.right: renderer.right;
@@ -104,24 +105,27 @@ Activity {
 		onClicked: { this.parent.stop(); }
 	}
 
+	onSearchRequestChanged: {
+		this._get("foundChannelsList").model.clear();
+
+		var list = this._get("categoriesModel").findChannels(value);
+		if (list.length) {
+			this._get("foundChannelsList").model.setList(list);
+			searchContent.contentY = 0;
+			this.start();
+		}
+	}
+
 	startSearch(searchRequest): {
 		if (!searchRequest) {
 			log("Empty search request.");
 			return;
 		}
 
-		if (!this.active)
-			this.start();
+		this.start();
 
 		this._get("foundPrograms").model.clear();
-		this._get("foundChannelsList").model.clear();
-
 		this._get("foundPrograms").model.getEPGForSearchRequest(searchRequest);
-		var list = this._get("categoriesModel").findChannels(searchRequest);
-		if (list.length) {
-			this._get("foundChannelsList").model.setList(list);
-			searchContent.contentX = 0;
-		}
 	}
 
 	Behavior on width { Animation { duration: 300; } }

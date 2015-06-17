@@ -156,7 +156,10 @@ Activity {
 		visible: !choosenProvider.choosed || !categoriesModel.count;
 	}
 
-	SearchPanel { id: searchPanel; }
+	SearchPanel {
+		id: searchPanel;
+		searchRequest: searchInput.text;
+	}
 
 	TextInput {
 		id: searchInput;

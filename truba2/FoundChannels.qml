@@ -1,5 +1,5 @@
 ListView {
-	height: contentHeight + 40;
+	height: 80 * count + 40;
 	anchors.left: parent.left;
 	anchors.right: parent.right;
 	contentFollowsCurrentItem: false;

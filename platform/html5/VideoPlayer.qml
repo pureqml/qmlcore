@@ -5,6 +5,7 @@ Item {
 	property bool	flash : true;
 	property bool	ready : false;
 	property bool	paused: false;
+	property bool	flasPlayerPaused: false;
 	property float	volume: 1.0;
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
@@ -30,9 +31,13 @@ Item {
 			var player = this.getObject('videoPlayer')
 			if (!player || !player.playerLoad) //flash player is not ready yet
 				return
-
-			player.playerLoad(this.getSourceUrl())
-			player.playerPlay(-1)
+			if (this.flasPlayerPaused) {
+				player.playerPlay()
+			} else {
+				player.playerLoad(this.getSourceUrl())
+				player.playerPlay(-1)
+			}
+			this.flasPlayerPaused = false
 		}
 		else
 			this._player.get(0).play()
@@ -117,7 +122,7 @@ Item {
 
 		onTriggered: {
 			this.parent.ready = this.parent._player.get(0).readyState || this.parent.flash;	//TODO: temporary fix.
-			this.parent.paused = this.parent.ready && this.parent._player.get(0).paused;
+			this.parent.paused = this.parent.ready && (this.parent._player.get(0).paused || this.parent.flasPlayerPaused);
 		}
 	}
 
@@ -172,7 +177,10 @@ Item {
 	pause: {
 		if (this.flash) {
 			var player = this.getObject('videoPlayer')
-			log("not implemented")
+			if (!player || !player.playerLoad)
+				return
+			player.playerPause()
+			this.flasPlayerPaused = true
 		} else if (this._player) {
 			this._player.get(0).pause()
 		}

@@ -98,6 +98,20 @@ Item {
 				this.parent.move(0, dy)
 			}
 		}
+
+		checkInnerItems(item): {
+			if (!item || !item.children)
+				return;
+
+			for (var i = 0; i < item.children.length; ++i) {
+				if (item.children[i] instanceof qml.core.Layout)
+					this.checkInnerItems(item.children[i])
+				if (item.children[i] instanceof qml.core.MouseArea || item.children[i] instanceof qml.core.BaseView)
+					item.children[i].clicked()
+			}
+		}
+
+		onClicked: { this.checkInnerItems(this.parent.content); }
 	}
 
 	move(dx, dy): {

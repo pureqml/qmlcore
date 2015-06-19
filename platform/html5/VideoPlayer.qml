@@ -40,7 +40,10 @@ Item {
 			this.flasPlayerPaused = false
 		}
 		else
+		{
+			this._player.get(0).controls = false
 			this._player.get(0).play()
+		}
 
 		this.applyVolume();
 	}
@@ -88,8 +91,8 @@ Item {
 			this._player = $('<video preload="metadata" width="' + this.width +
 				'" height="' + this.height +
 				'" src="' + this.src +
-				'" controls ' +
-				' ' + (this.autoPlay? "autoplay": "") + '>')
+				'" autoplay=' + (this.autoPlay? "autoplay": "") +
+				'>')
 			this._player.css('background-color', 'black')
 		} else {
 			console.log("creating object")

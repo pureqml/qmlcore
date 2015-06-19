@@ -3,7 +3,7 @@ Activity {
 	signal choosed;
 	signal addDialogCalled;
 	signal feedBackDialogCalled;
-	width: active ? 340 : 0;
+	width: active ? 380 : 0;
 	anchors.top: parent.top;
 	anchors.right: renderer.right;
 	anchors.bottom: parent.bottom;

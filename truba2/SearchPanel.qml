@@ -1,6 +1,6 @@
 Activity {
 	property string searchRequest;
-	width: active ? 400 : 0;
+	width: active ? 440 : 0;
 	anchors.top: parent.top;
 	anchors.right: renderer.right;
 	anchors.bottom: parent.bottom;

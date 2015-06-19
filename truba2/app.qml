@@ -166,6 +166,7 @@ Activity {
 		anchors.right: searchButton.left;
 		anchors.rightMargin: 20;
 		anchors.verticalCenter: settingButton.verticalCenter;
+		visible: !renderer.fullscreen;
 
 		onSelectPressed: { searchPanel.startSearch(searchInput.text); }
 	}

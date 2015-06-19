@@ -186,6 +186,16 @@ Activity {
 	}
 
 	TopMenuButton {
+		id: aboutButton;
+		anchors.top: parent.top;
+		anchors.right: videoPlayer.right;
+		visible: !renderer.fullscreen && !parent.hasAnyActiveChild;
+		icon: "res/help.png";
+
+		onClicked: { window.location.href = "http://truba.tv/about.html"; }
+	}
+
+	TopMenuButton {
 		id: searchButton;
 		anchors.top: parent.top;
 		anchors.right: settingButton.left;
@@ -199,7 +209,8 @@ Activity {
 	TopMenuButton {
 		id: settingButton;
 		anchors.top: parent.top;
-		anchors.right: videoPlayer.right;
+		anchors.right: aboutButton.left;
+		anchors.rightMargin: 10;
 		visible: !renderer.fullscreen && (!parent.hasAnyActiveChild || settingsPanel.active);
 		icon: "res/settings.png";
 

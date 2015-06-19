@@ -13,7 +13,7 @@ Item {
 	getSourceUrl: {
 		if (Array.isArray(this.source)) {
 			var httpSource
-			this.source.forEach(function(value) { if (value.startsWith('http')) httpSource = value })
+			this.source.forEach(function(value) { if (value.indexOf('http') == 0) httpSource = value })
 			if (httpSource)
 				return httpSource
 			else

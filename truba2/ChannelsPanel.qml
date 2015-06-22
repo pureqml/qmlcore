@@ -147,5 +147,14 @@ Item {
 		onClicked:				{ this.updateList(); }
 	}
 
-	setCategoryIndex(idx): { categoriesList.currentIndex = idx; }
+	//TODO: Keep just one on them.
+	setCategoryIndex(idx):	{ categoriesList.currentIndex = idx; }
+
+	setCategory(genre):		{
+		categoriesList.setList(genre)
+		var cat = categoriesList.model.get(categoriesList.currentIndex);
+		channelsModel.setList(cat.list);
+		channels.contentY = 0;
+		currentCategoryText.text = cat.text;
+	}
 }

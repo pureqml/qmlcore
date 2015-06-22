@@ -159,6 +159,11 @@ Activity {
 	SearchPanel {
 		id: searchPanel;
 		searchRequest: searchInput.text;
+
+		onChannelSwitch(channel): {
+			channelsPanel.setCategory(channel.genre);
+			mainWindow.switchToChannel(channel);
+		}
 	}
 
 	TextInput {

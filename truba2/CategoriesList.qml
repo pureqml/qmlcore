@@ -21,5 +21,14 @@ ListView {
 
 	toggle: { this.active = !this.active; }
 
+	setList(list): {
+		for (var i = 0; i < this.count; ++i) {
+			if (this.model.get(i).text == list) {
+				this.currentIndex = i
+				break;
+			}
+		}
+	}
+
 	Behavior on width { Animation { duration: 300; } }
 }

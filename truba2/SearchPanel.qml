@@ -1,4 +1,6 @@
 Activity {
+	id: searchPanelProto;
+	signal channelSwitch;
 	property string searchRequest;
 	width: active ? 440 : 0;
 	anchors.top: parent.top;
@@ -70,7 +72,12 @@ Activity {
 						visible: foundChannelsList.count;
 					}
 
-					FoundChannels { id: foundChannelsList; }
+					FoundChannels {
+						id: foundChannelsList;
+						dragEnabled: true;
+
+						onClicked: { searchPanelProto.channelSwitch(this.model.get(this.currentIndex)); }
+					}
 				}
 
 				Column {

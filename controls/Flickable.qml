@@ -74,6 +74,8 @@ Item {
 		}
 
 		onPressedChanged: {
+			this.checkInnerItemsPressed(this.parent.content, value);
+
 			if (!this.pressed)
 				return
 			this._x = this.mouseX
@@ -104,10 +106,24 @@ Item {
 				return;
 
 			for (var i = 0; i < item.children.length; ++i) {
-				if (item.children[i] instanceof qml.core.Layout)
+				if (item.children[i] instanceof qml.core.Layout || item.children[i] instanceof qml.core.BaseView)
 					this.checkInnerItems(item.children[i])
-				if (item.children[i] instanceof qml.core.MouseArea || item.children[i] instanceof qml.core.BaseView)
+
+				if (item.children[i] instanceof qml.core.MouseArea)
 					item.children[i].clicked()
+			}
+		}
+
+		checkInnerItemsPressed(item, value): {
+			if (!item || !item.children)
+				return;
+
+			for (var i = 0; i < item.children.length; ++i) {
+				if (item.children[i] instanceof qml.core.Layout || item.children[i] instanceof qml.core.BaseView)
+					this.checkInnerItemsPressed(item.children[i], value)
+
+				if (item.children[i] instanceof qml.core.MouseArea)
+					item.children[i].pressed = value
 			}
 		}
 

@@ -1291,7 +1291,7 @@ exports._setup = function() {
 		switch(name) {
 			case 'fullscreen': if (value) this._enterFullscreenMode(); else this._exitFullscreenMode(); break
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments)
+		_globals.core.Item.prototype._update.apply(this, arguments)
 	}
 
 	_globals.core.core.Context.prototype._enterFullscreenMode = function() {

@@ -15,26 +15,29 @@ Item {
 		color: colorTheme.backgroundColor;
 		clip: true;
 
-		Text {
-			id: infoControlChannelText;
-			anchors.left: channelControlInnerButton.right;
-			anchors.top: parent.top;
-			anchors.leftMargin: 20;
-			anchors.topMargin: 5;
-			font.pointSize: 18;
-			text: parent.parent.channelName;
-			color: colorTheme.textColor;
-		}
+		Column {
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			anchors.verticalCenter: parent.verticalCenter;
+			spacing: parent.height - infoControlChannelText.height - infoControlProgramText.height / 3;
 
-		Text {
-			id: infoControlProgramText;
-			anchors.left: channelControlInnerButton.right;
-			anchors.bottom: parent.bottom;
-			anchors.leftMargin: 20;
-			anchors.bottomMargin: 5;
-			font.pointSize: 18;
-			text: parent.parent.programTitle;
-			color: colorTheme.textColor;
+			Text {
+				id: infoControlChannelText;
+				anchors.left: channelControlInnerButton.right;
+				anchors.leftMargin: 20;
+				font.pointSize: 18;
+				text: parent.parent.parent.channelName;
+				color: colorTheme.textColor;
+			}
+
+			Text {
+				id: infoControlProgramText;
+				anchors.left: channelControlInnerButton.right;
+				anchors.leftMargin: 20;
+				font.pointSize: 18;
+				text: parent.parent.parent.programTitle;
+				color: colorTheme.textColor;
+			}
 		}
 
 		Behavior on width { Animation { duration: 300; } }
@@ -87,6 +90,6 @@ Item {
 		this.channelIcon = channel.source;
 		this.channelColor = channel.color;
 		this.channelName = channel.text;
-		this.programTitle = channel.program.title;
+		this.programTitle = channel.program.title != undefined ? channel.program.title : "";
 	}
 }

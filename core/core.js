@@ -1376,6 +1376,7 @@ exports.addProperty = function(self, type, name) {
 		switch(type) {
 		case 'int':		return Math.floor(value);
 		case 'bool':	return value? true: false;
+		case 'string':	return String(value);
 		default:		return value;
 		}
 	}

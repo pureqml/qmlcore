@@ -78,14 +78,13 @@ Item {
 		programInfoTime.text = "";
 		programInfoProgram.text = "";
 		programInfoDescription.text = "";
-
 		if (!program) {
 			log("ProgrmInfo: Empty program info.");
 			return;
 		}
 
-		programInfoTime.text = program.start;
-		programInfoProgram.text = program.title;
-		programInfoDescription.text = program.description;
+		programInfoTime.text = program.start != undefined ? program.start : "";
+		programInfoProgram.text = program.start != undefined ? program.title : "";
+		programInfoDescription.text = program.start != undefined ? program.description : "";
 	}
 }

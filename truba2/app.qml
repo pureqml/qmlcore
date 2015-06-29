@@ -1,11 +1,7 @@
 Activity {
 	id: mainWindow;
 	property bool portraitOrientation: false;
-	//TODO: don't update size if 'anchors.fill: renderer;'
-	anchors.left: renderer.left;
-	anchors.right: renderer.right;
-	width: renderer.width;
-	height: renderer.height;
+	anchors.fill: renderer;
 	name: "root";
 
 	Protocol		{ id: protocol; enabled: true; }

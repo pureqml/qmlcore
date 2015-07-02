@@ -1263,7 +1263,7 @@ exports._setup = function() {
 			"div#renderer { position: absolute; left: 0px; top: 0px; } " +
 			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 			"input { position: absolute; } " +
-			"img { position: absolute; } " +
+			"img { position: absolute; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } " +
 			"</style>"
 		));
 

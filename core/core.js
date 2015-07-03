@@ -797,6 +797,7 @@ exports._setup = function() {
 			case 'text': this.element.text(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
+			case 'shadow': this.element.css('text-shadow', value? '2px 2px black': 'none'); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
 				switch(value) {

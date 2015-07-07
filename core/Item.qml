@@ -4,6 +4,7 @@ Object {
 	property int z;
 	property int width;
 	property int height;
+	property real radius;
 	property bool clip;
 
 	property bool focus;

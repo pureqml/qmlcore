@@ -905,7 +905,8 @@ exports._setup = function() {
 			if (b > h)
 				h = b
 			c.viewX = p
-			p += c.width + this.spacing
+			if (c.recursiveVisible)
+				p += c.width + this.spacing
 		}
 		if (p > 0)
 			p -= this.spacing
@@ -915,6 +916,7 @@ exports._setup = function() {
 
 	_globals.core.Row.prototype.addChild = function(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
+		child.onChanged('recursiveVisible', this._layout.bind(this))
 		child.onChanged('width', this._layout.bind(this))
 	}
 
@@ -930,7 +932,8 @@ exports._setup = function() {
 			if (r > w)
 				w = r
 			c.viewY = p
-			p += c.height + this.spacing
+			if (c.recursiveVisible)
+				p += c.height + this.spacing
 		}
 		if (p > 0)
 			p -= this.spacing
@@ -941,6 +944,7 @@ exports._setup = function() {
 	_globals.core.Column.prototype.addChild = function(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
 		child.onChanged('height', this._layout.bind(this))
+		child.onChanged('recursiveVisible', this._layout.bind(this))
 	}
 
 	_globals.core.BaseView.prototype._onReset = function() {

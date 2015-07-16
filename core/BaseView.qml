@@ -1,4 +1,4 @@
-Item {
+MouseArea {
 	property Object model;
 	property Item delegate;
 
@@ -9,18 +9,16 @@ Item {
 	property int contentY;
 	property int contentWidth: 1;
 	property int contentHeight: 1;
+	property int scrollingStep: 0;
 
 	property bool handleNavigationKeys: true;
 	property bool keyNavigationWraps: true;
-	property bool dragEnabled: true;
 	property bool contentFollowsCurrentItem: true;
 	property bool pageScrolling: false;
 
-	property bool pressed: innerMouseArea.pressed;
-
 	property bool trace;
 
-	signal clicked;
+	hoverEnabled: true;
 
 	itemAt(x, y): {
 		var idx = this.indexAt(x, y)
@@ -69,6 +67,7 @@ Item {
 			return
 		}
 		var item = this._items[idx]
+
 		if (item)
 			this.focusChild(item)
 		if (this.contentFollowsCurrentItem)
@@ -85,131 +84,138 @@ Item {
 		this.focusCurrent()
 	}
 
-	MouseArea {
-		id: innerMouseArea;
-		anchors.fill: parent;
-		hoverEnabled: parent.dragEnabled;
-
-		checkInnerMouseAreas: {
-			var idx = this.parent.indexAt(this.mouseX, this.mouseY)
-			for (var i = 0; i < this.parent._items.length; ++i) {
-				var isMouseArea = this.parent._items[i] instanceof qml.core.MouseArea
-				if (i != idx && isMouseArea && this.parent._items[i].containsMouse) {
-					this.parent._items[i].containsMouse = false
-					break
-				}
-			}
-			if (this.parent._items[idx] instanceof qml.core.MouseArea)
-				this.parent._items[idx].containsMouse = true
-		}
-
-		onPressedChanged: {
-			if (this.pressed) {
-				var idx = this.parent.indexAt(this.mouseX, this.mouseY)
-				this._x = this.mouseX
-				this._y = this.mouseY
-				if (idx >= 0) {
-					this.parent.currentIndex = idx
-					this.parent.forceActiveFocus()
-				}
+	checkInnerMouseAreas: {
+		var idx = this.indexAt(this.mouseX, this.mouseY)
+		for (var i = 0; i < this._items.length; ++i) {
+			var isMouseArea = this._items[i] instanceof qml.core.MouseArea
+			if (i != idx && isMouseArea && this._items[i].containsMouse) {
+				this._items[i].containsMouse = false
+				break
 			}
 		}
+		if (this._items[idx] instanceof qml.core.MouseArea)
+			this._items[idx].containsMouse = true
+	}
 
-		onMouseXChanged: {
-			this.checkInnerMouseAreas();
-
-			if (!this.pressed)
-				return
-			var dx = this.mouseX - this._x
+	onPressedChanged: {
+		if (this.pressed) {
+			var idx = this.indexAt(this.mouseX, this.mouseY)
 			this._x = this.mouseX
-			var a = this.parent.getAnimation('contentX')
-			if (a)
-				a.disable()
-			this.parent.move(-dx, 0)
-			if (a)
-				a.enable()
-		}
-
-		onMouseYChanged: {
-			this.checkInnerMouseAreas();
-
-			if (!this.pressed)
-				return
-			var dy = this.mouseY - this._y
 			this._y = this.mouseY
-			var a = this.parent.getAnimation('contentY')
-			if (a)
-				a.disable()
-			this.parent.move(0, -dy)
-			if (a)
-				a.enable()
+			if (idx >= 0) {
+				this.currentIndex = idx
+				this.forceActiveFocus()
+			}
+		}
+	}
+
+	onMouseXChanged: {
+		this.checkInnerMouseAreas();
+
+		if (!this.pressed)
+			return
+		var dx = this.mouseX - this._x
+		this._x = this.mouseX
+		var a = this.getAnimation('contentX')
+		if (a)
+			a.disable()
+		this.move(-dx, 0)
+		if (a)
+			a.enable()
+	}
+
+	onMouseYChanged: {
+		this.checkInnerMouseAreas();
+
+		if (!this.pressed)
+			return
+		var dy = this.mouseY - this._y
+		this._y = this.mouseY
+		var a = this.getAnimation('contentY')
+		if (a)
+			a.disable()
+		this.move(0, -dy)
+		if (a)
+			a.enable()
+	}
+
+	onVerticalSwiped(event): {
+		if (!event)
+			return
+
+		var a = this.getAnimation('contentY')
+		if (a)
+			a.disable()
+		this.move(0, -event.dy)
+		if (a)
+			a.enable()
+	}
+
+	onWheelEvent(dp): {
+		if (this.scrollingStep != 0) {
+
+			if ((this.contentY - this.scrollingStep) <= 0 && dp > 0) {
+				this.contentY = 0;
+				return;
+			}
+			if ((this.contentY + this.scrollingStep) >= (this.contentHeight - this.height) && dp < 0) {
+				 	this.contentY = this.contentHeight - this.height;
+			 	return;
+			}
+			this.contentY += this.scrollingStep * (-dp);
+			return; //TODO: implement all the others
 		}
 
-		onVerticalSwiped(event): {
-			if (!event)
-				return
+		var horizontal = this.orientation == ListView.Horizontal
+		var itemBox = this.getItemPosition(this.currentIndex)
+		var iw = itemBox[2], ih = itemBox[3]
 
-			var a = this.parent.getAnimation('contentY')
-			if (a)
-				a.disable()
-			this.parent.move(0, -event.dy)
-			if (a)
-				a.enable()
-		}
+		if (horizontal) {
+			if (this.contentX <= 0 && dp > 0) {
+				this.contentX = 0;
+				return;
+			}
+			if (this.contentX >= (this.contentWidth - this.width) && dp < 0) {
+			 	this.contentX = this.contentWidth - this.width;
+			 	return;
+			}
 
-		onWheelEvent(dp): {
-			var horizontal = this.parent.orientation == ListView.Horizontal
-			var itemBox = this.parent.getItemPosition(this.parent.currentIndex)
-			var iw = itemBox[2], ih = itemBox[3]
-
-			if (horizontal) {
-				if (this.parent.contentX <= 0 && dp > 0) {
-					this.parent.contentX = 0;
-					return;
-				}
-				if (this.parent.contentX >= (this.parent.contentWidth - this.parent.width) && dp < 0) {
-				 	this.parent.contentX = this.parent.contentWidth - this.parent.width;
-				 	return;
-				}
-
-				if (this.parent.pageScrolling) {
-					this.parent.contentX += Math.round(-dp) * this.parent.width;
-				}
-				else {
-					this.parent.contentX += Math.round(-dp) * iw;
-				}
+			if (this.pageScrolling) {
+				this.contentX += Math.round(-dp) * this.width;
 			}
 			else {
-				if (this.parent.contentY <= 0 && dp > 0) {
-					this.parent.contentY = 0;
-					return;
-				}
-				if (this.parent.contentY >= (this.parent.contentHeight - this.parent.height) && dp < 0) {
-//				 	this.parent.contentY = this.parent.contentHeight - this.parent.height;
-				 	return;
-				}
-
-				if (this.parent.pageScrolling) {
-					this.parent.contentY += Math.round(-dp) * this.parent.height;
-				}
-				else {
-					this.parent.contentY += Math.round(-dp) * ih;
-				}
+				this.contentX += Math.round(-dp) * iw;
 			}
 		}
+		else {
+			if (this.contentY <= 0 && dp > 0) {
+				this.contentY = 0;
+				return;
+			}
+			if (this.contentY >= (this.contentHeight - this.height) && dp < 0) {
+//				 	this.contentY = this.contentHeight - this.height;
+			 	return;
+			}
 
-		onClicked: {
-			this.parent.clicked();
-			if (this.parent._items[this.parent.currentIndex] instanceof qml.core.MouseArea)
-				this.parent._items[this.parent.currentIndex].clicked();
+			if (this.pageScrolling) {
+				this.contentY += Math.round(-dp) * this.height;
+			}
+			else {
+				this.contentY += Math.round(-dp) * ih;
+			}
 		}
+	}
 
-		onEntered: {
-			this.parent.forceActiveFocus();
-			this.parent.focusCurrent()
+	onClicked: {
+		this.currentIndex = this.indexAt(this.mouseX, this.mouseY)
+		if (this._items[this.currentIndex] instanceof qml.core.MouseArea) {
+			this._items[this.currentIndex].clicked();
 		}
+	}
 
-		z: parent.dragEnabled? parent.z + 1: -1000;
+	onEntered: {
+		this.forceActiveFocus();
+		this.focusCurrent()
 	}
 
 	content: Item {

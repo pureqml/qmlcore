@@ -2,6 +2,7 @@ Item {
 	id: mainWindow;
 	anchors.fill: renderer;
 	anchors.margins: 100;
+
 	Column {
 		id: col;
 		Text { text: "line 1"; }
@@ -128,4 +129,18 @@ Item {
 		effects.shadow.spread: 10;
 		effects.shadow.blur: 3;
 	}
+
+	Rectangle {
+		width: 0;
+		height: 0;
+		color: "transparent";
+		anchors.top: zoo.bottom;
+		border.left.margin: 50;
+		border.left.color: "transparent";
+		border.right.margin: 50;
+		border.right.color: "transparent";
+		border.bottom.margin: 100;
+		border.bottom.color: "red";
+	}
+
 }

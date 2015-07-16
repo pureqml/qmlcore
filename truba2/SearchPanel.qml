@@ -74,7 +74,7 @@ Activity {
 
 					FoundChannels {
 						id: foundChannelsList;
-						dragEnabled: true;
+						hoverEnabled: true;
 
 						onClicked: { searchPanelProto.channelSwitch(this.model.get(this.currentIndex)); }
 					}

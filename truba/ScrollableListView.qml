@@ -1,6 +1,6 @@
 ListView {
 	id: scrollableListViewProto;
-	dragEnabled: !scrollUpArea.containsMouse;
+	hoverEnabled: !scrollUpArea.containsMouse;
 
 	MouseArea {
 		id: scrollUpArea;

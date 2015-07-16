@@ -343,6 +343,22 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.BorderMargin.prototype._update = function(name, value) {
+		if (this.parent && this.parent.parent) {
+			var el = this.parent.parent.element
+			var cssname = 'border-' + this.name
+			switch(name) {
+				case 'margin':
+					if (value) {
+						log(cssname, this.margin + "px solid " + new Color(this.color).get())
+						el.css(cssname, this.margin + "px solid " + new Color(this.color).get())
+					} else
+						el.css(cssname, '')
+				break
+			}
+		}
+	}
+
 	_globals.core.Shadow.prototype._update = function(name, value) {
 		this.parent._updateStyle()
 		_globals.core.Object.prototype._update.apply(this, arguments);

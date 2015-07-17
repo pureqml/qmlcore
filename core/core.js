@@ -783,6 +783,7 @@ exports._setup = function() {
 			case 'italic': 		this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
 			case 'bold': 		this.parent.element.css('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
 			case 'underline':	this.parent.element.css('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
+			case 'shadow':		this.parent.element.css('text-shadow', value? '2px 2px black': 'none'); this.parent._updateSize(); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -819,7 +820,6 @@ exports._setup = function() {
 			case 'text': this.element.text(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
-			case 'shadow': this.element.css('text-shadow', value? '2px 2px black': 'none'); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
 				switch(value) {

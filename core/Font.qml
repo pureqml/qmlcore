@@ -3,6 +3,7 @@ Object {
 	property bool italic;
 	property bool bold;
 	property bool underline;
+	property bool shadow;
 	property int pixelSize;
 	property int pointSize;
 }

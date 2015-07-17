@@ -2,7 +2,6 @@ Item {
 	property string text;
 	property color color;
 
-	property bool shadow;
 	property bool wrap;
 	property int horizontalAlignment;
 	property int verticalAlignment;

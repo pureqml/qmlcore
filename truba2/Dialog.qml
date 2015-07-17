@@ -12,6 +12,7 @@ Activity {
 	width: renderer.width;
 	height: renderer.height;
 	visible: active;
+	z: parent.z + 1000;
 
 	MouseArea {
 		anchors.fill: parent;

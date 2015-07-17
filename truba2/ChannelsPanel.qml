@@ -51,8 +51,9 @@ Item {
 		anchors.right: parent.right;
 		anchors.topMargin: 10 + parent.spacing;
 		hoverEnabled: !parent.parent.hasAnyActiveChild;
+		z: parent.z + 1;
 
-		onChannelSelected:		{ if (this.dragEnabled) this.switchToCurrent(); }
+		onChannelSelected:		{ if (this.hoverEnabled) this.switchToCurrent(); }
 		onCurrentIndexChanged:	{ epgpanel.hide(); }
 
 		onContentYChanged: {
@@ -102,6 +103,7 @@ Item {
 			id: epgpanel;
 			width: channels.width / 3;
 			height: channels.height / 2;
+			z: channels.z + 1;
 
 			onProgramSelected(program): {
 				channelsPanelProto.channelSelected(channels.model.get(channels.currentIndex));
@@ -124,6 +126,7 @@ Item {
 		anchors.left: renderer.left;
 		anchors.top: currentCategory.bottom;
 		anchors.bottom: renderer.bottom;
+		z: channels.z + 1;
 
 		onCountChanged: {
 			if (this.count == this.currentIndex + 1 && !channels.count) {

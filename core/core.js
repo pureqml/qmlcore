@@ -893,15 +893,34 @@ exports._setup = function() {
 	_globals.core.Image.prototype.Loading = 2;
 	_globals.core.Image.prototype.Error = 3;
 
+	_globals.core.Image.prototype.Stretch = 0;
+	_globals.core.Image.prototype.PreserveAspectFit = 1;
+	_globals.core.Image.prototype.PreserveAspectCrop = 2;
+	_globals.core.Image.prototype.Tile = 3;
+	_globals.core.Image.prototype.TileVertically = 4;
+	_globals.core.Image.prototype.TileHorizontally = 5;
+
 	_globals.core.Image.prototype._onLoad = function() {
 		var image = this
 		var tmp = new Image()
 		tmp.onload = function() {
-			image.paintedWidth = tmp.naturalWidth
-			image.paintedHeight = tmp.naturalHeight
+			switch(image.fillMode) {
+				case image.Stretch = 0:
+					image.paintedWidth = tmp.naturalWidth
+					image.paintedHeight = tmp.naturalHeight
+					break;
+				case image.PreserveAspectFit = 1:
+				case image.PreserveAspectCrop = 2:
+				case image.Tile = 3:
+				case image.TileVertically = 4:
+				case image.TileHorizontally = 5:
+					log("not implemented")
+					break;
+			}
 			//log(tmp.naturalWidth, tmp.naturalHeight)
 		}
 		tmp.src = this.source
+
 		this.status = this.Ready;
 	}
 
@@ -911,6 +930,7 @@ exports._setup = function() {
 
 	_globals.core.Image.prototype._update = function(name, value) {
 		switch(name) {
+			case 'fillMode': this._onLoad(); break;
 			case 'source': this.status = value? this.Loading: this.Null; this.element.attr('src', value? value: ""); if (value) this._onLoad(); break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);

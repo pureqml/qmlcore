@@ -905,15 +905,15 @@ exports._setup = function() {
 		var tmp = new Image()
 		tmp.onload = function() {
 			switch(image.fillMode) {
-				case image.Stretch = 0:
+				case image.Stretch:
 					image.paintedWidth = tmp.naturalWidth
 					image.paintedHeight = tmp.naturalHeight
 					break;
-				case image.PreserveAspectFit = 1:
-				case image.PreserveAspectCrop = 2:
-				case image.Tile = 3:
-				case image.TileVertically = 4:
-				case image.TileHorizontally = 5:
+				case image.PreserveAspectFit:
+				case image.PreserveAspectCrop:
+				case image.Tile:
+				case image.TileVertically:
+				case image.TileHorizontally:
 					log("not implemented")
 					break;
 			}

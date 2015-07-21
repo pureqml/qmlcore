@@ -901,27 +901,27 @@ exports._setup = function() {
 	_globals.core.Image.prototype.TileHorizontally = 5;
 
 	_globals.core.Image.prototype._onLoad = function() {
-		var image = this
-		var tmp = new Image()
-		tmp.onload = function() {
-			switch(image.fillMode) {
-				case image.Stretch:
-					image.paintedWidth = tmp.naturalWidth
-					image.paintedHeight = tmp.naturalHeight
-					break;
-				case image.PreserveAspectFit:
-				case image.PreserveAspectCrop:
-				case image.Tile:
-				case image.TileVertically:
-				case image.TileHorizontally:
-					log("not implemented")
-					break;
-			}
-			//log(tmp.naturalWidth, tmp.naturalHeight)
+		switch(this.fillMode) {
+			case this.Stretch:
+				this.element.css('background-image', 'url(' + this.source + ')')
+				this.element.css('background-size', '100% 100%')
+				break;
+			case this.TileVertically:
+				this.element.css('background', 'url(' + this.source + ') repeat-y')
+				break;
+			case this.TileHorizontally:
+				this.element.css('background', 'url(' + this.source + ') repeat-x')
+				break;
+			case this.PreserveAspectFit:
+			case this.PreserveAspectCrop:
+			case this.Tile:
+				this.element.css('background-image', 'url(' + this.source + ')')
+				this.element.css('background-size', '100% 100%')
+				log("Not implemented, use stretch.");
+				break;
 		}
-		tmp.src = this.source
 
-		this.status = this.Ready;
+		this.status = this.Ready
 	}
 
 	_globals.core.Image.prototype._onError = function() {
@@ -931,7 +931,11 @@ exports._setup = function() {
 	_globals.core.Image.prototype._update = function(name, value) {
 		switch(name) {
 			case 'fillMode': this._onLoad(); break;
-			case 'source': this.status = value? this.Loading: this.Null; this.element.attr('src', value? value: ""); if (value) this._onLoad(); break;
+			case 'source':
+				this.status = value ? this.Loading : this.Null;
+				if (value)
+					this._onLoad();
+				break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

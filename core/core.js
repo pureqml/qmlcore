@@ -901,27 +901,52 @@ exports._setup = function() {
 	_globals.core.Image.prototype.TileHorizontally = 5;
 
 	_globals.core.Image.prototype._onLoad = function() {
-		switch(this.fillMode) {
-			case this.Stretch:
-				this.element.css('background-image', 'url(' + this.source + ')')
-				this.element.css('background-size', '100% 100%')
-				break;
-			case this.TileVertically:
-				this.element.css('background', 'url(' + this.source + ') repeat-y')
-				break;
-			case this.TileHorizontally:
-				this.element.css('background', 'url(' + this.source + ') repeat-x')
-				break;
-			case this.PreserveAspectFit:
-			case this.PreserveAspectCrop:
-			case this.Tile:
-				this.element.css('background-image', 'url(' + this.source + ')')
-				this.element.css('background-size', '100% 100%')
-				log("Not implemented, use stretch.");
-				break;
-		}
+		var image = this
+		var tmp = new Image()
+		tmp.src = this.source
+		tmp.onload = function() {
+			image.paintedWidth = tmp.naturalWidth
+			image.paintedHeight = tmp.naturalHeight
 
-		this.status = this.Ready
+			image.element.css('background-image', 'url(' + image.source + ')')
+			switch(image.fillMode) {
+				case image.Stretch:
+					image.element.css('background-repeat', 'no-repeat')
+					image.element.css('background-size', '100% 100%')
+					break;
+				case image.TileVertically:
+					image.element.css('background-repeat', 'repeat-y')
+					break;
+				case image.TileHorizontally:
+					image.element.css('background-repeat', 'repeat-x')
+					break;
+				case image.PreserveAspectFit:
+					image.element.css('background-repeat', 'no-repeat')
+					image.element.css('background-position', 'center')
+					if (image.width < tmp.naturalWidth || image.height < tmp.naturalHeight) {
+						var wPart = image.width / tmp.naturalWidth
+						var hPart = image.height / tmp.naturalHeight
+						var wRatio = 100
+						var hRatio = 100
+						if (wPart > hPart)
+							wRatio = Math.floor(100 / wPart * hPart)
+						else
+							hRatio = Math.floor(100 / hPart * wPart)
+						image.element.css('background-repeat', 'no-repeat')
+						image.element.css('background-size', wRatio + '% ' + hRatio + '%')
+
+						image.paintedWidth = image.width * wRatio / 100
+						image.paintedHeight = image.height * hRatio / 100
+					}
+					break;
+				case image.PreserveAspectCrop:
+				case image.Tile:
+					image.element.css('background-repeat', 'repeat-y repeat-x')
+					log("Not implemented, use stretch.");
+					break;
+			}
+			image.status = image.Ready
+		}
 	}
 
 	_globals.core.Image.prototype._onError = function() {

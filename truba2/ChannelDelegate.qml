@@ -7,17 +7,17 @@ MouseArea {
 		id: channelIconBackground;
 		anchors.left: parent.left;
 		anchors.top: parent.top;
-		height: channelIcon.maxWidth;
-		width: channelIcon.maxWidth;
+		height: channelIcon.height;
+		width: channelIcon.width;
 		color: model.color;
 	}
 
 	Image {
 		id: channelIcon;
-		property int maxWidth: 50;
-		width: paintedWidth >= maxWidth ? maxWidth : paintedWidth;
-		height: paintedHeight * (width / paintedWidth);
+		width: 50;
+		height: 50;
 		anchors.centerIn: channelIconBackground;
+		fillMode: Image.PreserveAspectFit;
 		source: model.source;
 	}
 

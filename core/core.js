@@ -916,9 +916,11 @@ exports._setup = function() {
 					break;
 				case image.TileVertically:
 					image.element.css('background-repeat', 'repeat-y')
+					image.element.css('background-size', '100%')
 					break;
 				case image.TileHorizontally:
 					image.element.css('background-repeat', 'repeat-x')
+					image.element.css('background-size', tmp.naturalWidth + 'px 100%')
 					break;
 				case image.PreserveAspectFit:
 					image.element.css('background-repeat', 'no-repeat')

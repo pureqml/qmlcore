@@ -904,6 +904,8 @@ exports._setup = function() {
 		var image = this
 		var tmp = new Image()
 		tmp.src = this.source
+		image.element.css('border-radius', '0')
+
 		tmp.onload = function() {
 			image.paintedWidth = tmp.naturalWidth
 			image.paintedHeight = tmp.naturalHeight
@@ -950,6 +952,12 @@ exports._setup = function() {
 					image.element.css('background-repeat', 'repeat-y repeat-x')
 					break;
 			}
+
+			if (!image.width)
+				image.width = image.paintedWidth
+			if (!image.height)
+				image.height = image.paintedHeight
+
 			image.status = image.Ready
 		}
 	}
@@ -1344,7 +1352,7 @@ exports._setup = function() {
 			"div#renderer { position: absolute; left: 0px; top: 0px; } " +
 			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 			"input { position: absolute; } " +
-			"img { position: absolute; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } " +
+			"img { position: absolute; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; content: ''; } " +
 			"</style>"
 		));
 

@@ -934,17 +934,20 @@ exports._setup = function() {
 							wRatio = Math.floor(100 / wPart * hPart)
 						else
 							hRatio = Math.floor(100 / hPart * wPart)
-						image.element.css('background-repeat', 'no-repeat')
 						image.element.css('background-size', wRatio + '% ' + hRatio + '%')
-
 						image.paintedWidth = image.width * wRatio / 100
 						image.paintedHeight = image.height * hRatio / 100
 					}
 					break;
 				case image.PreserveAspectCrop:
+					image.element.css('background-repeat', 'no-repeat')
+					image.element.css('background-position', 'center')
+					var wRatio = Math.floor(tmp.naturalWidth / image.width * 100)
+					var hRatio = Math.floor(tmp.naturalHeight / image.height  * 100)
+					image.element.css('background-size', wRatio + '% ' + hRatio + '%')
+					break;
 				case image.Tile:
 					image.element.css('background-repeat', 'repeat-y repeat-x')
-					log("Not implemented, use stretch.");
 					break;
 			}
 			image.status = image.Ready

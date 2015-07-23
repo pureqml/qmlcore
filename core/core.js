@@ -927,19 +927,17 @@ exports._setup = function() {
 				case image.PreserveAspectFit:
 					image.element.css('background-repeat', 'no-repeat')
 					image.element.css('background-position', 'center')
-					if (image.width < tmp.naturalWidth || image.height < tmp.naturalHeight) {
-						var wPart = image.width / tmp.naturalWidth
-						var hPart = image.height / tmp.naturalHeight
-						var wRatio = 100
-						var hRatio = 100
-						if (wPart > hPart)
-							wRatio = Math.floor(100 / wPart * hPart)
-						else
-							hRatio = Math.floor(100 / hPart * wPart)
-						image.element.css('background-size', wRatio + '% ' + hRatio + '%')
-						image.paintedWidth = image.width * wRatio / 100
-						image.paintedHeight = image.height * hRatio / 100
-					}
+					var wPart = image.width / tmp.naturalWidth
+					var hPart = image.height / tmp.naturalHeight
+					var wRatio = 100
+					var hRatio = 100
+					if (wPart > hPart)
+						wRatio = Math.floor(100 / wPart * hPart)
+					else
+						hRatio = Math.floor(100 / hPart * wPart)
+					image.element.css('background-size', wRatio + '% ' + hRatio + '%')
+					image.paintedWidth = image.width * wRatio / 100
+					image.paintedHeight = image.height * hRatio / 100
 					break;
 				case image.PreserveAspectCrop:
 					image.element.css('background-repeat', 'no-repeat')
@@ -968,6 +966,8 @@ exports._setup = function() {
 
 	_globals.core.Image.prototype._update = function(name, value) {
 		switch(name) {
+			case 'width':
+			case 'height':
 			case 'fillMode': this._onLoad(); break;
 			case 'source':
 				this.status = value ? this.Loading : this.Null;

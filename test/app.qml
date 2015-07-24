@@ -3,6 +3,28 @@ Item {
 	anchors.fill: renderer;
 	anchors.margins: 100;
 
+	Image {
+		anchors.fill: renderer;
+		fillMode: Image.PreserveAspectCrop;
+		source: "res/sample.jpg";
+	}
+
+	Image {
+		anchors.centerIn: parent;
+		width: 600;
+		height: 300;
+		fillMode: Image.Stretch;
+		source: "res/robot.svg";
+	}
+
+	Image {
+		anchors.centerIn: parent;
+		width: 100;
+		height: 400;
+		fillMode: Image.PreserveAspectCrop;
+		source: "res/pipeline.png";
+	}
+
 	Column {
 		id: col;
 		Text { text: "line 1"; }
@@ -136,11 +158,10 @@ Item {
 		color: "transparent";
 		anchors.top: zoo.bottom;
 		border.left.margin: 50;
-		border.left.color: "transparent";
-		border.right.margin: 50;
-		border.right.color: "transparent";
-		border.bottom.margin: 100;
-		border.bottom.color: "red";
+		border.left.color: "red";
+		border.top.margin: 50;
+		border.top.color: "transparent";
+		border.bottom.margin: 50;
+		border.bottom.color: "transparent";
 	}
-
 }

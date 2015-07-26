@@ -51,7 +51,7 @@ MouseArea {
 		id: startProgramText;
 		anchors.left: parent.left;
 		anchors.top: channelIconBackground.bottom;
-		anchors.margins: 5;
+		anchors.topMargin: 5;
 		color: colorTheme.textColor;
 		text: model.program.start;
 		font.pointSize: 12;

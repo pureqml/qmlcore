@@ -11,7 +11,7 @@ GridView {
 	model: channelsModel;
 	hoverEnabled: true;
 	contentFollowsCurrentItem: false;
-	delegate: ChannelDelegate {} 
+	delegate: ChannelDelegate { }
 
 	onPressedChanged: {
 		if (this.pressed)

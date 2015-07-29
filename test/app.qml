@@ -21,7 +21,7 @@ Item {
 		anchors.centerIn: parent;
 		width: 100;
 		height: 400;
-		fillMode: Image.PreserveAspectCrop;
+		fillMode: Image.Stretch;
 		source: "res/pipeline.png";
 	}
 
@@ -57,75 +57,62 @@ Item {
 		visibilityTest.visible = !visibilityTest.visible
 	}
 
+	Rectangle {
+		color: "yellow";
+		anchors.fill: someText;
+	}
+
+	Rectangle {
+		color: "green";
+		anchors.fill: someText1;
+	}
+
+	Text {
+		id: someText;
+		anchors.left: parent.left;
+		anchors.bottom: parent.bottom;
+		text: "Dog Cat Rhino Rat";
+		font.family: "Courier New";
+	}
+
+	Text {
+		id: someText1;
+		anchors.left: parent.left;
+		anchors.bottom: someText.top;
+		text: "Dog Cat Rhino Rat";
+	}
+
+
+	Rectangle {
+		color: zoo.visible ? "red" : "navy";
+		anchors.right: parent.right;
+		anchors.bottom: parent.bottom;
+		width: 200;
+		height: 100;
+
+		MouseArea {
+			anchors.fill: parent;
+
+			onClicked: {
+				zoo.visible = !zoo.visible;
+			}
+		}
+	}
+
 	ListModel {
 		id: animalModel;
 
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
-		ListElement { type: "Dog"; age: 8; }
-		ListElement { type: "Cat"; age: 5; }
+		update: {
+			for ( var i = 0; i < 1500; ++i) {
+				this.append({
+					type: i % 1 ? "Dog" : "Cat",
+					age: i
+				});
+			}
+		}
 
 		onCompleted: {
+			this.update();
 			log("hello", this.count);
 		}
 	}

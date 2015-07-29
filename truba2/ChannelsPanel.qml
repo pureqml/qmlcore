@@ -119,6 +119,7 @@ Item {
 		anchors.left: categoriesList.right;
 		anchors.top: renderer.top;
 		anchors.bottom: renderer.bottom;
+		z: categoriesList.z;
 	}
 
 	CategoriesList {
@@ -127,6 +128,12 @@ Item {
 		anchors.top: currentCategory.bottom;
 		anchors.bottom: renderer.bottom;
 		z: channels.z + 1;
+
+		Rectangle {
+			anchors.fill: parent;
+			color: colorTheme.backgroundColor;
+			z: parent.z - 10;
+		}
 
 		onCountChanged: {
 			if (this.count == this.currentIndex + 1 && !channels.count) {

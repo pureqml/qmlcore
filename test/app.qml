@@ -105,7 +105,7 @@ Item {
 		update: {
 			for ( var i = 0; i < 1500; ++i) {
 				this.append({
-					type: i % 1 ? "Dog" : "Cat",
+					type: i % 2 ? "Dog" : "Cat",
 					age: i
 				});
 			}

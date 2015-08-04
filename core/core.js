@@ -942,9 +942,16 @@ exports._setup = function() {
 				case image.PreserveAspectCrop:
 					image.element.css('background-repeat', 'no-repeat')
 					image.element.css('background-position', 'center')
-					var wRatio = Math.floor(tmp.naturalWidth / image.width * 100)
-					var hRatio = Math.floor(tmp.naturalHeight / image.height  * 100)
-					image.element.css('background-size', wRatio + '% ' + hRatio + '%')
+					var pRatio = tmp.naturalWidth / tmp.naturalHeight
+					var iRatio = image.width / image.height
+					if (pRatio < iRatio) {
+						var hRatio = Math.floor(iRatio / pRatio * 100)
+						image.element.css('background-size', 100 + '% ' + hRatio + '%')
+					}
+					else {
+						var wRatio = Math.floor(pRatio / iRatio * 100)
+						image.element.css('background-size', wRatio + '% ' + 100 + '%')
+					}
 					break;
 				case image.Tile:
 					image.element.css('background-repeat', 'repeat-y repeat-x')

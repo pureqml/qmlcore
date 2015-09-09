@@ -1,7 +1,9 @@
 Item {
 	property int currentIndex: 0;
+	property int count: 0;
 
 	update: {
+		this.count = this.children.length;
 		for (var i = 0; i < this.children.length; ++i)
 			this.children[i].visible = (i == this.currentIndex);
 	}

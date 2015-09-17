@@ -9,7 +9,9 @@ Rectangle {
 	color: colorTheme.backgroundColor;
 
 	Image {
-		anchors.centerIn: parent;
+		anchors.fill: parent;
+		anchors.margins: parent.width / 4;
+		fillMode: Image.PreserveAspectFit;
 		source: parent.icon; 
 	}
 

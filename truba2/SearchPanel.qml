@@ -2,6 +2,7 @@ Activity {
 	id: searchPanelProto;
 	signal channelSwitch;
 	property string searchRequest;
+	property string request: "";
 	width: active ? 440 : 0;
 	anchors.top: parent.top;
 	anchors.right: renderer.right;
@@ -114,12 +115,22 @@ Activity {
 
 	onSearchRequestChanged: {
 		this._get("foundChannelsList").model.clear();
+		this.request = value;
+		searchTimer.restart();
+	}
 
-		var list = this._get("categoriesModel").findChannels(value);
-		if (list.length) {
-			this._get("foundChannelsList").model.setList(list);
-			searchContent.contentY = 0;
-			this.start();
+	Timer {
+		id: searchTimer;
+		interval: 1000;
+		repeat: false;
+
+		onTriggered: {
+			var list = this.parent._get("categoriesModel").findChannels(this.parent.request);
+			if (list.length) {
+				this.parent._get("foundChannelsList").model.setList(list);
+				searchContent.contentY = 0;
+				this.parent.start();
+			}
 		}
 	}
 

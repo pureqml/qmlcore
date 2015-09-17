@@ -11,7 +11,7 @@ ListModel {
 		this.protocol.getProviders(function(providers) {
 			self.clear();
 			for (var p in providers) {
-				if (providers[p].name == "Ondatra")
+				if (providers[p].name == "zabavaSlyUkraine")
 					self.defaultProvider = providers[p].alias;
 
 				self.append({

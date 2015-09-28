@@ -160,6 +160,12 @@ Item {
 	//TODO: Keep just one on them.
 	setCategoryIndex(idx):	{ categoriesList.currentIndex = idx; }
 
+	reset: {
+		categoriesList.currentIndex = 0;
+		categoriesList.updateList();
+		categoriesList.toggle();
+	}
+
 	setCategory(genre):		{
 		categoriesList.setList(genre)
 		var cat = categoriesList.model.get(categoriesList.currentIndex);

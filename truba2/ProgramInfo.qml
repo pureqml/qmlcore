@@ -11,7 +11,8 @@ Item {
 
 	Image {
 		id: programInfoIcon;
-		anchors.centerIn: programInfoChannelPlate;
+		anchors.fill: programInfoChannelPlate;
+		fillMode: Image.PreserveAspectFit;
 	}
 
 	Text {

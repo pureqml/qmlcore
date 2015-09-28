@@ -155,7 +155,7 @@ Activity {
 		horizontalAlignment: Text.AlignHCenter;
 		color: colorTheme.disabledTextColor;
 		wrap: true;
-		text: categoriesModel.count ? (!choosenProvider.choosed ? "Не указан провайдер" : "") : "Произошло что-то странное, похоже каналы выбранного провайдера вам недоступны, если вы все же к нему подключены и считаете, что ошибка произошла по ошибке, пожалуйста, напишите нам в форме обратной связи, мы все исправим.";
+		text: categoriesModel.count ? (!choosenProvider.choosed ? "Не указан провайдер" : "") : "Произошло что-то странное, похоже каналы выбранного провайдера вам недоступны, если вы все же к нему подключены и считаете, что произошла ошибка, пожалуйста, напишите нам в форме обратной связи, мы все исправим.";
 		font.pointSize: 32;
 		visible: !choosenProvider.choosed || !categoriesModel.count;
 	}

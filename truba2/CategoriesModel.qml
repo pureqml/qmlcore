@@ -1,4 +1,5 @@
 ListModel {
+	signal modelUpdated;
 	property string provider;
 	property Object repository;
 
@@ -46,6 +47,7 @@ ListModel {
 					list: map[genre]
 				});
 			}
+			self.modelUpdated();
 		})
 	}
 

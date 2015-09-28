@@ -51,8 +51,14 @@ Activity {
 		}
 	}
 
-	CategoriesModel	{ id: categoriesModel;	protocol: protocol; }
-	EPGModel		{ id: epgModel;			protocol: protocol; }
+	CategoriesModel	{
+		id: categoriesModel;
+		protocol: protocol;
+
+		onModelUpdated: { channelsPanel.reset(); }
+	}
+
+	EPGModel { id: epgModel; protocol: protocol; }
 
 	Timer {
 		id: updateTimer;
@@ -181,7 +187,6 @@ Activity {
 			choosenProvider.value = provider;
 			categoriesModel.provider = provider;
 			choosenProvider.choosed = provider;
-			channelsPanel.reset();
 		}
 
 		onAddDialogCalled:		{ addProviderDialog.start(); }

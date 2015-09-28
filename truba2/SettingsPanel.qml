@@ -99,6 +99,8 @@ Activity {
 				choose: {
 					selectedProviderText.text = this.model.get(this.currentIndex).text;
 					this.active = false;
+					log("Choosed provider: " + selectedProviderText.text);
+					settingsPanelProto.choosed(providersList.model.get(providersList.currentIndex).id);
 				}
 
 				onSelectPressed:	{ this.choose(); }
@@ -178,13 +180,6 @@ Activity {
 
 				onClicked: { settingsPanelProto.feedBackDialogCalled(); }
 			}
-		}
-	}
-
-	onActiveChanged: {
-		if (!this.active && selectedProviderText.choosed) {
-			log("Choosed provider: " + selectedProviderText.text);
-			settingsPanelProto.choosed(providersList.model.get(providersList.currentIndex).id);
 		}
 	}
 

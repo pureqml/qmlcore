@@ -17,6 +17,8 @@ Activity {
 			this.choosed = choosenProvider.value;
 			if (this.choosed)
 				categoriesModel.provider = choosenProvider.value;
+			else
+				settingsPanel.active = true;
 		}
 	}
 
@@ -174,12 +176,12 @@ Activity {
 
 	SettingsPanel {
 		id: settingsPanel;
-		active: !choosenProvider.choosed;
 
 		onChoosed(provider): {
 			choosenProvider.value = provider;
 			categoriesModel.provider = provider;
 			choosenProvider.choosed = provider;
+			channelsPanel.reset();
 		}
 
 		onAddDialogCalled:		{ addProviderDialog.start(); }

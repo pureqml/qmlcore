@@ -8,6 +8,8 @@ ListModel {
 			return;
 
 		var self = this;
+		var prevCount = this.count;
+
 		this.protocol.getChannels(function(list) {
 			self.clear();
 			self.repository = {};
@@ -47,7 +49,8 @@ ListModel {
 					list: map[genre]
 				});
 			}
-			self.modelUpdated();
+			if (prevCount)
+				self.modelUpdated();
 		})
 	}
 

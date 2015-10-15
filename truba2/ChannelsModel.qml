@@ -4,16 +4,33 @@ ListModel {
 		return colors[Math.round(Math.random() * (colors.length - 1))];
 	}
 
+	getSourceUrl(source): {
+		if (Array.isArray(source)) {
+			var httpSource
+			source.forEach(function(value) { if (value.indexOf('http') == 0) httpSource = value })
+			if (httpSource)
+				return httpSource
+			else
+				return null
+		}
+		return source
+	}
+
 	setList(list): {
 		this.clear();
 
 		for (var i = 0; i < list.length; ++i) {
+			var source = this.getSourceUrl(list[i].url)
+			if (!source) {
+				log("skip '" + list[i].title + "' channel with UDP source.")
+				continue
+			}
 			var channelColor = list[i].icon ? list[i].icon.color : this.getColor();
 			this.append({
 				id:	list[i].id,
 				genre:	list[i].genre,
 				text:	list[i].title,
-				url:	list[i].url,
+				url:	source,
 				lcn:	list[i].lcn,
 				source:	list[i].icon ? "http://truba.tv" + list[i].icon.source : "",
 				color:	channelColor,

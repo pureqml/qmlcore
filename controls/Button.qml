@@ -20,6 +20,7 @@ Rectangle {
     Text {
         id: label;
         anchors.centerIn: parent;
+		horizontalAlignment: Text.AlignHCenter;
         font.pointSize: 18;
         color: "white";
 

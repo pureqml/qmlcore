@@ -4,80 +4,88 @@ Activity {
 	anchors.fill: renderer;
 	name: "root";
 
-	//Protocol { id: protocol; enabled: true; }
+	Item {
+		id: safeArea;
+		anchors.fill: renderer;
+		anchors.margins: 20;
+	}
 
-	//ProvidersModel { id: providersModel; }
+	Protocol { id: protocol; enabled: true; }
 
-	//CategoriesModel	{
-		//id: categoriesModel;
-		//provider: providersModel.defaultProvider;
-	//}
+	ProvidersModel { id: providersModel; }
 
-	//EPGModel { id: epgModel; }
+	CategoriesModel	{
+		id: categoriesModel;
+		provider: providersModel.defaultProvider;
+	}
 
-	//Player {
-		//id: ondatraPlayer;
-		//property string url: "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
-		//anchors.fill: mainWindow;
-		//hideSpinner: true;
-		//disableControls: true;
-		//z: channelsPanel.z - 1;
-		//isFullscreen: true;
+	EPGModel { id: epgModel; }
 
-		//play:			{ ondatraPlayer.playUrl(ondatraPlayer.url) }
-		//onCompleted:	{ this.play() }
+	ColorTheme { id: colorTheme; }
 
-		//onRedPressed: {
-			//if (!osdLayout.show) {
-				//infoPanel.hide();
-				//osdLayout.showUp();
-			//}
-		//}
+	VideoPlayer {
+		id: videoPlayer;
+		anchors.fill: mainWindow;
+		//source: lastChannel.source ? lastChannel.source : "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
+		source: "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
+		autoPlay: true;
 
-		//onBackPressed: {
-			//if (infoPanel.visible) {
-				//infoPanel.hide();
-			//} else if (!osdLayout.show) {
-				//viewsFinder.closeApp();
-				//ondatraPlayer.abort();
-			//}
-		//}
+		Preloader {
+			anchors.centerIn: videoPlayer;
+			visible: !videoPlayer.ready;
+		}
+	}
 
-		//onSelectPressed: {
-			//if (osdLayout.show)
-				//return false;
-			//if (infoPanel.visible)
-				//infoPanel.hide()
-			//else
-				//infoPanel.show()
+	//onRedPressed: {
+		//if (!osdLayout.show) {
+			//infoPanel.hide();
+			//osdLayout.showUp();
 		//}
 	//}
 
-	//InfoPanel {
-		//id: infoPanel;
-		//anchors.left: safeArea.left;
-		//anchors.bottom: safeArea.bottom;
+	//onBackPressed: {
+		//if (infoPanel.visible) {
+			//infoPanel.hide();
+		//} else if (!osdLayout.show) {
+			//viewsFinder.closeApp();
+			//ondatraPlayer.abort();
+		//}
 	//}
 
-	//Item {
-		//id: osdLayout;
-		//property bool show: true;
-		//opacity: show ? 1.0 : 0.0;
+	//onSelectPressed: {
+		//if (osdLayout.show)
+			//return false;
+		//if (infoPanel.visible)
+			//infoPanel.hide()
+		//else
+			//infoPanel.show()
+	//}
 
-		//MainMenu {
-			//id: menu;
+	InfoPanel {
+		id: infoPanel;
+		anchors.left: safeArea.left;
+		anchors.bottom: safeArea.bottom;
+	}
 
-			//onDownPressed: { channelsPanel.setFocus(); }
-			//onIsAlive: { displayTimer.restart(); }
-		//}
+	Item {
+		id: osdLayout;
+		property bool show: true;
+		opacity: show ? 1.0 : 0.0;
 
-		//ChannelsPanel {
-			//id: channelsPanel;
-			//anchors.top: menu.bottom;
-			//anchors.left: safeArea.left;
-			//anchors.right: safeArea.right;
-			//anchors.leftMargin: menu.minSize + 2;
-			//anchors.topMargin: 2;
+		MainMenu {
+			id: menu;
+
+			onDownPressed: { channelsPanel.setFocus(); }
+			onIsAlive: { displayTimer.restart(); }
+		}
+
+		ChannelsPanel {
+			id: channelsPanel;
+			anchors.top: menu.bottom;
+			anchors.left: safeArea.left;
+			anchors.right: safeArea.right;
+			anchors.leftMargin: menu.minSize + 2;
+			anchors.topMargin: 2;
 
 			//onUpPressed: {
 				//if (panelContent.activeFocus)
@@ -93,9 +101,7 @@ Activity {
 			//}
 
 			//onIsAlive: { displayTimer.restart(); }
-		//}
-
-		//AlphaControl { alphaFunc: MaxAlpha; }
+		}
 
 		//BorderShadow3D {
 			//anchors.fill: menu;
@@ -109,16 +115,16 @@ Activity {
 			//menu.setFocus();
 			//displayTimer.restart();
 		//}
-	//}
+	}
 
-	//Timer {
-		//id: displayTimer;
-		//interval: 7000;
-		//repeat: false;
-		//running: false;
+	Timer {
+		id: displayTimer;
+		interval: 7000;
+		repeat: false;
+		running: false;
 
-		//onTriggered: { osdLayout.show = false; }
-	//}
+		onTriggered: { osdLayout.show = false; }
+	}
 
 	//onBackPressed: {
 		//if (osdLayout.show)

@@ -6,8 +6,6 @@ Item {
 	height: 100;
 	clip: true;
 
-	AlphaControl { alphaFunc: MaxAlpha; }
-
 	Text {
 		anchors.centerIn: parent;
 		text: categoryDelegate.genre;

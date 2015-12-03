@@ -1,58 +1,53 @@
 Object {
 	signal error;
-	property string baseUrl: "http://truba.tv/api/";
+	property string baseUrl;
 
-	function getProgramsAtDate(date, callback) {
+	getProgramsAtDate(date, callback): {
 		if (!date.getFullYear() || !date.getMonth() || !date.getDate())
 			return;
 		this.request("/programs/" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(), {}, callback)
 	}
 
-	function getCurrentPrograms(callback) {
+	getCurrentPrograms(callback): {
 		this.request("/programs", {}, callback)
 	}
 
-	function getChannels(callback) {
+	getChannels(callback): {
 		this.request("/channels", {}, callback)
 	}
 
-	function getProviders(callback) {
+	getProviders(callback): {
 		this.request("/providers", {}, callback)
 	}
 
-	function requestImpl(url, data, callback, type, headers) {
+	sendEmail(data, callback): {
+		this.request("/feedback", data, callback, "POST")
+	}
+
+	requestImpl(url, data, callback, type, headers): {
 		if (!this.enabled)
 			return;
 		if (url.charAt(0) === '/')
 			url = url.slice(1)
-		var self = this;
-
-		var url = this.baseUrl + url
-		if (data) {
-			for (var name in data) {
-				url += "&" + encodeURIComponent(name) + "=" + encodeURIComponent(data[name]);
-			}
-		}
-
 		log("request", url, data)
-
-		var req = new XMLHttpRequest();
-		req.onreadystatechange = function() {
-			if (req.readyState == XMLHttpRequest.DONE) {
-				var res = JSON.parse(req.responseText);
-				//log(req.responseText);
-				if (!res.error) {
-					callback(res);
-				} else {
-					log("Error during api call occured");
-				}
-			}
-		}
-		req.open("GET", url);
-		req.send();
+		var self = this;
+		$.ajax({
+			url: self.baseUrl + url,
+			data: data,
+			type: type || 'GET',
+			headers: headers || {}
+		}).done(function(res) {
+			if (callback)
+				callback(res)
+		}).fail(function(xhr, status, err) {
+			log("ajax request failed: " + JSON.stringify(status) + " status: " + xhr.status + " text: " + xhr.responseText)
+			if (callback)
+				callback({result: 0, error: { message: "ajax error"} })
+			self.error(status)
+		})
 	}
 
-	function request(url, data, callback, type) {
+	request(url, data, callback, type): {
 		if (!this.enabled)
 			return;
 
@@ -69,4 +64,6 @@ Object {
 
 		do_request()
 	}
+
+	onCompleted: { this.baseUrl = "http://truba.tv/api/"; }
 }

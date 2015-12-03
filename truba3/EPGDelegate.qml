@@ -2,7 +2,7 @@ Item {
 	width: parent.width;
 	height: 40;
 
-	SmallText {
+	Text {
 		id: epgStartProgramText;
 		anchors.left: parent.left;
 		anchors.verticalCenter: parent.verticalCenter;

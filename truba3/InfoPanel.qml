@@ -1,7 +1,7 @@
 Rectangle {
 	id: infoPanelProto;
 	property variant channel;
-	width: safeArea.width;
+	width: renderer.width - 50;
 	height: 120;
 	visible: false;
 	color: colorTheme.focusablePanelColor;
@@ -29,7 +29,7 @@ Rectangle {
 		anchors.left: channelBackground.right;
 		anchors.bottom: parent.bottom;
 
-		Behavior on width { animation: Animation {  duration: 150; } }
+		Behavior on width { Animation { duration: 300; } }
 	}
 
 	Text {
@@ -70,7 +70,7 @@ Rectangle {
 		onTriggered: { infoPanelProto.updateProgress(); }
 	}
 
-	function setChannel(channel) {
+	setChannel(channel): {
 		this.channel = channel
 		channelTitleText.text = channel.text
 		channelLogoImage.source = channel.source

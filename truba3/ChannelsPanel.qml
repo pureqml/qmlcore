@@ -1,6 +1,6 @@
 Item {
 	id: channelsPanelProto;
-	signal switched(channel);
+	signal switched;
 	signal isAlive;
 	height: safeArea.height - y;
 	anchors.left: safeArea.left;
@@ -12,9 +12,9 @@ Item {
 		onSwitched: { channelInfoPanel.show(channel) }
 	}
 
-	ChannelInfoPanel {
-		id: channelInfoPanel;
-		onSwitched: { channelsPanelProto.switched(channel) }
-		onIsAlive: { channelsPanelProto.isAlive(); }
-	}
+	//ChannelInfoPanel {
+		//id: channelInfoPanel;
+		//onSwitched: { channelsPanelProto.switched(channel) }
+		//onIsAlive: { channelsPanelProto.isAlive(); }
+	//}
 }

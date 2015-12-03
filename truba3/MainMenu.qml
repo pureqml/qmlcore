@@ -36,6 +36,6 @@ Rectangle {
 		onCurrentIndexChanged: { mainMenu.isAlive(); }
 	}
 
-	Behavior on width { animation: Animation {  duration: 200; } }
-	Behavior on height { animation: Animation {  duration: 200; } }
+	Behavior on width { Animation {  duration: 200; } }
+	Behavior on height { Animation {  duration: 200; } }
 }

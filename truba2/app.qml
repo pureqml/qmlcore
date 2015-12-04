@@ -37,13 +37,6 @@ Activity {
 		}
 	}
 
-	//onRedPressed: {
-		//if (!osdLayout.show) {
-			//infoPanel.hide();
-			//osdLayout.showUp();
-		//}
-	//}
-
 	//onBackPressed: {
 		//if (infoPanel.visible) {
 			//infoPanel.hide();
@@ -53,21 +46,18 @@ Activity {
 		//}
 	//}
 
-	//onSelectPressed: {
-		//if (osdLayout.show)
-			//return false;
-		//if (infoPanel.visible)
-			//infoPanel.hide()
-		//else
-			//infoPanel.show()
-	//}
+	onSelectPressed: {
+		if (!osdLayout.show) {
+			infoPanel.hide();
+			osdLayout.showUp();
+		}
+	}
 
-	//InfoPanel {
-		//id: infoPanel;
-		//anchors.left: safeArea.left;
-		//anchors.bottom: safeArea.bottom;
-	//}
-
+	InfoPanel {
+		id: infoPanel;
+		anchors.left: safeArea.left;
+		anchors.bottom: safeArea.bottom;
+	}
 
 	Item {
 		id: osdLayout;
@@ -91,7 +81,7 @@ Activity {
 					menu.forceActiveFocus();
 			}
 
-			onSwitched: {
+			onSwitched(channel): {
 				log("Channel switched:", channel.text, "url:", channel.url)
 				osdLayout.show = false
 				//ondatraPlayer.url = channel.url
@@ -102,18 +92,20 @@ Activity {
 			onIsAlive: { displayTimer.restart(); }
 		}
 
-		//BorderShadow3D {
-			//anchors.fill: menu;
-			//opacity: menu.activeFocus ? 1.0 : 0.0;
+		Item {
+			anchors.fill: parent;
+			effects.shadow.spread: 5;
+			effects.shadow.color: "#000a";
+			effects.shadow.blur: 6;
+			anchors.fill: menu;
+			opacity: menu.activeFocus ? 1.0 : 0.0;
+		}
 
-			//Behavior on opacity { animation: Animation {  duration: 300; } }
-		//}
-
-		//showUp: {
-			//this.show = true;
-			//menu.forceActiveFocus();
-			//displayTimer.restart();
-		//}
+		showUp: {
+			this.show = true;
+			menu.forceActiveFocus();
+			displayTimer.restart();
+		}
 	}
 
 	Timer {
@@ -125,14 +117,8 @@ Activity {
 		onTriggered: { osdLayout.show = false; }
 	}
 
-	//onBackPressed: {
-		//if (osdLayout.show)
-			//osdLayout.show = false;
-	//}
-
-	//onStarted: {
-		//osdLayout.showUp();
-		//providersModel.update();
-		//ondatraPlayer.play();
-	//}
+	onBackPressed: {
+		if (osdLayout.show)
+			osdLayout.show = false;
+	}
 }

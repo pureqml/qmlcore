@@ -18,44 +18,42 @@ Item {
 		text: model.text;
 		color: colorTheme.accentTextColor;
 		visible: parent.activeFocus;
-		//style: Shadow;
-		font.pixelSize: 18;
+		shadow: true;
+		font.pixelSize: 28;
 	}
 
 	GridView {
 		id: innerChannels;
-		property int displayedCount: 8;
+		property int displayedCount: 10;
 		height: count > 10 ? 200 : 100;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
-		cellWidth: (parent.width - horizontalSpacing * displayedCount) / displayedCount;
+		cellWidth: parent.width / displayedCount;
 		cellHeight: 90;
-		orientation: GridView.Horizontal;
-		horizontalSpacing: 2;
-		verticalSpacing: 2;
+		flow: GridView.FlowTopToBottom;
 		handleNavigationKeys: false;
-		model: ChannelsModel { }
+		model: ChannelsModel { protocol: protocol; }
 		delegate: ChannelDelegate { }
+
+		//TODO: =(
+		onCellWidthChanged: { this._layout(); }
 
 		onActiveFocusChanged:	{ if (this.activeFocus) this.showCurrentChannel(); }
 		onCurrentIndexChanged:	{ this.showCurrentChannel(); }
 		showCurrentChannel:		{ categoryRowDelegate.isAlive(); }
 
-		//onSelectPressed: {
-			//if (!this.recursiveVisible)
-				//return false;
+		onSelectPressed: {
+			if (!this.recursiveVisible)
+				return false;
 
-			//var itemRect = this.getItemRect(innerChannels.currentIndex);
-			//var row = this.model.get(this.currentIndex)
-
-			//row.x = itemRect.Left - this.contentX + this.x - 10;
-			//row.y = itemRect.Top + this.y - 10 - this.horizontalSpacing;
-			//row.width = itemRect.Width() + 20;
-			//row.height = itemRect.Height() + 25;
-
-			//categoryRowDelegate.switched(row);
-		//}
+			var row = this.model.get(this.currentIndex)
+			row.x = 0
+			row.y = 0 
+			row.width = 100 
+			row.height = 100 
+			categoryRowDelegate.switched(row);
+		}
 
 		onUpPressed: {
 			var rowCount = Math.floor(this.height / this.cellHeight);
@@ -87,7 +85,7 @@ Item {
 		}
 	}
 
-	onListChanged: {
+	onCompleted: {
 		if (this.list)
 			innerChannels.model.setList(this.list)
 	}

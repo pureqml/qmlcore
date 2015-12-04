@@ -1,6 +1,12 @@
 Item {
-	width: menuItemIcon.paintedWidth > innerMenuDelegateText.paintedWidth ? menuItemIcon.paintedWidth + 20 : innerMenuDelegateText.paintedWidth + 20;
+	width: 100 > innerMenuDelegateText.width ? 120 : innerMenuDelegateText.width + 20;
 	height: parent.height;
+
+	Rectangle {
+		anchors.fill: parent;
+		color: colorTheme.activeFocusColor;
+		visible: parent.activeFocus;
+	}
 
 	Image {
 		id: menuItemIcon;
@@ -16,8 +22,9 @@ Item {
 		anchors.bottom: parent.bottom;
 		anchors.bottomMargin: 10;
 		anchors.horizontalCenter: menuItemIcon.horizontalCenter;
+		horizontalAlignment: Text.AlignHCenter;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.text;
-		font.pixelSize: 18;
+		font.pixelSize: 28;
 	}
 }

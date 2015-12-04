@@ -5,13 +5,14 @@ ListModel {
 		if (!this.protocol)
 			return;
 
-		this.defaultProvider = "";
+		//this.defaultProvider = "";
+		this.defaultProvider = "peerstvSlyNet";
 		var self = this;
 
 		this.protocol.getProviders(function(providers) {
 			self.clear();
 			for (var p in providers) {
-				if (providers[p].name == "zabavaSlyUkraine")
+				if (providers[p].name == "peerstvSlyNet")
 					self.defaultProvider = providers[p].alias;
 
 				self.append({

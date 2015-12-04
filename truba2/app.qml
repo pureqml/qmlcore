@@ -6,20 +6,21 @@ Activity {
 
 	Item {
 		id: safeArea;
-		anchors.fill: renderer;
+		anchors.fill: mainWindow;
 		anchors.margins: 20;
 	}
 
 	Protocol { id: protocol; enabled: true; }
 
-	ProvidersModel { id: providersModel; }
+	ProvidersModel { id: providersModel; protocol: protocol; }
 
 	CategoriesModel	{
 		id: categoriesModel;
+		protocol: protocol;
 		provider: providersModel.defaultProvider;
 	}
 
-	EPGModel { id: epgModel; }
+	EPGModel { id: epgModel; protocol: protocol; }
 
 	ColorTheme { id: colorTheme; }
 
@@ -61,11 +62,12 @@ Activity {
 			//infoPanel.show()
 	//}
 
-	InfoPanel {
-		id: infoPanel;
-		anchors.left: safeArea.left;
-		anchors.bottom: safeArea.bottom;
-	}
+	//InfoPanel {
+		//id: infoPanel;
+		//anchors.left: safeArea.left;
+		//anchors.bottom: safeArea.bottom;
+	//}
+
 
 	Item {
 		id: osdLayout;
@@ -75,32 +77,29 @@ Activity {
 		MainMenu {
 			id: menu;
 
-			onDownPressed: { channelsPanel.setFocus(); }
+			onDownPressed: { channelsPanel.forceActiveFocus(); }
 			onIsAlive: { displayTimer.restart(); }
 		}
 
 		ChannelsPanel {
 			id: channelsPanel;
 			anchors.top: menu.bottom;
-			anchors.left: safeArea.left;
-			anchors.right: safeArea.right;
-			anchors.leftMargin: menu.minSize + 2;
 			anchors.topMargin: 2;
 
-			//onUpPressed: {
+			onUpPressed: {
 				//if (panelContent.activeFocus)
-					//menu.setFocus();
-			//}
+					menu.forceActiveFocus();
+			}
 
-			//onSwitched: {
-				//log("Channel switched:", channel.text, "url:", channel.url)
-				//osdLayout.show = false
+			onSwitched: {
+				log("Channel switched:", channel.text, "url:", channel.url)
+				osdLayout.show = false
 				//ondatraPlayer.url = channel.url
 				//ondatraPlayer.play()
-				//infoPanel.setChannel(channel)
-			//}
+				infoPanel.setChannel(channel)
+			}
 
-			//onIsAlive: { displayTimer.restart(); }
+			onIsAlive: { displayTimer.restart(); }
 		}
 
 		//BorderShadow3D {
@@ -112,7 +111,7 @@ Activity {
 
 		//showUp: {
 			//this.show = true;
-			//menu.setFocus();
+			//menu.forceActiveFocus();
 			//displayTimer.restart();
 		//}
 	}

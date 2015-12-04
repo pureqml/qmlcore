@@ -1,6 +1,6 @@
 Rectangle {
-	width: parent.cellWidth;
-	height: parent.cellHeight;
+	width: parent.cellWidth - 2;
+	height: parent.cellHeight - 2;
 	color: model.color;
 	z: activeFocus ? parent.z + 100 : parent.z + 1;
 
@@ -10,7 +10,7 @@ Rectangle {
 		width: parent.activeFocus ? parent.width + 20 : parent.width;
 		height: parent.activeFocus ? width - 40 : parent.height;
 		color: model.color;
-		visiible: parent.activeFocus;
+		visible: parent.activeFocus;
 
 		Behavior on width { Animation { duration: 200; } }
 	}
@@ -29,21 +29,13 @@ Rectangle {
 			anchors.top: parent.top;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
-			//horizontalAlignment: AlignHCenter;
-			//wrapMode: Text.Wrap;
+			horizontalAlignment: Text.AlignHCenter;
+			wrap: true;
 			text: model.text;
 			color: colorTheme.focusedTextColor;
-			font.pixelSize: 10;
+			font.pixelSize: 18;
 		}
 	}
-
-	//BorderShadow3D {
-		//anchors.top: channelBgPanel.top;
-		//anchors.left: channelBgPanel.left;
-		//anchors.right: channelBgPanel.right;
-		//anchors.bottom: titleBgPanel.bottom;
-		//visible: parent.activeFocus;
-	//}
 
 	Image {
 		anchors.fill: parent;
@@ -51,4 +43,16 @@ Rectangle {
 		fillMode: Image.PreserveAspectFit;
 		source: model.source;
 	}
+
+	Item {
+		anchors.top: channelBgPanel.top;
+		anchors.left: channelBgPanel.left;
+		anchors.right: channelBgPanel.right;
+		anchors.bottom: titleBgPanel.bottom;
+		effects.shadow.spread: 5;
+		effects.shadow.color: "#000a";
+		effects.shadow.blur: 6;
+		visible: parent.activeFocus;
+	}
+
 }

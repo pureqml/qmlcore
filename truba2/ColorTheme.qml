@@ -6,10 +6,15 @@ Item {
 	property Color dialogBackground:		"#FBFBFB";
 	property Color activeDialogBackground:	"#555";
 	property Color focusablePanelColor:		"#555";
+	property Color activePanelColor:		"#555";
 
-	property Color textColor:				"#000";
+	property Color accentColor:				"#555";
+	property Color activeFocusColor:		"#fa0";
+
+	property Color textColor:				"#fff";
+	property Color activeTextColor:			"#fff";
 	property Color accentTextColor:			"#D84315";
-	property Color focusedTextColor:		"#fff";
+	property Color focusedTextColor:		"#000";
 	property Color focusedAccentTextColor:	"#263238";
 	property Color disabledTextColor:		"#b0bec5";
 }

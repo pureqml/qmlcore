@@ -4,18 +4,17 @@ Item {
 	signal switched;
 	property variant channel;
 	visible: false;
-	focus: true;
+	focus: visible;
 
 	Rectangle {
 		id: fog;
 		anchors.fill: renderer;
 		//color: utils.lighter(logoBg.color, 0.4);
+		color: "#0000";
 		opacity: parent.visible ? 1.0 : 0.0;
 
 		Behavior on opacity { Animation { duration: 300; } }
 	}
-
-	//BorderShadow3D { anchors.fill: parent; }
 
 	Rectangle {
 		anchors.fill: parent;
@@ -78,14 +77,12 @@ Item {
 		color: "#0003";
 	}
 
-	////HighlightListView {
 	ListView {
 		id: programsList;
 		width: parent.width / 2;
 		anchors.top: logoBg.bottom;
 		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
-		//highlightColor: count && activeFocus ? colorTheme.activeFocusColor : "#0000";
 		anchors.margins: 10;
 		clip: true;
 		model: epgModel;
@@ -126,8 +123,8 @@ Item {
 		onLeftPressed: { programsList.forceActiveFocus() }
 
 		onSelectPressed: {
-			//channelInfoPanelProto.switched(channelInfoPanelProto.channel);
-			//channelInfoPanelProto.hide();
+			channelInfoPanelProto.switched(channelInfoPanelProto.channel);
+			channelInfoPanelProto.hide();
 		}
 	}
 
@@ -149,31 +146,31 @@ Item {
 
 	show(channel): {
 		this.visible = true
-		//this.channel = channel
+		this.channel = channel
 
-		this.x = channel.x
-		panelXAnimation.complete()
-		this.y = channel.y
-		panelYAnimation.complete()
+		//this.x = channel.x
+		//panelXAnimation.complete()
+		//this.y = channel.y
+		//panelYAnimation.complete()
 
 		logoBg.color = channel.color
 		channelInfoTitle.text = channel.text
 		programsList.model.getEPGForChannel(channel.id);
 		programsList.currentIndex = 0;
 
-		this.width = channel.width
-		panelWidthAnimation.complete()
-		this.height = channel.height
+		//this.width = channel.width
+		//panelWidthAnimation.complete()
+		//this.height = channel.height
 		selectedChannelLogo.source = channel.source
-		selectedChannelLogo.width = channel.width
-		selectedChannelLogo.height = channel.height
+		//selectedChannelLogo.width = channel.width
+		//selectedChannelLogo.height = channel.height
 		programDescription.text = "";
 
-		var w = safeArea.width / 3 * 2
+		var w = this.parent.width / 3 * 2
 		this.width = w
-		this.height = safeArea.height - 50
-		this.x = safeArea.x - this.parent.x + (safeArea.width - w) /  2 - 70
-		this.y = safeArea.y - this.parent.y + 25
+		this.height = this.parent.height - 50
+		this.x = this.parent.x - this.parent.x + (this.parent.width - w) /  2 - 70
+		this.y = this.parent.y - this.parent.y + 25
 		this.updateProgress()
 	}
 
@@ -195,6 +192,13 @@ Item {
 	onBackPressed: {
 		this.hide();
 		return true;
+	}
+
+	Item {
+		anchors.fill: parent;
+		effects.shadow.spread: 5;
+		effects.shadow.color: "#000a";
+		effects.shadow.blur: 6;
 	}
 
 	Behavior on x { Animation { id: panelXAnimation; duration: 300; } }

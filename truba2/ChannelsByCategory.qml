@@ -23,10 +23,7 @@ Item {
 			onReturnedToMenu:	{ contentView.forceActiveFocus() }
 			onMovedUp:		{ --channelsByGenres.currentIndex; }
 			onMovedDown:	{ ++channelsByGenres.currentIndex; }
-
-			onSwitched: {
-				channelsByGenreProto.switched(channel)
-			}
+			onSwitched(channel): { channelsByGenreProto.switched(channel) }
 		}
 
 		onCurrentIndexChanged: {

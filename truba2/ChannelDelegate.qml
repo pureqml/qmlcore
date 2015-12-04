@@ -54,5 +54,4 @@ Rectangle {
 		effects.shadow.blur: 6;
 		visible: parent.activeFocus;
 	}
-
 }

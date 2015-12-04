@@ -23,14 +23,14 @@ Rectangle {
 		model: ListModel {
 			property string text;
 
-			ListElement { text: "Просмотр"; icon: "apps/ondatra/res/menu/tv.png"; }
-			ListElement { text: "VOD"; icon: "apps/ondatra/res/menu/vod.png"; }
-			ListElement { text: "Настройки"; icon: "apps/ondatra/res/menu/settings.png"; }
+			ListElement { text: "Просмотр"; icon: "res/osd/menu/tv.png"; }
+			ListElement { text: "VOD"; icon: "res/osd/menu/vod.png"; }
+			ListElement { text: "Настройки"; icon: "res/osd/menu/settings.png"; }
 		}
 
 		onCountChanged: {
 			if (this.count)
-				this.setFocus()
+				this.forceActiveFocus()
 		}
 
 		onCurrentIndexChanged: { mainMenu.isAlive(); }

@@ -8,7 +8,7 @@ Item {
 
 	Rectangle {
 		id: fog;
-		anchors.fill: mainWindow;
+		anchors.fill: renderer;
 		//color: utils.lighter(logoBg.color, 0.4);
 		opacity: parent.visible ? 1.0 : 0.0;
 
@@ -91,7 +91,7 @@ Item {
 		model: epgModel;
 		delegate: EPGDelegate { }
 
-		onRightPressed: { acceptedButton.setFocus(); }
+		onRightPressed: { acceptedButton.forceActiveFocus(); }
 
 		onActiveFocusChanged: {
 			if (this.activeFocus)
@@ -123,7 +123,7 @@ Item {
 		anchors.margins: 10;
 		text: "Телесмотреть";
 
-		onLeftPressed: { programsList.setFocus() }
+		onLeftPressed: { programsList.forceActiveFocus() }
 
 		onSelectPressed: {
 			//channelInfoPanelProto.switched(channelInfoPanelProto.channel);
@@ -144,7 +144,7 @@ Item {
 
 	onVisibleChanged: {
 		if (this.visible)
-			acceptedButton.setFocus()
+			acceptedButton.forceActiveFocus()
 	}
 
 	show(channel): {

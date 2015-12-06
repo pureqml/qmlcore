@@ -37,9 +37,13 @@ BaseView {
 			}
 		} else {
 			if (key == 'Up') {
+				if (!this.currentIndex && !this.keyNavigationWraps)
+					return false;
 				--this.currentIndex;
 				return true;
 			} else if (key == 'Down') {
+				if (this.currentIndex == this.count - 1 && !this.keyNavigationWraps)
+					return false;
 				++this.currentIndex;
 				return true;
 			}

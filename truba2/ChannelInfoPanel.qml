@@ -2,6 +2,7 @@ Item {
 	id: channelInfoPanelProto;
 	signal isAlive;
 	signal switched;
+	signal rejected;
 	property variant channel;
 	visible: false;
 	focus: visible;
@@ -123,6 +124,8 @@ Item {
 		onLeftPressed: { programsList.forceActiveFocus() }
 
 		onSelectPressed: {
+			//if (!this.visible)
+				//return false;
 			channelInfoPanelProto.switched(channelInfoPanelProto.channel);
 			channelInfoPanelProto.hide();
 		}
@@ -191,6 +194,7 @@ Item {
 
 	onBackPressed: {
 		this.hide();
+		this.rejected();
 		return true;
 	}
 

@@ -9,14 +9,16 @@ Item {
 	ChannelsByCategory {
 		id: panelContent;
 		onIsAlive: { channelsPanelProto.isAlive(); }
+
 		onSwitched(channel): { channelInfoPanel.show(channel) }
 	}
 
 	ChannelInfoPanel {
 		id: channelInfoPanel;
 		onSwitched(channel): { channelsPanelProto.switched(channel) }
+		onRejected:	{ panelContent.focusChannels(); }
 		onIsAlive: { channelsPanelProto.isAlive(); }
 	}
 
-	onActiveFocusChanged: { panelContent.forceActiveFocus(); }
+	focusCategories: { panelContent.focusCategories(); }
 }

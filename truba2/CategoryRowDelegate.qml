@@ -85,6 +85,11 @@ Item {
 		}
 	}
 
+	onActiveFocusChanged: {
+		if (this.activeFocus)
+			innerChannels.forceActiveFocus()
+	}
+
 	onCompleted: {
 		if (this.list)
 			innerChannels.model.setList(this.list)

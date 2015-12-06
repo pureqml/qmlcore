@@ -67,7 +67,7 @@ Activity {
 		MainMenu {
 			id: menu;
 
-			onDownPressed: { channelsPanel.forceActiveFocus(); }
+			onDownPressed: { channelsPanel.focusCategories(); }
 			onIsAlive: { displayTimer.restart(); }
 		}
 
@@ -77,15 +77,13 @@ Activity {
 			anchors.topMargin: 2;
 
 			onUpPressed: {
-				//if (panelContent.activeFocus)
-					menu.forceActiveFocus();
+				menu.forceActiveFocus();
 			}
 
 			onSwitched(channel): {
 				log("Channel switched:", channel.text, "url:", channel.url)
 				osdLayout.show = false
-				//ondatraPlayer.url = channel.url
-				//ondatraPlayer.play()
+				videoPlayer.source = channel.url;
 				infoPanel.setChannel(channel)
 			}
 

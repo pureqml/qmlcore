@@ -10,7 +10,6 @@ Item {
 
 	ListView {
 		id: channelsByGenres;
-		focus: !menu.activeFocus;
 		anchors.top: parent.top;
 		anchors.left: contentView.right;
 		anchors.right: parent.right;
@@ -78,8 +77,13 @@ Item {
 		Behavior on width { Animation { duration: 300; } }
 	}
 
-	onActiveFocusChanged: {
-		if (this.activeFocus)
-			contentView.forceActiveFocus()
+	focusCategories: {
+		contentView.showFocused = true
+		contentView.forceActiveFocus()
+	}
+
+	focusChannels: {
+		contentView.showFocused = false
+		channelsByGenres.forceActiveFocus()
 	}
 }

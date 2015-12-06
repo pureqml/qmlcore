@@ -110,7 +110,7 @@ Activity {
 
 	Timer {
 		id: displayTimer;
-		interval: 7000;
+		interval: 10000;
 		repeat: false;
 		running: false;
 

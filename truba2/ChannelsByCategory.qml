@@ -10,6 +10,7 @@ Item {
 
 	ListView {
 		id: channelsByGenres;
+		focus: !menu.activeFocus;
 		anchors.top: parent.top;
 		anchors.left: contentView.right;
 		anchors.right: parent.right;
@@ -20,10 +21,14 @@ Item {
 		spacing: 5;
 		delegate: CategoryRowDelegate {
 			onIsAlive:			{ channelsByGenreProto.isAlive() }
-			onReturnedToMenu:	{ contentView.forceActiveFocus() }
 			onMovedUp:		{ --channelsByGenres.currentIndex; }
 			onMovedDown:	{ ++channelsByGenres.currentIndex; }
 			onSwitched(channel): { channelsByGenreProto.switched(channel) }
+
+			onReturnedToMenu: {
+				contentView.showFocused = true;
+				contentView.forceActiveFocus();
+			}
 		}
 
 		onCurrentIndexChanged: {
@@ -31,8 +36,6 @@ Item {
 			if (channelsByGenres.activeFocus)
 				contentView.currentIndex = this.currentIndex;
 		}
-
-		onLeftPressed: { contentView.forceActiveFocus(); }
 	}
 
 	Rectangle {
@@ -42,7 +45,7 @@ Item {
 
 	ListView {
 		id: contentView;
-		property bool showFocused: menu.activeFocus || activeFocus;
+		property bool showFocused: true;
 		property int minSize: 50;
 		width: showFocused ? 300 : minSize;
 		anchors.top: parent.top;
@@ -67,7 +70,10 @@ Item {
 				channelsByGenres.currentIndex = this.currentIndex;
 		}
 
-		onRightPressed: { channelsByGenres.forceActiveFocus(); }
+		onRightPressed: {
+			channelsByGenres.forceActiveFocus();
+			this.showFocused = false;
+		}
 
 		Behavior on width { Animation { duration: 300; } }
 	}

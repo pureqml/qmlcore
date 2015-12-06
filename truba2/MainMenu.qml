@@ -11,7 +11,6 @@ Rectangle {
 	focus: true;
 	clip: true;
 
-	//HighlightListView {
 	ListView {
 		id: innerMenuList;
 		height: parent.maxSize;
@@ -24,7 +23,6 @@ Rectangle {
 			property string text;
 
 			ListElement { text: "Просмотр"; icon: "res/osd/menu/tv.png"; }
-			ListElement { text: "VOD"; icon: "res/osd/menu/vod.png"; }
 			ListElement { text: "Настройки"; icon: "res/osd/menu/settings.png"; }
 		}
 

@@ -1039,6 +1039,11 @@ exports._setup = function() {
 		child.onChanged('recursiveVisible', this._layout.bind(this))
 	}
 
+
+	_globals.core.BaseView.prototype.Contain	= 0
+	_globals.core.BaseView.prototype.Center		= 1
+
+
 	_globals.core.BaseView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items

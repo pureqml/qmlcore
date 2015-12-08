@@ -10,6 +10,7 @@ MouseArea {
 	property int contentWidth: 1;
 	property int contentHeight: 1;
 	property int scrollingStep: 0;
+	property int positionMode;
 
 	property bool handleNavigationKeys: true;
 	property bool keyNavigationWraps: true;
@@ -32,6 +33,8 @@ MouseArea {
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height
 		var horizontal = this.orientation == this.Horizontal
+		var center = this.positionMode === this.Center
+
 		if (horizontal) {
 			if (iw > w) {
 				this.contentX = x - w / 2 + iw / 2
@@ -42,11 +45,12 @@ MouseArea {
 			else if (x - cx + iw > w)
 				this.contentX = x + iw - w
 		} else {
-			if (ih > h) {
-				this.contentY = y - h / 2 + ih / 2
-				return
-			}
-			if (y - cy < 0)
+			var atCenter = y - h / 2 + ih / 2
+			if (center)
+				this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 ? this.contentHeight - h : atCenter;
+			else if (ih > h)
+				this.contentY = atCenter
+			else if (y - cy < 0)
 				this.contentY = y
 			else if (y - cy + ih > h)
 				this.contentY = y + ih - h

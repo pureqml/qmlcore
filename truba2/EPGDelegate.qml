@@ -2,6 +2,12 @@ Item {
 	width: parent.width;
 	height: 40;
 
+	Rectangle {
+		anchors.fill: parent;
+		color: colorTheme.activeFocusColor;
+		visible: parent.activeFocus;
+	}
+
 	Text {
 		id: epgStartProgramText;
 		anchors.left: parent.left;

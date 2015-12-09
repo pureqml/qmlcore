@@ -62,7 +62,7 @@ Item {
 		anchors.margins: 10;
 		color: colorTheme.activeTextColor;
 		clip: true;
-		font.pixelSize: 14;
+		font.pixelSize: 18;
 	}
 
 	Item {
@@ -119,6 +119,7 @@ Item {
 		anchors.rightMargin: 10;
 		color: colorTheme.activeTextColor;
 		wrap: true;
+		font.pixelSize: 18;
 
 		updateDescription: { this.text = programsList.model.get(programsList.currentIndex).description }
 	}

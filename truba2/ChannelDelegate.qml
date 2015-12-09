@@ -8,7 +8,7 @@ Rectangle {
 		id: channelBgPanel;
 		anchors.centerIn: parent;
 		width: parent.activeFocus ? parent.width + 20 : parent.width;
-		height: parent.activeFocus ? width - 40 : parent.height;
+		height: parent.activeFocus ? parent.height + 20 : parent.height;
 		color: model.color;
 		visible: parent.activeFocus;
 

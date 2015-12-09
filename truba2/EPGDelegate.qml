@@ -15,6 +15,7 @@ Item {
 		anchors.leftMargin: 5;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.start;
+		font.pixelSize: 18;
 	}
 
 	Text {
@@ -26,6 +27,6 @@ Item {
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.title;
 		clip: true;
-		font.pixelSize: 14;
+		font.pixelSize: 18;
 	}
 }

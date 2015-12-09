@@ -36,18 +36,19 @@ MouseArea {
 		var center = this.positionMode === this.Center
 
 		if (horizontal) {
-			if (iw > w) {
-				this.contentX = x - w / 2 + iw / 2
-				return
-			}
-			if (x - cx < 0)
+			var atCenter = x - w / 2 + iw / 2
+			if (center)
+				this.contentX = atCenter < 0 ? 0 : x > this.contentWidth - w / 2 ? this.contentWidth - w : atCenter
+			else if (iw > w)
+				this.contentX = atCenter
+			else if (x - cx < 0)
 				this.contentX = x
 			else if (x - cx + iw > w)
 				this.contentX = x + iw - w
 		} else {
 			var atCenter = y - h / 2 + ih / 2
 			if (center)
-				this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 ? this.contentHeight - h : atCenter;
+				this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 ? this.contentHeight - h : atCenter
 			else if (ih > h)
 				this.contentY = atCenter
 			else if (y - cy < 0)

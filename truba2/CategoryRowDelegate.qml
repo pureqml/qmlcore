@@ -29,7 +29,8 @@ Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
-		cellWidth: parent.width / displayedCount;
+		//cellWidth: parent.width / displayedCount;
+		cellWidth: 120;
 		cellHeight: 90;
 		flow: GridView.FlowTopToBottom;
 		handleNavigationKeys: false;
@@ -37,7 +38,7 @@ Item {
 		delegate: ChannelDelegate { }
 
 		//TODO: =(
-		onCellWidthChanged: { this._layout(); }
+		//onCellWidthChanged: { this._layout(); }
 
 		onActiveFocusChanged:	{ if (this.activeFocus) this.showCurrentChannel(); }
 		onCurrentIndexChanged:	{ this.showCurrentChannel(); }

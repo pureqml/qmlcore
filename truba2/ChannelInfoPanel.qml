@@ -10,11 +10,19 @@ Item {
 	Rectangle {
 		id: fog;
 		anchors.fill: renderer;
-		//color: utils.lighter(logoBg.color, 0.4);
-		color: "#0000";
+		anchors.margins: -1000;
+		color: logoBg.color;
 		opacity: parent.visible ? 1.0 : 0.0;
+		effects.brightness: 0.4;
 
 		Behavior on opacity { Animation { duration: 300; } }
+	}
+
+	MouseArea {
+		anchors.fill: fog;
+		hoverEnabled: true;
+
+		onClicked: { channelInfoPanelProto.reject() }
 	}
 
 	Rectangle {
@@ -24,24 +32,26 @@ Item {
 
 	Rectangle {
 		id: logoBg;
-		anchors.fill: selectedChannelLogo;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
 	}
 
 	Image {
 		id: selectedChannelLogo;
-		anchors.top: parent.top;
-		anchors.left: parent.left;
+		anchors.fill: logoBg;
+		anchors.margins: 10;
+		fillMode: Image.PreserveAspectFit;
 	}
 
 	Text {
 		id: channelInfoTitle;
 		anchors.top: parent.top;
-		anchors.left: selectedChannelLogo.right;
+		anchors.left: logoBg.right;
 		anchors.right: parent.right;
 		anchors.margins: 10;
 		color: colorTheme.accentTextColor;
 		clip: true;
-		font.pixelSize: 18;
+		font.pixelSize: 28;
 	}
 
 	Text {
@@ -107,8 +117,8 @@ Item {
 		anchors.bottom: acceptedButton.top;
 		anchors.leftMargin: 10;
 		anchors.rightMargin: 10;
-		wrapMode: Text.Wrap;
 		color: colorTheme.activeTextColor;
+		wrap: true;
 
 		updateDescription: { this.text = programsList.model.get(programsList.currentIndex).description }
 	}
@@ -124,8 +134,6 @@ Item {
 		onLeftPressed: { programsList.forceActiveFocus() }
 
 		onSelectPressed: {
-			//if (!this.visible)
-				//return false;
 			channelInfoPanelProto.switched(channelInfoPanelProto.channel);
 			channelInfoPanelProto.hide();
 		}
@@ -151,34 +159,42 @@ Item {
 		this.visible = true
 		this.channel = channel
 
-		//this.x = channel.x
-		//panelXAnimation.complete()
-		//this.y = channel.y
-		//panelYAnimation.complete()
+		panelXAnimation.disable()
+		this.x = channel.x
+		panelYAnimation.disable()
+		this.y = channel.y
 
 		logoBg.color = channel.color
 		channelInfoTitle.text = channel.text
 		programsList.model.getEPGForChannel(channel.id);
 		programsList.currentIndex = 0;
 
-		//this.width = channel.width
-		//panelWidthAnimation.complete()
-		//this.height = channel.height
+		panelWidthAnimation.disable()
+		this.width = channel.width
+		this.height = channel.height
 		selectedChannelLogo.source = channel.source
-		//selectedChannelLogo.width = channel.width
-		//selectedChannelLogo.height = channel.height
+		logoBg.width = channel.width
+		logoBg.height = channel.height
 		programDescription.text = "";
 
+		panelWidthAnimation.enable()
 		var w = this.parent.width / 3 * 2
 		this.width = w
 		this.height = this.parent.height - 50
+		panelXAnimation.enable()
 		this.x = this.parent.x - this.parent.x + (this.parent.width - w) /  2 - 70
+		panelYAnimation.enable()
 		this.y = this.parent.y - this.parent.y + 25
 		this.updateProgress()
 	}
 
 	hide: {
 		this.visible = false
+	}
+
+	reject: {
+		this.hide();
+		this.rejected();
 	}
 
 	updateProgress: {
@@ -193,8 +209,7 @@ Item {
 	}
 
 	onBackPressed: {
-		this.hide();
-		this.rejected();
+		this.reject();
 		return true;
 	}
 

@@ -22,7 +22,13 @@ Item {
 			onIsAlive:			{ channelsByGenreProto.isAlive() }
 			onMovedUp:		{ --channelsByGenres.currentIndex; }
 			onMovedDown:	{ ++channelsByGenres.currentIndex; }
-			onSwitched(channel): { channelsByGenreProto.switched(channel) }
+
+			onSwitched(channel): {
+				var item = channelsByGenres._items[channelsByGenres.currentIndex];
+				channel.x += item.viewX + this.parent.parent.y
+				channel.y += item.viewY - channelsByGenres.contentY + this.parent.parent.y
+				channelsByGenreProto.switched(channel)
+			}
 
 			onReturnedToMenu: {
 				contentView.showFocused = true;

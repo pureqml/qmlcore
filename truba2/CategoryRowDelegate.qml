@@ -48,10 +48,11 @@ Item {
 				return false;
 
 			var row = this.model.get(this.currentIndex)
-			row.x = 0
-			row.y = 0 
-			row.width = 100 
-			row.height = 100 
+			var item = this._items[this.currentIndex];
+			row.x = item.viewX
+			row.y = item.viewY
+			row.width = item.width
+			row.height = item.height
 			categoryRowDelegate.switched(row);
 		}
 

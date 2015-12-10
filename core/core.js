@@ -1581,7 +1581,8 @@ exports._bootstrap = function(self, name) {
 			break;
 		case 'core.MouseArea':
 			self.element.click(self._onClick.bind(self))
-			self.element.drag(self._onVerticalSwipe.bind(self))
+			if (_globals.core.vendor == "webkit")
+				self.element.drag(self._onVerticalSwipe.bind(self))
 			$(document).mousemove(self._onMove.bind(self))
 			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
 			self.element.mousedown(self._onDown.bind(self))

@@ -5,7 +5,7 @@ Item {
 
 	property Color dialogBackground:		"#FBFBFB";
 	property Color activeDialogBackground:	"#555";
-	property Color focusablePanelColor:		"#555";
+	property Color focusablePanelColor:		"#111";
 	property Color activePanelColor:		"#555";
 
 	property Color accentColor:				"#555";

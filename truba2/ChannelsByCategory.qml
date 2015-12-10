@@ -18,6 +18,7 @@ Item {
 		positionMode: ListView.Center;
 		model: categoriesModel;
 		spacing: 5;
+		keyNavigationWraps: false;
 		delegate: CategoryRowDelegate {
 			onIsAlive:			{ channelsByGenreProto.isAlive() }
 			onMovedUp:		{ --channelsByGenres.currentIndex; }

@@ -4,7 +4,7 @@ Rectangle {
 	width: renderer.width - 50;
 	height: 120;
 	visible: false;
-	color: colorTheme.focusablePanelColor;
+	color: colorTheme.activeDialogBackground;
 
 	Rectangle {
 		id: channelBackground;

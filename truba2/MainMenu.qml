@@ -7,7 +7,7 @@ Rectangle {
 	anchors.top: safeArea.top;
 	anchors.left: safeArea.left;
 	anchors.right: safeArea.right;
-	color: colorTheme.focusablePanelColor;
+	color: colorTheme.activeDialogBackground;
 	focus: true;
 	clip: true;
 

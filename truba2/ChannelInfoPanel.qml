@@ -130,9 +130,13 @@ Item {
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
 		anchors.margins: 10;
+		color: activeFocus ? colorTheme.activeFocusColor : colorTheme.focusablePanelColor;
 		text: "Телесмотреть";
 
-		onLeftPressed: { programsList.forceActiveFocus() }
+		onLeftPressed: {
+			if (programsList.count)
+				programsList.forceActiveFocus()
+		}
 
 		onSelectPressed: {
 			channelInfoPanelProto.switched(channelInfoPanelProto.channel);

@@ -1444,7 +1444,13 @@ exports._setup = function() {
 		while(this._completedHandlers.length) {
 			var ch = this._completedHandlers
 			this._completedHandlers = []
-			ch.forEach(function(callback) { callback(); } )
+			ch.forEach(function(callback) {
+				try {
+					callback()
+				} catch(ex) {
+					log("onCompleted failed:", ex, ex.stack)
+				}
+			} )
 		}
 	}
 

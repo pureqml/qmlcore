@@ -1449,6 +1449,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.core.Context.prototype.start = function(name) {
+		console.log('Context: starting')
 		var proto;
 		if (typeof name == 'string') {
 			//log('creating component...', name);
@@ -1459,11 +1460,17 @@ exports._setup = function() {
 		}
 		else
 			proto = name;
+		console.log('Context: creating instance')
 		var instance = Object.create(proto.prototype);
+		console.log('Context: calling ctor')
 		proto.apply(instance, [this]);
+		console.log('Context: starting')
 		this._started = true
+		console.log('Context: calling on completed')
 		this._completed()
+		console.log('Context: signalling layout')
 		this.boxChanged()
+		console.log('Context: done')
 		return instance;
 	}
 }

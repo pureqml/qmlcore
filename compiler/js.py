@@ -281,9 +281,9 @@ class generator(object):
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
-		self.startup.append("qml.core.core._setup()")
-		self.startup.append("qml._context = new qml.core.core.Context()")
-		self.startup.append("qml._context.init()")
+		self.startup.append("\tqml.core.core._setup()")
+		self.startup.append("\tqml._context = new qml.core.core.Context()")
+		self.startup.append("\tqml._context.init()")
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -293,7 +293,7 @@ class generator(object):
 
 		if not declaration:
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
-			self.startup.append("qml._context.start(qml.%s)" %name)
+			self.startup.append("\tqml._context.start(qml.%s)" %name)
 
 		if package not in self.packages:
 			self.packages[package] = set()
@@ -399,4 +399,7 @@ class generator(object):
 		return "%s = %s();\n" %(ns, self.wrap(text))
 
 	def generate_startup(self):
-		return "\n".join(self.startup)
+		r = "try {\n"
+		r += "\n".join(self.startup)
+		r += "\n} catch(ex) { log(\"qml initialization failed: \", ex, ex.stack) }\n"
+		return r

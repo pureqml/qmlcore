@@ -246,6 +246,14 @@ exports._setup = function() {
 
 	/** @constructor */
 	var Color = function(value) {
+		if (typeof value !== 'string')
+		{
+			this.r = 255
+			this.g = 0
+			this.b = 255
+			log("invalid color specification: " + value)
+			return
+		}
 		var triplet
 		if (value.substring(0, 4) == "rgba") {
 			var b = value.indexOf('('), e = value.lastIndexOf(')')

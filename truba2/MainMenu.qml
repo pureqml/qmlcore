@@ -2,7 +2,7 @@ Item {
 	id: mainMenuProto;
 	property bool active: activeFocus;
 	property alias currentIndex: menuList.currentIndex;
-	property width minWidth: 100;
+	property width minWidth: 80;
 	width: active ? 280 : minWidth;
 	anchors.top: parent.top;
 	anchors.left: parent.left;

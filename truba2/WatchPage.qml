@@ -27,6 +27,6 @@ Item {
 		anchors.left: channels.right;
 		anchors.leftMargin: 2;
 
-		onLeftPressed: { categories.setFocus() }
+		onLeftPressed: { channels.setFocus() }
 	}
 }

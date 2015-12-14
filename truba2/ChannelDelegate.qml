@@ -1,57 +1,82 @@
 Rectangle {
-	width: parent.cellWidth - 2;
-	height: parent.cellHeight - 2;
-	color: model.color;
-	z: activeFocus ? parent.z + 100 : parent.z + 1;
+	id: channelDelegateProto;
+	width: parent.width;
+	height: 100;
+	color: colorTheme.focusablePanelColor;
+	clip: true;
 
 	Rectangle {
-		id: channelBgPanel;
-		anchors.centerIn: parent;
-		width: parent.activeFocus ? parent.width + 20 : parent.width;
-		height: parent.activeFocus ? parent.height + 20 : parent.height;
-		color: model.color;
+		anchors.fill: parent;
+		color: colorTheme.activeFocusColor;
 		visible: parent.activeFocus;
-
-		Behavior on width { Animation { duration: 200; } }
 	}
 
 	Rectangle {
-		id: titleBgPanel;
-		height: parent.activeFocus ? channelDelegateLabel.paintedHeight : 0;
-		anchors.top: channelBgPanel.bottom;
-		anchors.left: channelBgPanel.left;
-		anchors.right: channelBgPanel.right;
-		color: colorTheme.activeFocusColor;
-		clip: true;
+		id: logoBg;
+		width: height;
+		color: model.color;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		anchors.bottom: parent.bottom;
 
-		Text {
-			id: channelDelegateLabel;
-			anchors.top: parent.top;
-			anchors.left: parent.left;
-			anchors.right: parent.right;
-			horizontalAlignment: Text.AlignHCenter;
-			wrap: true;
-			text: model.text;
-			color: colorTheme.focusedTextColor;
-			font.pixelSize: 18;
+		Rectangle {
+			color: "#0000";
+			anchors.fill: parent;
+			anchors.topMargin: 4;
+			anchors.leftMargin: 4;
+			anchors.bottomMargin: 4;
+			border.width: 4;
+			border.color: colorTheme.activeFocusColor;
+			visible: channelDelegateProto.activeFocus;
+		}
+
+		Image {
+			anchors.fill: parent;
+			anchors.margins: 10;
+			fillMode: Image.PreserveAspectFit;
+			source: model.source;
 		}
 	}
 
-	Image {
-		anchors.fill: parent;
+	Text {
+		anchors.top: parent.top;
+		anchors.left: logoBg.right;
+		anchors.right: parent.right;
 		anchors.margins: 10;
-		fillMode: Image.PreserveAspectFit;
-		source: model.source;
+		text: model.text;
+		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.accentTextColor;
+		font.pixelSize: 21;
+		font.bold: true;
+	}
+
+	Text {
+		anchors.left: logoBg.right;
+		anchors.right: parent.right;
+		anchors.bottom: parent.bottom;
+		anchors.leftMargin: 10;
+		anchors.rightMargin: 10;
+		anchors.bottomMargin: 20;
+		text: model.program.start + "-" + model.program.stop + " " + model.program.title;
+		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+		font.pixelSize: 18;
 	}
 
 	Item {
-		anchors.top: channelBgPanel.top;
-		anchors.left: channelBgPanel.left;
-		anchors.right: channelBgPanel.right;
-		anchors.bottom: titleBgPanel.bottom;
-		effects.shadow.spread: 5;
-		effects.shadow.color: "#000a";
-		effects.shadow.blur: 6;
-		visible: parent.activeFocus;
+		height: 5;
+		anchors.left: logoBg.right;
+		anchors.right: parent.right;
+		anchors.bottom: parent.bottom;
+		anchors.leftMargin: 10;
+		anchors.rightMargin: 10;
+		anchors.bottomMargin: 10;
+
+		Rectangle {
+			id: programProgress;
+			width: model.program.progress * parent.width;
+			anchors.top: parent.top;
+			anchors.left: parent.left;
+			anchors.bottom: parent.bottom;
+			color: colorTheme.accentColor;
+		}
 	}
 }

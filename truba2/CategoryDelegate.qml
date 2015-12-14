@@ -2,7 +2,7 @@ Item {
 	id: categoryDelegate;
 	property string genre: model.text;
 	width: parent.width;
-	height: 100;
+	height: 50;
 	clip: true;
 
 	Rectangle {
@@ -15,7 +15,6 @@ Item {
 		anchors.centerIn: parent;
 		text: categoryDelegate.genre;
 		color: categoryDelegate.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
-		visible: contentView.showFocused;
 		font.pixelSize: 28;
 		opacity: parent.activeFocus ? 1 : 0.8;
 	}

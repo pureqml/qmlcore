@@ -1,39 +1,31 @@
-Rectangle {
-	id: mainMenu;
-	signal isAlive;
-	property int minSize: 60;
-	property int maxSize: 160;
-	height: activeFocus ? maxSize : minSize;
-	anchors.top: safeArea.top;
-	anchors.left: safeArea.left;
-	anchors.right: safeArea.right;
-	color: colorTheme.activeDialogBackground;
-	focus: true;
-	clip: true;
+Item {
+	id: mainMenuProto;
+	property bool active: activeFocus;
+	property alias currentIndex: menuList.currentIndex;
+	property width minWidth: 100;
+	width: active ? 280 : minWidth;
+	anchors.top: parent.top;
+	anchors.left: parent.left;
+	anchors.bottom: parent.bottom;
+
+	Rectangle {
+		anchors.fill: parent;
+		color: colorTheme.focusablePanelColor;
+	}
 
 	ListView {
-		id: innerMenuList;
-		height: parent.maxSize;
-		anchors.bottom: parent.bottom;
-		anchors.left: parent.left;
-		anchors.right: parent.right;
-		orientation: ListView.Horizontal;
+		id: menuList;
+		anchors.fill: parent;
 		delegate: MenuDelegate { }
 		model: ListModel {
 			property string text;
 
-			ListElement { text: "Просмотр"; icon: "res/osd/menu/tv.png"; }
-			ListElement { text: "Настройки"; icon: "res/osd/menu/settings.png"; }
+			ListElement { text: "Просмотр"; icon: "tv.png"; }
+			ListElement { text: "Настройки"; icon: "settings.png"; }
 		}
-
-		onCountChanged: {
-			if (this.count)
-				this.forceActiveFocus()
-		}
-
-		onCurrentIndexChanged: { mainMenu.isAlive(); }
 	}
 
-	Behavior on width { Animation {  duration: 200; } }
-	Behavior on height { Animation {  duration: 200; } }
+	BorderShadow { }
+
+	Behavior on width { Animation { duration: 300; } }
 }

@@ -1,4 +1,6 @@
 Item {
+	property string res:	"res/osd/menu/";
+
 	property Color backgroundColor:			"#fff";
 	property Color activeBackgroundColor:	"#b0bec5";
 	property Color disabledBackgroundColor:	"#FBFBFB";
@@ -8,7 +10,7 @@ Item {
 	property Color focusablePanelColor:		"#111";
 	property Color activePanelColor:		"#555";
 
-	property Color accentColor:				"#555";
+	property Color accentColor:				"#E65100";
 	property Color activeFocusColor:		"#fa0";
 
 	property Color textColor:				"#fff";

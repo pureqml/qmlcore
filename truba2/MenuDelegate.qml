@@ -1,6 +1,7 @@
 Item {
-	width: 100 > innerMenuDelegateText.width ? 120 : innerMenuDelegateText.width + 20;
-	height: parent.height;
+	width: parent.width;
+	height: 100;
+	clip: true;
 
 	Rectangle {
 		anchors.fill: parent;
@@ -10,19 +11,19 @@ Item {
 
 	Image {
 		id: menuItemIcon;
-		anchors.bottom: innerMenuDelegateText.top;
-		anchors.horizontalCenter: parent.horizontalCenter;
-		anchors.bottomMargin: 10;
+		anchors.left: parent.left;
+		anchors.verticalCenter: parent.verticalCenter;
+		anchors.leftMargin: 14;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
-		source: model.icon;
+		source: colorTheme.res + (parent.activeFocus ? "b_" : "") + model.icon;
 	}
 
 	Text {
 		id: innerMenuDelegateText;
-		anchors.bottom: parent.bottom;
-		anchors.bottomMargin: 10;
-		anchors.horizontalCenter: menuItemIcon.horizontalCenter;
-		horizontalAlignment: Text.AlignHCenter;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+		anchors.leftMargin: 100;
+		anchors.verticalCenter: parent.verticalCenter;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.text;
 		font.pixelSize: 28;

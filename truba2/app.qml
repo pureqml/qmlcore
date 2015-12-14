@@ -4,12 +4,6 @@ Activity {
 	anchors.fill: renderer;
 	name: "root";
 
-	Item {
-		id: safeArea;
-		anchors.fill: mainWindow;
-		anchors.margins: 20;
-	}
-
 	Protocol { id: protocol; enabled: true; }
 
 	ProvidersModel { id: providersModel; protocol: protocol; }
@@ -26,97 +20,56 @@ Activity {
 
 	VideoPlayer {
 		id: videoPlayer;
-		anchors.fill: mainWindow;
-		//source: lastChannel.source ? lastChannel.source : "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
+		anchors.fill: renderer;
 		source: "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
 		autoPlay: true;
 
-		Preloader {
-			anchors.centerIn: videoPlayer;
-			visible: !videoPlayer.ready;
-		}
-	}
-
-	//onBackPressed: {
-		//if (infoPanel.visible) {
-			//infoPanel.hide();
-		//} else if (!osdLayout.show) {
-			//viewsFinder.closeApp();
-			//ondatraPlayer.abort();
+		//Preloader {
+			//anchors.centerIn: videoPlayer;
+			//visible: !videoPlayer.ready;
 		//}
-	//}
-
-	onSelectPressed: {
-		if (!osdLayout.show) {
-			infoPanel.hide();
-			osdLayout.showUp();
-		}
-	}
-
-	InfoPanel {
-		id: infoPanel;
-		anchors.left: safeArea.left;
-		anchors.bottom: safeArea.bottom;
 	}
 
 	Item {
 		id: osdLayout;
-		property bool show: true;
-		opacity: show ? 1.0 : 0.0;
+		anchors.fill: parent;
+
+		PageStack {
+			id: content;
+			anchors.top: parent.top;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			anchors.bottom: parent.bottom;
+			anchors.leftMargin: menu.minWidth + 2;
+			currentIndex: menu.currentIndex;
+
+			WatchPage {
+				onSwitched(channel): {
+					log("Channel switched:", channel.text, "url:", channel.url)
+					osdLayout.hide()
+					videoPlayer.source = channel.url;
+				}
+			}
+
+			//SettingsPage { }	//TODO: impl
+			onLeftPressed: { menu.setFocus() }
+		}
 
 		MainMenu {
 			id: menu;
 
-			onDownPressed: { channelsPanel.focusCategories(); }
-			onIsAlive: { displayTimer.restart(); }
+			onRightPressed: { content.setFocus() }
 		}
+	
+		hide: { this.visible = false }
 
-		ChannelsPanel {
-			id: channelsPanel;
-			anchors.top: menu.bottom;
-			anchors.topMargin: 2;
-
-			onUpPressed: {
-				menu.forceActiveFocus();
-			}
-
-			onSwitched(channel): {
-				log("Channel switched:", channel.text, "url:", channel.url)
-				osdLayout.show = false
-				videoPlayer.source = channel.url;
-				infoPanel.setChannel(channel)
-			}
-
-			onIsAlive: { displayTimer.restart(); }
-		}
-
-		Item {
-			anchors.fill: parent;
-			effects.shadow.spread: 5;
-			effects.shadow.color: "#000a";
-			effects.shadow.blur: 6;
-			anchors.fill: menu;
-			opacity: menu.activeFocus ? 1.0 : 0.0;
-		}
-
-		showUp: {
-			this.show = true;
-			menu.forceActiveFocus();
-			displayTimer.restart();
+		show: {
+			this.visible = true
+			menu.setFocus()
 		}
 	}
 
-	Timer {
-		id: displayTimer;
-		interval: 10000;
-		repeat: false;
-		running: false;
-
-		onTriggered: { osdLayout.show = false; }
-	}
-
-	onBackPressed: {
-		if (osdLayout.show)
-			osdLayout.show = false;
+	onRedPressed: {
+		osdLayout.show()
 	}
 }

@@ -1,5 +1,5 @@
 Item {
-	width: 500;
+	width: 450;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 

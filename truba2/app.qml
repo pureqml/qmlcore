@@ -67,9 +67,20 @@ Activity {
 			this.visible = true
 			menu.setFocus()
 		}
+
+		onBackPressed: { osdLayout.hide() }
 	}
 
-	onRedPressed: {
-		osdLayout.show()
+	onRedPressed: { osdLayout.show() }
+
+	onBackPressed: {
+		if (osdLayout.visible)
+			return false
+
+		// Crunch for compiler.
+		if (!widgetAPI)
+			var widgetAPI = { }
+		if (_globals.core.vendor == "samsung")
+			widgetAPI.sendExitEvent()
 	}
 }

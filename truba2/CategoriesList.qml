@@ -1,5 +1,6 @@
 Item {
 	id: categoriesList;
+	property string prevGenre: "";
 	signal genreChoosed;
 	width: 300;
 	anchors.top: parent.top;
@@ -24,14 +25,18 @@ Item {
 
 	Timer {
 		id: updateTimer;
-		interval: 500;
+		interval: 800;
 		repeat: false;
 
-		onTriggered: { categoriesList.genreChoosed(categoriesListView.model.get(categoriesListView.currentIndex).list) }
+		onTriggered: {
+			categoriesList.genreChoosed(categoriesListView.model.get(categoriesListView.currentIndex).list)
+			categoriesList.prevGenre = categoriesListView.model.get(categoriesListView.currentIndex).text
+		}
 	}
 
 	onActiveFocusChanged: {
-		if (this.activeFocus)
+		var genre = categoriesListView.model.get(categoriesListView.currentIndex).text
+		if (this.activeFocus && genre != this.prevGenre)
 			updateTimer.restart()
 	}
 }

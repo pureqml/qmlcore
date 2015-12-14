@@ -12,7 +12,9 @@ Item {
 	}
 
 	Text {
-		anchors.centerIn: parent;
+		anchors.left: parent.left;
+		anchors.leftMargin: 10;
+		anchors.verticalCenter: parent.verticalCenter;
 		text: categoryDelegate.genre;
 		color: categoryDelegate.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
 		font.pixelSize: 28;

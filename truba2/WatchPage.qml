@@ -6,7 +6,11 @@ Item {
 	CategoriesList {
 		id: categories;
 
-		onGenreChoosed(list): { channels.resetIndex(); channels.setList(list) }
+		onGenreChoosed(list): {
+			channels.resetIndex()
+			channels.setList(list)
+			programs.hide()
+		}
 
 		onRightPressed: { channels.setFocus() }
 	}

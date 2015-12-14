@@ -1,6 +1,6 @@
 Item {
 	width: parent.width;
-	height: 100;
+	height: 70;
 	clip: true;
 
 	Rectangle {
@@ -13,7 +13,7 @@ Item {
 		id: menuItemIcon;
 		anchors.left: parent.left;
 		anchors.verticalCenter: parent.verticalCenter;
-		anchors.leftMargin: 14;
+		anchors.leftMargin: 13;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
 		source: colorTheme.res + (parent.activeFocus ? "b_" : "") + model.icon;
 	}

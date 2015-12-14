@@ -29,4 +29,9 @@ Item {
 
 		onTriggered: { categoriesList.genreChoosed(categoriesListView.model.get(categoriesListView.currentIndex).list) }
 	}
+
+	onActiveFocusChanged: {
+		if (this.activeFocus)
+			updateTimer.restart()
+	}
 }

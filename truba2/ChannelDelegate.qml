@@ -56,13 +56,13 @@ Rectangle {
 		anchors.leftMargin: 10;
 		anchors.rightMargin: 10;
 		anchors.bottomMargin: 20;
-		text: model.program.start + "-" + model.program.stop + " " + model.program.title;
+		text: model.program.start + (model.program.start ? "-" : "") + model.program.stop + " " + model.program.title;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		font.pixelSize: 18;
 	}
 
 	Item {
-		height: 5;
+		height: 3;
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;

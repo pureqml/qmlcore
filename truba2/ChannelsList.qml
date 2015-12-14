@@ -19,18 +19,23 @@ Item {
 		onCurrentIndexChanged: { updateChannelTimer.restart() }
 	}
 
-	setList(list): { channelsListView.model.setList(list) }
-
-	resetIndex: {
-		channelsListView.contentY = 0
-		channelsListView.currentIndex = 0
-	}
-
 	Timer {
 		id: updateChannelTimer;
 		interval: 500;
 		repeat: false;
 
 		onTriggered: { channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex)) }
+	}
+
+	setList(list): { channelsListView.model.setList(list) }
+
+	onActiveFocusChanged: {
+		if (this.activeFocus)
+			updateChannelTimer.restart()
+	}
+
+	resetIndex: {
+		channelsListView.contentY = 0
+		channelsListView.currentIndex = 0
 	}
 }

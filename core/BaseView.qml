@@ -105,6 +105,7 @@ MouseArea {
 	onPressedChanged: {
 		if (this.pressed) {
 			var idx = this.indexAt(this.mouseX, this.mouseY)
+			this._pressedIndex = idx
 			this._x = this.mouseX
 			this._y = this.mouseY
 			if (idx >= 0) {
@@ -212,7 +213,7 @@ MouseArea {
 	}
 
 	onClicked: {
-		this.currentIndex = this.indexAt(this.mouseX, this.mouseY)
+		this.currentIndex = this._pressedIndex ? this._pressedIndex : this.indexAt(this.mouseX, this.mouseY)
 		if (this._items[this.currentIndex] instanceof qml.core.MouseArea) {
 			this._items[this.currentIndex].clicked();
 		}

@@ -78,6 +78,7 @@ BaseView {
 
 	indexAt(x, y): {
 		var items = this._items
+		var center = this.positionMode === this.Center
 		x += this.contentX
 		y += this.contentY
 		if (this.orientation == ListView.Horizontal) {

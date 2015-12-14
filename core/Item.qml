@@ -33,5 +33,5 @@ Object {
 
 	onVisibleChanged: { this._updateVisibility() }
 	onOpacityChanged: { this._updateVisibility() }
-	focus: { this.forceActiveFocus(); }
+	setFocus: { this.forceActiveFocus(); }
 }

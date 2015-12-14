@@ -37,7 +37,7 @@ MouseArea {
 
 		if (horizontal) {
 			var atCenter = x - w / 2 + iw / 2
-			if (center)
+			if (center && this.contentWidth > w)
 				this.contentX = atCenter < 0 ? 0 : x > this.contentWidth - w / 2 ? this.contentWidth - w : atCenter
 			else if (iw > w)
 				this.contentX = atCenter
@@ -47,7 +47,7 @@ MouseArea {
 				this.contentX = x + iw - w
 		} else {
 			var atCenter = y - h / 2 + ih / 2
-			if (center)
+			if (center && this.contentHeight > h)
 				this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 ? this.contentHeight - h : atCenter
 			else if (ih > h)
 				this.contentY = atCenter

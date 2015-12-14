@@ -101,6 +101,7 @@ def generate():
 	print "generating sources..."
 	namespace = "qml"
 	app = "'use strict'\n"
+	app += "var log = console.log.bind(console)\n"
 	app += "var " + generator.generate(namespace)
 	app += generator.generate_startup()
 	with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:

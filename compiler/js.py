@@ -391,7 +391,6 @@ class generator(object):
 	def generate(self, ns):
 		text = ""
 		text += "var _globals = exports\n"
-		text += "var log = console.log.bind(console)\n"
 		text += "%s\n" %self.generate_imports()
 		text += "//========================================\n\n"
 		text += "var core = _globals.core.core\n"

@@ -1,7 +1,7 @@
 Rectangle {
 	id: channelDelegateProto;
 	width: parent.width;
-	height: 100;
+	height: channelLabelText.paintedHeight * 3.5;
 	color: colorTheme.focusablePanelColor;
 	clip: true;
 
@@ -38,18 +38,18 @@ Rectangle {
 		}
 	}
 
-	Text {
+	MainText {
+		id: channelLabelText;
 		anchors.top: parent.top;
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
 		anchors.margins: 10;
 		text: model.text;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.accentTextColor;
-		font.pixelSize: 21;
 		font.bold: true;
 	}
 
-	Text {
+	MainText {
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
@@ -58,7 +58,6 @@ Rectangle {
 		anchors.bottomMargin: 20;
 		text: model.program.start + (model.program.start ? "-" : "") + model.program.stop + " " + model.program.title;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
-		font.pixelSize: 18;
 	}
 
 	Item {

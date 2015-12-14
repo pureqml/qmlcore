@@ -489,16 +489,14 @@ exports._setup = function() {
 			return true
 
 		var children = this.children
-		var result = focus
 		for(var i = 0; i < children.length; ++i) {
 			var child = children[i]
 			if (('_tryFocus' in child) && child._tryFocus()) {
 				this._focusChild(child)
-				result = true
-				break
+				return true
 			}
 		}
-		return result
+		return focus
 	}
 
 	_globals.core.Item.prototype._propagateFocusToParents = function() {

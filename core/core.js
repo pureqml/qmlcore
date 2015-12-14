@@ -428,7 +428,8 @@ exports._setup = function() {
 	_globals.core.Item.prototype.addChild = function(child) {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		if ('_tryFocus' in child)
-			child._tryFocus()
+			if (child._tryFocus())
+				this._propagateFocusToParents()
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
@@ -502,7 +503,7 @@ exports._setup = function() {
 
 	_globals.core.Item.prototype._propagateFocusToParents = function() {
 		var item = this;
-		while(item.parent && !item.parent.focusedChild) {
+		while(item.parent && (!item.parent.focusedChild || !item.parent.focusedChild.visible)) {
 			item.parent._focusChild(item)
 			item = item.parent
 		}

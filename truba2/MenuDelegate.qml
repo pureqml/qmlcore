@@ -18,14 +18,13 @@ Item {
 		source: colorTheme.res + (parent.activeFocus ? "b_" : "") + model.icon;
 	}
 
-	Text {
+	MainText {
 		id: innerMenuDelegateText;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
-		anchors.leftMargin: 100;
+		anchors.leftMargin: 82;
 		anchors.verticalCenter: parent.verticalCenter;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.text;
-		font.pixelSize: 28;
 	}
 }

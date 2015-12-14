@@ -1,6 +1,6 @@
 Item {
 	width: parent.width;
-	height: 40;
+	height: epgStartProgramText.paintedHeight + 10;
 
 	Rectangle {
 		anchors.fill: parent;
@@ -8,17 +8,16 @@ Item {
 		visible: parent.activeFocus;
 	}
 
-	Text {
+	MainText {
 		id: epgStartProgramText;
 		anchors.left: parent.left;
 		anchors.verticalCenter: parent.verticalCenter;
 		anchors.leftMargin: 5;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.start;
-		font.pixelSize: 18;
 	}
 
-	Text {
+	MainText {
 		anchors.verticalCenter: parent.verticalCenter;
 		anchors.left: epgStartProgramText.right;
 		anchors.right: parent.right;
@@ -27,6 +26,5 @@ Item {
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.title;
 		clip: true;
-		font.pixelSize: 18;
 	}
 }

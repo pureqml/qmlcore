@@ -3,7 +3,7 @@ Item {
 	property bool active: activeFocus;
 	property alias currentIndex: menuList.currentIndex;
 	property width minWidth: 80;
-	width: active ? 280 : minWidth;
+	width: active ? renderer.width / 4.5 : minWidth;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;

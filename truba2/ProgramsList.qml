@@ -1,7 +1,7 @@
 Item {
 	id: programsList;
 	property bool showed: false;
-	width: 450;
+	width: renderer.width / 2.8;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 	opacity: showed ? 1.0 : 0.0;

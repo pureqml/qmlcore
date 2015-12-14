@@ -2,7 +2,7 @@ Item {
 	id: channelListProto;
 	signal switched;
 	signal channelChoosed;
-	width: 450;
+	width: renderer.width / 2.8;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 

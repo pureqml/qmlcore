@@ -2,7 +2,7 @@ Item {
 	id: categoriesList;
 	property string prevGenre: "";
 	signal genreChoosed;
-	width: 300;
+	width: renderer.width / 4.2;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;

@@ -117,6 +117,16 @@ Item {
 		}
 	}
 
+	Item {
+		id: invisibleFocus;
+		visible: false;
+		focus: true;
+		onKeyPressed: {
+			log("ALL YOUR KEYS ARE BELONG TO US", key)
+			return true;
+		}
+	}
+
 	GridView {
 		id: zoo;
 		anchors.right: parent.right;

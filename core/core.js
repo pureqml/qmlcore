@@ -491,7 +491,7 @@ exports._setup = function() {
 		var result = focus
 		for(var i = 0; i < children.length; ++i) {
 			var child = children[i]
-			if (child._tryFocus()) {
+			if (('_tryFocus' in child) && child._tryFocus()) {
 				this._focusChild(child)
 				result = true
 				break

@@ -499,7 +499,7 @@ exports._setup = function() {
 				return true
 			}
 		}
-		return focus
+		return this.focus
 	}
 
 	_globals.core.Item.prototype._propagateFocusToParents = function() {

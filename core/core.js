@@ -427,7 +427,8 @@ exports._setup = function() {
 
 	_globals.core.Item.prototype.addChild = function(child) {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
-		this._tryFocus(child)
+		if ('_tryFocus' in child)
+			child._tryFocus()
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
@@ -479,16 +480,24 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.Item.prototype._tryFocus = function(child) {
-		if (child.focusedChild || child.focus) { //already has focus tree
-			var item = child;
-			while(item.parent && !item.parent.focusedChild) {
-				item.parent._focusChild(item)
-				item = item.parent
+	_globals.core.Item.prototype._tryFocus = function() {
+		if (!this.visible)
+			return false
+
+		if (this.focusedChild && this.focusedChild._tryFocus())
+			return true
+
+		var children = this.children
+		var result = focus
+		for(var i = 0; i < children.length; ++i) {
+			var child = children[i]
+			if (child._tryFocus()) {
+				this._focusChild(child)
+				result = true
+				break
 			}
-			return true;
 		}
-		return false;
+		return result
 	}
 
 	_globals.core.Item.prototype._propagateFocusToParents = function() {
@@ -533,8 +542,12 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._processKey = function (event) {
-		if (this.focusedChild && this.focusedChild._processKey(event))
-			return true;
+		this._tryFocus() //soft-restore focus for invisible components
+		if (this.focusedChild && this.focusedChild.visible) {
+			if (this.focusedChild._processKey(event))
+				return true
+		}
+
 		var key = keyCodes[event.which];
 		if (key) {
 			if (key in this._pressedHandlers) {

@@ -21,7 +21,7 @@ Item {
 
 	Timer {
 		id: updateChannelTimer;
-		interval: 500;
+		interval: 800;
 		repeat: false;
 
 		onTriggered: { channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex)) }

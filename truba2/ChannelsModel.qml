@@ -38,6 +38,7 @@ ListModel {
 					start:			"",
 					stop:			"",
 					description:	"",
+					progress:		0.0,
 					title: 			""
 				}
 			});
@@ -59,6 +60,8 @@ ListModel {
 						rows[j].program.stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
 						rows[j].program.title = programs[i].title;
 						rows[j].program.description = programs[i].description;
+						var currDate = new Date();
+						rows[j].program.progress = (currDate.getTime() - start.getTime()) / (stop.getTime() - start.getTime())
 						self.set(j, rows[j]);
 					}
 				}

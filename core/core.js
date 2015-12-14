@@ -211,6 +211,8 @@ _globals.core.Object.prototype.getAnimation = function (name, animation) {
 	return (a && a.enabled())? a: null;
 }
 
+_globals.core.Object.prototype._tryFocus = function() { return false }
+
 exports._setup = function() {
 
 	_globals.core.ListModel.prototype.addChild = function(child) {
@@ -427,9 +429,8 @@ exports._setup = function() {
 
 	_globals.core.Item.prototype.addChild = function(child) {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
-		if ('_tryFocus' in child)
-			if (child._tryFocus())
-				child._propagateFocusToParents()
+		if (child._tryFocus())
+			child._propagateFocusToParents()
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
@@ -493,7 +494,7 @@ exports._setup = function() {
 		var children = this.children
 		for(var i = 0; i < children.length; ++i) {
 			var child = children[i]
-			if (('_tryFocus' in child) && child._tryFocus()) {
+			if (child._tryFocus()) {
 				this._focusChild(child)
 				return true
 			}

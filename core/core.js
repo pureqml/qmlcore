@@ -429,7 +429,7 @@ exports._setup = function() {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		if ('_tryFocus' in child)
 			if (child._tryFocus())
-				this._propagateFocusToParents()
+				child._propagateFocusToParents()
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {

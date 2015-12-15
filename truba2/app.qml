@@ -1,10 +1,16 @@
 Activity {
 	id: mainWindow;
 	property bool portraitOrientation: false;
+	property variant channel;
 	anchors.fill: renderer;
 	name: "root";
 
-	Protocol { id: protocol; enabled: true; }
+	Protocol {
+		id: protocol;
+		enabled: true;
+
+		onLoadingChanged: { if (this.loading) menu.setFocus() }
+	}
 
 	ProvidersModel { id: providersModel; protocol: protocol; }
 
@@ -38,31 +44,45 @@ Activity {
 		PageStack {
 			id: content;
 			anchors.top: parent.top;
-			anchors.left: parent.left;
+			anchors.left: menu.right;
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
-			anchors.leftMargin: menu.minWidth + 2;
+			anchors.leftMargin: 2;
 			currentIndex: menu.currentIndex;
 
 			WatchPage {
+				id: watchPage;
 				onSwitched(channel): {
 					log("Channel switched:", channel.text, "url:", channel.url)
 					osdLayout.hide()
-					videoPlayer.source = channel.url;
+					videoPlayer.source = channel.url
+					mainWindow.channel = channel
 				}
 			}
 
-			//SettingsPage { }	//TODO: impl
+			SettingsPage { id: settingsPage; }
+
+			//TODO: fix it
+			choose: {
+				if (this.currentIndex == 0)
+					watchPage.setFocus()
+				else
+					settingsPage.setFocus()
+			}
+
 			onLeftPressed: { menu.setFocus() }
 		}
 
 		MainMenu {
 			id: menu;
 
-			onRightPressed: { content.setFocus() }
+			onRightPressed: { content.choose() }
 		}
 	
-		hide: { this.visible = false }
+		hide: {
+			this.visible = false
+			watchPage.reset()
+		}
 
 		show: {
 			this.visible = true
@@ -72,9 +92,16 @@ Activity {
 		onBackPressed: { osdLayout.hide() }
 	}
 
+	InfoPanel { id: infoPanel; }
+
 	Spinner { visible: protocol.loading; }
 
-	onRedPressed: { osdLayout.show() }
+	onRedPressed: {
+		infoPanel.hide()
+		osdLayout.show()
+	}
+
+	onSelectPressed: { infoPanel.show(this.channel) }
 
 	onBackPressed: {
 		if (osdLayout.visible)

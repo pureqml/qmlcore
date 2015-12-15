@@ -1,9 +1,10 @@
 Item {
 	id: categoriesList;
 	signal genreChoosed;
+	property bool active: true;
 	property string prevGenre: "";
 	property int count: categoriesListView.count;
-	width: renderer.width / 4.2;
+	width: active ? renderer.width / 4.2 : 80;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
@@ -18,15 +19,25 @@ Item {
 		model: categoriesModel;
 		delegate: CategoryDelegate { }
 
-		onCurrentIndexChanged: { updateTimer.restart(); }
+		onCurrentIndexChanged: {
+			log("category index changed " + this.currentIndex);
+			updateTimer.restart();
+		}
+	}
+
+	Image {
+		anchors.centerIn: parent;
+		source: colorTheme.res + "more.png";
+		visible: !categoriesList.active;
 	}
 
 	Timer {
 		id: updateTimer;
-		interval: 800;
+		interval: 1000;
 		repeat: false;
 
 		onTriggered: {
+			log("category timer triggered");
 			categoriesList.genreChoosed(categoriesListView.model.get(categoriesListView.currentIndex).list)
 			categoriesList.prevGenre = categoriesListView.model.get(categoriesListView.currentIndex).text
 		}

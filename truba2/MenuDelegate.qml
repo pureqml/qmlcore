@@ -15,7 +15,7 @@ Item {
 		anchors.verticalCenter: parent.verticalCenter;
 		anchors.leftMargin: 13;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
-		source: colorTheme.res + (parent.activeFocus ? "b_" : "") + model.icon;
+		source: colorTheme.res + "menu/" + (parent.activeFocus ? "b_" : "") + model.icon;
 	}
 
 	MainText {

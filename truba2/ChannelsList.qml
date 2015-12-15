@@ -18,7 +18,11 @@ Item {
 		delegate: ChannelDelegate { }
 
 		onSelectPressed: { channelListProto.switched(this.model.get(this.currentIndex)) }
-		onCurrentIndexChanged: { updateChannelTimer.restart() }
+
+		onCurrentIndexChanged: {
+			log("channel index changed " + this.currentIndex);
+			updateChannelTimer.restart()
+		}
 	}
 
 	Timer {
@@ -26,7 +30,10 @@ Item {
 		interval: 800;
 		repeat: false;
 
-		onTriggered: { channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex)) }
+		onTriggered: {
+			log("channel timer triggered")
+			channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex))
+		}
 	}
 
 	setList(list): { channelsListView.model.setList(list) }
@@ -41,5 +48,5 @@ Item {
 		channelsListView.currentIndex = 0
 	}
 
-	Behavior on opacity { Animation { duration: 300; } }
+	//Behavior on opacity { Animation { duration: 300; } }
 }

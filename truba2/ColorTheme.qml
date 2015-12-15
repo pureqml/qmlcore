@@ -1,5 +1,5 @@
 Item {
-	property string res:	"res/osd/menu/";
+	property string res:		"res/osd/";
 
 	property Color backgroundColor:			"#fff";
 	property Color activeBackgroundColor:	"#b0bec5";

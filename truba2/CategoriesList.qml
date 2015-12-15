@@ -1,16 +1,14 @@
 Item {
 	id: categoriesList;
-	property string prevGenre: "";
 	signal genreChoosed;
+	property string prevGenre: "";
+	property int count: categoriesListView.count;
 	width: renderer.width / 4.2;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
 
-	Rectangle {
-		anchors.fill: parent;
-		color: colorTheme.focusablePanelColor;
-	}
+	Background { }
 
 	ListView {
 		id: categoriesListView;

@@ -2,9 +2,11 @@ Item {
 	id: channelListProto;
 	signal switched;
 	signal channelChoosed;
+	property int count: channelsListView.count;
 	width: renderer.width / 2.8;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
+	opacity: activeFocus ? 1.0 : 0.8;
 
 	ListView {
 		id: channelsListView;
@@ -38,4 +40,6 @@ Item {
 		channelsListView.contentY = 0
 		channelsListView.currentIndex = 0
 	}
+
+	Behavior on opacity { Animation { duration: 300; } }
 }

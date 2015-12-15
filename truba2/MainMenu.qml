@@ -8,10 +8,7 @@ Item {
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
 
-	Rectangle {
-		anchors.fill: parent;
-		color: colorTheme.focusablePanelColor;
-	}
+	Background { }
 
 	ListView {
 		id: menuList;

@@ -1,15 +1,14 @@
 Item {
-	id: programsList;
+	id: programsListProto;
+	signal disappeared;
 	property bool showed: false;
+	property int count: programsListView.count;
 	width: renderer.width / 2.8;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 	opacity: showed ? 1.0 : 0.0;
 
-	Rectangle {
-		anchors.fill: parent;
-		color: colorTheme.focusablePanelColor;
-	}
+	Background { }
 
 	ListView {
 		id: programsListView;
@@ -20,7 +19,7 @@ Item {
 		delegate: EPGDelegate { }
 	}
 
-	hide: { this.showed = false }
+	hide: { this.showed = false; if (this.activeFocus) programsListProto.disappeared(); }
 	show: { this.showed = true }
 
 	setChannel(channel): {

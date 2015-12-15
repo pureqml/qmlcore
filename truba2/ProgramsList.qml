@@ -3,19 +3,33 @@ Item {
 	signal disappeared;
 	property bool showed: false;
 	property int count: programsListView.count;
-	width: renderer.width / 2.8;
+	//width: renderer.width / 2.8;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
 	opacity: showed ? 1.0 : 0.0;
 
 	Background { }
 
+	MainText {
+		id: todaylabel;
+		anchors.top: parent.top;
+		anchors.horizontalCenter: parent.horizontalCenter;
+		horizontalAlignment: Text.AlignHCenter;
+		font.bold: true;
+		color: colorTheme.accentTextColor;
+		text: "Сегодня";
+	}
+
 	ListView {
 		id: programsListView;
-		anchors.fill: parent;
+		anchors.top: todaylabel.bottom;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+		anchors.bottom: parent.bottom;
 		model: epgModel;
 		positionMode: ListView.Center;
 		keyNavigationWraps: false;
+		clip: true;
 		delegate: EPGDelegate { }
 	}
 

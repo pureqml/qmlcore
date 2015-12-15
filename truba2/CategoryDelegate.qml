@@ -18,6 +18,6 @@ Item {
 		anchors.verticalCenter: parent.verticalCenter;
 		text: categoryDelegate.genre;
 		color: categoryDelegate.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
-		opacity: parent.activeFocus ? 1 : 0.8;
+		opacity: parent.activeFocus ? 1 : categoriesList.active ? 0.8 : 0.0;
 	}
 }

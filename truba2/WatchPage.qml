@@ -12,7 +12,12 @@ Item {
 			programs.hide()
 		}
 
-		onRightPressed: { if (channels.count) channels.setFocus() }
+		onRightPressed: {
+			if (channels.count)
+				channels.setFocus()
+		}
+
+		onActiveFocusChanged: { if (this.activeFocus) categories.active = true }
 	}
 
 	ChannelsList {
@@ -24,19 +29,28 @@ Item {
 		onRightPressed:	{ if (programs.count) programs.setFocus() }
 		onSwitched(channel): { watchPageProto.switched(channel) }
 		onChannelChoosed(channel): { programs.setChannel(channel) }
+
+		onActiveFocusChanged: { if (this.activeFocus) categories.active = false }
 	}
 
 	ProgramsList {
 		id: programs;
 		anchors.left: channels.right;
-		anchors.leftMargin: 2;
+		anchors.right: parent.right;
+		anchors.leftMargin: 4;
 
 		onLeftPressed: { channels.setFocus() }
 		onDisappeared: { channels.setFocus() }
+
+		onActiveFocusChanged: { if (this.activeFocus) categories.active = false }
 	}
 
+	reset: { categories.active = true }
+
 	onActiveFocusChanged: {
-		if (this.activeFocus)
+		if (this.activeFocus) {
+			categories.active = true
 			categories.setFocus()
+		}
 	}
 }

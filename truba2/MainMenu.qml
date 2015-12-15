@@ -21,8 +21,4 @@ Item {
 			ListElement { text: "Настройки"; icon: "settings.png"; }
 		}
 	}
-
-	BorderShadow { }
-
-	Behavior on width { Animation { duration: 300; } }
 }

@@ -33,6 +33,7 @@ Activity {
 	Item {
 		id: osdLayout;
 		anchors.fill: parent;
+		opacity: protocol.loading ? 0.0 : 1.0;
 
 		PageStack {
 			id: content;
@@ -70,6 +71,8 @@ Activity {
 
 		onBackPressed: { osdLayout.hide() }
 	}
+
+	Spinner { visible: protocol.loading; }
 
 	onRedPressed: { osdLayout.show() }
 

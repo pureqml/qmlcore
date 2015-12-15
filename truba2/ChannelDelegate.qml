@@ -1,5 +1,6 @@
 Rectangle {
 	id: channelDelegateProto;
+	property bool toggled: false;
 	width: parent.width;
 	height: channelLabelText.paintedHeight * 3.5;
 	color: colorTheme.focusablePanelColor;
@@ -7,8 +8,10 @@ Rectangle {
 
 	Rectangle {
 		anchors.fill: parent;
-		color: colorTheme.activeFocusColor;
+		color: channelDelegateProto.toggled ? colorTheme.accentColor : colorTheme.activeFocusColor;
 		visible: parent.activeFocus;
+
+		Behavior on color { ColorAnimation { duration: 300; } }
 	}
 
 	Rectangle {
@@ -77,5 +80,19 @@ Rectangle {
 			anchors.bottom: parent.bottom;
 			color: colorTheme.accentColor;
 		}
+	}
+
+	Timer {
+		id: toggleTimer;
+		interval: 300;
+		repeat: false;
+
+		onTriggered: { channelDelegateProto.toggled = false }
+	}
+
+	onSelectPressed: {
+		this.toggled = true
+		toggleTimer.restart()
+		event.accepted = false
 	}
 }

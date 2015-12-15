@@ -5,7 +5,6 @@ ListModel {
 		if (!this.protocol)
 			return;
 
-		//this.defaultProvider = "";
 		this.defaultProvider = "peerstvSlyNet";
 		var self = this;
 

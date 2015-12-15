@@ -30,6 +30,7 @@ Item {
 		anchors.left: currentChannelBg.right;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
+		clip: true;
 
 		MainText {
 			id: currentChannelTitle;
@@ -68,15 +69,29 @@ Item {
 			}
 		}
 
-		SmallText {
-			id: currentProgramDescriptionText;
+		Item {
+			id: descriptionClipper;
 			anchors.top: currentProgramProgress.bottom;
 			anchors.left: parent.left;
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
 			anchors.margins: 5;
-			color: colorTheme.textColor;
-			wrap: true;
+			clip: true;
+
+			SmallText {
+				id: currentProgramDescriptionText;
+				//anchors.top: currentProgramProgress.bottom;
+				//property int defaultY: descriptionClipper.y;
+				//y: defaultY;
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				anchors.bottom: parent.bottom;
+				color: colorTheme.textColor;
+				wrap: true;
+
+				Behavior on y { Animation { duration: 300; } }
+			}
 		}
 	}
 
@@ -97,7 +112,6 @@ Item {
 			return
 
 		currentProgramTitle.text = program.start + (program.start ? "-" : "") + program.stop + " " + program.title;
-		log("ds", program.description)
 		currentProgramDescriptionText.text = program.description
 
 		var currDate = new Date();
@@ -105,7 +119,21 @@ Item {
 		var stop = program.stopTime
 		currentProgramProgress.progress = (currDate.getTime() - start.getTime()) / (stop.getTime() - start.getTime())
 	}
-	
+
+	onUpPressed: {
+		//if (!this.visible || !this.channel.program || !this.channel.program.description)
+			//return
+
+		//currentProgramDescriptionText.y -= 20;
+	}
+
+	onDownPressed: {
+		//if (!this.visible || !this.channel.program || !this.channel.program.description)
+			//return
+
+		//currentProgramDescriptionText.y += 20;
+	}
+
 	onBackPressed: { this.hide() }
 
 	hide: { this.visible = false }
@@ -118,6 +146,7 @@ Item {
 
 		this.visible = true
 		this.channel = channel
+		currentProgramDescriptionText.y = currentProgramDescriptionText.defaultY;
 
 		currentChannelBg.color = channel.color
 		currentChannelTitle.text = channel.text

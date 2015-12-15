@@ -18,7 +18,8 @@ ListModel {
 				self.append({
 					id: providers[p].alias,
 					text: providers[p].name,
-					source: "http://truba.tv" + providers[p].icon
+					source: "http://truba.tv" + providers[p].icon,
+					selected: self.defaultProvider == providers[p].alias
 				});
 			}
 		})

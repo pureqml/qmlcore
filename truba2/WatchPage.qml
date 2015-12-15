@@ -12,7 +12,7 @@ Item {
 			programs.hide()
 		}
 
-		onRightPressed: { channels.setFocus() }
+		onRightPressed: { if (channels.count) channels.setFocus() }
 	}
 
 	ChannelsList {
@@ -21,7 +21,7 @@ Item {
 		anchors.leftMargin: 2;
 
 		onLeftPressed:	{ categories.setFocus() }
-		onRightPressed:	{ programs.setFocus() }
+		onRightPressed:	{ if (programs.count) programs.setFocus() }
 		onSwitched(channel): { watchPageProto.switched(channel) }
 		onChannelChoosed(channel): { programs.setChannel(channel) }
 	}
@@ -32,5 +32,11 @@ Item {
 		anchors.leftMargin: 2;
 
 		onLeftPressed: { channels.setFocus() }
+		onDisappeared: { channels.setFocus() }
+	}
+
+	onActiveFocusChanged: {
+		if (this.activeFocus)
+			categories.setFocus()
 	}
 }

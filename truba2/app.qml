@@ -83,12 +83,4 @@ Activity {
 		if (_globals.core.vendor == "samsung")
 			widgetAPI.sendExitEvent()
 	}
-
-	Rectangle {
-		width: 1280;
-		height: 780;
-		color: "#0000";
-		border.color: "#f00";
-		border.width: 2;
-	}
 }

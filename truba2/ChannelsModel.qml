@@ -35,6 +35,8 @@ ListModel {
 				source:	list[i].icon ? "http://truba.tv" + list[i].icon.source : "",
 				color:	channelColor,
 				program: {
+					startTime:		"",
+					stopTime:		"",
 					start:			"",
 					stop:			"",
 					description:	"",
@@ -56,6 +58,8 @@ ListModel {
 					if (curChannel == programs[i].channel) {
 						var start = new Date(programs[i].start);
 						var stop = new Date(programs[i].stop);
+						rows[j].program.startTime = start
+						rows[j].program.stopTime = stop
 						rows[j].program.start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
 						rows[j].program.stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
 						rows[j].program.title = programs[i].title;

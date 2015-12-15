@@ -19,10 +19,7 @@ Item {
 		model: categoriesModel;
 		delegate: CategoryDelegate { }
 
-		onCurrentIndexChanged: {
-			log("category index changed " + this.currentIndex);
-			updateTimer.restart();
-		}
+		onCurrentIndexChanged: { categoriesList.updateContent() }
 	}
 
 	Image {
@@ -33,19 +30,27 @@ Item {
 
 	Timer {
 		id: updateTimer;
+		property int requestIndex: 0;
 		interval: 1000;
 		repeat: false;
 
 		onTriggered: {
-			log("category timer triggered");
+			if (this.requestIndex != categoriesListView.currentIndex)
+				this.restart()
+
 			categoriesList.genreChoosed(categoriesListView.model.get(categoriesListView.currentIndex).list)
 			categoriesList.prevGenre = categoriesListView.model.get(categoriesListView.currentIndex).text
 		}
 	}
 
+	updateContent: {
+		updateTimer.requestIndex = categoriesListView.currentIndex
+		updateTimer.restart()
+	}
+
 	onActiveFocusChanged: {
 		var genre = categoriesListView.model.get(categoriesListView.currentIndex).text
 		if (this.activeFocus && genre != this.prevGenre)
-			updateTimer.restart()
+			this.updateContent()
 	}
 }

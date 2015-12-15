@@ -54,7 +54,6 @@ Activity {
 				id: watchPage;
 				onSwitched(channel): {
 					log("Channel switched:", channel.text, "url:", channel.url)
-					osdLayout.hide()
 					videoPlayer.source = channel.url
 					mainWindow.channel = channel
 				}
@@ -101,7 +100,12 @@ Activity {
 		osdLayout.show()
 	}
 
-	onSelectPressed: { infoPanel.show(this.channel) }
+	onSelectPressed: {
+		if (osdLayout.visible)
+			event.accepted = false;
+		else
+			infoPanel.show(this.channel)
+	}
 
 	onBackPressed: {
 		if (osdLayout.visible)

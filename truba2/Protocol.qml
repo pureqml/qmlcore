@@ -1,5 +1,6 @@
 Object {
 	signal error;
+	property bool loading: false;
 	property string baseUrl;
 
 	getProgramsAtDate(date, callback): {
@@ -13,7 +14,12 @@ Object {
 	}
 
 	getChannels(callback): {
-		this.request("/channels", {}, callback)
+		var self = this
+		self.loading = true
+		this.request("/channels", {}, function(list) {
+			callback(list)
+			self.loading = false
+		})
 	}
 
 	getProviders(callback): {

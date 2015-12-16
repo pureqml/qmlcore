@@ -24,10 +24,25 @@ Activity {
 
 	ColorTheme { id: colorTheme; }
 
+	LocalStorage {
+		id: lastChannel;
+		property string source;
+		name: "lastChannel";
+
+		onCompleted: {
+			this.read();
+			var channelInfo = lastChannel.value ? JSON.parse(lastChannel.value): {};
+			if (channelInfo) {
+				channelInfo.program = {};
+				mainWindow.switchToChannel(channelInfo);
+			}
+		}
+	}
+
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.fill: renderer;
-		source: "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
+		source: lastChannel.source ? lastChannel.source : "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
 		autoPlay: true;
 
 		//Preloader {
@@ -52,11 +67,8 @@ Activity {
 
 			WatchPage {
 				id: watchPage;
-				onSwitched(channel): {
-					log("Channel switched:", channel.text, "url:", channel.url)
-					videoPlayer.source = channel.url
-					mainWindow.channel = channel
-				}
+
+				onSwitched(channel): { mainWindow.switchToChannel(channel) }
 			}
 
 			SettingsPage { id: settingsPage; }
@@ -98,6 +110,17 @@ Activity {
 	onRedPressed: {
 		infoPanel.hide()
 		osdLayout.show()
+	}
+
+	switchToChannel(channel): {
+		if (!channel) {
+			log("Try to switch to null channel.");
+			return;
+		}
+		log("Channel switched:", channel.text, "url:", channel.url)
+		lastChannel.value = JSON.stringify(channel);
+		videoPlayer.source = channel.url
+		this.channel = channel
 	}
 
 	onSelectPressed: {

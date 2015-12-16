@@ -113,7 +113,7 @@ Item {
 		if (!program || !program.start)
 			return
 
-		currentProgramTitle.text = program.start + (program.start ? "-" : "") + program.stop + " " + program.title;
+		currentProgramTitle.text = program.start + (program.start ? " - " : "") + program.stop + " " + program.title;
 		currentProgramDescriptionText.text = program.description
 
 		var currDate = new Date();

@@ -39,7 +39,7 @@ Activity {
 					"lcn":213,
 					"genres":["Развлекательные"],
 					"text":"Пятница +7",
-					"url":["http://fe-dv.svc.iptv.rt.ru/hls/CH_R01_FRIDAY/variant.m3u8?version=2"],
+					"url":"http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8",
 					"provider":"zabavaSlyUkraine",
 					"program": {},
 					"color":"#ffffff",

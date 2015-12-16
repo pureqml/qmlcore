@@ -52,25 +52,32 @@ Rectangle {
 		font.bold: true;
 	}
 
-	MainText {
+	SmallText {
+		anchors.top: channelLabelText.bottom;
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
-		anchors.bottom: parent.bottom;
 		anchors.leftMargin: 10;
 		anchors.rightMargin: 10;
-		anchors.bottomMargin: 20;
-		text: model.program.start + (model.program.start ? "-" : "") + model.program.stop + " " + model.program.title;
+		text: model.program.title;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+	}
+
+	SmallText {
+		id: durationText;
+		anchors.left: logoBg.right;
+		anchors.bottom: parent.bottom;
+		anchors.margins: 10;
+		text: model.program.start + (model.program.start ? "-" : "") + model.program.stop;
+		color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 	}
 
 	Item {
 		height: 3;
-		anchors.left: logoBg.right;
+		anchors.left: durationText.right;
 		anchors.right: parent.right;
-		anchors.bottom: parent.bottom;
+		anchors.verticalCenter: durationText.verticalCenter;
 		anchors.leftMargin: 10;
 		anchors.rightMargin: 10;
-		anchors.bottomMargin: 10;
 
 		Rectangle {
 			id: programProgress;

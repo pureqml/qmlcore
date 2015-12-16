@@ -9,6 +9,8 @@ Item {
 	visible: false;
 	focus: visible;
 
+	EPGModel { id: currentEpgModel; protocol: protocol; }
+
 	Rectangle {
 		id: currentChannelBg;
 		height: parent.height;
@@ -117,7 +119,10 @@ Item {
 		var currDate = new Date();
 		var start = program.startTime
 		var stop = program.stopTime
-		currentProgramProgress.progress = (currDate.getTime() - start.getTime()) / (stop.getTime() - start.getTime())
+		var progress = (currDate.getTime() - start.getTime()) / (stop.getTime() - start.getTime())
+		currentProgramProgress.progress = progress
+		if (progress >= 1.0)
+			this.channel.program = currentEpgModel.getCurrentProgram(this.channel.id)
 	}
 
 	onUpPressed: {

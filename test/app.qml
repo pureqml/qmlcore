@@ -161,4 +161,6 @@ Item {
 		border.bottom.margin: 50;
 		border.bottom.color: "transparent";
 	}
+
+	CrazyBall {}
 }

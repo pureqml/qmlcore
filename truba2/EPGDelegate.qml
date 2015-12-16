@@ -15,7 +15,7 @@ Item {
 		anchors.leftMargin: 10;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 		text: model.start;
-		effects.brightness: 0.6;
+		opacity: parent.activeFocus ? 1.0 : 0.6;
 	}
 
 	MainText {

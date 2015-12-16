@@ -32,10 +32,21 @@ Activity {
 		onCompleted: {
 			this.read();
 			var channelInfo = lastChannel.value ? JSON.parse(lastChannel.value): {};
-			if (channelInfo) {
+			if (channelInfo)
 				channelInfo.program = {};
-				mainWindow.switchToChannel(channelInfo);
-			}
+			else
+				channelInfo = {
+					"lcn":213,
+					"genres":["Развлекательные"],
+					"text":"Пятница +7",
+					"url":["http://fe-dv.svc.iptv.rt.ru/hls/CH_R01_FRIDAY/variant.m3u8?version=2"],
+					"provider":"zabavaSlyUkraine",
+					"program": {},
+					"color":"#ffffff",
+					"source": "http://truba.tv/public/icons/PYaTNICA.png",
+					"id":"пятница"
+				};
+			mainWindow.switchToChannel(channelInfo);
 		}
 	}
 

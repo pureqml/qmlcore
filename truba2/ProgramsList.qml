@@ -15,6 +15,7 @@ Item {
 		anchors.top: parent.top;
 		anchors.horizontalCenter: parent.horizontalCenter;
 		horizontalAlignment: Text.AlignHCenter;
+		anchors.topMargin: 10;
 		font.bold: true;
 		color: colorTheme.accentTextColor;
 		text: "Сегодня";
@@ -26,6 +27,7 @@ Item {
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
+		anchors.topMargin: 10;
 		model: epgModel;
 		positionMode: ListView.Center;
 		keyNavigationWraps: false;

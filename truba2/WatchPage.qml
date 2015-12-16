@@ -37,7 +37,7 @@ Item {
 		id: programs;
 		anchors.left: channels.right;
 		anchors.right: parent.right;
-		anchors.leftMargin: 4;
+		anchors.leftMargin: 2;
 
 		onLeftPressed: { channels.setFocus() }
 		onDisappeared: { channels.setFocus() }

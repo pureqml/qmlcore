@@ -14,14 +14,50 @@ ListModel {
 			for (var i in this.epgMap[channel]) {
 				if (this.epgMap[channel][i].title.toLowerCase().indexOf(request) >= 0) {
 					var start = this.epgMap[channel][i].start;
+					var startTime = start 
 					start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+
+					var stop = this.epgMap[channel][i].stop;
+					var stopTime = stop 
+					stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
+
 					this.append({
 						title: this.epgMap[channel][i].title,
 						description: this.epgMap[channel][i].description,
 						channel: this.epgMap[channel][i].channel,
-						start: start
+						start: start,
+						stop: stop,
+						startTime: startTime,
+						stopTime: stopTime
 					});
 				}
+			}
+		}
+	}
+
+	getCurrentProgram(channel): {
+		for (var i in this.epgMap[channel]) {
+			var start = this.epgMap[channel][i].start;
+			var stop = this.epgMap[channel][i].stop;
+			var now = new Date();
+
+			if (now >= start && now <= stop) {
+				var startTime = start 
+				start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+
+				var stopTime = stop 
+				stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
+
+				var program = {
+					title: this.epgMap[channel][i].title,
+					description: this.epgMap[channel][i].description,
+					channel: this.epgMap[channel][i].channel,
+					start: start,
+					stop: stop,
+					startTime: startTime,
+					stopTime: stopTime
+				}
+				return program
 			}
 		}
 	}
@@ -34,11 +70,22 @@ ListModel {
 			var now = new Date();
 			if (start <= now)
 				continue;
+
+			var startTime = start 
 			start = start.getHours() + ":" + (start.getMinutes() < 10 ? "0" : "") + start.getMinutes();
+
+			var stop = this.epgMap[channel][i].stop;
+			var stopTime = stop 
+			stop = stop.getHours() + ":" + (stop.getMinutes() < 10 ? "0" : "") + stop.getMinutes();
+
 			this.append({
 				title: this.epgMap[channel][i].title,
 				description: this.epgMap[channel][i].description,
-				start: start
+				channel: this.epgMap[channel][i].channel,
+				start: start,
+				stop: stop,
+				startTime: startTime,
+				stopTime: stopTime
 			});
 		}
 	}

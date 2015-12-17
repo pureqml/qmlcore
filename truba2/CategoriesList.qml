@@ -14,12 +14,20 @@ Item {
 	ListView {
 		id: categoriesListView;
 		anchors.fill: parent;
-		positionMode: ListView.Center;
 		keyNavigationWraps: false;
 		model: categoriesModel;
 		delegate: CategoryDelegate { }
 
-		onCurrentIndexChanged: { categoriesList.updateContent() }
+		select: { categoriesList.updateContent() }
+		onClicked: { this.select() }
+		onCurrentIndexChanged: { this.select() }
+
+		onCompleted: {
+			if (_globals.core.vendor != "webkit") {
+				this.positionMode = ListView.Center
+				this.contentFollowsCurrentItem = false
+			}
+		}
 	}
 
 	Image {

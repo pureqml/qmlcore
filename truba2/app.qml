@@ -62,6 +62,13 @@ Activity {
 		//}
 	}
 
+	MouseArea {
+		anchors.fill: parent;
+		hoverEnabled: true;
+
+		onClicked: { mainWindow.showInfo(); }
+	}
+
 	Item {
 		id: osdLayout;
 		anchors.fill: parent;
@@ -100,6 +107,18 @@ Activity {
 
 			onRightPressed: { content.choose() }
 		}
+
+		WebButton {
+			anchors.left: mainWindow.left;
+			anchors.bottom: mainWindow.bottom;
+			anchors.margins: 20;
+			icon: "close.png";
+
+			onClicked: {
+				if (osdLayout.visible)
+					osdLayout.hide()
+			}
+		}
 	
 		hide: {
 			this.visible = false
@@ -114,7 +133,14 @@ Activity {
 		onBackPressed: { osdLayout.hide() }
 	}
 
-	InfoPanel { id: infoPanel; }
+	InfoPanel {
+		id: infoPanel;
+
+		onMenuCalled: {
+			this.hide();
+			osdLayout.show();
+		}
+	}
 
 	Spinner { visible: protocol.loading; }
 
@@ -134,11 +160,17 @@ Activity {
 		this.channel = channel
 	}
 
-	onSelectPressed: {
+	showInfo: {
 		if (osdLayout.visible)
-			event.accepted = false;
+			return false;
 		else
 			infoPanel.show(this.channel)
+		return true;
+	}
+
+	onSelectPressed: {
+		if (!this.showInfo())
+			event.accepted = false;
 	}
 
 	onBackPressed: {

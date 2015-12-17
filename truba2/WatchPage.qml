@@ -48,9 +48,8 @@ Item {
 	reset: { categories.active = true }
 
 	onActiveFocusChanged: {
-		if (this.activeFocus) {
-			categories.active = true
+		categories.active = true
+		if (this.activeFocus)
 			categories.setFocus()
-		}
 	}
 }

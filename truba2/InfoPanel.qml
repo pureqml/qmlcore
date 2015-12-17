@@ -1,5 +1,6 @@
 Item {
 	id: infoPanelProto;
+	signal menuCalled;
 	property variant channel;
 	height: renderer.height / 5;
 	anchors.left: parent.left;
@@ -107,6 +108,24 @@ Item {
 
 		onTriggered: { infoPanelProto.updateProgress() }
 	}
+
+	WebButton {
+		anchors.top: parent.top;
+		anchors.right: parent.right;
+		icon: "close.png";
+
+		onClicked: { infoPanelProto.hide() }
+	}
+
+
+	WebButton {
+		anchors.right: parent.right;
+		anchors.bottom: parent.bottom;
+		icon: "menu.png";
+
+		onClicked: { infoPanelProto.menuCalled() }
+	}
+
 
 	updateProgress: {
 		var program = this.channel.program;

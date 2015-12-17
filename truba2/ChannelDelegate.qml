@@ -67,7 +67,7 @@ Rectangle {
 		anchors.left: logoBg.right;
 		anchors.bottom: parent.bottom;
 		anchors.margins: 10;
-		text: model.program.start + (model.program.start ? "-" : "") + model.program.stop;
+		text: model.program.start + (model.program.start ? " - " : "") + model.program.stop;
 		color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 	}
 

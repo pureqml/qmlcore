@@ -33,6 +33,13 @@ Item {
 		keyNavigationWraps: false;
 		clip: true;
 		delegate: EPGDelegate { }
+
+		onCompleted: {
+			if (_globals.core.vendor != "webkit") {
+				this.positionMode = ListView.Center
+				this.contentFollowsCurrentItem = false
+			}
+		}
 	}
 
 	hide: { this.showed = false; if (this.activeFocus) programsListProto.disappeared(); }

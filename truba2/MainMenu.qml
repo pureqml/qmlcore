@@ -7,6 +7,7 @@ Item {
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
+	clip: true;
 
 	Background { }
 

@@ -3,9 +3,9 @@ Item {
 	signal disappeared;
 	property bool showed: false;
 	property int count: programsListView.count;
-	//width: renderer.width / 2.8;
+	property int curHeight: todaylabel.paintedHeight + 20 + programsListView.contentHeight;
+	height: curHeight >= renderer.height ? renderer.height : curHeight;
 	anchors.top: parent.top;
-	anchors.bottom: parent.bottom;
 	opacity: showed ? 1.0 : 0.0;
 
 	Background { }
@@ -37,6 +37,8 @@ Item {
 		onCompleted: {
 			if (_globals.core.vendor != "webkit") {
 				this.positionMode = ListView.Center
+				this.contentFollowsCurrentItem = true
+			} else {
 				this.contentFollowsCurrentItem = false
 			}
 		}

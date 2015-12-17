@@ -25,6 +25,8 @@ Item {
 		onCompleted: {
 			if (_globals.core.vendor != "webkit") {
 				this.positionMode = ListView.Center
+				this.contentFollowsCurrentItem = true
+			} else {
 				this.contentFollowsCurrentItem = false
 			}
 		}
@@ -50,5 +52,5 @@ Item {
 		channelsListView.currentIndex = 0
 	}
 
-	//Behavior on opacity { Animation { duration: 300; } }
+	Behavior on width { Animation { duration: 300; } }
 }

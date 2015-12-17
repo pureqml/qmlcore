@@ -52,14 +52,21 @@ Rectangle {
 		font.bold: true;
 	}
 
-	SmallText {
+	Item {
 		anchors.top: channelLabelText.bottom;
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
+		anchors.bottom: durationText.top;
 		anchors.leftMargin: 10;
 		anchors.rightMargin: 10;
-		text: model.program.title;
-		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+
+		SmallText {
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: parent.left;
+			anchors.right: parent.right;
+			text: model.program.title;
+			color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+		}
 	}
 
 	SmallText {
@@ -102,4 +109,6 @@ Rectangle {
 		toggleTimer.restart()
 		event.accepted = false
 	}
+
+	Behavior on opacity { Animation { duration: 300; } }
 }

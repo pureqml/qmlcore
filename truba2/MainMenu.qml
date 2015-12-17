@@ -22,4 +22,6 @@ Item {
 			ListElement { text: "Настройки"; icon: "settings.png"; }
 		}
 	}
+
+	Behavior on width { Animation { duration: 300; } }
 }

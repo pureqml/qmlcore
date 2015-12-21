@@ -86,6 +86,11 @@ for opt in "$@"; do
 			minify
 			package smarttv
 		;;
+		truba2-tizen)
+			compiler -o app core controls truba2 platform/tizen
+			minify
+			package tizen
+		;;
 
 		*) echo "unknown option $opt"; exit;;
 	esac

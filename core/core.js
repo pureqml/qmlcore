@@ -38,6 +38,18 @@ if ('Common' in window) {
 	log("loaded")
 }
 
+if ('tizen' in window) {
+	log = function() {
+		var args = Array.prototype.slice.call(arguments)
+		console.log("[QML] " + args.join(" "))
+	}
+
+	log("[QML] Tizen")
+	_globals.core.vendor = "tizen"
+
+	log("loaded")
+}
+
 if (navigator.userAgent.indexOf('Android') >= 0) {
 	log = function() {
 		var args = Array.prototype.slice.call(arguments)
@@ -62,6 +74,22 @@ if (_globals.core.vendor == "samsung")
 		29461: 'Down',
 		29460: 'Up',
 		29443: 'Select'
+	}
+} else if (_globals.core.vendor == "tizen") {
+	keyCodes = {
+		37: 'Left',
+		38: 'Up',
+		39: 'Right',
+		40: 'Down',
+		13: 'Select',
+		403: 'Red',
+		404: 'Green',
+		405: 'Yellow',
+		406: 'Blue',
+		427: 'PageUp',
+		428: 'PageDown',
+		457: 'Menu',
+		10009: 'Back'
 	}
 } else {
 	keyCodes = {

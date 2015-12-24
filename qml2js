@@ -91,10 +91,10 @@ for opt in "$@"; do
 			minify
 			package tizen
 		;;
-		truba2-lg)
-			compiler -o app core controls truba2 platform/lg
+		truba2-webos)
+			compiler -o app core controls truba2 platform/webos
 			minify
-			package lg
+			package webos
 		;;
 
 		*) echo "unknown option $opt"; exit;;

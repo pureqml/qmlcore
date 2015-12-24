@@ -32,18 +32,17 @@ Activity {
 		onCompleted: {
 			this.read();
 			var channelInfo = lastChannel.value ? JSON.parse(lastChannel.value): {};
-			if (channelInfo)
+			if (channelInfo && channelInfo.url)
 				channelInfo.program = {};
 			else
 				channelInfo = {
 					"lcn":213,
 					"genres":["Развлекательные"],
 					"text":"Пятница +7",
-					"url":"http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8",
 					"provider":"zabavaSlyUkraine",
 					"program": {},
 					"color":"#ffffff",
-					"source": "http://truba.tv/public/icons/PYaTNICA.png",
+					"url": "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8",
 					"id":"пятница"
 				};
 			mainWindow.switchToChannel(channelInfo);
@@ -145,8 +144,12 @@ Activity {
 	Spinner { visible: protocol.loading; }
 
 	onRedPressed: {
-		infoPanel.hide()
-		osdLayout.show()
+		if (!osdLayout.visible) {
+			infoPanel.hide()
+			osdLayout.show()
+		} else {
+			osdLayout.hide()
+		}
 	}
 
 	switchToChannel(channel): {

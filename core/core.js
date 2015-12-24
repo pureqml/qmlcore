@@ -38,6 +38,20 @@ if ('Common' in window) {
 	log("loaded")
 }
 
+
+if ('webOS' in window) {
+	log = function() {
+		var args = Array.prototype.slice.call(arguments)
+		console.log("[QML] " + args.join(" "))
+	}
+
+	log("[QML] WebOS")
+	_globals.core.vendor = "webos"
+
+	log("loaded")
+}
+
+
 if ('tizen' in window) {
 	log = function() {
 		var args = Array.prototype.slice.call(arguments)
@@ -90,6 +104,21 @@ if (_globals.core.vendor == "samsung")
 		428: 'PageDown',
 		457: 'Menu',
 		10009: 'Back'
+	}
+} else if (_globals.core.vendor == "webos") {
+	keyCodes = {
+		13: 'Select',
+		27: 'Back',
+		37: 'Left',
+		33: 'PageUp',
+		34: 'PageDown',
+		38: 'Up',
+		39: 'Right',
+		40: 'Down',
+		112: 'Red',
+		113: 'Green',
+		114: 'Yellow',
+		115: 'Blue'
 	}
 } else {
 	keyCodes = {

@@ -91,6 +91,8 @@ if args.wait:
 def process_files(generator, dirs):
 	for project_dir in dirs:
 		for dirpath, dirnames, filenames in os.walk(project_dir):
+                	if '.nocompile' in filenames:
+                        	continue
 			for filename in filenames:
 				process_file(generator, dirpath, filename)
 

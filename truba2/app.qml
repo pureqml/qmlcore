@@ -26,7 +26,7 @@ Activity {
 
 	LocalStorage {
 		id: lastChannel;
-		property string source;
+		property string url;
 		name: "lastChannel";
 
 		onCompleted: {
@@ -46,13 +46,13 @@ Activity {
 					"id":"пятница"
 				};
 			mainWindow.switchToChannel(channelInfo);
+			videoPlayer.source = lastChannel.url ? lastChannel.url : "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
 		}
 	}
 
 	VideoPlayer {
 		id: videoPlayer;
 		anchors.fill: renderer;
-		source: lastChannel.source ? lastChannel.source : "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
 		autoPlay: true;
 
 		//Preloader {

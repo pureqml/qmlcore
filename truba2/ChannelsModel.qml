@@ -31,7 +31,7 @@ ListModel {
 				genre:	list[i].genre,
 				text:	list[i].title,
 				url:	source,
-				lcn:	list[i].lcn,
+				lcn:	this.count + 1,
 				source:	list[i].icon ? "http://truba.tv" + list[i].icon.source : "",
 				color:	channelColor,
 				program: {

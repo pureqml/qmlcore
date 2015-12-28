@@ -2,7 +2,9 @@ Item {
 	id: channelListProto;
 	signal switched;
 	signal channelChoosed;
+	property variant currentList;
 	property int count: channelsListView.count;
+	property int currentIndex: channelsListView.currentIndex;
 	width: renderer.width / 2.8;
 	anchors.top: parent.top;
 	anchors.bottom: parent.bottom;
@@ -15,10 +17,13 @@ Item {
 		spacing: 2;
 		model: ChannelsModel { protocol: protocol; }
 		delegate: ChannelDelegate { }
+		onClicked:			{ this.select(); }
+		onSelectPressed:	{ this.select(); }
 
-		select: { channelListProto.switched(this.model.get(this.currentIndex)) }
-		onClicked: { this.select(); }
-		onSelectPressed: { this.select(); }
+		select: {
+			var channel = this.model.get(this.currentIndex)
+			channelListProto.switched(channel)
+		}
 
 		onCurrentIndexChanged: { updateChannelTimer.restart() }
 
@@ -40,7 +45,13 @@ Item {
 		onTriggered: { channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex)) }
 	}
 
-	setList(list): { channelsListView.model.setList(list) }
+	setList(list): {
+		channelsListView.model.setList(list)
+
+		channelListProto.currentList = [ ]
+		for (var i = 0; i < channelsListView.count; ++i)
+			channelListProto.currentList.push(channelsListView.model.get(i))
+	}
 
 	onActiveFocusChanged: {
 		if (this.activeFocus)

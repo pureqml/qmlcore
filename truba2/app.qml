@@ -9,7 +9,10 @@ Activity {
 		id: protocol;
 		enabled: true;
 
-		onLoadingChanged: { if (this.loading) menu.setFocus() }
+		onLoadingChanged: {
+			if (!this.loading)
+				osdLayout.start()
+		}
 	}
 
 	ProvidersModel { id: providersModel; protocol: protocol; }
@@ -68,10 +71,11 @@ Activity {
 		onClicked: { mainWindow.showInfo(); }
 	}
 
-	Item {
+	Activity {
 		id: osdLayout;
 		anchors.fill: parent;
-		opacity: protocol.loading ? 0.0 : 1.0;
+		opacity: !active ? 0.0 : 1.0;
+		focus: active;
 
 		PageStack {
 			id: content;
@@ -81,6 +85,7 @@ Activity {
 			anchors.bottom: parent.bottom;
 			anchors.leftMargin: 2;
 			currentIndex: menu.currentIndex;
+			visible: osdLayout.active;
 
 			WatchPage {
 				id: watchPage;
@@ -115,41 +120,30 @@ Activity {
 
 			onClicked: {
 				if (osdLayout.visible)
-					osdLayout.hide()
+					osdLayout.stop()
 			}
 		}
-	
-		hide: {
-			this.visible = false
-			watchPage.reset()
-		}
 
-		show: {
-			this.visible = true
-			menu.setFocus()
-		}
-
-		onBackPressed: { osdLayout.hide() }
+		onStarted:		{ menu.setFocus(); }
+		onStopped:		{ watchPage.reset(); }
 	}
 
 	InfoPanel {
 		id: infoPanel;
 
 		onMenuCalled: {
-			this.hide();
-			osdLayout.show();
+			this.stop();
+			osdLayout.start();
 		}
 	}
 
 	Spinner { visible: protocol.loading; }
 
 	onRedPressed: {
-		if (!osdLayout.visible) {
-			infoPanel.hide()
-			osdLayout.show()
-		} else {
-			osdLayout.hide()
-		}
+		if (!osdLayout.active)
+			osdLayout.start()
+		else
+			osdLayout.stop()
 	}
 
 	switchToChannel(channel): {
@@ -164,7 +158,7 @@ Activity {
 	}
 
 	showInfo: {
-		if (osdLayout.visible)
+		if (osdLayout.active)
 			return false;
 		else
 			infoPanel.show(this.channel)
@@ -172,12 +166,14 @@ Activity {
 	}
 
 	onSelectPressed: {
-		if (!this.showInfo())
+		if (infoPanel.active)
+			infoPanel.stop();
+		else if (!this.showInfo())
 			event.accepted = false;
 	}
 
 	onBackPressed: {
-		if (osdLayout.visible)
+		if (osdLayout.active)
 			return false
 
 		// Crunch for compiler.

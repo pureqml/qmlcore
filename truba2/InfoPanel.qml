@@ -181,6 +181,10 @@ Activity {
 			return
 		}
 
+		currentProgramTitle.text = ""
+		currentProgramDescriptionText.text = ""
+		currentProgramProgress.progress = 0.0
+
 		this.start()
 		this.channel = channel
 		currentProgramDescriptionText.y = currentProgramDescriptionText.defaultY
@@ -189,5 +193,7 @@ Activity {
 		currentChannelTitle.text = channel.text
 		currentChannelLogo.source = channel.source
 		this.updateProgress()
+
+		showInfoTimer.restart()
 	}
 }

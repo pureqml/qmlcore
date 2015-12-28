@@ -76,6 +76,7 @@ Activity {
 		anchors.fill: parent;
 		opacity: !active ? 0.0 : 1.0;
 		focus: active;
+		name: "menu";
 
 		PageStack {
 			id: content;
@@ -148,13 +149,15 @@ Activity {
 
 	switchToChannel(channel): {
 		if (!channel) {
-			log("Try to switch to null channel.");
+			log("Try to switch to null channel.")
 			return;
 		}
 		log("Channel switched:", channel.text, "url:", channel.url)
-		lastChannel.value = JSON.stringify(channel);
+		lastChannel.value = JSON.stringify(channel)
 		videoPlayer.source = channel.url
 		this.channel = channel
+		if (infoPanel.active)
+			infoPanel.show(this.channel)
 	}
 
 	showInfo: {
@@ -181,5 +184,26 @@ Activity {
 			var widgetAPI = { }
 		if (_globals.core.vendor == "samsung")
 			widgetAPI.sendExitEvent()
+	}
+
+	onRightPressed:			{ this.channelUp() }
+	onChannelUpPressed:		{ this.channelUp() }
+	onLeftPressed:			{ this.channelDown() }
+	onChannelDownPressed:	{ this.channelDown() }
+
+	channelUp: {
+		if (this.hasAnyActiveChild && !infoPanel.active)
+			return;
+
+		log("channel up")
+		watchPage.switchNextChannel()
+	}
+
+	channelDown: {
+		if (this.hasAnyActiveChild && !infoPanel.active)
+			return;
+
+		log("channel down")
+		watchPage.switchPreviousChannel()
 	}
 }

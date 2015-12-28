@@ -2,6 +2,7 @@ Item {
 	id: watchPageProto;
 	signal switched;
 	property variant currentList;
+	property int currentLcn;
 	anchors.fill: parent;
 
 	CategoriesList {
@@ -28,8 +29,13 @@ Item {
 
 		onLeftPressed:	{ categories.setFocus() }
 		onRightPressed:	{ if (programs.count) programs.setFocus() }
-		onSwitched(channel): { watchPageProto.switched(channel); watchPageProto.currentList = channel.genre }
 		onChannelChoosed(channel): { programs.setChannel(channel) }
+
+		onSwitched(channel): {
+			watchPageProto.switched(channel)
+			watchPageProto.currentList = channels.currentList
+			watchPageProto.currentLcn = channels.currentIndex
+		}
 
 		onActiveFocusChanged: { if (this.activeFocus) categories.active = false }
 	}
@@ -52,5 +58,21 @@ Item {
 		categories.active = true
 		if (this.activeFocus)
 			categories.setFocus()
+	}
+
+	switchNextChannel: {
+		if (!this.currentList || !this.currentList.length)
+			return
+
+		this.currentLcn = ++this.currentLcn % this.currentList.length;
+		this.switched(this.currentList[this.currentLcn])
+	}
+
+	switchPreviousChannel: {
+		if (!this.currentList || !this.currentList.length)
+			return
+
+		this.currentLcn = --this.currentLcn >= 0 ? this.currentLcn % this.currentList.length : this.currentList.length + this.currentLcn;
+		this.switched(this.currentList[this.currentLcn])
 	}
 }

@@ -1,6 +1,7 @@
 Item {
 	id: watchPageProto;
 	signal switched;
+	property variant currentList;
 	anchors.fill: parent;
 
 	CategoriesList {
@@ -27,7 +28,7 @@ Item {
 
 		onLeftPressed:	{ categories.setFocus() }
 		onRightPressed:	{ if (programs.count) programs.setFocus() }
-		onSwitched(channel): { watchPageProto.switched(channel) }
+		onSwitched(channel): { watchPageProto.switched(channel); watchPageProto.currentList = channel.genre }
 		onChannelChoosed(channel): { programs.setChannel(channel) }
 
 		onActiveFocusChanged: { if (this.activeFocus) categories.active = false }

@@ -1,4 +1,4 @@
-Item {
+Activity {
 	id: infoPanelProto;
 	signal menuCalled;
 	property variant channel;
@@ -7,7 +7,7 @@ Item {
 	anchors.right: parent.right;
 	anchors.bottom: parent.bottom;
 	anchors.margins: 10;
-	visible: false;
+	visible: active;
 	focus: visible;
 
 	EPGModel { id: currentEpgModel; protocol: protocol; }
@@ -114,7 +114,7 @@ Item {
 		anchors.right: parent.right;
 		icon: "close.png";
 
-		onClicked: { infoPanelProto.hide() }
+		onClicked: { infoPanelProto.stop() }
 	}
 
 
@@ -158,19 +158,15 @@ Item {
 		//currentProgramDescriptionText.y += 20;
 	}
 
-	onBackPressed: { this.hide() }
-
-	hide: { this.visible = false }
-
 	show(channel): {
 		if (!channel) {
 			log("channel is null")
 			return
 		}
 
-		this.visible = true
+		this.start()
 		this.channel = channel
-		currentProgramDescriptionText.y = currentProgramDescriptionText.defaultY;
+		currentProgramDescriptionText.y = currentProgramDescriptionText.defaultY
 
 		currentChannelBg.color = channel.color
 		currentChannelTitle.text = channel.text

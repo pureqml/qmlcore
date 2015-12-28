@@ -9,6 +9,7 @@ Activity {
 	anchors.margins: 10;
 	visible: active;
 	focus: visible;
+	name: "info";
 
 	EPGModel { id: currentEpgModel; protocol: protocol; }
 
@@ -117,7 +118,6 @@ Activity {
 		onClicked: { infoPanelProto.stop() }
 	}
 
-
 	WebButton {
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
@@ -126,6 +126,14 @@ Activity {
 		onClicked: { infoPanelProto.menuCalled() }
 	}
 
+	Timer {
+		id: showInfoTimer;
+		interval: 7000;
+
+		onTriggered: {
+			infoPanelProto.stop()
+		}
+	}
 
 	updateProgress: {
 		var program = this.channel.program;
@@ -145,6 +153,7 @@ Activity {
 	}
 
 	onUpPressed: {
+		showInfoTimer.restart()
 		//if (!this.visible || !this.channel.program || !this.channel.program.description)
 			//return
 
@@ -152,10 +161,18 @@ Activity {
 	}
 
 	onDownPressed: {
+		showInfoTimer.restart()
 		//if (!this.visible || !this.channel.program || !this.channel.program.description)
 			//return
 
 		//currentProgramDescriptionText.y += 20;
+	}
+
+	onActiveChanged: {
+		if (this.active)
+			showInfoTimer.restart()
+		else
+			showInfoTimer.stop()
 	}
 
 	show(channel): {

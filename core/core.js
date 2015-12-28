@@ -100,25 +100,26 @@ if (_globals.core.vendor == "samsung")
 		404: 'Green',
 		405: 'Yellow',
 		406: 'Blue',
-		427: 'PageUp',
-		428: 'PageDown',
+		427: 'ChannelUp',
+		428: 'ChannelDown',
 		457: 'Menu',
 		10009: 'Back'
 	}
 } else if (_globals.core.vendor == "webos") {
 	keyCodes = {
-		13: 'Select',
-		27: 'Back',
 		37: 'Left',
-		33: 'PageUp',
-		34: 'PageDown',
 		38: 'Up',
 		39: 'Right',
 		40: 'Down',
-		112: 'Red',
-		113: 'Green',
-		114: 'Yellow',
-		115: 'Blue'
+		13: 'Select',
+		403: 'Red',
+		404: 'Green',
+		405: 'Yellow',
+		406: 'Blue',
+		427: 'ChannelUp',
+		428: 'ChannelDown',
+		457: 'Menu',
+		10009: 'Back'
 	}
 } else {
 	keyCodes = {

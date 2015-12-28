@@ -47,7 +47,7 @@ Rectangle {
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
 		anchors.margins: 10;
-		text: model.text;
+		text: model.lcn + ". " + model.text;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.accentTextColor;
 		font.bold: true;
 	}

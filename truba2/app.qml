@@ -15,12 +15,15 @@ Activity {
 		}
 	}
 
-	ProvidersModel { id: providersModel; protocol: protocol; }
+	ProvidersModel {
+		id: providersModel;
+		protocol: protocol;
+	}
 
 	CategoriesModel	{
 		id: categoriesModel;
 		protocol: protocol;
-		provider: providersModel.defaultProvider;
+		provider: providersModel.choosedProvider;
 	}
 
 	EPGModel { id: epgModel; protocol: protocol; }

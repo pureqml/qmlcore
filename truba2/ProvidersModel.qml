@@ -1,29 +1,46 @@
 ListModel {
-	property string defaultProvider;
+	id: providersModelProto;
+	property string defaultProvider: "bat";
+	property string choosedProvider: "";
+
+	LocalStorage {
+		id: lastProvider;
+		name: "lastProvider";
+
+		onCompleted: {
+			this.read();
+			var provider = lastProvider.value ? JSON.parse(lastProvider.value) : { }
+
+			if (provider && provider.id)
+				providersModelProto.choosedProvider = provider.id
+			else
+				providersModelProto.choosedProvider = providersModelProto.defaultProvider
+			providersModelProto.update();
+		}
+	}
 
 	update: {
 		if (!this.protocol)
 			return;
 
-		this.defaultProvider = "bat";
 		var self = this;
 
 		this.protocol.getProviders(function(providers) {
 			self.clear();
 			for (var p in providers) {
-				if (providers[p].name == "bat")
-					self.defaultProvider = providers[p].alias;
-
 				self.append({
 					id: providers[p].alias,
 					text: providers[p].name,
 					source: "http://truba.tv" + providers[p].icon,
-					selected: self.defaultProvider == providers[p].alias
+					selected: self.choosedProvider == providers[p].alias
 				});
 			}
 		})
 	}
 
-	onCompleted:		{ this.update(); }
+	saveProvider(idx): {
+		lastProvider.value = JSON.stringify(this.get(idx))
+	}
+
 	onProtocolChanged:	{ this.update(); }
 }

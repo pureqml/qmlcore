@@ -17,6 +17,7 @@ Item {
 		spacing: 2;
 		model: ChannelsModel { protocol: protocol; }
 		delegate: ChannelDelegate { }
+
 		onClicked:			{ this.select(); }
 		onSelectPressed:	{ this.select(); }
 

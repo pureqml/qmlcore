@@ -5,6 +5,20 @@ Item {
 	property int currentLcn;
 	anchors.fill: parent;
 
+	LocalStorage {
+		id: lastList;
+		name: "lastList";
+
+		onCompleted: {
+			this.read();
+			var lastListData = lastList.value ? JSON.parse(lastList.value): {};
+			if (lastListData && lastListData.list) {
+				watchPageProto.currentList = lastListData.list
+				watchPageProto.currentLcn = lastListData.lcn
+			}
+		}
+	}
+
 	CategoriesList {
 		id: categories;
 
@@ -35,6 +49,11 @@ Item {
 			watchPageProto.switched(channel)
 			watchPageProto.currentList = channels.currentList
 			watchPageProto.currentLcn = channels.currentIndex
+			var lastListData = {
+				list: watchPageProto.currentList,
+				lcn: watchPageProto.currentLcn
+			}
+			lastList.value = JSON.stringify(lastListData)
 		}
 
 		onActiveFocusChanged: { if (this.activeFocus) categories.active = false }

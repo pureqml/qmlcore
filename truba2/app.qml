@@ -68,7 +68,7 @@ Activity {
 		anchors.fill: parent;
 		hoverEnabled: true;
 
-		onClicked: { mainWindow.showInfo(); }
+		onClicked: { infoPanel.show(mainWindow.channel) }
 	}
 
 	Activity {
@@ -109,6 +109,7 @@ Activity {
 
 		MainMenu {
 			id: menu;
+			visible: osdLayout.active;
 
 			onRightPressed: { content.choose() }
 		}
@@ -140,11 +141,12 @@ Activity {
 
 	Spinner { visible: protocol.loading; }
 
-	onRedPressed: {
-		if (!osdLayout.active)
-			osdLayout.start()
-		else
-			osdLayout.stop()
+	onUpPressed:	{ this.showInfo() }
+	onDownPressed:	{ this.showInfo() }
+
+	showInfo: {
+		if (!this.hasAnyActiveChild)
+			infoPanel.show(this.channel)
 	}
 
 	switchToChannel(channel): {
@@ -160,19 +162,9 @@ Activity {
 			infoPanel.show(this.channel)
 	}
 
-	showInfo: {
-		if (osdLayout.active)
-			return false;
-		else
-			infoPanel.show(this.channel)
-		return true;
-	}
-
 	onSelectPressed: {
-		if (infoPanel.active)
-			infoPanel.stop();
-		else if (!this.showInfo())
-			event.accepted = false;
+		if (!osdLayout.active)
+			osdLayout.start()
 	}
 
 	onBackPressed: {
@@ -192,18 +184,12 @@ Activity {
 	onChannelDownPressed:	{ this.channelDown() }
 
 	channelUp: {
-		if (this.hasAnyActiveChild && !infoPanel.active)
-			return;
-
-		log("channel up")
-		watchPage.switchNextChannel()
+		if (!this.hasAnyActiveChild || infoPanel.active)
+			watchPage.switchNextChannel()
 	}
 
 	channelDown: {
-		if (this.hasAnyActiveChild && !infoPanel.active)
-			return;
-
-		log("channel down")
-		watchPage.switchPreviousChannel()
+		if (!this.hasAnyActiveChild || infoPanel.active)
+			watchPage.switchPreviousChannel()
 	}
 }

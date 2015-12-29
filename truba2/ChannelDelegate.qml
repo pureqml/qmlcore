@@ -21,6 +21,7 @@ Rectangle {
 		anchors.top: parent.top;
 		anchors.left: parent.left;
 		anchors.bottom: parent.bottom;
+		clip: true;
 
 		Rectangle {
 			color: "#0000";

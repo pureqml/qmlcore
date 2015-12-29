@@ -33,7 +33,17 @@ Rectangle {
 			visible: channelDelegateProto.activeFocus;
 		}
 
+		SmallText {
+			anchors.verticalCenter: parent.verticalCenter;
+			anchors.left: parent.left;
+			anchors.leftMargin: paintedWidth > logoBg.width - 10 ? 5 : (logoBg.width - paintedWidth) / 2;
+			text: model.text;
+			color: colorTheme.focusedTextColor;
+			visible: channelLogo.status != Image.Ready;
+		}
+
 		Image {
+			id: channelLogo;
 			anchors.fill: parent;
 			anchors.margins: 10;
 			fillMode: Image.PreserveAspectFit;

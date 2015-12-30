@@ -40,6 +40,7 @@ ListModel {
 
 	saveProvider(idx): {
 		lastProvider.value = JSON.stringify(this.get(idx))
+		this.choosedProvider = this.get(idx).id
 	}
 
 	onProtocolChanged:	{ this.update(); }

@@ -78,7 +78,6 @@ Activity {
 		id: osdLayout;
 		anchors.fill: parent;
 		opacity: !active ? 0.0 : 1.0;
-		focus: active;
 		name: "menu";
 
 		PageStack {
@@ -128,6 +127,8 @@ Activity {
 					osdLayout.stop()
 			}
 		}
+
+		onActiveChanged: { if (this.active) menu.setFocus() }
 
 		onStarted:		{ menu.setFocus(); }
 		onStopped:		{ watchPage.reset(); }

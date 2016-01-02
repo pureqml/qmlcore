@@ -1,7 +1,7 @@
 Item {
 	id: providerDelegate;
 	width: parent.width;
-	height: categoryLabel.paintedHeight + 10;
+	height: categoryLabel.paintedHeight > 36 ? categoryLabel.paintedHeight + 10 : 46;
 	clip: true;
 
 	Rectangle {

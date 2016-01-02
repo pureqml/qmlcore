@@ -4,7 +4,7 @@ Object {
 	property string baseUrl;
 
 	getProgramsAtDate(date, callback): {
-		if (!date.getFullYear() || !date.getMonth() || !date.getDate())
+		if (!date.getFullYear || !date.getMonth || !date.getDate)
 			return;
 		this.request("/programs/" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(), {}, callback)
 	}

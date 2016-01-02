@@ -6,9 +6,28 @@ Item {
 
 	Background { }
 
+	Item {
+		id: feedbackLabel;
+		height: feedbackText.paintedHeight;
+		anchors.top: parent.top;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+		anchors.margins: 10;
+
+		MainText {
+			id: feedbackText;
+			color: colorTheme.textColor;
+			wrap: true;
+			text: "Если у Вы знаете о других рабочих плейлистах, напишите нам support@truba.tv.";
+		}
+	}
+
 	ListView {
 		id: categoriesListView;
-		anchors.fill: parent;
+		anchors.top: feedbackText.bottom;
+		anchors.left: parent.left;
+		anchors.right: parent.right;
+		anchors.bottom: parent.bottom;
 		positionMode: ListView.Center;
 		keyNavigationWraps: false;
 		model: providersModel;

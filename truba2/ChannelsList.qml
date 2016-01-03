@@ -10,20 +10,14 @@ Item {
 	anchors.bottom: parent.bottom;
 	opacity: activeFocus ? 1.0 : 0.8;
 
-	ListView {
+	TrubaListView {
 		id: channelsListView;
 		anchors.fill: parent;
-		keyNavigationWraps: false;
 		spacing: 2;
-		contentFollowsCurrentItem: !globals.isHtml5;
-		positionMode: globals.isHtml5 ? ListView.Contain : ListView.Center;
 		model: ChannelsModel { protocol: protocol; }
 		delegate: ChannelDelegate { }
 
-		onClicked:			{ this.select(); }
-		onSelectPressed:	{ this.select(); }
-
-		select: {
+		onToggled: {
 			var channel = this.model.get(this.currentIndex)
 			channelListProto.switched(channel)
 		}

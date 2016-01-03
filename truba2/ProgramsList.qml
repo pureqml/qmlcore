@@ -21,18 +21,15 @@ Item {
 		text: "Сегодня";
 	}
 
-	ListView {
+	TrubaListView {
 		id: programsListView;
 		anchors.top: todaylabel.bottom;
 		anchors.left: parent.left;
 		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
 		anchors.topMargin: 10;
-		model: epgModel;
-		contentFollowsCurrentItem: !globals.isHtml5;
-		positionMode: globals.isHtml5 ? ListView.Contain : ListView.Center;
-		keyNavigationWraps: false;
 		clip: true;
+		model: epgModel;
 		delegate: EPGDelegate { }
 	}
 

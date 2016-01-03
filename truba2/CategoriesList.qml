@@ -11,13 +11,10 @@ Item {
 
 	Background { }
 
-	ListView {
+	TrubaListView {
 		id: categoriesListView;
 		anchors.fill: parent;
-		keyNavigationWraps: false;
 		model: categoriesModel;
-		contentFollowsCurrentItem: !globals.isHtml5;
-		positionMode: globals.isHtml5 ? ListView.Contain : ListView.Center;
 		delegate: CategoryDelegate { }
 
 		select: { categoriesList.updateContent() }

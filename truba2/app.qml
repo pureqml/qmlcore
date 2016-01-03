@@ -5,6 +5,8 @@ Activity {
 	anchors.fill: renderer;
 	name: "root";
 
+	Globals { id: globals; }
+
 	Protocol {
 		id: protocol;
 		enabled: true;

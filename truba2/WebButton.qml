@@ -4,14 +4,10 @@ MouseArea {
 	hoverEnabled: true;
 	width: 50;
 	height: 50;
+	visible: globals.isHtml5;
 
 	Image {
 		source: colorTheme.res + webButtonProto.icon;
 		anchors.centerIn: parent;
-	}
-
-	onCompleted: {
-		if (_globals.core.vendor != "webkit")
-			this.visible = false
 	}
 }

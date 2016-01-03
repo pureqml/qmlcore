@@ -15,6 +15,8 @@ Item {
 		anchors.fill: parent;
 		keyNavigationWraps: false;
 		spacing: 2;
+		contentFollowsCurrentItem: !globals.isHtml5;
+		positionMode: globals.isHtml5 ? ListView.Contain : ListView.Center;
 		model: ChannelsModel { protocol: protocol; }
 		delegate: ChannelDelegate { }
 
@@ -27,15 +29,6 @@ Item {
 		}
 
 		onCurrentIndexChanged: { updateChannelTimer.restart() }
-
-		onCompleted: {
-			if (_globals.core.vendor != "webkit") {
-				this.positionMode = ListView.Center
-				this.contentFollowsCurrentItem = true
-			} else {
-				this.contentFollowsCurrentItem = false
-			}
-		}
 	}
 
 	Timer {

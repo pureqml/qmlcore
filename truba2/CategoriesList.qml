@@ -16,20 +16,13 @@ Item {
 		anchors.fill: parent;
 		keyNavigationWraps: false;
 		model: categoriesModel;
+		contentFollowsCurrentItem: !globals.isHtml5;
+		positionMode: globals.isHtml5 ? ListView.Contain : ListView.Center;
 		delegate: CategoryDelegate { }
 
 		select: { categoriesList.updateContent() }
 		onClicked: { this.select() }
 		onCurrentIndexChanged: { this.select() }
-
-		onCompleted: {
-			if (_globals.core.vendor != "webkit") {
-				this.positionMode = ListView.Center
-				this.contentFollowsCurrentItem = true
-			} else {
-				this.contentFollowsCurrentItem = false
-			}
-		}
 	}
 
 	Image {

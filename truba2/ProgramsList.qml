@@ -29,19 +29,11 @@ Item {
 		anchors.bottom: parent.bottom;
 		anchors.topMargin: 10;
 		model: epgModel;
-		positionMode: ListView.Center;
+		contentFollowsCurrentItem: !globals.isHtml5;
+		positionMode: globals.isHtml5 ? ListView.Contain : ListView.Center;
 		keyNavigationWraps: false;
 		clip: true;
 		delegate: EPGDelegate { }
-
-		onCompleted: {
-			if (_globals.core.vendor != "webkit") {
-				this.positionMode = ListView.Center
-				this.contentFollowsCurrentItem = true
-			} else {
-				this.contentFollowsCurrentItem = false
-			}
-		}
 	}
 
 	hide: { this.showed = false; if (this.activeFocus) programsListProto.disappeared(); }

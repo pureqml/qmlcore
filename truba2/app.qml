@@ -180,7 +180,7 @@ Activity {
 		// Crunch for compiler.
 		if (!widgetAPI)
 			var widgetAPI = { }
-		if (_globals.core.vendor == "samsung")
+		if (globals.platform == "samsung")
 			widgetAPI.sendExitEvent()
 	}
 

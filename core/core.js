@@ -45,8 +45,20 @@ if ('webOS' in window) {
 		console.log("[QML] " + args.join(" "))
 	}
 
-	log("[QML] WebOS")
+	log("WebOS deteceted")
 	_globals.core.vendor = "webos"
+
+	var self = this
+	var history = window.history
+	history.pushState({ "data": "data" });
+
+	window.addEventListener('popstate', function (event) {
+		history.pushState({ "data": "data" });
+		if (!event.state)
+			return
+		// Emulate 'Back' pressing.
+		jQuery.event.trigger({ type: 'keydown', which: 27 })
+	});
 
 	log("loaded")
 }
@@ -112,14 +124,14 @@ if (_globals.core.vendor == "samsung")
 		39: 'Right',
 		40: 'Down',
 		13: 'Select',
+		33: 'ChannelUp',
+		34: 'ChannelDown',
+		27: 'Back',
 		403: 'Red',
 		404: 'Green',
 		405: 'Yellow',
 		406: 'Blue',
-		427: 'ChannelUp',
-		428: 'ChannelDown',
-		457: 'Menu',
-		10009: 'Back'
+		457: 'Menu'
 	}
 } else {
 	keyCodes = {

@@ -119,8 +119,8 @@ Activity {
 		}
 
 		WebButton {
-			anchors.left: mainWindow.left;
-			anchors.bottom: mainWindow.bottom;
+			anchors.top: mainWindow.top;
+			anchors.right: mainWindow.right;
 			anchors.margins: 20;
 			icon: "close.png";
 

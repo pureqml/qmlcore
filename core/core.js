@@ -50,10 +50,11 @@ if ('webOS' in window) {
 
 	var self = this
 	var history = window.history
-	history.pushState({ "data": "data" });
+	history.pushState({ "data": "data" })
 
 	window.addEventListener('popstate', function (event) {
-		history.pushState({ "data": "data" });
+		event.preventDefault()
+		history.pushState({ "data": "data" })
 		if (!event.state)
 			return
 		// Emulate 'Back' pressing.

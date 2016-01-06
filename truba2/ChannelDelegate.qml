@@ -119,13 +119,16 @@ MouseArea {
 		onTriggered: { channelDelegateProto.toggled = false }
 	}
 
-	onSelectPressed: { this.blinck() }
+	onSelectPressed: {
+		this.blinck()
+		event.accepted = false
+	}
+
 	onClicked: { this.blinck() }
 
 	blinck: {
 		this.toggled = true
 		toggleTimer.restart()
-		event.accepted = false
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

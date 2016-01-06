@@ -18,7 +18,7 @@ ListView {
 
 		if (itemY < this.contentY)
 			this.contentY -= itemH
-		else if (itemY > this.contentY + this.height)
+		else if (itemY + itemH > this.contentY + this.height)
 			this.contentY += itemH
 	}
 }

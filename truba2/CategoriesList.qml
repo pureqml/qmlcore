@@ -17,9 +17,12 @@ Item {
 		model: categoriesModel;
 		delegate: CategoryDelegate { }
 
-		select: { categoriesList.updateContent() }
-		onClicked: { this.select() }
-		onCurrentIndexChanged: { this.select() }
+		onToggled: {
+			updateTimer.requestIndex = categoriesListView.currentIndex
+			updateTimer.process()
+		}
+
+		onCurrentIndexChanged: { categoriesList.updateContent() }
 	}
 
 	Image {
@@ -34,13 +37,17 @@ Item {
 		interval: 1000;
 		repeat: false;
 
-		onTriggered: {
+		process: {
+			this.stop()
+
 			if (this.requestIndex != categoriesListView.currentIndex)
 				this.restart()
 
 			categoriesList.genreChoosed(categoriesListView.model.get(categoriesListView.currentIndex).list)
 			categoriesList.prevGenre = categoriesListView.model.get(categoriesListView.currentIndex).text
 		}
+
+		onTriggered: { this.process() }
 	}
 
 	updateContent: {

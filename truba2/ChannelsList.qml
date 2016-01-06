@@ -18,6 +18,7 @@ Item {
 		delegate: ChannelDelegate { }
 
 		onToggled: {
+			updateChannelTimer.process()
 			var channel = this.model.get(this.currentIndex)
 			channelListProto.switched(channel)
 		}
@@ -30,7 +31,12 @@ Item {
 		interval: 800;
 		repeat: false;
 
-		onTriggered: { channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex)) }
+		process: {
+			this.stop()
+			channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex))
+		}
+
+		onTriggered: { this.process() }
 	}
 
 	setList(list): {

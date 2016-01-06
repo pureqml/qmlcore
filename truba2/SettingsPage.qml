@@ -18,7 +18,7 @@ Item {
 			id: feedbackText;
 			color: colorTheme.textColor;
 			wrap: true;
-			text: "Если у Вы знаете о других рабочих плейлистах, напишите нам support@truba.tv.";
+			text: "Если у Вас есть пожелания к сервису или Вы хотите добавить сюда свой плейлист, напишите нам на support@truba.tv";
 		}
 	}
 

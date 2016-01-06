@@ -79,6 +79,13 @@ Item {
 			categories.setFocus()
 	}
 
+	onVisibleChanged: {
+		if (!this.visible) {
+			channels.hide()
+			programs.hide()
+		}
+	}
+
 	switchNextChannel: {
 		if (!this.currentList || !this.currentList.length)
 			return

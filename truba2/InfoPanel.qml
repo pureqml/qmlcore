@@ -77,7 +77,7 @@ Activity {
 			id: descriptionClipper;
 			anchors.top: currentProgramProgress.bottom;
 			anchors.left: parent.left;
-			anchors.right: parent.right;
+			anchors.right: webControls.left;
 			anchors.bottom: parent.bottom;
 			anchors.margins: 5;
 			clip: true;
@@ -110,20 +110,39 @@ Activity {
 		onTriggered: { infoPanelProto.updateProgress() }
 	}
 
-	WebButton {
+	Rectangle {
+		id: webControls;
+		width: closeButton.width + 10;
 		anchors.top: parent.top;
 		anchors.right: parent.right;
-		icon: "close.png";
-
-		onClicked: { infoPanelProto.stop() }
-	}
-
-	WebButton {
-		anchors.right: parent.right;
 		anchors.bottom: parent.bottom;
-		icon: "menu.png";
+		anchors.rightMargin: 5;
+		color: colorTheme.focusedTextColor;
 
-		onClicked: { infoPanelProto.menuCalled() }
+		WebButton {
+			id: closeButton;
+			anchors.top: parent.top;
+			anchors.right: parent.right;
+			icon: "close.png";
+
+			onClicked: { infoPanelProto.stop() }
+		}
+
+		WebButton {
+			anchors.right: parent.right;
+			anchors.verticalCenter: parent.verticalCenter;
+			icon: "fullscreen.png";
+
+			onClicked: { renderer.fullscreen = !renderer.fullscreen }
+		}
+
+		WebButton {
+			anchors.right: parent.right;
+			anchors.bottom: parent.bottom;
+			icon: "menu.png";
+
+			onClicked: { infoPanelProto.menuCalled() }
+		}
 	}
 
 	Timer {

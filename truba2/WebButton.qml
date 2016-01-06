@@ -7,7 +7,7 @@ MouseArea {
 	visible: globals.isHtml5;
 
 	Image {
-		source: colorTheme.res + webButtonProto.icon;
+		source: colorTheme.res + "controls/" + webButtonProto.icon;
 		anchors.centerIn: parent;
 	}
 }

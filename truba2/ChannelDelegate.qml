@@ -1,10 +1,14 @@
-Rectangle {
+MouseArea {
 	id: channelDelegateProto;
 	property bool toggled: false;
 	width: parent.width;
 	height: channelLabelText.paintedHeight * 3.5;
-	color: colorTheme.focusablePanelColor;
 	clip: true;
+
+	Rectangle {
+		anchors.fill: parent;
+		color: colorTheme.focusablePanelColor;
+	}
 
 	Rectangle {
 		anchors.fill: parent;
@@ -115,7 +119,10 @@ Rectangle {
 		onTriggered: { channelDelegateProto.toggled = false }
 	}
 
-	onSelectPressed: {
+	onSelectPressed: { this.blinck() }
+	onClicked: { this.blinck() }
+
+	blinck: {
 		this.toggled = true
 		toggleTimer.restart()
 		event.accepted = false

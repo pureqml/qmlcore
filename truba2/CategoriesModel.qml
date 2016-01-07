@@ -46,6 +46,7 @@ ListModel {
 				self.repository[genre] = map[genre];
 				self.append({
 					text: genre,
+					count: map[genre].length,
 					list: map[genre]
 				});
 			}

@@ -123,6 +123,7 @@ Activity {
 			id: closeButton;
 			anchors.top: parent.top;
 			anchors.right: parent.right;
+			size: parent.height / 3;
 			icon: "close.png";
 
 			onClicked: { infoPanelProto.stop() }
@@ -131,6 +132,7 @@ Activity {
 		WebButton {
 			anchors.right: parent.right;
 			anchors.verticalCenter: parent.verticalCenter;
+			size: parent.height / 3;
 			icon: "fullscreen.png";
 
 			onClicked: { renderer.fullscreen = !renderer.fullscreen }
@@ -139,6 +141,7 @@ Activity {
 		WebButton {
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
+			size: parent.height / 3;
 			icon: "menu.png";
 
 			onClicked: { infoPanelProto.menuCalled() }

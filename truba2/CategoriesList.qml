@@ -9,7 +9,7 @@ Item {
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
 
-	Background { }
+	Background { opacity: parent.activeFocus || innerCategoriesArea.containsMouse ? 1.0 : 0.8; }
 
 	TrubaListView {
 		id: categoriesListView;
@@ -31,6 +31,15 @@ Item {
 		visible: !categoriesList.active;
 	}
 
+	MouseArea {
+		id: innerCategoriesArea;
+		anchors.fill: parent;
+		hoverEnabled: true;
+		visible: !categoriesList.active;
+
+		onClicked: { categoriesList.active = true }
+	}
+
 	Timer {
 		id: updateTimer;
 		property int requestIndex: 0;
@@ -43,8 +52,9 @@ Item {
 			if (this.requestIndex != categoriesListView.currentIndex)
 				this.restart()
 
-			categoriesList.genreChoosed(categoriesListView.model.get(categoriesListView.currentIndex).list)
-			categoriesList.prevGenre = categoriesListView.model.get(categoriesListView.currentIndex).text
+			var idx = categoriesListView.currentIndex
+			categoriesList.genreChoosed(categoriesListView.model.get(idx).list)
+			categoriesList.prevGenre = categoriesListView.model.get(idx).text
 		}
 
 		onTriggered: { this.process() }

@@ -108,7 +108,7 @@ Activity {
 					settingsPage.setFocus()
 			}
 
-			onLeftPressed: { menu.setFocus() }
+			onLeftPressed: { menu.expand() }
 		}
 
 		MainMenu {
@@ -130,7 +130,7 @@ Activity {
 			}
 		}
 
-		onActiveChanged: { if (this.active) menu.setFocus() }
+		onActiveChanged: { if (this.active) menu.expand() }
 
 		onStarted:		{ menu.setFocus(); }
 		onStopped:		{ watchPage.reset(); }

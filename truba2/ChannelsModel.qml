@@ -19,6 +19,11 @@ ListModel {
 	setList(list): {
 		this.clear();
 
+		if (!list) {
+			log("List is undefined")
+			return
+		}
+
 		for (var i = 0; i < list.length; ++i) {
 			var source = this.getSourceUrl(list[i].url)
 			if (!source) {

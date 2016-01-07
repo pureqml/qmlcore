@@ -20,4 +20,14 @@ Item {
 		color: categoryDelegate.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
 		opacity: parent.activeFocus ? 1 : categoriesList.active ? 0.8 : 0.0;
 	}
+
+	MainText {
+		id: categoryLabel;
+		anchors.right: parent.right;
+		anchors.rightMargin: 10;
+		anchors.verticalCenter: parent.verticalCenter;
+		text: model.count;
+		color: categoryDelegate.activeFocus ? colorTheme.focusedTextColor : colorTheme.activeTextColor;
+		opacity: parent.activeFocus ? 1 : categoriesList.active ? 0.8 : 0.0;
+	}
 }

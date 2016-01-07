@@ -1,13 +1,14 @@
 MouseArea {
 	id: webButtonProto;
 	property string icon;
+	property int size: 50;
 	hoverEnabled: true;
-	width: 50;
-	height: 50;
+	width: size;
+	height: size;
 	visible: globals.isHtml5;
 
 	Image {
 		source: colorTheme.res + "controls/" + webButtonProto.icon;
-		anchors.centerIn: parent;
+		anchors.fill: parent;
 	}
 }

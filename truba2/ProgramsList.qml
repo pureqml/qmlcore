@@ -39,10 +39,6 @@ Item {
 	setChannel(channel): {
 		programsListView.model.getEPGForChannel(channel.id)
 		programsListView.currentIndex = 0
-		if (channel.program.start)
-			this.show()
-		else
-			this.hide()
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

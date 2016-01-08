@@ -39,9 +39,14 @@ Item {
 		anchors.left: categories.right;
 		anchors.leftMargin: 2;
 
-		onLeftPressed:	{ categories.setFocus() }
-		onRightPressed:	{ if (programs.count) programs.setFocus() }
+		onLeftPressed: { categories.setFocus() }
+		onCurrentIndexChanged: { programs.hide() }
 		onChannelChoosed(channel): { programs.setChannel(channel) }
+
+		onEpgCalled: {
+			programs.show()
+			programs.setFocus()
+		}
 
 		onSwitched(channel): {
 			watchPageProto.switched(channel)

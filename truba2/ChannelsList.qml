@@ -2,6 +2,7 @@ Item {
 	id: channelListProto;
 	signal switched;
 	signal channelChoosed;
+	signal epgCalled;
 	property variant currentList;
 	property int count: channelsListView.count;
 	property int currentIndex: channelsListView.currentIndex;
@@ -18,26 +19,13 @@ Item {
 		model: ChannelsModel { protocol: protocol; }
 		delegate: ChannelDelegate { }
 
-		onToggled: {
-			var channel = this.model.get(this.currentIndex)
-			channelListProto.switched(channel)
-			updateChannelTimer.process()
+		onToggled: { channelListProto.switched(this.model.get(this.currentIndex)) }
+		onCurrentIndexChanged: { channelListProto.channelChoosed(this.model.get(this.currentIndex)) }
+
+		onRightPressed: {
+			if (this.model.get(this.currentIndex).program.startTime)
+				channelListProto.epgCalled()
 		}
-
-		onCurrentIndexChanged: { updateChannelTimer.restart() }
-	}
-
-	Timer {
-		id: updateChannelTimer;
-		interval: 800;
-		repeat: false;
-
-		process: {
-			this.stop()
-			channelListProto.channelChoosed(channelsListView.model.get(channelsListView.currentIndex))
-		}
-
-		onTriggered: { this.process() }
 	}
 
 	setList(list): {
@@ -48,11 +36,6 @@ Item {
 			channelListProto.currentList.push(channelsListView.model.get(i))
 
 		this.show()
-	}
-
-	onActiveFocusChanged: {
-		if (this.activeFocus)
-			updateChannelTimer.restart()
 	}
 
 	hide: {

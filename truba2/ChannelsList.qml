@@ -17,7 +17,12 @@ Item {
 		anchors.fill: parent;
 		spacing: 2;
 		model: ChannelsModel { protocol: protocol; }
-		delegate: ChannelDelegate { }
+		delegate: ChannelDelegate {
+			onEpgCalled: {
+				if (channelsListView.model.get(channelsListView.currentIndex).program.startTime)
+					channelListProto.epgCalled()
+			}
+		}
 
 		onToggled: { channelListProto.switched(this.model.get(this.currentIndex)) }
 		onCurrentIndexChanged: { channelListProto.channelChoosed(this.model.get(this.currentIndex)) }

@@ -1,9 +1,11 @@
 MouseArea {
 	id: channelDelegateProto;
+	signal epgCalled;
 	property bool toggled: false;
 	property int spacing: (height - channelLabelText.paintedHeight - 2 * durationText.font.pixelSize) / 4;
 	width: parent.width;
 	height: channelLabelText.paintedHeight * 3.5;
+	hoverEnabled: true;
 
 	Rectangle {
 		anchors.fill: parent;
@@ -121,7 +123,7 @@ MouseArea {
 		id: showEpgItem;
 		height: parent.height;
 		width: 50;
-		anchors.left: parent.right;
+		anchors.right: parent.right;
 		visible: model.program.startTime && parent.activeFocus;
 		color: blinkRect.color;
 
@@ -147,8 +149,12 @@ MouseArea {
 	onClicked: { this.blinck() }
 
 	blinck: {
-		this.toggled = true
-		toggleTimer.restart()
+		if (this.mouseX >= this.width - showEpgItem.width) {
+			this.epgCalled()
+		} else {
+			this.toggled = true
+			toggleTimer.restart()
+		}
 	}
 
 	Behavior on opacity { Animation { duration: 300; } }

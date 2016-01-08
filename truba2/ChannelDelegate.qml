@@ -1,6 +1,7 @@
 MouseArea {
 	id: channelDelegateProto;
 	property bool toggled: false;
+	property int spacing: (height - channelLabelText.paintedHeight - 2 * durationText.font.pixelSize) / 4;
 	width: parent.width;
 	height: channelLabelText.paintedHeight * 3.5;
 	clip: true;
@@ -61,7 +62,7 @@ MouseArea {
 		anchors.top: parent.top;
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
-		anchors.margins: 10;
+		anchors.margins: channelDelegateProto.spacing;
 		text: model.lcn + ". " + model.text;
 		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.accentTextColor;
 		font.bold: true;
@@ -72,8 +73,8 @@ MouseArea {
 		anchors.left: logoBg.right;
 		anchors.right: parent.right;
 		anchors.bottom: durationText.top;
-		anchors.leftMargin: 10;
-		anchors.rightMargin: 10;
+		anchors.leftMargin: channelDelegateProto.spacing;
+		anchors.rightMargin: channelDelegateProto.spacing;
 
 		SmallText {
 			anchors.verticalCenter: parent.verticalCenter;
@@ -88,7 +89,7 @@ MouseArea {
 		id: durationText;
 		anchors.left: logoBg.right;
 		anchors.bottom: parent.bottom;
-		anchors.margins: 10;
+		anchors.margins: channelDelegateProto.spacing;
 		text: model.program.start + (model.program.start ? " - " : "") + model.program.stop;
 		color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
 	}
@@ -98,8 +99,8 @@ MouseArea {
 		anchors.left: durationText.right;
 		anchors.right: parent.right;
 		anchors.verticalCenter: durationText.verticalCenter;
-		anchors.leftMargin: 10;
-		anchors.rightMargin: 10;
+		anchors.leftMargin: channelDelegateProto.spacing;
+		anchors.rightMargin: channelDelegateProto.spacing;
 
 		Rectangle {
 			id: programProgress;

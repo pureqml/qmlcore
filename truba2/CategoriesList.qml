@@ -1,15 +1,14 @@
 Item {
 	id: categoriesList;
 	signal genreChoosed;
-	property bool active: true;
 	property string prevGenre: "";
 	property int count: categoriesListView.count;
-	width: active ? renderer.width / 4.2 : 80;
+	width: renderer.width / 4.2;
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
 
-	Background { opacity: parent.activeFocus || innerCategoriesArea.containsMouse ? 1.0 : 0.8; }
+	Background { }
 
 	TrubaListView {
 		id: categoriesListView;
@@ -23,21 +22,6 @@ Item {
 		}
 
 		onCurrentIndexChanged: { categoriesList.updateContent() }
-	}
-
-	Image {
-		anchors.centerIn: parent;
-		source: colorTheme.res + "more.png";
-		visible: !categoriesList.active;
-	}
-
-	MouseArea {
-		id: innerCategoriesArea;
-		anchors.fill: parent;
-		hoverEnabled: true;
-		visible: !categoriesList.active;
-
-		onClicked: { categoriesList.active = true }
 	}
 
 	Timer {

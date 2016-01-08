@@ -74,6 +74,11 @@ Activity {
 		hoverEnabled: true;
 
 		onClicked: { infoPanel.show(mainWindow.channel) }
+
+		onHorizontalSwiped(event): {
+			if (!mainWindow.hasAnyActiveChild)
+				osdLayout.start()
+		}
 	}
 
 	Activity {

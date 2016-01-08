@@ -7,13 +7,14 @@ Item {
 	anchors.top: parent.top;
 	anchors.left: parent.left;
 	anchors.bottom: parent.bottom;
-	clip: true;
 
 	Background { }
+	BorderShadow { visible: mainMenuProto.active; }
 
 	ListView {
 		id: menuList;
 		anchors.fill: parent;
+		clip: true;
 		delegate: MenuDelegate { }
 		model: ListModel {
 			property string text;

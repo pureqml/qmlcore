@@ -4,7 +4,6 @@ MouseArea {
 	property int spacing: (height - channelLabelText.paintedHeight - 2 * durationText.font.pixelSize) / 4;
 	width: parent.width;
 	height: channelLabelText.paintedHeight * 3.5;
-	clip: true;
 
 	Rectangle {
 		anchors.fill: parent;
@@ -12,6 +11,7 @@ MouseArea {
 	}
 
 	Rectangle {
+		id: blinkRect;
 		anchors.fill: parent;
 		color: channelDelegateProto.toggled ? colorTheme.accentColor : colorTheme.activeFocusColor;
 		visible: parent.activeFocus;
@@ -57,58 +57,77 @@ MouseArea {
 		}
 	}
 
-	MainText {
-		id: channelLabelText;
-		anchors.top: parent.top;
-		anchors.left: logoBg.right;
-		anchors.right: parent.right;
-		anchors.margins: channelDelegateProto.spacing;
-		text: model.lcn + ". " + model.text;
-		color: parent.activeFocus ? colorTheme.focusedTextColor : colorTheme.accentTextColor;
-		font.bold: true;
-	}
-
 	Item {
-		anchors.top: channelLabelText.bottom;
-		anchors.left: logoBg.right;
-		anchors.right: parent.right;
-		anchors.bottom: durationText.top;
-		anchors.leftMargin: channelDelegateProto.spacing;
-		anchors.rightMargin: channelDelegateProto.spacing;
+		anchors.fill: parent;
+		clip: true;
+
+		MainText {
+			id: channelLabelText;
+			anchors.top: parent.top;
+			anchors.left: logoBg.right;
+			anchors.right: parent.right;
+			anchors.margins: channelDelegateProto.spacing;
+			text: model.lcn + ". " + model.text;
+			color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.accentTextColor;
+			font.bold: true;
+		}
+
+		Item {
+			anchors.top: channelLabelText.bottom;
+			anchors.left: logoBg.right;
+			anchors.right: parent.right;
+			anchors.bottom: durationText.top;
+			anchors.leftMargin: channelDelegateProto.spacing;
+			anchors.rightMargin: channelDelegateProto.spacing;
+
+			SmallText {
+				anchors.verticalCenter: parent.verticalCenter;
+				anchors.left: parent.left;
+				anchors.right: parent.right;
+				text: model.program.title;
+				color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+			}
+		}
 
 		SmallText {
-			anchors.verticalCenter: parent.verticalCenter;
-			anchors.left: parent.left;
-			anchors.right: parent.right;
-			text: model.program.title;
+			id: durationText;
+			anchors.left: logoBg.right;
+			anchors.bottom: parent.bottom;
+			anchors.margins: channelDelegateProto.spacing;
+			text: model.program.start + (model.program.start ? " - " : "") + model.program.stop;
 			color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
+		}
+
+		Item {
+			height: 3;
+			anchors.left: durationText.right;
+			anchors.right: parent.right;
+			anchors.verticalCenter: durationText.verticalCenter;
+			anchors.leftMargin: channelDelegateProto.spacing;
+			anchors.rightMargin: channelDelegateProto.spacing;
+
+			Rectangle {
+				id: programProgress;
+				width: model.program.progress * parent.width;
+				anchors.top: parent.top;
+				anchors.left: parent.left;
+				anchors.bottom: parent.bottom;
+				color: colorTheme.accentColor;
+			}
 		}
 	}
 
-	SmallText {
-		id: durationText;
-		anchors.left: logoBg.right;
-		anchors.bottom: parent.bottom;
-		anchors.margins: channelDelegateProto.spacing;
-		text: model.program.start + (model.program.start ? " - " : "") + model.program.stop;
-		color: channelDelegateProto.activeFocus ? colorTheme.focusedTextColor : colorTheme.textColor;
-	}
+	Rectangle {
+		id: showEpgItem;
+		height: parent.height;
+		width: 50;
+		anchors.left: parent.right;
+		visible: model.program.startTime && parent.activeFocus;
+		color: blinkRect.color;
 
-	Item {
-		height: 3;
-		anchors.left: durationText.right;
-		anchors.right: parent.right;
-		anchors.verticalCenter: durationText.verticalCenter;
-		anchors.leftMargin: channelDelegateProto.spacing;
-		anchors.rightMargin: channelDelegateProto.spacing;
-
-		Rectangle {
-			id: programProgress;
-			width: model.program.progress * parent.width;
-			anchors.top: parent.top;
-			anchors.left: parent.left;
-			anchors.bottom: parent.bottom;
-			color: colorTheme.accentColor;
+		Image {
+			anchors.centerIn: parent;
+			source: colorTheme.res + "b_epg.png";
 		}
 	}
 

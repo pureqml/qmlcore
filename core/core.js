@@ -678,12 +678,16 @@ exports._setup = function() {
 			return false
 	}
 
-	_globals.core.MouseArea.prototype._onVerticalSwipe = function(event) {
+	_globals.core.MouseArea.prototype._onSwipe = function(event) {
 		if (!this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
 			return
 
 		this.pressed = !event.end
-		this.verticalSwiped(event)
+		if (event.orientation == "vertical")
+			this.verticalSwiped(event)
+		else
+			this.horizontalSwiped(event)
+
 		event.preventDefault()
 	}
 
@@ -1689,7 +1693,7 @@ exports._bootstrap = function(self, name) {
 		case 'core.MouseArea':
 			self.element.click(self._onClick.bind(self))
 			if (self.element.drag)
-				self.element.drag(self._onVerticalSwipe.bind(self))
+				self.element.drag(self._onSwipe.bind(self))
 			$(document).mousemove(self._onMove.bind(self))
 			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
 			self.element.mousedown(self._onDown.bind(self))

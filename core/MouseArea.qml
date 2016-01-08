@@ -5,6 +5,7 @@ Item {
 	signal canceled;
 	signal wheelEvent;
 	signal verticalSwiped;
+	signal horizontalSwiped;
 
 	property bool hoverEnabled;
 	property bool containsMouse;

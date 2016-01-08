@@ -85,10 +85,10 @@ Activity {
 		PageStack {
 			id: content;
 			anchors.top: parent.top;
-			anchors.left: menu.right;
+			anchors.left: parent.left;
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
-			anchors.leftMargin: 2;
+			anchors.leftMargin: menu.minWidth + 2;
 			currentIndex: menu.currentIndex;
 			visible: osdLayout.active;
 
@@ -108,7 +108,7 @@ Activity {
 					settingsPage.setFocus()
 			}
 
-			onLeftPressed: { menu.expand() }
+			onLeftPressed: { menu.setFocus() }
 		}
 
 		MainMenu {
@@ -130,10 +130,9 @@ Activity {
 			}
 		}
 
-		onActiveChanged: { if (this.active) menu.expand() }
+		onActiveChanged: { if (this.active) menu.setFocus() }
 
 		onStarted:		{ menu.setFocus(); }
-		onStopped:		{ watchPage.reset(); }
 	}
 
 	InfoPanel {

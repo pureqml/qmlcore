@@ -32,8 +32,6 @@ Item {
 			if (channels.count)
 				channels.setFocus()
 		}
-
-		onActiveFocusChanged: { if (this.activeFocus) categories.active = true }
 	}
 
 	ChannelsList {
@@ -55,8 +53,6 @@ Item {
 			}
 			lastList.value = JSON.stringify(lastListData)
 		}
-
-		onActiveFocusChanged: { if (this.activeFocus) categories.active = false }
 	}
 
 	ProgramsList {
@@ -67,14 +63,9 @@ Item {
 
 		onLeftPressed: { channels.setFocus() }
 		onDisappeared: { channels.setFocus() }
-
-		onActiveFocusChanged: { if (this.activeFocus) categories.active = false }
 	}
 
-	reset: { categories.active = true }
-
 	onActiveFocusChanged: {
-		categories.active = true
 		if (this.activeFocus)
 			categories.setFocus()
 	}

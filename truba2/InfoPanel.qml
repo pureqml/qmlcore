@@ -110,6 +110,15 @@ Activity {
 		onTriggered: { infoPanelProto.updateProgress() }
 	}
 
+	WebButton {
+		id: closeButton;
+		anchors.top: renderer.top;
+		anchors.right: renderer.right;
+		icon: "close.png";
+
+		onClicked: { infoPanelProto.stop() }
+	}
+
 	Rectangle {
 		id: webControls;
 		width: closeButton.width + 10;
@@ -120,19 +129,9 @@ Activity {
 		color: colorTheme.focusedTextColor;
 
 		WebButton {
-			id: closeButton;
 			anchors.top: parent.top;
 			anchors.right: parent.right;
-			size: parent.height / 3;
-			icon: "close.png";
-
-			onClicked: { infoPanelProto.stop() }
-		}
-
-		WebButton {
-			anchors.right: parent.right;
-			anchors.verticalCenter: parent.verticalCenter;
-			size: parent.height / 3;
+			size: parent.height / 2;
 			icon: "fullscreen.png";
 
 			onClicked: { renderer.fullscreen = !renderer.fullscreen }
@@ -141,7 +140,7 @@ Activity {
 		WebButton {
 			anchors.right: parent.right;
 			anchors.bottom: parent.bottom;
-			size: parent.height / 3;
+			size: parent.height / 2;
 			icon: "menu.png";
 
 			onClicked: { infoPanelProto.menuCalled() }

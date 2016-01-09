@@ -5,7 +5,7 @@ Activity {
 	anchors.fill: renderer;
 	name: "root";
 
-	Globals { id: globals; }
+	PlatformInfo { id: globals; }
 
 	Protocol {
 		id: protocol;

@@ -5,7 +5,7 @@ MouseArea {
 	hoverEnabled: true;
 	width: size;
 	height: size;
-	visible: globals.isHtml5;
+	visible: globals.isWebkit;
 
 	Image {
 		source: colorTheme.res + "controls/" + webButtonProto.icon;

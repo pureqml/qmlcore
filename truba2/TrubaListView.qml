@@ -1,8 +1,8 @@
 ListView {
 	signal toggled;
 	keyNavigationWraps: false;
-	contentFollowsCurrentItem: !globals.isHtml5;
-	positionMode: globals.isHtml5 ? ListView.Contain : ListView.Center;
+	contentFollowsCurrentItem: !globals.isWebkit;
+	positionMode: globals.isWebkit ? ListView.Contain : ListView.Center;
 
 	onClicked:			{ this.toggled(); }
 	onSelectPressed:	{ this.toggled(); }

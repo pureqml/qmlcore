@@ -36,14 +36,17 @@ Item {
 		toggle: {
 			for (var i = 0; i < this.count; ++i)
 				if (this.model.get(i).selected) {
-					this.model.get(i).selected = false
-					this._onRowsChanged(i, i + 1)
+					var item = this.model.get(i)
+					item.selected = false
+					this.model.set(i, item)
 					break;
 				}
 
 			var idx = this.currentIndex
-			this.model.get(idx).selected = true
-			this._onRowsChanged(idx, idx + 1)
+			var item = this.model.get(idx)
+			item.selected = true
+			this.model.set(idx, item)
+
 			this.model.saveProvider(idx)
 		}
 

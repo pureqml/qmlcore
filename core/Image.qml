@@ -4,6 +4,8 @@ Item {
 
 	property int paintedWidth;
 	property int paintedHeight;
+	width: paintedWidth;
+	height: paintedHeight;
 
 	property int fillMode: Image.Stretch;
 }

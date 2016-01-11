@@ -40,6 +40,7 @@ Activity {
 			id: currentChannelTitle;
 			anchors.top: parent.top;
 			anchors.left: parent.left;
+			anchors.right: webControls.left;
 			anchors.margins: 10;
 			font.bold: true;
 			color: colorTheme.accentTextColor;
@@ -47,8 +48,9 @@ Activity {
 
 		MainText {
 			id: currentProgramTitle;
-			anchors.left: parent.left;
 			anchors.top: currentChannelTitle.bottom;
+			anchors.left: parent.left;
+			anchors.right: webControls.left;
 			anchors.topMargin: 5;
 			anchors.leftMargin: 10;
 			anchors.rightMargin: 10;

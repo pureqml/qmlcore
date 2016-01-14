@@ -54,7 +54,6 @@ Activity {
 					"id":"пятница"
 				};
 			mainWindow.switchToChannel(channelInfo);
-			videoPlayer.source = lastChannel.url ? lastChannel.url : "http://msk3.peers.tv/streaming/friday/126/tvrec/playlist.m3u8";
 		}
 	}
 

@@ -84,6 +84,85 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 	}
 }
 
+
+var gpPollInterval;
+if (!('ongamepadconnected' in window)) {
+	// No gamepad events available, poll instead.
+	gpPollInterval = setInterval(pollGamepads, 1000);
+}
+
+function pollGamepads() {
+	var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+	for (var i = 0; i < gamepads.length; i++) {
+		var gp = gamepads[i];
+		if (gamepads[i]) {
+			gpButtonCheckLoop();
+			clearInterval(gpPollInterval);
+		}
+	}
+}
+
+function buttonPressed(b) {
+	if (typeof(b) == "object")
+		return b.pressed;
+	return b == 1.0;
+}
+
+
+var gpButtonsPollInterval;
+function gpButtonCheckLoop() {
+	clearInterval(gpButtonsPollInterval);
+	var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+	if (!gamepads)
+		return;
+
+	var gp = gamepads[0];
+	if (gp.buttons.length >= 16) {
+		// Functional buttons.
+		if (buttonPressed(gp.buttons[0]))
+			jQuery.event.trigger({ type: 'keydown', which: 112 })
+		else if (buttonPressed(gp.buttons[2]))
+			jQuery.event.trigger({ type: 'keydown', which: 113 })
+		else if (buttonPressed(gp.buttons[1]))
+			jQuery.event.trigger({ type: 'keydown', which: 114 })
+		else if (buttonPressed(gp.buttons[3]))
+			jQuery.event.trigger({ type: 'keydown', which: 114 })
+		// Trigger buttons.
+		else if (buttonPressed(gp.buttons[4]))
+			log("button 4")
+		else if (buttonPressed(gp.buttons[5]))
+			log("button 5")
+		else if (buttonPressed(gp.buttons[6]))
+			log("button 6")
+		else if (buttonPressed(gp.buttons[7]))
+			log("button 7")
+		// Select button.
+		else if (buttonPressed(gp.buttons[8]))
+			jQuery.event.trigger({ type: 'keydown', which: 13 })
+		// Start button.
+		else if (buttonPressed(gp.buttons[9]))
+			log("button 9")
+		// Left joystick.
+		else if (buttonPressed(gp.buttons[10]))
+			log("button 10")
+		// Right joystick.
+		else if (buttonPressed(gp.buttons[11]))
+			log("button 11")
+		// Navigation keys.
+		else if (buttonPressed(gp.buttons[12]))
+			jQuery.event.trigger({ type: 'keydown', which: 38 })
+		else if (buttonPressed(gp.buttons[13]))
+			jQuery.event.trigger({ type: 'keydown', which: 40 })
+		else if (buttonPressed(gp.buttons[14]))
+			jQuery.event.trigger({ type: 'keydown', which: 37 })
+		else if (buttonPressed(gp.buttons[15]))
+			jQuery.event.trigger({ type: 'keydown', which: 39 })
+	}
+
+	gpButtonsPollInterval = setInterval(gpButtonCheckLoop, 250);
+}
+
+
 var keyCodes
 if (_globals.core.vendor == "samsung")
 {

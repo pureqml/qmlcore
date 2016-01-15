@@ -1624,7 +1624,7 @@ exports.addProperty = function(self, type, name) {
 
 					interpolated_value = convert(animation.interpolate(dst, src, t));
 					self._update(name, interpolated_value, src);
-				});
+				}, 0);
 
 				timeout = setTimeout(function() {
 					clearInterval(timer);

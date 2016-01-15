@@ -159,7 +159,7 @@ function gpButtonCheckLoop() {
 			jQuery.event.trigger({ type: 'keydown', which: 39 })
 	}
 
-	gpButtonsPollInterval = setInterval(gpButtonCheckLoop, 250);
+	gpButtonsPollInterval = setInterval(gpButtonCheckLoop, 100);
 }
 
 

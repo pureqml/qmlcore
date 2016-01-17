@@ -85,84 +85,6 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 }
 
 
-var gpPollInterval;
-if (!('ongamepadconnected' in window)) {
-	// No gamepad events available, poll instead.
-	gpPollInterval = setInterval(pollGamepads, 1000);
-}
-
-function pollGamepads() {
-	var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
-	for (var i = 0; i < gamepads.length; i++) {
-		var gp = gamepads[i];
-		if (gamepads[i]) {
-			gpButtonCheckLoop();
-			clearInterval(gpPollInterval);
-		}
-	}
-}
-
-function buttonPressed(b) {
-	if (typeof(b) == "object")
-		return b.pressed;
-	return b == 1.0;
-}
-
-
-var gpButtonsPollInterval;
-function gpButtonCheckLoop() {
-	clearInterval(gpButtonsPollInterval);
-	var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
-	if (!gamepads)
-		return;
-
-	var gp = gamepads[0];
-	if (gp.buttons.length >= 16) {
-		// Functional buttons.
-		if (buttonPressed(gp.buttons[0]))
-			jQuery.event.trigger({ type: 'keydown', which: 112 })
-		else if (buttonPressed(gp.buttons[2]))
-			jQuery.event.trigger({ type: 'keydown', which: 113 })
-		else if (buttonPressed(gp.buttons[1]))
-			jQuery.event.trigger({ type: 'keydown', which: 114 })
-		else if (buttonPressed(gp.buttons[3]))
-			jQuery.event.trigger({ type: 'keydown', which: 114 })
-		// Trigger buttons.
-		else if (buttonPressed(gp.buttons[4]))
-			log("button 4")
-		else if (buttonPressed(gp.buttons[5]))
-			log("button 5")
-		else if (buttonPressed(gp.buttons[6]))
-			log("button 6")
-		else if (buttonPressed(gp.buttons[7]))
-			log("button 7")
-		// Select button.
-		else if (buttonPressed(gp.buttons[8]))
-			jQuery.event.trigger({ type: 'keydown', which: 13 })
-		// Start button.
-		else if (buttonPressed(gp.buttons[9]))
-			log("button 9")
-		// Left joystick.
-		else if (buttonPressed(gp.buttons[10]))
-			log("button 10")
-		// Right joystick.
-		else if (buttonPressed(gp.buttons[11]))
-			log("button 11")
-		// Navigation keys.
-		else if (buttonPressed(gp.buttons[12]))
-			jQuery.event.trigger({ type: 'keydown', which: 38 })
-		else if (buttonPressed(gp.buttons[13]))
-			jQuery.event.trigger({ type: 'keydown', which: 40 })
-		else if (buttonPressed(gp.buttons[14]))
-			jQuery.event.trigger({ type: 'keydown', which: 37 })
-		else if (buttonPressed(gp.buttons[15]))
-			jQuery.event.trigger({ type: 'keydown', which: 39 })
-	}
-
-	gpButtonsPollInterval = setInterval(gpButtonCheckLoop, 100);
-}
-
-
 var keyCodes
 if (_globals.core.vendor == "samsung")
 {
@@ -747,6 +669,7 @@ exports._setup = function() {
 		var box = this.toScreen()
 		var x = event.pageX - box[0]
 		var y = event.pageY - box[1]
+
 		if (x >= 0 && y >= 0 && x < this.width && y < this.height)
 		{
 			this.mouseX = x
@@ -755,6 +678,141 @@ exports._setup = function() {
 		}
 		else
 			return false
+	}
+
+	_globals.core.GamepadManager.prototype._gpButtonsPollInterval
+
+	_globals.core.GamepadManager.prototype._gpButtonCheckLoop = function(self) {
+		clearInterval(self._gpButtonsPollInterval);
+		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+		for (var i in gamepads) {
+			if (!gamepads[i] || !gamepads[i].buttons)
+				continue
+
+			var gp = gamepads[i]
+			var gpItem
+
+			for (var i = 0; i < this.children.length; ++i) {
+				var c = this.children[i]
+				if (c instanceof qml.core.Gamepad && c.connected && c.index == gp.index) {
+					gpItem = c
+					break
+				}
+			}
+
+			if (!gp || !gpItem)
+				continue
+
+			var event = { type: 'keydown', 'source': 'gamepad', 'index': gp.index }
+
+			if (gp.axes && gp.axes.length >= 4) {
+				// Left joystick.
+				if (gp.axes[0])
+					gpItem.leftJoystickX(gp.axes[0])
+				if (gp.axes[1])
+					gpItem.leftJoystickY(gp.axes[1])
+
+				// Right joystick.
+				if (gp.axes[2])
+					gpItem.rightJoystickX(gp.axes[2])
+				if (gp.axes[3])
+					gpItem.rightJoystickY(gp.axes[3])
+			}
+
+			if (gp.buttons.length >= 16) {
+				// Functional buttons.
+				if (gp.buttons[0].pressed)
+					event.which = 114
+				else if (gp.buttons[1].pressed)
+					event.which = 112
+				else if (gp.buttons[2].pressed)
+					event.which = 113
+				else if (gp.buttons[3].pressed)
+					event.which = 115
+				// Trigger buttons.
+				else if (gp.buttons[4].pressed)
+					log("button 4")
+				else if (gp.buttons[5].pressed)
+					log("button 5")
+				else if (gp.buttons[6].pressed)
+					log("button 6")
+				else if (gp.buttons[7].pressed)
+					log("button 7")
+				// Select button.
+				else if (gp.buttons[8].pressed)
+					event.which = 27
+				// Start button.
+				else if (gp.buttons[9].pressed)
+					log("button 9")
+				// Left joystick.
+				else if (gp.buttons[10].pressed)
+					event.which = 13
+				// Right joystick.
+				else if (gp.buttons[11].pressed)
+					event.which = 13
+				// Navigation keys.
+				else if (gp.buttons[12].pressed)
+					event.which = 38
+				else if (gp.buttons[13].pressed)
+					event.which = 40
+				else if (gp.buttons[14].pressed)
+					event.which = 37
+				else if (gp.buttons[15].pressed)
+					event.which = 39
+			}
+
+			if (gp.buttons.length >= 17) {
+				if (gp.buttons[16].pressed)
+					log("button 16")
+			}
+
+			if (event.which)
+				jQuery.event.trigger("keypress", event)
+		}
+		this._gpButtonsPollInterval = setInterval( function() { self._gpButtonCheckLoop(self) }, 250)
+	}
+
+	_globals.core.GamepadManager.prototype._onGamepadConnected = function(event) {
+		if (!this._gamepads) 
+			this._gamepads = {}
+
+		var children = this.children
+		var g = event.gamepad
+
+		for (var i = 0; i < children.length; ++i) {
+			var c = children[i]
+			if (c instanceof qml.core.Gamepad && !c.connected) {
+				c.index = g.index
+				c.connected = true
+				c.deviceInfo = g.id
+				c.buttonsCount = g.buttons.length
+				c.axesCount = g.axes.length
+				break
+			}
+		}
+
+		this._gamepads[event.gamepad.index] = event.gamepad
+		if (++this.count == 1)
+			this._gpButtonCheckLoop(this)
+	}
+
+	_globals.core.GamepadManager.prototype._onGamepadDisconnected = function(event) {
+		var g = event.gamepad
+		var children = this.children
+
+		for (var i = 0; i < children.length; ++i) {
+			var c = children[i]
+			if (c instanceof qml.core.Gamepad && c.index == g.index) {
+				c.index = -1
+				c.connected = false
+				c.deviceInfo = ""
+				c.buttonsCount = 0
+				c.axesCount = 0
+				break
+			}
+		}
+		delete this._gamepads[event.gamepad.index]
+		--this.count
 	}
 
 	_globals.core.MouseArea.prototype._onSwipe = function(event) {
@@ -1768,6 +1826,23 @@ exports._bootstrap = function(self, name) {
 			updateVisibility(self.parent.recursiveVisible)
 			self.parent.onChanged('recursiveVisible', updateVisibility)
 
+			break;
+		case 'core.GamepadManager':
+			var gpPollInterval
+			if (!('ongamepadconnected' in window))
+				gpPollInterval = setInterval(pollGamepads, 1000)
+
+			function pollGamepads() {
+				clearInterval(gpPollInterval)
+				var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+				for (var i = 0; i < gamepads.length; ++i) {
+					var gamepad = gamepads[i]
+					if (gamepad)
+						self._onGamepadConnected({ 'gamepad': gamepad })
+				}
+			}
+			window.addEventListener('gamepadconnected', self._onGamepadConnected.bind(self));
+			window.addEventListener('gamepaddisconnected', self._onGamepadDisconnected.bind(self));
 			break;
 		case 'core.MouseArea':
 			self.element.click(self._onClick.bind(self))

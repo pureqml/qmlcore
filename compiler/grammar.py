@@ -135,6 +135,7 @@ expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | 
 
 expression_ops = infixNotation(expression_definition, [
 	('!', 1, opAssoc.RIGHT, handle_unary_op),
+	('%', 2, opAssoc.LEFT, handle_binary_op),
 	('*', 2, opAssoc.LEFT, handle_binary_op),
 	('/', 2, opAssoc.LEFT, handle_binary_op),
 	('+', 2, opAssoc.LEFT, handle_binary_op),

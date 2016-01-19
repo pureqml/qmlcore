@@ -9,11 +9,11 @@ Activity {
 		id: game;
 	}
 
-	Text {
-		anchors.centerIn: parent;
-		text: "INSERT 2 GAMEPADS";
-		color: "#fff";
-		font.pixelSize: 46;
-		visible: game.stubbed;
-	}
+	//Text {
+		//anchors.centerIn: parent;
+		//text: "INSERT 2 GAMEPADS";
+		//color: "#fff";
+		//font.pixelSize: 46;
+		//visible: game.stubbed;
+	//}
 }

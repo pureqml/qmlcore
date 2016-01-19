@@ -6,7 +6,7 @@ Rectangle {
 
 	GamepadManager {
 		id: gpManager;
-		property int maxSpeed: 50;
+		property int maxSpeed: 100;
 		anchors.fill: parent;
 
 		Gamepad {
@@ -40,7 +40,6 @@ Rectangle {
 		}
 	}
 
-
 	Rectangle {
 		width: 20;
 		height: parent.height;
@@ -48,6 +47,17 @@ Rectangle {
 		color: colorTheme.itemsColor;
 	}
 
+	Rectangle {
+		id: ball;
+		x: parent.width / 2;
+		y: parent.height / 2;
+		width: 40;
+		height: width;
+		color: colorTheme.itemsColor;
+
+		Behavior on x { Animation { duration: 100; } }
+		Behavior on y { Animation { duration: 100; } }
+	}
 
 	Bat {
 		id: player1;
@@ -57,5 +67,59 @@ Rectangle {
 	Bat {
 		id: player2;
 		anchors.right: parent.right;
+	}
+
+	Timer {
+		id: nextBallRestart;
+		interval: 1000;
+
+		onTriggered: {
+			ball.x = gameAreaProto.width / 2
+			ball.y = gameAreaProto.height / 2
+			gameTimer.shift = -gameTimer.shift
+			gameTimer.restart()
+		}
+	}
+
+	Timer {
+		id: gameTimer;
+		property int shift: 50;
+		property int angle: 45;
+		property real pi: 3.1415926;
+		interval: 100;
+		repeat: true;
+		triggerOnStart: true;
+
+		onTriggered: {
+			var newX = ball.x + this.shift * Math.cos(this.angle * this.pi / 180)
+			var newY = ball.y + this.shift * Math.sin(this.angle * this.pi / 180)
+			if (newY <= 0) {
+				this.angle = -this.angle
+			} else if (newY >= gameAreaProto.height - ball.height) {
+				this.angle = -this.angle
+			} else if (newX <= player1.x + player1.width && 
+				newY >= player1.y && newY <= player1.y + player1.height) {
+				this.angle = -this.angle
+				this.shift = -this.shift
+			} else if (newX + ball.width <= 0) {
+				// Player1 missed ball
+				nextBallRestart.restart()
+				this.stop()
+			} else if (newX + ball.width >= player2.x &&
+				newY >= player2.y && newY <= player2.y + player2.height) {
+				this.angle = -this.angle
+				this.shift = -this.shift
+			} else if (newX > gameAreaProto.width) {
+				// Player2 missed ball
+				nextBallRestart.restart()
+				this.stop()
+			}
+			ball.x = newX
+			ball.y = newY
+		}
+	}
+
+	onCompleted: {
+		gameTimer.restart()
 	}
 }

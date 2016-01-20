@@ -41,10 +41,23 @@ Rectangle {
 	}
 
 	Rectangle {
+		id: sectionLine;
 		width: 20;
 		height: parent.height;
 		anchors.horizontalCenter: parent.horizontalCenter;
 		color: colorTheme.itemsColor;
+	}
+
+	Score {
+		id: player1Score;
+		anchors.top: sectionLine.top;
+		anchors.right: sectionLine.left;
+	}
+
+	Score {
+		id: player2Score;
+		anchors.top: sectionLine.top;
+		anchors.left: sectionLine.right;
 	}
 
 	Rectangle {
@@ -54,9 +67,6 @@ Rectangle {
 		width: 40;
 		height: width;
 		color: colorTheme.itemsColor;
-
-		Behavior on x { Animation { duration: 100; } }
-		Behavior on y { Animation { duration: 100; } }
 	}
 
 	Bat {
@@ -83,16 +93,17 @@ Rectangle {
 
 	Timer {
 		id: gameTimer;
-		property int shift: 50;
+		property int shift: 20;
 		property int angle: 45;
 		property real pi: 3.1415926;
-		interval: 100;
+		interval: 30;
 		repeat: true;
 		triggerOnStart: true;
 
 		onTriggered: {
 			var newX = ball.x + this.shift * Math.cos(this.angle * this.pi / 180)
 			var newY = ball.y + this.shift * Math.sin(this.angle * this.pi / 180)
+
 			if (newY <= 0) {
 				this.angle = -this.angle
 			} else if (newY >= gameAreaProto.height - ball.height) {
@@ -103,6 +114,7 @@ Rectangle {
 				this.shift = -this.shift
 			} else if (newX + ball.width <= 0) {
 				// Player1 missed ball
+				++player2Score.value;
 				nextBallRestart.restart()
 				this.stop()
 			} else if (newX + ball.width >= player2.x &&
@@ -111,6 +123,7 @@ Rectangle {
 				this.shift = -this.shift
 			} else if (newX > gameAreaProto.width) {
 				// Player2 missed ball
+				++player1Score.value;
 				nextBallRestart.restart()
 				this.stop()
 			}

@@ -3,6 +3,7 @@ Rectangle {
 	property bool stubbed: gpManager.count < 2;
 	anchors.fill: parent;
 	color: colorTheme.backgroundColor;
+	focus: true;
 
 	GamepadManager {
 		id: gpManager;
@@ -52,12 +53,16 @@ Rectangle {
 		id: player1Score;
 		anchors.top: sectionLine.top;
 		anchors.right: sectionLine.left;
+		anchors.rightMargin: 40;
+
+		onValueChaned: { gameAreaProto.checkGameOver() }
 	}
 
 	Score {
 		id: player2Score;
 		anchors.top: sectionLine.top;
 		anchors.left: sectionLine.right;
+		anchors.leftMargin: 40;
 	}
 
 	Rectangle {
@@ -87,7 +92,18 @@ Rectangle {
 			ball.x = gameAreaProto.width / 2
 			ball.y = gameAreaProto.height / 2
 			gameTimer.shift = -gameTimer.shift
+			gameTimer.angle = Math.random() * 90 - 45
 			gameTimer.restart()
+		}
+	}
+
+	MouseArea {
+		anchors.fill: parent;
+		hoverEnabled: true;
+
+		onMouseYChanged: {
+			if (gpManager.count < 2)
+				player2.y = value
 		}
 	}
 
@@ -114,7 +130,7 @@ Rectangle {
 				this.shift = -this.shift
 			} else if (newX + ball.width <= 0) {
 				// Player1 missed ball
-				++player2Score.value;
+				++player2Score.value
 				nextBallRestart.restart()
 				this.stop()
 			} else if (newX + ball.width >= player2.x &&
@@ -123,12 +139,38 @@ Rectangle {
 				this.shift = -this.shift
 			} else if (newX > gameAreaProto.width) {
 				// Player2 missed ball
-				++player1Score.value;
+				++player1Score.value
 				nextBallRestart.restart()
 				this.stop()
 			}
 			ball.x = newX
 			ball.y = newY
+		}
+	}
+
+	checkGameOver: {
+		if (player1Score.value >= 10)
+		{
+			gameTimer.stop()
+		}
+		else if (player2Score.value >= 10)
+		{
+		
+			gameTimer.stop()
+		}
+	}
+
+	onUpPressed: {
+		if (gpManager.count == 0) {
+			player1.speedUp()
+			gamepad1.updatePosition(-player1.speed)
+		}
+	}
+
+	onDownPressed: {
+		if (gpManager.count == 0) {
+			player1.speedUp()
+			gamepad1.updatePosition(player1.speed)
 		}
 	}
 

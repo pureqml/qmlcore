@@ -317,6 +317,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Animation.prototype.interpolate = blend;
+	_globals.core.Animation.prototype.complete = function() { }
 
 	/** @constructor */
 	var Color = function(value) {

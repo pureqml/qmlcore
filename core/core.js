@@ -1763,11 +1763,14 @@ exports.addProperty = function(self, type, name) {
 					self._update(name, interpolated_value, src);
 				}, 0);
 
-				timeout = setTimeout(function() {
+				var complete = function() {
 					clearInterval(timer);
 					interpolated_value = undefined;
 					self._update(name, dst, src);
-				}, duration);
+				}
+
+				timeout = setTimeout(complete, duration);
+				animation.complete = complete;
 			}
 			var oldValue = value;
 			if (oldValue !== newValue) {

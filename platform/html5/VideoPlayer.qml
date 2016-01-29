@@ -1,6 +1,7 @@
 Item {
 	property bool	autoPlay;
 	property string	source;
+	property bool	loop: false;
 
 	property bool	flash : true;
 	property bool	ready : false;
@@ -54,6 +55,7 @@ Item {
 	onWidthChanged: {
 		if (!this._player)
 			return;
+
 		if (this.flash) {
 			$('#videoPlayer').attr('width', value)
 			$('embed[name=videoPlayer]').attr('width', value)
@@ -71,6 +73,8 @@ Item {
 			this._player.attr('height', this.height)
 	}
 
+	onLoopChanged: { if (this._player) this._player.attr('loop', this.loop) }
+
 	onCompleted: {
 		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
 			this.flash = false
@@ -82,6 +86,7 @@ Item {
 				'" autoplay=' + (this.autoPlay? "autoplay": "") +
 				'>')
 			this._player.css('background-color', 'black')
+			this._player.attr('loop', this.loop)
 		} else {
 			console.log("creating object")
 			this._player = $(

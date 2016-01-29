@@ -1,3 +1,0 @@
-Item {
-	anchors.fill: parent;
-}

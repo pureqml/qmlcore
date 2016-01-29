@@ -1,6 +1,7 @@
 Rectangle {
 	id: gameAreaProto;
-	property bool stubbed: gpManager.count < 2;
+	property bool gameStopped: false;
+	property int maxCount: 10;
 	anchors.fill: parent;
 	color: colorTheme.backgroundColor;
 	focus: true;
@@ -53,15 +54,15 @@ Rectangle {
 		id: player1Score;
 		anchors.top: sectionLine.top;
 		anchors.right: sectionLine.left;
+		anchors.topMargin: 20;
 		anchors.rightMargin: 40;
-
-		onValueChaned: { gameAreaProto.checkGameOver() }
 	}
 
 	Score {
 		id: player2Score;
 		anchors.top: sectionLine.top;
 		anchors.left: sectionLine.right;
+		anchors.topMargin: 20;
 		anchors.leftMargin: 40;
 	}
 
@@ -72,6 +73,7 @@ Rectangle {
 		width: 40;
 		height: width;
 		color: colorTheme.itemsColor;
+		visible: !gameAreaProto.gameStopped;
 	}
 
 	Bat {
@@ -105,15 +107,41 @@ Rectangle {
 			if (gpManager.count < 2)
 				player2.y = value
 		}
+
+		onClicked: { gameAreaProto.restart() }
+	}
+
+	Column {
+		width: parent.width;
+		anchors.centerIn: parent;
+		visible: parent.gameStopped;
+
+		Text {
+			width: parent.width;
+			text: "GAME OVER!";
+			horizontalAlignment: Text.AlignHCenter;
+			color: colorTheme.itemsColor;
+			font.pixelSize: 52;
+			font.shadow: true;
+		}
+
+		Text {
+			width: parent.width;
+			text: "PRESS 'ENTER' TO RESTART";
+			horizontalAlignment: Text.AlignHCenter;
+			color: colorTheme.itemsColor;
+			font.pixelSize: 42;
+			font.shadow: true;
+		}
 	}
 
 	Timer {
 		id: gameTimer;
-		property int shift: 20;
+		property int shift: 10;
 		property int angle: 45;
 		property real pi: 3.1415926;
-		interval: 30;
-		repeat: true;
+		interval: 20;
+		repeat: !gameAreaProto.gameStopped;
 		triggerOnStart: true;
 
 		onTriggered: {
@@ -132,6 +160,7 @@ Rectangle {
 				// Player1 missed ball
 				++player2Score.value
 				nextBallRestart.restart()
+				gameAreaProto.checkGameOver()
 				this.stop()
 			} else if (newX + ball.width >= player2.x &&
 				newY >= player2.y && newY <= player2.y + player2.height) {
@@ -141,6 +170,7 @@ Rectangle {
 				// Player2 missed ball
 				++player1Score.value
 				nextBallRestart.restart()
+				gameAreaProto.checkGameOver()
 				this.stop()
 			}
 			ball.x = newX
@@ -148,14 +178,21 @@ Rectangle {
 		}
 	}
 
+	onSelectPressed: { this.restart() }
+
+	restart: {
+		player1Score.value = 0
+		player2Score.value = 0
+		this.gameStopped = false
+		nextBallRestart.restart()
+	}
+
 	checkGameOver: {
-		if (player1Score.value >= 10)
-		{
+		if (player1Score.value >= this.maxCount) {
+			this.gameStopped = true
 			gameTimer.stop()
-		}
-		else if (player2Score.value >= 10)
-		{
-		
+		} else if (player2Score.value >= this.maxCount) {
+			this.gameStopped = true
 			gameTimer.stop()
 		}
 	}

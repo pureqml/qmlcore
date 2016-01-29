@@ -7,12 +7,11 @@ Rectangle {
 	radius: 4;
 	focus: true;
 
-	Text {
+	MainText {
 		id: buttonInnerText;
 		anchors.centerIn: parent;
 		colol: octoColors.textColor;
 		text: buttonProto.text;
-		//font: mainFont;
 	}
 
 	Behavior on color { ColorAnimation { duration: 300; } }

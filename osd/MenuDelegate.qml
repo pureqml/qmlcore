@@ -1,10 +1,11 @@
-Item {
+MouseArea {
 	id: menuDelegateProto;
 	signal itemFocused;
 	signal itemSelected;
 	property variant content: model.content;
 	height: 320 + topLabel.paintedHeight + 30;
 	width: parent.width;
+	hoverEnabled: true;
 
 	ListModel { id: menuDelegateModel; }
 

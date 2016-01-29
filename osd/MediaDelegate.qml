@@ -6,9 +6,9 @@ Item {
 	Rectangle {
 		anchors.fill: iconImage;
 		color: model.color ? model.color : "#0000";
-		effects.shadow.color: parent.activeFocus ? "#000" : "#0000";
-		effects.shadow.spread: 8;
-		effects.shadow.blur: 10;
+		//effects.shadow.color: parent.activeFocus ? "#000" : "#0000";
+		//effects.shadow.spread: 8;
+		//effects.shadow.blur: 10;
 	}
 
 	Image {
@@ -21,7 +21,7 @@ Item {
 		fillMode: Image.Stretch;
 		source: model.icon;
 
-		Behavior on height { Animation { duration: 300; } }
+		//Behavior on height { Animation { duration: 300; } }
 	}
 
 	Item {
@@ -36,7 +36,7 @@ Item {
 			color: mediaDelegateProto.activeFocus ? octoColors.accentColor : octoColors.panelColor;
 			opacity: mediaDelegateProto.activeFocus ? 1.0 : 0.8;
 
-			Behavior on color { ColorAnimation { duration: 300; } }
+			Behavior on color { ColorAnimation { duration: 200; } }
 		}
 
 		TinyText {
@@ -61,9 +61,8 @@ Item {
 		color: "#0000";
 		border.color: octoColors.accentColor;
 		border.width: 5;
-		radius: 5;
 		opacity: parent.activeFocus ? 1.0 : 0.0;
 
-		Behavior on opacity { Animation { duration: 300; } }
+		Behavior on opacity { Animation { duration: 200; } }
 	}
 }

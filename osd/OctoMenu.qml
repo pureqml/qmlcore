@@ -14,7 +14,9 @@ Item {
 		id: innerMenuView;
 		anchors.fill: parent;
 		keyNavigationWraps: false;
+		positionMode: ListView.Center;
 		model: menuModel;
+		hoverEnabled: true;
 		delegate: MenuDelegate {
 			onItemFocused(item): {
 				octoMenuProto.itemFocused(item)
@@ -28,11 +30,6 @@ Item {
 			}
 		}
 	}
-
-	//onLeftPressed:	{ return true }
-	//onRightPressed:	{ return true }
-	//onUpPressed:	{ return true }
-	//onDownPressed:	{ return true }
 
 	fill(data): {
 		if (!data || !data.root) {

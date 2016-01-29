@@ -1,3 +1,3 @@
 Text {
-	font.pixelSize: renderer.width / 72;
+	font.pixelSize: 20;
 }

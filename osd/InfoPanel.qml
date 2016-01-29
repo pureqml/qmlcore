@@ -10,14 +10,16 @@ Item {
 	property bool isChannel: false;
 	property bool showed: false;
 	property real progress: 0.0;
-	height: showed ? (isChannel ? 160 : 250) : 0;
+	height: infoPanelImage.paintedHeight;
 	anchors.left: parent.left;
 	anchors.right: parent.right;
 	anchors.bottom: parent.bottom;
 	anchors.margins: 10;
+	visible: showed;
 	focus: showed;
 
 	Rectangle {
+		id: innerPanel;
 		anchors.fill: parent;
 		color: octoColors.panelColor;
 		clip: true;
@@ -30,11 +32,11 @@ Item {
 
 		Image {
 			id: infoPanelImage;
-			width: 160;
+			//width: 160;
 			anchors.top: parent.top;
 			anchors.left: parent.left;
 			anchors.bottom: parent.bottom;
-			fillMode: Image.Stretch;
+			//fillMode: Image.Stretch;
 		}
 
 		Column {
@@ -47,21 +49,18 @@ Item {
 			anchors.rightMargin: 10;
 			visible: !infoPanelProto.isChannel;
 
-			Text {
-				//font: mainFont;
+			MainText {
 				color: octoColors.textColor;
 				text: infoPanelProto.title;
 			}
 
-			Text {
-				//font: tinyFont;
+			MainText {
 				color: octoColors.subTextColor;
 				text: infoPanelProto.year;
 			}
 
-			Text {
+			MainText {
 				height: paintedHeight + 20;
-				//font: tinyFont;
 				color: octoColors.textColor;
 				text: infoPanelProto.duration;
 			}
@@ -87,24 +86,26 @@ Item {
 			}
 		}
 
-		Text {
-			anchors.top: currentProgramProgress.bottom;
+		SmallText {
+			anchors.top: infoPanelShort.bottom;
 			anchors.left: infoPanelShort.left;
 			anchors.right: infoPanelShort.right;
-			anchors.topMargin: infoPanelProto.isChannel ? 5 : 40;
-			//font: smallFont;
 			color: octoColors.textColor;
 			text: infoPanelProto.description;
-			wrapMode: Text.Wrap;
+			wrap: true;
 		}
 	}
 
 	show(media): {
+		if (!media)
+			return
+
 		this.showed = true 
 
 		infoPanelImage.source = media.icon
 		this.title = media.text
-		this.isChannel = !media.movieInfo
+		//this.isChannel = !media.movieInfo
+		this.isChannel = false 
 
 		if (media.movieInfo) {
 			var info = media.movieInfo
@@ -118,6 +119,11 @@ Item {
 			this.duration = ""
 			this.description = program.description
 		}
+		innerPanel.setFocus()
+	}
+
+	onActiveFocusChanged: {
+	log("focus", this.activeFocus)
 	}
 
 	hide: { this.showed = false }

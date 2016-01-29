@@ -2,6 +2,7 @@ Item {
 	id: backgroundPreviewProto;
 	property string preview: "";
 	anchors.fill: parent;
+	focus: false;
 
 	Image {
 		id: backgroundImage;
@@ -31,6 +32,7 @@ Item {
 			swapImage.opacity = 1
 			hideSwapAnimation.complete()
 			backgroundImage.source = backgroundPreviewProto.preview
+			backgroundPreviewProto.opacity = backgroundPreviewProto.preview ? 1.0 : 0.0
 			swapImage.opacity = 0
 		}
 	}
@@ -39,4 +41,6 @@ Item {
 		this.preview = preview
 		updatePreviewTimer.restart()
 	}
+
+	Behavior on opacity { Animation { id: hideSwapAnimation; duration: 300; } }
 }

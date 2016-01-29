@@ -21,7 +21,7 @@ Object {
 				{
 					"text": "Первый",
 					"icon": "res/octoosd/channels/icons/1.png",
-					"preview": ["res/octoosd/channels/preview/1.jpg"],
+					"preview": ["res/octoosd/channels/preview/1.png"],
 					"color": "#00387f",
 					"url": "",
 					"program":
@@ -34,7 +34,7 @@ Object {
 				}, {
 					"text": "Discovery",
 					"icon": "res/octoosd/channels/icons/2.png",
-					"preview": ["res/octoosd/channels/preview/2.jpg"],
+					"preview": ["res/octoosd/channels/preview/2.png"],
 					"color": "#424242",
 					"url": "",
 					"program":
@@ -47,7 +47,7 @@ Object {
 				}, {
 					"text": "Animal Planet",
 					"icon": "res/octoosd/channels/icons/3.png",
-					"preview": ["res/octoosd/channels/preview/3.jpg"],
+					"preview": ["res/octoosd/channels/preview/3.png"],
 					"color": "#EEEEEE",
 					"url": "",
 					"program":
@@ -60,7 +60,7 @@ Object {
 				}, {
 					"text": "Investigation Discovery",
 					"icon": "res/octoosd/channels/icons/4.png",
-					"preview": ["res/octoosd/channels/preview/4.jpg"],
+					"preview": ["res/octoosd/channels/preview/4.png"],
 					"color": "#fff",
 					"url": "",
 					"program":
@@ -73,7 +73,7 @@ Object {
 				}, {
 					"text": "History",
 					"icon": "res/octoosd/channels/icons/5.png",
-					"preview": ["res/octoosd/channels/preview/5.jpg"],
+					"preview": ["res/octoosd/channels/preview/5.png"],
 					"color": "#212121",
 					"url": "",
 					"program":
@@ -86,7 +86,7 @@ Object {
 				}, {
 					"text": "Paramount Comedy",
 					"icon": "res/octoosd/channels/icons/6.png",
-					"preview": ["res/octoosd/channels/preview/6.jpg"],
+					"preview": ["res/octoosd/channels/preview/6.png"],
 					"color": "#ff5353",
 					"url": "",
 					"program":
@@ -102,8 +102,8 @@ Object {
 			[
 				{
 					"text": "The Revenant",
-					"icon": "res/octoosd/vod/posters/revenant.jpg",
-					"preview": [ "res/octoosd/vod/preview/revenant_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/revenant.png",
+					"preview": [ "res/octoosd/vod/preview/revenant_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Revenant",
@@ -117,8 +117,8 @@ Object {
 					}
 				}, {
 					"text": "Everest",
-					"icon": "res/octoosd/vod/posters/everest.jpg",
-					"preview": [ "res/octoosd/vod/preview/everest_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/everest.png",
+					"preview": [ "res/octoosd/vod/preview/everest_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Everest",
@@ -136,8 +136,8 @@ Object {
 			[
 				{
 					"text": "Avengers Age of Ultron",
-					"icon": "res/octoosd/vod/posters/ultron.jpg",
-					"preview": [ "res/octoosd/vod/preview/ultron_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/ultron.png",
+					"preview": [ "res/octoosd/vod/preview/ultron_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Avengers Age of Ultron",
@@ -151,8 +151,8 @@ Object {
 					}
 				}, {
 					"text": "Law Abiding Citizen",
-					"icon": "res/octoosd/vod/posters/law.jpg",
-					"preview": [ "res/octoosd/vod/preview/law_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/law.png",
+					"preview": [ "res/octoosd/vod/preview/law_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Law Abiding Citizen",
@@ -166,8 +166,8 @@ Object {
 					}
 				}, {
 					"text": "The Dark Knight Rises",
-					"icon": "res/octoosd/vod/posters/batmanRises.jpg",
-					"preview": [ "res/octoosd/vod/preview/batmanRises_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/batmanRises.png",
+					"preview": [ "res/octoosd/vod/preview/batmanRises_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Dark Knight Rises",
@@ -181,8 +181,8 @@ Object {
 					}
 				}, {
 					"text": "District 9",
-					"icon": "res/octoosd/vod/posters/district9.jpg",
-					"preview": [ "res/octoosd/vod/preview/district9_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/district9.png",
+					"preview": [ "res/octoosd/vod/preview/district9_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "District 9",
@@ -196,8 +196,8 @@ Object {
 					}
 				}, {
 					"text": "Divergent",
-					"icon": "res/octoosd/vod/posters/divergent.jpg",
-					"preview": [ "res/octoosd/vod/preview/divergent_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/divergent.png",
+					"preview": [ "res/octoosd/vod/preview/divergent_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Divergent",
@@ -211,8 +211,8 @@ Object {
 					}
 				}, {
 					"text": "Terminator Genisys",
-					"icon": "res/octoosd/vod/posters/terminator.jpg",
-					"preview": [ "res/octoosd/vod/preview/terminator_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/terminator.png",
+					"preview": [ "res/octoosd/vod/preview/terminator_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Terminator Genisys",
@@ -226,8 +226,8 @@ Object {
 					}
 				}, {
 					"text": "Mad Max: Fury Road",
-					"icon": "res/octoosd/vod/posters/madMax.jpg",
-					"preview": [ "res/octoosd/vod/preview/madMax_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/madMax.png",
+					"preview": [ "res/octoosd/vod/preview/madMax_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Mad Max: Fury Road",
@@ -241,8 +241,8 @@ Object {
 					}
 				}, {
 					"text": "Fury",
-					"icon": "res/octoosd/vod/posters/fury.jpg",
-					"preview": [ "res/octoosd/vod/preview/fury_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/fury.png",
+					"preview": [ "res/octoosd/vod/preview/fury_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Fury",
@@ -256,8 +256,8 @@ Object {
 					}
 				}, {
 					"text": "Exodus: Gods and Kings",
-					"icon": "res/octoosd/vod/posters/exodus.jpg",
-					"preview": [ "res/octoosd/vod/preview/exodus_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/exodus.png",
+					"preview": [ "res/octoosd/vod/preview/exodus_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Exodus: Gods and Kings",
@@ -271,8 +271,8 @@ Object {
 					}
 				}, {
 					"text": "Django Unchained",
-					"icon": "res/octoosd/vod/posters/django.jpg",
-					"preview": [ "res/octoosd/vod/preview/django_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/django.png",
+					"preview": [ "res/octoosd/vod/preview/django_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Django Unchained",
@@ -286,8 +286,8 @@ Object {
 					}
 				}, {
 					"text": "Fast & Furious 6",
-					"icon": "res/octoosd/vod/posters/furious.jpg",
-					"preview": [ "res/octoosd/vod/preview/furious_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/furious.png",
+					"preview": [ "res/octoosd/vod/preview/furious_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Fast & Furious 6",
@@ -301,8 +301,8 @@ Object {
 					}
 				}, {
 					"text": "Spectre",
-					"icon": "res/octoosd/vod/posters/spectre.jpg",
-					"preview": [ "res/octoosd/vod/preview/spectre_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/spectre.png",
+					"preview": [ "res/octoosd/vod/preview/spectre_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Spectre",
@@ -315,8 +315,8 @@ Object {
 					}
 				}, {
 					"text": "The Expendables",
-					"icon": "res/octoosd/vod/posters/expendables.jpg",
-					"preview": [ "res/octoosd/vod/preview/expendables_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/expendables.png",
+					"preview": [ "res/octoosd/vod/preview/expendables_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Expendables",
@@ -330,8 +330,8 @@ Object {
 					}
 				}, {
 					"text": "300",
-					"icon": "res/octoosd/vod/posters/300.jpg",
-					"preview": [ "res/octoosd/vod/preview/300_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/300.png",
+					"preview": [ "res/octoosd/vod/preview/300_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "300",
@@ -345,8 +345,8 @@ Object {
 					}
 				}, {
 					"text": "Ant-Man",
-					"icon": "res/octoosd/vod/posters/antman.jpg",
-					"preview": [ "res/octoosd/vod/preview/antman_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/antman.png",
+					"preview": [ "res/octoosd/vod/preview/antman_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Ant-Man",
@@ -360,8 +360,8 @@ Object {
 					}
 				}, {
 					"text": "Skyfall",
-					"icon": "res/octoosd/vod/posters/skyfall.jpg",
-					"preview": [ "res/octoosd/vod/preview/skyfall_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/skyfall.png",
+					"preview": [ "res/octoosd/vod/preview/skyfall_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Skyfall",
@@ -374,8 +374,8 @@ Object {
 					}
 				}, {
 					"text": "X-Men: First Class",
-					"icon": "res/octoosd/vod/posters/firstclass.jpg",
-					"preview": [ "res/octoosd/vod/preview/firstclass_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/firstclass.png",
+					"preview": [ "res/octoosd/vod/preview/firstclass_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "X-Men: First Class",
@@ -389,8 +389,8 @@ Object {
 					}
 				}, {
 					"text": "Rise of the Planet of the Apes",
-					"icon": "res/octoosd/vod/posters/planetOfTheApes.jpg",
-					"preview": [ "res/octoosd/vod/preview/planetOfTheApes_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/planetOfTheApes.png",
+					"preview": [ "res/octoosd/vod/preview/planetOfTheApes_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Rise of the Planet of the Apes",
@@ -408,8 +408,8 @@ Object {
 			[
 				{
 					"text": "Ex Machina",
-					"icon": "res/octoosd/vod/posters/exMachina.jpg",
-					"preview": [ "res/octoosd/vod/preview/exMachina_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/exMachina.png",
+					"preview": [ "res/octoosd/vod/preview/exMachina_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Ex Machina",
@@ -423,8 +423,8 @@ Object {
 					}
 				}, {
 					"text": "Gravity",
-					"icon": "res/octoosd/vod/posters/gravity.jpg",
-					"preview": [ "res/octoosd/vod/preview/gravity_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/gravity.png",
+					"preview": [ "res/octoosd/vod/preview/gravity_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Gravity",
@@ -438,8 +438,8 @@ Object {
 					}
 				}, {
 					"text": "Edge of Tomorrow",
-					"icon": "res/octoosd/vod/posters/tomorrow.jpg",
-					"preview": [ "res/octoosd/vod/preview/tomorrow_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/tomorrow.png",
+					"preview": [ "res/octoosd/vod/preview/tomorrow_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Edge of Tomorrow",
@@ -453,8 +453,8 @@ Object {
 					}
 				}, {
 					"text": "The Martian",
-					"icon": "res/octoosd/vod/posters/martian.jpg",
-					"preview": [ "res/octoosd/vod/preview/martian_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/martian.png",
+					"preview": [ "res/octoosd/vod/preview/martian_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Martian",
@@ -468,8 +468,8 @@ Object {
 					}
 				}, {
 					"text": "Interstellar",
-					"icon": "res/octoosd/vod/posters/interstellar.jpg",
-					"preview": [ "res/octoosd/vod/preview/interstellar_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/interstellar.png",
+					"preview": [ "res/octoosd/vod/preview/interstellar_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Interstellar",
@@ -483,8 +483,8 @@ Object {
 					}
 				}, {
 					"text": "Cloud Atlas",
-					"icon": "res/octoosd/vod/posters/atlas.jpg",
-					"preview": [ "res/octoosd/vod/preview/atlas_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/atlas.png",
+					"preview": [ "res/octoosd/vod/preview/atlas_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Cloud Atlas",
@@ -498,8 +498,8 @@ Object {
 					}
 				}, {
 					"text": "Avengers Age of Ultron",
-					"icon": "res/octoosd/vod/posters/ultron.jpg",
-					"preview": [ "res/octoosd/vod/preview/ultron_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/ultron.png",
+					"preview": [ "res/octoosd/vod/preview/ultron_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Avengers Age of Ultron",
@@ -513,8 +513,8 @@ Object {
 					}
 				}, {
 					"text": "Ant-Man",
-					"icon": "res/octoosd/vod/posters/antman.jpg",
-					"preview": [ "res/octoosd/vod/preview/antman_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/antman.png",
+					"preview": [ "res/octoosd/vod/preview/antman_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Ant-Man",
@@ -528,8 +528,8 @@ Object {
 					}
 				}, {
 					"text": "X-Men: First Class",
-					"icon": "res/octoosd/vod/posters/firstclass.jpg",
-					"preview": [ "res/octoosd/vod/preview/firstclass_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/firstclass.png",
+					"preview": [ "res/octoosd/vod/preview/firstclass_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "X-Men: First Class",
@@ -543,8 +543,8 @@ Object {
 					}
 				}, {
 					"text": "Rise of the Planet of the Apes",
-					"icon": "res/octoosd/vod/posters/planetOfTheApes.jpg",
-					"preview": [ "res/octoosd/vod/preview/planetOfTheApes_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/planetOfTheApes.png",
+					"preview": [ "res/octoosd/vod/preview/planetOfTheApes_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Rise of the Planet of the Apes",
@@ -562,8 +562,8 @@ Object {
 			[
 				{
 					"text": "American Hustle",
-					"icon": "res/octoosd/vod/posters/hustle.jpg",
-					"preview": [ "res/octoosd/vod/preview/hustle_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/hustle.png",
+					"preview": [ "res/octoosd/vod/preview/hustle_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "American Hustle",
@@ -577,8 +577,8 @@ Object {
 					}
 				}, {
 					"text": "Law Abiding Citizen",
-					"icon": "res/octoosd/vod/posters/law.jpg",
-					"preview": [ "res/octoosd/vod/preview/law_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/law.png",
+					"preview": [ "res/octoosd/vod/preview/law_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Law Abiding Citizen",
@@ -592,8 +592,8 @@ Object {
 					}
 				}, {
 					"text": "Black Mass",
-					"icon": "res/octoosd/vod/posters/blackMass.jpg",
-					"preview": [ "res/octoosd/vod/preview/blackMass_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/blackMass.png",
+					"preview": [ "res/octoosd/vod/preview/blackMass_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Black Mass",
@@ -607,8 +607,8 @@ Object {
 					}
 				}, {
 					"text": "The Girl with the Dragon Tattoo",
-					"icon": "res/octoosd/vod/posters/tattoo.jpg",
-					"preview": [ "res/octoosd/vod/preview/tattoo_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/tattoo.png",
+					"preview": [ "res/octoosd/vod/preview/tattoo_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Girl with the Dragon Tattoo",
@@ -622,8 +622,8 @@ Object {
 					}
 				}, {
 					"text": "Public Enemies",
-					"icon": "res/octoosd/vod/posters/publicEnemies.jpg",
-					"preview": [ "res/octoosd/vod/preview/publicEnemies_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/publicEnemies.png",
+					"preview": [ "res/octoosd/vod/preview/publicEnemies_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Public Enemies",
@@ -641,8 +641,8 @@ Object {
 			[
 				{
 					"text": "Wreck-It Ralph",
-					"icon": "res/octoosd/vod/posters/ralph.jpg",
-					"preview": [ "res/octoosd/vod/preview/ralph_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/ralph.png",
+					"preview": [ "res/octoosd/vod/preview/ralph_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Wreck-It Ralph",
@@ -656,8 +656,8 @@ Object {
 					}
 				}, {
 					"text": "The Lego Movie",
-					"icon": "res/octoosd/vod/posters/lego.jpg",
-					"preview": [ "res/octoosd/vod/preview/lego_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/lego.png",
+					"preview": [ "res/octoosd/vod/preview/lego_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Lego Movie",
@@ -671,8 +671,8 @@ Object {
 					}
 				}, {
 					"text": "Finding Nemo",
-					"icon": "res/octoosd/vod/posters/nemo.jpg",
-					"preview": [ "res/octoosd/vod/preview/nemo_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/nemo.png",
+					"preview": [ "res/octoosd/vod/preview/nemo_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Finding Nemo",
@@ -686,8 +686,8 @@ Object {
 					}
 				}, {
 					"text": "Frozen",
-					"icon": "res/octoosd/vod/posters/frozen.jpg",
-					"preview": [ "res/octoosd/vod/preview/frozen_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/frozen.png",
+					"preview": [ "res/octoosd/vod/preview/frozen_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Frozen",
@@ -700,8 +700,8 @@ Object {
 					}
 				}, {
 					"text": "Shrek",
-					"icon": "res/octoosd/vod/posters/shrek.jpg",
-					"preview": [ "res/octoosd/vod/preview/shrek_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/shrek.png",
+					"preview": [ "res/octoosd/vod/preview/shrek_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Shrek",
@@ -715,8 +715,8 @@ Object {
 					}
 				}, {
 					"text": "Shrek 2",
-					"icon": "res/octoosd/vod/posters/shrek2.jpg",
-					"preview": [ "res/octoosd/vod/preview/shrek2_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/shrek2.png",
+					"preview": [ "res/octoosd/vod/preview/shrek2_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Shrek 2",
@@ -730,8 +730,8 @@ Object {
 					}
 				}, {
 					"text": "Shrek Forever After",
-					"icon": "res/octoosd/vod/posters/shrek4.jpg",
-					"preview": [ "res/octoosd/vod/preview/shrek4_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/shrek4.png",
+					"preview": [ "res/octoosd/vod/preview/shrek4_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Shrek Forever After",
@@ -749,8 +749,8 @@ Object {
 			[
 				{
 					"text": "Entourage",
-					"icon": "res/octoosd/vod/posters/entourage.jpg",
-					"preview": [ "res/octoosd/vod/preview/entourage_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/entourage.png",
+					"preview": [ "res/octoosd/vod/preview/entourage_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Entourage",
@@ -763,8 +763,8 @@ Object {
 					}
 				}, {
 					"text": "Birdman",
-					"icon": "res/octoosd/vod/posters/birdman.jpg",
-					"preview": [ "res/octoosd/vod/preview/birdman_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/birdman.png",
+					"preview": [ "res/octoosd/vod/preview/birdman_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Birdman",
@@ -777,8 +777,8 @@ Object {
 					}
 				}, {
 					"text": "The Book Thief",
-					"icon": "res/octoosd/vod/posters/bookThief.jpg",
-					"preview": [ "res/octoosd/vod/preview/bookThief_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/bookThief.png",
+					"preview": [ "res/octoosd/vod/preview/bookThief_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Book Thief",
@@ -792,8 +792,8 @@ Object {
 					}
 				}, {
 					"text": "The Bucket List",
-					"icon": "res/octoosd/vod/posters/bucket.jpg",
-					"preview": [ "res/octoosd/vod/preview/bucket_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/bucket.png",
+					"preview": [ "res/octoosd/vod/preview/bucket_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Bucket List",
@@ -807,8 +807,8 @@ Object {
 					}
 				}, {
 					"text": "Fifty Shades of Grey",
-					"icon": "res/octoosd/vod/posters/grey.jpg",
-					"preview": [ "res/octoosd/vod/preview/grey_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/grey.png",
+					"preview": [ "res/octoosd/vod/preview/grey_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Fifty Shades of Grey",
@@ -822,8 +822,8 @@ Object {
 					}
 				}, {
 					"text": "The Intern",
-					"icon": "res/octoosd/vod/posters/intern.jpg",
-					"preview": [ "res/octoosd/vod/preview/intern_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/intern.png",
+					"preview": [ "res/octoosd/vod/preview/intern_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Intern",
@@ -837,8 +837,8 @@ Object {
 					}
 				}, {
 					"text": "Slumdog Millionaire",
-					"icon": "res/octoosd/vod/posters/million.jpg",
-					"preview": [ "res/octoosd/vod/preview/million_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/million.png",
+					"preview": [ "res/octoosd/vod/preview/million_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Slumdog Millionaire",
@@ -852,8 +852,8 @@ Object {
 					}
 				}, {
 					"text": "Silver Linings Playbook",
-					"icon": "res/octoosd/vod/posters/playbook.jpg",
-					"preview": [ "res/octoosd/vod/preview/playbook_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/playbook.png",
+					"preview": [ "res/octoosd/vod/preview/playbook_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Silver Linings Playbook",
@@ -867,8 +867,8 @@ Object {
 					}
 				}, {
 					"text": "The Aviator",
-					"icon": "res/octoosd/vod/posters/aviator.jpg",
-					"preview": [ "res/octoosd/vod/preview/aviator_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/aviator.png",
+					"preview": [ "res/octoosd/vod/preview/aviator_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Aviator",
@@ -882,8 +882,8 @@ Object {
 					}
 				}, {
 					"text": "The Social Network",
-					"icon": "res/octoosd/vod/posters/social.jpg",
-					"preview": [ "res/octoosd/vod/preview/social_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/social.png",
+					"preview": [ "res/octoosd/vod/preview/social_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Social Network",
@@ -897,8 +897,8 @@ Object {
 					}
 				}, {
 					"text": "The Imitation Game",
-					"icon": "res/octoosd/vod/posters/imitation.jpg",
-					"preview": [ "res/octoosd/vod/preview/imitation_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/imitation.png",
+					"preview": [ "res/octoosd/vod/preview/imitation_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Imitation Game",
@@ -912,8 +912,8 @@ Object {
 					}
 				}, {
 					"text": "The Iron Lady",
-					"icon": "res/octoosd/vod/posters/ironLady.jpg",
-					"preview": [ "res/octoosd/vod/preview/ironLady_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/ironLady.png",
+					"preview": [ "res/octoosd/vod/preview/ironLady_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Iron Lady",
@@ -931,8 +931,8 @@ Object {
 			[
 				{
 					"text": "The Imitation Game",
-					"icon": "res/octoosd/vod/posters/imitation.jpg",
-					"preview": [ "res/octoosd/vod/preview/imitation_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/imitation.png",
+					"preview": [ "res/octoosd/vod/preview/imitation_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Imitation Game",
@@ -950,8 +950,8 @@ Object {
 			[
 				{
 					"text": "Entourage",
-					"icon": "res/octoosd/vod/posters/entourage.jpg",
-					"preview": [ "res/octoosd/vod/preview/entourage_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/entourage.png",
+					"preview": [ "res/octoosd/vod/preview/entourage_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Entourage",
@@ -964,8 +964,8 @@ Object {
 					}
 				}, {
 					"text": "Silver Linings Playbook",
-					"icon": "res/octoosd/vod/posters/playbook.jpg",
-					"preview": [ "res/octoosd/vod/preview/playbook_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/playbook.png",
+					"preview": [ "res/octoosd/vod/preview/playbook_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Silver Linings Playbook",
@@ -979,8 +979,8 @@ Object {
 					}
 				}, {
 					"text": "Due Date",
-					"icon": "res/octoosd/vod/posters/dueDate.jpg",
-					"preview": [ "res/octoosd/vod/preview/dueDate_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/dueDate.png",
+					"preview": [ "res/octoosd/vod/preview/dueDate_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Due Date",
@@ -994,8 +994,8 @@ Object {
 					}
 				}, {
 					"text": "The Hangover Part III",
-					"icon": "res/octoosd/vod/posters/hangover3.jpg",
-					"preview": [ "res/octoosd/vod/preview/hangover3_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/hangover3.png",
+					"preview": [ "res/octoosd/vod/preview/hangover3_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Hangover Part III",
@@ -1009,8 +1009,8 @@ Object {
 					}
 				}, {
 					"text": "Get Hard",
-					"icon": "res/octoosd/vod/posters/getHard.jpg",
-					"preview": [ "res/octoosd/vod/preview/getHard_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/getHard.png",
+					"preview": [ "res/octoosd/vod/preview/getHard_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Get Hard",
@@ -1028,8 +1028,8 @@ Object {
 			[
 				{
 					"text": "The Aviator",
-					"icon": "res/octoosd/vod/posters/aviator.jpg",
-					"preview": [ "res/octoosd/vod/preview/aviator_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/aviator.png",
+					"preview": [ "res/octoosd/vod/preview/aviator_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Aviator",
@@ -1043,8 +1043,8 @@ Object {
 					}
 				}, {
 					"text": "The Social Network",
-					"icon": "res/octoosd/vod/posters/social.jpg",
-					"preview": [ "res/octoosd/vod/preview/social_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/social.png",
+					"preview": [ "res/octoosd/vod/preview/social_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Social Network",
@@ -1058,8 +1058,8 @@ Object {
 					}
 				}, {
 					"text": "The Imitation Game",
-					"icon": "res/octoosd/vod/posters/imitation.jpg",
-					"preview": [ "res/octoosd/vod/preview/imitation_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/imitation.png",
+					"preview": [ "res/octoosd/vod/preview/imitation_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Imitation Game",
@@ -1073,8 +1073,8 @@ Object {
 					}
 				}, {
 					"text": "The Theory of Everything",
-					"icon": "res/octoosd/vod/posters/theory.jpg",
-					"preview": [ "res/octoosd/vod/preview/theory_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/theory.png",
+					"preview": [ "res/octoosd/vod/preview/theory_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Theory of Everything",
@@ -1088,8 +1088,8 @@ Object {
 					}
 				}, {
 					"text": "Black Mass",
-					"icon": "res/octoosd/vod/posters/blackMass.jpg",
-					"preview": [ "res/octoosd/vod/preview/blackMass_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/blackMass.png",
+					"preview": [ "res/octoosd/vod/preview/blackMass_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "Black Mass",
@@ -1103,8 +1103,8 @@ Object {
 					}
 				}, {
 					"text": "The Iron Lady",
-					"icon": "res/octoosd/vod/posters/ironLady.jpg",
-					"preview": [ "res/octoosd/vod/preview/ironLady_1.jpg" ],
+					"icon": "res/octoosd/vod/posters/ironLady.png",
+					"preview": [ "res/octoosd/vod/preview/ironLady_1.png" ],
 					"url": "",
 					"movieInfo": {
 						"title": "The Iron Lady",

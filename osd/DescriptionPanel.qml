@@ -29,9 +29,9 @@ Item {
 		width: height / 3 * 2;
 		fillMode: Image.Stretch;
 
-		Behavior on height { Animation { id: imageHeightAnim; duration: 250; } }
-		Behavior on x { Animation { id: imageXAnim; duration: 250; } }
-		Behavior on y { Animation { id: imageYAnim; duration: 250; } }
+		Behavior on height { Animation { id: imageHeightAnim; duration: 200; } }
+		Behavior on x { Animation { id: imageXAnim; duration: 200; } }
+		Behavior on y { Animation { id: imageYAnim; duration: 200; } }
 	}
 
 	Item {

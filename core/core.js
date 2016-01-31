@@ -148,7 +148,13 @@ if (_globals.core.vendor == "samsung")
 		112: 'Red',
 		113: 'Green',
 		114: 'Yellow',
-		115: 'Blue'
+		115: 'Blue',
+
+		6661: 'L1',
+		6662: 'L2',
+		6663: 'R1',
+		6664: 'R2',
+		6665: 'Start'
 	}
 }
 
@@ -704,7 +710,7 @@ exports._setup = function() {
 			if (!gp || !gpItem)
 				continue
 
-			var event = { type: 'keydown', 'source': 'gamepad', 'index': gp.index }
+			var event = { 'type': 'keydown', 'source': 'gamepad', 'index': gp.index }
 
 			if (gp.axes && gp.axes.length >= 4) {
 				// Left joystick.
@@ -732,19 +738,19 @@ exports._setup = function() {
 					event.which = 115
 				// Trigger buttons.
 				else if (gp.buttons[4].pressed)
-					log("button 4")
+					event.which = 6661
 				else if (gp.buttons[5].pressed)
-					log("button 5")
+					event.which = 6663
 				else if (gp.buttons[6].pressed)
-					log("button 6")
+					event.which = 6662
 				else if (gp.buttons[7].pressed)
-					log("button 7")
+					event.which = 6664
 				// Select button.
 				else if (gp.buttons[8].pressed)
 					event.which = 27
 				// Start button.
 				else if (gp.buttons[9].pressed)
-					log("button 9")
+					event.which = 6665
 				// Left joystick.
 				else if (gp.buttons[10].pressed)
 					event.which = 13
@@ -768,7 +774,7 @@ exports._setup = function() {
 			}
 
 			if (event.which)
-				jQuery.event.trigger("keypress", event)
+				jQuery.event.trigger(event)
 		}
 		this._gpButtonsPollInterval = setInterval( function() { self._gpButtonCheckLoop(self) }, 250)
 	}

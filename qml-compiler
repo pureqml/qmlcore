@@ -28,6 +28,11 @@ with open(grammar_source, "rb") as f:
 	data = f.read()
 	grammar_digest = hashlib.sha1(data).hexdigest()
 
+try:
+	os.mkdir(".cache")
+except:
+	pass
+
 project_dirs = args.directory
 output_dir = args.output
 
@@ -39,13 +44,14 @@ def check_file(filename):
 
 
 def process_file(generator, dirpath, filename):
-	root, ext = os.path.splitext(filename)
-	if root[0] == '.':
+	name, ext = os.path.splitext(filename)
+	print dirpath, name
+	if name[0] == '.':
 		return
 
 	path = os.path.join(dirpath, filename)
 	if ext == ".qml":
-		com = ".".join(dirpath.split(os.path.sep) + [root])
+		com = ".".join(dirpath.split(os.path.sep)[-1:] + [name])
 		cached_path = os.path.join(".cache", com)
 		with open(path) as f:
 			data = f.read()
@@ -63,7 +69,7 @@ def process_file(generator, dirpath, filename):
 				cPickle.dump(tree, f)
 
 		assert(len(tree) == 1)
-		generator.add_component(com, tree[0], root[0].isupper())
+		generator.add_component(com, tree[0], name[0].isupper())
 	elif ext == ".js":
 		with open(path) as f:
 			data = f.read()
@@ -90,9 +96,13 @@ if args.wait:
 
 def process_files(generator, dirs):
 	for project_dir in dirs:
-		for dirpath, dirnames, filenames in os.walk(project_dir):
-                	if '.nocompile' in filenames:
-                        	continue
+		if project_dir == '.':
+			project_dir = os.getcwd()
+		for dirpath, dirnames, filenames in os.walk(project_dir, topdown = True):
+			dirnames[:] = [name for name in dirnames if name[0] != '.']
+			if '.nocompile' in filenames:
+				dirnames[:] = []
+				continue
 			for filename in filenames:
 				process_file(generator, dirpath, filename)
 

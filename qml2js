@@ -24,83 +24,23 @@ function package() {
 	rm -rf $pkg
 }
 
-for opt in "$@"; do
-	case $opt in
-		--help)
-			echo "$0          development mode, on-fly build in app/"
-			echo "$0 dev      compile html5 in dev mode and exit"
-			echo "$0 smarttv  package application for Samsung SmartTv"
-			echo "$0 html5    package html5 application"
-			echo "$0 test     run test app"
-		;;
-		test)
-			compiler -w -o app core controls test
-		;;
-		domru-dev)
-			compiler -o app core controls domru platform/html5
-		;;
-		domru-dev-mini)
-			compiler -o app core controls domru platform/html5
-			minify
-		;;
-		domru-smarttv)
-			compiler -o app core controls domru platform/smarttv
-			minify
-			package smarttv
-		;;
-		domru-html5)
-			compiler -o app core controls domru platform/html5
-			minify
-			package html5
-		;;
-		truba)
-			compiler -w -o app core controls truba platform/html5
-		;;
-		truba-dev)
-			compiler -o app core controls truba platform/html5
-		;;
-		truba-dev-mini)
-			compiler -o app core controls truba platform/html5
-			minify
-		;;
-		truba-html5)
-			compiler -o app core controls truba platform/html5
-			minify
-			package html5
-		;;
-		truba-smarttv)
-			compiler -o app core controls truba platform/smarttv
-			minify
-			package smarttv
-		;;
-		truba2-dev)
-			compiler -o app core controls truba2 platform/html5
-		;;
-		truba2-html5)
-			compiler -o app core controls truba2 platform/html5
-			minify
-			package html5
-		;;
-		truba2-smarttv)
-			compiler -o app core controls truba2 platform/smarttv
-			minify
-			package smarttv
-		;;
-		truba2-tizen)
-			compiler -o app core controls truba2 platform/tizen
-			minify
-			package tizen
-		;;
-		truba2-webos)
-			compiler -o app core controls truba2 platform/webos
-			minify
-			package webos
-		;;
-
-		*) echo "unknown option $opt"; exit;;
-	esac
-done
-
-if [ -z $1 ]; then
-	compiler -w -o app core controls domru platform/html5
+if [ $# -eq 0 ]; then
+	echo "usage: [compile|minify|package] *args"
+	exit
 fi
+
+case $1 in
+	compile)
+		compiler ${@:2}
+	;;
+	package)
+		package ${@:2}
+	;;
+	minify)
+		minify ${@:2}
+	;;
+	*)
+		echo "invalid command line $@"
+		exit 1
+	;;
+esac

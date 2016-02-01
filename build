@@ -13,7 +13,11 @@ def build(root, name, platform, manifest):
 		os.mkdir(target)
 	except:
 		pass
+
 	call([path.join(root, 'qml-compiler'), '-o', target, path.join(root, 'core'), path.join(root, 'platform', platform), '.'])
+	if path.isdir('res'):
+		print "copying resources..."
+		call(['cp', '-ur', 'res', target])
 
 
 root = os.path.dirname(sys.argv[0])

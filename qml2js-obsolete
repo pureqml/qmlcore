@@ -16,7 +16,7 @@ function package() {
 	pkg=`mktemp -d -p .`
 	cp -ra app/* $pkg
 	rm $pkg/app.html $pkg/qml.js
-	cp platform/$platform/dist/* $pkg
+	cp $ROOT/platform/$platform/dist/* $pkg
 	suffix=`date '+%Y%m%d-%H%M%S'`
 	pushd $pkg >/dev/null
 	zip -r0 ../${platform}-${suffix}.zip *

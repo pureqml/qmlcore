@@ -45,7 +45,6 @@ def check_file(filename):
 
 def process_file(generator, dirpath, filename):
 	name, ext = os.path.splitext(filename)
-	print dirpath, name
 	if name[0] == '.':
 		return
 
@@ -74,7 +73,8 @@ def process_file(generator, dirpath, filename):
 		with open(path) as f:
 			data = f.read()
 		print "including js file...", path
-		generator.add_js(path, data)
+		com = ".".join(dirpath.split(os.path.sep)[-1:] + [name])
+		generator.add_js(com, data)
 
 
 notifier = None

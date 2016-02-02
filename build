@@ -5,6 +5,17 @@ import os
 from os import path
 import json
 from subprocess import call
+from StringIO import StringIO
+
+def minify(root, name, platform, manifest):
+	src = path.join(".app." + platform, "qml.js")
+	with open(path.join(".app." + platform, "qml.min.js"), "w") as out:
+		call(["java", "-jar", path.join(root, "compiler/gcc/compiler.jar"),
+			"--warning_level", "VERBOSE", "--externs",
+			path.join(root, "compiler/gcc/jquery-1.9.js"),
+			src], stdout = out)
+	os.remove(src)
+
 
 def build(root, name, platform, manifest):
 	print "building %s for %s..." %(name, platform)
@@ -16,6 +27,8 @@ def build(root, name, platform, manifest):
 
 	platform_path = path.join(root, 'platform', platform)
 	call([path.join(root, 'qml-compiler'), '-o', target, path.join(root, 'core'), platform_path, '.'])
+	if ('minify' in manifest) and manifest['minify']:
+		minify(root, name, platform, manifest)
 
 	print "copying resources..."
 	platform_dist = path.join(root, 'dist')

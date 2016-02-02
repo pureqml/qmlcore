@@ -18,6 +18,10 @@ def build(root, name, platform, manifest):
 	call([path.join(root, 'qml-compiler'), '-o', target, path.join(root, 'core'), platform_path, '.'])
 
 	print "copying resources..."
+	platform_dist = path.join(root, 'dist')
+	app_res = [path.join(platform_dist, f) for f in os.listdir(platform_dist)]
+	call(['cp', '-ur'] + app_res + [target])
+
 	platform_dist = path.join(platform_path, 'dist')
 	if path.isdir(platform_dist):
 		app_res = [path.join(platform_dist, f) for f in os.listdir(platform_dist)]

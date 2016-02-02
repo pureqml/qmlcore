@@ -38,6 +38,15 @@ if ('Common' in window) {
 	log("loaded")
 }
 
+if ('VK_UNSUPPORTED' in window) {
+	log = function() {
+		var args = Array.prototype.slice.call(arguments)
+		console.log("[QML] " + args.join(" "))
+	}
+	log("operatv deteceted")
+	_globals.core.vendor = "operatv"
+	log("loaded")
+}
 
 if ('webOS' in window) {
 	log = function() {
@@ -134,6 +143,22 @@ if (_globals.core.vendor == "samsung")
 		405: 'Yellow',
 		406: 'Blue',
 		457: 'Menu'
+	}
+} else if (_globals.core.vendor == "operatv") {
+	keyCodes = {
+		13: 'Select',
+		8: 'Back',
+		27: 'Back',
+		37: 'Left',
+		33: 'PageUp',
+		34: 'PageDown',
+		38: 'Up',
+		39: 'Right',
+		40: 'Down',
+		112: 'Red',
+		113: 'Green',
+		114: 'Yellow',
+		115: 'Blue'
 	}
 } else {
 	keyCodes = {

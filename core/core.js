@@ -146,8 +146,8 @@ if (_globals.core.vendor == "samsung")
 	}
 } else if (_globals.core.vendor == "operatv") {
 	keyCodes = {
-		13: 'Select',
 		8: 'Back',
+		13: 'Select',
 		27: 'Back',
 		37: 'Left',
 		33: 'PageUp',
@@ -155,10 +155,14 @@ if (_globals.core.vendor == "samsung")
 		38: 'Up',
 		39: 'Right',
 		40: 'Down',
-		112: 'Red',
-		113: 'Green',
-		114: 'Yellow',
-		115: 'Blue'
+		403: 'Red',
+		404: 'Green',
+		405: 'Yellow',
+		406: 'Blue',
+		412: 'Rewind',
+		413: 'Stop',
+		415: 'Play',
+		417: 'FastForward'
 	}
 } else {
 	keyCodes = {
@@ -174,7 +178,7 @@ if (_globals.core.vendor == "samsung")
 		113: 'Green',
 		114: 'Yellow',
 		115: 'Blue',
-
+		// Gamepad special buttons.
 		6661: 'L1',
 		6662: 'L2',
 		6663: 'R1',

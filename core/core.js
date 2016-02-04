@@ -419,6 +419,14 @@ exports._setup = function() {
 		return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 	}
 
+	_globals.core.Animation.prototype._update = function(name, value) {
+		var parent = this.parent
+		if (parent && parent._updateAnimation && parent._updateAnimation(name, this))
+			return
+
+		_globals.core.Object.prototype._update.apply(this, arguments);
+	}
+
 	_globals.core.ColorAnimation.prototype.interpolate = function(dst, src, t) {
 		var dst_c = new Color(dst), src_c = new Color(src);
 		var r = Math.floor(blend(dst_c.r, src_c.r, t))
@@ -450,7 +458,7 @@ exports._setup = function() {
 		this.element.css(attr, transitions.join(','))
 	}
 
-	_globals.core.Item.prototype.setAnimation = function (name, animation) {
+	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
 		var css = this._mapCSSAttribute(name)
 		if (css !== undefined) {
 			if (!animation)
@@ -459,8 +467,14 @@ exports._setup = function() {
 			this.setTransition('transition', css, animation.duration)
 			this.setTransition('-webkit-transition', css, animation.duration)
 			this.setTransition('-moz-transition', css, animation.duration)
+			return true
 		}
 		else
+			return false
+	}
+
+	_globals.core.Item.prototype.setAnimation = function (name, animation) {
+		if (!this._updateAnimation(name, animation))
 			_globals.core.Object.prototype.setAnimation.apply(this, arguments);
 	}
 

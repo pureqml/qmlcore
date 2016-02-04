@@ -437,6 +437,33 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	_globals.core.Item.prototype.setTransition = function(attr, name, duration) {
+		var transitions = (this.element.css(attr) || '').split(',')
+		for(var i = 0; i < transitions.length; ) {
+			var trName = transitions[i].trim().split(' ', 2)[0]
+			if (trName == name)
+				transitions.splice(i, 1)
+			else
+				++i
+		}
+		transitions.push(name + ' ' + duration + 'ms')
+		this.element.css(attr, transitions.join(','))
+	}
+
+	_globals.core.Item.prototype.setAnimation = function (name, animation) {
+		var css = this._mapCSSAttribute(name)
+		if (css !== undefined) {
+			if (!animation)
+				throw "resetting transition not implemented"
+
+			this.setTransition('transition', css, animation.duration)
+			this.setTransition('-webkit-transition', css, animation.duration)
+			this.setTransition('-moz-transition', css, animation.duration)
+		}
+		else
+			_globals.core.Object.prototype.setAnimation.apply(this, arguments);
+	}
+
 	_globals.core.Item.prototype.toScreen = function() {
 		var item = this
 		var x = 0, y = 0
@@ -539,6 +566,10 @@ exports._setup = function() {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
+	}
+
+	_globals.core.Item.prototype._mapCSSAttribute = function(name) {
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top'}[name]
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {

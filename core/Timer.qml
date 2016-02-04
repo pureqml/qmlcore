@@ -7,6 +7,17 @@ Object {
 	property bool triggeredOnStart;
 
 	restart:	{ this._restart(); this.running = true; }
-	start:		{ this.running = true; }
 	stop:		{ this.running = false; }
+
+	start: {
+		var oldRunning = this.running;
+		this.running = true;
+		if (this.triggeredOnStart && !oldRunning)
+			this._emitTriggered();
+	}
+
+	onCompleted: {
+		if (this.running && this.triggeredOnStart)
+			this.triggered()
+	}
 }

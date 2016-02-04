@@ -467,6 +467,7 @@ exports._setup = function() {
 			this.setTransition('transition', css, animation.duration)
 			this.setTransition('-webkit-transition', css, animation.duration)
 			this.setTransition('-moz-transition', css, animation.duration)
+			this.setTransition('-o-transition', css, animation.duration)
 			return true
 		}
 		else

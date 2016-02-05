@@ -585,7 +585,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._mapCSSAttribute = function(name) {
-		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top'}[name]
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity'}[name]
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {

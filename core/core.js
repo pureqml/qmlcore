@@ -1104,7 +1104,9 @@ exports._setup = function() {
 			case 'italic': 		this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
 			case 'bold': 		this.parent.element.css('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
 			case 'underline':	this.parent.element.css('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
-			case 'shadow':		this.parent.element.css('text-shadow', value? '2px 2px black': 'none'); this.parent._updateSize(); break;
+			case 'shadow':		this.parent.element.css('text-shadow', value? '1px 1px black': 'none'); this.parent._updateSize(); break;
+			case 'lineHeight':	this.parent.element.css('line-height', value + "px"); this.parent._updateSize(); break;
+			case 'weight':	this.parent.element.css('font-weight', value); this.parent._updateSize(); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -1141,6 +1143,7 @@ exports._setup = function() {
 			case 'text': this.element.text(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
+			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
 				switch(value) {
@@ -1344,9 +1347,9 @@ exports._setup = function() {
 			var r = c.x + c.width
 			if (r > w)
 				w = r
-			c.viewY = p
+			c.viewY = p + c.anchors.topMargin
 			if (c.recursiveVisible)
-				p += c.height + this.spacing
+				p += c.height + c.anchors.topMargin + this.spacing
 		}
 		if (p > 0)
 			p -= this.spacing
@@ -1681,7 +1684,7 @@ exports._setup = function() {
 		var div = $("<div id='renderer'></div>");
 		body.append(div);
 		$('head').append($("<style>" +
-			"body { overflow: hidden; }" +
+			"body { overflow-x: hidden; }" +
 			"div#renderer { position: absolute; left: 0px; top: 0px; } " +
 			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 			"input { position: absolute; } " +
@@ -1694,8 +1697,10 @@ exports._setup = function() {
 		this.height = h;
 
 		core.addProperty(this, 'bool', 'fullscreen')
+		core.addProperty(this, 'int', 'scrollY')
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
+		win.on('scroll', function(event) { this.scrollY = win.scrollTop();}.bind(this));
 
 		var self = this;
 		div.bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e) {
@@ -1950,5 +1955,7 @@ exports._bootstrap = function(self, name) {
 			self.element.on('load', self._onLoad.bind(self));
 			self.element.on('error', self._onError.bind(self));
 			break;
+		case 'core.Text':
+			$(window).load( self._updateSize.bind(self));
 	}
 }

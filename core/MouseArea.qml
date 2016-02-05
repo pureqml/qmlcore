@@ -12,32 +12,15 @@ Item {
 	property real mouseX;
 	property real mouseY;
 	property bool pressed;
-	property bool defaultCursor: false;
-	//property string cursorUrl: "res/mouse.png";
-	property string cursorUrl: "";
+	property string cursor;
+	property bool hover: containsMouse;
 
-	onContainsMouseChanged: {
-		if (value) {
-			if (this.cursorUrl)
-				this.element.css('cursor', 'url("' + this.cursorUrl + '"), auto' );
-			else if (!this.defaultCursor)
-				this.element.css('cursor', 'pointer');
-			this.entered()
-		} else {
-			this.element.css('cursor', 'default');
-			this.exited()
-		}
+	onCursorChanged: {
+		this.element.css('cursor', value);
 	}
 
 	onRecursiveVisibleChanged: {
 		if (!value)
 			this.containsMouse = false
-	}
-
-	onDefaultCursorChanged: {
-		if (value)
-			this.element.css('cursor', 'default');
-		else
-			this.element.css('cursor', 'pointer');	
 	}
 }

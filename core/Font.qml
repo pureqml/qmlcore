@@ -6,4 +6,6 @@ Object {
 	property bool shadow;
 	property int pixelSize;
 	property int pointSize;
+	property int lineHeight;
+	property int weight;
 }

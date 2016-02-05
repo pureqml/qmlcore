@@ -421,7 +421,7 @@ exports._setup = function() {
 
 	_globals.core.Animation.prototype._update = function(name, value) {
 		var parent = this.parent
-		if (parent && parent._updateAnimation && parent._updateAnimation(name, this))
+		if (parent && parent._updateAnimation && parent._updateAnimation(this._target, this.enabled()? this: null))
 			return
 
 		_globals.core.Object.prototype._update.apply(this, arguments);
@@ -464,6 +464,7 @@ exports._setup = function() {
 			if (!animation)
 				throw "resetting transition not implemented"
 
+			animation._target = name
 			this.setTransition('transition', css, animation.duration)
 			this.setTransition('-webkit-transition', css, animation.duration)
 			this.setTransition('-moz-transition', css, animation.duration)

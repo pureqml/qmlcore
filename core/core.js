@@ -459,6 +459,9 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
+		if (animation && !animation.cssTransition)
+			return false
+
 		var css = this._mapCSSAttribute(name)
 		if (css !== undefined) {
 			if (!animation)

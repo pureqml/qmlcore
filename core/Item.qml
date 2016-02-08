@@ -6,6 +6,7 @@ Object {
 	property int height;
 	property real radius;
 	property bool clip;
+	property real rotate;
 
 	property bool focus;
 	property bool activeFocus;

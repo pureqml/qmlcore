@@ -1235,6 +1235,10 @@ exports._setup = function() {
 			image.paintedHeight = tmp.naturalHeight
 
 			image.element.css('background-image', 'url(' + image.source + ')')
+			image.element.css('-ms-transform', 'rotate(' + image.rotate + 'deg)')
+			image.element.css('-webkit-transform', 'rotate(' + image.rotate + 'deg)')
+			image.element.css('-moz-transform', 'rotate(' + image.rotate + 'deg)')
+			image.element.css('transform', 'rotate(' + image.rotate + 'deg)')
 			switch(image.fillMode) {
 				case image.Stretch:
 					image.element.css('background-repeat', 'no-repeat')
@@ -1299,6 +1303,7 @@ exports._setup = function() {
 		switch(name) {
 			case 'width':
 			case 'height':
+			case 'rotate':
 			case 'fillMode': this._onLoad(); break;
 			case 'source':
 				this.status = value ? this.Loading : this.Null;

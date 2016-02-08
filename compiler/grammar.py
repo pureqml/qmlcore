@@ -106,7 +106,7 @@ method_declaration.setParseAction(handle_method_declaration)
 method_declaration_qml = Keyword("function").suppress() + nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(identifier + ZeroOrMore(Literal(",").suppress() + identifier)) + Literal(")").suppress() ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
-behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + identifier + Literal("{").suppress() + component_declaration + Literal("}").suppress()
+behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + nested_identifier_rvalue + Literal("{").suppress() + component_declaration + Literal("}").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
 scope_declaration = behavior_declaration | signal_declaration | alias_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope

@@ -10,6 +10,9 @@ def split_name(name):
 	r = name.split(".")
 	return ".".join(r[:-1]), r[-1]
 
+def escape(name):
+	return name.replace('.', '__')
+
 class component_generator(object):
 	def __init__(self, name, component, prototype = False):
 		self.name = name
@@ -129,7 +132,7 @@ class component_generator(object):
 	def wrap_creator(self, prefix, var, code):
 		if not code.strip():
 			return ""
-		safe_var = var.replace('.', '__')
+		safe_var = escape(var)
 		return "\tfunction %s_%s () {\n%s\n\t}\n\t%s_%s.call(%s)" %(prefix, safe_var, code, prefix, safe_var, var)
 
 	def generate_prototype(self, registry, ident_n = 1):
@@ -181,7 +184,7 @@ class component_generator(object):
 				raise Exception("setting id of the remote object is prohibited")
 
 			if isinstance(value, component_generator):
-				var = "%s_%s" %(parent, target.replace('.', '__'))
+				var = "%s_%s" %(parent, escape(target))
 				prologue.append("%svar %s;" %(ident, var))
 				if target != "delegate":
 					r.append("%s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent))
@@ -226,7 +229,7 @@ class component_generator(object):
 				value = replace_enums(value, self, registry)
 				deps = parse_deps(value)
 				if deps:
-					suffix = "_var_%s__%s" %(parent.replace('.', '_'), target.replace('.', '_'))
+					suffix = "_var_%s__%s" %(escape(parent), escape(target))
 					var = "_update" + suffix
 					r.append("%svar %s = (function() { %s = (%s); }).bind(this);" %(ident, var, target_lvalue, value))
 					r.append("%s%s();" %(ident, var))
@@ -241,7 +244,7 @@ class component_generator(object):
 			elif t is component_generator:
 				if target == "delegate":
 					continue
-				var = "%s_%s" %(parent, target.replace('.', '__'))
+				var = "%s_%s" %(parent, escape(target))
 				r.append(self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1)))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))

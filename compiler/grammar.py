@@ -67,6 +67,7 @@ builtin = Keyword("Math") + Literal(".") + Word(alphanums) + Optional(Literal("(
 builtin.setParseAction(handle_builtin)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
+nested_identifier_lvalue_list = Group(nested_identifier_lvalue + ZeroOrMore(Literal(",").suppress() + nested_identifier_lvalue))
 
 nested_identifier_rvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
@@ -106,7 +107,7 @@ method_declaration.setParseAction(handle_method_declaration)
 method_declaration_qml = Keyword("function").suppress() + nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(identifier + ZeroOrMore(Literal(",").suppress() + identifier)) + Literal(")").suppress() ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
-behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + nested_identifier_lvalue + Literal("{").suppress() + component_declaration + Literal("}").suppress()
+behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + nested_identifier_lvalue_list + Literal("{").suppress() + component_declaration + Literal("}").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
 scope_declaration = behavior_declaration | signal_declaration | alias_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope

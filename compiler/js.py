@@ -73,9 +73,10 @@ class component_generator(object):
 		elif t is lang.Component:
 			self.children.append(component_generator(self.package + ".<anonymous>", child))
 		elif t is lang.Behavior:
-			if child.target in self.animations:
-				raise Exception("duplicate animation on property " + child.target);
-			self.animations[child.target] = component_generator(self.package + ".<anonymous-animation>", child.animation)
+			for target in child.target:
+				if target in self.animations:
+					raise Exception("duplicate animation on property " + target);
+				self.animations[target] = component_generator(self.package + ".<anonymous-animation>", child.animation)
 		elif t is lang.Method:
 			name, args, code = child.name, child.args, child.code
 			if len(name) > 2 and name.startswith("on") and name[2].isupper(): #onXyzzy

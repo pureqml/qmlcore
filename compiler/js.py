@@ -122,11 +122,16 @@ class component_generator(object):
 	def generate_animations(self, registry, parent):
 		r = []
 		for name, animation in self.animations.iteritems():
-			var = "behavior_on_" + name
+			var = "behavior_on_" + escape(name)
 			r.append("\tvar %s = new _globals.%s(%s);" %(var, registry.find_component(self.package, animation.component.name), parent))
 			r.append(self.wrap_creator("create", var, "\n".join(animation.generate_creators(registry, var, 2))))
 			r.append(self.wrap_creator("setup", var, animation.generate_setup_code(registry, var, 2)))
-			r.append("\tthis.setAnimation('%s', %s);\n" %(name, var))
+			parent, target = split_name(name)
+			if not parent:
+				parent = 'this'
+			else:
+				parent = self.get_lvalue(parent)
+			r.append("\t%s.setAnimation('%s', %s);\n" %(parent, target, var))
 		return "\n".join(r)
 
 	def wrap_creator(self, prefix, var, code):
@@ -201,6 +206,11 @@ class component_generator(object):
 					r.append("%sthis.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(this)" %(ident, target, p, code, ident, var))
 
 		return "\n".join(prologue), "\n".join(r)
+
+	def get_lvalue(self, target):
+		path = target.split(".")
+		path = ["_get('%s')" %x for x in path]
+		return "this.%s" % ".".join(path)
 
 	def get_target_lvalue(self, target):
 		path = target.split(".")

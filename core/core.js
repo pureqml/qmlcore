@@ -571,6 +571,7 @@ exports._setup = function() {
 		var el = this.parent.element
 		if (el) {
 			el.css('-webkit-filter', style)
+			el.css('filter', style)
 			if (this.shadow && !this.shadow._empty())
 				el.css('box-shadow', this.shadow._getFilterStyle())
 		}
@@ -746,6 +747,22 @@ exports._setup = function() {
 			log("unhandled key", event.which);
 		}
 		return false;
+	}
+	_globals.core.WebItem.prototype._onClick = function(event) {
+		if (!this.recursiveVisible)
+			return
+
+		this.clicked()
+	}
+
+	_globals.core.WebItem.prototype._onEnter = function(event) {
+		if (!this.recursiveVisible)
+			return
+		this.hover = true
+	}
+
+	_globals.core.WebItem.prototype._onExit = function(event) {
+		this.hover = false
 	}
 
 	_globals.core.MouseArea.prototype._updatePosition = function(event) {
@@ -1924,6 +1941,12 @@ exports._bootstrap = function(self, name) {
 			}
 			updateVisibility(self.parent.recursiveVisible)
 			self.parent.onChanged('recursiveVisible', updateVisibility)
+
+			break;
+
+		case 'core.WebItem':
+			self.element.click(self._onClick.bind(self))
+			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
 
 			break;
 		case 'core.GamepadManager':

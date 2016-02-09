@@ -1,6 +1,6 @@
 Object {
 	property int duration: 200;
-	property bool cssTransition: true;
+	property bool cssTransition: false;
 
 	disable:	{ ++this._disabled; }
 	enable:		{ --this._disabled; }

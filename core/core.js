@@ -1385,6 +1385,54 @@ exports._setup = function() {
 		child.onChanged('recursiveVisible', this._layout.bind(this))
 	}
 
+	_globals.core.PageStack.prototype._layout = function() {
+		this.count = this.children.length;
+		for (var i = 0; i < this.count; ++i)
+			this.children[i].visible = (i == this.currentIndex);
+
+		var c = this.children[this.currentIndex];
+		this.contentHeight = c.height;
+		this.contentWidth = c.width;
+	}
+
+	_globals.core.PageStack.prototype.addChild = function(child) {
+		_globals.core.Item.prototype.addChild.apply(this, arguments)
+		child.onChanged('height', this._layout.bind(this))
+		child.onChanged('recursiveVisible', this._layout.bind(this))
+	}
+
+	_globals.core.Grid.prototype._layout = function() {
+		var children = this.children;
+		var cX = 0, cY = 0, xMax = 0, yMax = 0;
+		for(var i = 0; i < children.length; ++i) {
+			var c = children[i]
+			if (c.recursiveVisible) {
+				if (this.maxWidth - cX < c.width) {
+					c.x = 0;
+					c.y = yMax + c.anchors.topMargin;// + (cY === 0 ? 0 : this.spacing);
+					cY = yMax;// + this.spacing;
+					yMax = c.y + c.height + this.spacing;
+				} else {
+					c.x = cX;
+					c.y = cY + c.anchors.topMargin;
+				}
+				if (yMax < c.y + c.height)
+					yMax = c.y + c.height + this.spacing;
+				if (xMax < c.x + c.width)
+					xMax = c.x + c.width;
+				cX = c.x + c.width + this.spacing;
+			}
+		}
+		this.height = yMax;
+		this.width = xMax;
+	}
+
+	_globals.core.Grid.prototype.addChild = function(child) {
+		_globals.core.Item.prototype.addChild.apply(this, arguments)
+		child.onChanged('height', this._layout.bind(this))
+		child.onChanged('width', this._layout.bind(this))
+		child.onChanged('recursiveVisible', this._layout.bind(this))
+	}
 
 	_globals.core.BaseView.prototype.Contain	= 0
 	_globals.core.BaseView.prototype.Center		= 1

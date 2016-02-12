@@ -1140,7 +1140,8 @@ exports._setup = function() {
 	_globals.core.Text.prototype._updateSize = function() {
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
-		this.element.css('width', '')
+		if (!this.wrap)
+			this.element.css('width', '')
 		this.element.css('height', '')
 		var w = this.element.width();
 		var h = this.element.height();
@@ -1159,7 +1160,7 @@ exports._setup = function() {
 		switch(name) {
 			case 'text': this.element.text(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
-			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); break;
+			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); this._updateSize(); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':

@@ -1140,7 +1140,9 @@ exports._setup = function() {
 	_globals.core.Text.prototype._updateSize = function() {
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
-		if (!this.wrap)
+		if (this.wrap)
+			this.element.css('width', this.width)
+		else
 			this.element.css('width', '')
 		this.element.css('height', '')
 		var w = this.element.width();

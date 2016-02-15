@@ -455,7 +455,10 @@ exports._setup = function() {
 				++i
 		}
 		transitions.push(name + ' ' + duration + 'ms')
-		this.element.css(attr, transitions.join(','))
+		transitions.join(',')
+		//TODO: simplify it!
+		transitions = $.grep(transitions, function(n){ return n != "" });
+		this.element.css(attr, transitions)
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {

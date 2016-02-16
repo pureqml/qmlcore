@@ -27,9 +27,8 @@ Item {
 				player.playerPlay(-1)
 			}
 			this.flasPlayerPaused = false
-		}
-		else
-		{
+		} else {
+			this._player.attr('src', this.source)
 			this._player.get(0).controls = false
 			this._player.get(0).play()
 		}
@@ -76,7 +75,8 @@ Item {
 	onLoopChanged: { if (this._player) this._player.attr('loop', this.loop) }
 
 	onCompleted: {
-		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
+		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0 ||
+			navigator.userAgent.indexOf('Chromium'))
 			this.flash = false
 
 		if (!this.flash) {

@@ -446,6 +446,9 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype.setTransition = function(attr, name, duration) {
+		if (this.element.css(attr) === undefined) {
+			return;
+		}
 		var tDelay = this.element.css(attr + '-delay')
 		var tDuration = this.element.css(attr + '-duration')
 		var tProperty = this.element.css(attr + '-property')

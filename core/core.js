@@ -625,7 +625,13 @@ exports._setup = function() {
 			case 'recursiveVisible': if (this.element) /*FIXME*/this.element.css('visibility', value? 'visible': 'hidden'); break;
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
-			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break
+			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
+			case 'rotate':
+				this.element.css('-ms-transform', 'rotate(' + value + 'deg)')
+				this.element.css('-webkit-transform', 'rotate(' + value + 'deg)')
+				this.element.css('-moz-transform', 'rotate(' + value + 'deg)')
+				this.element.css('transform', 'rotate(' + value + 'deg)')
+				break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -1258,10 +1264,6 @@ exports._setup = function() {
 			image.paintedHeight = tmp.naturalHeight
 
 			image.element.css('background-image', 'url(' + image.source + ')')
-			image.element.css('-ms-transform', 'rotate(' + image.rotate + 'deg)')
-			image.element.css('-webkit-transform', 'rotate(' + image.rotate + 'deg)')
-			image.element.css('-moz-transform', 'rotate(' + image.rotate + 'deg)')
-			image.element.css('transform', 'rotate(' + image.rotate + 'deg)')
 			switch(image.fillMode) {
 				case image.Stretch:
 					image.element.css('background-repeat', 'no-repeat')
@@ -1326,7 +1328,7 @@ exports._setup = function() {
 		switch(name) {
 			case 'width':
 			case 'height':
-			case 'rotate':
+//			case 'rotate':
 			case 'fillMode': this._onLoad(); break;
 			case 'source':
 				this.status = value ? this.Loading : this.Null;

@@ -446,21 +446,32 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype.setTransition = function(attr, name, duration) {
-		var transitions = (this.element.css(attr) || '').split(',')
-		for(var i = 0; i < transitions.length; ) {
-			var trName = transitions[i].trim().split(' ', 2)[0]
-			if (trName == name)
-				transitions.splice(i, 1)
-			else
-				++i
-		}
-		transitions.push(name + ' ' + duration + 'ms')
-		transitions.join(',')
-		//TODO: simplify it!
-		transitions = $.grep(transitions, function(n){ return n != "" });
-		// if (attr === "-moz-transition")
-		// 	log ("setTransition", name, duration, transitions);
-		this.element.css(attr, transitions)
+		var tDelay = this.element.css(attr + '-delay')
+		var tDuration = this.element.css(attr + '-duration')
+		var tProperty = this.element.css(attr + '-property')
+		var tFunction = this.element.css(attr + '-timing-function')
+	
+		this.element.css(attr + '-delay', tDelay + ', 0s')
+		this.element.css(attr + '-duration', tDuration + ', ' + duration + 'ms')
+		this.element.css(attr + '-property', tProperty + ', ' + name)
+		this.element.css(attr + '-timing-function', tFunction + ', ease')
+
+		// var transitions = (this.element.css(attr) || '').split(',')
+		// for(var i = 0; i < transitions.length; ) {
+		// 	var trName = transitions[i].trim().split(' ', 2)[0]
+		// 	if (trName == name)
+		// 		transitions.splice(i, 1)
+		// 	else
+		// 		++i
+		// }
+		// transitions.push(name + ' ' + duration + 'ms ')
+		// transitions.join(',')
+		// //TODO: simplify it!
+		// transitions = $.grep(transitions, function(n){ return n != "" });
+		// // if (attr === "-moz-transition")
+		// // 	log ("setTransition", name, duration, transitions);
+		// log ("this.element.css before 2", this.element.css(attr), transitions)
+		// this.element.css(attr, transitions)
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
@@ -470,18 +481,15 @@ exports._setup = function() {
 		var css = this._mapCSSAttribute(name)
 		var prefix = this._prefixCCSNeeded(name) 
 
-		// if (prefix)
-		// 	log ("prefix needed", name)
-
 		if (css !== undefined) {
 			if (!animation)
 				throw "resetting transition not implemented"
 
 			animation._target = name
-			this.setTransition('-webkit-transition', (prefix ? "-webkit-" : "") + css, animation.duration)
-			this.setTransition('-moz-transition', (prefix ? "-moz-" : "") + css, animation.duration)
-			this.setTransition('-ms-transition', (prefix ? "-ms-" : "") + css, animation.duration)
-			this.setTransition('-o-transition', (prefix ? "-o-" : "") + css, animation.duration)
+			this.setTransition('-webkit-transition', (prefix ? '-webkit-' : '') + css, animation.duration)
+			this.setTransition('-moz-transition', (prefix ? '-moz-' : '') + css, animation.duration)
+			this.setTransition('-ms-transition', (prefix ? '-ms-' : '') + css, animation.duration)
+			this.setTransition('-o-transition', (prefix ? '-o-' : '') + css, animation.duration)
 			this.setTransition('transition', css, animation.duration)
 			return true
 		}

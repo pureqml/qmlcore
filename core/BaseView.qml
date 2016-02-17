@@ -104,6 +104,7 @@ MouseArea {
 
 	onPressedChanged: {
 		if (this.pressed) {
+			this._prevDx = 0
 			var idx = this.indexAt(this.mouseX, this.mouseY)
 			this._pressedIndex = idx
 			this._x = this.mouseX
@@ -112,6 +113,8 @@ MouseArea {
 				this.currentIndex = idx
 				this.forceActiveFocus()
 			}
+		} else {
+			this.stopMoving()
 		}
 	}
 
@@ -149,10 +152,38 @@ MouseArea {
 		if (!event)
 			return
 
-		var a = this.getAnimation('contentY')
+		var a = this.content.getAnimation('y')
 		if (a)
 			a.disable()
-		this.move(0, -event.dy)
+
+		var shift = event.dy
+		if (this._prevDy)
+			shift = event.dy - this._prevDy
+		this.move(0, -shift)
+		this._prevDy = event.dy
+		this._accelY = shift * 10
+
+		if (a)
+			a.enable()
+	}
+
+	stopMoving: { this.move(this._accelX ? -this._accelX : 0, this._accelY ? -this._accelY : 0) }
+
+	onHorizontalSwiped(event): {
+		if (!event)
+			return
+
+		var a = this.content.getAnimation('x')
+		if (a)
+			a.disable()
+
+		var shift = event.dx
+		if (this._prevDx)
+			shift = event.dx - this._prevDx
+		this.move(-shift, 0)
+		this._prevDx = event.dx
+		this._accelX = shift * 10
+
 		if (a)
 			a.enable()
 	}

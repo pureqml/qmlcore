@@ -458,6 +458,8 @@ exports._setup = function() {
 		transitions.join(',')
 		//TODO: simplify it!
 		transitions = $.grep(transitions, function(n){ return n != "" });
+		// if (attr === "-moz-transition")
+		// 	log ("setTransition", name, duration, transitions);
 		this.element.css(attr, transitions)
 	}
 
@@ -468,18 +470,19 @@ exports._setup = function() {
 		var css = this._mapCSSAttribute(name)
 		var prefix = this._prefixCCSNeeded(name) 
 
-		if (prefix)
-			log ("prefix needed", name)
+		// if (prefix)
+		// 	log ("prefix needed", name)
 
 		if (css !== undefined) {
 			if (!animation)
 				throw "resetting transition not implemented"
 
 			animation._target = name
-			this.setTransition('transition', css, animation.duration)
 			this.setTransition('-webkit-transition', (prefix ? "-webkit-" : "") + css, animation.duration)
 			this.setTransition('-moz-transition', (prefix ? "-moz-" : "") + css, animation.duration)
+			this.setTransition('-ms-transition', (prefix ? "-ms-" : "") + css, animation.duration)
 			this.setTransition('-o-transition', (prefix ? "-o-" : "") + css, animation.duration)
+			this.setTransition('transition', css, animation.duration)
 			return true
 		}
 		else
@@ -636,6 +639,7 @@ exports._setup = function() {
 			case 'radius':	this.element.css('border-radius', value); break;
 			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
 			case 'rotate':
+				this.element.css('-o-transform', 'rotate(' + value + 'deg)')
 				this.element.css('-ms-transform', 'rotate(' + value + 'deg)')
 				this.element.css('-webkit-transform', 'rotate(' + value + 'deg)')
 				this.element.css('-moz-transform', 'rotate(' + value + 'deg)')

@@ -1,6 +1,7 @@
 Layout {
 	property int currentIndex: 0;
 	property int count: 0;
+	clip: true;
 
 	onCurrentIndexChanged: {
 		if (this.currentIndex < 0)

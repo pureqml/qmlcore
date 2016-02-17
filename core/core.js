@@ -466,15 +466,20 @@ exports._setup = function() {
 			return false
 
 		var css = this._mapCSSAttribute(name)
+		var prefix = this._prefixCCSNeeded(name) 
+
+		if (prefix)
+			log ("prefix needed", name)
+
 		if (css !== undefined) {
 			if (!animation)
 				throw "resetting transition not implemented"
 
 			animation._target = name
 			this.setTransition('transition', css, animation.duration)
-			this.setTransition('-webkit-transition', css, animation.duration)
-			this.setTransition('-moz-transition', css, animation.duration)
-			this.setTransition('-o-transition', css, animation.duration)
+			this.setTransition('-webkit-transition', (prefix ? "-webkit-" : "") + css, animation.duration)
+			this.setTransition('-moz-transition', (prefix ? "-moz-" : "") + css, animation.duration)
+			this.setTransition('-o-transition', (prefix ? "-o-" : "") + css, animation.duration)
 			return true
 		}
 		else
@@ -592,7 +597,11 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._mapCSSAttribute = function(name) {
-		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius'}[name]
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform'}[name]
+	}
+
+	_globals.core.Item.prototype._prefixCCSNeeded = function(name) {
+		return {rotate: true}[name]
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {

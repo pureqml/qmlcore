@@ -446,12 +446,16 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype.setTransition = function(attr, name, duration) {
-		if (this.element.css(attr) === undefined) {
+		if (this.element.css(attr) === undefined)
 			return;
-		}
+
+		var tProperty = this.element.css(attr + '-property')
+
+		if (tProperty.search(name) !== -1)
+			return;
+
 		var tDelay = this.element.css(attr + '-delay')
 		var tDuration = this.element.css(attr + '-duration')
-		var tProperty = this.element.css(attr + '-property')
 		var tFunction = this.element.css(attr + '-timing-function')
 	
 		this.element.css(attr + '-delay', tDelay + ', 0s')

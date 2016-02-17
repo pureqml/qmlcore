@@ -1935,9 +1935,11 @@ exports.addProperty = function(self, type, name) {
 				var complete = function() {
 					clearInterval(timer);
 					interpolated_value = undefined;
+					animation.running = false
 					self._update(name, dst, src);
 				}
 
+				animation.running = true
 				timeout = setTimeout(complete, duration);
 				animation.complete = complete;
 			}

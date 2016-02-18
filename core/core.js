@@ -10,7 +10,7 @@ if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 	_globals.core.vendor = "samsung"
 
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		alert("[QML] " + args.join(" "))
 	}
@@ -39,7 +39,7 @@ if ('Common' in window) {
 }
 
 if ('VK_UNSUPPORTED' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -49,7 +49,7 @@ if ('VK_UNSUPPORTED' in window) {
 }
 
 if ('webOS' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -75,7 +75,7 @@ if ('webOS' in window) {
 
 
 if ('tizen' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -87,7 +87,7 @@ if ('tizen' in window) {
 }
 
 if (navigator.userAgent.indexOf('Android') >= 0) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -821,6 +821,18 @@ exports._setup = function() {
 	}
 
 	_globals.core.GamepadManager.prototype._gpButtonsPollInterval
+
+	_globals.core.GamepadManager.prototype._gpPollInterval
+
+	_globals.core.GamepadManager.prototype._pollGamepads = function(self) {
+		clearInterval(self._gpPollInterval)
+		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+		for (var i = 0; i < gamepads.length; ++i) {
+			var gamepad = gamepads[i]
+			if (gamepad)
+				self._onGamepadConnected({ 'gamepad': gamepad })
+		}
+	}
 
 	_globals.core.GamepadManager.prototype._gpButtonCheckLoop = function(self) {
 		clearInterval(self._gpButtonsPollInterval);
@@ -2036,19 +2048,9 @@ exports._bootstrap = function(self, name) {
 
 			break;
 		case 'core.GamepadManager':
-			var gpPollInterval
 			if (!('ongamepadconnected' in window))
-				gpPollInterval = setInterval(pollGamepads, 1000)
+				self._gpPollInterval = setInterval(function() { self._pollGamepads(self) }, 1000)
 
-			function pollGamepads() {
-				clearInterval(gpPollInterval)
-				var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
-				for (var i = 0; i < gamepads.length; ++i) {
-					var gamepad = gamepads[i]
-					if (gamepad)
-						self._onGamepadConnected({ 'gamepad': gamepad })
-				}
-			}
 			window.addEventListener('gamepadconnected', self._onGamepadConnected.bind(self));
 			window.addEventListener('gamepaddisconnected', self._onGamepadDisconnected.bind(self));
 			break;

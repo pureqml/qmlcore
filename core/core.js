@@ -822,6 +822,18 @@ exports._setup = function() {
 
 	_globals.core.GamepadManager.prototype._gpButtonsPollInterval
 
+	_globals.core.GamepadManager.prototype._gpPollInterval
+
+	_globals.core.GamepadManager.prototype._pollGamepads = function(self) {
+		clearInterval(self._gpPollInterval)
+		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+		for (var i = 0; i < gamepads.length; ++i) {
+			var gamepad = gamepads[i]
+			if (gamepad)
+				self._onGamepadConnected({ 'gamepad': gamepad })
+		}
+	}
+
 	_globals.core.GamepadManager.prototype._gpButtonCheckLoop = function(self) {
 		clearInterval(self._gpButtonsPollInterval);
 		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
@@ -2036,19 +2048,9 @@ exports._bootstrap = function(self, name) {
 
 			break;
 		case 'core.GamepadManager':
-			var gpPollInterval
 			if (!('ongamepadconnected' in window))
-				gpPollInterval = setInterval(pollGamepads, 1000)
+				self._gpPollInterval = setInterval(function() { self._pollGamepads(self) }, 1000)
 
-			function pollGamepads() {
-				clearInterval(gpPollInterval)
-				var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
-				for (var i = 0; i < gamepads.length; ++i) {
-					var gamepad = gamepads[i]
-					if (gamepad)
-						self._onGamepadConnected({ 'gamepad': gamepad })
-				}
-			}
 			window.addEventListener('gamepadconnected', self._onGamepadConnected.bind(self));
 			window.addEventListener('gamepaddisconnected', self._onGamepadDisconnected.bind(self));
 			break;

@@ -785,22 +785,6 @@ exports._setup = function() {
 		}
 		return false;
 	}
-	_globals.core.WebItem.prototype._onClick = function(event) {
-		if (!this.recursiveVisible)
-			return
-
-		this.clicked()
-	}
-
-	_globals.core.WebItem.prototype._onEnter = function(event) {
-		if (!this.recursiveVisible)
-			return
-		this.hover = true
-	}
-
-	_globals.core.WebItem.prototype._onExit = function(event) {
-		this.hover = false
-	}
 
 	_globals.core.MouseArea.prototype._updatePosition = function(event) {
 		if (!this.recursiveVisible)
@@ -2042,11 +2026,6 @@ exports._bootstrap = function(self, name) {
 
 			break;
 
-		case 'core.WebItem':
-			self.element.click(self._onClick.bind(self))
-			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
-
-			break;
 		case 'core.GamepadManager':
 			if (!('ongamepadconnected' in window))
 				self._gpPollInterval = setInterval(function() { self._pollGamepads(self) }, 1000)

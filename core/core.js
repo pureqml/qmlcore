@@ -10,7 +10,7 @@ if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 	_globals.core.vendor = "samsung"
 
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		alert("[QML] " + args.join(" "))
 	}
@@ -39,7 +39,7 @@ if ('Common' in window) {
 }
 
 if ('VK_UNSUPPORTED' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -49,7 +49,7 @@ if ('VK_UNSUPPORTED' in window) {
 }
 
 if ('webOS' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -75,7 +75,7 @@ if ('webOS' in window) {
 
 
 if ('tizen' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -87,7 +87,7 @@ if ('tizen' in window) {
 }
 
 if (navigator.userAgent.indexOf('Android') >= 0) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -446,19 +446,39 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype.setTransition = function(attr, name, duration) {
-		var transitions = (this.element.css(attr) || '').split(',')
-		for(var i = 0; i < transitions.length; ) {
-			var trName = transitions[i].trim().split(' ', 2)[0]
-			if (trName == name)
-				transitions.splice(i, 1)
-			else
-				++i
-		}
-		transitions.push(name + ' ' + duration + 'ms')
-		transitions.join(',')
-		//TODO: simplify it!
-		transitions = $.grep(transitions, function(n){ return n != "" });
-		this.element.css(attr, transitions)
+		if (this.element.css(attr) === undefined)
+			return;
+
+		var tProperty = this.element.css(attr + '-property')
+
+		if (tProperty.search(name) !== -1)
+			return;
+
+		var tDelay = this.element.css(attr + '-delay')
+		var tDuration = this.element.css(attr + '-duration')
+		var tFunction = this.element.css(attr + '-timing-function')
+	
+		this.element.css(attr + '-delay', tDelay + ', 0s')
+		this.element.css(attr + '-duration', tDuration + ', ' + duration + 'ms')
+		this.element.css(attr + '-property', tProperty + ', ' + name)
+		this.element.css(attr + '-timing-function', tFunction + ', ease')
+
+		// var transitions = (this.element.css(attr) || '').split(',')
+		// for(var i = 0; i < transitions.length; ) {
+		// 	var trName = transitions[i].trim().split(' ', 2)[0]
+		// 	if (trName == name)
+		// 		transitions.splice(i, 1)
+		// 	else
+		// 		++i
+		// }
+		// transitions.push(name + ' ' + duration + 'ms ')
+		// transitions.join(',')
+		// //TODO: simplify it!
+		// transitions = $.grep(transitions, function(n){ return n != "" });
+		// // if (attr === "-moz-transition")
+		// // 	log ("setTransition", name, duration, transitions);
+		// log ("this.element.css before 2", this.element.css(attr), transitions)
+		// this.element.css(attr, transitions)
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
@@ -466,15 +486,18 @@ exports._setup = function() {
 			return false
 
 		var css = this._mapCSSAttribute(name)
+		var prefix = this._prefixCCSNeeded(name) 
+
 		if (css !== undefined) {
 			if (!animation)
 				throw "resetting transition not implemented"
 
 			animation._target = name
+			this.setTransition('-webkit-transition', (prefix ? '-webkit-' : '') + css, animation.duration)
+			this.setTransition('-moz-transition', (prefix ? '-moz-' : '') + css, animation.duration)
+			this.setTransition('-ms-transition', (prefix ? '-ms-' : '') + css, animation.duration)
+			this.setTransition('-o-transition', (prefix ? '-o-' : '') + css, animation.duration)
 			this.setTransition('transition', css, animation.duration)
-			this.setTransition('-webkit-transition', css, animation.duration)
-			this.setTransition('-moz-transition', css, animation.duration)
-			this.setTransition('-o-transition', css, animation.duration)
 			return true
 		}
 		else
@@ -592,7 +615,11 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._mapCSSAttribute = function(name) {
-		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius'}[name]
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform'}[name]
+	}
+
+	_globals.core.Item.prototype._prefixCCSNeeded = function(name) {
+		return {rotate: true}[name]
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
@@ -625,7 +652,14 @@ exports._setup = function() {
 			case 'recursiveVisible': if (this.element) /*FIXME*/this.element.css('visibility', value? 'visible': 'hidden'); break;
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
-			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break
+			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
+			case 'rotate':
+				this.element.css('-o-transform', 'rotate(' + value + 'deg)')
+				this.element.css('-ms-transform', 'rotate(' + value + 'deg)')
+				this.element.css('-webkit-transform', 'rotate(' + value + 'deg)')
+				this.element.css('-moz-transform', 'rotate(' + value + 'deg)')
+				this.element.css('transform', 'rotate(' + value + 'deg)')
+				break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -787,6 +821,18 @@ exports._setup = function() {
 	}
 
 	_globals.core.GamepadManager.prototype._gpButtonsPollInterval
+
+	_globals.core.GamepadManager.prototype._gpPollInterval
+
+	_globals.core.GamepadManager.prototype._pollGamepads = function(self) {
+		clearInterval(self._gpPollInterval)
+		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+		for (var i = 0; i < gamepads.length; ++i) {
+			var gamepad = gamepads[i]
+			if (gamepad)
+				self._onGamepadConnected({ 'gamepad': gamepad })
+		}
+	}
 
 	_globals.core.GamepadManager.prototype._gpButtonCheckLoop = function(self) {
 		clearInterval(self._gpButtonsPollInterval);
@@ -1258,10 +1304,6 @@ exports._setup = function() {
 			image.paintedHeight = tmp.naturalHeight
 
 			image.element.css('background-image', 'url(' + image.source + ')')
-			image.element.css('-ms-transform', 'rotate(' + image.rotate + 'deg)')
-			image.element.css('-webkit-transform', 'rotate(' + image.rotate + 'deg)')
-			image.element.css('-moz-transform', 'rotate(' + image.rotate + 'deg)')
-			image.element.css('transform', 'rotate(' + image.rotate + 'deg)')
 			switch(image.fillMode) {
 				case image.Stretch:
 					image.element.css('background-repeat', 'no-repeat')
@@ -1326,7 +1368,7 @@ exports._setup = function() {
 		switch(name) {
 			case 'width':
 			case 'height':
-			case 'rotate':
+//			case 'rotate':
 			case 'fillMode': this._onLoad(); break;
 			case 'source':
 				this.status = value ? this.Loading : this.Null;
@@ -2008,19 +2050,9 @@ exports._bootstrap = function(self, name) {
 
 			break;
 		case 'core.GamepadManager':
-			var gpPollInterval
 			if (!('ongamepadconnected' in window))
-				gpPollInterval = setInterval(pollGamepads, 1000)
+				self._gpPollInterval = setInterval(function() { self._pollGamepads(self) }, 1000)
 
-			function pollGamepads() {
-				clearInterval(gpPollInterval)
-				var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
-				for (var i = 0; i < gamepads.length; ++i) {
-					var gamepad = gamepads[i]
-					if (gamepad)
-						self._onGamepadConnected({ 'gamepad': gamepad })
-				}
-			}
 			window.addEventListener('gamepadconnected', self._onGamepadConnected.bind(self));
 			window.addEventListener('gamepaddisconnected', self._onGamepadDisconnected.bind(self));
 			break;

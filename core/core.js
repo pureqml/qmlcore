@@ -451,7 +451,7 @@ exports._setup = function() {
 
 		var tProperty = this.element.css(attr + '-property')
 
-		if (tProperty.search(name) !== -1)
+		if (tProperty.search(' ' + name) !== -1)
 			return;
 
 		var tDelay = this.element.css(attr + '-delay')

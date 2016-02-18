@@ -10,7 +10,7 @@ if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 	_globals.core.vendor = "samsung"
 
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		alert("[QML] " + args.join(" "))
 	}
@@ -39,7 +39,7 @@ if ('Common' in window) {
 }
 
 if ('VK_UNSUPPORTED' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -49,7 +49,7 @@ if ('VK_UNSUPPORTED' in window) {
 }
 
 if ('webOS' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -75,7 +75,7 @@ if ('webOS' in window) {
 
 
 if ('tizen' in window) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
@@ -87,7 +87,7 @@ if ('tizen' in window) {
 }
 
 if (navigator.userAgent.indexOf('Android') >= 0) {
-	log = function() {
+	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}

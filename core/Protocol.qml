@@ -1,5 +1,6 @@
 Object {
 	signal error;
+	property bool enabled: true;
 	property bool loading: false;
 	property string baseUrl;
 
@@ -9,7 +10,7 @@ Object {
 		this.loading = true
 		if (url.charAt(0) === '/')
 			url = url.slice(1)
-		log("request", url, data)
+		log("request", this.baseUrl + url, data)
 		var self = this;
 		$.ajax({
 			url: self.baseUrl + url,

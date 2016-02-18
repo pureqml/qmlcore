@@ -103,9 +103,13 @@ MouseArea {
 	}
 
 	onPressedChanged: {
+		var idx = this.indexAt(this.mouseX, this.mouseY)
+		if (this._items[idx] instanceof qml.core.MouseArea)
+			this._items[idx].pressed = value
+
 		if (this.pressed) {
 			this._prevDx = 0
-			var idx = this.indexAt(this.mouseX, this.mouseY)
+			this._prevDy = 0
 			this._pressedIndex = idx
 			this._x = this.mouseX
 			this._y = this.mouseY
@@ -125,7 +129,7 @@ MouseArea {
 			return
 		var dx = this.mouseX - this._x
 		this._x = this.mouseX
-		var a = this.getAnimation('contentX')
+		var a = this.content.getAnimation('x')
 		if (a)
 			a.disable()
 		this.move(-dx, 0)
@@ -140,7 +144,7 @@ MouseArea {
 			return
 		var dy = this.mouseY - this._y
 		this._y = this.mouseY
-		var a = this.getAnimation('contentY')
+		var a = this.content.getAnimation('y')
 		if (a)
 			a.disable()
 		this.move(0, -dy)
@@ -149,8 +153,12 @@ MouseArea {
 	}
 
 	onVerticalSwiped(event): {
-		if (!event)
+		if (!event && this.orientation != ListView.Vertical)
 			return
+
+		var idx = this.indexAt(event.x, event.y)
+		if (this._items[idx] instanceof qml.core.MouseArea)
+			this._items[idx].verticalSwiped(event)
 
 		var a = this.content.getAnimation('y')
 		if (a)
@@ -170,8 +178,12 @@ MouseArea {
 	stopMoving: { this.move(this._accelX ? -this._accelX : 0, this._accelY ? -this._accelY : 0) }
 
 	onHorizontalSwiped(event): {
-		if (!event)
+		if (!event && this.orientation != ListView.Horizontal)
 			return
+
+		var idx = this.indexAt(event.x, event.y)
+		if (this._items[idx] instanceof qml.core.MouseArea)
+			this._items[idx].horizontalSwiped(event)
 
 		var a = this.content.getAnimation('x')
 		if (a)

@@ -103,13 +103,8 @@ MouseArea {
 	}
 
 	onPressedChanged: {
-		var idx = this.indexAt(this.mouseX, this.mouseY)
-		if (this._items[idx] instanceof qml.core.MouseArea)
-			this._items[idx].pressed = value
-
 		if (this.pressed) {
-			this._prevDx = 0
-			this._prevDy = 0
+			var idx = this.indexAt(this.mouseX, this.mouseY)
 			this._pressedIndex = idx
 			this._x = this.mouseX
 			this._y = this.mouseY
@@ -157,8 +152,10 @@ MouseArea {
 			return
 
 		var idx = this.indexAt(event.x, event.y)
-		if (this._items[idx] instanceof qml.core.MouseArea)
+		if (this._items[idx] instanceof qml.core.MouseArea) {
 			this._items[idx].verticalSwiped(event)
+			this._items[idx].pressed = !event.end
+		}
 
 		var a = this.content.getAnimation('y')
 		if (a)
@@ -173,6 +170,9 @@ MouseArea {
 
 		if (a)
 			a.enable()
+
+		if (event.end)
+			this._prevDy = 0
 	}
 
 	stopMoving: { this.move(this._accelX ? -this._accelX : 0, this._accelY ? -this._accelY : 0) }
@@ -182,8 +182,10 @@ MouseArea {
 			return
 
 		var idx = this.indexAt(event.x, event.y)
-		if (this._items[idx] instanceof qml.core.MouseArea)
+		if (this._items[idx] instanceof qml.core.MouseArea) {
 			this._items[idx].horizontalSwiped(event)
+			this._items[idx].pressed = !event.end
+		}
 
 		var a = this.content.getAnimation('x')
 		if (a)
@@ -198,6 +200,9 @@ MouseArea {
 
 		if (a)
 			a.enable()
+
+		if (event.end)
+			this._prevDx = 0
 	}
 
 	onWheelEvent(dp): {

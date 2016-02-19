@@ -12,11 +12,12 @@ Item {
 	property string cursor;
 	property bool pressed;
 	property bool containsMouse;
-	property bool swipable: true;
 	property bool clickable: true;
 	property bool pressable: true;
 	property bool hoverEnabled: true;
 	property bool wheelEnabled: true;
+	property bool verticalSwipable: true;
+	property bool horizontalSwipable: true;
 
 	property alias hover: containsMouse;
 	property alias hoverable: hoverEnabled;
@@ -70,15 +71,22 @@ Item {
 		}
 	}
 
-	dragEventHandler(event): {
+	horizontalSwipeHandler(event): {
 		if (!event || !this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
 			return
 
 		this.pressed = !event.end
-		if (event.orientation == "vertical")
-			this.verticalSwiped(event)
-		else
-			this.horizontalSwiped(event)
+		this.horizontalSwiped(event)
+
+		event.preventDefault()
+	}
+
+	verticalSwipeHandler(event): {
+		if (!event || !this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
+			return
+
+		this.pressed = !event.end
+		this.verticalSwiped(event)
 
 		event.preventDefault()
 	}
@@ -118,8 +126,11 @@ Item {
 
 	onCompleted: {
 		var self = this
-		if (this.element.drag && this.swipable)
-			this.element.drag(this.dragEventHandler.bind(this))
+
+		if (this.element.verticalSwipe && this.verticalSwipable)
+			this.element.verticalSwipe(this.verticalSwipeHandler.bind(this))
+		if (this.element.horizontalSwipe && this.horizontalSwipable)
+			this.element.horizontalSwipe(this.horizontalSwipeHandler.bind(this))
 		if (this.clickable)
 			this.element.click(this.clicked.bind(this))
 		if (this.wheelEnabled)

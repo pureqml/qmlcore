@@ -449,19 +449,27 @@ exports._setup = function() {
 		if (this.element.css(attr) === undefined)
 			return;
 
-		var tProperty = this.element.css(attr + '-property')
+		var tProperty = this.element.css(attr + '-property').split(', ')
 
-		if (tProperty.search(' ' + name) !== -1)
-			return;
-
-		var tDelay = this.element.css(attr + '-delay')
-		var tDuration = this.element.css(attr + '-duration')
-		var tFunction = this.element.css(attr + '-timing-function')
+		if (tProperty.indexOf(name) === -1) { //if property not set
+			this.element.css(attr + '-delay', this.element.css(attr + '-delay') + ', 0s')
+			this.element.css(attr + '-duration', this.element.css(attr + '-duration') + ', ' + duration + 'ms')
+			this.element.css(attr + '-property', this.element.css(attr + '-property') + ', ' + name)
+			this.element.css(attr + '-timing-function', this.element.css(attr + '-timing-function') + ', ' + easing)
+		} else { //property already set, adjust the params
+			var idx = tProperty.indexOf(name)
 	
-		this.element.css(attr + '-delay', tDelay + ', 0s')
-		this.element.css(attr + '-duration', tDuration + ', ' + duration + 'ms')
-		this.element.css(attr + '-property', tProperty + ', ' + name)
-		this.element.css(attr + '-timing-function', tFunction + ', ' + easing)
+//			var tDelay = this.element.css(attr + '-delay').split(', ') // uncomment when needed
+			var tDuration = this.element.css(attr + '-duration').split(', ')
+			var tFunction = this.element.css(attr + '-timing-function').split(', ') // need to handle commas between brackets
+
+			tDuration[idx] = duration + 'ms'
+			tFunction[idx] = easing
+
+//			this.element.css(attr + '-delay', tDelay.toString())
+			this.element.css(attr + '-duration', tDuration.toString())
+			this.element.css(attr + '-timing-function', tFunction.toString())
+		}
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {

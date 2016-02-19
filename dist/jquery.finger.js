@@ -124,8 +124,10 @@
 			return;
 		}
 
-		// fire drag event
-		trigger(event, 'drag');
+		if (move.orientation == 'horizontal')
+			trigger(event, 'horizontalSwipe');
+		else
+			trigger(event, 'verticalSwipe');
 	}
 
 	function stopHandler(event) {
@@ -150,9 +152,8 @@
 			event.target = start.target;
 			if (dt < Finger.flickDuration) trigger(event, 'flick');
 			move.end = true;
-			evtName = 'drag';
+			evtName = move.orientation == 'vertical' ? 'verticalSwipe' : 'horizontalSwipe';
 		}
-
 		trigger(event, evtName, true);
 	}
 
@@ -164,7 +165,8 @@
 		'tap',
 		'doubletap',
 		'press',
-		'drag',
+		'verticalSwipe',
+		'horizontalSwipe',
 		'flick'
 	], function(i, name) {
 		$.fn[name] = function (fn) {

@@ -769,24 +769,6 @@ exports._setup = function() {
 		return false;
 	}
 
-	_globals.core.MouseArea.prototype._updatePosition = function(event) {
-		if (!this.recursiveVisible)
-			return
-
-		var box = this.toScreen()
-		var x = event.pageX - box[0]
-		var y = event.pageY - box[1]
-
-		if (x >= 0 && y >= 0 && x < this.width && y < this.height)
-		{
-			this.mouseX = x
-			this.mouseY = y
-			return true
-		}
-		else
-			return false
-	}
-
 	_globals.core.GamepadManager.prototype._gpButtonsPollInterval
 
 	_globals.core.GamepadManager.prototype._gpPollInterval
@@ -932,70 +914,6 @@ exports._setup = function() {
 		}
 		delete this._gamepads[event.gamepad.index]
 		--this.count
-	}
-
-	_globals.core.MouseArea.prototype._onSwipe = function(event) {
-		if (!this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
-			return
-
-		this.pressed = !event.end
-		if (event.orientation == "vertical")
-			this.verticalSwiped(event)
-		else
-			this.horizontalSwiped(event)
-
-		event.preventDefault()
-	}
-
-	_globals.core.MouseArea.prototype._onClick = function(event) {
-		if (!this.recursiveVisible)
-			return
-
-		this._updatePosition(event)
-		this.clicked()
-	}
-
-	_globals.core.MouseArea.prototype._onEnter = function(event) {
-		if (!this.hoverEnabled || !this.recursiveVisible)
-			return
-
-		this._updatePosition(event)
-		this.containsMouse = true
-	}
-
-	_globals.core.MouseArea.prototype._onExit = function(event) {
-		if (!this.hoverEnabled || !this.recursiveVisible)
-			return
-
-		this._updatePosition(event)
-		this.containsMouse = false
-		if (this.pressed) {
-			this.pressed = false
-			this.canceled()
-		}
-	}
-
-	_globals.core.MouseArea.prototype._onMove = function(event) {
-		if (!this.hoverEnabled || !this.recursiveVisible)
-			return
-
-		if (this._updatePosition(event))
-			event.preventDefault()
-	}
-
-	_globals.core.MouseArea.prototype._onDown = function(event) {
-		this._updatePosition(event)
-		this.pressed = true
-	}
-
-	_globals.core.MouseArea.prototype._onUp = function(event) {
-		this._updatePosition(event)
-		this.pressed = false
-	}
-
-	_globals.core.MouseArea.prototype._onWheel = function(event) {
-		var e = event.originalEvent
-		this.wheelEvent(e.wheelDelta / 120)
 	}
 
 	_globals.core.AnchorLine.prototype.toScreen = function() {
@@ -2015,16 +1933,6 @@ exports._bootstrap = function(self, name) {
 
 			window.addEventListener('gamepadconnected', self._onGamepadConnected.bind(self));
 			window.addEventListener('gamepaddisconnected', self._onGamepadDisconnected.bind(self));
-			break;
-		case 'core.MouseArea':
-			self.element.click(self._onClick.bind(self))
-			if (self.element.drag)
-				self.element.drag(self._onSwipe.bind(self))
-			$(document).mousemove(self._onMove.bind(self))
-			self.element.hover(self._onEnter.bind(self), self._onExit.bind(self)) //fixme: unsubscribe
-			self.element.mousedown(self._onDown.bind(self))
-			self.element.mouseup(self._onUp.bind(self))
-			self.element.on('mousewheel', self._onWheel.bind(self))
 			break;
 		case 'core.Image':
 			self.element.remove();

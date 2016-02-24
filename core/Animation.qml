@@ -1,6 +1,6 @@
 Object {
 	property int duration: 200;
-	property bool cssTransition: false;
+	property bool cssTransition: true;
 	property bool running: false;
 	property string easing: "ease";
 

@@ -3,6 +3,7 @@ Object {
 	property bool enabled: true;
 	property bool loading: false;
 	property string baseUrl;
+	property string url;
 
 	requestImpl(url, data, callback, type, headers): {
 		if (!this.enabled)
@@ -10,6 +11,7 @@ Object {
 		this.loading = true
 		if (url.charAt(0) === '/')
 			url = url.slice(1)
+		this.url = url
 		log("request", this.baseUrl + url, data)
 		var self = this;
 		$.ajax({

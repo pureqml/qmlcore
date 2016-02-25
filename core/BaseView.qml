@@ -99,5 +99,7 @@ Item {
 
 	onRecursiveVisibleChanged: { this._layout() }
 	onBoxChanged: { this._layout() }
+	onWidthChanged: { this._layout() }
+	onHeightChanged: { this._layout() }
 	onCompleted: { this._attach(); this._layout() }
 }

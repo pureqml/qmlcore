@@ -453,7 +453,7 @@ exports._setup = function() {
 
 		if (tProperty.indexOf(name) === -1) { //if property not set
 			this.element.css(attr + '-delay', this.element.css(attr + '-delay') + ', 0s')
-			this.element.css(attr + '-duration', this.element.css(attr + '-duration') + ', ' + duration + 'ms')
+			this.element.css(attr + '-duration', duration + 'ms')
 			this.element.css(attr + '-property', this.element.css(attr + '-property') + ', ' + name)
 			this.element.css(attr + '-timing-function', this.element.css(attr + '-timing-function') + ', ' + easing)
 		} else { //property already set, adjust the params

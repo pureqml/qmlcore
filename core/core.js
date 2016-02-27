@@ -489,7 +489,6 @@ exports._setup = function() {
 			this.setTransition('-ms-transition', (prefix ? '-ms-' : '') + css, animation.duration, animation.easing)
 			this.setTransition('-o-transition', (prefix ? '-o-' : '') + css, animation.duration, animation.easing)
 			this.setTransition('transition', css, animation.duration, animation.easing)
-			this._animations[name] = animation;
 			return true
 		}
 		else

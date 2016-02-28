@@ -88,8 +88,6 @@ Item {
 	}
 
 	content: Item {
-		Behavior on x	{ Animation { duration: 300; } }
-		Behavior on y	{ Animation { duration: 300; } }
 		onXChanged:		{ this.parent._layout() }
 		onYChanged:		{ this.parent._layout() }
 	}
@@ -102,4 +100,7 @@ Item {
 	onWidthChanged: { this._layout() }
 	onHeightChanged: { this._layout() }
 	onCompleted: { this._attach(); this._layout() }
+
+	Behavior on contentX { Animation { duration: 300; } }
+	Behavior on contentY { Animation { duration: 300; } }
 }

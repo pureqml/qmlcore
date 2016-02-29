@@ -1,4 +1,6 @@
 Item {
+	signal finished;
+	signal error;
 	property bool	autoPlay;
 	property string	source;
 	property bool	loop: false;
@@ -35,6 +37,8 @@ Item {
 				this._player.get(0).controls = false
 				var self = this
 				this._player.get(0).ontimeupdate = function() { self.progress = self._player.get(0).currentTime }
+				this._player.get(0).onerror = function() { self.error() }
+				this._player.get(0).onended = function() { self.finished() }
 			}
 			this._player.get(0).play()
 		}

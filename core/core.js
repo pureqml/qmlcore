@@ -1551,6 +1551,7 @@ exports._setup = function() {
 		body.append(div);
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +
+			'::-webkit-scrollbar { display: none; }' +
 			"div#renderer { position: absolute; left: 0px; top: 0px; } " +
 			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 			"input { position: absolute; } " +

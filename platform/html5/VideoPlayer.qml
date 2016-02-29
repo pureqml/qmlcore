@@ -8,6 +8,8 @@ Item {
 	property bool	paused: false;
 	property bool	flasPlayerPaused: false;
 	property float	volume: 1.0;
+	property int	duration;
+	property int	progress;
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
 
@@ -28,12 +30,22 @@ Item {
 			}
 			this.flasPlayerPaused = false
 		} else {
-			this._player.attr('src', this.source)
-			this._player.get(0).controls = false
+			if (!this.paused) {
+				this._player.attr('src', this.source)
+				this._player.get(0).controls = false
+				var self = this
+				this._player.get(0).ontimeupdate = function() { self.progress = self._player.get(0).currentTime }
+			}
 			this._player.get(0).play()
 		}
 
 		this.applyVolume();
+	}
+
+	seek(value): {
+		if (!this.flash)
+			this._player.get(0).currentTime += value
+		//TODO: Impl for flash player.
 	}
 
 	onAutoPlayChanged: {
@@ -117,6 +129,7 @@ Item {
 		running: true;
 
 		onTriggered: {
+			this.parent.duration = this.parent._player.get(0).duration ? this.parent._player.get(0).duration : 0
 			this.parent.ready = this.parent._player.get(0).readyState || this.parent.flash;	//TODO: temporary fix.
 			this.parent.paused = this.parent.ready && (this.parent._player.get(0).paused || this.parent.flasPlayerPaused);
 		}

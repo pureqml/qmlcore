@@ -12,6 +12,7 @@ Item {
 	property float	volume: 1.0;
 	property int	duration;
 	property int	progress;
+	property int	buffered;
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
 
@@ -39,6 +40,10 @@ Item {
 				this._player.get(0).ontimeupdate = function() { self.progress = self._player.get(0).currentTime }
 				this._player.get(0).onerror = function() { self.error() }
 				this._player.get(0).onended = function() { self.finished() }
+				this._player.get(0).onprogress = function() {
+					var last = self._player.get(0).buffered.length - 1
+					self.buffered = self._player.get(0).buffered.end(last) - self._player.get(0).buffered.start(last)
+				}
 			}
 			this._player.get(0).play()
 		}

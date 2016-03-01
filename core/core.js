@@ -1486,16 +1486,16 @@ exports._setup = function() {
 			item.viewY = y
 
 			if (horizontal) {
-				x += this.cellWidth
+				x += this.cellWidth + this.spacing
 				if (x > 0 && x + this.cellWidth > w) {
 					x = 0
-					y += this.cellHeight
+					y += this.cellHeight + this.spacing
 				}
 			} else {
-				y += this.cellHeight
+				y += this.cellHeight + this.spacing
 				if (y > 0 && y + this.cellHeight > h) {
 					y = 0
-					x += this.cellWidth
+					x += this.cellWidth + this.spacing
 				}
 			}
 
@@ -1514,15 +1514,15 @@ exports._setup = function() {
 		}
 
 		if (!horizontal) {
-			this.rows = Math.floor(h / this.cellHeight)
+			this.rows = Math.floor((h + this.spacing) / (this.cellHeight + this.spacing))
 			this.columns = Math.floor((n + this.rows - 1) / this.rows)
-			this.contentWidth = this.content.width = this.columns * this.cellWidth
-			this.contentHeight = this.content.height = this.rows * this.cellHeight
+			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing
+			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing
 		} else {
-			this.columns = Math.floor(w / this.cellWidth)
+			this.columns = Math.floor((w + this.spacing ) / (this.cellWidth + this.spacing))
 			this.rows = Math.floor((n + this.columns - 1) / this.columns)
-			this.contentWidth = this.columns * this.cellWidth
-			this.contentHeight = this.rows * this.cellHeight
+			this.contentWidth = this.columns * (this.cellWidth + this.spacing) - this.spacing
+			this.contentHeight = this.rows * (this.cellHeight + this.spacing) - this.spacing
 		}
 		//console.log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		if (created)

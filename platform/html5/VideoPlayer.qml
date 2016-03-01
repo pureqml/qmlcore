@@ -4,10 +4,10 @@ Item {
 	property bool	autoPlay;
 	property string	source;
 	property bool	loop: false;
-
 	property bool	flash : true;
 	property bool	ready : false;
 	property bool	paused: false;
+	property bool	muted: false;
 	property bool	flasPlayerPaused: false;
 	property float	volume: 1.0;
 	property int	duration;
@@ -40,6 +40,7 @@ Item {
 				this._player.get(0).ontimeupdate = function() { self.progress = self._player.get(0).currentTime }
 				this._player.get(0).onerror = function() { self.error() }
 				this._player.get(0).onended = function() { self.finished() }
+				this._player.get(0).onvolumechange = function() { self.muted = self._player.get(0).muted }
 				this._player.get(0).onprogress = function() {
 					var last = self._player.get(0).buffered.length - 1
 					self.buffered = self._player.get(0).buffered.end(last) - self._player.get(0).buffered.start(last)
@@ -139,6 +140,7 @@ Item {
 
 		onTriggered: {
 			this.parent.duration = this.parent._player.get(0).duration ? this.parent._player.get(0).duration : 0
+			this.parent.muted = this.parent._player.get(0).muted
 			this.parent.ready = this.parent._player.get(0).readyState || this.parent.flash;	//TODO: temporary fix.
 			this.parent.paused = this.parent.ready && (this.parent._player.get(0).paused || this.parent.flasPlayerPaused);
 		}
@@ -206,6 +208,7 @@ Item {
 
 	volumeUp:			{ this.volume += 0.1; }
 	volumeDown:			{ this.volume -= 0.1; }
+	toggleMute:			{ this._player.get(0).muted = !this._player.get(0).muted }
 	onVolumeChanged:	{ this.applyVolume(); }
 	onReadyChanged:		{ log("ReadyState: " + this.ready); }
 }

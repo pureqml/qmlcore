@@ -58,6 +58,12 @@ Item {
 		//TODO: Impl for flash player.
 	}
 
+	seekTo(value): {
+		if (!this.flash)
+			this._player.get(0).currentTime = value
+		//TODO: Impl for flash player.
+	}
+
 	onAutoPlayChanged: {
 		if (value)
 			this.play()

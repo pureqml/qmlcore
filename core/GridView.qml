@@ -6,6 +6,7 @@ BaseView {
 
 	property int rows;
 	property int columns;
+	property int spacing: 0;
 
 	move(dx, dy): {
 		var horizontal = this.flow == this.FlowLeftToRight

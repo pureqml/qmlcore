@@ -101,6 +101,6 @@ Item {
 	onHeightChanged: { this._layout() }
 	onCompleted: { this._attach(); this._layout() }
 
-	Behavior on contentX { Animation { duration: 300; } }
-	Behavior on contentY { Animation { duration: 300; } }
+//	Behavior on contentX { Animation { duration: 300; } }
+//	Behavior on contentY { Animation { duration: 300; } }
 }

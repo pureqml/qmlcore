@@ -936,13 +936,11 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignVCenter	= 2
 
 	_globals.core.Text.prototype._updateSize = function() {
-		if (this.text.length === 0 || (document.readyState !== "complete")) { 
-			this.paintedWidth = 0; 
-			this.paintedHeight = 0; 
+		if (!this._allowLayout) 
 			return;
-		}
-//		log ("_updateSize", this._get('renderer').tempCount)
-//		this._get('renderer').tempCount++;
+
+		// log ("_updateSize", this._get('renderer').tempCount)
+		// this._get('renderer').tempCount++;
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
 		if (this.wrap)

@@ -936,6 +936,13 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignVCenter	= 2
 
 	_globals.core.Text.prototype._updateSize = function() {
+		if (this.text.length === 0 || (document.readyState !== "complete")) { 
+			this.paintedWidth = 0; 
+			this.paintedHeight = 0; 
+			return;
+		}
+//		log ("_updateSize", this._get('renderer').tempCount)
+//		this._get('renderer').tempCount++;
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
 		if (this.wrap)
@@ -1568,6 +1575,7 @@ exports._setup = function() {
 
 		core.addProperty(this, 'bool', 'fullscreen')
 		core.addProperty(this, 'int', 'scrollY')
+//		core.addProperty(this, 'int', 'tempCount')
 		core.addProperty(this, 'string', 'hash')
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));

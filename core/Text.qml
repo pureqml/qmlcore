@@ -12,4 +12,11 @@ Item {
 
 	width: paintedWidth;
 	height: paintedHeight;
+
+	onCompleted: {
+		if (this.text.length > 0 && !this._allowLayout) { 
+			this._allowLayout = true;
+			this._updateSize();
+		}
+	}
 }

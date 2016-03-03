@@ -421,7 +421,7 @@ exports._setup = function() {
 
 	_globals.core.Animation.prototype._update = function(name, value) {
 		var parent = this.parent
-		if (parent && parent._updateAnimation && parent._updateAnimation(this._target, this.enabled()? this: null))
+		if (this._target && parent && parent._updateAnimation && parent._updateAnimation(this._target, this.enabled() ? this: null))
 			return
 
 		_globals.core.Object.prototype._update.apply(this, arguments);
@@ -480,6 +480,7 @@ exports._setup = function() {
 		var prefix = this._prefixCCSNeeded(name) 
 
 		if (css !== undefined) {
+//			log("OUI CSS", name)
 			if (!animation)
 				throw "resetting transition not implemented"
 
@@ -491,8 +492,10 @@ exports._setup = function() {
 			this.setTransition('transition', css, animation.duration, animation.easing)
 			return true
 		}
-		else
+		else {
+//			log("NO CSS", name)
 			return false
+		}
 	}
 
 	_globals.core.Item.prototype.setAnimation = function (name, animation) {
@@ -606,7 +609,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._mapCSSAttribute = function(name) {
-		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform'}[name]
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow'}[name]
 	}
 
 	_globals.core.Item.prototype._prefixCCSNeeded = function(name) {

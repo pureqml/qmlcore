@@ -456,14 +456,13 @@ exports._setup = function() {
 
 		var tProperty = this.element.css(attr + '-property').split(', ')
 
-		if (tProperty.indexOf(name) === -1) { //if property not set
+		var idx = tProperty.indexOf(name)
+		if (idx === -1) { //if property not set
 			this.element.css(attr + '-delay', this.element.css(attr + '-delay') + ', 0s')
 			this.element.css(attr + '-duration', this.element.css(attr + '-duration') + ', ' + duration + 'ms')
 			this.element.css(attr + '-property', this.element.css(attr + '-property') + ', ' + name)
 			this.element.css(attr + '-timing-function', this.element.css(attr + '-timing-function') + ', ' + easing)
 		} else { //property already set, adjust the params
-			var idx = tProperty.indexOf(name)
-	
 //			var tDelay = this.element.css(attr + '-delay').split(', ') // uncomment when needed
 			var tDuration = this.element.css(attr + '-duration').split(', ')
 			var tFunction = this.element.css(attr + '-timing-function').split(', ') // need to handle commas between brackets

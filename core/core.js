@@ -232,6 +232,8 @@ _globals.core.Object.prototype._setId = function (name) {
 }
 
 _globals.core.Object.prototype.onChanged = function (name, callback) {
+	// if (this.text)
+	// 	log ("onChanged", this, name, callback)
 	if (name in this._changedHandlers)
 		this._changedHandlers[name].push(callback);
 	else
@@ -1580,6 +1582,8 @@ exports._setup = function() {
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));
 		win.on('hashchange', function(event) { this.hash = window.location.hash; }.bind(this));
 
+		win.load( this._completed.bind(this) );
+
 		var self = this;
 		div.bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e) {
 			var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
@@ -1668,8 +1672,8 @@ exports._setup = function() {
 		proto.apply(instance, [this]);
 		console.log('Context: starting')
 		this._started = true
-		console.log('Context: calling on completed')
-		this._completed()
+		// console.log('Context: calling on completed')
+		// this._completed()
 		console.log('Context: signalling layout')
 		this.boxChanged()
 		console.log('Context: done')
@@ -1808,7 +1812,7 @@ exports._bootstrap = function(self, name) {
 			self.element.on('load', self._onLoad.bind(self));
 			self.element.on('error', self._onError.bind(self));
 			break;
-		case 'core.Text':
-			$(window).load( self._updateSize.bind(self));
+		// case 'core.Text':
+		// 	$(window).load( self._updateSize.bind(self));
 	}
 }

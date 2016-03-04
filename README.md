@@ -4,5 +4,5 @@
 
 please use the following link to add/remove features and update link then
 
-https://modernizr.com/download/?cssgradients-csstransforms-csstransitions-fullscreen-domprefixes-setclasses-testallprops-testprop
+https://modernizr.com/download/?cssgradients-csstransforms-csstransitions-fullscreen-domprefixes-prefixed-prefixedcss-prefixedcssvalue-setclasses-testallprops-testprop
 

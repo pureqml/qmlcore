@@ -9,8 +9,6 @@ Object {
 		if (!this.enabled)
 			return;
 		this.loading = true
-		if (url.charAt(0) === '/')
-			url = url.slice(1)
 		this.url = url
 		log("request", this.baseUrl + url, data)
 		var self = this;

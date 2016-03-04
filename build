@@ -34,7 +34,11 @@ def build(root, name, platform, manifest):
 		pass
 
 	platform_path = path.join(root, 'platform', platform)
-	call([path.join(root, 'qml-compiler'), '-o', target, path.join(root, 'core'), platform_path, '.'])
+	options = ['-o', target, path.join(root, 'core'), platform_path, '.']
+	if args.devel:
+		options.insert(0, '-w')
+
+	call([path.join(root, 'qml-compiler')] + options)
 	if ('minify' in manifest) and manifest['minify']:
 		minify(root, name, platform, manifest)
 

@@ -449,8 +449,8 @@ exports._setup = function() {
 
 	_globals.core.Item.prototype.setTransition = function(name, duration, easing) {
 		var attr = Modernizr.prefixedCSS('transition')
-		if (this.element.css(attr) === undefined)
-			return;
+		if (attr === false)
+			return false
 
 		name = Modernizr.prefixedCSSValue('transition', name) || name //replace transform: <prefix>rotate hack
 
@@ -474,6 +474,7 @@ exports._setup = function() {
 			this.element.css(attr + '-duration', tDuration.toString())
 			this.element.css(attr + '-timing-function', tFunction.toString())
 		}
+		return true
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
@@ -487,8 +488,7 @@ exports._setup = function() {
 				throw "resetting transition not implemented"
 
 			animation._target = name
-			this.setTransition(css, animation.duration, animation.easing)
-			return true
+			return this.setTransition(css, animation.duration, animation.easing)
 		} else {
 			return false
 		}

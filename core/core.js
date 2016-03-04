@@ -1596,38 +1596,11 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments)
 	}
 
-	_globals.core.core.Context.prototype._enterFullscreenMode = function() {
-		var elem = this.element.get(0)
-		if (elem.requestFullscreen)
-			elem.requestFullscreen()
-		else if (elem.msRequestFullscreen)
-			elem.msRequestFullscreen()
-		else if (elem.mozRequestFullScreen)
-			elem.mozRequestFullScreen()
-		else if (elem.webkitRequestFullscreen)
-			elem.webkitRequestFullscreen()
-		else
-			console.log("no requestFullscreen api: ", elem)
-	}
-
-	_globals.core.core.Context.prototype._exitFullscreenMode = function() {
-		if (document.exitFullscreen)
-			document.exitFullscreen()
-		else if (document.msExitFullscreen)
-			document.msExitFullscreen();
-		else if (document.mozCancelFullScreen)
-			document.mozCancelFullScreen()
-		else if (document.webkitExitFullscreen)
-			document.webkitExitFullscreen()
-		else
-			console.log("no exitFullscreen api")
-	}
+	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
+	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document)() }
 
 	_globals.core.core.Context.prototype._inFullscreenMode = function() {
-		return !!(document.fullscreenElement ||    // alternative standard method
-			document.mozFullScreenElement ||
-			document.webkitFullscreenElement ||
-			document.msFullscreenElement)
+		return !!Modernizr.prefixed('fullscreenElement', document)
 	}
 
 	_globals.core.core.Context.prototype._completed = function() {

@@ -452,9 +452,12 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Item.prototype.setTransition = function(attr, name, duration, easing) {
+	_globals.core.Item.prototype.setTransition = function(name, duration, easing) {
+		var attr = Modernizr.prefixedCSS('transition')
 		if (this.element.css(attr) === undefined)
 			return;
+
+		name = Modernizr.prefixedCSSValue('transition', name) || name //replace transform: <prefix>rotate hack
 
 		var tProperty = this.element.css(attr + '-property').split(', ')
 
@@ -480,11 +483,10 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
-		if (animation && !animation.cssTransition)
+		if (!Modernizr.csstransitions || (animation && !animation.cssTransition))
 			return false
 
 		var css = this._mapCSSAttribute(name)
-		var prefix = this._prefixCCSNeeded(name) 
 
 		if (css !== undefined) {
 //			log("OUI CSS", name)
@@ -492,11 +494,7 @@ exports._setup = function() {
 				throw "resetting transition not implemented"
 
 			animation._target = name
-			this.setTransition('-webkit-transition', (prefix ? '-webkit-' : '') + css, animation.duration, animation.easing)
-			this.setTransition('-moz-transition', (prefix ? '-moz-' : '') + css, animation.duration, animation.easing)
-			this.setTransition('-ms-transition', (prefix ? '-ms-' : '') + css, animation.duration, animation.easing)
-			this.setTransition('-o-transition', (prefix ? '-o-' : '') + css, animation.duration, animation.easing)
-			this.setTransition('transition', css, animation.duration, animation.easing)
+			this.setTransition(css, animation.duration, animation.easing)
 			return true
 		}
 		else {
@@ -619,10 +617,6 @@ exports._setup = function() {
 		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow'}[name]
 	}
 
-	_globals.core.Item.prototype._prefixCCSNeeded = function(name) {
-		return {rotate: true}[name]
-	}
-
 	_globals.core.Item.prototype._update = function(name, value) {
 		switch(name) {
 			case 'width':
@@ -654,13 +648,7 @@ exports._setup = function() {
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
 			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
-			case 'rotate':
-				this.element.css('-o-transform', 'rotate(' + value + 'deg)')
-				this.element.css('-ms-transform', 'rotate(' + value + 'deg)')
-				this.element.css('-webkit-transform', 'rotate(' + value + 'deg)')
-				this.element.css('-moz-transform', 'rotate(' + value + 'deg)')
-				this.element.css('transform', 'rotate(' + value + 'deg)')
-				break
+			case 'rotate':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -1030,11 +1018,7 @@ exports._setup = function() {
 				if (value) {
 					var decl = value._getDeclaration()
 					this.element.css('background-color', '')
-					//this.element.css('background', 'linear-gradient(to ' + decl + ')')
-					this.element.css('background', '-o-linear-gradient(' + decl + ')')
-					this.element.css('background', '-moz-linear-gradient(' + decl + ')')
-					this.element.css('background', '-webkit-linear-gradient(' + decl + ')')
-					this.element.css('background', '-ms-linear-gradient(' + decl + ')')
+					this.element.css('background', Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')'))
 				} else {
 					this.element.css('background', '')
 					this._update('color', normalizeColor(this.color)) //restore color

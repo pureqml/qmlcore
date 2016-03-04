@@ -17,7 +17,7 @@ def minify(root, name, platform, manifest):
 	os.remove(src)
 
 def copy(source, destination):
-	call(['cp', '-ur'] + [path.join(source, file_) for file_ in os.listdir(source)] + [destination])
+	call(['cp', '-r'] + [path.join(source, file_) for file_ in os.listdir(source)] + [destination])
 
 
 def build(root, name, platform, manifest):

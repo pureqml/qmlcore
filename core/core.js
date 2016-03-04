@@ -3,6 +3,8 @@ var widgetAPI
 var tvKey
 var pluginAPI
 
+var Modernizr = window.Modernizr
+
 _globals.core.vendor = "webkit"
 _globals.trace = { key: false, focus: false }
 
@@ -446,7 +448,6 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype.setTransition = function(name, duration, easing) {
-		var Modernizr = window.Modernizr
 		var attr = Modernizr.prefixedCSS('transition')
 		if (this.element.css(attr) === undefined)
 			return;
@@ -477,7 +478,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
-		if (!window.Modernizr.csstransitions || (animation && !animation.cssTransition))
+		if (!Modernizr.csstransitions || (animation && !animation.cssTransition))
 			return false
 
 		var css = this._mapCSSAttribute(name)
@@ -642,7 +643,7 @@ exports._setup = function() {
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
 			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
-			case 'rotate':	this.element.css(window.Modernizr.prefixedCSS('transform'), window.Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
+			case 'rotate':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -1023,7 +1024,7 @@ exports._setup = function() {
 				if (value) {
 					var decl = value._getDeclaration()
 					this.element.css('background-color', '')
-					this.element.css('background', window.Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')'))
+					this.element.css('background', Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')'))
 				} else {
 					this.element.css('background', '')
 					this._update('color', normalizeColor(this.color)) //restore color
@@ -1601,11 +1602,11 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments)
 	}
 
-	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return window.Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
-	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return window.Modernizr.prefixed('exitFullscreen', document)() }
+	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
+	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document)() }
 
 	_globals.core.core.Context.prototype._inFullscreenMode = function() {
-		return !!window.Modernizr.prefixed('fullscreenElement', document)
+		return !!Modernizr.prefixed('fullscreenElement', document)
 	}
 
 	_globals.core.core.Context.prototype._completed = function() {

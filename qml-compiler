@@ -17,7 +17,7 @@ if args.wait:
 	try:
 		import pyinotify
 	except:
-		print "seems that you don't have pyinotify module installed, you can't use -w without it"
+		raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
 
 compiler.grammar.source.parseWithTabs()
 grammar_source = compiler.grammar.__file__

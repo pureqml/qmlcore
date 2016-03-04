@@ -232,8 +232,13 @@ _globals.core.Object.prototype._setId = function (name) {
 }
 
 _globals.core.Object.prototype.onChanged = function (name, callback) {
-	// if (this.text)
-	// 	log ("onChanged", this, name, callback)
+	if (this._updateSize) {
+//		log ("onChanged", this.text, name, callback)
+		if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
+			this._updateSizeNeeded = true;
+			this._updateSize();
+		}
+	}
 	if (name in this._changedHandlers)
 		this._changedHandlers[name].push(callback);
 	else
@@ -938,10 +943,13 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignVCenter	= 2
 
 	_globals.core.Text.prototype._updateSize = function() {
-		if (!this._allowLayout) 
+		if (!this._allowLayout || !this._updateSizeNeeded) 
 			return;
 
-		// log ("_updateSize", this._get('renderer').tempCount)
+		if (this.text.length === 0)
+			return;
+
+		// log ("_updateSize", this.text, this._get('renderer').tempCount)
 		// this._get('renderer').tempCount++;
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
@@ -1577,6 +1585,7 @@ exports._setup = function() {
 		core.addProperty(this, 'int', 'scrollY')
 //		core.addProperty(this, 'int', 'tempCount')
 		core.addProperty(this, 'string', 'hash')
+//		core.addProperty(this, 'int', 'tempCount')
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));

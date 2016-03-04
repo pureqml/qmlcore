@@ -926,8 +926,7 @@ exports._setup = function() {
 	_globals.core.Text.prototype.AlignVCenter	= 2
 
 	_globals.core.Text.prototype.onChanged = function (name, callback) {
-		if (this._updateSize) {
-			// log ("onChanged", this.text, name, callback)
+		if (!this._updateSizeNeeded) {
 			if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
 				this._updateSizeNeeded = true;
 				this._updateSize();
@@ -940,8 +939,11 @@ exports._setup = function() {
 		if (!this._allowLayout || !this._updateSizeNeeded) 
 			return;
 
-		if (this.text.length === 0)
+		if (this.text.length === 0) {
+			this.paintedWidth = 0;
+			this.paintedHeight = 0;	
 			return;
+		}
 
 		// log ("_updateSize", this.text, this._get('renderer').tempCount)
 		// this._get('renderer').tempCount++;

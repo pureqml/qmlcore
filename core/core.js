@@ -483,16 +483,13 @@ exports._setup = function() {
 		var css = this._mapCSSAttribute(name)
 
 		if (css !== undefined) {
-//			log("OUI CSS", name)
 			if (!animation)
 				throw "resetting transition not implemented"
 
 			animation._target = name
 			this.setTransition(css, animation.duration, animation.easing)
 			return true
-		}
-		else {
-//			log("NO CSS", name)
+		} else {
 			return false
 		}
 	}

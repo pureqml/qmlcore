@@ -1004,7 +1004,7 @@ exports._setup = function() {
 
 	_globals.core.Gradient.prototype._getDeclaration = function() {
 		var decl = []
-		var orientation = this.orientation == this.Vertical? 'top': 'left'
+		var orientation = this.orientation == this.Vertical? 'bottom': 'left'
 		decl.push(orientation)
 
 		var stops = this.stops

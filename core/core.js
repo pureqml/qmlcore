@@ -1575,7 +1575,6 @@ exports._setup = function() {
 
 		core.addProperty(this, 'bool', 'fullscreen')
 		core.addProperty(this, 'int', 'scrollY')
-//		core.addProperty(this, 'int', 'tempCount')
 		core.addProperty(this, 'string', 'hash')
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));

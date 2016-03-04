@@ -6,6 +6,11 @@ from os import path
 import json
 from subprocess import call
 from StringIO import StringIO
+import argparse
+
+parser = argparse.ArgumentParser('qml translation tool')
+parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
+args = parser.parse_args()
 
 def minify(root, name, platform, manifest):
 	src = path.join(".app." + platform, "qml.js")

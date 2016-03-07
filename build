@@ -17,8 +17,9 @@ def minify(root, name, platform, manifest):
 	src = path.join(".app." + platform, "qml.js")
 	with open(path.join(".app." + platform, "qml.min.js"), "w") as out:
 		call(["java", "-jar", path.join(root, "compiler/gcc/compiler.jar"),
-			"--warning_level", "VERBOSE", "--externs",
-			path.join(root, "compiler/gcc/jquery-1.9.js"),
+			"--warning_level", "VERBOSE",
+			"--externs", path.join(root, "compiler/gcc/jquery-1.9.js"),
+			"--process_jquery_primitives",
 			src], stdout = out)
 	os.remove(src)
 

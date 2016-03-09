@@ -605,7 +605,7 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._mapCSSAttribute = function(name) {
-		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow'}[name]
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', translateX: 'transform'}[name]
 	}
 
 	_globals.core.Item.prototype._update = function(name, value) {
@@ -638,6 +638,7 @@ exports._setup = function() {
 			case 'recursiveVisible': if (this.element) /*FIXME*/this.element.css('visibility', value? 'visible': 'hidden'); break;
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
+			case 'translateX':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'translateX(' + value + 'px)')); break;
 			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
 			case 'rotate':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
 		}

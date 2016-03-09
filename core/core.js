@@ -941,8 +941,6 @@ exports._setup = function() {
 			return;
 		}
 
-		// log ("_updateSize", this.text, this._get('renderer').tempCount)
-		// this._get('renderer').tempCount++;
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
 		if (this.wrap)
@@ -1572,7 +1570,6 @@ exports._setup = function() {
 		core.addProperty(this, 'bool', 'fullscreen')
 		core.addProperty(this, 'int', 'scrollY')
 		core.addProperty(this, 'string', 'hash')
-		// core.addProperty(this, 'int', 'tempCount')
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));

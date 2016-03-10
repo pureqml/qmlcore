@@ -5,12 +5,18 @@ var pluginAPI
 
 var Modernizr = window.Modernizr
 
-_globals.core.vendor = "webkit"
+_globals.core.browser = "webkit"
+_globals.core.device = "desktop"
+_globals.core.vendor = ""
+_globals.core.os = navigator.platform
+
 _globals.trace = { key: false, focus: false }
 
 if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 	_globals.core.vendor = "samsung"
+	_globals.core.device = "tv"
+	_globals.core.os = "smartTV"
 
 	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
@@ -47,6 +53,9 @@ if ('VK_UNSUPPORTED' in window) {
 	}
 	log("operatv deteceted")
 	_globals.core.vendor = "operatv"
+	_globals.core.device = "tv"
+	_globals.core.os = "operaOS"
+
 	log("loaded")
 }
 
@@ -57,7 +66,9 @@ if ('webOS' in window) {
 	}
 
 	log("WebOS deteceted")
-	_globals.core.vendor = "webos"
+	_globals.core.vendor = "LG"
+	_globals.core.device = "tv"
+	_globals.core.os = "webOS"
 
 	var self = this
 	var history = window.history
@@ -83,8 +94,9 @@ if ('tizen' in window) {
 	}
 
 	log("[QML] Tizen")
-	_globals.core.vendor = "tizen"
-
+	_globals.core.vendor = "samsung"
+	_globals.core.device = "tv"
+	_globals.core.os = "tizen"
 	log("loaded")
 }
 
@@ -93,11 +105,30 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
+
+	log("[QML] Android")
+	_globals.core.vendor = "google"
+	_globals.core.device = "mobile"
+	_globals.core.os = "android"
+	log("loaded")
+}
+
+if (navigator.userAgent.indexOf('iPhone') >= 0) {
+	log = function(dummy) {
+		var args = Array.prototype.slice.call(arguments)
+		console.log("[QML] " + args.join(" "))
+	}
+
+	log("[QML] iPhone")
+	_globals.core.vendor = "apple"
+	_globals.core.device = "mobile"
+	_globals.core.os = "iOS"
+	log("loaded")
 }
 
 
 var keyCodes
-if (_globals.core.vendor == "samsung")
+if (_globals.core.os == "smartTV")
 {
 	keyCodes = {
 		4: 'Left',
@@ -114,7 +145,7 @@ if (_globals.core.vendor == "samsung")
 		29460: 'Up',
 		29443: 'Select'
 	}
-} else if (_globals.core.vendor == "tizen") {
+} else if (_globals.core.os == "tizen") {
 	keyCodes = {
 		37: 'Left',
 		38: 'Up',
@@ -130,7 +161,7 @@ if (_globals.core.vendor == "samsung")
 		457: 'Menu',
 		10009: 'Back'
 	}
-} else if (_globals.core.vendor == "webos") {
+} else if (_globals.core.os == "webOS") {
 	keyCodes = {
 		37: 'Left',
 		38: 'Up',
@@ -146,7 +177,7 @@ if (_globals.core.vendor == "samsung")
 		406: 'Blue',
 		457: 'Menu'
 	}
-} else if (_globals.core.vendor == "operatv") {
+} else if (_globals.core.os == "operaOS") {
 	keyCodes = {
 		8: 'Back',
 		13: 'Select',

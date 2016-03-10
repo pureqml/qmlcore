@@ -171,6 +171,7 @@ if (_globals.core.vendor == "samsung")
 		13: 'Select',
 		27: 'Back',
 		37: 'Left',
+		32: 'Space',
 		33: 'PageUp',
 		34: 'PageDown',
 		38: 'Up',

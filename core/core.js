@@ -8,8 +8,6 @@ var Modernizr = window.Modernizr
 _globals.core.os = navigator.platform
 _globals.core.device = "desktop"
 _globals.core.vendor = ""
-_globals.core.browser = ""
-_globals.core.webkit = navigator.userAgent.toLowerCase().indexOf('webkit') >= 0
 
 _globals.trace = { key: false, focus: false }
 
@@ -87,7 +85,6 @@ if ('webOS' in window) {
 	log("loaded")
 }
 
-
 if ('tizen' in window) {
 	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
@@ -101,32 +98,27 @@ if ('tizen' in window) {
 	log("loaded")
 }
 
-if (navigator.userAgent.indexOf('Android') >= 0) {
+var _checkDevice = function(target, info) {
+	if (navigator.userAgent.indexOf(target) < 0)
+		return
+
 	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
 
-	log("[QML] Android")
-	_globals.core.vendor = "google"
-	_globals.core.device = "mobile"
-	_globals.core.os = "android"
+	log("[QML] " + target)
+	_globals.core.vendor = info.vendor
+	_globals.core.device = info.device
+	_globals.core.os = info.os
 	log("loaded")
 }
 
-if (navigator.userAgent.indexOf('iPhone') >= 0) {
-	log = function(dummy) {
-		var args = Array.prototype.slice.call(arguments)
-		console.log("[QML] " + args.join(" "))
-	}
-
-	log("[QML] iPhone")
-	_globals.core.vendor = "apple"
-	_globals.core.device = "mobile"
-	_globals.core.os = "iOS"
-	log("loaded")
-}
-
+_checkDevice('Blackberry', { 'vendor': 'blackberry', 'device': 'mobile', 'os': 'blackberry' })
+_checkDevice('Android', { 'vendor': 'google', 'device': 'mobile', 'os': 'android' })
+_checkDevice('iPhone', { 'vendor': 'apple', 'device': 'mobile', 'os': 'iOS' })
+_checkDevice('iPad', { 'vendor': 'apple', 'device': 'tablet', 'os': 'iOS' })
+_checkDevice('iPod', { 'vendor': 'apple', 'device': 'player', 'os': 'iOS' })
 
 var keyCodes
 if (_globals.core.os == "smartTV")

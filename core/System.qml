@@ -8,23 +8,24 @@ Object {
 	property bool landscape: !portrait;
 
 	onCompleted: {
+		var browser = ""
 		if (navigator.userAgent.indexOf('Chromium') >= 0)
-			_globals.core.browser = "Chromium"
+			browser = "Chromium"
 		else if (navigator.userAgent.indexOf('Chrome') >= 0)
-			_globals.core.browser = "Chrome"
+			browser = "Chrome"
 		else if (navigator.userAgent.indexOf('Opera') >= 0)
-			_globals.core.browser = "Opera"
+			browser = "Opera"
 		else if (navigator.userAgent.indexOf('Firefox') >= 0)
-			_globals.core.browser = "Firefox"
+			browser = "Firefox"
 		else if (navigator.userAgent.indexOf('Safari') >= 0)
-			_globals.core.browser = "Safari"
+			browser = "Safari"
 		else if (navigator.userAgent.indexOf('MSIE') >= 0)
-			_globals.core.browser = "IE"
+			browser = "IE"
 		else if (navigator.userAgent.indexOf('YaBrowser') >= 0)
-			_globals.core.browser = "Yandex"
+			browser = "Yandex"
 
-		this.browser = _globals.core.browser
-		this.webkit = _globals.core.webkit
+		this.browser = browser
+		this.webkit = navigator.userAgent.toLowerCase().indexOf('webkit') >= 0
 		this.device = _globals.core.device
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os

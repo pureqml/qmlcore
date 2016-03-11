@@ -1604,6 +1604,8 @@ exports._setup = function() {
 		core.addProperty(this, 'int', 'scrollY')
 //		core.addProperty(this, 'int', 'tempCount')
 		core.addProperty(this, 'string', 'hash')
+		core.addProperty(this, 'System', 'system');
+		this.system = new _globals.core.System(this);
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));

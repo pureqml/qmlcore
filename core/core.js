@@ -477,7 +477,7 @@ exports._setup = function() {
 		if (attr === false)
 			return false
 
-		name = Modernizr.prefixedCSSValue('transition', name) || name //replace transform: <prefix>rotate hack
+		name = Modernizr.prefixedCSS(name) || name //replace transform: <prefix>rotate hack
 
 		var tProperty = this.element.css(attr + '-property').split(', ')
 

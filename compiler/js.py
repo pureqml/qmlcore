@@ -145,7 +145,7 @@ class component_generator(object):
 		assert self.prototype == True
 
 		#HACK HACK: make immutable
-		registry.id_set = set(['renderer'])
+		registry.id_set = set(['context'])
 		self.collect_id(registry.id_set)
 
 		r = []
@@ -339,7 +339,7 @@ class generator(object):
 		r, base_class = [], {}
 
 		for name, gen in self.components.iteritems():
-			self.id_set = set(['renderer'])
+			self.id_set = set(['context'])
 			gen.collect_id(self.id_set)
 
 			code = "//=====[component %s]=====================\n\n" %name

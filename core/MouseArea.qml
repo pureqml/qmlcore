@@ -6,6 +6,7 @@ Item {
 	signal wheelEvent;
 	signal verticalSwiped;
 	signal horizontalSwiped;
+	signal mouseMove;
 
 	property real mouseX;
 	property real mouseY;
@@ -102,11 +103,6 @@ Item {
 		}
 	}
 
-	mouseMoveHandler(event): {
-		if (this.updatePosition(event))
-			event.preventDefault()
-	}
-
 	updatePosition(event): {
 		if (!this.recursiveVisible)
 			return false
@@ -141,7 +137,7 @@ Item {
 		}
 		if (this.hoverEnabled) {
 			this.element.hover(function() { self.containsMouse = true }, function() { self.containsMouse = false })
-			this.element.mousemove(function(event) { if (self.updatePosition(event)) event.preventDefault() })
+			this.element.mousemove(function(event) { self.mouseMove(); if (self.updatePosition(event)) event.preventDefault() })
 		}
 	}
 }

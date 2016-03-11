@@ -4,7 +4,7 @@ Object {
 	property string vendor;
 	property string os;
 	property bool webkit;
-	property bool portrait: renderer.width < renderer.height;
+	property bool portrait: context.width < context.height;
 	property bool landscape: !portrait;
 
 	onCompleted: {

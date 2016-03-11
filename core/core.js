@@ -1453,7 +1453,7 @@ exports._setup = function() {
 			this.contentHeight = p
 		}
 		if (created)
-			this._get('renderer')._completed()
+			this._get('context')._completed()
 	}
 
 	_globals.core.GridView.prototype.FlowLeftToRight	= 0
@@ -1556,7 +1556,7 @@ exports._setup = function() {
 		}
 		//console.log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		if (created)
-			this._get('renderer')._completed()
+			this._get('context')._completed()
 	}
 
 	_globals.core.core.Context = function() {
@@ -1569,7 +1569,7 @@ exports._setup = function() {
 	_globals.core.core.Context.prototype.constructor = exports.Context;
 
 	_globals.core.core.Context.prototype.init = function() {
-		this._local['renderer'] = this;
+		this._local['context'] = this;
 
 		var win = $(window);
 		var w = win.width();
@@ -1577,12 +1577,12 @@ exports._setup = function() {
 		//log("window size: " + w + "x" + h);
 
 		var body = $('body');
-		var div = $("<div id='renderer'></div>");
+		var div = $("<div id='context'></div>");
 		body.append(div);
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +
 			'::-webkit-scrollbar { display: none; }' +
-			"div#renderer { position: absolute; left: 0px; top: 0px; } " +
+			"div#context { position: absolute; left: 0px; top: 0px; } " +
 			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 			"input { position: absolute; } " +
 			"img { position: absolute; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; content: ''; } " +

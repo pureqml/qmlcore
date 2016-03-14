@@ -16,6 +16,7 @@ Item {
 	property bool keyNavigationWraps: true;
 	property bool contentFollowsCurrentItem: true;
 	property bool pageScrolling: false;
+	property bool rendered: false;
 
 	property bool trace;
 

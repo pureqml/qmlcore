@@ -1453,6 +1453,7 @@ exports._setup = function() {
 			this.contentWidth = maxW
 			this.contentHeight = p
 		}
+		this.rendered = true
 		if (created)
 			this._get('context')._completed()
 	}
@@ -1556,6 +1557,7 @@ exports._setup = function() {
 			this.contentHeight = this.rows * (this.cellHeight + this.spacing) - this.spacing
 		}
 		//console.log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
+		this.rendered = true
 		if (created)
 			this._get('context')._completed()
 	}

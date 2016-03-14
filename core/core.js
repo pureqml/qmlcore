@@ -1387,12 +1387,13 @@ exports._setup = function() {
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		for(var i = 0; i < n && p + c < size; ++i) {
+		//for(var i = 0; i < n && p + c < size; ++i) {
+		for(var i = 0; i < n; ++i) {
 			var item = items[i]
 
 			if (!item) {
-				if (p + c >= size && itemsCount > 0)
-					break
+				//if (p + c >= size && itemsCount > 0)
+					//break
 				var row = this.model.get(i)
 				this._local['model'] = row
 				this._items[i] = item = this.delegate()

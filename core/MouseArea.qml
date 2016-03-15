@@ -18,7 +18,7 @@ Item {
 	property bool containsMouse;
 	property bool clickable: true;
 	property bool pressable: true;
-	property bool touchable: true;
+	property bool touchEnabled: true;
 	property bool hoverEnabled: true;
 	property bool wheelEnabled: true;
 	property bool verticalSwipable: true;
@@ -28,6 +28,34 @@ Item {
 	property alias hoverable: hoverEnabled;
 
 	onCursorChanged: { this.element.css('cursor', value) }
+
+	onTouchEnabledChanged: {
+		if (value) {
+			self = this
+			if ('ontouchstart' in window)
+				this.element.bind('touchstart', function(event) { self.touchStart(event) })
+			if ('ontouchend' in window)
+				this.element.bind('touchend', function(event) { self.touchEnd(event) })
+			if ('ontouchmove' in window)
+				this.element.bind('touchmove', function(event) { self.touchMove(event) })
+		} else {
+			this.element.unbind('touchmove touchend touchstart')
+		}
+	}
+
+	onVerticalSwipableChanged: {
+		if (value && this.element.verticalSwipe)
+			this.element.verticalSwipe(this.verticalSwipeHandler.bind(this))
+		else
+			this.element.unbind('verticalSwipe')
+	}
+
+	onHorizontalSwipableChanged: {
+		if (value && this.element.verticalSwipe)
+			this.element.horizontalSwipe(this.horizontalSwipeHandler.bind(this))
+		else
+			this.element.unbind('horizontalSwipe')
+	}
 
 	onRecursiveVisibleChanged: {
 		if (!value)
@@ -136,11 +164,13 @@ Item {
 			this.element.hover(function() { self.containsMouse = true }, function() { self.containsMouse = false })
 			this.element.mousemove(function(event) { self.mouseMove(); if (self.updatePosition(event)) event.preventDefault() })
 		}
-		if (this.touchable && ('ontouchstart' in window))
-			this.element.bind('touchstart', function(event) { self.touchStart(event) })
-		if (this.touchable && ('ontouchend' in window))
-			this.element.bind('touchend', function(event) { self.touchEnd(event) })
-		if (this.touchable && ('ontouchmove' in window))
-			this.element.bind('touchmove', function(event) { self.touchMove(event) })
+		if (this.touchEnabled) {
+			if ('ontouchstart' in window)
+				this.element.bind('touchstart', function(event) { self.touchStart(event) })
+			if ('ontouchend' in window)
+				this.element.bind('touchend', function(event) { self.touchEnd(event) })
+			if ('ontouchmove' in window)
+				this.element.bind('touchmove', function(event) { self.touchMove(event) })
+		}
 	}
 }

@@ -1231,7 +1231,7 @@ exports._setup = function() {
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
 			if (c.recursiveVisible) {
-				if (this.maxWidth - cX < c.width) {
+				if (this.width - cX < c.width) {
 					c.x = 0;
 					c.y = yMax + c.anchors.topMargin;// + (cY === 0 ? 0 : this.spacing);
 					cY = yMax;// + this.spacing;
@@ -1247,8 +1247,8 @@ exports._setup = function() {
 				cX = c.x + c.width + this.spacing;
 			}
 		}
-		this.height = yMax;
-		this.width = xMax;
+		this.contentHeight = yMax;
+		this.contentWidth = xMax;
 	}
 
 	_globals.core.Grid.prototype.addChild = function(child) {

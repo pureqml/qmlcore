@@ -1628,8 +1628,8 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments)
 	}
 
-	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
-	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document)() }
+	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0)) }
+	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document) }
 
 	_globals.core.core.Context.prototype._inFullscreenMode = function() {
 		return !!Modernizr.prefixed('fullscreenElement', document)

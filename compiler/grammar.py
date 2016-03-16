@@ -51,6 +51,10 @@ def handle_builtin(s, l, t):
 	#print "builtin> ", t
 	return "".join(t)
 
+def handle_function_call(s, l, t):
+	#print "func> ", t
+	return "".join(t)
+
 expression = Forward()
 expression_list = Forward()
 component_declaration = Forward()
@@ -65,6 +69,9 @@ enum_value.setParseAction(handle_enum_value)
 
 builtin = Keyword("Math") + Literal(".") + Word(alphanums) + Optional(Literal("(") + expression_list + Literal(")"))
 builtin.setParseAction(handle_builtin)
+
+function_call = Word(alphanums) + Literal("(") + expression_list + Literal(")")
+function_call.setParseAction(handle_function_call)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_lvalue_list = Group(nested_identifier_lvalue + ZeroOrMore(Literal(",").suppress() + nested_identifier_lvalue))
@@ -132,7 +139,7 @@ def handle_expression_array(s, l, t):
 	return "".join(t)
 expression_array.setParseAction(handle_expression_array)
 
-expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | nested_identifier_rvalue | enum_value | expression_array)
+expression_definition = (dblQuotedString | Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array)
 
 expression_ops = infixNotation(expression_definition, [
 	('!', 1, opAssoc.RIGHT, handle_unary_op),

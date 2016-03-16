@@ -1677,6 +1677,10 @@ exports._setup = function() {
 		console.log('Context: done')
 		return instance;
 	}
+
+	_globals.core.core.Context.prototype.qsTr = function(text) {
+		return text
+	}
 }
 
 exports.addProperty = function(self, type, name) {

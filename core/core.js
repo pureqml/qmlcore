@@ -1804,9 +1804,6 @@ exports._bootstrap = function(self, name) {
 
 			break;
 		case 'core.Image':
-			self.element.remove();
-			self.element = $('<div/>');
-			self.parent.element.append(self.element);
 			self.element.on('load', self._onLoad.bind(self));
 			self.element.on('error', self._onError.bind(self));
 			break;

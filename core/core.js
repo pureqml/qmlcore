@@ -663,7 +663,7 @@ exports._setup = function() {
 			case 'recursiveVisible': if (this.element) /*FIXME*/this.element.css('visibility', value? 'visible': 'hidden'); break;
 			case 'z':		this.element.css('z-index', value); break;
 			case 'radius':	this.element.css('border-radius', value); break;
-			case 'translateX':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'translateX(' + value + 'px)')); break;
+			case 'translateX':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'translate3d(' + value + 'px, 0px, 0px)')); break;
 			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
 			case 'rotate':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
 		}
@@ -1628,8 +1628,8 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments)
 	}
 
-	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0)) }
-	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document) }
+	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
+	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document)() }
 
 	_globals.core.core.Context.prototype._inFullscreenMode = function() {
 		return !!Modernizr.prefixed('fullscreenElement', document)

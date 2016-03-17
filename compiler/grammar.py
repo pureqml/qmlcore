@@ -53,7 +53,7 @@ def handle_builtin(s, l, t):
 
 def handle_function_call(s, l, t):
 	#print "func> ", t
-	return "".join(t)
+	return "%s(%s)" % (t[0], ",".join(t[1:]))
 
 expression = Forward()
 expression_list = Forward()
@@ -70,7 +70,9 @@ enum_value.setParseAction(handle_enum_value)
 builtin = Keyword("Math") + Literal(".") + Word(alphanums) + Optional(Literal("(") + expression_list + Literal(")"))
 builtin.setParseAction(handle_builtin)
 
-function_call = Word(alphanums) + Literal("(") + expression_list + Literal(")")
+function_call = Word(alphanums) + Literal("(").suppress() + expression_list + Literal(")").suppress() + \
+	ZeroOrMore(Literal(".").suppress() + Literal("arg").suppress() + Literal("(").suppress() + expression + Literal(")").suppress())
+
 function_call.setParseAction(handle_function_call)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")

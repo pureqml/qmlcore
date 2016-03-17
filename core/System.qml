@@ -1,4 +1,5 @@
 Object {
+	property string language;
 	property string browser;
 	property string device;
 	property string vendor;
@@ -29,5 +30,6 @@ Object {
 		this.device = _globals.core.device
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
+		this.language = navigator.language
 	}
 }

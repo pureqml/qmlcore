@@ -1571,7 +1571,7 @@ exports._setup = function() {
 	_globals.core.core.Context.prototype = Object.create(_globals.core.Item.prototype);
 	_globals.core.core.Context.prototype.constructor = exports.Context;
 
-	_globals.core.core.Context.prototype.init = function() {
+	_globals.core.core.Context.prototype.init = function(html) {
 		this._local['context'] = this;
 
 		var win = $(window);
@@ -1580,7 +1580,7 @@ exports._setup = function() {
 		//log("window size: " + w + "x" + h);
 
 		var body = $('body');
-		var div = $("<div id='context'></div>");
+		var div = $(html);
 		body.append(div);
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +

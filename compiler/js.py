@@ -297,7 +297,7 @@ class generator(object):
 		self.startup = []
 		self.startup.append("\tqml.core.core._setup()")
 		self.startup.append("\tqml._context = new qml.core.core.Context()")
-		self.startup.append("\tqml._context.init()")
+		self.startup.append("\tqml._context.init(\"<div id='context'></div>\")")
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:

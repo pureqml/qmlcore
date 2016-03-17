@@ -30,7 +30,7 @@ Object {
 		})
 	}
 
-	request(url, data, callback, type): {
+	request(url, data, callback, type, headers): {
 		if (!this.enabled)
 			return;
 
@@ -42,7 +42,7 @@ Object {
 					log("Request failed: " + res.error.message);
 				else
 					callback(res)
-			}, type, {})
+			}, type, headers)
 		}
 
 		do_request()

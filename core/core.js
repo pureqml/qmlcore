@@ -1679,7 +1679,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.core.Context.prototype.qsTr = function(text) {
-		return text
+		var args = arguments
+		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
 	}
 }
 

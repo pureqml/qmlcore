@@ -1697,14 +1697,15 @@ exports.addProperty = function(self, type, name) {
 		case 'array':		value = []; break
 		default: if (type[0].toUpperCase() == type[0]) value = null; break;
 	}
-	var convert = function(value) {
-		switch(type) {
-		case 'int':		return Math.floor(value);
-		case 'bool':	return value? true: false;
-		case 'string':	return String(value);
-		default:		return value;
-		}
+
+	var convert
+	switch(type) {
+		case 'int':		convert = function(value) { return Math.floor(value) }
+		case 'bool':	convert = function(value) { return value? true: false }
+		case 'string':	convert = function(value) { return String(value) }
+		default:		convert = function(value) { return value }
 	}
+
 	Object.defineProperty(self, name, {
 		get: function() {
 			return interpolated_value !== undefined? interpolated_value: value;

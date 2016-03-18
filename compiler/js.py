@@ -19,6 +19,7 @@ class component_generator(object):
 		self.component = component
 		self.aliases = {}
 		self.properties = {}
+		self.enums = {}
 		self.assignments = {}
 		self.animations = {}
 		self.package = get_package(name)
@@ -53,18 +54,25 @@ class component_generator(object):
 			value = component_generator(self.package + ".<anonymous>", value)
 		self.assignments[target] = value
 
+	def has_property(self, name):
+		return (name in self.properties) or (name in self.aliases) or (name in self.enums)
+
 	def add_child(self, child):
 		t = type(child)
 		if t is lang.Property:
-			if child.name in self.properties or child.name in self.aliases:
+			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
 			self.properties[child.name] = child.type
 			if child.value is not None:
 				self.assign(child.name, child.value)
 		elif t is lang.AliasProperty:
-			if child.name in self.properties or child.name in self.aliases:
+			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
 			self.aliases[child.name] = child.target
+		elif t is lang.EnumProperty:
+			if self.has_property(child.name):
+				raise Exception("duplicate property " + child.name)
+			self.enums[child.name] = child.values
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
 		elif t is lang.IdAssignment:

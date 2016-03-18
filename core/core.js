@@ -1689,6 +1689,7 @@ exports._setup = function() {
 exports.addProperty = function(proto, type, name) {
 	var getDefaultValue
 	switch(type) {
+		case 'enum': //fixme: add default value here
 		case 'int':		getDefaultValue = function() { return 0 }; break
 		case 'bool':	getDefaultValue = function() { return false }; break
 		case 'real':	getDefaultValue = function() { return 0.0 }; break

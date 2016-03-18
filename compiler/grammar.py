@@ -17,6 +17,9 @@ def handle_property_declaration(s, l, t):
 def handle_alias_property_declaration(s, l, t):
 	return lang.AliasProperty(t[0], t[1])
 
+def handle_enum_property_declaration(s, l, t):
+	return lang.EnumProperty(t[0], t[1])
+
 def handle_method_declaration(s, l, t):
 	return lang.Method(t[0], t[1], t[2])
 
@@ -64,7 +67,8 @@ component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z_]"), alphanums + "_")
 code = originalTextFor(nestedExpr("{", "}", None, None))
 
-enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + Word(srange("[A-Z_]"), alphanums)
+enum_element = Word(srange("[A-Z_]"), alphanums)
+enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
 enum_value.setParseAction(handle_enum_value)
 
 builtin = Keyword("Math") + Literal(".") + Word(alphanums) + Optional(Literal("(") + expression_list + Literal(")"))
@@ -103,6 +107,10 @@ property_declaration = (((Keyword("property").suppress() + type + identifier + L
 alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() + identifier + Literal(":").suppress() + nested_identifier_lvalue + expression_end
 alias_property_declaration.setParseAction(handle_alias_property_declaration)
 
+enum_property_declaration = Keyword("property").suppress() + Keyword("enum").suppress() + identifier + \
+	Literal("{").suppress() + Group(enum_element + ZeroOrMore(Literal(",").suppress() + enum_element)) + Literal("}").suppress() + expression_end
+enum_property_declaration.setParseAction(handle_enum_property_declaration)
+
 property_declaration.setParseAction(handle_property_declaration)
 
 assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end
@@ -119,7 +127,7 @@ method_declaration_qml.setParseAction(handle_method_declaration)
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + nested_identifier_lvalue_list + Literal("{").suppress() + component_declaration + Literal("}").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
-scope_declaration = behavior_declaration | signal_declaration | alias_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
+scope_declaration = behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
 component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
 
 component_declaration << (component_type + component_scope)

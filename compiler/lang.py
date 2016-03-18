@@ -14,6 +14,11 @@ class AliasProperty(object):
 		self.name = name
 		self.target = target
 
+class EnumProperty(object):
+	def __init__(self, name, values):
+		self.name = name
+		self.values = values
+
 class Method(object):
 	def __init__(self, name, args, code):
 		self.name = name

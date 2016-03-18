@@ -671,8 +671,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._updateVisibility = function() {
-		var visible = this.hasOwnProperty('visible')? this.visible: true
-//		var opacity = this.hasOwnProperty('opacity')? this.opacity: 1.0
+		var visible = ('visible' in this)? this.visible: true
+//		var opacity = ('opacity' in this)? this.opacity: 1.0
 		this.recursiveVisible = this._recursiveVisible && this.visible// && this.opacity > 0.004 //~1/255
 		if (!visible && this.parent)
 			this.parent._tryFocus() //try repair local focus on visibility changed
@@ -1161,7 +1161,7 @@ exports._setup = function() {
 		var h = 0
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (!c.hasOwnProperty('height'))
+			if (!('height' in c))
 				continue
 			var b = c.y + c.height
 			if (b > h)
@@ -1188,7 +1188,7 @@ exports._setup = function() {
 		var w = 0
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (!c.hasOwnProperty('height'))
+			if (!('height' in c))
 				continue
 			var r = c.x + c.width
 			if (r > w)

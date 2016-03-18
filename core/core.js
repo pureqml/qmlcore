@@ -989,7 +989,7 @@ exports._setup = function() {
 
 	_globals.core.Text.prototype._update = function(name, value) {
 		switch(name) {
-			case 'text': this.element.text(value); this._updateSize(); break;
+			case 'text': this.element.html(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); this._updateSize(); break;
 			case 'width': this._updateSize(); break;

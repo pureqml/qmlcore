@@ -938,15 +938,6 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Text.prototype.AlignLeft		= 0
-	_globals.core.Text.prototype.AlignRight		= 1
-	_globals.core.Text.prototype.AlignHCenter	= 2
-	_globals.core.Text.prototype.AlignJustify	= 3
-
-	_globals.core.Text.prototype.AlignTop		= 0
-	_globals.core.Text.prototype.AlignBottom	= 1
-	_globals.core.Text.prototype.AlignVCenter	= 2
-
 	_globals.core.Text.prototype.onChanged = function (name, callback) {
 		if (!this._updateSizeNeeded) {
 			if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
@@ -1019,9 +1010,6 @@ exports._setup = function() {
 		return normalizeColor(this.color) + " " + Math.floor(100 * this.position) + "%"
 	}
 
-	_globals.core.Gradient.prototype.Vertical = 0
-	_globals.core.Gradient.prototype.Horizontal = 1
-
 	_globals.core.Gradient.prototype._getDeclaration = function() {
 		var decl = []
 		var orientation = this.orientation == this.Vertical? 'bottom': 'left'
@@ -1056,18 +1044,6 @@ exports._setup = function() {
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
-
-	_globals.core.Image.prototype.Null = 0;
-	_globals.core.Image.prototype.Ready = 1;
-	_globals.core.Image.prototype.Loading = 2;
-	_globals.core.Image.prototype.Error = 3;
-
-	_globals.core.Image.prototype.Stretch = 0;
-	_globals.core.Image.prototype.PreserveAspectFit = 1;
-	_globals.core.Image.prototype.PreserveAspectCrop = 2;
-	_globals.core.Image.prototype.Tile = 3;
-	_globals.core.Image.prototype.TileVertically = 4;
-	_globals.core.Image.prototype.TileHorizontally = 5;
 
 	_globals.core.Image.prototype._onLoad = function() {
 		var image = this

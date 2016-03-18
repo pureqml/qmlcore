@@ -3,8 +3,13 @@ Item {
 	property color color;
 
 	property bool wrap;
-	property int horizontalAlignment;
-	property int verticalAlignment;
+	property enum horizontalAlignment {
+		AlignLeft, AlignRight, AlignHCenter, AlignJustify
+	};
+
+	property enum verticalAlignment {
+		AlignTop, AlignBottom, AlignVCenter
+	};
 
 	property Font font: Font {}
 	property int paintedWidth;

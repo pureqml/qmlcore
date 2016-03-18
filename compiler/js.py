@@ -162,6 +162,12 @@ class component_generator(object):
 			args, code = argscode
 			code = process(code, self, registry)
 			r.append("%sexports.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
+
+		for name, values in self.enums.iteritems():
+			for i in xrange(0, len(values)):
+				r.append("%sexports.%s.prototype.%s = %d" %(ident, self.name, values[i], i))
+				r.append("%sexports.%s.%s = %d" %(ident, self.name, values[i], i))
+
 		return "\n".join(r)
 
 	def generate_creators(self, registry, parent, ident_n = 1):

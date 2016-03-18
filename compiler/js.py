@@ -105,7 +105,7 @@ class component_generator(object):
 				raise Exception("duplicate signal " + name)
 			self.signals.add(name)
 		else:
-			print "unhandled", child
+			raise Exception("unhandled element: %s" %child)
 
 	def generate_ctor(self, registry):
 		return "\texports.%s.apply(this, arguments);\n\tcore._bootstrap(this, '%s');\n" %(registry.find_component(self.package, self.component.name), self.name)

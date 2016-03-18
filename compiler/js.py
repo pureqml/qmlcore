@@ -107,12 +107,6 @@ class component_generator(object):
 		else:
 			print "unhandled", child
 
-	def generate_properties(self):
-		r = []
-		for name, type in self.properties.iteritems():
-			r.append("\tcore.addProperty(this, '%s', '%s');" %(type, name))
-		return "\n".join(r)
-
 	def generate_ctor(self, registry):
 		return "\texports.%s.apply(this, arguments);\n\tcore._bootstrap(this, '%s');\n" %(registry.find_component(self.package, self.component.name), self.name)
 
@@ -153,6 +147,9 @@ class component_generator(object):
 		for name in self.signals:
 			r.append("%sexports.%s.prototype.%s = function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitSignal.apply(this, args) }" %(ident, self.name, name, name))
 
+		for name, type in self.properties.iteritems():
+			r.append("%score.addProperty(exports.%s.prototype, '%s', '%s')" %(ident, self.name, type, name))
+
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)
@@ -167,8 +164,6 @@ class component_generator(object):
 		if not self.prototype:
 			for name in self.signals:
 				r.append("%score.addSignal(this, '%s')" %(ident, name))
-
-		r.append(self.generate_properties())
 
 		idx = 0
 		for gen in self.children:

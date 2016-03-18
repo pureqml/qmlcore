@@ -1686,18 +1686,18 @@ exports._setup = function() {
 	}
 }
 
-exports.addProperty = function(self, type, name) {
-	var value;
-	var timer;
-	var timeout;
-	var interpolated_value;
+exports.addProperty = function(proto, type, name) {
+	var getDefaultValue
 	switch(type) {
-		case 'int':			value = 0; break;
-		case 'bool':		value = false; break;
-		case 'real':		value = 0.0; break;
-		case 'string':		value = ""; break
-		case 'array':		value = []; break
-		default: if (type[0].toUpperCase() == type[0]) value = null; break;
+		case 'int':		getDefaultValue = function() { return 0 }; break
+		case 'bool':	getDefaultValue = function() { return false }; break
+		case 'real':	getDefaultValue = function() { return 0.0 }; break
+		case 'string':	getDefaultValue = function() { return "" }; break
+		case 'array':	getDefaultValue = function() { return [] }; break
+		default:
+			getDefaultValue = (type[0].toUpperCase() == type[0])?
+				function() { return null }:
+				function() { }
 	}
 
 	var convert
@@ -1708,60 +1708,74 @@ exports.addProperty = function(self, type, name) {
 		default:		convert = function(value) { return value }
 	}
 
-	Object.defineProperty(self, name, {
+	var storageName = '__property_' + name
+
+	var getStorage = function(obj) {
+		var p = obj[storageName]
+		if (p === undefined) {
+			p = { value : getDefaultValue() }
+			obj[storageName] = p
+		}
+		return p
+	}
+
+	Object.defineProperty(proto, name, {
 		get: function() {
-			return interpolated_value !== undefined? interpolated_value: value;
+			var p = getStorage(this)
+			return p.interpolated_value !== undefined? p.interpolated_value: p.value;
 		},
+
 		set: function(newValue) {
-			if (!self.getAnimation) {
-				log("bound unknown object", self)
-				throw "invalid object";
+			var p = getStorage(this)
+			if (!this.getAnimation) {
+				log("bound unknown object", this)
+				throw "invalid object"
 			}
 			newValue = convert(newValue)
-			var animation = self.getAnimation(name)
-			if (animation && value !== newValue) {
-				if (timer)
-					clearInterval(timer);
-				if (timeout)
-					clearTimeout(timeout);
+			var animation = this.getAnimation(name)
+			if (animation && p.value !== newValue) {
+				if (p.timer)
+					clearInterval(p.timer)
+				if (p.timeout)
+					clearTimeout(p.timeout)
 
-				var duration = animation.duration;
-				var date = new Date();
-				var started = date.getTime() + date.getMilliseconds() / 1000.0;
+				var duration = animation.duration
+				var date = new Date()
+				var started = date.getTime() + date.getMilliseconds() / 1000.0
 
-				var src = interpolated_value !== undefined? interpolated_value: value;
-				var dst = newValue;
-				timer = setInterval(function() {
-					var date = new Date();
-					var now = date.getTime() + date.getMilliseconds() / 1000.0;
-					var t = 1.0 * (now - started) / duration;
+				var src = p.interpolated_value !== undefined? p.interpolated_value: p.value
+				var dst = newValue
+				p.timer = setInterval(function() {
+					var date = new Date()
+					var now = date.getTime() + date.getMilliseconds() / 1000.0
+					var t = 1.0 * (now - started) / duration
 					if (t >= 1)
-						t = 1;
+						t = 1
 
-					interpolated_value = convert(animation.interpolate(dst, src, t));
-					self._update(name, interpolated_value, src);
-				}, 0);
+					p.interpolated_value = convert(animation.interpolate(dst, src, t))
+					this._update(name, p.interpolated_value, src)
+				}.bind(this), 0)
 
 				var complete = function() {
-					clearInterval(timer);
-					interpolated_value = undefined;
+					clearInterval(p.timer)
+					interpolated_value = undefined
 					animation.running = false
-					self._update(name, dst, src);
-				}
+					this._update(name, dst, src)
+				}.bind(this)
 
 				animation.running = true
-				timeout = setTimeout(complete, duration);
-				animation.complete = complete;
+				p.timeout = setTimeout(complete, duration)
+				animation.complete = complete
 			}
-			var oldValue = value;
+			var oldValue = p.value
 			if (oldValue !== newValue) {
-				value = newValue;
+				p.value = newValue
 				if (!animation)
-					self._update(name, newValue, oldValue);
+					this._update(name, newValue, oldValue)
 			}
 		},
 		enumerable: true
-	});
+	})
 }
 
 exports.addAliasProperty = function(self, name, getObject, getter, setter) {

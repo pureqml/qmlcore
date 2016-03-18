@@ -319,7 +319,7 @@ _globals.core.Object.prototype._emitSignal = function(name) {
 	args.shift();
 	if (name in this._signalHandlers) {
 		var handlers = this._signalHandlers[name];
-		handlers.forEach(function(callback) { callback.apply(this, args) })
+		handlers.forEach(function(callback) { try { callback.apply(this, args) } catch(ex) { log("signal " + name + " handler failed:", ex, ex.stack) } });
 	}
 }
 
@@ -1686,18 +1686,18 @@ exports._setup = function() {
 	}
 }
 
-exports.addProperty = function(proto, type, name) {
-	var getDefaultValue
+exports.addProperty = function(self, type, name) {
+	var value;
+	var timer;
+	var timeout;
+	var interpolated_value;
 	switch(type) {
-		case 'int':		getDefaultValue = function() { return 0 }; break
-		case 'bool':	getDefaultValue = function() { return false }; break
-		case 'real':	getDefaultValue = function() { return 0.0 }; break
-		case 'string':	getDefaultValue = function() { return "" }; break
-		case 'array':	getDefaultValue = function() { return [] }; break
-		default:
-			getDefaultValue = (type[0].toUpperCase() == type[0])?
-				function() { return null }:
-				function() { }
+		case 'int':			value = 0; break;
+		case 'bool':		value = false; break;
+		case 'real':		value = 0.0; break;
+		case 'string':		value = ""; break
+		case 'array':		value = []; break
+		default: if (type[0].toUpperCase() == type[0]) value = null; break;
 	}
 
 	var convert
@@ -1708,74 +1708,60 @@ exports.addProperty = function(proto, type, name) {
 		default:		convert = function(value) { return value }
 	}
 
-	var storageName = '__property_' + name
-
-	var getStorage = function(obj) {
-		var p = obj[storageName]
-		if (p === undefined) {
-			p = { value : getDefaultValue() }
-			obj[storageName] = p
-		}
-		return p
-	}
-
-	Object.defineProperty(proto, name, {
+	Object.defineProperty(self, name, {
 		get: function() {
-			var p = getStorage(this)
-			return p.interpolated_value !== undefined? p.interpolated_value: p.value;
+			return interpolated_value !== undefined? interpolated_value: value;
 		},
-
 		set: function(newValue) {
-			var p = getStorage(this)
-			if (!this.getAnimation) {
-				log("bound unknown object", this)
-				throw "invalid object"
+			if (!self.getAnimation) {
+				log("bound unknown object", self)
+				throw "invalid object";
 			}
 			newValue = convert(newValue)
-			var animation = this.getAnimation(name)
-			if (animation && p.value !== newValue) {
-				if (p.timer)
-					clearInterval(p.timer)
-				if (p.timeout)
-					clearTimeout(p.timeout)
+			var animation = self.getAnimation(name)
+			if (animation && value !== newValue) {
+				if (timer)
+					clearInterval(timer);
+				if (timeout)
+					clearTimeout(timeout);
 
-				var duration = animation.duration
-				var date = new Date()
-				var started = date.getTime() + date.getMilliseconds() / 1000.0
+				var duration = animation.duration;
+				var date = new Date();
+				var started = date.getTime() + date.getMilliseconds() / 1000.0;
 
-				var src = p.interpolated_value !== undefined? p.interpolated_value: p.value
-				var dst = newValue
-				p.timer = setInterval(function() {
-					var date = new Date()
-					var now = date.getTime() + date.getMilliseconds() / 1000.0
-					var t = 1.0 * (now - started) / duration
+				var src = interpolated_value !== undefined? interpolated_value: value;
+				var dst = newValue;
+				timer = setInterval(function() {
+					var date = new Date();
+					var now = date.getTime() + date.getMilliseconds() / 1000.0;
+					var t = 1.0 * (now - started) / duration;
 					if (t >= 1)
-						t = 1
+						t = 1;
 
-					p.interpolated_value = convert(animation.interpolate(dst, src, t))
-					this._update(name, p.interpolated_value, src)
-				}.bind(this), 0)
+					interpolated_value = convert(animation.interpolate(dst, src, t));
+					self._update(name, interpolated_value, src);
+				}, 0);
 
 				var complete = function() {
-					clearInterval(p.timer)
-					interpolated_value = undefined
+					clearInterval(timer);
+					interpolated_value = undefined;
 					animation.running = false
-					this._update(name, dst, src)
-				}.bind(this)
+					self._update(name, dst, src);
+				}
 
 				animation.running = true
-				p.timeout = setTimeout(complete, duration)
-				animation.complete = complete
+				timeout = setTimeout(complete, duration);
+				animation.complete = complete;
 			}
-			var oldValue = p.value
+			var oldValue = value;
 			if (oldValue !== newValue) {
-				p.value = newValue
+				value = newValue;
 				if (!animation)
-					this._update(name, newValue, oldValue)
+					self._update(name, newValue, oldValue);
 			}
 		},
 		enumerable: true
-	})
+	});
 }
 
 exports.addAliasProperty = function(self, name, getObject, getter, setter) {

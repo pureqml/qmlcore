@@ -1,6 +1,6 @@
 BaseView {
-	property int orientation;
 	property int spacing;
+	property enum orientation { Vertical, Horizontal };
 
 	move(dx, dy): {
 		var horizontal = this.orientation == this.Horizontal

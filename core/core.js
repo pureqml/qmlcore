@@ -1326,11 +1326,6 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
-
-	_globals.core.ListView.prototype.Vertical	= 0
-	_globals.core.ListView.prototype.Horizontal	= 1
-
-
 	_globals.core.ListView.prototype._layout = function() {
 		if (!this.recursiveVisible)
 			return
@@ -1433,9 +1428,6 @@ exports._setup = function() {
 		if (created)
 			this._get('context')._completed()
 	}
-
-	_globals.core.GridView.prototype.FlowLeftToRight	= 0
-	_globals.core.GridView.prototype.FlowTopToBottom	= 1
 
 	_globals.core.GridView.prototype._layout = function() {
 		if (!this.recursiveVisible)

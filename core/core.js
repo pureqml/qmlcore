@@ -1730,6 +1730,7 @@ exports.addProperty = function(proto, type, name) {
 					interpolated_value = undefined
 					animation.running = false
 					this._update(name, dst, src)
+					animation.complete = function() { }
 				}.bind(this)
 
 				animation.running = true

@@ -64,7 +64,8 @@ class component_generator(object):
 				raise Exception("duplicate property " + child.name)
 			self.properties[child.name] = child
 			if child.value is not None:
-				self.assign(child.name, child.value)
+				if not child.is_trivial():
+					self.assign(child.name, child.value)
 		elif t is lang.AliasProperty:
 			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
@@ -161,7 +162,10 @@ class component_generator(object):
 			r.append("%sexports.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
 
 		for name, prop in self.properties.iteritems():
-			r.append("%score.addProperty(exports.%s.prototype, '%s', '%s')" %(ident, self.name, prop.type, name))
+			args = ["exports.%s.prototype" %self.name, "'%s'" %prop.type, "'%s'" %name]
+			if prop.is_trivial():
+				args.append(prop.value)
+			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		for name, prop in self.enums.iteritems():
 			values = prop.values

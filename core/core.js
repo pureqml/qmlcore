@@ -1734,7 +1734,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 				var complete = function() {
 					clearInterval(p.timer)
-					interpolated_value = undefined
+					p.interpolated_value = undefined
 					animation.running = false
 					this._update(name, dst, src)
 					animation.complete = function() { }

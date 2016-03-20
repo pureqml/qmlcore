@@ -18,7 +18,7 @@ def handle_alias_property_declaration(s, l, t):
 	return lang.AliasProperty(t[0], t[1])
 
 def handle_enum_property_declaration(s, l, t):
-	return lang.EnumProperty(t[0], t[1])
+	return lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None)
 
 def handle_method_declaration(s, l, t):
 	return lang.Method(t[0], t[1], t[2])
@@ -108,7 +108,7 @@ alias_property_declaration = Keyword("property").suppress() + Keyword("alias").s
 alias_property_declaration.setParseAction(handle_alias_property_declaration)
 
 enum_property_declaration = Keyword("property").suppress() + Keyword("enum").suppress() + identifier + \
-	Literal("{").suppress() + Group(enum_element + ZeroOrMore(Literal(",").suppress() + enum_element)) + Literal("}").suppress() + expression_end
+	Literal("{").suppress() + Group(enum_element + ZeroOrMore(Literal(",").suppress() + enum_element)) + Literal("}").suppress() + Optional(Literal(':').suppress() + enum_element) + expression_end
 enum_property_declaration.setParseAction(handle_enum_property_declaration)
 
 property_declaration.setParseAction(handle_property_declaration)

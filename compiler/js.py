@@ -62,7 +62,7 @@ class component_generator(object):
 		if t is lang.Property:
 			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
-			self.properties[child.name] = child.type
+			self.properties[child.name] = child
 			if child.value is not None:
 				self.assign(child.name, child.value)
 		elif t is lang.AliasProperty:
@@ -72,7 +72,7 @@ class component_generator(object):
 		elif t is lang.EnumProperty:
 			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
-			self.enums[child.name] = child.values
+			self.enums[child.name] = child
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
 		elif t is lang.IdAssignment:
@@ -155,18 +155,25 @@ class component_generator(object):
 		for name in self.signals:
 			r.append("%sexports.%s.prototype.%s = function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitSignal.apply(this, args) }" %(ident, self.name, name, name))
 
-		for name, type in self.properties.iteritems():
-			r.append("%score.addProperty(exports.%s.prototype, '%s', '%s')" %(ident, self.name, type, name))
-
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)
 			r.append("%sexports.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
 
-		for name, values in self.enums.iteritems():
+		for name, prop in self.properties.iteritems():
+			r.append("%score.addProperty(exports.%s.prototype, '%s', '%s')" %(ident, self.name, prop.type, name))
+
+		for name, prop in self.enums.iteritems():
+			values = prop.values
+
 			for i in xrange(0, len(values)):
 				r.append("%sexports.%s.prototype.%s = %d" %(ident, self.name, values[i], i))
 				r.append("%sexports.%s.%s = %d" %(ident, self.name, values[i], i))
+
+			args = ["exports.%s.prototype" %self.name, "'enum'", "'%s'" %name]
+			if prop.default is not None:
+				args.append("exports.%s.%s" %(self.name, prop.default))
+			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		return "\n".join(r)
 

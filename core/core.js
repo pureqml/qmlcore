@@ -1654,27 +1654,34 @@ exports._setup = function() {
 	}
 }
 
-exports.addProperty = function(proto, type, name) {
-	var getDefaultValue
-	switch(type) {
-		case 'enum': //fixme: add default value here
-		case 'int':		getDefaultValue = function() { return 0 }; break
-		case 'bool':	getDefaultValue = function() { return false }; break
-		case 'real':	getDefaultValue = function() { return 0.0 }; break
-		case 'string':	getDefaultValue = function() { return "" }; break
-		case 'array':	getDefaultValue = function() { return [] }; break
-		default:
-			getDefaultValue = (type[0].toUpperCase() == type[0])?
-				function() { return null }:
-				function() { }
-	}
-
+exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
 	switch(type) {
-		case 'int':		convert = function(value) { return Math.floor(value) }
-		case 'bool':	convert = function(value) { return value? true: false }
-		case 'string':	convert = function(value) { return String(value) }
-		default:		convert = function(value) { return value }
+		case 'enum':
+		case 'int':		convert = function(value) { return parseInt(value) }; break
+		case 'bool':	convert = function(value) { return value? true: false }; break
+		case 'real':	convert = function(value) { return parseFloat(value) }; break
+		case 'string':	convert = function(value) { return String(value) }; break
+		default:		convert = function(value) { return value }; break
+	}
+
+	var getDefaultValue
+	if (defaultValue !== undefined) {
+		defaultValue = convert(defaultValue)
+		getDefaultValue = function() { return defaultValue }
+	} else {
+		switch(type) {
+			case 'enum': //fixme: add default value here
+			case 'int':		getDefaultValue = function() { return 0 }; break
+			case 'bool':	getDefaultValue = function() { return false }; break
+			case 'real':	getDefaultValue = function() { return 0.0 }; break
+			case 'string':	getDefaultValue = function() { return "" }; break
+			case 'array':	getDefaultValue = function() { return [] }; break
+			default:
+				getDefaultValue = (type[0].toUpperCase() == type[0])?
+					function() { return null }:
+					function() { }
+		}
 	}
 
 	var storageName = '__property_' + name
@@ -1793,7 +1800,6 @@ exports._bootstrap = function(self, name) {
 			}
 			updateVisibility(self.parent.recursiveVisible)
 			self.parent.onChanged('recursiveVisible', updateVisibility)
-
 			break;
 		case 'core.Image':
 			self.element.on('load', self._onLoad.bind(self));

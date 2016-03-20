@@ -510,7 +510,7 @@ exports._setup = function() {
 
 		if (css !== undefined) {
 			if (!animation)
-				throw "resetting transition not implemented"
+				throw "resetting transition was not implemented"
 
 			animation._target = name
 			return this.setTransition(css, animation.duration, animation.easing)

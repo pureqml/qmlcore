@@ -2,8 +2,8 @@
 
 ## Adding modernizr features:
 
-please use the following link to add/remove features and update link then
-
-https://modernizr.com/download/?cssgradients-csstransforms-csstransitions-fullscreen-webworkers-domprefixes-prefixed-prefixedcss-prefixedcssvalue-setclasses-testallprops-testprop
+please use the following command to get the custom modernizr build page:
+```head -n2 dist/modernizr-custom.js | tail -n1```
+or just second line of modernizr-custom.js file
 
 DON'T FORGET TO POST UPDATED LINK WITH MODERNIZR CONFIGURATION HERE ^^^

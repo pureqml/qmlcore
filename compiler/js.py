@@ -190,6 +190,13 @@ class component_generator(object):
 			for name in self.signals:
 				r.append("%score.addSignal(this, '%s')" %(ident, name))
 
+		if not self.prototype:
+			for name, prop in self.properties.iteritems():
+				args = [parent, "'%s'" %prop.type, "'%s'" %name]
+				if prop.is_trivial():
+					args.append(prop.value)
+				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
+
 		idx = 0
 		for gen in self.children:
 			var = "%s_child%d" %(parent, idx)
@@ -200,13 +207,6 @@ class component_generator(object):
 			prologue.append(p)
 			r.append(self.wrap_creator("create", var, code))
 			idx += 1
-
-		if not self.prototype:
-			for name, prop in self.properties.iteritems():
-				args = [parent, "'%s'" %prop.type, "'%s'" %name]
-				if prop.is_trivial():
-					args.append(prop.value)
-				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":

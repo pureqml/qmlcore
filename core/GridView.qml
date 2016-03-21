@@ -1,12 +1,12 @@
 BaseView {
-	property int flow;
-
 	property int cellWidth: 100;
 	property int cellHeight: 100;
 
 	property int rows;
 	property int columns;
 	property int spacing: 0;
+
+	property enum flow { FlowLeftToRight, FlowTopToBottom };
 
 	move(dx, dy): {
 		var horizontal = this.flow == this.FlowLeftToRight

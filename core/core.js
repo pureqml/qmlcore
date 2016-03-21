@@ -510,7 +510,7 @@ exports._setup = function() {
 
 		if (css !== undefined) {
 			if (!animation)
-				throw "resetting transition not implemented"
+				throw "resetting transition was not implemented"
 
 			animation._target = name
 			return this.setTransition(css, animation.duration, animation.easing)
@@ -671,8 +671,8 @@ exports._setup = function() {
 	}
 
 	_globals.core.Item.prototype._updateVisibility = function() {
-		var visible = this.hasOwnProperty('visible')? this.visible: true
-//		var opacity = this.hasOwnProperty('opacity')? this.opacity: 1.0
+		var visible = ('visible' in this)? this.visible: true
+//		var opacity = ('opacity' in this)? this.opacity: 1.0
 		this.recursiveVisible = this._recursiveVisible && this.visible// && this.opacity > 0.004 //~1/255
 		if (!visible && this.parent)
 			this.parent._tryFocus() //try repair local focus on visibility changed
@@ -938,15 +938,6 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Text.prototype.AlignLeft		= 0
-	_globals.core.Text.prototype.AlignRight		= 1
-	_globals.core.Text.prototype.AlignHCenter	= 2
-	_globals.core.Text.prototype.AlignJustify	= 3
-
-	_globals.core.Text.prototype.AlignTop		= 0
-	_globals.core.Text.prototype.AlignBottom	= 1
-	_globals.core.Text.prototype.AlignVCenter	= 2
-
 	_globals.core.Text.prototype.onChanged = function (name, callback) {
 		if (!this._updateSizeNeeded) {
 			if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
@@ -989,7 +980,7 @@ exports._setup = function() {
 
 	_globals.core.Text.prototype._update = function(name, value) {
 		switch(name) {
-			case 'text': this.element.text(value); this._updateSize(); break;
+			case 'text': this.element.html(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
 			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); this._updateSize(); break;
 			case 'width': this._updateSize(); break;
@@ -1018,9 +1009,6 @@ exports._setup = function() {
 	_globals.core.GradientStop.prototype._getDeclaration = function() {
 		return normalizeColor(this.color) + " " + Math.floor(100 * this.position) + "%"
 	}
-
-	_globals.core.Gradient.prototype.Vertical = 0
-	_globals.core.Gradient.prototype.Horizontal = 1
 
 	_globals.core.Gradient.prototype._getDeclaration = function() {
 		var decl = []
@@ -1056,18 +1044,6 @@ exports._setup = function() {
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
-
-	_globals.core.Image.prototype.Null = 0;
-	_globals.core.Image.prototype.Ready = 1;
-	_globals.core.Image.prototype.Loading = 2;
-	_globals.core.Image.prototype.Error = 3;
-
-	_globals.core.Image.prototype.Stretch = 0;
-	_globals.core.Image.prototype.PreserveAspectFit = 1;
-	_globals.core.Image.prototype.PreserveAspectCrop = 2;
-	_globals.core.Image.prototype.Tile = 3;
-	_globals.core.Image.prototype.TileVertically = 4;
-	_globals.core.Image.prototype.TileHorizontally = 5;
 
 	_globals.core.Image.prototype._onLoad = function() {
 		var image = this
@@ -1161,7 +1137,7 @@ exports._setup = function() {
 		var h = 0
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (!c.hasOwnProperty('height'))
+			if (!('height' in c))
 				continue
 			var b = c.y + c.height
 			if (b > h)
@@ -1188,7 +1164,7 @@ exports._setup = function() {
 		var w = 0
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (!c.hasOwnProperty('height'))
+			if (!('height' in c))
 				continue
 			var r = c.x + c.width
 			if (r > w)
@@ -1350,11 +1326,6 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
-
-	_globals.core.ListView.prototype.Vertical	= 0
-	_globals.core.ListView.prototype.Horizontal	= 1
-
-
 	_globals.core.ListView.prototype._layout = function() {
 		if (!this.recursiveVisible)
 			return
@@ -1457,9 +1428,6 @@ exports._setup = function() {
 		if (created)
 			this._get('context')._completed()
 	}
-
-	_globals.core.GridView.prototype.FlowLeftToRight	= 0
-	_globals.core.GridView.prototype.FlowTopToBottom	= 1
 
 	_globals.core.GridView.prototype._layout = function() {
 		if (!this.recursiveVisible)
@@ -1571,7 +1539,7 @@ exports._setup = function() {
 	_globals.core.core.Context.prototype = Object.create(_globals.core.Item.prototype);
 	_globals.core.core.Context.prototype.constructor = exports.Context;
 
-	_globals.core.core.Context.prototype.init = function() {
+	_globals.core.core.Context.prototype.init = function(html) {
 		this._local['context'] = this;
 
 		var win = $(window);
@@ -1580,7 +1548,7 @@ exports._setup = function() {
 		//log("window size: " + w + "x" + h);
 
 		var body = $('body');
-		var div = $("<div id='context'></div>");
+		var div = $(html);
 		body.append(div);
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +
@@ -1596,10 +1564,12 @@ exports._setup = function() {
 		this.width = w;
 		this.height = h;
 
-		core.addProperty(this, 'bool', 'fullscreen')
-		core.addProperty(this, 'int', 'scrollY')
-		core.addProperty(this, 'string', 'hash')
-		core.addProperty(this, 'System', 'system');
+		var proto = _globals.core.core.Context.prototype
+		core.addProperty(proto, 'bool', 'fullscreen')
+		core.addProperty(proto, 'int', 'scrollY')
+		core.addProperty(proto, 'string', 'hash')
+		core.addProperty(proto, 'System', 'system');
+
 		this.system = new _globals.core.System(this);
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
@@ -1676,83 +1646,112 @@ exports._setup = function() {
 		console.log('Context: done')
 		return instance;
 	}
+
+	_globals.core.core.Context.prototype.qsTr = function(text) {
+		var args = arguments
+		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
+	}
 }
 
-exports.addProperty = function(self, type, name) {
-	var value;
-	var timer;
-	var timeout;
-	var interpolated_value;
+exports.addProperty = function(proto, type, name, defaultValue) {
+	var convert
 	switch(type) {
-		case 'int':			value = 0; break;
-		case 'bool':		value = false; break;
-		case 'real':		value = 0.0; break;
-		case 'string':		value = ""; break
-		case 'array':		value = []; break
-		default: if (type[0].toUpperCase() == type[0]) value = null; break;
+		case 'enum':
+		case 'int':		convert = function(value) { return parseInt(value) }; break
+		case 'bool':	convert = function(value) { return value? true: false }; break
+		case 'real':	convert = function(value) { return parseFloat(value) }; break
+		case 'string':	convert = function(value) { return String(value) }; break
+		default:		convert = function(value) { return value }; break
 	}
-	var convert = function(value) {
+
+	var getDefaultValue
+	if (defaultValue !== undefined) {
+		defaultValue = convert(defaultValue)
+		getDefaultValue = function() { return defaultValue }
+	} else {
 		switch(type) {
-		case 'int':		return Math.floor(value);
-		case 'bool':	return value? true: false;
-		case 'string':	return String(value);
-		default:		return value;
+			case 'enum': //fixme: add default value here
+			case 'int':		getDefaultValue = function() { return 0 }; break
+			case 'bool':	getDefaultValue = function() { return false }; break
+			case 'real':	getDefaultValue = function() { return 0.0 }; break
+			case 'string':	getDefaultValue = function() { return "" }; break
+			case 'array':	getDefaultValue = function() { return [] }; break
+			default:
+				getDefaultValue = (type[0].toUpperCase() == type[0])?
+					function() { return null }:
+					function() { }
 		}
 	}
-	Object.defineProperty(self, name, {
+
+	var storageName = '__property_' + name
+
+	var getStorage = function(obj) {
+		var p = obj[storageName]
+		if (p === undefined) {
+			p = { value : getDefaultValue() }
+			obj[storageName] = p
+		}
+		return p
+	}
+
+	Object.defineProperty(proto, name, {
 		get: function() {
-			return interpolated_value !== undefined? interpolated_value: value;
+			var p = getStorage(this)
+			return p.interpolated_value !== undefined? p.interpolated_value: p.value;
 		},
+
 		set: function(newValue) {
-			if (!self.getAnimation) {
-				log("bound unknown object", self)
-				throw "invalid object";
+			var p = getStorage(this)
+			if (!this.getAnimation) {
+				log("bound unknown object", this)
+				throw "invalid object"
 			}
 			newValue = convert(newValue)
-			var animation = self.getAnimation(name)
-			if (animation && value !== newValue) {
-				if (timer)
-					clearInterval(timer);
-				if (timeout)
-					clearTimeout(timeout);
+			var animation = this.getAnimation(name)
+			if (animation && p.value !== newValue) {
+				if (p.timer)
+					clearInterval(p.timer)
+				if (p.timeout)
+					clearTimeout(p.timeout)
 
-				var duration = animation.duration;
-				var date = new Date();
-				var started = date.getTime() + date.getMilliseconds() / 1000.0;
+				var duration = animation.duration
+				var date = new Date()
+				var started = date.getTime() + date.getMilliseconds() / 1000.0
 
-				var src = interpolated_value !== undefined? interpolated_value: value;
-				var dst = newValue;
-				timer = setInterval(function() {
-					var date = new Date();
-					var now = date.getTime() + date.getMilliseconds() / 1000.0;
-					var t = 1.0 * (now - started) / duration;
+				var src = p.interpolated_value !== undefined? p.interpolated_value: p.value
+				var dst = newValue
+				p.timer = setInterval(function() {
+					var date = new Date()
+					var now = date.getTime() + date.getMilliseconds() / 1000.0
+					var t = 1.0 * (now - started) / duration
 					if (t >= 1)
-						t = 1;
+						t = 1
 
-					interpolated_value = convert(animation.interpolate(dst, src, t));
-					self._update(name, interpolated_value, src);
-				}, 0);
+					p.interpolated_value = convert(animation.interpolate(dst, src, t))
+					this._update(name, p.interpolated_value, src)
+				}.bind(this), 0)
 
 				var complete = function() {
-					clearInterval(timer);
-					interpolated_value = undefined;
+					clearInterval(p.timer)
+					p.interpolated_value = undefined
 					animation.running = false
-					self._update(name, dst, src);
-				}
+					this._update(name, dst, src)
+					animation.complete = function() { }
+				}.bind(this)
 
 				animation.running = true
-				timeout = setTimeout(complete, duration);
-				animation.complete = complete;
+				p.timeout = setTimeout(complete, duration)
+				animation.complete = complete
 			}
-			var oldValue = value;
+			var oldValue = p.value
 			if (oldValue !== newValue) {
-				value = newValue;
+				p.value = newValue
 				if (!animation)
-					self._update(name, newValue, oldValue);
+					this._update(name, newValue, oldValue)
 			}
 		},
 		enumerable: true
-	});
+	})
 }
 
 exports.addAliasProperty = function(self, name, getObject, getter, setter) {
@@ -1800,12 +1799,8 @@ exports._bootstrap = function(self, name) {
 			}
 			updateVisibility(self.parent.recursiveVisible)
 			self.parent.onChanged('recursiveVisible', updateVisibility)
-
 			break;
 		case 'core.Image':
-			self.element.remove();
-			self.element = $('<div/>');
-			self.parent.element.append(self.element);
 			self.element.on('load', self._onLoad.bind(self));
 			self.element.on('error', self._onError.bind(self));
 			break;

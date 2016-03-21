@@ -19,6 +19,7 @@ class component_generator(object):
 		self.component = component
 		self.aliases = {}
 		self.properties = {}
+		self.enums = {}
 		self.assignments = {}
 		self.animations = {}
 		self.package = get_package(name)
@@ -53,18 +54,26 @@ class component_generator(object):
 			value = component_generator(self.package + ".<anonymous>", value)
 		self.assignments[target] = value
 
+	def has_property(self, name):
+		return (name in self.properties) or (name in self.aliases) or (name in self.enums)
+
 	def add_child(self, child):
 		t = type(child)
 		if t is lang.Property:
-			if child.name in self.properties or child.name in self.aliases:
+			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
-			self.properties[child.name] = child.type
+			self.properties[child.name] = child
 			if child.value is not None:
-				self.assign(child.name, child.value)
+				if not child.is_trivial():
+					self.assign(child.name, child.value)
 		elif t is lang.AliasProperty:
-			if child.name in self.properties or child.name in self.aliases:
+			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
 			self.aliases[child.name] = child.target
+		elif t is lang.EnumProperty:
+			if self.has_property(child.name):
+				raise Exception("duplicate property " + child.name)
+			self.enums[child.name] = child
 		elif t is lang.Assignment:
 			self.assign(child.target, child.value)
 		elif t is lang.IdAssignment:
@@ -105,13 +114,7 @@ class component_generator(object):
 				raise Exception("duplicate signal " + name)
 			self.signals.add(name)
 		else:
-			print "unhandled", child
-
-	def generate_properties(self):
-		r = []
-		for name, type in self.properties.iteritems():
-			r.append("\tcore.addProperty(this, '%s', '%s');" %(type, name))
-		return "\n".join(r)
+			raise Exception("unhandled element: %s" %child)
 
 	def generate_ctor(self, registry):
 		return "\texports.%s.apply(this, arguments);\n\tcore._bootstrap(this, '%s');\n" %(registry.find_component(self.package, self.component.name), self.name)
@@ -157,6 +160,25 @@ class component_generator(object):
 			args, code = argscode
 			code = process(code, self, registry)
 			r.append("%sexports.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
+
+		for name, prop in self.properties.iteritems():
+			args = ["exports.%s.prototype" %self.name, "'%s'" %prop.type, "'%s'" %name]
+			if prop.is_trivial():
+				args.append(prop.value)
+			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
+
+		for name, prop in self.enums.iteritems():
+			values = prop.values
+
+			for i in xrange(0, len(values)):
+				r.append("%sexports.%s.prototype.%s = %d" %(ident, self.name, values[i], i))
+				r.append("%sexports.%s.%s = %d" %(ident, self.name, values[i], i))
+
+			args = ["exports.%s.prototype" %self.name, "'enum'", "'%s'" %name]
+			if prop.default is not None:
+				args.append("exports.%s.%s" %(self.name, prop.default))
+			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
+
 		return "\n".join(r)
 
 	def generate_creators(self, registry, parent, ident_n = 1):
@@ -168,8 +190,6 @@ class component_generator(object):
 			for name in self.signals:
 				r.append("%score.addSignal(this, '%s')" %(ident, name))
 
-		r.append(self.generate_properties())
-
 		idx = 0
 		for gen in self.children:
 			var = "%s_child%d" %(parent, idx)
@@ -180,6 +200,13 @@ class component_generator(object):
 			prologue.append(p)
 			r.append(self.wrap_creator("create", var, code))
 			idx += 1
+
+		if not self.prototype:
+			for name, prop in self.properties.iteritems():
+				args = [parent, "'%s'" %prop.type, "'%s'" %name]
+				if prop.is_trivial():
+					args.append(prop.value)
+				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":
@@ -273,6 +300,7 @@ class component_generator(object):
 				args, code = argscode
 				code = process(code, self, registry)
 				r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
+
 		for name, argscode in self.signal_handlers.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)
@@ -295,9 +323,6 @@ class generator(object):
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
-		self.startup.append("\tqml.core.core._setup()")
-		self.startup.append("\tqml._context = new qml.core.core.Context()")
-		self.startup.append("\tqml._context.init()")
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -413,6 +438,11 @@ class generator(object):
 
 	def generate_startup(self):
 		r = "try {\n"
-		r += "\n".join(self.startup)
+		startup = []
+		startup.append("\tqml.core.core._setup()")
+		startup.append("\tqml._context = new qml.core.core.Context()")
+		startup.append("\tqml._context.init(\"<div id='context'></div>\")")
+		startup += self.startup
+		r += "\n".join(startup)
 		r += "\n} catch(ex) { log(\"qml initialization failed: \", ex, ex.stack) }\n"
 		return r

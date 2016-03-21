@@ -201,6 +201,13 @@ class component_generator(object):
 			r.append(self.wrap_creator("create", var, code))
 			idx += 1
 
+		if not self.prototype:
+			for name, prop in self.properties.iteritems():
+				args = [parent, "'%s'" %prop.type, "'%s'" %name]
+				if prop.is_trivial():
+					args.append(prop.value)
+				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
+
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				if "." in value:
@@ -293,6 +300,7 @@ class component_generator(object):
 				args, code = argscode
 				code = process(code, self, registry)
 				r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
+
 		for name, argscode in self.signal_handlers.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)

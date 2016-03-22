@@ -20,6 +20,10 @@ Item {
 
 	property bool trace;
 
+	constructor: {
+		this._items = []
+	}
+
 	itemAt(x, y): {
 		var idx = this.indexAt(x, y)
 		return idx >= 0? this._items[idx]: null

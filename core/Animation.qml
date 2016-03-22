@@ -4,7 +4,8 @@ Object {
 	property bool running: false;
 	property string easing: "ease";
 
-	disable:	{ ++this._disabled; }
-	enable:		{ --this._disabled; }
-	enabled:	{ return this._disabled == 0; }
+	constructor:	{ this.disabled = 0 }
+	disable:		{ ++this._disabled }
+	enable:			{ --this._disabled }
+	enabled:		{ return this._disabled == 0 }
 }

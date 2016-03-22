@@ -32,6 +32,7 @@ class component_generator(object):
 		self.signals = set()
 		self.id = None
 		self.prototype = prototype
+		self.ctor = ''
 
 		for child in component.children:
 			self.add_child(child)
@@ -108,6 +109,8 @@ class component_generator(object):
 				if name in self.methods:
 					raise Exception("duplicate method " + name)
 				self.methods[name] = args, code
+		elif t is lang.Constructor:
+			self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
 		elif t is lang.Signal:
 			name = child.name
 			if name in self.signals:
@@ -117,7 +120,7 @@ class component_generator(object):
 			raise Exception("unhandled element: %s" %child)
 
 	def generate_ctor(self, registry):
-		return "\texports.%s.apply(this, arguments);\n\tcore._bootstrap(this, '%s');\n" %(registry.find_component(self.package, self.component.name), self.name)
+		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
 
 	def generate(self, registry):
 		ctor  = "/** @constructor */\n"

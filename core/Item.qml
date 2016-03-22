@@ -32,6 +32,23 @@ Object {
 	property int viewX;
 	property int viewY;
 
+	constructor: {
+		if (this.parent) {
+			if (this.element)
+				throw "double ctor call"
+
+			this.element = $('<div/>')
+			this.parent.element.append(this.element)
+			var self = this
+			var updateVisibility = function(value) {
+				self._recursiveVisible = value
+				self._updateVisibility()
+			}
+			updateVisibility(this.parent.recursiveVisible)
+			this.parent.onChanged('recursiveVisible', updateVisibility)
+		} //no parent == top level element, skip
+	}
+
 	onVisibleChanged: { this._updateVisibility() }
 	onOpacityChanged: { this._updateVisibility() }
 	setFocus: { this.forceActiveFocus(); }

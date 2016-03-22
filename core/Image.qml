@@ -6,4 +6,9 @@ Item {
 	property int paintedHeight;
 
 	property enum fillMode { Stretch, PreserveAspectFit, PreserveAspectCrop, Tile, TileVertically, TileHorizontally };
+
+	constructor: {
+		this.element.on('load', this._onLoad.bind(this));
+		this.element.on('error', this._onError.bind(this));
+	}
 }

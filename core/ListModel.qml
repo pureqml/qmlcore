@@ -6,6 +6,10 @@ Object {
 
 	property int count;
 
+	constructor: {
+		this._rows = []
+	}
+
 	clear: {
 		this._rows = []
 		this.count = this._rows.length

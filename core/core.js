@@ -1805,5 +1805,8 @@ exports._bootstrap = function(self, name) {
 			self.element.on('load', self._onLoad.bind(self));
 			self.element.on('error', self._onError.bind(self));
 			break;
+		case 'core.WebItem':
+			self.element.css('cursor', self.cursor)
+			break
 	}
 }

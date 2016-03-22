@@ -6,6 +6,8 @@ Object {
 	property string os;
 	property bool webkit;
 	property bool has3d;
+	property bool hasCssTransforms;
+	property bool hasCssTransitions;
 	property bool portrait: context.width < context.height;
 	property bool landscape: !portrait;
 
@@ -33,5 +35,7 @@ Object {
 		this.os = _globals.core.os
 		this.language = navigator.language
 		this.has3d = window.Modernizr && window.Modernizr.csstransforms3d
+		this.hasCssTransitions = window.Modernizr && window.Modernizr.csstransitions
+		this.hasCssTransforms = window.Modernizr && window.Modernizr.csstransforms
 	}
 }

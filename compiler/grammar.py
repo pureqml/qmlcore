@@ -21,7 +21,8 @@ def handle_enum_property_declaration(s, l, t):
 	return lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None)
 
 def handle_method_declaration(s, l, t):
-	return lang.Method(t[0], t[1], t[2])
+	name = t[0]
+	return lang.Method(name, t[1], t[2]) if name != 'constructor' else lang.Constructor(t[1], t[2])
 
 def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t

@@ -5,7 +5,6 @@ Object {
 	property string vendor;
 	property string os;
 	property bool webkit;
-	property bool has3d;
 	property bool portrait: context.width < context.height;
 	property bool landscape: !portrait;
 
@@ -32,6 +31,5 @@ Object {
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
 		this.language = navigator.language
-		this.has3d = window.Modernizr && window.Modernizr.csstransforms3d
 	}
 }

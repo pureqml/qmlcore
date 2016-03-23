@@ -1702,25 +1702,12 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			if (animation && p.value !== newValue) {
 				if (p.timer)
 					clearInterval(p.timer)
-				if (p.timeout)
-					clearTimeout(p.timeout)
 
-				var duration = animation.duration
-				var date = new Date()
-				var started = date.getTime() + date.getMilliseconds() / 1000.0
+				var now = new Date()
+				p.started = now.getTime() + now.getMilliseconds() / 1000.0
 
 				var src = p.interpolated_value !== undefined? p.interpolated_value: p.value
 				var dst = newValue
-				p.timer = setInterval(function() {
-					var date = new Date()
-					var now = date.getTime() + date.getMilliseconds() / 1000.0
-					var t = 1.0 * (now - started) / duration
-					if (t >= 1)
-						t = 1
-
-					p.interpolated_value = convert(animation.interpolate(dst, src, t))
-					this._update(name, p.interpolated_value, src)
-				}.bind(this), 0)
 
 				var complete = function() {
 					clearInterval(p.timer)
@@ -1730,8 +1717,23 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					animation.complete = function() { }
 				}.bind(this)
 
+				var duration = animation.duration
+
+				p.timer = setInterval(function() {
+					var date = new Date()
+					var now = date.getTime() + date.getMilliseconds() / 1000.0
+					var t = 1.0 * (now - p.started) / duration
+					if (t >= 1) {
+						clearInterval(p.timer)
+						complete()
+						return
+					}
+					p.interpolated_value = convert(animation.interpolate(dst, src, t))
+					this._update(name, p.interpolated_value, src)
+				}.bind(this), 0)
+
+
 				animation.running = true
-				p.timeout = setTimeout(complete, duration)
 				animation.complete = complete
 			}
 			var oldValue = p.value

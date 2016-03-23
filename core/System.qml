@@ -11,43 +11,6 @@ Object {
 	property bool portrait: context.width < context.height;
 	property bool landscape: !portrait;
 
-	_has3d: {
-		// More: https://gist.github.com/lorenzopolidori/3794226
-		if (!window.getComputedStyle)
-			return false;
-
-		var el = document.createElement('p'),
-			has3d,
-			transforms = {
-				'webkitTransform':'-webkit-transform',
-				'OTransform':'-o-transform',
-				'msTransform':'-ms-transform',
-				'MozTransform':'-moz-transform',
-				'transform':'transform'
-			};
-
-		document.body.insertBefore(el, null);
-		for (var t in transforms) {
-			if (el.style[t] !== undefined) {
-				el.style[t] = 'translate3d(1px,1px,1px)';
-				has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
-			}
-		}
-
-		document.body.removeChild(el);
-		log("has3d", has3d)
-		return (has3d !== undefined && has3d.length > 0 && has3d !== "none");
-	}
-
-	_hasTransform: {
-		var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
-		var div = document.createElement('div');
-		for (var i = 0; i < prefixes.length; ++i)
-			if (div && div.style[prefixes[i]] !== undefined)
-				return prefixes[i];
-		return false;
-	}
-
 	onCompleted: {
 		var browser = ""
 		if (navigator.userAgent.indexOf('Chromium') >= 0)
@@ -72,7 +35,7 @@ Object {
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
 		this.language = navigator.language
-		this.support3dTransforms = this._has3d()
-		this.supportTransforms = this._hasTransform()
+		this.support3dTransforms = window.Modernizr && window.Modernizr.csstransforms3d
+		this.supportTransforms = window.Modernizr && window.Modernizr.csstransforms
 	}
 }

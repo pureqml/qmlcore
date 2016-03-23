@@ -1708,13 +1708,15 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				var src = p.interpolated_value !== undefined? p.interpolated_value: p.value
 				var dst = newValue
 
+				var self = this
+
 				var complete = function() {
 					clearInterval(p.timer)
 					p.interpolated_value = undefined
 					animation.running = false
-					this._update(name, dst, src)
+					self._update(name, dst, src)
 					animation.complete = function() { }
-				}.bind(this)
+				}
 
 				var duration = animation.duration
 
@@ -1728,8 +1730,8 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 						return
 					}
 					p.interpolated_value = convert(animation.interpolate(dst, src, t))
-					this._update(name, p.interpolated_value, src)
-				}.bind(this), 0)
+					self._update(name, p.interpolated_value, src)
+				}, 0)
 
 
 				animation.running = true

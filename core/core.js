@@ -1664,22 +1664,18 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		default:		convert = function(value) { return value }; break
 	}
 
-	var getDefaultValue
 	if (defaultValue !== undefined) {
 		defaultValue = convert(defaultValue)
-		getDefaultValue = function() { return defaultValue }
 	} else {
 		switch(type) {
 			case 'enum': //fixme: add default value here
-			case 'int':		getDefaultValue = function() { return 0 }; break
-			case 'bool':	getDefaultValue = function() { return false }; break
-			case 'real':	getDefaultValue = function() { return 0.0 }; break
-			case 'string':	getDefaultValue = function() { return "" }; break
-			case 'array':	getDefaultValue = function() { return [] }; break
+			case 'int':		defaultValue = 0; break
+			case 'bool':	defaultValue = false; break
+			case 'real':	defaultValue = 0.0; break
+			case 'string':	defaultValue = ""; break
+			case 'array':	defaultValue = []; break
 			default:
-				getDefaultValue = (type[0].toUpperCase() == type[0])?
-					function() { return null }:
-					function() { }
+				defaultValue = (type[0].toUpperCase() == type[0])? null: undefined
 		}
 	}
 
@@ -1687,11 +1683,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 	var getStorage = function(obj) {
 		var p = obj[storageName]
-		if (p === undefined) {
-			p = { value : getDefaultValue() }
-			obj[storageName] = p
-		}
-		return p
+		return p !== undefined? p: (obj[storageName] = { value : defaultValue })
 	}
 
 	Object.defineProperty(proto, name, {

@@ -1701,8 +1701,10 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 	Object.defineProperty(proto, name, {
 		get: function() {
-			var p = getStorage(this)
-			return p.interpolatedValue !== undefined? p.interpolatedValue: p.value;
+			var p = this[storageName]
+			return p !== undefined?
+				p.interpolatedValue !== undefined? p.interpolatedValue: p.value:
+				defaultValue
 		},
 
 		set: function(newValue) {

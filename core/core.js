@@ -1722,7 +1722,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 				var duration = animation.duration
 
-				p.timer = setInterval(function() {
+				var nextFrame = function() {
 					var date = new Date()
 					var now = date.getTime() + date.getMilliseconds() / 1000.0
 					var t = 1.0 * (now - p.started) / duration
@@ -1733,8 +1733,9 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					}
 					p.interpolated_value = convert(animation.interpolate(dst, src, t))
 					self._update(name, p.interpolated_value, src)
-				}, 0)
+				}
 
+				p.timer = setInterval(nextFrame, 0)
 
 				animation.running = true
 				animation.complete = complete

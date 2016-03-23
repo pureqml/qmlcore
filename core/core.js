@@ -611,6 +611,8 @@ exports._setup = function() {
 		var style = this._getFilterStyle()
 		var el = this.parent.element
 		if (el) {
+			//chromium bug
+			//https://github.com/Modernizr/Modernizr/issues/981
 			el.css('-webkit-filter', style)
 			el.css('filter', style)
 			if (this.shadow && !this.shadow._empty())

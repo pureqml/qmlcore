@@ -1712,10 +1712,11 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 				var complete = function() {
 					clearInterval(p.timer)
-					p.interpolated_value = undefined
-					animation.running = false
-					self._update(name, dst, src)
 					animation.complete = function() { }
+					animation.running = false
+					p.interpolated_value = undefined
+					p.started = undefined
+					self._update(name, dst, src)
 				}
 
 				var duration = animation.duration

@@ -1656,6 +1656,9 @@ exports._setup = function() {
 	}
 }
 
+var requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
+var cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }
+
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
 	switch(type) {
@@ -1692,7 +1695,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	Object.defineProperty(proto, name, {
 		get: function() {
 			var p = getStorage(this)
-			return p.interpolated_value !== undefined? p.interpolated_value: p.value;
+			return p.interpolatedValue !== undefined? p.interpolatedValue: p.value;
 		},
 
 		set: function(newValue) {
@@ -1700,22 +1703,23 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			var p = getStorage(this)
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
-				if (p.timer)
-					clearInterval(p.timer)
+				if (p.frameRequest)
+					cancelAnimationFrame(p.frameRequest)
 
 				var now = new Date()
 				p.started = now.getTime() + now.getMilliseconds() / 1000.0
 
-				var src = p.interpolated_value !== undefined? p.interpolated_value: p.value
+				var src = p.interpolatedValue !== undefined? p.interpolatedValue: p.value
 				var dst = newValue
 
 				var self = this
 
 				var complete = function() {
-					clearInterval(p.timer)
+					cancelAnimationFrame(p.frameRequest)
+					p.frameRequest = undefined
 					animation.complete = function() { }
 					animation.running = false
-					p.interpolated_value = undefined
+					p.interpolatedValue = undefined
 					p.started = undefined
 					self._update(name, dst, src)
 				}
@@ -1727,15 +1731,15 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					var now = date.getTime() + date.getMilliseconds() / 1000.0
 					var t = 1.0 * (now - p.started) / duration
 					if (t >= 1) {
-						clearInterval(p.timer)
 						complete()
-						return
+					} else {
+						p.interpolatedValue = convert(animation.interpolate(dst, src, t))
+						self._update(name, p.interpolatedValue, src)
+						p.frameRequest = requestAnimationFrame(nextFrame)
 					}
-					p.interpolated_value = convert(animation.interpolate(dst, src, t))
-					self._update(name, p.interpolated_value, src)
 				}
 
-				p.timer = setInterval(nextFrame, 0)
+				p.frameRequest = requestAnimationFrame(nextFrame)
 
 				animation.running = true
 				animation.complete = complete

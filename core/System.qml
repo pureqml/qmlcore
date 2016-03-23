@@ -1,4 +1,5 @@
 Object {
+	property string webkitVersion;
 	property string userAgent;
 	property string language;
 	property string browser;
@@ -39,5 +40,9 @@ Object {
 		this.has3d = window.Modernizr && window.Modernizr.csstransforms3d
 		this.hasCssTransitions = window.Modernizr && window.Modernizr.csstransitions
 		this.hasCssTransforms = window.Modernizr && window.Modernizr.csstransforms
+
+		var result = /WebKit\/([\d.]+)/.exec(navigator.userAgent);
+		if (result && result.length > 1)
+			this.webkitVersion = result[1]
 	}
 }

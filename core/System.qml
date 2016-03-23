@@ -1,5 +1,4 @@
 Object {
-	property string webkitVersion;
 	property string userAgent;
 	property string language;
 	property string browser;
@@ -8,10 +7,35 @@ Object {
 	property string os;
 	property bool webkit;
 	property bool has3d;
-	property bool hasCssTransforms;
-	property bool hasCssTransitions;
 	property bool portrait: context.width < context.height;
 	property bool landscape: !portrait;
+
+	_has3d: {
+		// More: https://gist.github.com/lorenzopolidori/3794226
+		if (!window.getComputedStyle)
+			return false;
+
+		var el = document.createElement('p'),
+			has3d,
+			transforms = {
+				'webkitTransform':'-webkit-transform',
+				'OTransform':'-o-transform',
+				'msTransform':'-ms-transform',
+				'MozTransform':'-moz-transform',
+				'transform':'transform'
+			};
+
+		document.body.insertBefore(el, null);
+		for (var t in transforms) {
+			if (el.style[t] !== undefined) {
+				el.style[t] = 'translate3d(1px,1px,1px)';
+				has3d = window.getComputedStyle(el).getPropertyValue(transforms[t]);
+			}
+		}
+
+		document.body.removeChild(el);
+		return (has3d !== undefined && has3d.length > 0 && has3d !== "none");
+	}
 
 	onCompleted: {
 		var browser = ""
@@ -37,12 +61,6 @@ Object {
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
 		this.language = navigator.language
-		this.has3d = window.Modernizr && window.Modernizr.csstransforms3d
-		this.hasCssTransitions = window.Modernizr && window.Modernizr.csstransitions
-		this.hasCssTransforms = window.Modernizr && window.Modernizr.csstransforms
-
-		var result = /WebKit\/([\d.]+)/.exec(navigator.userAgent);
-		if (result && result.length > 1)
-			this.webkitVersion = result[1]
+		this.has3d = this._has3d()
 	}
 }

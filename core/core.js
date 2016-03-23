@@ -611,8 +611,7 @@ exports._setup = function() {
 		var style = this._getFilterStyle()
 		var el = this.parent.element
 		if (el) {
-			el.css('-webkit-filter', style)
-			el.css('filter', style)
+			el.css(Modernizr.prefixedCSS('filter'), style)
 			if (this.shadow && !this.shadow._empty())
 				el.css('box-shadow', this.shadow._getFilterStyle())
 		}
@@ -1549,13 +1548,14 @@ exports._setup = function() {
 		var body = $('body');
 		var div = $(html);
 		body.append(div);
+		var userSelect = Modernizr.prefixedCSS('user-select') + ": none; "
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +
 			'::-webkit-scrollbar { display: none; }' +
 			"div#context { position: absolute; left: 0px; top: 0px; } " +
 			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 			"input { position: absolute; } " +
-			"img { position: absolute; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } " +
+			"img { position: absolute; -webkit-touch-callout: none; " + userSelect + " } " +
 			"</style>"
 		));
 

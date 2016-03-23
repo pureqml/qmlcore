@@ -1029,6 +1029,13 @@ exports._setup = function() {
 		return decl.join()
 	}
 
+	_globals.core.Rectangle.prototype._mapCSSAttribute = function(name) {
+		var attr = {color: 'background-color'}[name]
+		return (attr !== undefined)?
+			attr:
+			_globals.core.Item.prototype._mapCSSAttribute.apply(this, arguments)
+	}
+
 	_globals.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
 			case 'color': this.element.css('background-color', normalizeColor(value)); break;

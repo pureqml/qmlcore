@@ -1696,12 +1696,8 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		},
 
 		set: function(newValue) {
-			var p = getStorage(this)
-			if (!this.getAnimation) {
-				log("bound unknown object", this)
-				throw "invalid object"
-			}
 			newValue = convert(newValue)
+			var p = getStorage(this)
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
 				if (p.timer)

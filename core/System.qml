@@ -6,7 +6,8 @@ Object {
 	property string vendor;
 	property string os;
 	property bool webkit;
-	property bool has3d;
+	property bool support3dTransforms;
+	property bool supportTransforms;
 	property bool portrait: context.width < context.height;
 	property bool landscape: !portrait;
 
@@ -34,7 +35,17 @@ Object {
 		}
 
 		document.body.removeChild(el);
+		log("has3d", has3d)
 		return (has3d !== undefined && has3d.length > 0 && has3d !== "none");
+	}
+
+	_hasTransform: {
+		var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+		var div = document.createElement('div');
+		for (var i = 0; i < prefixes.length; ++i)
+			if (div && div.style[prefixes[i]] !== undefined)
+				return prefixes[i];
+		return false;
 	}
 
 	onCompleted: {
@@ -61,6 +72,7 @@ Object {
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
 		this.language = navigator.language
-		this.has3d = this._has3d()
+		this.support3dTransforms = this._has3d()
+		this.supportTransforms = this._hasTransform()
 	}
 }

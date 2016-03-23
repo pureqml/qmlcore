@@ -1,4 +1,5 @@
 Object {
+	property string userAgent;
 	property string language;
 	property string browser;
 	property string device;
@@ -29,6 +30,7 @@ Object {
 			browser = "Yandex"
 
 		this.browser = browser
+		this.userAgent = navigator.userAgent
 		this.webkit = navigator.userAgent.toLowerCase().indexOf('webkit') >= 0
 		this.device = _globals.core.device
 		this.vendor = _globals.core.vendor

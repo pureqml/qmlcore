@@ -3,10 +3,11 @@ Rectangle {
 	property bool hover;
 	property bool clickable: true;
 	property bool hoverable: true;
-	property string cursor;
+	property string cursor : "pointer";
 	color: "transparent";
 
-	onCursorChanged: { this.element.css('cursor', value) }
+	constructor:		{ this.element.css('cursor', this.cursor) }
+	onCursorChanged: 	{ this.element.css('cursor', value) }
 
 	onClickableChanged: {
 		if (value)
@@ -29,7 +30,5 @@ Rectangle {
 			this.element.click(this.clicked.bind(this))
 		if (this.hoverable)
 			this.element.hover(function() { self.hover = true }, function() { self.hover = false })
-
-		this.cursor = "pointer"
 	}
 }

@@ -32,6 +32,7 @@ class component_generator(object):
 		self.signals = set()
 		self.id = None
 		self.prototype = prototype
+		self.ctor = ''
 
 		for child in component.children:
 			self.add_child(child)
@@ -108,6 +109,8 @@ class component_generator(object):
 				if name in self.methods:
 					raise Exception("duplicate method " + name)
 				self.methods[name] = args, code
+		elif t is lang.Constructor:
+			self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
 		elif t is lang.Signal:
 			name = child.name
 			if name in self.signals:
@@ -117,10 +120,11 @@ class component_generator(object):
 			raise Exception("unhandled element: %s" %child)
 
 	def generate_ctor(self, registry):
-		return "\texports.%s.apply(this, arguments);\n\tcore._bootstrap(this, '%s');\n" %(registry.find_component(self.package, self.component.name), self.name)
+		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
 
 	def generate(self, registry):
-		ctor  = "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
+		ctor  = "/** @constructor */\n"
+		ctor += "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
 		return ctor
 
 	def generate_animations(self, registry, parent):
@@ -190,6 +194,13 @@ class component_generator(object):
 			for name in self.signals:
 				r.append("%score.addSignal(this, '%s')" %(ident, name))
 
+		if not self.prototype:
+			for name, prop in self.properties.iteritems():
+				args = [parent, "'%s'" %prop.type, "'%s'" %name]
+				if prop.is_trivial():
+					args.append(prop.value)
+				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
+
 		idx = 0
 		for gen in self.children:
 			var = "%s_child%d" %(parent, idx)
@@ -200,13 +211,6 @@ class component_generator(object):
 			prologue.append(p)
 			r.append(self.wrap_creator("create", var, code))
 			idx += 1
-
-		if not self.prototype:
-			for name, prop in self.properties.iteritems():
-				args = [parent, "'%s'" %prop.type, "'%s'" %name]
-				if prop.is_trivial():
-					args.append(prop.value)
-				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":

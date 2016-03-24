@@ -39,6 +39,12 @@ class EnumProperty(object):
 		self.values = values
 		self.default = default
 
+class Constructor(object):
+	def __init__(self, args, code):
+		if len(args) != 0:
+			raise Exception("no arguments for constructor allowed")
+		self.code = code
+
 class Method(object):
 	def __init__(self, name, args, code):
 		self.name = name

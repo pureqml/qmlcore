@@ -71,11 +71,11 @@ if ('webOS' in window) {
 
 	var self = this
 	var history = window.history
-	history.pushState({ "data": "data" })
+	history.pushState({ "data": "data" }, "back pressed stub")
 
 	window.addEventListener('popstate', function (event) {
 		event.preventDefault()
-		history.pushState({ "data": "data" })
+		history.pushState({ "data": "data" }, "back pressed stub")
 		if (!event.state)
 			return
 		// Emulate 'Back' pressing.
@@ -611,6 +611,8 @@ exports._setup = function() {
 		var style = this._getFilterStyle()
 		var el = this.parent.element
 		if (el) {
+			//chromium bug
+			//https://github.com/Modernizr/Modernizr/issues/981
 			el.css('-webkit-filter', style)
 			el.css('filter', style)
 			if (this.shadow && !this.shadow._empty())
@@ -993,6 +995,14 @@ exports._setup = function() {
 				case this.AlignJustify:	this.element.css('text-align', 'justify'); break
 				}
 				break
+			case 'wrapMode':
+				switch(value) {
+				case this.NoWrap:		this.element.css('white-space', 'nowrap'); break
+				case this.WordWrap:		this.element.css('white-space', 'normal'); break
+				case this.WrapAnywhere:	this.element.css('white-space', 'nowrap'); break	//TODO: implement.
+				case this.Wrap:			this.element.css('white-space', 'nowrap'); break	//TODO: implement.
+				}
+				break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
@@ -1027,6 +1037,13 @@ exports._setup = function() {
 		return decl.join()
 	}
 
+	_globals.core.Rectangle.prototype._mapCSSAttribute = function(name) {
+		var attr = {color: 'background-color'}[name]
+		return (attr !== undefined)?
+			attr:
+			_globals.core.Item.prototype._mapCSSAttribute.apply(this, arguments)
+	}
+
 	_globals.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
 			case 'color': this.element.css('background-color', normalizeColor(value)); break;
@@ -1049,7 +1066,6 @@ exports._setup = function() {
 		var image = this
 		var tmp = new Image()
 		tmp.src = this.source
-		image.element.css('border-radius', '0')
 
 		tmp.onload = function() {
 			image.paintedWidth = tmp.naturalWidth
@@ -1550,13 +1566,14 @@ exports._setup = function() {
 		var body = $('body');
 		var div = $(html);
 		body.append(div);
+		var userSelect = Modernizr.prefixedCSS('user-select') + ": none; "
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +
 			'::-webkit-scrollbar { display: none; }' +
 			"div#context { position: absolute; left: 0px; top: 0px; } " +
 			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
 			"input { position: absolute; } " +
-			"img { position: absolute; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; content: ''; } " +
+			"img { position: absolute; -webkit-touch-callout: none; " + userSelect + " } " +
 			"</style>"
 		));
 
@@ -1653,33 +1670,32 @@ exports._setup = function() {
 	}
 }
 
+var requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
+var cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }
+
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
 	switch(type) {
 		case 'enum':
-		case 'int':		convert = function(value) { return parseInt(value) }; break
+		case 'int':		convert = function(value) { return parseInt(value, 0) }; break
 		case 'bool':	convert = function(value) { return value? true: false }; break
 		case 'real':	convert = function(value) { return parseFloat(value) }; break
 		case 'string':	convert = function(value) { return String(value) }; break
 		default:		convert = function(value) { return value }; break
 	}
 
-	var getDefaultValue
 	if (defaultValue !== undefined) {
 		defaultValue = convert(defaultValue)
-		getDefaultValue = function() { return defaultValue }
 	} else {
 		switch(type) {
 			case 'enum': //fixme: add default value here
-			case 'int':		getDefaultValue = function() { return 0 }; break
-			case 'bool':	getDefaultValue = function() { return false }; break
-			case 'real':	getDefaultValue = function() { return 0.0 }; break
-			case 'string':	getDefaultValue = function() { return "" }; break
-			case 'array':	getDefaultValue = function() { return [] }; break
+			case 'int':		defaultValue = 0; break
+			case 'bool':	defaultValue = false; break
+			case 'real':	defaultValue = 0.0; break
+			case 'string':	defaultValue = ""; break
+			case 'array':	defaultValue = []; break
 			default:
-				getDefaultValue = (type[0].toUpperCase() == type[0])?
-					function() { return null }:
-					function() { }
+				defaultValue = (type[0].toUpperCase() == type[0])? null: undefined
 		}
 	}
 
@@ -1687,60 +1703,61 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 	var getStorage = function(obj) {
 		var p = obj[storageName]
-		if (p === undefined) {
-			p = { value : getDefaultValue() }
-			obj[storageName] = p
-		}
-		return p
+		return p !== undefined? p: (obj[storageName] = { value : defaultValue })
 	}
 
 	Object.defineProperty(proto, name, {
 		get: function() {
-			var p = getStorage(this)
-			return p.interpolated_value !== undefined? p.interpolated_value: p.value;
+			var p = this[storageName]
+			return p !== undefined?
+				p.interpolatedValue !== undefined? p.interpolatedValue: p.value:
+				defaultValue
 		},
 
 		set: function(newValue) {
-			var p = getStorage(this)
-			if (!this.getAnimation) {
-				log("bound unknown object", this)
-				throw "invalid object"
-			}
 			newValue = convert(newValue)
+			var p = getStorage(this)
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
-				if (p.timer)
-					clearInterval(p.timer)
-				if (p.timeout)
-					clearTimeout(p.timeout)
+				if (p.frameRequest)
+					cancelAnimationFrame(p.frameRequest)
 
-				var duration = animation.duration
-				var date = new Date()
-				var started = date.getTime() + date.getMilliseconds() / 1000.0
+				var now = new Date()
+				p.started = now.getTime() + now.getMilliseconds() / 1000.0
 
-				var src = p.interpolated_value !== undefined? p.interpolated_value: p.value
+				var src = p.interpolatedValue !== undefined? p.interpolatedValue: p.value
 				var dst = newValue
-				p.timer = setInterval(function() {
-					var date = new Date()
-					var now = date.getTime() + date.getMilliseconds() / 1000.0
-					var t = 1.0 * (now - started) / duration
-					if (t >= 1)
-						t = 1
 
-					p.interpolated_value = convert(animation.interpolate(dst, src, t))
-					this._update(name, p.interpolated_value, src)
-				}.bind(this), 0)
+				var self = this
 
 				var complete = function() {
-					clearInterval(p.timer)
-					p.interpolated_value = undefined
-					animation.running = false
-					this._update(name, dst, src)
+					cancelAnimationFrame(p.frameRequest)
+					p.frameRequest = undefined
 					animation.complete = function() { }
-				}.bind(this)
+					animation.running = false
+					p.interpolatedValue = undefined
+					p.started = undefined
+					self._update(name, dst, src)
+				}
+
+				var duration = animation.duration
+
+				var nextFrame = function() {
+					var date = new Date()
+					var now = date.getTime() + date.getMilliseconds() / 1000.0
+					var t = 1.0 * (now - p.started) / duration
+					if (t >= 1) {
+						complete()
+					} else {
+						p.interpolatedValue = convert(animation.interpolate(dst, src, t))
+						self._update(name, p.interpolatedValue, src)
+						p.frameRequest = requestAnimationFrame(nextFrame)
+					}
+				}
+
+				p.frameRequest = requestAnimationFrame(nextFrame)
 
 				animation.running = true
-				p.timeout = setTimeout(complete, duration)
 				animation.complete = complete
 			}
 			var oldValue = p.value
@@ -1770,39 +1787,4 @@ exports.addSignal = function(self, name) {
 		args.splice(0, 0, name);
 		self._emitSignal.apply(self, args);
 	})
-}
-
-exports._bootstrap = function(self, name) {
-	switch(name) {
-		case 'core.ListModel':
-			self._rows = []
-			break;
-		case 'core.BaseView':
-			self._items = []
-			break;
-		case 'core.Gradient':
-			self.stops = []
-			break
-		case 'core.Animation':
-			self._disabled = 0
-			break
-		case 'core.Item':
-			if (!self.parent) //top-level item, do not create item
-				break;
-			if (self.element)
-				throw "double ctor call";
-			self.element = $('<div/>');
-			self.parent.element.append(self.element);
-			var updateVisibility = function(value) {
-				self._recursiveVisible = value
-				self._updateVisibility()
-			}
-			updateVisibility(self.parent.recursiveVisible)
-			self.parent.onChanged('recursiveVisible', updateVisibility)
-			break;
-		case 'core.Image':
-			self.element.on('load', self._onLoad.bind(self));
-			self.element.on('error', self._onError.bind(self));
-			break;
-	}
 }

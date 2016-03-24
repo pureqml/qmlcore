@@ -71,11 +71,11 @@ if ('webOS' in window) {
 
 	var self = this
 	var history = window.history
-	history.pushState({ "data": "data" })
+	history.pushState({ "data": "data" }, "back pressed stub")
 
 	window.addEventListener('popstate', function (event) {
 		event.preventDefault()
-		history.pushState({ "data": "data" })
+		history.pushState({ "data": "data" }, "back pressed stub")
 		if (!event.state)
 			return
 		// Emulate 'Back' pressing.
@@ -1670,7 +1670,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
 	switch(type) {
 		case 'enum':
-		case 'int':		convert = function(value) { return parseInt(value) }; break
+		case 'int':		convert = function(value) { return parseInt(value, 0) }; break
 		case 'bool':	convert = function(value) { return value? true: false }; break
 		case 'real':	convert = function(value) { return parseFloat(value) }; break
 		case 'string':	convert = function(value) { return String(value) }; break

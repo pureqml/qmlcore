@@ -995,6 +995,14 @@ exports._setup = function() {
 				case this.AlignJustify:	this.element.css('text-align', 'justify'); break
 				}
 				break
+			case 'wrapMode':
+				switch(value) {
+				case this.NoWrap:		this.element.css('white-space', 'nowrap'); break
+				case this.WordWrap:		this.element.css('white-space', 'normal'); break
+				case this.WrapAnywhere:	this.element.css('white-space', 'nowrap'); break	//TODO: implement.
+				case this.Wrap:			this.element.css('white-space', 'nowrap'); break	//TODO: implement.
+				}
+				break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

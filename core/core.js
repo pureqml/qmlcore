@@ -962,7 +962,7 @@ exports._setup = function() {
 
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
-		if (this.wrap)
+		if (this.wrapMode != Text.NoWrap)
 			this.element.css('width', this.width)
 		else
 			this.element.css('width', '')
@@ -984,7 +984,6 @@ exports._setup = function() {
 		switch(name) {
 			case 'text': this.element.html(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
-			case 'wrap': this.element.css('white-space', value? 'normal': 'nowrap'); this._updateSize(); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
@@ -1002,6 +1001,7 @@ exports._setup = function() {
 				case this.WrapAnywhere:	this.element.css('white-space', 'nowrap'); break	//TODO: implement.
 				case this.Wrap:			this.element.css('white-space', 'nowrap'); break	//TODO: implement.
 				}
+				this._updateSize();
 				break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);

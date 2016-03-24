@@ -2,7 +2,10 @@ Item {
 	property string text;
 	property color color;
 
-	property bool wrap;
+	property enum wrapMode {
+		NoWrap, WordWrap, WrapAnywhere, Wrap
+	};
+
 	property enum horizontalAlignment {
 		AlignLeft, AlignRight, AlignHCenter, AlignJustify
 	};

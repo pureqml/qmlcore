@@ -22,6 +22,10 @@ Item {
 
 	constructor: {
 		this._items = []
+		var self = this
+		this._delayedLayout = new qml.core.DelayedAction(function() {
+			self._layout()
+		})
 	}
 
 	itemAt(x, y): {

@@ -1295,7 +1295,7 @@ exports._setup = function() {
 		}
 		if (items.length != model.count)
 			throw "reset failed"
-		this._layout()
+		this._delayedLayout.schedule()
 	}
 
 	_globals.core.BaseView.prototype._onRowsInserted = function(begin, end) {
@@ -1306,7 +1306,7 @@ exports._setup = function() {
 			items.splice(i, 0, null)
 		if (items.length != this.model.count)
 			throw "insert failed"
-		this._layout()
+		this._delayedLayout.schedule()
 	}
 
 	_globals.core.BaseView.prototype._onRowsChanged = function(begin, end) {
@@ -1321,7 +1321,7 @@ exports._setup = function() {
 		}
 		if (items.length != this.model.count)
 			throw "change failed"
-		this._layout()
+		this._delayedLayout.schedule()
 	}
 
 	_globals.core.BaseView.prototype._onRowsRemoved = function(begin, end) {
@@ -1336,7 +1336,7 @@ exports._setup = function() {
 		items.splice(begin, end - begin)
 		if (items.length != this.model.count)
 			throw "remove failed"
-		this._layout()
+		this._delayedLayout.schedule()
 	}
 
 	_globals.core.BaseView.prototype._attach = function() {

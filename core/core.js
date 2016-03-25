@@ -442,6 +442,25 @@ exports._setup = function() {
 		return (new Color(spec)).get()
 	}
 
+	/** @constructor */
+	var DelayedAction = function(action) {
+		this.action = function() {
+			this.timeout = undefined
+			action()
+		}.bind(this)
+	}
+	_globals.core.DelayedAction = DelayedAction
+
+	DelayedAction.prototype.constructor = DelayedAction
+
+	DelayedAction.prototype.schedule = function() {
+		if (this.timeout !== undefined)
+			return false
+
+		this.timeout = setTimeout(this.action, 0)
+		return true
+	}
+
 	_globals.core.Color.prototype.get = function() {
 		return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 	}

@@ -31,7 +31,7 @@ Item {
 
 	onTouchEnabledChanged: {
 		if (value) {
-			self = this
+			var self = this
 			if ('ontouchstart' in window)
 				this.element.bind('touchstart', function(event) { self.touchStart(event) })
 			if ('ontouchend' in window)

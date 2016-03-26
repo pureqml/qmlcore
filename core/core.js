@@ -981,7 +981,7 @@ exports._setup = function() {
 
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
-		if (this.wrapMode != Text.NoWrap)
+		if (this.wrapMode > 0)
 			this.element.css('width', this.width)
 		else
 			this.element.css('width', '')

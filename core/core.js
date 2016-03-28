@@ -668,15 +668,15 @@ exports._setup = function() {
 
 			case 'x':
 			case 'viewX':
-				value = this.x + this.viewX
-				this.element.css('left', value);
+				var x = this.x + this.viewX
+				this.element.css('left', x);
 				this.boxChanged()
 				break;
 
 			case 'y':
 			case 'viewY':
-				value = this.y + this.viewY
-				this.element.css('top', value);
+				var y = this.y + this.viewY
+				this.element.css('top', y);
 				this.boxChanged()
 				break;
 

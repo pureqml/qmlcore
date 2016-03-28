@@ -317,12 +317,9 @@ _globals.core.Object.prototype.on = function (name, callback) {
 _globals.core.Object.prototype._emitSignal = function(name) {
 	var args = Array.prototype.slice.call(arguments);
 	args.shift();
-	function tryCatch(fn, ctx, ctxArgs, name) { try { fn.apply(ctx, ctxArgs) } catch(ex) { log("signal " + name + " handler failed:", ex, ex.stack) } }
 	if (name in this._signalHandlers) {
 		var handlers = this._signalHandlers[name];
-		//handlers.forEach(function(callback) { try { callback.apply(this, args) } catch(ex) { log("signal " + name + " handler failed:", ex, ex.stack) } });
-		//TODO: just experiment! Don't forget to remove line below and considered anonumous function.
-		handlers.forEach(function(callback) { tryCatch(callback, this, args, name) });
+		handlers.forEach(function(callback) { try { callback.apply(this, args) } catch(ex) { log("signal " + name + " handler failed:", ex, ex.stack) } });
 	}
 }
 

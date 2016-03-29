@@ -1153,9 +1153,11 @@ exports._setup = function() {
 
 	_globals.core.Image.prototype._update = function(name, value) {
 		switch(name) {
-			case 'width':
-			case 'height':
-//			case 'rotate':
+			//case 'width':
+			//case 'height':
+			//TODO: just experiment!
+			case 'width': if (value) this._onLoad(); break;
+			case 'height': if (value) this._onLoad(); break;
 			case 'fillMode': this._onLoad(); break;
 			case 'source':
 				this.status = value ? this.Loading : this.Null;

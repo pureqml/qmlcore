@@ -5,6 +5,13 @@ Item {
 	property int spacing;
 	property bool handleNavigationKeys: true;
 
+	constructor: {
+		var self = this
+		this._delayedLayout = new qml.core.DelayedAction(function() {
+			self._layout()
+		})
+	}
+
 	focusNextChild: {
 		var idx = 0;
 		if (this.focusedChild)
@@ -24,5 +31,5 @@ Item {
 	width: contentWidth;
 	height: contentHeight;
 
-	onCompleted: { this._layout(); }
+	onCompleted: { this._delayedLayout.schedule() }
 }

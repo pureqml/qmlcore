@@ -109,5 +109,5 @@ BaseView {
 		}
 	}
 
-	onFlowChanged: { this._layout() }
+	onFlowChanged: { this._delayedLayout.schedule() }
 }

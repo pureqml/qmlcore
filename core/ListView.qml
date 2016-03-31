@@ -111,5 +111,5 @@ BaseView {
 		}
 		return -1
 	}
-	onOrientationChanged: { this._layout() }
+	onOrientationChanged: { _delayedLayout.schedule() }
 }

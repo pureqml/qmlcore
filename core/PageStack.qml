@@ -9,6 +9,6 @@ Layout {
 		else if (this.currentIndex >= this.children.length)
 			this.currentIndex = this.children.length - 1;
 			
-		this._layout();
+		this._delayedLayout.schedule()
 	}
 }

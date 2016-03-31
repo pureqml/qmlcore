@@ -21,6 +21,10 @@ Item {
 	width: paintedWidth;
 	height: paintedHeight;
 
+	constructor: {
+		this.element.addClass('text')
+	}
+
 	onCompleted: {
 		if (!this._allowLayout) { 
 			this._allowLayout = true;

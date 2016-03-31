@@ -491,7 +491,7 @@ exports._setup = function() {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Item.prototype.setTransition = function(name, duration, easing) {
+	_globals.core.Item.prototype.setTransition = function(name, animation) {
 		var attr = Modernizr.prefixedCSS('transition')
 		if (attr === false)
 			return false
@@ -503,16 +503,16 @@ exports._setup = function() {
 		var idx = tProperty.indexOf(name)
 		if (idx === -1) { //if property not set
 			this.element.css(attr + '-delay', this.element.css(attr + '-delay') + ', 0s')
-			this.element.css(attr + '-duration', this.element.css(attr + '-duration') + ', ' + duration + 'ms')
+			this.element.css(attr + '-duration', this.element.css(attr + '-duration') + ', ' + animation.duration + 'ms')
 			this.element.css(attr + '-property', this.element.css(attr + '-property') + ', ' + name)
-			this.element.css(attr + '-timing-function', this.element.css(attr + '-timing-function') + ', ' + easing)
+			this.element.css(attr + '-timing-function', this.element.css(attr + '-timing-function') + ', ' + animation.easing)
 		} else { //property already set, adjust the params
 //			var tDelay = this.element.css(attr + '-delay').split(', ') // uncomment when needed
 			var tDuration = this.element.css(attr + '-duration').split(', ')
 			var tFunction = this.element.css(attr + '-timing-function').split(', ') // need to handle commas between brackets
 
-			tDuration[idx] = duration + 'ms'
-			tFunction[idx] = easing
+			tDuration[idx] = animation.duration + 'ms'
+			tFunction[idx] = animation.easing
 
 //			this.element.css(attr + '-delay', tDelay.toString())
 			this.element.css(attr + '-duration', tDuration.toString())
@@ -532,7 +532,7 @@ exports._setup = function() {
 				throw "resetting transition was not implemented"
 
 			animation._target = name
-			return this.setTransition(css, animation.duration, animation.easing)
+			return this.setTransition(css, animation)
 		} else {
 			return false
 		}

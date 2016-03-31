@@ -1,5 +1,5 @@
 Layout {
 	property int maxWidth: 1000;
 
-	onWidthChanged: { this._layout(); }
+	onWidthChanged: { this._delayedLayout.schedule() }
 }

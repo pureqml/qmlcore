@@ -1189,8 +1189,9 @@ exports._setup = function() {
 
 	_globals.core.Row.prototype.addChild = function(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		child.onChanged('recursiveVisible', this._layout.bind(this))
-		child.onChanged('width', this._layout.bind(this))
+		var delayedLayout = this._delayedLayout
+		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
 	}
 
 	_globals.core.Column.prototype._layout = function() {
@@ -1216,8 +1217,9 @@ exports._setup = function() {
 
 	_globals.core.Column.prototype.addChild = function(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		child.onChanged('height', this._layout.bind(this))
-		child.onChanged('recursiveVisible', this._layout.bind(this))
+		var delayedLayout = this._delayedLayout
+		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 	}
 
 	_globals.core.PageStack.prototype._layout = function() {
@@ -1232,8 +1234,9 @@ exports._setup = function() {
 
 	_globals.core.PageStack.prototype.addChild = function(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		child.onChanged('height', this._layout.bind(this))
-		child.onChanged('recursiveVisible', this._layout.bind(this))
+		var delayedLayout = this._delayedLayout
+		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 	}
 
 	_globals.core.Grid.prototype._layout = function() {
@@ -1264,9 +1267,10 @@ exports._setup = function() {
 
 	_globals.core.Grid.prototype.addChild = function(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		child.onChanged('height', this._layout.bind(this))
-		child.onChanged('width', this._layout.bind(this))
-		child.onChanged('recursiveVisible', this._layout.bind(this))
+		var delayedLayout = this._delayedLayout
+		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 	}
 
 	_globals.core.BaseView.prototype.Contain	= 0

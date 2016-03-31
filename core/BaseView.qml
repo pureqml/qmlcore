@@ -97,18 +97,18 @@ Item {
 	}
 
 	content: Item {
-		onXChanged:		{ this.parent._layout() }
-		onYChanged:		{ this.parent._layout() }
+		onXChanged:		{ this.parent._delayedLayout.schedule() }
+		onYChanged:		{ this.parent._delayedLayout.schedule() }
 	}
 
 	onContentXChanged: { this.content.x = -value; }
 	onContentYChanged: { this.content.y = -value; }
 
-	onRecursiveVisibleChanged: { this._layout() }
-	onBoxChanged: { this._layout() }
-	onWidthChanged: { this._layout() }
-	onHeightChanged: { this._layout() }
-	onCompleted: { this._attach(); this._layout() }
+	onRecursiveVisibleChanged:	{ this._delayedLayout.schedule() }
+	onBoxChanged: 				{ this._delayedLayout.schedule() }
+	onWidthChanged:				{ this._delayedLayout.schedule() }
+	onHeightChanged:			{ this._delayedLayout.schedule() }
+	onCompleted: { this._attach(); this._delayedLayout.schedule() }
 
 //	Behavior on contentX { Animation { duration: 300; } }
 //	Behavior on contentY { Animation { duration: 300; } }

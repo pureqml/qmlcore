@@ -1589,7 +1589,7 @@ exports._setup = function() {
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +
 			"div#context { position: absolute; left: 0px; top: 0px; } " +
-			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; } " +
+			"div { position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; left: 0px; top: 0px; width: 0px; height: 0px; border-radius: 0px; opacity: 1.0; } " +
 			"input { position: absolute; } " +
 			"img { position: absolute; -webkit-touch-callout: none; " + userSelect + " } " +
 			"</style>"

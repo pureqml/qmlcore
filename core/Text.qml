@@ -23,12 +23,9 @@ Item {
 
 	constructor: {
 		this.element.addClass('text')
-	}
-
-	onCompleted: {
-		if (!this._allowLayout) { 
-			this._allowLayout = true;
-			this._updateSize();
-		}
+		var self = this
+		this._delayedUpdateSize = new qml.core.DelayedAction(function() {
+			self._updateSize()
+		})
 	}
 }

@@ -25,7 +25,7 @@ Item {
 		this.element.addClass('text')
 		var self = this
 		this._delayedUpdateSize = new qml.core.DelayedAction(function() {
-			self._updateSize()
+			self._updateSizeImpl()
 		})
 	}
 }

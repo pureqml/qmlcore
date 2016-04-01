@@ -973,9 +973,9 @@ exports._setup = function() {
 			return;
 
 		if (this.text.length === 0) {
-			this.paintedWidth = 0;
-			this.paintedHeight = 0;	
-			return;
+			this.paintedWidth = 0
+			this.paintedHeight = 0
+			return
 		}
 
 		var oldW = this.element.css('width')

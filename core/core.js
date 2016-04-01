@@ -1632,7 +1632,7 @@ exports._setup = function() {
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));
 		win.on('hashchange', function(event) { this.hash = window.location.hash; }.bind(this));
 
-		win.load( function() {
+		win.on('load', function() {
 			log('Context: window.load. calling completed()');
 			this._completed();
 			div.css('visibility', 'visible');

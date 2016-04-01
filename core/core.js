@@ -237,6 +237,10 @@ var colorTable = {
 	'transparent': '0000'
 }
 
+/**
+ * @constructor
+ */
+
 exports.core.Object = function(parent) {
 	this.parent = parent;
 	this.children = []

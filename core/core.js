@@ -1084,8 +1084,6 @@ exports._setup = function() {
 	_globals.core.Image.prototype._onLoad = function() {
 		var image = this
 		var tmp = new Image()
-		tmp.src = this.source
-
 		tmp.onload = function() {
 			image.paintedWidth = tmp.naturalWidth
 			image.paintedHeight = tmp.naturalHeight
@@ -1142,9 +1140,9 @@ exports._setup = function() {
 				image.width = image.paintedWidth
 			if (!image.height)
 				image.height = image.paintedHeight
-
 			image.status = image.Ready
 		}
+		tmp.src = this.source
 	}
 
 	_globals.core.Image.prototype._onError = function() {

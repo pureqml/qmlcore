@@ -980,21 +980,22 @@ exports._setup = function() {
 
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
+		var element = this.element
 		if (this.wrapMode != _globals.core.Text.NoWrap)
-			this.element.css('width', this.width)
+			element.css('width', this.width)
 		else
-			this.element.css('width', '')
-		this.element.css('height', '')
-		var w = this.element.width();
-		var h = this.element.height();
-		this.element.css('width', oldW)
-		this.element.css('height', oldH)
+			element.css('width', '')
+		element.css('height', '')
+		var w = element.width();
+		var h = element.height();
+		element.css('width', oldW)
+		element.css('height', oldH)
 		this.paintedWidth = w;
 		this.paintedHeight = h;
 		switch(this.verticalAlignment) {
-		case this.AlignTop:		this.element.css('margin-top', 0); break
-		case this.AlignBottom:	this.element.css('margin-top', this.height - this.paintedHeight); break
-		case this.AlignVCenter:	this.element.css('margin-top', (this.height - this.paintedHeight) / 2); break
+		case this.AlignTop:		element.css('margin-top', 0); break
+		case this.AlignBottom:	element.css('margin-top', this.height - this.paintedHeight); break
+		case this.AlignVCenter:	element.css('margin-top', (this.height - this.paintedHeight) / 2); break
 		}
 	}
 

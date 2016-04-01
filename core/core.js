@@ -1,3 +1,5 @@
+exports = _globals
+
 //samsung guts
 var widgetAPI
 var tvKey
@@ -5,17 +7,17 @@ var pluginAPI
 
 var Modernizr = window.Modernizr
 
-_globals.core.os = navigator.platform
-_globals.core.device = "desktop"
-_globals.core.vendor = ""
+exports.core.os = navigator.platform
+exports.core.device = "desktop"
+exports.core.vendor = ""
 
-_globals.trace = { key: false, focus: false }
+exports.trace = { key: false, focus: false }
 
 if ('Common' in window) {
 	alert("[QML] samsung smart tv")
-	_globals.core.vendor = "samsung"
-	_globals.core.device = "tv"
-	_globals.core.os = "smartTV"
+	exports.core.vendor = "samsung"
+	exports.core.device = "tv"
+	exports.core.os = "smartTV"
 
 	log = function(dummy) {
 		var args = Array.prototype.slice.call(arguments)
@@ -51,9 +53,9 @@ if ('VK_UNSUPPORTED' in window) {
 		console.log("[QML] " + args.join(" "))
 	}
 	log("operatv deteceted")
-	_globals.core.vendor = "operatv"
-	_globals.core.device = "tv"
-	_globals.core.os = "operaOS"
+	exports.core.vendor = "operatv"
+	exports.core.device = "tv"
+	exports.core.os = "operaOS"
 
 	log("loaded")
 }
@@ -65,9 +67,9 @@ if ('webOS' in window) {
 	}
 
 	log("WebOS deteceted")
-	_globals.core.vendor = "LG"
-	_globals.core.device = "tv"
-	_globals.core.os = "webOS"
+	exports.core.vendor = "LG"
+	exports.core.device = "tv"
+	exports.core.os = "webOS"
 
 	var self = this
 	var history = window.history
@@ -92,9 +94,9 @@ if ('tizen' in window) {
 	}
 
 	log("[QML] Tizen")
-	_globals.core.vendor = "samsung"
-	_globals.core.device = "tv"
-	_globals.core.os = "tizen"
+	exports.core.vendor = "samsung"
+	exports.core.device = "tv"
+	exports.core.os = "tizen"
 	log("loaded")
 }
 
@@ -108,9 +110,9 @@ var _checkDevice = function(target, info) {
 	}
 
 	log("[QML] " + target)
-	_globals.core.vendor = info.vendor
-	_globals.core.device = info.device
-	_globals.core.os = info.os
+	exports.core.vendor = info.vendor
+	exports.core.device = info.device
+	exports.core.os = info.os
 	log("loaded")
 }
 
@@ -121,7 +123,7 @@ _checkDevice('iPad', { 'vendor': 'apple', 'device': 'tablet', 'os': 'iOS' })
 _checkDevice('iPod', { 'vendor': 'apple', 'device': 'player', 'os': 'iOS' })
 
 var keyCodes
-if (_globals.core.os == "smartTV")
+if (exports.core.os == "smartTV")
 {
 	keyCodes = {
 		4: 'Left',
@@ -138,7 +140,7 @@ if (_globals.core.os == "smartTV")
 		29460: 'Up',
 		29443: 'Select'
 	}
-} else if (_globals.core.os == "tizen") {
+} else if (exports.core.os == "tizen") {
 	keyCodes = {
 		37: 'Left',
 		38: 'Up',
@@ -154,7 +156,7 @@ if (_globals.core.os == "smartTV")
 		457: 'Menu',
 		10009: 'Back'
 	}
-} else if (_globals.core.os == "webOS") {
+} else if (exports.core.os == "webOS") {
 	keyCodes = {
 		37: 'Left',
 		38: 'Up',
@@ -170,7 +172,7 @@ if (_globals.core.os == "smartTV")
 		406: 'Blue',
 		457: 'Menu'
 	}
-} else if (_globals.core.os == "operaOS") {
+} else if (exports.core.os == "operaOS") {
 	keyCodes = {
 		8: 'Back',
 		13: 'Select',
@@ -235,7 +237,7 @@ var colorTable = {
 	'transparent': '0000'
 }
 
-_globals.core.Object = function(parent) {
+exports.core.Object = function(parent) {
 	this.parent = parent;
 	this.children = []
 	this._local = {}
@@ -246,11 +248,11 @@ _globals.core.Object = function(parent) {
 	this._updaters = {}
 }
 
-_globals.core.Object.prototype.addChild = function(child) {
+exports.core.Object.prototype.addChild = function(child) {
 	this.children.push(child);
 }
 
-_globals.core.Object.prototype._setId = function (name) {
+exports.core.Object.prototype._setId = function (name) {
 	var p = this;
 	while(p) {
 		p._local[name] = this;
@@ -258,14 +260,14 @@ _globals.core.Object.prototype._setId = function (name) {
 	}
 }
 
-_globals.core.Object.prototype.onChanged = function (name, callback) {
+exports.core.Object.prototype.onChanged = function (name, callback) {
 	if (name in this._changedHandlers)
 		this._changedHandlers[name].push(callback);
 	else
 		this._changedHandlers[name] = [callback];
 }
 
-_globals.core.Object.prototype.removeOnChanged = function (name, callback) {
+exports.core.Object.prototype.removeOnChanged = function (name, callback) {
 	if (name in this._changedHandlers) {
 		var handlers = this._changedHandlers[name];
 		for(var i = 0; i < handlers.length; ) {
@@ -277,7 +279,7 @@ _globals.core.Object.prototype.removeOnChanged = function (name, callback) {
 	}
 }
 
-_globals.core.Object.prototype._removeUpdater = function (name, callback) {
+exports.core.Object.prototype._removeUpdater = function (name, callback) {
 	if (name in this._updaters)
 		this._updaters[name]();
 
@@ -287,7 +289,7 @@ _globals.core.Object.prototype._removeUpdater = function (name, callback) {
 		delete this._updaters[name]
 }
 
-_globals.core.Object.prototype.onPressed = function (name, callback) {
+exports.core.Object.prototype.onPressed = function (name, callback) {
 	var wrapper
 	if (name != 'Key')
 		wrapper = function(key, event) { event.accepted = true; callback(key, event); return event.accepted }
@@ -300,21 +302,21 @@ _globals.core.Object.prototype.onPressed = function (name, callback) {
 		this._pressedHandlers[name] = [wrapper];
 }
 
-_globals.core.Object.prototype._update = function(name, value) {
+exports.core.Object.prototype._update = function(name, value) {
 	if (name in this._changedHandlers) {
 		var handlers = this._changedHandlers[name];
 		handlers.forEach(function(callback) { try { callback(value) } catch(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) }})
 	}
 }
 
-_globals.core.Object.prototype.on = function (name, callback) {
+exports.core.Object.prototype.on = function (name, callback) {
 	if (name in this._signalHandlers)
 		this._signalHandlers[name].push(callback);
 	else
 		this._signalHandlers[name] = [callback];
 }
 
-_globals.core.Object.prototype._emitSignal = function(name) {
+exports.core.Object.prototype._emitSignal = function(name) {
 	var args = Array.prototype.slice.call(arguments);
 	args.shift();
 	if (name in this._signalHandlers) {
@@ -323,7 +325,7 @@ _globals.core.Object.prototype._emitSignal = function(name) {
 	}
 }
 
-_globals.core.Object.prototype._get = function (name) {
+exports.core.Object.prototype._get = function (name) {
 	if (name in this)
 		return this[name];
 	var object = this;
@@ -336,24 +338,24 @@ _globals.core.Object.prototype._get = function (name) {
 	throw ("invalid property requested: '" + name + "' in context of " + this);
 }
 
-_globals.core.Object.prototype.setAnimation = function (name, animation) {
+exports.core.Object.prototype.setAnimation = function (name, animation) {
 	this._animations[name] = animation;
 }
 
-_globals.core.Object.prototype.getAnimation = function (name, animation) {
+exports.core.Object.prototype.getAnimation = function (name, animation) {
 	var a = this._animations[name]
 	return (a && a.enabled())? a: null;
 }
 
-_globals.core.Object.prototype._tryFocus = function() { return false }
+exports.core.Object.prototype._tryFocus = function() { return false }
 
 exports._setup = function() {
 
-	_globals.core.ListModel.prototype.addChild = function(child) {
+	exports.core.ListModel.prototype.addChild = function(child) {
 		this.append(child)
 	}
 
-	_globals.core.Timer.prototype._restart = function() {
+	exports.core.Timer.prototype._restart = function() {
 		if (this._timeout) {
 			clearTimeout(this._timeout);
 			this._timeout = undefined;
@@ -378,8 +380,8 @@ exports._setup = function() {
 		return t * (dst - src) + src;
 	}
 
-	_globals.core.Animation.prototype.interpolate = blend;
-	_globals.core.Animation.prototype.complete = function() { }
+	exports.core.Animation.prototype.interpolate = blend;
+	exports.core.Animation.prototype.complete = function() { }
 
 	/** @constructor */
 	var Color = function(value) {
@@ -435,8 +437,8 @@ exports._setup = function() {
 		} else
 			throw "invalid color specification: " + value
 	}
-	_globals.core.Color = Color
-	_globals.core.Color.prototype.constructor = _globals.core.Color
+	exports.core.Color = Color
+	exports.core.Color.prototype.constructor = exports.core.Color
 
 	var normalizeColor = function(spec) {
 		return (new Color(spec)).get()
@@ -449,7 +451,7 @@ exports._setup = function() {
 			action()
 		}.bind(this)
 	}
-	_globals.core.DelayedAction = DelayedAction
+	exports.core.DelayedAction = DelayedAction
 
 	DelayedAction.prototype.constructor = DelayedAction
 
@@ -460,19 +462,19 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.Color.prototype.get = function() {
+	exports.core.Color.prototype.get = function() {
 		return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 	}
 
-	_globals.core.Animation.prototype._update = function(name, value) {
+	exports.core.Animation.prototype._update = function(name, value) {
 		var parent = this.parent
 		if (this._target && parent && parent._updateAnimation && parent._updateAnimation(this._target, this.enabled() ? this: null))
 			return
 
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.ColorAnimation.prototype.interpolate = function(dst, src, t) {
+	exports.core.ColorAnimation.prototype.interpolate = function(dst, src, t) {
 		var dst_c = new Color(dst), src_c = new Color(src);
 		var r = Math.floor(blend(dst_c.r, src_c.r, t))
 		var g = Math.floor(blend(dst_c.g, src_c.g, t))
@@ -481,16 +483,16 @@ exports._setup = function() {
 		return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 	}
 
-	_globals.core.Timer.prototype._update = function(name, value) {
+	exports.core.Timer.prototype._update = function(name, value) {
 		switch(name) {
 			case 'running': this._restart(); break;
 			case 'interval': this._restart(); break;
 			case 'repeat': this._restart(); break;
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Item.prototype.setTransition = function(name, animation) {
+	exports.core.Item.prototype.setTransition = function(name, animation) {
 		var attr = Modernizr.prefixedCSS('transition')
 		if (attr === false)
 			return false
@@ -520,7 +522,7 @@ exports._setup = function() {
 		return true
 	}
 
-	_globals.core.Item.prototype._updateAnimation = function(name, animation) {
+	exports.core.Item.prototype._updateAnimation = function(name, animation) {
 		if (!Modernizr.csstransitions || (animation && !animation.cssTransition))
 			return false
 
@@ -537,12 +539,12 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.Item.prototype.setAnimation = function (name, animation) {
+	exports.core.Item.prototype.setAnimation = function (name, animation) {
 		if (!this._updateAnimation(name, animation))
-			_globals.core.Object.prototype.setAnimation.apply(this, arguments);
+			exports.core.Object.prototype.setAnimation.apply(this, arguments);
 	}
 
-	_globals.core.Item.prototype.toScreen = function() {
+	exports.core.Item.prototype.toScreen = function() {
 		var item = this
 		var x = 0, y = 0
 		var w = this.width, h = this.height
@@ -558,15 +560,15 @@ exports._setup = function() {
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
-	_globals.core.Border.prototype._update = function(name, value) {
+	exports.core.Border.prototype._update = function(name, value) {
 		switch(name) {
 			case 'width': this.parent.element.css({'border-width': value, 'margin-left': -value, 'margin-top': -value}); break;
 			case 'color': this.parent.element.css('border-color', normalizeColor(value)); break;
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.BorderMargin.prototype._updateStyle = function() {
+	exports.core.BorderMargin.prototype._updateStyle = function() {
 		if (this.parent && this.parent.parent) {
 			var el = this.parent.parent.element
 			if (el) {
@@ -580,24 +582,24 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.BorderMargin.prototype._update = function(name, value) {
+	exports.core.BorderMargin.prototype._update = function(name, value) {
 		switch(name) {
 			case 'margin': this._updateStyle(); break
 			case 'color': this._updateStyle(); break
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Shadow.prototype._update = function(name, value) {
+	exports.core.Shadow.prototype._update = function(name, value) {
 		this.parent._updateStyle()
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Shadow.prototype._empty = function() {
+	exports.core.Shadow.prototype._empty = function() {
 		return !this.x && !this.y && !this.blur && !this.spread;
 	}
 
-	_globals.core.Shadow.prototype._getFilterStyle = function() {
+	exports.core.Shadow.prototype._getFilterStyle = function() {
 		var style = this.x + "px " + this.y + "px " + this.blur + "px "
 		if (this.spread > 0)
 			style += this.spread + "px "
@@ -605,14 +607,14 @@ exports._setup = function() {
 		return style
 	}
 
-	_globals.core.Effects.prototype._addStyle = function(property, style, units) {
+	exports.core.Effects.prototype._addStyle = function(property, style, units) {
 		var value = this[property]
 		if (!value)
 			return ''
 		return (style || property) + '(' + value + (units || '') + ') '
 	}
 
-	_globals.core.Effects.prototype._getFilterStyle = function() {
+	exports.core.Effects.prototype._getFilterStyle = function() {
 		var style = []
 		style += this._addStyle('blur', 'blur', 'px')
 		style += this._addStyle('grayscale')
@@ -625,7 +627,7 @@ exports._setup = function() {
 		return style
 	}
 
-	_globals.core.Effects.prototype._updateStyle = function() {
+	exports.core.Effects.prototype._updateStyle = function() {
 		var style = this._getFilterStyle()
 		var el = this.parent.element
 		if (el) {
@@ -638,22 +640,22 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.Effects.prototype._update = function(name, value) {
+	exports.core.Effects.prototype._update = function(name, value) {
 		this._updateStyle()
-		_globals.core.Object.prototype._update.apply(this, arguments)
+		exports.core.Object.prototype._update.apply(this, arguments)
 	}
 
-	_globals.core.Item.prototype.addChild = function(child) {
-		_globals.core.Object.prototype.addChild.apply(this, arguments)
+	exports.core.Item.prototype.addChild = function(child) {
+		exports.core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
 	}
 
-	_globals.core.Item.prototype._mapCSSAttribute = function(name) {
+	exports.core.Item.prototype._mapCSSAttribute = function(name) {
 		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', translateX: 'transform'}[name]
 	}
 
-	_globals.core.Item.prototype._update = function(name, value) {
+	exports.core.Item.prototype._update = function(name, value) {
 		switch(name) {
 			case 'width':
 				this.element.css('width', value)
@@ -687,10 +689,10 @@ exports._setup = function() {
 			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
 			case 'rotate':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Item.prototype._updateVisibility = function() {
+	exports.core.Item.prototype._updateVisibility = function() {
 		var visible = ('visible' in this)? this.visible: true
 //		var opacity = ('opacity' in this)? this.opacity: 1.0
 		this.recursiveVisible = this._recursiveVisible && this.visible// && this.opacity > 0.004 //~1/255
@@ -698,7 +700,7 @@ exports._setup = function() {
 			this.parent._tryFocus() //try repair local focus on visibility changed
 	}
 
-	_globals.core.Item.prototype.forceActiveFocus = function() {
+	exports.core.Item.prototype.forceActiveFocus = function() {
 		var item = this;
 		while(item.parent) {
 			item.parent._focusChild(item);
@@ -706,7 +708,7 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.Item.prototype._tryFocus = function() {
+	exports.core.Item.prototype._tryFocus = function() {
 		if (!this.visible)
 			return false
 
@@ -724,14 +726,14 @@ exports._setup = function() {
 		return this.focus
 	}
 
-	_globals.core.Item.prototype._propagateFocusToParents = function() {
+	exports.core.Item.prototype._propagateFocusToParents = function() {
 		var item = this;
 		while(item.parent && (!item.parent.focusedChild || !item.parent.focusedChild.visible)) {
 			item.parent._focusChild(item)
 			item = item.parent
 		}
 	}
-	_globals.core.Item.prototype.hasActiveFocus = function() {
+	exports.core.Item.prototype.hasActiveFocus = function() {
 		var item = this
 		while(item.parent) {
 			if (item.parent.focusedChild != item)
@@ -742,13 +744,13 @@ exports._setup = function() {
 		return true
 	}
 
-	_globals.core.Item.prototype._focusTree = function(active) {
+	exports.core.Item.prototype._focusTree = function(active) {
 		this.activeFocus = active;
 		if (this.focusedChild)
 			this.focusedChild._focusTree(active);
 	}
 
-	_globals.core.Item.prototype._focusChild = function (child) {
+	exports.core.Item.prototype._focusChild = function (child) {
 		if (child.parent !== this)
 			throw "invalid object passed as child"
 		if (this.focusedChild === child)
@@ -760,12 +762,12 @@ exports._setup = function() {
 			this.focusedChild._focusTree(this.hasActiveFocus())
 	}
 
-	_globals.core.Item.prototype.focusChild = function(child) {
+	exports.core.Item.prototype.focusChild = function(child) {
 		this._propagateFocusToParents()
 		this._focusChild(child)
 	}
 
-	_globals.core.Item.prototype._processKey = function (event) {
+	exports.core.Item.prototype._processKey = function (event) {
 		this._tryFocus() //soft-restore focus for invisible components
 		if (this.focusedChild && this.focusedChild.visible) {
 			if (this.focusedChild._processKey(event))
@@ -780,7 +782,7 @@ exports._setup = function() {
 					var callback = handlers[i]
 					try {
 						if (callback(key, event)) {
-							if (_globals.trace.key)
+							if (exports.trace.key)
 								log("key", key, "handled by", this, new Error().stack)
 							return true;
 						}
@@ -796,7 +798,7 @@ exports._setup = function() {
 					var callback = handlers[i]
 					try {
 						if (callback(key, event)) {
-							if (_globals.trace.key)
+							if (exports.trace.key)
 								log("key", key, "handled by", this, new Error().stack)
 							return true
 						}
@@ -812,11 +814,11 @@ exports._setup = function() {
 		return false;
 	}
 
-	_globals.core.AnchorLine.prototype.toScreen = function() {
+	exports.core.AnchorLine.prototype.toScreen = function() {
 		return this.parent.toScreen()[this.boxIndex]
 	}
 
-	_globals.core.Anchors.prototype._update = function(name) {
+	exports.core.Anchors.prototype._update = function(name) {
 		var self = this.parent;
 		var parent = self.parent;
 		var anchors = this;
@@ -940,10 +942,10 @@ exports._setup = function() {
 				anchors.verticalCenter = anchors.centerIn.verticalCenter;
 				break;
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Font.prototype._update = function(name, value) {
+	exports.core.Font.prototype._update = function(name, value) {
 		switch(name) {
 			case 'family':		this.parent.element.css('font-family', value); this.parent._delayedUpdateSize.schedule(); break
 			case 'pointSize':	this.parent.element.css('font-size', value + "pt"); this.parent._delayedUpdateSize.schedule(); break
@@ -955,20 +957,20 @@ exports._setup = function() {
 			case 'lineHeight':	this.parent.element.css('line-height', value + "px"); this.parent._delayedUpdateSize.schedule(); break;
 			case 'weight':	this.parent.element.css('font-weight', value); this.parent._delayedUpdateSize.schedule(); break;
 		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Text.prototype.onChanged = function (name, callback) {
+	exports.core.Text.prototype.onChanged = function (name, callback) {
 		if (!this._updateSizeNeeded) {
 			if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
 				this._updateSizeNeeded = true;
 				this._delayedUpdateSize.schedule();
 			}
 		}
-		_globals.core.Object.prototype.onChanged.apply(this, arguments);
+		exports.core.Object.prototype.onChanged.apply(this, arguments);
 	}
 
-	_globals.core.Text.prototype._updateSize = function() {
+	exports.core.Text.prototype._updateSize = function() {
 		if (!this._updateSizeNeeded)
 			return;
 
@@ -981,7 +983,7 @@ exports._setup = function() {
 		var oldW = this.element.css('width')
 		var oldH = this.element.css('height')
 		var element = this.element
-		if (this.wrapMode != _globals.core.Text.NoWrap)
+		if (this.wrapMode != exports.core.Text.NoWrap)
 			element.css('width', this.width)
 		else
 			element.css('width', '')
@@ -999,7 +1001,7 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.Text.prototype._update = function(name, value) {
+	exports.core.Text.prototype._update = function(name, value) {
 		switch(name) {
 			case 'text': this.element.html(value); this._delayedUpdateSize.schedule(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
@@ -1023,23 +1025,23 @@ exports._setup = function() {
 				this._delayedUpdateSize.schedule();
 				break
 		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
+		exports.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Gradient.prototype.addChild = function(child) {
+	exports.core.Gradient.prototype.addChild = function(child) {
 		this.stops.push(child)
 		this.stops.sort(function(a, b) { return a.position > b.position; })
 	}
 
-	_globals.core.GradientStop.prototype._update = function() {
+	exports.core.GradientStop.prototype._update = function() {
 		this.parent.parent._update('gradient', this.parent)
 	}
 
-	_globals.core.GradientStop.prototype._getDeclaration = function() {
+	exports.core.GradientStop.prototype._getDeclaration = function() {
 		return normalizeColor(this.color) + " " + Math.floor(100 * this.position) + "%"
 	}
 
-	_globals.core.Gradient.prototype._getDeclaration = function() {
+	exports.core.Gradient.prototype._getDeclaration = function() {
 		var decl = []
 		var orientation = this.orientation == this.Vertical? 'bottom': 'left'
 		decl.push(orientation)
@@ -1056,14 +1058,14 @@ exports._setup = function() {
 		return decl.join()
 	}
 
-	_globals.core.Rectangle.prototype._mapCSSAttribute = function(name) {
+	exports.core.Rectangle.prototype._mapCSSAttribute = function(name) {
 		var attr = {color: 'background-color'}[name]
 		return (attr !== undefined)?
 			attr:
-			_globals.core.Item.prototype._mapCSSAttribute.apply(this, arguments)
+			exports.core.Item.prototype._mapCSSAttribute.apply(this, arguments)
 	}
 
-	_globals.core.Rectangle.prototype._update = function(name, value) {
+	exports.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
 			case 'color': this.element.css('background-color', normalizeColor(value)); break;
 			case 'gradient': {
@@ -1078,10 +1080,10 @@ exports._setup = function() {
 				break;
 			}
 		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
+		exports.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Image.prototype._init = function() {
+	exports.core.Image.prototype._init = function() {
 		var tmp = new Image()
 		this._image = tmp
 		this._image.onerror = this._onError.bind(this)
@@ -1148,17 +1150,17 @@ exports._setup = function() {
 		this.load()
 	}
 
-	_globals.core.Image.prototype._onError = function() {
+	exports.core.Image.prototype._onError = function() {
 		this.status = this.Error;
 	}
 
-	_globals.core.Image.prototype.load = function() {
+	exports.core.Image.prototype.load = function() {
 		var src = this.source
-		this.status = (src.length === 0)? _globals.core.Image.Null: _globals.core.Image.Loading
+		this.status = (src.length === 0)? exports.core.Image.Null: exports.core.Image.Loading
 		this._image.src = src
 	}
 
-	_globals.core.Image.prototype._update = function(name, value) {
+	exports.core.Image.prototype._update = function(name, value) {
 		switch(name) {
 			case 'width':
 			case 'height':
@@ -1170,10 +1172,10 @@ exports._setup = function() {
 					this.load();
 				break;
 		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
+		exports.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Row.prototype._layout = function() {
+	exports.core.Row.prototype._layout = function() {
 		var children = this.children;
 		var p = 0
 		var h = 0
@@ -1194,14 +1196,14 @@ exports._setup = function() {
 		this.contentHeight = h
 	}
 
-	_globals.core.Row.prototype.addChild = function(child) {
-		_globals.core.Item.prototype.addChild.apply(this, arguments)
+	exports.core.Row.prototype.addChild = function(child) {
+		exports.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
 	}
 
-	_globals.core.Column.prototype._layout = function() {
+	exports.core.Column.prototype._layout = function() {
 		var children = this.children;
 		var p = 0
 		var w = 0
@@ -1222,14 +1224,14 @@ exports._setup = function() {
 		this.contentHeight = p
 	}
 
-	_globals.core.Column.prototype.addChild = function(child) {
-		_globals.core.Item.prototype.addChild.apply(this, arguments)
+	exports.core.Column.prototype.addChild = function(child) {
+		exports.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
 		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 	}
 
-	_globals.core.PageStack.prototype._layout = function() {
+	exports.core.PageStack.prototype._layout = function() {
 		this.count = this.children.length;
 		for (var i = 0; i < this.count; ++i)
 			this.children[i].visible = (i == this.currentIndex);
@@ -1239,14 +1241,14 @@ exports._setup = function() {
 		this.contentWidth = c.width;
 	}
 
-	_globals.core.PageStack.prototype.addChild = function(child) {
-		_globals.core.Item.prototype.addChild.apply(this, arguments)
+	exports.core.PageStack.prototype.addChild = function(child) {
+		exports.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
 		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 	}
 
-	_globals.core.Grid.prototype._layout = function() {
+	exports.core.Grid.prototype._layout = function() {
 		var children = this.children;
 		var cX = 0, cY = 0, xMax = 0, yMax = 0;
 		for(var i = 0; i < children.length; ++i) {
@@ -1272,19 +1274,19 @@ exports._setup = function() {
 		this.contentWidth = xMax;
 	}
 
-	_globals.core.Grid.prototype.addChild = function(child) {
-		_globals.core.Item.prototype.addChild.apply(this, arguments)
+	exports.core.Grid.prototype.addChild = function(child) {
+		exports.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
 		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 	}
 
-	_globals.core.BaseView.prototype.Contain	= 0
-	_globals.core.BaseView.prototype.Center		= 1
+	exports.core.BaseView.prototype.Contain	= 0
+	exports.core.BaseView.prototype.Center		= 1
 
 
-	_globals.core.BaseView.prototype._onReset = function() {
+	exports.core.BaseView.prototype._onReset = function() {
 		var model = this.model
 		var items = this._items
 		if (this.trace)
@@ -1309,7 +1311,7 @@ exports._setup = function() {
 		this._delayedLayout.schedule()
 	}
 
-	_globals.core.BaseView.prototype._onRowsInserted = function(begin, end) {
+	exports.core.BaseView.prototype._onRowsInserted = function(begin, end) {
 		if (this.trace)
 			log("rows inserted", begin, end)
 		var items = this._items
@@ -1320,7 +1322,7 @@ exports._setup = function() {
 		this._delayedLayout.schedule()
 	}
 
-	_globals.core.BaseView.prototype._onRowsChanged = function(begin, end) {
+	exports.core.BaseView.prototype._onRowsChanged = function(begin, end) {
 		if (this.trace)
 			log("rows changed", begin, end)
 		var items = this._items
@@ -1335,7 +1337,7 @@ exports._setup = function() {
 		this._delayedLayout.schedule()
 	}
 
-	_globals.core.BaseView.prototype._onRowsRemoved = function(begin, end) {
+	exports.core.BaseView.prototype._onRowsRemoved = function(begin, end) {
 		log("rows removed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
@@ -1350,7 +1352,7 @@ exports._setup = function() {
 		this._delayedLayout.schedule()
 	}
 
-	_globals.core.BaseView.prototype._attach = function() {
+	exports.core.BaseView.prototype._attach = function() {
 		if (this._attached || !this.model || !this.delegate)
 			return
 
@@ -1362,17 +1364,17 @@ exports._setup = function() {
 		this._onReset()
 	}
 
-	_globals.core.BaseView.prototype._update = function(name, value) {
+	exports.core.BaseView.prototype._update = function(name, value) {
 		switch(name) {
 		case 'delegate':
 			if (value)
 				value.visible = false
 			break
 		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
+		exports.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.ListView.prototype._layout = function() {
+	exports.core.ListView.prototype._layout = function() {
 		if (!this.recursiveVisible)
 			return
 
@@ -1475,7 +1477,7 @@ exports._setup = function() {
 			this._get('context')._completed()
 	}
 
-	_globals.core.GridView.prototype._layout = function() {
+	exports.core.GridView.prototype._layout = function() {
 		if (!this.recursiveVisible)
 			return
 
@@ -1576,17 +1578,17 @@ exports._setup = function() {
 			this._get('context')._completed()
 	}
 
-	_globals.core.core.Context = function() {
-		_globals.core.Item.apply(this, null);
+	exports.core.core.Context = function() {
+		exports.core.Item.apply(this, null);
 		this._started = false
 		this._completedHandlers = []
 		this._delayedActions = []
 	}
 
-	_globals.core.core.Context.prototype = Object.create(_globals.core.Item.prototype);
-	_globals.core.core.Context.prototype.constructor = exports.Context;
+	exports.core.core.Context.prototype = Object.create(exports.core.Item.prototype);
+	exports.core.core.Context.prototype.constructor = exports.Context;
 
-	_globals.core.core.Context.prototype.init = function(html) {
+	exports.core.core.Context.prototype.init = function(html) {
 		this._local['context'] = this;
 
 		var win = $(window);
@@ -1613,14 +1615,14 @@ exports._setup = function() {
 		this.width = w;
 		this.height = h;
 
-		var proto = _globals.core.core.Context.prototype
+		var proto = exports.core.core.Context.prototype
 		core.addProperty(proto, 'bool', 'fullscreen')
 		core.addProperty(proto, 'int', 'scrollY')
 //		core.addProperty(this, 'int', 'tempCount')
 		core.addProperty(proto, 'string', 'hash')
 		core.addProperty(proto, 'System', 'system');
 
-		this.system = new _globals.core.System(this);
+		this.system = new exports.core.System(this);
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));
@@ -1640,25 +1642,25 @@ exports._setup = function() {
 		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
 	}
 
-	_globals.core.core.Context.prototype._onCompleted = function(callback) {
+	exports.core.core.Context.prototype._onCompleted = function(callback) {
 		this._completedHandlers.push(callback);
 	}
 
-	_globals.core.core.Context.prototype._update = function(name, value) {
+	exports.core.core.Context.prototype._update = function(name, value) {
 		switch(name) {
 			case 'fullscreen': if (value) this._enterFullscreenMode(); else this._exitFullscreenMode(); break
 		}
-		_globals.core.Item.prototype._update.apply(this, arguments)
+		exports.core.Item.prototype._update.apply(this, arguments)
 	}
 
-	_globals.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
-	_globals.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document)() }
+	exports.core.core.Context.prototype._enterFullscreenMode = function() { return Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
+	exports.core.core.Context.prototype._exitFullscreenMode = function() { return Modernizr.prefixed('exitFullscreen', document)() }
 
-	_globals.core.core.Context.prototype._inFullscreenMode = function() {
+	exports.core.core.Context.prototype._inFullscreenMode = function() {
 		return !!Modernizr.prefixed('fullscreenElement', document)
 	}
 
-	_globals.core.core.Context.prototype._completed = function() {
+	exports.core.core.Context.prototype._completed = function() {
 		if (!this._started)
 			return
 
@@ -1675,13 +1677,13 @@ exports._setup = function() {
 		}
 	}
 
-	_globals.core.core.Context.prototype.start = function(name) {
+	exports.core.core.Context.prototype.start = function(name) {
 		console.log('Context: starting')
 		var proto;
 		if (typeof name == 'string') {
 			//log('creating component...', name);
 			var path = name.split('.');
-			proto = _globals;
+			proto = exports;
 			for (var i = 0; i < path.length; ++i)
 				proto = proto[path[i]]
 		}
@@ -1701,7 +1703,7 @@ exports._setup = function() {
 		return instance;
 	}
 
-	_globals.core.core.Context.prototype._processActions = function() {
+	exports.core.core.Context.prototype._processActions = function() {
 		while (this._delayedActions.length) {
 			var next = this._delayedActions.shift()
 			try {
@@ -1713,14 +1715,14 @@ exports._setup = function() {
 		this._delayedTimeout = undefined
 	}
 
-	_globals.core.core.Context.prototype.scheduleAction = function(action) {
+	exports.core.core.Context.prototype.scheduleAction = function(action) {
 		var da = this._delayedActions
 		this._delayedActions.push(action)
 		if (this._delayedTimeout === undefined)
 			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
 	}
 
-	_globals.core.core.Context.prototype.qsTr = function(text) {
+	exports.core.core.Context.prototype.qsTr = function(text) {
 		var args = arguments
 		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
 	}

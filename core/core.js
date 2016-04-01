@@ -1081,10 +1081,13 @@ exports._setup = function() {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	_globals.core.Image.prototype._onLoad = function() {
-		var image = this
+	_globals.core.Image.prototype._init = function() {
 		var tmp = new Image()
-		tmp.onload = function() {
+		this._image = tmp
+		this._image.onerror = this._onError.bind(this)
+
+		var image = this
+		this._image.onload = function() {
 			image.paintedWidth = tmp.naturalWidth
 			image.paintedHeight = tmp.naturalHeight
 
@@ -1142,11 +1145,17 @@ exports._setup = function() {
 				image.height = image.paintedHeight
 			image.status = image.Ready
 		}
-		tmp.src = this.source
+		this.load()
 	}
 
 	_globals.core.Image.prototype._onError = function() {
 		this.status = this.Error;
+	}
+
+	_globals.core.Image.prototype.load = function() {
+		var src = this.source
+		this.status = (src.length === 0)? _globals.core.Image.Null: _globals.core.Image.Loading
+		this._image.src = src
 	}
 
 	_globals.core.Image.prototype._update = function(name, value) {
@@ -1154,11 +1163,11 @@ exports._setup = function() {
 			case 'width':
 			case 'height':
 //			case 'rotate':
-			case 'fillMode': this._onLoad(); break;
+			case 'fillMode': this.load(); break;
 			case 'source':
 				this.status = value ? this.Loading : this.Null;
 				if (value)
-					this._onLoad();
+					this.load();
 				break;
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);

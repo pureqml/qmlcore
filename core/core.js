@@ -951,15 +951,15 @@ exports._setup = function() {
 
 	exports.core.Font.prototype._update = function(name, value) {
 		switch(name) {
-			case 'family':		this.parent.element.css('font-family', value); this.parent._delayedUpdateSize.schedule(); break
-			case 'pointSize':	this.parent.element.css('font-size', value + "pt"); this.parent._delayedUpdateSize.schedule(); break
-			case 'pixelSize':	this.parent.element.css('font-size', value + "px"); this.parent._delayedUpdateSize.schedule(); break
-			case 'italic': 		this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._delayedUpdateSize.schedule(); break
-			case 'bold': 		this.parent.element.css('font-weight', value? 'bold': 'normal'); this.parent._delayedUpdateSize.schedule(); break
-			case 'underline':	this.parent.element.css('text-decoration', value? 'underline': ''); this.parent._delayedUpdateSize.schedule(); break
-			case 'shadow':		this.parent.element.css('text-shadow', value? '1px 1px black': 'none'); this.parent._delayedUpdateSize.schedule(); break;
-			case 'lineHeight':	this.parent.element.css('line-height', value + "px"); this.parent._delayedUpdateSize.schedule(); break;
-			case 'weight':	this.parent.element.css('font-weight', value); this.parent._delayedUpdateSize.schedule(); break;
+			case 'family':		this.parent.element.css('font-family', value); this.parent._updateSize(); break
+			case 'pointSize':	this.parent.element.css('font-size', value + "pt"); this.parent._updateSize(); break
+			case 'pixelSize':	this.parent.element.css('font-size', value + "px"); this.parent._updateSize(); break
+			case 'italic': 		this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
+			case 'bold': 		this.parent.element.css('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
+			case 'underline':	this.parent.element.css('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
+			case 'shadow':		this.parent.element.css('text-shadow', value? '1px 1px black': 'none'); this.parent._updateSize(); break;
+			case 'lineHeight':	this.parent.element.css('line-height', value + "px"); this.parent._updateSize(); break;
+			case 'weight':	this.parent.element.css('font-weight', value); this.parent._updateSize(); break;
 		}
 		exports.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -968,13 +968,18 @@ exports._setup = function() {
 		if (!this._updateSizeNeeded) {
 			if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
 				this._updateSizeNeeded = true;
-				this._delayedUpdateSize.schedule();
+				this._updateSize();
 			}
 		}
 		exports.core.Object.prototype.onChanged.apply(this, arguments);
 	}
 
 	exports.core.Text.prototype._updateSize = function() {
+		if (this._updateSizeNeeded)
+			this._delayedUpdateSize.schedule()
+	}
+
+	exports.core.Text.prototype._updateSizeImpl = function() {
 		if (!this._updateSizeNeeded)
 			return;
 
@@ -1007,10 +1012,10 @@ exports._setup = function() {
 
 	exports.core.Text.prototype._update = function(name, value) {
 		switch(name) {
-			case 'text': this.element.html(value); this._delayedUpdateSize.schedule(); break;
+			case 'text': this.element.html(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
-			case 'width': this._delayedUpdateSize.schedule(); break;
-			case 'verticalAlignment': this.verticalAlignment = value; this._delayedUpdateSize.schedule(); break
+			case 'width': this._updateSize(); break;
+			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
 				switch(value) {
 				case this.AlignLeft:	this.element.css('text-align', 'left'); break
@@ -1026,7 +1031,7 @@ exports._setup = function() {
 				case this.WrapAnywhere:	this.element.css('white-space', 'nowrap'); break	//TODO: implement.
 				case this.Wrap:			this.element.css('white-space', 'nowrap'); break	//TODO: implement.
 				}
-				this._delayedUpdateSize.schedule();
+				this._updateSize();
 				break
 		}
 		exports.core.Item.prototype._update.apply(this, arguments);

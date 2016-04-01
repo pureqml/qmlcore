@@ -445,7 +445,7 @@ exports._setup = function() {
 	/** @constructor */
 	var DelayedAction = function(action) {
 		this.action = function() {
-			this.timeout = undefined
+			this._scheduled = false
 			action()
 		}.bind(this)
 	}
@@ -454,11 +454,10 @@ exports._setup = function() {
 	DelayedAction.prototype.constructor = DelayedAction
 
 	DelayedAction.prototype.schedule = function() {
-		if (this.timeout !== undefined)
-			return false
-
-		this.timeout = setTimeout(this.action, 0)
-		return true
+		if (!this._scheduled) {
+			this._scheduled = true
+			qml._context.scheduleAction(this.action)
+		}
 	}
 
 	_globals.core.Color.prototype.get = function() {
@@ -1573,6 +1572,7 @@ exports._setup = function() {
 		_globals.core.Item.apply(this, null);
 		this._started = false
 		this._completedHandlers = []
+		this._delayedActions = []
 	}
 
 	_globals.core.core.Context.prototype = Object.create(_globals.core.Item.prototype);
@@ -1691,6 +1691,25 @@ exports._setup = function() {
 		this.boxChanged()
 		console.log('Context: done')
 		return instance;
+	}
+
+	_globals.core.core.Context.prototype._processActions = function() {
+		while (this._delayedActions.length) {
+			var next = this._delayedActions.shift()
+			try {
+				next()
+			} catch(ex) {
+				log('exception in delayed action', ex)
+			}
+		}
+		this._delayedTimeout = undefined
+	}
+
+	_globals.core.core.Context.prototype.scheduleAction = function(action) {
+		var da = this._delayedActions
+		this._delayedActions.push(action)
+		if (this._delayedTimeout === undefined)
+			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
 	}
 
 	_globals.core.core.Context.prototype.qsTr = function(text) {

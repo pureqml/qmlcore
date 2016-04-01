@@ -1588,6 +1588,7 @@ exports._setup = function() {
 
 		var body = $('body');
 		var div = $(html);
+		div.css('visibility', 'hidden');
 		body.append(div);
 		var userSelect = Modernizr.prefixedCSS('user-select') + ": none; "
 		$('head').append($("<style>" +
@@ -1617,7 +1618,11 @@ exports._setup = function() {
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));
 		win.on('hashchange', function(event) { this.hash = window.location.hash; }.bind(this));
 
-		win.load( this._completed.bind(this) );
+		win.load( function() {
+			log('Context: window.load. calling completed()');
+			this._completed();
+			div.css('visibility', 'visible');
+		} .bind(this) );
 
 		var self = this;
 		div.bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e) {

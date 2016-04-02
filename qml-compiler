@@ -114,6 +114,7 @@ def generate():
 	namespace = "qml"
 	app = "'use strict'\n"
 	app += "var log = console.log.bind(console)\n"
+	app += "/** @const */\n"
 	app += "/** @param {string} text @param {...} args */\n"
 	app += "var qsTr = function(text, args) { return qml._context.qsTr.apply(qml._context, arguments) }\n"
 	app += "/** @const */\n"

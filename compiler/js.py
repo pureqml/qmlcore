@@ -442,7 +442,7 @@ class generator(object):
 		text += "var _globals = exports\n"
 		text += "%s\n" %self.generate_imports()
 		text += "//========================================\n\n"
-		text += "/** @const */\n"
+		text += "/** @const @type {!Object} */\n"
 		text += "var core = _globals.core.core\n"
 		text += "%s\n" %self.generate_components()
 		return "%s = %s();\n" %(ns, self.wrap(text))

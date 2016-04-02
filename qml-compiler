@@ -114,12 +114,12 @@ def generate():
 	namespace = "qml"
 	app = "'use strict'\n"
 	app += "var log = console.log.bind(console)\n"
+	app += "/** @const */\n"
+	app += "/** @param {string} text @param {...} args */\n"
+	app += "var qsTr = function(text, args) { return qml._context.qsTr.apply(qml._context, arguments) }\n"
 	app += "/** @const @type {!Object} */\n"
 	app += "var " + generator.generate(namespace)
 	app += generator.generate_startup()
-	app += "/** @const */\n"
-	app += "/** @param {string} text @param {...} args */\n"
-	app += "var qsTr = function(text, args) { return %s._context.qsTr.apply(qml._context, arguments) }\n" %namespace
 	with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
 		f.write(app)
 	print "done"

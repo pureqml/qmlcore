@@ -618,15 +618,15 @@ exports._setup = function() {
 
 	exports.core.Effects.prototype._getFilterStyle = function() {
 		var style = []
-		style += this._addStyle('blur', 'blur', 'px')
-		style += this._addStyle('grayscale')
-		style += this._addStyle('sepia')
-		style += this._addStyle('brightness')
-		style += this._addStyle('contrast')
-		style += this._addStyle('hueRotate', 'hue-rotate', 'deg')
-		style += this._addStyle('invert')
-		style += this._addStyle('saturate')
-		return style
+		style.push(this._addStyle('blur', 'blur', 'px'))
+		style.push(this._addStyle('grayscale'))
+		style.push(this._addStyle('sepia'))
+		style.push(this._addStyle('brightness'))
+		style.push(this._addStyle('contrast'))
+		style.push(this._addStyle('hueRotate', 'hue-rotate', 'deg'))
+		style.push(this._addStyle('invert'))
+		style.push(this._addStyle('saturate'))
+		return style.join('')
 	}
 
 	exports.core.Effects.prototype._updateStyle = function() {

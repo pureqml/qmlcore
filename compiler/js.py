@@ -125,9 +125,9 @@ class component_generator(object):
 	def generate(self, registry):
 		ctor  = "/**\n * @constructor\n"
 		base_type = registry.find_component(self.package, self.component.name)
-		ctor += " * <fixme>extends {_globals.%s}\n" %base_type
+		ctor += " * @extends {exports.%s}\n" %base_type
 		ctor += " */\n"
-		ctor += "\texports.%s = function() {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
+		ctor += "\texports.%s = function(parent) {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
 		return ctor
 
 	def generate_animations(self, registry, parent):
@@ -423,7 +423,7 @@ class generator(object):
 		def check(path, packages):
 			for ns in packages.iterkeys():
 				package = path + "." + ns
-				r.append("if (!%s) %s = {}" %(package, package))
+				r.append("if (!%s) /** @const */ %s = {}" %(package, package))
 				check(package, packages[ns])
 		check(path, packages)
 

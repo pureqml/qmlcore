@@ -250,6 +250,8 @@ exports.core.Object = function(parent) {
 	this._updaters = {}
 }
 
+exports.core.Object.prototype.constructor = exports.core.Object
+
 exports.core.Object.prototype.addChild = function(child) {
 	this.children.push(child);
 }

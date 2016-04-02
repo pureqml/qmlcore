@@ -1008,9 +1008,11 @@ exports._setup = function() {
 		}
 	}
 
+	var htmlRe = /[&<]/
+
 	exports.core.Text.prototype._update = function(name, value) {
 		switch(name) {
-			case 'text': this.element.html(value); this._updateSize(); break;
+			case 'text': if (htmlRe.exec(value)) this.element.html(value); else this.element.text(value); this._updateSize(); break;
 			case 'color': this.element.css('color', normalizeColor(value)); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break

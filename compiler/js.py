@@ -178,7 +178,9 @@ class component_generator(object):
 			values = prop.values
 
 			for i in xrange(0, len(values)):
+				r.append("/** @const @type {number} */")
 				r.append("%sexports.%s.prototype.%s = %d" %(ident, self.name, values[i], i))
+				r.append("/** @const @type {number} */")
 				r.append("%sexports.%s.%s = %d" %(ident, self.name, values[i], i))
 
 			args = ["exports.%s.prototype" %self.name, "'enum'", "'%s'" %name]

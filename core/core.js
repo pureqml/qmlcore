@@ -447,17 +447,14 @@ exports._setup = function() {
 	}
 
 	/** @constructor */
-	var DelayedAction = function(action) {
+	exports.core.DelayedAction = function(action) {
 		this.action = function() {
 			this._scheduled = false
 			action()
 		}.bind(this)
 	}
-	exports.core.DelayedAction = DelayedAction
 
-	DelayedAction.prototype.constructor = DelayedAction
-
-	DelayedAction.prototype.schedule = function() {
+	exports.core.DelayedAction.prototype.schedule = function() {
 		if (!this._scheduled) {
 			this._scheduled = true
 			qml._context.scheduleAction(this.action)

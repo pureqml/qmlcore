@@ -987,18 +987,17 @@ exports._setup = function() {
 			return
 		}
 
-		var oldW = this.element.css('width')
-		var oldH = this.element.css('height')
 		var element = this.element
-		if (this.wrapMode != exports.core.Text.NoWrap)
-			element.css('width', this.width)
-		else
-			element.css('width', '')
+		var wrap = this.wrapMode != exports.core.Text.NoWrap
+		if (!wrap)
+			element.css('width', '') //no need to reset it to width, it's already there
 		element.css('height', '')
+
 		var w = element.width();
 		var h = element.height();
-		element.css('width', oldW)
-		element.css('height', oldH)
+		if (!wrap)
+			element.css('width', this.width)
+		element.css('height', this.height)
 		this.paintedWidth = w;
 		this.paintedHeight = h;
 		switch(this.verticalAlignment) {

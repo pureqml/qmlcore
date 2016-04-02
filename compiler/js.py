@@ -355,8 +355,8 @@ class generator(object):
 			raise Exception("duplicate js name " + name)
 		self.imports[name] = data
 
-	def wrap(self, code):
-		return "(function() {\n'use strict';\nvar exports = {};\n%s\nreturn exports;\n} )" %code
+	def wrap(self, code, use_globals = False):
+		return "(function() {\n'use strict';\n/** @const */\nvar exports = %s;\n%s\nreturn exports;\n} )" %("_globals" if use_globals else "{}", code)
 
 	def find_component(self, package, name):
 		if name == "Object":
@@ -433,14 +433,16 @@ class generator(object):
 				safe_name = safe_name[:-3]
 			safe_name = safe_name.replace('/', '.')
 			code = "//=====[import %s]=====================\n\n" %name + code
-			r.append("_globals.%s = %s()" %(safe_name, self.wrap(code)))
+			r.append("_globals.%s = %s()" %(safe_name, self.wrap(code, name == "core.core"))) #hack: core.core use _globals as its exports
 		return "\n".join(r)
 
 	def generate(self, ns):
 		text = ""
+		text += "/** @const */\n"
 		text += "var _globals = exports\n"
 		text += "%s\n" %self.generate_imports()
 		text += "//========================================\n\n"
+		text += "/** @const */\n"
 		text += "var core = _globals.core.core\n"
 		text += "%s\n" %self.generate_components()
 		return "%s = %s();\n" %(ns, self.wrap(text))

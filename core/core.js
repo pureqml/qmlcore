@@ -1,5 +1,3 @@
-exports = _globals
-
 //samsung guts
 var widgetAPI
 var tvKey

@@ -388,7 +388,7 @@ exports._setup = function() {
 	exports.core.Animation.prototype.complete = function() { }
 
 	/** @constructor */
-	var Color = function(value) {
+	exports.core.Color = function(value) {
 		if (typeof value !== 'string')
 		{
 			this.r = 255
@@ -441,8 +441,9 @@ exports._setup = function() {
 		} else
 			throw "invalid color specification: " + value
 	}
-	exports.core.Color = Color
 	exports.core.Color.prototype.constructor = exports.core.Color
+	/** @const */
+	var Color = exports.core.Color
 
 	var normalizeColor = function(spec) {
 		return (new Color(spec)).get()

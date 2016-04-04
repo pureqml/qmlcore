@@ -1079,15 +1079,18 @@ exports._setup = function() {
 
 		var wrap = this.wrapMode != exports.core.Text.NoWrap
 		if (!wrap)
-			this.style('width', 'auto') //no need to reset it to width, it's already there
-		this.style('height', 'auto')
+			this.style({ width: 'auto', height: 'auto' }) //no need to reset it to width, it's already there
+		else
+			this.style('height', 'auto')
 
 		var element = this.element
-		var w = element.width();
-		var h = element.height();
+		var dom = element[0]
+		var w = dom.offsetWidth, h = dom.offsetHeight
 		if (!wrap)
-			this.style('width', this.width)
-		this.style('height', this.height)
+			this.style({width: this.width, height: this.height})
+		else
+			this.style('height', this.height)
+
 		this.paintedWidth = w;
 		this.paintedHeight = h;
 		switch(this.verticalAlignment) {

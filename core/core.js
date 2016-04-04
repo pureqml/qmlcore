@@ -578,6 +578,10 @@ exports._setup = function() {
 	}
 
 	exports.core.Item.prototype._updateStyle = function() {
+		var element = this.element
+		if (!element)
+			return
+
 		var rules = []
 		for(var name in this._styles) {
 			var value = this._styles[name]
@@ -592,8 +596,8 @@ exports._setup = function() {
 
 			rules.push(rule.join(':'))
 		}
-		rules = rules.join(';')
-		this.element.attr('style', rules)
+
+		element.attr('style', rules.join(';'))
 	}
 
 	exports.core.Item.prototype.style = function(name, value) {

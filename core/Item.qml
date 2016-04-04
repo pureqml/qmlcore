@@ -33,6 +33,7 @@ Object {
 	property int viewY;
 
 	constructor: {
+		this._styles = {}
 		if (this.parent) {
 			if (this.element)
 				throw "double ctor call"

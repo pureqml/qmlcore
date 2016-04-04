@@ -6,8 +6,8 @@ Rectangle {
 	property string cursor : "pointer";
 	color: "transparent";
 
-	constructor:		{ this.element.css('cursor', this.cursor) }
-	onCursorChanged: 	{ this.element.css('cursor', value) }
+	constructor:		{ this.style('cursor', this.cursor) }
+	onCursorChanged: 	{ this.style('cursor', value) }
 
 	onClickableChanged: {
 		if (value)

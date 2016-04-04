@@ -24,7 +24,7 @@ Item {
 		font: textEditProto.font;
 		font.pointSize: 24;
 		onCompleted: {
-			this.element.css('white-space', 'pre')
+			this.style('white-space', 'pre')
 		}
 	}
 

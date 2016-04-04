@@ -625,14 +625,14 @@ exports._setup = function() {
 
 	exports.core.BorderMargin.prototype._updateStyle = function() {
 		if (this.parent && this.parent.parent) {
-			var el = this.parent.parent.element
-			if (el) {
+			var pp = this.parent.parent
+			if (pp) {
 				var cssname = 'border-' + this.name
 				if (this.margin) {
 					//log(cssname, this.margin + "px solid " + new Color(this.color).get())
-					el.css(cssname, this.margin + "px solid " + new Color(this.color).get())
+					pp.style(cssname, this.margin + "px solid " + new Color(this.color).get())
 				} else
-					el.css(cssname, '')
+					pp.style(cssname, '')
 			}
 		}
 	}
@@ -684,15 +684,13 @@ exports._setup = function() {
 
 	exports.core.Effects.prototype._updateStyle = function() {
 		var style = this._getFilterStyle()
-		var el = this.parent.element
-		if (el) {
-			//chromium bug
-			//https://github.com/Modernizr/Modernizr/issues/981
-			el.css('-webkit-filter', style)
-			el.css('filter', style)
-			if (this.shadow && !this.shadow._empty())
-				el.css('box-shadow', this.shadow._getFilterStyle())
-		}
+		var parent = this.parent
+		//chromium bug
+		//https://github.com/Modernizr/Modernizr/issues/981
+		parent.style('-webkit-filter', style)
+		parent.style('filter', style)
+		if (this.shadow && !this.shadow._empty())
+			parent.style('box-shadow', this.shadow._getFilterStyle())
 	}
 
 	exports.core.Effects.prototype._update = function(name, value) {

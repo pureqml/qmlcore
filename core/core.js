@@ -495,40 +495,40 @@ exports._setup = function() {
 	}
 
 	var transition = {
-		transition: Modernizr.prefixedCSS('transition'),
 		property: Modernizr.prefixedCSS('transition-property'),
 		delay: Modernizr.prefixedCSS('transition-delay'),
 		duration: Modernizr.prefixedCSS('transition-duration'),
 		timing: Modernizr.prefixedCSS('transition-timing-function')
 	}
-	log(transition)
 
 	exports.core.Item.prototype.setTransition = function(name, animation) {
-		if (transition.transition === false)
+		if (!Modernizr.csstransitions)
 			return false
 
 		name = Modernizr.prefixedCSS(name) || name //replace transform: <prefix>rotate hack
 
-		var tProperty = this.element.css(transition.property).split(',')
+		var property = this.style(transition.property) || []
+		var duration = this.style(transition.duration) || []
+		var timing = this.style(transition.timing) || []
+		var delay = this.style(transition.delay) || []
 
-		var idx = tProperty.indexOf(name)
+		var idx = property.indexOf(name)
 		if (idx === -1) { //if property not set
-			this.element.css(transition.delay, this.element.css(transition.delay) + ',0s')
-			this.element.css(transition.duration, this.element.css(transition.duration) + ',' + animation.duration + 'ms')
-			this.element.css(transition.property, this.element.css(transition.property) + ',' + name)
-			this.element.css(transition.timing, this.element.css(transition.timing) + ',' + animation.easing)
+			property.push(name)
+			duration.push(animation.duration + 'ms')
+			timing.push(animation.easing)
+			delay.push('0s')
 		} else { //property already set, adjust the params
-			//var tDelay = this.element.css(transition.delay).split(',') // uncomment when needed
-			var tDuration = this.element.css(transition.duration).split(',')
-			var tFunction = this.element.css(transition.timing).split(',') // need to handle commas between brackets
-
-			tDuration[idx] = animation.duration + 'ms'
-			tFunction[idx] = animation.easing
-
-//			this.element.css(attr + '-delay', tDelay.toString())
-			this.element.css(transition.duration, tDuration.toString())
-			this.element.css(transition.duration, tFunction.toString())
+			duration[idx] = animation.duration + 'ms'
+			timing[idx] = animation.easing
 		}
+
+		var style = {}
+		style[transition.property] = property
+		style[transition.duration] = duration
+		style[transition.timing] = timing
+		style[transition.delay] = delay
+		this.style(style)
 		return true
 	}
 
@@ -570,10 +570,51 @@ exports._setup = function() {
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
+	var cssUnits = {
+		'width': 'px',
+		'height': 'px',
+		'left': 'px',
+		'top': 'px',
+	}
+
+	exports.core.Item.prototype._updateStyle = function() {
+		var rules = []
+		for(var name in this._styles) {
+			var value = this._styles[name]
+			var rule = []
+
+			rule.push(name)
+			if (Array.isArray(value))
+				value = value.join(',')
+
+			var unit = value? cssUnits[name] || '': ''
+			rule.push(value + unit)
+
+			rules.push(rule.join(':'))
+		}
+		rules = rules.join(';')
+		this.element.attr('style', rules)
+	}
+
+	exports.core.Item.prototype.style = function(name, value) {
+		if (value !== undefined) {
+			this._styles[name] = value
+			this._updateStyle()
+		} else {
+			if (name instanceof Object) {
+				for(var k in name)
+					this._styles[k] = name[k]
+				this._updateStyle()
+			}
+			else
+				return this._styles[name]
+		}
+	}
+
 	exports.core.Border.prototype._update = function(name, value) {
 		switch(name) {
-			case 'width': this.parent.element.css({'border-width': value, 'margin-left': -value, 'margin-top': -value}); break;
-			case 'color': this.parent.element.css('border-color', normalizeColor(value)); break;
+			case 'width': this.parent.style({'border-width': value, 'margin-left': -value, 'margin-top': -value}); break;
+			case 'color': this.parent.style('border-color', normalizeColor(value)); break;
 		}
 		exports.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -668,36 +709,36 @@ exports._setup = function() {
 	exports.core.Item.prototype._update = function(name, value) {
 		switch(name) {
 			case 'width':
-				this.element.css('width', value)
+				this.style('width', value)
 				this.boxChanged()
 				break;
 
 			case 'height':
-				this.element.css('height', value);
+				this.style('height', value);
 				this.boxChanged()
 				break;
 
 			case 'x':
 			case 'viewX':
 				var x = this.x + this.viewX
-				this.element.css('left', x);
+				this.style('left', x);
 				this.boxChanged()
 				break;
 
 			case 'y':
 			case 'viewY':
 				var y = this.y + this.viewY
-				this.element.css('top', y);
+				this.style('top', y);
 				this.boxChanged()
 				break;
 
-			case 'opacity': if (this.element) /*FIXME*/this.element.css('opacity', value); break;
-			case 'recursiveVisible': if (this.element) /*FIXME*/this.element.css('visibility', value? 'visible': 'hidden'); break;
-			case 'z':		this.element.css('z-index', value); break;
-			case 'radius':	this.element.css('border-radius', value); break;
-			case 'translateX':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'translate3d(' + value + 'px, 0px, 0px)')); break;
-			case 'clip':	this.element.css('overflow', value? 'hidden': 'visible'); break;
-			case 'rotate':	this.element.css(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
+			case 'opacity': if (this.element) /*FIXME*/this.style('opacity', value); break;
+			case 'recursiveVisible': if (this.element) /*FIXME*/this.style('visibility', value? 'visible': 'hidden'); break;
+			case 'z':		this.style('z-index', value); break;
+			case 'radius':	this.style('border-radius', value); break;
+			case 'translateX':	this.style(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'translate3d(' + value + 'px, 0px, 0px)')); break;
+			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
+			case 'rotate':	this.style(Modernizr.prefixedCSS('transform'), Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
 		}
 		exports.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -996,15 +1037,15 @@ exports._setup = function() {
 
 	exports.core.Font.prototype._update = function(name, value) {
 		switch(name) {
-			case 'family':		this.parent.element.css('font-family', value); this.parent._updateSize(); break
-			case 'pointSize':	this.parent.element.css('font-size', value + "pt"); this.parent._updateSize(); break
-			case 'pixelSize':	this.parent.element.css('font-size', value + "px"); this.parent._updateSize(); break
-			case 'italic': 		this.parent.element.css('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
-			case 'bold': 		this.parent.element.css('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
-			case 'underline':	this.parent.element.css('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
-			case 'shadow':		this.parent.element.css('text-shadow', value? '1px 1px black': 'none'); this.parent._updateSize(); break;
-			case 'lineHeight':	this.parent.element.css('line-height', value + "px"); this.parent._updateSize(); break;
-			case 'weight':	this.parent.element.css('font-weight', value); this.parent._updateSize(); break;
+			case 'family':		this.parent.style('font-family', value); this.parent._updateSize(); break
+			case 'pointSize':	this.parent.style('font-size', value + "pt"); this.parent._updateSize(); break
+			case 'pixelSize':	this.parent.style('font-size', value + "px"); this.parent._updateSize(); break
+			case 'italic': 		this.parent.style('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
+			case 'bold': 		this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
+			case 'underline':	this.parent.style('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
+			case 'shadow':		this.parent.style('text-shadow', value? '1px 1px black': 'none'); this.parent._updateSize(); break;
+			case 'lineHeight':	this.parent.style('line-height', value + "px"); this.parent._updateSize(); break;
+			case 'weight':	this.parent.style('font-weight', value); this.parent._updateSize(); break;
 		}
 		exports.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -1034,23 +1075,23 @@ exports._setup = function() {
 			return
 		}
 
-		var element = this.element
 		var wrap = this.wrapMode != exports.core.Text.NoWrap
 		if (!wrap)
-			element.css('width', '') //no need to reset it to width, it's already there
-		element.css('height', '')
+			this.style('width', 'auto') //no need to reset it to width, it's already there
+		this.style('height', 'auto')
 
+		var element = this.element
 		var w = element.width();
 		var h = element.height();
 		if (!wrap)
-			element.css('width', this.width)
-		element.css('height', this.height)
+			this.style('width', this.width)
+		this.style('height', this.height)
 		this.paintedWidth = w;
 		this.paintedHeight = h;
 		switch(this.verticalAlignment) {
-		case this.AlignTop:		element.css('margin-top', 0); break
-		case this.AlignBottom:	element.css('margin-top', this.height - this.paintedHeight); break
-		case this.AlignVCenter:	element.css('margin-top', (this.height - this.paintedHeight) / 2); break
+		case this.AlignTop:		this.style('margin-top', 0); break
+		case this.AlignBottom:	this.style('margin-top', this.height - this.paintedHeight); break
+		case this.AlignVCenter:	this.style('margin-top', (this.height - this.paintedHeight) / 2); break
 		}
 	}
 
@@ -1059,23 +1100,23 @@ exports._setup = function() {
 	exports.core.Text.prototype._update = function(name, value) {
 		switch(name) {
 			case 'text': if (htmlRe.exec(value)) this.element.html(value); else this.element.text(value); this._updateSize(); break;
-			case 'color': this.element.css('color', normalizeColor(value)); break;
+			case 'color': this.style('color', normalizeColor(value)); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
 				switch(value) {
-				case this.AlignLeft:	this.element.css('text-align', 'left'); break
-				case this.AlignRight:	this.element.css('text-align', 'right'); break
-				case this.AlignHCenter:	this.element.css('text-align', 'center'); break
-				case this.AlignJustify:	this.element.css('text-align', 'justify'); break
+				case this.AlignLeft:	this.style('text-align', 'left'); break
+				case this.AlignRight:	this.style('text-align', 'right'); break
+				case this.AlignHCenter:	this.style('text-align', 'center'); break
+				case this.AlignJustify:	this.style('text-align', 'justify'); break
 				}
 				break
 			case 'wrapMode':
 				switch(value) {
-				case this.NoWrap:		this.element.css('white-space', 'nowrap'); break
-				case this.WordWrap:		this.element.css('white-space', 'normal'); break
-				case this.WrapAnywhere:	this.element.css('white-space', 'nowrap'); break	//TODO: implement.
-				case this.Wrap:			this.element.css('white-space', 'nowrap'); break	//TODO: implement.
+				case this.NoWrap:		this.style('white-space', 'nowrap'); break
+				case this.WordWrap:		this.style('white-space', 'normal'); break
+				case this.WrapAnywhere:	this.style('white-space', 'nowrap'); break	//TODO: implement.
+				case this.Wrap:			this.style('white-space', 'nowrap'); break	//TODO: implement.
 				}
 				this._updateSize();
 				break
@@ -1122,14 +1163,14 @@ exports._setup = function() {
 
 	exports.core.Rectangle.prototype._update = function(name, value) {
 		switch(name) {
-			case 'color': this.element.css('background-color', normalizeColor(value)); break;
+			case 'color': this.style('background-color', normalizeColor(value)); break;
 			case 'gradient': {
 				if (value) {
 					var decl = value._getDeclaration()
-					this.element.css('background-color', '')
-					this.element.css('background', Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')'))
+					this.style('background-color', '')
+					this.style('background', Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')'))
 				} else {
-					this.element.css('background', '')
+					this.style('background', '')
 					this._update('color', normalizeColor(this.color)) //restore color
 				}
 				break;
@@ -1148,23 +1189,23 @@ exports._setup = function() {
 			image.paintedWidth = tmp.naturalWidth
 			image.paintedHeight = tmp.naturalHeight
 
-			image.element.css('background-image', 'url(' + image.source + ')')
+			image.style('background-image', 'url(' + image.source + ')')
 			switch(image.fillMode) {
 				case image.Stretch:
-					image.element.css('background-repeat', 'no-repeat')
-					image.element.css('background-size', '100% 100%')
+					image.style('background-repeat', 'no-repeat')
+					image.style('background-size', '100% 100%')
 					break;
 				case image.TileVertically:
-					image.element.css('background-repeat', 'repeat-y')
-					image.element.css('background-size', '100%')
+					image.style('background-repeat', 'repeat-y')
+					image.style('background-size', '100%')
 					break;
 				case image.TileHorizontally:
-					image.element.css('background-repeat', 'repeat-x')
-					image.element.css('background-size', tmp.naturalWidth + 'px 100%')
+					image.style('background-repeat', 'repeat-x')
+					image.style('background-size', tmp.naturalWidth + 'px 100%')
 					break;
 				case image.PreserveAspectFit:
-					image.element.css('background-repeat', 'no-repeat')
-					image.element.css('background-position', 'center')
+					image.style('background-repeat', 'no-repeat')
+					image.style('background-position', 'center')
 					var wPart = image.width / tmp.naturalWidth
 					var hPart = image.height / tmp.naturalHeight
 					var wRatio = 100
@@ -1173,26 +1214,26 @@ exports._setup = function() {
 						wRatio = Math.floor(100 / wPart * hPart)
 					else
 						hRatio = Math.floor(100 / hPart * wPart)
-					image.element.css('background-size', wRatio + '% ' + hRatio + '%')
+					image.style('background-size', wRatio + '% ' + hRatio + '%')
 					image.paintedWidth = image.width * wRatio / 100
 					image.paintedHeight = image.height * hRatio / 100
 					break;
 				case image.PreserveAspectCrop:
-					image.element.css('background-repeat', 'no-repeat')
-					image.element.css('background-position', 'center')
+					image.style('background-repeat', 'no-repeat')
+					image.style('background-position', 'center')
 					var pRatio = tmp.naturalWidth / tmp.naturalHeight
 					var iRatio = image.width / image.height
 					if (pRatio < iRatio) {
 						var hRatio = Math.floor(iRatio / pRatio * 100)
-						image.element.css('background-size', 100 + '% ' + hRatio + '%')
+						image.style('background-size', 100 + '% ' + hRatio + '%')
 					}
 					else {
 						var wRatio = Math.floor(pRatio / iRatio * 100)
-						image.element.css('background-size', wRatio + '% ' + 100 + '%')
+						image.style('background-size', wRatio + '% ' + 100 + '%')
 					}
 					break;
 				case image.Tile:
-					image.element.css('background-repeat', 'repeat-y repeat-x')
+					image.style('background-repeat', 'repeat-y repeat-x')
 					break;
 			}
 

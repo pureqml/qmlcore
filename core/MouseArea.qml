@@ -27,7 +27,7 @@ Item {
 	property alias hover: containsMouse;
 	property alias hoverable: hoverEnabled;
 
-	onCursorChanged: { this.element.css('cursor', value) }
+	onCursorChanged: { this.style('cursor', value) }
 
 	onTouchEnabledChanged: {
 		if (value) {

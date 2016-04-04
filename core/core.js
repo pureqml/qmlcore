@@ -494,32 +494,40 @@ exports._setup = function() {
 		exports.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	var transition = {
+		transition: Modernizr.prefixedCSS('transition'),
+		property: Modernizr.prefixedCSS('transition-property'),
+		delay: Modernizr.prefixedCSS('transition-delay'),
+		duration: Modernizr.prefixedCSS('transition-duration'),
+		timing: Modernizr.prefixedCSS('transition-timing-function')
+	}
+	log(transition)
+
 	exports.core.Item.prototype.setTransition = function(name, animation) {
-		var attr = Modernizr.prefixedCSS('transition')
-		if (attr === false)
+		if (transition.transition === false)
 			return false
 
 		name = Modernizr.prefixedCSS(name) || name //replace transform: <prefix>rotate hack
 
-		var tProperty = this.element.css(attr + '-property').split(', ')
+		var tProperty = this.element.css(transition.property).split(',')
 
 		var idx = tProperty.indexOf(name)
 		if (idx === -1) { //if property not set
-			this.element.css(attr + '-delay', this.element.css(attr + '-delay') + ', 0s')
-			this.element.css(attr + '-duration', this.element.css(attr + '-duration') + ', ' + animation.duration + 'ms')
-			this.element.css(attr + '-property', this.element.css(attr + '-property') + ', ' + name)
-			this.element.css(attr + '-timing-function', this.element.css(attr + '-timing-function') + ', ' + animation.easing)
+			this.element.css(transition.delay, this.element.css(transition.delay) + ',0s')
+			this.element.css(transition.duration, this.element.css(transition.duration) + ',' + animation.duration + 'ms')
+			this.element.css(transition.property, this.element.css(transition.property) + ',' + name)
+			this.element.css(transition.timing, this.element.css(transition.timing) + ',' + animation.easing)
 		} else { //property already set, adjust the params
-//			var tDelay = this.element.css(attr + '-delay').split(', ') // uncomment when needed
-			var tDuration = this.element.css(attr + '-duration').split(', ')
-			var tFunction = this.element.css(attr + '-timing-function').split(', ') // need to handle commas between brackets
+			//var tDelay = this.element.css(transition.delay).split(',') // uncomment when needed
+			var tDuration = this.element.css(transition.duration).split(',')
+			var tFunction = this.element.css(transition.timing).split(',') // need to handle commas between brackets
 
 			tDuration[idx] = animation.duration + 'ms'
 			tFunction[idx] = animation.easing
 
 //			this.element.css(attr + '-delay', tDelay.toString())
-			this.element.css(attr + '-duration', tDuration.toString())
-			this.element.css(attr + '-timing-function', tFunction.toString())
+			this.element.css(transition.duration, tDuration.toString())
+			this.element.css(transition.duration, tFunction.toString())
 		}
 		return true
 	}

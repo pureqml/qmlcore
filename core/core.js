@@ -235,6 +235,15 @@ var colorTable = {
 	'transparent': '0000'
 }
 
+var safeCallImpl = function(callback, args, onError) {
+	try { return callback.apply(null, args) } catch(ex) { onError(ex) }
+}
+
+var safeCall = function(args, onError) {
+	return function(callback) { return safeCallImpl(callback, args, onError) }
+}
+
+
 /**
  * @constructor
  */
@@ -308,8 +317,9 @@ exports.core.Object.prototype.onPressed = function (name, callback) {
 
 exports.core.Object.prototype._update = function(name, value) {
 	if (name in this._changedHandlers) {
-		var handlers = this._changedHandlers[name];
-		handlers.forEach(function(callback) { try { callback(value) } catch(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) }})
+		var handlers = this._changedHandlers[name]
+		var invoker = safeCall([value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+		handlers.forEach(invoker)
 	}
 }
 
@@ -321,11 +331,12 @@ exports.core.Object.prototype.on = function (name, callback) {
 }
 
 exports.core.Object.prototype._emitSignal = function(name) {
-	var args = Array.prototype.slice.call(arguments);
-	args.shift();
+	var args = Array.prototype.slice.call(arguments)
+	args.shift()
+	var invoker = safeCall(args, function(ex) { log("signal " + name + " handler failed:", ex, ex.stack) })
 	if (name in this._signalHandlers) {
-		var handlers = this._signalHandlers[name];
-		handlers.forEach(function(callback) { try { callback.apply(this, args) } catch(ex) { log("signal " + name + " handler failed:", ex, ex.stack) } });
+		var handlers = this._signalHandlers[name]
+		handlers.forEach(invoker)
 	}
 }
 
@@ -1806,13 +1817,10 @@ exports._setup = function() {
 	}
 
 	exports.core.core.Context.prototype._processActions = function() {
+		var invoker = safeCall([], function (ex) { log('exception in delayed action', ex) })
 		while (this._delayedActions.length) {
 			var next = this._delayedActions.shift()
-			try {
-				next()
-			} catch(ex) {
-				log('exception in delayed action', ex)
-			}
+			invoker(next)
 		}
 		this._delayedTimeout = undefined
 	}

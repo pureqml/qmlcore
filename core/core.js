@@ -597,7 +597,8 @@ exports._setup = function() {
 			rules.push(rule.join(':'))
 		}
 
-		element.attr('style', rules.join(';'))
+		var dom = element[0]
+		dom.style = rules.join(';')
 	}
 
 	exports.core.Item.prototype.style = function(name, value) {

@@ -32,12 +32,30 @@ Item {
 
 	function onChanged (name, callback) {
 		if (!this._updateSizeNeeded) {
-			if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
-				this._updateSizeNeeded = true;
-				this._updateSize();
+			switch(name) {
+				case "right":
+				case "width":
+				case "bottom":
+				case "height":
+				case "verticalCenter":
+				case "horizontalCenter":
+					this._enableSizeUpdate()
 			}
 		}
 		qml.core.Object.prototype.onChanged.apply(this, arguments);
+	}
+
+	function on(name, callback) {
+		if (!this._updateSizeNeeded) {
+			if (name == 'boxChanged')
+				this._enableSizeUpdate()
+		}
+		qml.core.Object.prototype.on.apply(this, arguments)
+	}
+
+	function _enableSizeUpdate() {
+		this._updateSizeNeeded = true
+		this._updateSize()
 	}
 
 	function _updateSize() {
@@ -107,12 +125,5 @@ Item {
 				break
 		}
 		qml.core.Item.prototype._update.apply(this, arguments);
-	}
-
-	onCompleted: {
-		if (this._updateSizeNeeded)
-			this._delayedUpdateSize.schedule()
-		else
-			this._reflectSize()
 	}
 }

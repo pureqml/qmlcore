@@ -685,11 +685,11 @@ exports._setup = function() {
 	}
 
 	exports.core.Effects.prototype._updateStyle = function() {
-		var style = this._getFilterStyle()
+		var filterStyle = this._getFilterStyle()
 		var parent = this.parent
 		//chromium bug
 		//https://github.com/Modernizr/Modernizr/issues/981
-		var style = {'-webkit-filter': style, 'filter': style }
+		var style = {'-webkit-filter': filterStyle, 'filter': filterStyle }
 		if (this.shadow && !this.shadow._empty())
 			style['box-shadow'] = this.shadow._getFilterStyle()
 		parent.style(style)

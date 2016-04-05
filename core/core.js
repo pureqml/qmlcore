@@ -497,11 +497,6 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 	var storageName = '__property_' + name
 
-	var getStorage = function(obj) {
-		var p = obj[storageName]
-		return p !== undefined? p: (obj[storageName] = { value : defaultValue })
-	}
-
 	Object.defineProperty(proto, name, {
 		get: function() {
 			var p = this[storageName]
@@ -512,7 +507,13 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 		set: function(newValue) {
 			newValue = convert(newValue)
-			var p = getStorage(this)
+			var p = this[storageName]
+			if (p === undefined) { //no storage
+				if (newValue == defaultValue) //value == defaultValue, no storage allocation
+					return
+
+				p = this[storageName] = { value : defaultValue }
+			}
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
 				if (p.frameRequest)

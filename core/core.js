@@ -607,9 +607,9 @@ exports._setup = function() {
 			for(var k in name) {
 				var value = name[k]
 				if (value !== '') //fixme: replace it with explicit 'undefined' syntax
-					this._styles[name] = value
+					this._styles[k] = value
 				else
-					delete this._styles[name]
+					delete this._styles[k]
 			}
 			this._updateStyle()
 		}

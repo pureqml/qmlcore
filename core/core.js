@@ -399,10 +399,10 @@ exports.core.Color = function(value) {
 	if (value.substring(0, 4) == "rgba") {
 		var b = value.indexOf('('), e = value.lastIndexOf(')')
 		value = value.substring(b + 1, e).split(',')
-		this.r = value[0] * 1
-		this.g = value[1] * 1
-		this.b = value[2] * 1
-		this.a = value[3] * 1
+		this.r = parseInt(value[0])
+		this.g = parseInt(value[1])
+		this.b = parseInt(value[2])
+		this.a = parseInt(value[3])
 		return
 	}
 	else {

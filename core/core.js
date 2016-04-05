@@ -11,6 +11,29 @@ exports.core.vendor = ""
 
 exports.trace = { key: false, focus: false }
 
+var copyArguments = function(args, src, prefix) {
+	var dst = 0
+	if (src === undefined)
+		src = 0
+
+	var argsLength = args.length
+	var n = src < argsLength? argsLength - src: 0
+
+	var copy
+	if (prefix !== undefined) {
+		copy = new Array(n + 1)
+		copy[dst++] = prefix
+	} else
+		copy = new Array(n)
+
+	while(n--)
+		copy[dst++] = args[src++]
+
+	return copy
+}
+
+exports.core.copyArguments = copyArguments
+
 if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 	exports.core.vendor = "samsung"
@@ -18,7 +41,7 @@ if ('Common' in window) {
 	exports.core.os = "smartTV"
 
 	log = function(dummy) {
-		var args = Array.prototype.slice.call(arguments)
+		var args = copyArguments(arguments)
 		alert("[QML] " + args.join(" "))
 	}
 
@@ -47,7 +70,7 @@ if ('Common' in window) {
 
 if ('VK_UNSUPPORTED' in window) {
 	log = function(dummy) {
-		var args = Array.prototype.slice.call(arguments)
+		var args = copyArguments(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
 	log("operatv deteceted")
@@ -60,7 +83,7 @@ if ('VK_UNSUPPORTED' in window) {
 
 if ('webOS' in window) {
 	log = function(dummy) {
-		var args = Array.prototype.slice.call(arguments)
+		var args = copyArguments(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
 
@@ -87,7 +110,7 @@ if ('webOS' in window) {
 
 if ('tizen' in window) {
 	log = function(dummy) {
-		var args = Array.prototype.slice.call(arguments)
+		var args = copyArguments(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
 
@@ -103,7 +126,7 @@ var _checkDevice = function(target, info) {
 		return
 
 	log = function(dummy) {
-		var args = Array.prototype.slice.call(arguments)
+		var args = copyArguments(arguments)
 		console.log("[QML] " + args.join(" "))
 	}
 
@@ -330,8 +353,8 @@ exports.core.Object.prototype.on = function (name, callback) {
 }
 
 exports.core.Object.prototype._emitSignal = function(name) {
-	var args = Array.prototype.slice.call(arguments)
-	args.shift()
+	var name = arguments[0]
+	var args = copyArguments(arguments, 1)
 	var invoker = exports.core.safeCall(args, function(ex) { log("signal " + name + " handler failed:", ex, ex.stack) })
 	if (name in this._signalHandlers) {
 		var handlers = this._signalHandlers[name]
@@ -556,8 +579,7 @@ exports.addAliasProperty = function(self, name, getObject, getter, setter) {
 
 exports.addSignal = function(self, name) {
 	self[name] = (function() {
-		var args = Array.prototype.slice.call(arguments);
-		args.splice(0, 0, name);
-		self._emitSignal.apply(self, args);
+		var args = copyArguments(arguments, 0, name)
+		self._emitSignal.apply(self, args)
 	})
 }

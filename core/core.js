@@ -702,10 +702,10 @@ exports._setup = function() {
 		var parent = this.parent
 		//chromium bug
 		//https://github.com/Modernizr/Modernizr/issues/981
-		parent.style('-webkit-filter', style)
-		parent.style('filter', style)
+		var style = {'-webkit-filter': style, 'filter': style }
 		if (this.shadow && !this.shadow._empty())
-			parent.style('box-shadow', this.shadow._getFilterStyle())
+			style['box-shadow'] = this.shadow._getFilterStyle()
+		parent.style(style)
 	}
 
 	exports.core.Effects.prototype._update = function(name, value) {
@@ -1187,8 +1187,7 @@ exports._setup = function() {
 			case 'gradient': {
 				if (value) {
 					var decl = value._getDeclaration()
-					this.style('background-color', '')
-					this.style('background', Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')'))
+					this.style({ 'background-color': '', 'background': Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')') })
 				} else {
 					this.style('background', '')
 					this._update('color', normalizeColor(this.color)) //restore color
@@ -1209,23 +1208,23 @@ exports._setup = function() {
 			image.paintedWidth = tmp.naturalWidth
 			image.paintedHeight = tmp.naturalHeight
 
-			image.style('background-image', 'url(' + image.source + ')')
+			var style = {'background-image': 'url(' + image.source + ')'}
 			switch(image.fillMode) {
 				case image.Stretch:
-					image.style('background-repeat', 'no-repeat')
-					image.style('background-size', '100% 100%')
+					style['background-repeat'] = 'no-repeat'
+					style['background-size'] = '100% 100%'
 					break;
 				case image.TileVertically:
-					image.style('background-repeat', 'repeat-y')
-					image.style('background-size', '100%')
+					style['background-repeat'] = 'repeat-y'
+					style['background-size'] = '100%'
 					break;
 				case image.TileHorizontally:
-					image.style('background-repeat', 'repeat-x')
-					image.style('background-size', tmp.naturalWidth + 'px 100%')
+					style['background-repeat'] = 'repeat-x'
+					style['background-size'] = tmp.naturalWidth + 'px 100%'
 					break;
 				case image.PreserveAspectFit:
-					image.style('background-repeat', 'no-repeat')
-					image.style('background-position', 'center')
+					style['background-repeat'] = 'no-repeat'
+					style['background-position'] = 'center'
 					var wPart = image.width / tmp.naturalWidth
 					var hPart = image.height / tmp.naturalHeight
 					var wRatio = 100
@@ -1234,28 +1233,29 @@ exports._setup = function() {
 						wRatio = Math.floor(100 / wPart * hPart)
 					else
 						hRatio = Math.floor(100 / hPart * wPart)
-					image.style('background-size', wRatio + '% ' + hRatio + '%')
+					style['background-size'] = wRatio + '% ' + hRatio + '%'
 					image.paintedWidth = image.width * wRatio / 100
 					image.paintedHeight = image.height * hRatio / 100
 					break;
 				case image.PreserveAspectCrop:
-					image.style('background-repeat', 'no-repeat')
-					image.style('background-position', 'center')
+					style['background-repeat'] = 'no-repeat'
+					style['background-position'] = 'center'
 					var pRatio = tmp.naturalWidth / tmp.naturalHeight
 					var iRatio = image.width / image.height
 					if (pRatio < iRatio) {
 						var hRatio = Math.floor(iRatio / pRatio * 100)
-						image.style('background-size', 100 + '% ' + hRatio + '%')
+						style['background-size'] = 100 + '% ' + hRatio + '%'
 					}
 					else {
 						var wRatio = Math.floor(pRatio / iRatio * 100)
-						image.style('background-size', wRatio + '% ' + 100 + '%')
+						style['background-size'] = wRatio + '% ' + 100 + '%'
 					}
 					break;
 				case image.Tile:
-					image.style('background-repeat', 'repeat-y repeat-x')
+					style['background-repeat'] = 'repeat-y repeat-x'
 					break;
 			}
+			image.style(style)
 
 			if (!image.width)
 				image.width = image.paintedWidth

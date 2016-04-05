@@ -1731,9 +1731,9 @@ exports._setup = function() {
 		win.on('hashchange', function(event) { this.hash = window.location.hash; }.bind(this));
 
 		win.on('load', function() {
-			log('Context: window.load. calling completed()');
-			this._completed();
-			div.css('visibility', 'visible');
+			log('Context: window.load. calling completed()')
+			this._completed()
+			div.css('visibility', 'visible')
 		} .bind(this) );
 
 		var self = this;

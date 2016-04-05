@@ -1101,18 +1101,21 @@ exports._setup = function() {
 		var element = this.element
 		var dom = element[0]
 		var w = dom.offsetWidth, h = dom.offsetHeight
+		var style
 		if (!wrap)
-			this.style({width: this.width, height: this.height})
+			style = { width: this.width, height: this.height }
 		else
-			this.style('height', this.height)
+			style = {'height': this.height }
 
 		this.paintedWidth = w;
 		this.paintedHeight = h;
+
 		switch(this.verticalAlignment) {
-		case this.AlignTop:		this.style('margin-top', 0); break
-		case this.AlignBottom:	this.style('margin-top', this.height - this.paintedHeight); break
-		case this.AlignVCenter:	this.style('margin-top', (this.height - this.paintedHeight) / 2); break
+		case this.AlignTop:		style['margin-top'] = 0; break
+		case this.AlignBottom:	style['margin-top'] = this.height - this.paintedHeight; break
+		case this.AlignVCenter:	style['margin-top'] = (this.height - this.paintedHeight) / 2; break
 		}
+		this.style(style)
 	}
 
 	var htmlRe = /[&<]/

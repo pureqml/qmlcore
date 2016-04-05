@@ -2,6 +2,7 @@
 
 import compiler.grammar
 import compiler.js
+import compiler.lang
 import argparse
 import os, os.path
 import hashlib
@@ -19,14 +20,19 @@ if args.wait:
 	except:
 		raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
 
+
 compiler.grammar.source.parseWithTabs()
+
+data = ""
 grammar_source = compiler.grammar.__file__
-if grammar_source.endswith("pyc"):
-	#fixme: check that path exists
-	grammar_source = grammar_source[:-1]
 with open(grammar_source, "rb") as f:
-	data = f.read()
-	grammar_digest = hashlib.sha1(data).hexdigest()
+	data += f.read()
+
+grammar_source = compiler.lang.__file__
+with open(grammar_source, "rb") as f:
+	data += f.read()
+
+grammar_digest = hashlib.sha1(data).hexdigest()
 
 try:
 	os.mkdir(".cache")

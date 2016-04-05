@@ -29,7 +29,7 @@ class component_generator(object):
 		self.signal_handlers = {}
 		self.changed_handlers = {}
 		self.key_handlers = {}
-		self.signals = set()
+		self.signals = {}
 		self.id = None
 		self.prototype = prototype
 		self.ctor = ''
@@ -115,7 +115,7 @@ class component_generator(object):
 			name = child.name
 			if name in self.signals:
 				raise Exception("duplicate signal " + name)
-			self.signals.add(name)
+			self.signals[name] = child
 		else:
 			raise Exception("unhandled element: %s" %child)
 
@@ -160,8 +160,9 @@ class component_generator(object):
 
 		r = []
 		ident = "\t" * ident_n
-		for name in self.signals:
-			r.append("%sexports.%s.prototype.%s = function() { var args = Array.prototype.slice.call(arguments); args.splice(0, 0, '%s'); this._emitSignal.apply(this, args) }" %(ident, self.name, name, name))
+		for name, signal in self.signals.iteritems():
+			args = ", ".join(signal.args)
+			r.append("%sexports.%s.prototype.%s = function(%s) { this._emitSignal('%s'%s) }" %(ident, self.name, name, args, name, (", " + args) if args else ""))
 
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode

@@ -614,7 +614,10 @@ exports._setup = function() {
 
 	exports.core.Item.prototype.style = function(name, value) {
 		if (value !== undefined) {
-			this._styles[name] = value
+			if (value !== '') //fixme: replace it with explicit 'undefined' syntax
+				this._styles[name] = value
+			else
+				delete this._styles[name]
 			this._updateStyle()
 		} else {
 			if (name instanceof Object) {

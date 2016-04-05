@@ -45,6 +45,12 @@ Item {
 			this._delayedUpdateSize.schedule()
 	}
 
+	function _reflectSize() {
+		var dom = this.element[0]
+		this.paintedWidth = dom.offsetWidth
+		this.paintedHeight = dom.offsetHeight
+	}
+
 	function _updateSizeImpl() {
 		if (this.text.length === 0) {
 			this.paintedWidth = 0
@@ -58,17 +64,13 @@ Item {
 		else
 			this.style('height', 'auto')
 
-		var element = this.element
-		var dom = element[0]
-		var w = dom.offsetWidth, h = dom.offsetHeight
+		this._reflectSize()
+
 		var style
 		if (!wrap)
 			style = { width: this.width, height: this.height }
 		else
 			style = {'height': this.height }
-
-		this.paintedWidth = w;
-		this.paintedHeight = h;
 
 		switch(this.verticalAlignment) {
 		case this.AlignTop:		style['margin-top'] = 0; break
@@ -107,5 +109,10 @@ Item {
 		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	onCompleted: { this._delayedUpdateSize.schedule() }
+	onCompleted: {
+		if (this._updateSizeNeeded)
+			this._delayedUpdateSize.schedule()
+		else
+			this._reflectSize()
+	}
 }

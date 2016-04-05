@@ -570,6 +570,7 @@ exports._setup = function() {
 		'height': 'px',
 		'left': 'px',
 		'top': 'px',
+		'border-radius': 'px'
 	}
 
 	exports.core.Item.prototype._updateStyle = function() {

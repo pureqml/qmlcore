@@ -50,6 +50,22 @@ Object {
 		} //no parent == top level element, skip
 	}
 
+	function toScreen() {
+		var item = this
+		var x = 0, y = 0
+		var w = this.width, h = this.height
+		while(item) {
+			x += item.x
+			y += item.y
+			if ('view' in item) {
+				x += item.viewX + item.view.content.x
+				y += item.viewY + item.view.content.y
+			}
+			item = item.parent
+		}
+		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
+	}
+
 	onVisibleChanged: { this._updateVisibility() }
 	onOpacityChanged: { this._updateVisibility() }
 	setFocus: { this.forceActiveFocus(); }

@@ -845,39 +845,33 @@ exports._setup = function() {
 		var key = keyCodes[event.which];
 		if (key) {
 			if (key in this._pressedHandlers) {
-				var handlers = this._pressedHandlers[key];
+				var handlers = this._pressedHandlers[key]
+				var invoker = safeCall([key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
-					try {
-						if (callback(key, event)) {
-							if (exports.trace.key)
-								log("key", key, "handled by", this, new Error().stack)
-							return true;
-						}
-					} catch(ex) {
-						log("on " + key + " handler failed:", ex, ex.stack)
+					if (invoker(callback)) {
+						if (exports.trace.key)
+							log("key", key, "handled by", this, new Error().stack)
+						return true;
 					}
 				}
 			}
 
 			if ('Key' in this._pressedHandlers) {
-				var handlers = this._pressedHandlers['Key'];
+				var handlers = this._pressedHandlers['Key']
+				var invoker = safeCall([key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
-					try {
-						if (callback(key, event)) {
-							if (exports.trace.key)
-								log("key", key, "handled by", this, new Error().stack)
-							return true
-						}
-					} catch(ex) {
-						log("onKeyPressed handler failed:", ex, ex.stack)
+					if (invoker(callback)) {
+						if (exports.trace.key)
+							log("key", key, "handled by", this, new Error().stack)
+						return true
 					}
 				}
 			}
 		}
 		else {
-			log("unhandled key", event.which);
+			log("unknown key", event.which);
 		}
 		return false;
 	}
@@ -1783,16 +1777,11 @@ exports._setup = function() {
 		if (!this._started)
 			return
 
+		var invoker = safeCall([], function (ex) { log("onCompleted failed:", ex, ex.stack) })
 		while(this._completedHandlers.length) {
 			var ch = this._completedHandlers
 			this._completedHandlers = []
-			ch.forEach(function(callback) {
-				try {
-					callback()
-				} catch(ex) {
-					log("onCompleted failed:", ex, ex.stack)
-				}
-			} )
+			ch.forEach(invoker)
 		}
 	}
 

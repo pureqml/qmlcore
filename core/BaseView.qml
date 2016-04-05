@@ -181,7 +181,7 @@ Item {
 				value.visible = false
 			break
 		}
-		exports.core.Item.prototype._update.apply(this, arguments);
+		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
 

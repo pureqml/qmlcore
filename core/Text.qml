@@ -37,7 +37,7 @@ Item {
 				this._updateSize();
 			}
 		}
-		exports.core.Object.prototype.onChanged.apply(this, arguments);
+		qml.core.Object.prototype.onChanged.apply(this, arguments);
 	}
 
 	function _updateSize() {
@@ -83,7 +83,7 @@ Item {
 
 		switch(name) {
 			case 'text': if (htmlRe.exec(value)) this.element.html(value); else this.element.text(value); this._updateSize(); break;
-			case 'color': this.style('color', exports.core.normalizeColor(value)); break;
+			case 'color': this.style('color', qml.core.normalizeColor(value)); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
@@ -104,7 +104,7 @@ Item {
 				this._updateSize();
 				break
 		}
-		exports.core.Item.prototype._update.apply(this, arguments);
+		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
 	onCompleted: { this._delayedUpdateSize.schedule() }

@@ -14,7 +14,7 @@ Object {
 		if (this._target && parent && parent._updateAnimation && parent._updateAnimation(this._target, this.enabled() ? this: null))
 			return
 
-		exports.core.Object.prototype._update.apply(this, arguments);
+		qml.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	function interpolate(dst, src, t) {

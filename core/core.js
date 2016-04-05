@@ -615,7 +615,6 @@ exports._setup = function() {
 		}
 		else
 			return this._styles[name]
-		}
 	}
 
 	exports.core.Border.prototype._update = function(name, value) {

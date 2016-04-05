@@ -42,7 +42,7 @@ Object {
 
 	function _update(name, value) {
 		this._updateStyle()
-		exports.core.Object.prototype._update.apply(this, arguments)
+		qml.core.Object.prototype._update.apply(this, arguments)
 	}
 
 }

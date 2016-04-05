@@ -101,7 +101,7 @@ Item {
 					this.load();
 				break;
 		}
-		exports.core.Item.prototype._update.apply(this, arguments);
+		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
 }

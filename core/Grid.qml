@@ -30,7 +30,7 @@ Layout {
 	}
 
 	function addChild(child) {
-		exports.core.Item.prototype.addChild.apply(this, arguments)
+		qml.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
 		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))

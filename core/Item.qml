@@ -85,7 +85,7 @@ Object {
 
 	function setAnimation (name, animation) {
 		if (!this._updateAnimation(name, animation))
-			exports.core.Object.prototype.setAnimation.apply(this, arguments);
+			qml.core.Object.prototype.setAnimation.apply(this, arguments);
 	}
 
 
@@ -111,7 +111,7 @@ Object {
 	}
 
 	function addChild (child) {
-		exports.core.Object.prototype.addChild.apply(this, arguments)
+		qml.core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
 	}
@@ -154,7 +154,7 @@ Object {
 			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
 			case 'rotate':	this.style(window.Modernizr.prefixedCSS('transform'), window.Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
 		}
-		exports.core.Object.prototype._update.apply(this, arguments);
+		qml.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	function _updateVisibility () {
@@ -316,11 +316,11 @@ Object {
 				return true
 		}
 
-		var key = exports.core.keyCodes[event.which];
+		var key = qml.core.keyCodes[event.which];
 		if (key) {
 			if (key in this._pressedHandlers) {
 				var handlers = this._pressedHandlers[key]
-				var invoker = exports.core.safeCall([key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
+				var invoker = qml.core.safeCall([key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {
@@ -333,7 +333,7 @@ Object {
 
 			if ('Key' in this._pressedHandlers) {
 				var handlers = this._pressedHandlers['Key']
-				var invoker = exports.core.safeCall([key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
+				var invoker = qml.core.safeCall([key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {

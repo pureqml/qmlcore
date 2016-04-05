@@ -27,7 +27,7 @@ Object {
 			case 'interval': this._restart(); break;
 			case 'repeat': this._restart(); break;
 		}
-		exports.core.Object.prototype._update.apply(this, arguments);
+		qml.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	function _restart() {

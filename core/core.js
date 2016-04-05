@@ -566,12 +566,18 @@ exports._setup = function() {
 	}
 
 	var cssUnits = {
-		'width': 'px',
-		'height': 'px',
 		'left': 'px',
 		'top': 'px',
+		'width': 'px',
+		'height': 'px',
+
 		'border-radius': 'px',
-		'border-width': 'px'
+		'border-width': 'px',
+
+		'margin-left': 'px',
+		'margin-top': 'px',
+		'margin-right': 'px',
+		'margin-top': 'px'
 	}
 
 	exports.core.Item.prototype._updateStyle = function() {

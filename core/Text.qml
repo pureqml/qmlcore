@@ -28,4 +28,5 @@ Item {
 			self._updateSizeImpl()
 		})
 	}
+	onCompleted: { this._updateSize() }
 }

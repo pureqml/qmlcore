@@ -353,7 +353,6 @@ exports.core.Object.prototype.on = function (name, callback) {
 }
 
 exports.core.Object.prototype._emitSignal = function(name) {
-	var name = arguments[0]
 	var args = copyArguments(arguments, 1)
 	var invoker = exports.core.safeCall(args, function(ex) { log("signal " + name + " handler failed:", ex, ex.stack) })
 	if (name in this._signalHandlers) {

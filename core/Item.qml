@@ -66,6 +66,292 @@ Object {
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
+	function _updateAnimation(name, animation) {
+		if (!window.Modernizr.csstransitions || (animation && !animation.cssTransition))
+			return false
+
+		var css = this._mapCSSAttribute(name)
+
+		if (css !== undefined) {
+			if (!animation)
+				throw "resetting transition was not implemented"
+
+			animation._target = name
+			return this.setTransition(css, animation)
+		} else {
+			return false
+		}
+	}
+
+	function setAnimation (name, animation) {
+		if (!this._updateAnimation(name, animation))
+			exports.core.Object.prototype.setAnimation.apply(this, arguments);
+	}
+
+
+	function style(name, value) {
+		if (value !== undefined) {
+			if (value !== '') //fixme: replace it with explicit 'undefined' syntax
+				this._styles[name] = value
+			else
+				delete this._styles[name]
+			this._updateStyle()
+		} else if (name instanceof Object) { //style({ }) assignment
+			for(var k in name) {
+				value = name[k]
+				if (value !== '') //fixme: replace it with explicit 'undefined' syntax
+					this._styles[k] = value
+				else
+					delete this._styles[k]
+			}
+			this._updateStyle()
+		}
+		else
+			return this._styles[name]
+	}
+
+	function addChild (child) {
+		exports.core.Object.prototype.addChild.apply(this, arguments)
+		if (child._tryFocus())
+			child._propagateFocusToParents()
+	}
+
+	function _mapCSSAttribute (name) {
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', translateX: 'transform'}[name]
+	}
+
+	function _update (name, value) {
+		switch(name) {
+			case 'width':
+				this.style('width', value)
+				this.boxChanged()
+				break;
+
+			case 'height':
+				this.style('height', value);
+				this.boxChanged()
+				break;
+
+			case 'x':
+			case 'viewX':
+				var x = this.x + this.viewX
+				this.style('left', x);
+				this.boxChanged()
+				break;
+
+			case 'y':
+			case 'viewY':
+				var y = this.y + this.viewY
+				this.style('top', y);
+				this.boxChanged()
+				break;
+
+			case 'opacity': if (this.element) /*FIXME*/this.style('opacity', value); break;
+			case 'recursiveVisible': if (this.element) /*FIXME*/this.style('visibility', value? 'visible': 'hidden'); break;
+			case 'z':		this.style('z-index', value); break;
+			case 'radius':	this.style('border-radius', value); break;
+			case 'translateX':	this.style(window.Modernizr.prefixedCSS('transform'), window.Modernizr.prefixedCSSValue('transform', 'translate3d(' + value + 'px, 0px, 0px)')); break;
+			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
+			case 'rotate':	this.style(window.Modernizr.prefixedCSS('transform'), window.Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
+		}
+		exports.core.Object.prototype._update.apply(this, arguments);
+	}
+
+	function _updateVisibility () {
+		var visible = ('visible' in this)? this.visible: true
+//		var opacity = ('opacity' in this)? this.opacity: 1.0
+		this.recursiveVisible = this._recursiveVisible && this.visible// && this.opacity > 0.004 //~1/255
+		if (!visible && this.parent)
+			this.parent._tryFocus() //try repair local focus on visibility changed
+	}
+
+	function forceActiveFocus () {
+		var item = this;
+		while(item.parent) {
+			item.parent._focusChild(item);
+			item = item.parent;
+		}
+	}
+
+	function _tryFocus () {
+		if (!this.visible)
+			return false
+
+		if (this.focusedChild && this.focusedChild._tryFocus())
+			return true
+
+		var children = this.children
+		for(var i = 0; i < children.length; ++i) {
+			var child = children[i]
+			if (child._tryFocus()) {
+				this._focusChild(child)
+				return true
+			}
+		}
+		return this.focus
+	}
+
+	function _propagateFocusToParents () {
+		var item = this;
+		while(item.parent && (!item.parent.focusedChild || !item.parent.focusedChild.visible)) {
+			item.parent._focusChild(item)
+			item = item.parent
+		}
+	}
+	function hasActiveFocus () {
+		var item = this
+		while(item.parent) {
+			if (item.parent.focusedChild != item)
+				return false
+
+			item = item.parent
+		}
+		return true
+	}
+
+	function _focusTree (active) {
+		this.activeFocus = active;
+		if (this.focusedChild)
+			this.focusedChild._focusTree(active);
+	}
+
+	function _focusChild  (child) {
+		if (child.parent !== this)
+			throw "invalid object passed as child"
+		if (this.focusedChild === child)
+			return
+		if (this.focusedChild)
+			this.focusedChild._focusTree(false)
+		this.focusedChild = child
+		if (this.focusedChild)
+			this.focusedChild._focusTree(this.hasActiveFocus())
+	}
+
+	function focusChild (child) {
+		this._propagateFocusToParents()
+		this._focusChild(child)
+	}
+
+	function setTransition(name, animation) {
+		if (!window.Modernizr.csstransitions)
+			return false
+
+		var transition = {
+			property: window.Modernizr.prefixedCSS('transition-property'),
+			delay: window.Modernizr.prefixedCSS('transition-delay'),
+			duration: window.Modernizr.prefixedCSS('transition-duration'),
+			timing: window.Modernizr.prefixedCSS('transition-timing-function')
+		}
+
+		name = window.Modernizr.prefixedCSS(name) || name //replace transform: <prefix>rotate hack
+
+		var property = this.style(transition.property) || []
+		var duration = this.style(transition.duration) || []
+		var timing = this.style(transition.timing) || []
+		var delay = this.style(transition.delay) || []
+
+		var idx = property.indexOf(name)
+		if (idx === -1) { //if property not set
+			property.push(name)
+			duration.push(animation.duration + 'ms')
+			timing.push(animation.easing)
+			delay.push('0s')
+		} else { //property already set, adjust the params
+			duration[idx] = animation.duration + 'ms'
+			timing[idx] = animation.easing
+		}
+
+		var style = {}
+		style[transition.property] = property
+		style[transition.duration] = duration
+		style[transition.timing] = timing
+		style[transition.delay] = delay
+		this.style(style)
+		return true
+	}
+
+	function _updateStyle() {
+		var element = this.element
+		if (!element)
+			return
+
+		var cssUnits = {
+			'left': 'px',
+			'top': 'px',
+			'width': 'px',
+			'height': 'px',
+
+			'border-radius': 'px',
+			'border-width': 'px',
+
+			'margin-left': 'px',
+			'margin-top': 'px',
+			'margin-right': 'px',
+			'margin-top': 'px'
+		}
+
+		var rules = []
+		for(var name in this._styles) {
+			var value = this._styles[name]
+			var rule = []
+
+			rule.push(name)
+			if (Array.isArray(value))
+				value = value.join(',')
+
+			var unit = value && Number.isFinite(value)? cssUnits[name] || '': ''
+			rule.push(value + unit)
+
+			rules.push(rule.join(':'))
+		}
+
+		var dom = element[0]
+		dom.style = rules.join(';')
+	}
+
+	function _processKey(event) {
+		this._tryFocus() //soft-restore focus for invisible components
+		if (this.focusedChild && this.focusedChild.visible) {
+			if (this.focusedChild._processKey(event))
+				return true
+		}
+
+		var key = exports.core.keyCodes[event.which];
+		if (key) {
+			if (key in this._pressedHandlers) {
+				var handlers = this._pressedHandlers[key]
+				var invoker = exports.core.safeCall([key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
+				for(var i = handlers.length - 1; i >= 0; --i) {
+					var callback = handlers[i]
+					if (invoker(callback)) {
+						if (exports.trace.key)
+							log("key", key, "handled by", this, new Error().stack)
+						return true;
+					}
+				}
+			}
+
+			if ('Key' in this._pressedHandlers) {
+				var handlers = this._pressedHandlers['Key']
+				var invoker = exports.core.safeCall([key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
+				for(var i = handlers.length - 1; i >= 0; --i) {
+					var callback = handlers[i]
+					if (invoker(callback)) {
+						if (exports.trace.key)
+							log("key", key, "handled by", this, new Error().stack)
+						return true
+					}
+				}
+			}
+		}
+		else {
+			log("unknown key", event.which);
+		}
+		return false;
+	}
+
+
+
 	onVisibleChanged: { this._updateVisibility() }
 	onOpacityChanged: { this._updateVisibility() }
 	setFocus: { this.forceActiveFocus(); }

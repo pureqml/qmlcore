@@ -15,6 +15,7 @@ Item {
 	};
 
 	property Font font: Font {}
+
 	property int paintedWidth;
 	property int paintedHeight;
 
@@ -28,5 +29,86 @@ Item {
 			self._updateSizeImpl()
 		})
 	}
+
+	function onChanged (name, callback) {
+		if (!this._updateSizeNeeded) {
+			if (name === "right" || name === "width" || name === "bottom" || name === "height" || name === "verticalCenter" || name === "horizontalCenter") {
+				this._updateSizeNeeded = true;
+				this._updateSize();
+			}
+		}
+		exports.core.Object.prototype.onChanged.apply(this, arguments);
+	}
+
+	function _updateSize() {
+		if (this._updateSizeNeeded)
+			this._delayedUpdateSize.schedule()
+	}
+
+	function _updateSizeImpl() {
+		if (!this._updateSizeNeeded)
+			return;
+
+		if (this.text.length === 0) {
+			this.paintedWidth = 0
+			this.paintedHeight = 0
+			return
+		}
+
+		var wrap = this.wrapMode != exports.core.Text.NoWrap
+		if (!wrap)
+			this.style({ width: 'auto', height: 'auto' }) //no need to reset it to width, it's already there
+		else
+			this.style('height', 'auto')
+
+		var element = this.element
+		var dom = element[0]
+		var w = dom.offsetWidth, h = dom.offsetHeight
+		var style
+		if (!wrap)
+			style = { width: this.width, height: this.height }
+		else
+			style = {'height': this.height }
+
+		this.paintedWidth = w;
+		this.paintedHeight = h;
+
+		switch(this.verticalAlignment) {
+		case this.AlignTop:		style['margin-top'] = 0; break
+		case this.AlignBottom:	style['margin-top'] = this.height - this.paintedHeight; break
+		case this.AlignVCenter:	style['margin-top'] = (this.height - this.paintedHeight) / 2; break
+		}
+		this.style(style)
+	}
+
+	function _update(name, value) {
+		var htmlRe = /[&<]/
+
+		switch(name) {
+			case 'text': if (htmlRe.exec(value)) this.element.html(value); else this.element.text(value); this._updateSize(); break;
+			case 'color': this.style('color', exports.core.normalizeColor(value)); break;
+			case 'width': this._updateSize(); break;
+			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
+			case 'horizontalAlignment':
+				switch(value) {
+				case this.AlignLeft:	this.style('text-align', 'left'); break
+				case this.AlignRight:	this.style('text-align', 'right'); break
+				case this.AlignHCenter:	this.style('text-align', 'center'); break
+				case this.AlignJustify:	this.style('text-align', 'justify'); break
+				}
+				break
+			case 'wrapMode':
+				switch(value) {
+				case this.NoWrap:		this.style('white-space', 'nowrap'); break
+				case this.WordWrap:		this.style('white-space', 'normal'); break
+				case this.WrapAnywhere:	this.style('white-space', 'nowrap'); break	//TODO: implement.
+				case this.Wrap:			this.style('white-space', 'nowrap'); break	//TODO: implement.
+				}
+				this._updateSize();
+				break
+		}
+		exports.core.Item.prototype._update.apply(this, arguments);
+	}
+
 	onCompleted: { this._updateSize() }
 }

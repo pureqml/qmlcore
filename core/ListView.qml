@@ -2,7 +2,7 @@ BaseView {
 	property int spacing;
 	property enum orientation { Vertical, Horizontal };
 
-	move(dx, dy): {
+	function move(dx, dy) {
 		var horizontal = this.orientation == this.Horizontal
 		var x, y
 		if (horizontal && this.contentWidth > this.width) {
@@ -59,7 +59,7 @@ BaseView {
 		}
 	}
 
-	getItemPosition(idx): {
+	function getItemPosition(idx) {
 		var items = this._items
 		var item = items[idx]
 		if (!item) {
@@ -85,7 +85,7 @@ BaseView {
 			return [item.viewX + item.x, item.viewY + item.y, item.width, item.height]
 	}
 
-	indexAt(x, y): {
+	function indexAt(x, y) {
 		var items = this._items
 		var center = this.positionMode === this.Center
 		x += this.contentX
@@ -111,5 +111,109 @@ BaseView {
 		}
 		return -1
 	}
+
+	function _layout() {
+		if (!this.recursiveVisible)
+			return
+
+		var model = this.model;
+		if (!model)
+			return
+
+		this.count = model.count
+
+		var horizontal = this.orientation === this.Horizontal
+
+		var w = this.width, h = this.height
+		if (horizontal && w <= 0)
+			return
+
+		if (!horizontal && h <= 0)
+			return
+
+		var items = this._items
+		var n = items.length
+		if (!n)
+			return
+
+		//log("layout " + n + " into " + w + "x" + h)
+		var created = false
+		var p = 0
+		var c = horizontal? this.content.x: this.content.y
+		var size = horizontal? w: h
+		var maxW = 0, maxH = 0
+
+		var itemsCount = 0
+		//for(var i = 0; i < n && p + c < size; ++i) {
+		for(var i = 0; i < n; ++i) {
+			var item = items[i]
+
+			if (!item) {
+				//if (p + c >= size && itemsCount > 0)
+					//break
+				var row = this.model.get(i)
+				this._local['model'] = row
+				this._items[i] = item = this.delegate()
+				item.view = this
+				item.element.remove()
+				this.content.element.append(item.element)
+				item._local['model'] = row
+				delete this._local['model']
+				created = true
+			}
+
+			++itemsCount
+
+			var s = (horizontal? item.width: item.height)
+			//var visible = (p + c + s >= 0 && p + c < size)
+
+			if (item.x + item.width > maxW)
+				maxW = item.width + item.x
+			if (item.y + item.height > maxH)
+				maxH = item.height + item.y
+
+			if (horizontal)
+				item.viewX = p
+			else
+				item.viewY = p
+
+			if (this.currentIndex == i) {
+				this.focusChild(item)
+				if (this.contentFollowsCurrentItem)
+					this.positionViewAtIndex(i)
+			}
+
+			//TODO: show all items because of css transition animation
+			//item.visible = visible 
+			item.visible = true 
+			p += s + this.spacing
+		}
+		//for( ;i < n; ++i) {
+			//var item = items[i]
+			//if (item)
+				//item.visible = false
+		//}
+		if (p > 0)
+			p -= this.spacing;
+
+		if (itemsCount)
+			p *= items.length / itemsCount
+
+		if (horizontal) {
+			this.content.width = p
+			this.content.height = maxH
+			this.contentWidth = p
+			this.contentHeight = maxH
+		} else {
+			this.content.width = maxW
+			this.content.height = p
+			this.contentWidth = maxW
+			this.contentHeight = p
+		}
+		this.rendered = true
+		if (created)
+			this._get('context')._completed()
+	}
+
 	onOrientationChanged: { this._delayedLayout.schedule() }
 }

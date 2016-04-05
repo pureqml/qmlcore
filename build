@@ -11,6 +11,7 @@ import argparse
 parser = argparse.ArgumentParser('qml translation tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
 parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
+parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
 args = parser.parse_args()
 
 def minify(root, name, platform, manifest):
@@ -22,7 +23,8 @@ def minify(root, name, platform, manifest):
 			"--process_jquery_primitives",
 			"--jscomp_off=missingProperties",
 			src], stdout = out)
-	os.remove(src)
+	if not args.keep_temp:
+		os.remove(src)
 
 def copy(source, destination):
 	call(['cp', '-r'] + [path.join(source, file_) for file_ in os.listdir(source)] + [destination])

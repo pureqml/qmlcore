@@ -603,14 +603,18 @@ exports._setup = function() {
 			else
 				delete this._styles[name]
 			this._updateStyle()
-		} else {
-			if (name instanceof Object) {
-				for(var k in name)
-					this._styles[k] = name[k]
-				this._updateStyle()
+		} else if (name instanceof Object) { //style({ }) assignment
+			for(var k in name) {
+				var value = name[k]
+				if (value !== '') //fixme: replace it with explicit 'undefined' syntax
+					this._styles[name] = value
+				else
+					delete this._styles[name]
 			}
-			else
-				return this._styles[name]
+			this._updateStyle()
+		}
+		else
+			return this._styles[name]
 		}
 	}
 

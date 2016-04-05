@@ -46,16 +46,13 @@ Item {
 	}
 
 	function _updateSizeImpl() {
-		if (!this._updateSizeNeeded)
-			return;
-
 		if (this.text.length === 0) {
 			this.paintedWidth = 0
 			this.paintedHeight = 0
 			return
 		}
 
-		var wrap = this.wrapMode != exports.core.Text.NoWrap
+		var wrap = this.wrapMode != Text.NoWrap
 		if (!wrap)
 			this.style({ width: 'auto', height: 'auto' }) //no need to reset it to width, it's already there
 		else
@@ -110,5 +107,5 @@ Item {
 		exports.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	onCompleted: { this._updateSize() }
+	onCompleted: { this._delayedUpdateSize.schedule() }
 }

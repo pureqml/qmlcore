@@ -8,7 +8,7 @@ BaseView {
 
 	property enum flow { FlowLeftToRight, FlowTopToBottom };
 
-	move(dx, dy): {
+	function move(dx, dy) {
 		var horizontal = this.flow == this.FlowLeftToRight
 		var x, y
 		if (horizontal && this.contentHeight > this.height) {
@@ -50,7 +50,7 @@ BaseView {
 		}
 	}
 
-	getItemPosition(idx): {
+	function getItemPosition(idx) {
 		var horizontal = this.flow == this.FlowLeftToRight
 		var x, y, cw = this.cellWidth, ch = this.cellHeight
 		if (horizontal) {
@@ -67,7 +67,7 @@ BaseView {
 		return [x, y, cw, ch]
 	}
 
-	indexAt(x, y): {
+	function indexAt(x, y) {
 		var items = this._items
 		x -= this.content.x
 		y -= this.content.y
@@ -81,7 +81,7 @@ BaseView {
 		}
 	}
 
-	positionViewAtIndex(idx): {
+	function positionViewAtIndex(idx) {
 		var cx = this.contentX, cy = this.contentY
 		var itemBox = this.getItemPosition(idx)
 		var x = itemBox[0], y = itemBox[1]
@@ -108,6 +108,108 @@ BaseView {
 				this.contentY = y + ih - h
 		}
 	}
+
+	function _layout() {
+		if (!this.recursiveVisible)
+			return
+
+		var model = this.model;
+		if (!model)
+			return
+
+		this.count = model.count
+		if (!this.count)
+			return
+
+		var w = this.width, h = this.height
+		var horizontal = this.flow == this.FlowLeftToRight
+
+		if (horizontal && w <= 0)
+			return
+
+		if (!horizontal && h <= 0)
+			return
+
+		var items = this._items
+		var n = items.length
+		if (!n)
+			return
+
+		//log("layout " + n + " into " + w + "x" + h)
+		var created = false
+		var x = 0, y = 0
+		var cx = this.content.x, cy = this.content.y
+
+		var atEnd = function() { return horizontal? cy + y >= h: cx + x >= w }
+
+		var itemsCount = 0
+		for(var i = 0; i < n && !atEnd(); ++i) {
+			var item = this._items[i]
+
+			if (!item) {
+				var row = this.model.get(i)
+				this._local['model'] = row
+				this._items[i] = item = this.delegate()
+				item.view = this
+				item.element.remove()
+				this.content.element.append(item.element)
+				item._local['model'] = row
+				delete this._local['model']
+				created = true
+			}
+
+			++itemsCount
+
+			var visible = horizontal? (cy + y + item.height >= 0 && cy + y < h): (cx + x + item.width >= 0 && cx + x < w)
+
+			item.viewX = x
+			item.viewY = y
+
+			if (horizontal) {
+				x += this.cellWidth + this.spacing
+				if (x > 0 && x + this.cellWidth > w) {
+					x = 0
+					y += this.cellHeight + this.spacing
+				}
+			} else {
+				y += this.cellHeight + this.spacing
+				if (y > 0 && y + this.cellHeight > h) {
+					y = 0
+					x += this.cellWidth + this.spacing
+				}
+			}
+
+			if (this.currentIndex == i) {
+				this.focusChild(item)
+				if (this.contentFollowsCurrentItem)
+					this.positionViewAtIndex(i)
+			}
+
+			item.visible = visible
+		}
+		for( ;i < n; ++i) {
+			var item = items[i]
+			if (item)
+				item.visible = false
+		}
+
+		if (!horizontal) {
+			this.rows = Math.floor((h + this.spacing) / (this.cellHeight + this.spacing))
+			this.columns = Math.floor((n + this.rows - 1) / this.rows)
+			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing
+			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing
+		} else {
+			this.columns = Math.floor((w + this.spacing ) / (this.cellWidth + this.spacing))
+			this.rows = Math.floor((n + this.columns - 1) / this.columns)
+			this.contentWidth = this.columns * (this.cellWidth + this.spacing) - this.spacing
+			this.contentHeight = this.rows * (this.cellHeight + this.spacing) - this.spacing
+		}
+		//console.log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
+		this.rendered = true
+		if (created)
+			this._get('context')._completed()
+	}
+
 
 	onFlowChanged: { this._delayedLayout.schedule() }
 }

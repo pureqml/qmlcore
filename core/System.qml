@@ -8,10 +8,10 @@ Object {
 	property bool webkit;
 	property bool support3dTransforms;
 	property bool supportTransforms;
-	property bool portrait: context.width < context.height;
+	property bool portrait: parent.width < parent.height;
 	property bool landscape: !portrait;
 
-	onCompleted: {
+	constructor: {
 		var browser = ""
 		if (navigator.userAgent.indexOf('Chromium') >= 0)
 			browser = "Chromium"

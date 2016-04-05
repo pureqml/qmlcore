@@ -28,12 +28,12 @@ Item {
 		})
 	}
 
-	itemAt(x, y): {
+	function itemAt(x, y) {
 		var idx = this.indexAt(x, y)
 		return idx >= 0? this._items[idx]: null
 	}
 
-	positionViewAtIndex(idx): {
+	function positionViewAtIndex(idx) {
 		var cx = this.contentX, cy = this.contentY
 		var itemBox = this.getItemPosition(idx)
 		var x = itemBox[0], y = itemBox[1]
@@ -65,7 +65,7 @@ Item {
 		}
 	}
 
-	focusCurrent: {
+	function focusCurrent() {
 		var n = this.count
 		if (n == 0)
 			return
@@ -95,6 +95,95 @@ Item {
 	onCurrentIndexChanged: {
 		this.focusCurrent()
 	}
+
+	function _onReset() {
+		var model = this.model
+		var items = this._items
+		if (this.trace)
+			log("reset", items.length, model.count)
+
+		if (items.length == model.count && items.length == 0)
+			return
+
+		if (items.length > model.count) {
+			if (model.count != items.length)
+				this._onRowsRemoved(model.count, items.length)
+			if (items.length > 0)
+				this._onRowsChanged(0, items.length)
+		} else {
+			if (items.length > 0)
+				this._onRowsChanged(0, items.length)
+			if (model.count != items.length)
+				this._onRowsInserted(items.length, model.count)
+		}
+		if (items.length != model.count)
+			throw "reset failed"
+		this._delayedLayout.schedule()
+	}
+
+	function _onRowsInserted(begin, end) {
+		if (this.trace)
+			log("rows inserted", begin, end)
+		var items = this._items
+		for(var i = begin; i < end; ++i)
+			items.splice(i, 0, null)
+		if (items.length != this.model.count)
+			throw "insert failed"
+		this._delayedLayout.schedule()
+	}
+
+	function _onRowsChanged(begin, end) {
+		if (this.trace)
+			log("rows changed", begin, end)
+		var items = this._items
+		for(var i = begin; i < end; ++i) {
+			var item = items[i];
+			if (item && item.element)
+				item.element.remove()
+			items[i] = null
+		}
+		if (items.length != this.model.count)
+			throw "change failed"
+		this._delayedLayout.schedule()
+	}
+
+	function _onRowsRemoved(begin, end) {
+		log("rows removed", begin, end)
+		var items = this._items
+		for(var i = begin; i < end; ++i) {
+			var item = items[i];
+			if (item && item.element)
+				item.element.remove()
+			items[i] = null
+		}
+		items.splice(begin, end - begin)
+		if (items.length != this.model.count)
+			throw "remove failed"
+		this._delayedLayout.schedule()
+	}
+
+	function _attach() {
+		if (this._attached || !this.model || !this.delegate)
+			return
+
+		this.model.on('reset', this._onReset.bind(this))
+		this.model.on('rowsInserted', this._onRowsInserted.bind(this))
+		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
+		this.model.on('rowsRemoved', this._onRowsRemoved.bind(this))
+		this._attached = true
+		this._onReset()
+	}
+
+	function _update(name, value) {
+		switch(name) {
+		case 'delegate':
+			if (value)
+				value.visible = false
+			break
+		}
+		exports.core.Item.prototype._update.apply(this, arguments);
+	}
+
 
 	content: Item {
 		onXChanged:		{ this.parent._delayedLayout.schedule() }

@@ -448,10 +448,10 @@ class generator(object):
 		return "%s = %s();\n" %(ns, self.wrap(text))
 
 	def generate_startup(self):
-		r = "try {\n"
+		r = ""
+		r += "try {\n"
 		startup = []
-		startup.append("\tqml.core.core._setup()")
-		startup.append("\tqml._context = new qml.core.core.Context()")
+		startup.append("\tqml._context = new qml.core.Context()")
 		startup.append("\tqml._context.init(\"<div id='context'></div>\")")
 		startup += self.startup
 		r += "\n".join(startup)

@@ -73,3 +73,4 @@ class Behavior(object):
 class Signal(object):
 	def __init__(self, name):
 		self.name = name
+		self.args = []

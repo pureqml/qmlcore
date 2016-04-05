@@ -594,7 +594,7 @@ exports._setup = function() {
 			if (Array.isArray(value))
 				value = value.join(',')
 
-			var unit = value? cssUnits[name] || '': ''
+			var unit = value && Number.isFinite(value)? cssUnits[name] || '': ''
 			rule.push(value + unit)
 
 			rules.push(rule.join(':'))

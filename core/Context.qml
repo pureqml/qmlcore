@@ -44,7 +44,7 @@ Item {
 
 		win.on('load', function() {
 			log('Context: window.load. calling completed()')
-			this._completed()
+			this._complete()
 			div.css('visibility', 'visible')
 		} .bind(this) );
 
@@ -74,7 +74,7 @@ Item {
 		return !!window.Modernizr.prefixed('fullscreenElement', document)
 	}
 
-	function _completed() {
+	function _complete() {
 		if (!this._started)
 			return
 

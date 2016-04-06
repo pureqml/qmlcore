@@ -24,7 +24,7 @@ Item {
 
 	constructor: {
 		this.element.addClass('text')
-		this._fragment = null
+		this._fragment = []
 		this._setText(this.text)
 		var self = this
 		this._delayedUpdateSize = new qml.core.DelayedAction(function() {
@@ -32,28 +32,23 @@ Item {
 		})
 	}
 
-	function _createFragment(html) {
-		var fragment = document.createDocumentFragment()
-		var temp = document.createElement('div')
-
-		temp.innerHTML = html
-		while (temp.firstChild)
-			fragment.appendChild(temp.firstChild)
-		return fragment
-	}
-
 	function _setText(html) {
 		var dom = this.element[0]
-		if (this._fragment !== null) {
-			dom.removeChild(this._fragment)
-			this._fragment = null
-		}
+		this._fragment.forEach(function(node) { dom.removeChild(node) })
+		this._fragment = []
 
 		if (html === '')
 			return
 
-		this._fragment = this._createFragment(html)
-		dom.appendChild(this._fragment)
+		var fragment = document.createDocumentFragment()
+		var temp = document.createElement('div')
+
+		temp.innerHTML = html
+		while (temp.firstChild) {
+			this._fragment.push(temp.firstChild)
+			fragment.appendChild(temp.firstChild)
+		}
+		dom.appendChild(fragment)
 	}
 
 	function onChanged (name, callback) {

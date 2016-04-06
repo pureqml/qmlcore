@@ -6,6 +6,7 @@ Item {
 
 	constructor: {
 		this._started = false
+		this._completed = false
 		this._completedHandlers = []
 		this._delayedActions = []
 	}
@@ -78,12 +79,17 @@ Item {
 		if (!this._started)
 			return
 
+		this._completed = true
+
 		var invoker = qml.core.safeCall([], function (ex) { log("onCompleted failed:", ex, ex.stack) })
-		while(this._completedHandlers.length) {
-			var ch = this._completedHandlers
-			this._completedHandlers = []
-			ch.forEach(invoker)
-		}
+		do {
+			while(this._completedHandlers.length) {
+				var ch = this._completedHandlers
+				this._completedHandlers = []
+				ch.forEach(invoker)
+			}
+			this._processActions()
+		} while(this._completedHandlers.length)
 	}
 
 	function start(name) {
@@ -123,7 +129,7 @@ Item {
 	function scheduleAction(action) {
 		var da = this._delayedActions
 		this._delayedActions.push(action)
-		if (this._delayedTimeout === undefined)
+		if (this._completed && this._delayedTimeout === undefined) //do not schedule any processing before creation process ends
 			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
 	}
 

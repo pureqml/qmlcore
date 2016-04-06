@@ -275,6 +275,7 @@ Object {
 		if (!element)
 			return
 
+		/** @const */
 		var cssUnits = {
 			'left': 'px',
 			'top': 'px',

@@ -24,12 +24,36 @@ Item {
 
 	constructor: {
 		this.element.addClass('text')
-		this.textnode = document.createTextNode('')
-		this.element[0].appendChild(this.textnode)
+		this._fragment = null
+		this._setText(this.text)
 		var self = this
 		this._delayedUpdateSize = new qml.core.DelayedAction(function() {
 			self._updateSizeImpl()
 		})
+	}
+
+	function _createFragment(html) {
+		var fragment = document.createDocumentFragment()
+		var temp = document.createElement('div')
+
+		temp.innerHTML = html
+		while (temp.firstChild)
+			fragment.appendChild(temp.firstChild)
+		return fragment
+	}
+
+	function _setText(html) {
+		var dom = this.element[0]
+		if (this._fragment !== null) {
+			dom.removeChild(this._fragment)
+			this._fragment = null
+		}
+
+		if (html === '')
+			return
+
+		this._fragment = this._createFragment(html)
+		dom.appendChild(this._fragment)
 	}
 
 	function onChanged (name, callback) {
@@ -102,7 +126,7 @@ Item {
 
 	function _update(name, value) {
 		switch(name) {
-			case 'text': this.textnode.nodeValue = value; this._updateSize(); break;
+			case 'text': this._setText(value); this._updateSize(); break;
 			case 'color': this.style('color', qml.core.normalizeColor(value)); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break

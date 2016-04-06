@@ -306,7 +306,7 @@ Object {
 		}
 
 		var dom = element[0]
-		dom.style = rules.join(';')
+		dom.setAttribute('style', rules.join(';'))
 	}
 
 	function _processKey(event) {

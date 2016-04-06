@@ -24,6 +24,8 @@ Item {
 
 	constructor: {
 		this.element.addClass('text')
+		this.textnode = document.createTextNode('')
+		this.element[0].appendChild(this.textnode)
 		var self = this
 		this._delayedUpdateSize = new qml.core.DelayedAction(function() {
 			self._updateSizeImpl()
@@ -99,10 +101,8 @@ Item {
 	}
 
 	function _update(name, value) {
-		var htmlRe = /[&<]/
-
 		switch(name) {
-			case 'text': if (htmlRe.exec(value)) this.element.html(value); else this.element.text(value); this._updateSize(); break;
+			case 'text': this.textnode.nodeValue = value; this._updateSize(); break;
 			case 'color': this.style('color', qml.core.normalizeColor(value)); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break

@@ -22,7 +22,6 @@ Item {
 
 		var body = $('body');
 		var div = $(html);
-		div.css('visibility', 'hidden');
 		body.append(div);
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
 		$('head').append($("<style>" +
@@ -36,8 +35,9 @@ Item {
 		));
 
 		this.element = div
-		this.width = w;
-		this.height = h;
+		this.width = w
+		this.height = h
+		this.style('visibility', 'hidden')
 
 		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));
@@ -46,7 +46,7 @@ Item {
 		win.on('load', function() {
 			log('Context: window.load. calling completed()')
 			this._complete()
-			div.css('visibility', 'visible')
+			this.style('visibility', 'visible')
 		} .bind(this) );
 
 		var self = this;

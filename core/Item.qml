@@ -300,7 +300,7 @@ Object {
 			if (Array.isArray(value))
 				value = value.join(',')
 
-			var unit = value && Number.isFinite(value)? cssUnits[name] || '': ''
+			var unit = (typeof value === 'number')? cssUnits[name] || '': ''
 			rule.push(value + unit)
 
 			rules.push(rule.join(':'))

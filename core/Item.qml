@@ -288,7 +288,7 @@ Object {
 			'margin-left': 'px',
 			'margin-top': 'px',
 			'margin-right': 'px',
-			'margin-top': 'px'
+			'margin-bottom': 'px'
 		}
 
 		var rules = []

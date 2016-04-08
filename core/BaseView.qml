@@ -186,8 +186,8 @@ Item {
 
 
 	content: Item {
-		onXChanged:		{ this.parent._delayedLayout.schedule() }
-		onYChanged:		{ this.parent._delayedLayout.schedule() }
+		onXChanged:		{ this.parent._layout() }
+		onYChanged:		{ this.parent._layout() }
 	}
 
 	onContentXChanged: { this.content.x = -value; }

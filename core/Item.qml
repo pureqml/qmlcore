@@ -34,6 +34,7 @@ Object {
 
 	constructor: {
 		this._styles = {}
+		this._modernizrCache = {}
 		if (this.parent) {
 			if (this.element)
 				throw "double ctor call"
@@ -150,9 +151,9 @@ Object {
 			case 'recursiveVisible': if (this.element) /*FIXME*/this.style('visibility', value? 'visible': 'hidden'); break;
 			case 'z':		this.style('z-index', value); break;
 			case 'radius':	this.style('border-radius', value); break;
-			case 'translateX':	this.style(window.Modernizr.prefixedCSS('transform'), window.Modernizr.prefixedCSSValue('transform', 'translate3d(' + value + 'px, 0px, 0px)')); break;
+			case 'translateX':	this.style('transform', 'translate3d(' + value + 'px, 0px, 0px)'); break;
 			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
-			case 'rotate':	this.style(window.Modernizr.prefixedCSS('transform'), window.Modernizr.prefixedCSSValue('transform', 'rotate(' + value + 'deg)')); break
+			case 'rotate':	this.style('transform', 'rotate(' + value + 'deg)'); break
 		}
 		qml.core.Object.prototype._update.apply(this, arguments);
 	}
@@ -296,12 +297,18 @@ Object {
 			var value = this._styles[name]
 			var rule = []
 
-			rule.push(name)
+			var prefixedName = this._modernizrCache[name]
+			if (prefixedName === undefined)
+				this._modernizrCache[name] = prefixedName = Modernizr.prefixedCSS(name)
+			rule.push(prefixedName !== false? prefixedName: name)
 			if (Array.isArray(value))
 				value = value.join(',')
 
 			var unit = (typeof value === 'number')? cssUnits[name] || '': ''
-			rule.push(value + unit)
+			value += unit
+
+			var prefixedValue = Modernizr.prefixedCSSValue(name, value)
+			rule.push(prefixedValue !== false? prefixedValue: value)
 
 			rules.push(rule.join(':'))
 		}

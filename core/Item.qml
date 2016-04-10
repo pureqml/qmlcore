@@ -299,7 +299,7 @@ Object {
 
 			var prefixedName = this._modernizrCache[name]
 			if (prefixedName === undefined)
-				this._modernizrCache[name] = prefixedName = Modernizr.prefixedCSS(name)
+				this._modernizrCache[name] = prefixedName = window.Modernizr.prefixedCSS(name)
 			rule.push(prefixedName !== false? prefixedName: name)
 			if (Array.isArray(value))
 				value = value.join(',')
@@ -307,7 +307,7 @@ Object {
 			var unit = (typeof value === 'number')? cssUnits[name] || '': ''
 			value += unit
 
-			var prefixedValue = Modernizr.prefixedCSSValue(name, value)
+			var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
 			rule.push(prefixedValue !== false? prefixedValue: value)
 
 			rules.push(rule.join(':'))

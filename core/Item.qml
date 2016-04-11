@@ -307,7 +307,7 @@ Object {
 			var unit = (typeof value === 'number')? cssUnits[name] || '': ''
 			value += unit
 
-			var prefixedValue;
+			var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
 			rule.push(prefixedValue !== false? prefixedValue: value)
 
 			rules.push(rule.join(':'))

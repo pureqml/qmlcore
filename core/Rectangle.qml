@@ -17,7 +17,7 @@ Item {
 			case 'gradient': {
 				if (value) {
 					var decl = value._getDeclaration()
-					this.style({ 'background-color': '', 'background': window.Modernizr.prefixedCSSValue('background', 'linear-gradient(to ' + decl + ')') })
+					this.style({ 'background-color': '', 'background': 'linear-gradient(to ' + decl + ')' })
 				} else {
 					this.style('background', '')
 					this._update('color', qml.core.normalizeColor(this.color)) //restore color

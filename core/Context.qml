@@ -28,7 +28,7 @@ Item {
 			"body { overflow-x: hidden; }" +
 			"div#context { position: absolute; left: 0px; top: 0px; } " +
 			"div.text { width: auto; height: auto} " +
-			"div " + "{ position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
+			"div " + "{ position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; -webkit-backface-visibility:hidden } " +
 			"input { position: absolute; } " +
 			"img { position: absolute; -webkit-touch-callout: none; " + userSelect + " } " +
 			"</style>"

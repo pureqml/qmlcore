@@ -151,14 +151,7 @@ BaseView {
 			if (!item) {
 				//if (p + c >= size && itemsCount > 0)
 					//break
-				var row = this.model.get(i)
-				this._local['model'] = row
-				this._items[i] = item = this.delegate()
-				item.view = this
-				item.element.remove()
-				this.content.element.append(item.element)
-				item._local['model'] = row
-				delete this._local['model']
+				item = this._createDelegate(i)
 				created = true
 			}
 

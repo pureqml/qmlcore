@@ -184,6 +184,18 @@ Item {
 		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	function _createDelegate(idx) {
+		var row = this.model.get(idx)
+		this._local['model'] = row
+		var item = this.delegate()
+		this._items[idx] = item
+		item.view = this
+		item.element.remove()
+		this.content.element.append(item.element)
+		item._local['model'] = row
+		delete this._local['model']
+		return item
+	}
 
 	content: Item {
 		onXChanged:		{ this.parent._layout() }

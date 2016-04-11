@@ -147,14 +147,7 @@ BaseView {
 			var item = this._items[i]
 
 			if (!item) {
-				var row = this.model.get(i)
-				this._local['model'] = row
-				this._items[i] = item = this.delegate()
-				item.view = this
-				item.element.remove()
-				this.content.element.append(item.element)
-				item._local['model'] = row
-				delete this._local['model']
+				item = this.createDelegate(i)
 				created = true
 			}
 

@@ -147,7 +147,7 @@ BaseView {
 			var item = this._items[i]
 
 			if (!item) {
-				item = this.createDelegate(i)
+				item = this._createDelegate(i)
 				created = true
 			}
 

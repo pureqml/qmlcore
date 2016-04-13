@@ -508,7 +508,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			newValue = convert(newValue)
 			var p = this[storageName]
 			if (p === undefined) { //no storage
-				if (newValue == defaultValue) //value == defaultValue, no storage allocation
+				if (newValue === defaultValue) //value == defaultValue, no storage allocation
 					return
 
 				p = this[storageName] = { value : defaultValue }

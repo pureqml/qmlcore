@@ -205,11 +205,10 @@ Item {
 	onContentXChanged: { this.content.x = -value; }
 	onContentYChanged: { this.content.y = -value; }
 
-	onRecursiveVisibleChanged:	{ this._delayedLayout.schedule() }
-	onBoxChanged: 				{ this._delayedLayout.schedule() }
+	onRecursiveVisibleChanged:	{ if (value) this._delayedLayout.schedule(); }
 	onWidthChanged:				{ this._delayedLayout.schedule() }
 	onHeightChanged:			{ this._delayedLayout.schedule() }
-	onCompleted: { this._attach(); this._delayedLayout.schedule() }
+	onCompleted:				{ this._attach(); this._delayedLayout.schedule() }
 
 //	Behavior on contentX { Animation { duration: 300; } }
 //	Behavior on contentY { Animation { duration: 300; } }

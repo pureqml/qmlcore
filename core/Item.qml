@@ -90,16 +90,16 @@ Object {
 	}
 
 
-	function style(name, value) {
-		if (value !== undefined) {
-			if (value !== '') //fixme: replace it with explicit 'undefined' syntax
-				this._styles[name] = value
+	function style(name, style) {
+		if (style !== undefined) {
+			if (style !== '') //fixme: replace it with explicit 'undefined' syntax
+				this._styles[name] = style
 			else
 				delete this._styles[name]
 			this._updateStyle()
 		} else if (name instanceof Object) { //style({ }) assignment
 			for(var k in name) {
-				value = name[k]
+				var value = name[k]
 				if (value !== '') //fixme: replace it with explicit 'undefined' syntax
 					this._styles[k] = value
 				else

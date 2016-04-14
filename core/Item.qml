@@ -147,8 +147,8 @@ Object {
 				this.boxChanged()
 				break;
 
-			case 'opacity': if (this.element) /*FIXME*/this.style('opacity', value); break;
-			case 'recursiveVisible': if (this.element) /*FIXME*/this.style('visibility', value? 'visible': 'hidden'); break;
+			case 'opacity': if (this.element) this.style('opacity', value); break;
+			case 'visible': if (this.element) this.style('visibility', value? 'inherit': 'hidden'); break;
 			case 'z':		this.style('z-index', value); break;
 			case 'radius':	this.style('border-radius', value); break;
 			case 'translateX':	this.style('transform', 'translate3d(' + value + 'px, 0px, 0px)'); break;

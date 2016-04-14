@@ -160,8 +160,7 @@ Object {
 
 	function _updateVisibility () {
 		var visible = ('visible' in this)? this.visible: true
-//		var opacity = ('opacity' in this)? this.opacity: 1.0
-		this.recursiveVisible = this._recursiveVisible && this.visible// && this.opacity > 0.004 //~1/255
+		this.recursiveVisible = this._recursiveVisible && this.visible
 		if (!visible && this.parent)
 			this.parent._tryFocus() //try repair local focus on visibility changed
 	}
@@ -361,6 +360,5 @@ Object {
 
 
 	onVisibleChanged: { this._updateVisibility() }
-	onOpacityChanged: { this._updateVisibility() }
 	setFocus: { this.forceActiveFocus(); }
 }

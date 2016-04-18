@@ -6,7 +6,7 @@ var pluginAPI
 var Modernizr = window.Modernizr
 
 exports.core.os = navigator.platform
-exports.core.device = "desktop"
+exports.core.device = 0
 exports.core.vendor = ""
 
 exports.trace = { key: false, focus: false }
@@ -37,7 +37,7 @@ exports.core.copyArguments = copyArguments
 if ('Common' in window) {
 	alert("[QML] samsung smart tv")
 	exports.core.vendor = "samsung"
-	exports.core.device = "tv"
+	exports.core.device = 1
 	exports.core.os = "smartTV"
 
 	log = function(dummy) {
@@ -75,7 +75,7 @@ if ('VK_UNSUPPORTED' in window) {
 	}
 	log("operatv deteceted")
 	exports.core.vendor = "operatv"
-	exports.core.device = "tv"
+	exports.core.device = 1
 	exports.core.os = "operaOS"
 
 	log("loaded")
@@ -89,7 +89,7 @@ if ('webOS' in window) {
 
 	log("WebOS deteceted")
 	exports.core.vendor = "LG"
-	exports.core.device = "tv"
+	exports.core.device = 1
 	exports.core.os = "webOS"
 
 	var self = this
@@ -116,7 +116,7 @@ if ('tizen' in window) {
 
 	log("[QML] Tizen")
 	exports.core.vendor = "samsung"
-	exports.core.device = "tv"
+	exports.core.device = 1
 	exports.core.os = "tizen"
 	log("loaded")
 }
@@ -137,11 +137,11 @@ var _checkDevice = function(target, info) {
 	log("loaded")
 }
 
-_checkDevice('Blackberry', { 'vendor': 'blackberry', 'device': 'mobile', 'os': 'blackberry' })
-_checkDevice('Android', { 'vendor': 'google', 'device': 'mobile', 'os': 'android' })
-_checkDevice('iPhone', { 'vendor': 'apple', 'device': 'mobile', 'os': 'iOS' })
-_checkDevice('iPad', { 'vendor': 'apple', 'device': 'tablet', 'os': 'iOS' })
-_checkDevice('iPod', { 'vendor': 'apple', 'device': 'player', 'os': 'iOS' })
+_checkDevice('Blackberry', { 'vendor': 'blackberry', 'device': 2, 'os': 'blackberry' })
+_checkDevice('Android', { 'vendor': 'google', 'device': 2, 'os': 'android' })
+_checkDevice('iPhone', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
+_checkDevice('iPad', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
+_checkDevice('iPod', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
 
 if (exports.core.os == "smartTV")
 {

@@ -2,7 +2,6 @@ Object {
 	property string userAgent;
 	property string language;
 	property string browser;
-	property string device;
 	property string vendor;
 	property string os;
 	property bool webkit;
@@ -10,6 +9,34 @@ Object {
 	property bool supportTransforms;
 	property bool portrait: parent.width < parent.height;
 	property bool landscape: !portrait;
+	property int contextWidth: parent.width;
+	property int contextHeight: parent.height;
+	property enum device { Desktop, Tv, Mobile };
+	property enum layoutType { MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL, Laptop4K };
+
+	onContextWidthChanged: { this._updateLayoutType() }
+	onContextHeightChanged: { this._updateLayoutType() }
+
+	_updateLayoutType: {
+		if (!this.contextWidth || !this.contextHeight)
+			return
+		var min = this.contextWidth < this.contextHeight ? this.contextWidth : this.contextHeight
+
+		if (min <= 320)
+			this.layoutType = this.MobileS
+		else if (min <= 375)
+			this.layoutType = this.MobileM
+		else if (min <= 425)
+			this.layoutType = this.MobileL
+		else if (min <= 768)
+			this.layoutType = this.Tablet
+		else if (this.contextWidth <= 1024)
+			this.layoutType = this.Laptop
+		else if (this.contextWidth <= 1440)
+			this.layoutType = this.LaptopL
+		else
+			this.layoutType = this.Laptop4K
+	}
 
 	constructor: {
 		var browser = ""

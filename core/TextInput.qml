@@ -3,15 +3,21 @@ Item {
 	width: 173;
 	property string text;
 	property bool passwordMode: false;
+	property Color color: "#000000";
+	property Color backgroundColor: "#fff";
 
 	onCompleted: {
-		var input = $('<input>');
-		input.width(this.width);
-		input.height(this.height);
-		input[0].type = this.passwordMode ? "password" : "text"
+		var input = document.createElement("input");
+		input.setAttribute("type", this.passwordMode ? "password" : "text");
+		input.style.width = this.width + "px"
+		input.style.height = this.height + "px"
+		input.style.color = this.color
+		input.style.background = this.backgroundColor
+
 		var self = this
-		input.keyup(function() { self.text = this.value } );
-		input.keydown(function(event) { if (self._processKey(event)) event.preventDefault();} );
+		input.onkeyup = function() { self.text = this.value }
+		input.onkeydown = function(event) { if (self._processKey(event)) event.preventDefault();}
+
 		this.element.append(input)
 	}
 }

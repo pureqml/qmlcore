@@ -33,7 +33,7 @@ var_re = re.compile(r'\${(\w+)}', re.MULTILINE)
 
 def replace_index(destination, source, context):
 	_head, name = path.split(source)
-	destination = path.join(destination, context['id'] + '.html')
+	destination = path.join(destination, context['html'] + '.html')
 	with open(destination, 'wb') as fd, open(source) as fs:
 		data = fs.read()
 		data = var_re.sub(lambda x: context[x.group(1)], data)
@@ -51,7 +51,7 @@ def copy(source, destination, context):
 	call(['cp', '-r'] + copy_src + [destination])
 
 
-def build(root, name, platform, app, manifest):
+def build(root, name, platform, app, html, manifest):
 	print "building %s.%s for %s..." %(name, app, platform)
 	target = '.app.' + platform
 	try:
@@ -70,7 +70,7 @@ def build(root, name, platform, app, manifest):
 		script = minify(root, name, app, platform, manifest)
 
 	print "copying resources..."
-	context = { 'id': app, 'app': script }
+	context = { 'id': app, 'app': script, 'html': html }
 
 	copy(path.join(root, 'dist'), target, context)
 
@@ -107,4 +107,5 @@ if not platforms:
 
 for platform in platforms:
 	for app in apps:
-		build(root, name, platform, app, manifest)
+		html = apps[app]
+		build(root, name, platform, app, html, manifest)

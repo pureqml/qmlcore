@@ -30,8 +30,8 @@ def copy(source, destination):
 	call(['cp', '-r'] + [path.join(source, file_) for file_ in os.listdir(source)] + [destination])
 
 
-def build(root, name, platform, manifest):
-	print "building %s for %s..." %(name, platform)
+def build(root, name, platform, app, manifest):
+	print "building %s.%s for %s..." %(name, app, platform)
 	target = '.app.' + platform
 	try:
 		os.mkdir(target)
@@ -39,7 +39,7 @@ def build(root, name, platform, manifest):
 		pass
 
 	platform_path = path.join(root, 'platform', platform)
-	options = ['-o', target, path.join(root, 'core'), platform_path, '.']
+	options = ['-o', target, path.join(root, 'core'), platform_path, '.', '-a', app]
 	if args.devel:
 		options.insert(0, '-w')
 
@@ -66,6 +66,7 @@ def build(root, name, platform, manifest):
 root = os.path.dirname(sys.argv[0])
 
 platforms = None
+apps = ['app']
 with open('.manifest') as f:
 	manifest = json.load(f)
 
@@ -74,9 +75,13 @@ name = manifest['name']
 if 'platforms' in manifest:
 	platforms = manifest['platforms']
 
+if 'apps' in manifest:
+	apps = manifest['apps']
+
 if not platforms:
 	print "WARNING: .manifest was not found, building for html5 platform"
 	platforms = ['html5']
 
 for platform in platforms:
-	build(root, name, platform, manifest)
+	for app in apps:
+		build(root, name, platform, app, manifest)

@@ -5,19 +5,32 @@ Item {
 	property bool passwordMode: false;
 	property Color color: "#000000";
 	property Color backgroundColor: "#fff";
+	property Font font: Font {}
+	property Border border: Border {}
 
-	onCompleted: {
-		var input = document.createElement("input");
-		input.setAttribute("type", this.passwordMode ? "password" : "text");
-		input.style.width = this.width + "px"
-		input.style.height = this.height + "px"
-		input.style.color = this.color
-		input.style.background = this.backgroundColor
+	function _update(name, value) {
+		switch (name) {
+			case 'width': this._updateSize(); break
+			case 'height': this._updateSize(); break
+			case 'color': this.style('color', value); break
+			case 'backgroundColor': this.style('background', value); break
+			case 'passwordMode': this.element[0].setAttribute('type', value ? 'password' : 'text'); break
+		}
 
+		qml.core.Item.prototype._update.apply(this, arguments);
+	}
+
+	constructor: {
+		this.element.remove()
+		this.element = $(document.createElement('input'))
 		var self = this
-		input.onkeyup = function() { self.text = this.value }
-		input.onkeydown = function(event) { if (self._processKey(event)) event.preventDefault();}
+		this.element[0].onkeyup = function() { self.text = this.value }
+		this.element[0].onkeydown = function(event) { if (self._processKey(event)) event.preventDefault();}
+		this.parent.element.append(this.element)
+	}
 
-		this.element.append(input)
+	function _updateSize() {
+		var style = { width: this.width, height: this.height }
+		this.style(style)
 	}
 }

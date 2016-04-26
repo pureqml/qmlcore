@@ -51,7 +51,7 @@ def copy(source, destination, context):
 	call(['cp', '-r'] + copy_src + [destination])
 
 
-def build(root, name, platform, app, html, manifest):
+def build(root, name, platform, app, html, manifest, paths):
 	print "building %s.%s for %s..." %(name, app, platform)
 	target = '.app.' + platform
 	try:
@@ -60,7 +60,11 @@ def build(root, name, platform, app, html, manifest):
 		pass
 
 	platform_path = path.join(root, 'platform', platform)
-	options = ['-o', target, path.join(root, 'core'), platform_path, '.', '-a', app]
+
+        options = ['-o', target, path.join(root, 'core'), platform_path]
+        options.extend(paths)
+        options.extend(['.', '-a', app])
+
 	if args.devel:
 		options.insert(0, '-w')
 
@@ -98,6 +102,10 @@ name = manifest['name']
 if 'platforms' in manifest:
 	platforms = manifest['platforms']
 
+paths = []
+if 'path' in manifest:
+        paths = manifest['path']
+
 if 'apps' in manifest:
 	apps = manifest['apps']
 
@@ -108,4 +116,4 @@ if not platforms:
 for platform in platforms:
 	for app in apps:
 		html = apps[app]
-		build(root, name, platform, app, html, manifest)
+		build(root, name, platform, app, html, manifest, paths)

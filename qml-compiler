@@ -10,6 +10,7 @@ import cPickle
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", nargs='+')
+parser.add_argument("-a", dest="app")
 parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
 args = parser.parse_args()

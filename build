@@ -7,6 +7,7 @@ import json
 from subprocess import call
 from StringIO import StringIO
 import argparse
+import re
 
 parser = argparse.ArgumentParser('qml translation tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
@@ -14,9 +15,10 @@ parser.add_argument('--devel', '-d', action='store_true', default=False, help='d
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
 args = parser.parse_args()
 
-def minify(root, name, platform, manifest):
-	src = path.join(".app." + platform, "qml.js")
-	with open(path.join(".app." + platform, "qml.min.js"), "w") as out:
+def minify(root, name, app, platform, manifest):
+	src = path.join(".app." + platform, "qml.%s.js" % app)
+	dstname = "qml.%s.min.js" %app
+	with open(path.join(".app." + platform, dstname), "w") as out:
 		call(["java", "-jar", path.join(root, "compiler/gcc/compiler.jar"),
 			"--warning_level", "VERBOSE",
 			"--externs", path.join(root, "compiler/gcc/jquery-1.9.js"),
@@ -25,9 +27,28 @@ def minify(root, name, platform, manifest):
 			src], stdout = out)
 	if not args.keep_temp:
 		os.remove(src)
+	return dstname
 
-def copy(source, destination):
-	call(['cp', '-r'] + [path.join(source, file_) for file_ in os.listdir(source)] + [destination])
+var_re = re.compile(r'\${(\w+)}', re.MULTILINE)
+
+def replace_index(destination, source, context):
+	_head, name = path.split(source)
+	destination = path.join(destination, context['id'] + '.html')
+	with open(destination, 'wb') as fd, open(source) as fs:
+		data = fs.read()
+		data = var_re.sub(lambda x: context[x.group(1)], data)
+		fd.write(data)
+
+def copy(source, destination, context):
+	files = [path.join(source, file_) for file_ in os.listdir(source)]
+	copy_src = []
+	for src in files:
+		_path, name = path.split(src)
+		if name == 'index.html':
+			replace_index(destination, src, context)
+		else:
+			copy_src.append(src)
+	call(['cp', '-r'] + copy_src + [destination])
 
 
 def build(root, name, platform, app, manifest):
@@ -44,20 +65,22 @@ def build(root, name, platform, app, manifest):
 		options.insert(0, '-w')
 
 	call([path.join(root, 'qml-compiler')] + options)
+	script = 'qml.%s.js' %app #fixme
 	if args.minify or (('minify' in manifest) and manifest['minify']):
-		minify(root, name, platform, manifest)
+		script = minify(root, name, app, platform, manifest)
 
 	print "copying resources..."
+	context = { 'id': app, 'app': script }
 
-	copy(path.join(root, 'dist'), target)
+	copy(path.join(root, 'dist'), target, context)
 
 	platform_dist = path.join(platform_path, 'dist')
 	if path.isdir(platform_dist):
-		copy(platform_dist, target)
+		copy(platform_dist, target, context)
 
 	project_dist = path.join(os.getcwd(), 'dist')
 	if path.isdir(project_dist):
-		copy(project_dist, target)
+		copy(project_dist, target, context)
 
 	if path.isdir('res'):
 		call(['cp', '-ur', 'res', target])
@@ -66,7 +89,7 @@ def build(root, name, platform, app, manifest):
 root = os.path.dirname(sys.argv[0])
 
 platforms = None
-apps = ['app']
+apps = {'app': 'index.html' }
 with open('.manifest') as f:
 	manifest = json.load(f)
 

@@ -133,7 +133,7 @@ def generate():
 	app += "/** @const @type {!Object} */\n"
 	app += "var " + generator.generate(namespace)
 	app += generator.generate_startup()
-	with open(os.path.join(output_dir, namespace + ".js"), "wt") as f:
+	with open(os.path.join(output_dir, namespace + "." + args.app + ".js"), "wt") as f:
 		f.write(app)
 	print "done"
 

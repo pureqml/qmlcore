@@ -9,6 +9,8 @@ Item {
 	property bool	paused: false;
 	property bool	muted: false;
 	property bool	flasPlayerPaused: false;
+	property bool	waiting: false;
+	property bool	seeking: false;
 	property float	volume: 1.0;
 	property int	duration;
 	property int	progress;
@@ -33,19 +35,6 @@ Item {
 			}
 			this.flasPlayerPaused = false
 		} else {
-			if (!this.paused) {
-				this._player.attr('src', this.source)
-				this._player.get(0).controls = false
-				var self = this
-				this._player.get(0).ontimeupdate = function() { self.progress = self._player.get(0).currentTime }
-				this._player.get(0).onerror = function() { self.error() }
-				this._player.get(0).onended = function() { self.finished() }
-				this._player.get(0).onvolumechange = function() { self.muted = self._player.get(0).muted }
-				this._player.get(0).onprogress = function() {
-					var last = self._player.get(0).buffered.length - 1
-					self.buffered = self._player.get(0).buffered.end(last) - self._player.get(0).buffered.start(last)
-				}
-			}
 			this._player.get(0).play()
 		}
 
@@ -103,8 +92,8 @@ Item {
 	onLoopChanged: { if (this._player) this._player.attr('loop', this.loop) }
 
 	onCompleted: {
-		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0 ||
-			navigator.userAgent.indexOf('Chromium'))
+		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
+			//navigator.userAgent.indexOf('Chromium'))
 			this.flash = false
 
 		if (!this.flash) {
@@ -115,6 +104,39 @@ Item {
 				'>')
 			this._player.css('background-color', 'black')
 			this._player.attr('loop', this.loop)
+
+			var player = this._player.get(0)
+			var self = this
+			player.addEventListener('error', function () { log("Player error occured"); self.error() })
+			player.addEventListener('play', function () { self.waiting = false; self.paused = player.paused })
+			player.addEventListener('pause', function () { self.paused = player.paused })
+			player.addEventListener('ended', function () { self.finished() })
+			player.addEventListener('seeked', function () { log("seeked"); self.seeking = false; self.waiting = false })
+			player.addEventListener('canplay', function () { log("canplay", player.readyState); self.ready = player.readyState })
+			player.addEventListener('seeking', function () { log("seeking"); self.seeking = true; self.waiting = true })
+			player.addEventListener('waiting', function () { log("waiting"); self.waiting = true })
+			player.addEventListener('volumechange', function () { self.muted = player.muted })
+			player.addEventListener('stolled', function () { log("Was stolled", player.networkState); })
+			player.addEventListener('emptied', function () { log("Was emptied", player.networkState); })
+			player.addEventListener('canplaythrough', function () { log("Canplaythrough"); })
+
+			player.addEventListener('timeupdate', function () {
+				self.waiting = false
+				if (!self.seeking)
+					self.progress = player.currentTime
+			})
+
+			player.addEventListener('durationchange', function () {
+				var d = player.duration
+				self.duration = isFinite(d) ? d : 0
+			})
+
+			player.addEventListener('progress', function () {
+				var last = player.buffered.length - 1
+				self.waiting = false
+				if (last >= 0)
+					self.buffered = player.buffered.end(last) - player.buffered.start(last)
+			})
 		} else {
 			console.log("creating object")
 			this._player = $(
@@ -217,4 +239,34 @@ Item {
 	toggleMute:			{ this._player.get(0).muted = !this._player.get(0).muted }
 	onVolumeChanged:	{ this.applyVolume(); }
 	onReadyChanged:		{ log("ReadyState: " + this.ready); }
+
+	onError: {
+		this.paused = false
+		this.waiting = false
+		var player = this._player.get(0)
+
+		if (this.flash || !player || !player.error)
+			return
+
+		log("player.error", player.error)
+		if (player.error.code) {
+			switch (player.error.code) {
+			case 1:
+				log("MEDIA_ERR_ABORTED error occured")
+				break;
+			case 2:
+				log("MEDIA_ERR_NETWORK error occured")
+				break;
+			case 3:
+				log("MEDIA_ERR_DECODE error occured")
+				break;
+			case 4:
+				log("MEDIA_ERR_SRC_NOT_SUPPORTED error occured")
+				break;
+			default:
+				log("UNDEFINED error occured")
+				break;
+			}
+		}
+	}
 }

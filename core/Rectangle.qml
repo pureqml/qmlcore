@@ -1,5 +1,5 @@
 Item {
-	property color color: "#000";
+	property color color: "#0000";
 
 	property Border border: Border {}
 	property Gradient gradient;

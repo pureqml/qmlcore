@@ -48,7 +48,8 @@ def copy(source, destination, context):
 			replace_index(destination, src, context)
 		else:
 			copy_src.append(src)
-	call(['cp', '-r'] + copy_src + [destination])
+	if copy_src:
+		call(['cp', '-r'] + copy_src + [destination])
 
 
 def build(root, name, platform, app, html, manifest):

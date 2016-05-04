@@ -31,13 +31,20 @@ def minify(root, name, app, platform, manifest):
 
 var_re = re.compile(r'\${(\w+)}', re.MULTILINE)
 
-def process_template(destination, source, context):
+def process_template_simple(destination, source, context):
 	_head, name = path.split(source)
 	destination = path.join(destination, context['html'] + '.html')
 	with open(destination, 'wb') as fd, open(source) as fs:
 		data = fs.read()
 		data = var_re.sub(lambda x: context[x.group(1)], data)
 		fd.write(data)
+
+def process_template(destination, source, context):
+	t = context['templater']
+	if t == 'simple':
+		process_template_simple(destination, source, context)
+	else:
+		raise Exception('unknown templater used: %s' %t)
 
 def copy(source, destination, context):
 	files = [path.join(source, file_) for file_ in os.listdir(source)]
@@ -82,9 +89,10 @@ def build(root, name, platform, app, html, manifest):
 
 	if args.minify or (('minify' in manifest) and manifest['minify']):
 		script = minify(root, name, app, platform, manifest)
+	templater = manifest.get('templater', 'simple')
 
 	print "copying resources..."
-	context = { 'id': app, 'app': script, 'html': html }
+	context = { 'id': app, 'app': script, 'html': html, 'templater': templater }
 
 	copy(path.join(root, 'dist'), target, context)
 

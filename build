@@ -62,13 +62,13 @@ def build(root, name, platform, app, html, manifest):
 
 	platform_path = path.join(root, 'platform', platform)
 
-        paths = []
-        if 'path' in manifest:
-                paths = manifest['path']
+	paths = []
+	if 'path' in manifest:
+		paths = manifest['path']
 
-        options = ['-o', target, path.join(root, 'core'), platform_path]
-        options.extend(paths)
-        options.extend(['.', '-a', app])
+	options = ['-o', target, path.join(root, 'core'), platform_path]
+	options.extend(paths)
+	options.extend(['.', '-a', app])
 
 	if args.devel:
 		options.insert(0, '-w')

@@ -41,10 +41,16 @@ def process_template_simple(destination, source, context):
 		data = block_re.sub('', data)
 		fd.write(data)
 
+def process_template_jinja2(destination, source, context):
+	from jinja2 import Environment, PackageLoader
+	print destination, source, context
+
 def process_template(destination, source, context):
 	t = context['templater']
 	if t == 'simple':
 		process_template_simple(destination, source, context)
+	elif t == 'jinja2':
+		process_template_jinja2(destination, source, context)
 	else:
 		raise Exception('unknown templater used: %s' %t)
 

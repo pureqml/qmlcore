@@ -31,7 +31,7 @@ def minify(root, name, app, platform, manifest):
 
 var_re = re.compile(r'\${(\w+)}', re.MULTILINE)
 
-def replace_index(destination, source, context):
+def process_template(destination, source, context):
 	_head, name = path.split(source)
 	destination = path.join(destination, context['html'] + '.html')
 	with open(destination, 'wb') as fd, open(source) as fs:
@@ -45,9 +45,13 @@ def copy(source, destination, context):
 	for src in files:
 		_path, name = path.split(src)
 		if name == 'index.html':
-			replace_index(destination, src, context)
+			process_template(destination, src, context)
 		else:
-			copy_src.append(src)
+			name, ext = path.splitext(name)
+			if ext == '.html' and context['html'] == name:
+				process_template(destination, src, context)
+			else:
+				copy_src.append(src)
 	if copy_src:
 		call(['cp', '-r'] + copy_src + [destination])
 

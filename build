@@ -30,6 +30,7 @@ def minify(root, name, app, platform, manifest):
 	return dstname
 
 var_re = re.compile(r'{{([\w\.]+)}}', re.MULTILINE)
+block_re = re.compile(r'{%.*?%}', re.MULTILINE | re.IGNORECASE)
 
 def process_template_simple(destination, source, context):
 	_head, name = path.split(source)
@@ -37,6 +38,7 @@ def process_template_simple(destination, source, context):
 	with open(destination, 'wb') as fd, open(source) as fs:
 		data = fs.read()
 		data = var_re.sub(lambda x: context.get(x.group(1), ''), data)
+		data = block_re.sub('', data)
 		fd.write(data)
 
 def process_template(destination, source, context):

@@ -8,8 +8,10 @@
 	<script src="jquery-1.12.3.min.js"></script>
 	<script src="jquery.finger.js"></script>
 	<script src="modernizr-custom.js"></script>
+	{% block head %}{% endblock %}
 </head>
 <body style="font-family: Roboto">
+	{% block content %}{% endblock %}
 	<script src="{{app}}"></script>
 </body>
 </html>

@@ -29,14 +29,14 @@ def minify(root, name, app, platform, manifest):
 		os.remove(src)
 	return dstname
 
-var_re = re.compile(r'\${(\w+)}', re.MULTILINE)
+var_re = re.compile(r'{{([\w\.]+)}}', re.MULTILINE)
 
 def process_template_simple(destination, source, context):
 	_head, name = path.split(source)
 	destination = path.join(destination, context['html'] + '.html')
 	with open(destination, 'wb') as fd, open(source) as fs:
 		data = fs.read()
-		data = var_re.sub(lambda x: context[x.group(1)], data)
+		data = var_re.sub(lambda x: context.get(x.group(1), ''), data)
 		fd.write(data)
 
 def process_template(destination, source, context):

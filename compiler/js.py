@@ -53,6 +53,8 @@ class component_generator(object):
 		t = type(value)
 		if t is lang.Component:
 			value = component_generator(self.package + ".<anonymous>", value)
+		if t is str: #and value[0] == '"' and value[-1] == '"':
+			value = value.replace("\\\n", "")
 		self.assignments[target] = value
 
 	def has_property(self, name):

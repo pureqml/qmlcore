@@ -8,6 +8,7 @@ Item {
 		switch (name) {
 			case 'width': this._updateSize(); break
 			case 'height': this._updateSize(); break
+			case 'accept': this.element[0].setAttribute("accept", value); break
 		}
 
 		qml.core.Item.prototype._update.apply(this, arguments);

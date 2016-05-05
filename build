@@ -42,8 +42,13 @@ def process_template_simple(destination, source, context):
 		fd.write(data)
 
 def process_template_jinja2(destination, source, context):
-	from jinja2 import Environment, PackageLoader
-	print destination, source, context
+	from jinja2 import Environment, FileSystemLoader
+	src, name = path.split(source)
+	env = Environment(loader=FileSystemLoader(context['template_path']))
+	template = env.get_template(name)
+	destination = path.join(destination, context['html'] + '.html')
+	with open(destination, 'w') as fd:
+		fd.write(template.render(**context))
 
 def process_template(destination, source, context):
 	t = context['templater']
@@ -104,13 +109,20 @@ def build(root, name, platform, app, html, manifest):
 
 	copy(path.join(root, 'dist'), target, context)
 
+	template_path = []
+
 	platform_dist = path.join(platform_path, 'dist')
 	if path.isdir(platform_dist):
-		copy(platform_dist, target, context)
+		template_path.append(platform_dist)
+
 
 	project_dist = path.join(os.getcwd(), 'dist')
 	if path.isdir(project_dist):
-		copy(project_dist, target, context)
+		template_path.append(project_dist)
+
+	context['template_path'] = template_path
+	for dist in template_path:
+		copy(dist, target, context)
 
 	if path.isdir('res'):
 		call(['cp', '-ur', 'res', target])

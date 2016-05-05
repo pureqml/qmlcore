@@ -8,6 +8,11 @@ Item {
 	property enum fillMode { Stretch, PreserveAspectFit, PreserveAspectCrop, Tile, TileVertically, TileHorizontally };
 
 	constructor: {
+		var self = this
+		this._delayedLoad = new qml.core.DelayedAction(function() {
+			self._load()
+		})
+
 		this._init()
 	}
 
@@ -83,10 +88,14 @@ Item {
 		this.status = this.Error;
 	}
 
+	function _load() {
+		this._image.src = this.source
+	}
+
 	function load() {
 		var src = this.source
 		this.status = (src.length === 0)? Image.Null: Image.Loading
-		this._image.src = src
+		this._delayedLoad.schedule()
 	}
 
 	function _update(name, value) {

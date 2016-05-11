@@ -197,10 +197,7 @@ Item {
 		return item
 	}
 
-	content: Item {
-		onXChanged:		{ this.parent._layout() }
-		onYChanged:		{ this.parent._layout() }
-	}
+	content: BaseViewContent { }
 
 	onContentXChanged: { this.content.x = -value; }
 	onContentYChanged: { this.content.y = -value; }
@@ -208,7 +205,12 @@ Item {
 	onRecursiveVisibleChanged:	{ if (value) this._delayedLayout.schedule(); }
 	onWidthChanged:				{ this._delayedLayout.schedule() }
 	onHeightChanged:			{ this._delayedLayout.schedule() }
-	onCompleted:				{ this._attach(); this._delayedLayout.schedule() }
+	onCompleted:				{
+		this._attach();
+		var delayedLayout = this._delayedLayout
+		this.element.scroll(function(event) { delayedLayout.schedule() })
+		delayedLayout.schedule()
+	}
 
 //	Behavior on contentX { Animation { duration: 300; } }
 //	Behavior on contentY { Animation { duration: 300; } }

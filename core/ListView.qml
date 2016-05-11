@@ -144,13 +144,12 @@ BaseView {
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		//for(var i = 0; i < n && p + c < size; ++i) {
-		for(var i = 0; i < n; ++i) {
+		for(var i = 0; i < n && p + c < size; ++i) {
 			var item = items[i]
 
 			if (!item) {
-				//if (p + c >= size && itemsCount > 0)
-					//break
+				if (p + c >= size && itemsCount > 0)
+					break
 				item = this._createDelegate(i)
 				created = true
 			}
@@ -158,7 +157,7 @@ BaseView {
 			++itemsCount
 
 			var s = (horizontal? item.width: item.height)
-			//var visible = (p + c + s >= 0 && p + c < size)
+			var visible = (p + c + s >= 0 && p + c < size)
 
 			if (item.x + item.width > maxW)
 				maxW = item.width + item.x
@@ -176,16 +175,14 @@ BaseView {
 					this.positionViewAtIndex(i)
 			}
 
-			//TODO: show all items because of css transition animation
-			//item.visible = visible 
-			item.visible = true 
+			item.visible = visible
 			p += s + this.spacing
 		}
-		//for( ;i < n; ++i) {
-			//var item = items[i]
-			//if (item)
-				//item.visible = false
-		//}
+		for( ;i < n; ++i) {
+			var item = items[i]
+			if (item)
+				item.visible = false
+		}
 		if (p > 0)
 			p -= this.spacing;
 

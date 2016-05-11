@@ -208,7 +208,7 @@ Item {
 	onCompleted:				{
 		this._attach();
 		var delayedLayout = this._delayedLayout
-		this.element.scroll(function(event) { delayedLayout.schedule() })
+		this.element.scroll(function(event) { this.contentX = this.element.scrollLeft(); this.contentY = this.element.scrollTop() }.bind(this))
 		delayedLayout.schedule()
 	}
 

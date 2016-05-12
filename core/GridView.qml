@@ -194,8 +194,8 @@ BaseView {
 		} else {
 			this.columns = Math.floor((w + this.spacing ) / (this.cellWidth + this.spacing))
 			this.rows = Math.floor((n + this.columns - 1) / this.columns)
-			this.contentWidth = this.columns * (this.cellWidth + this.spacing) - this.spacing
-			this.contentHeight = this.rows * (this.cellHeight + this.spacing) - this.spacing
+			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing
+			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing
 		}
 		//console.log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		this.rendered = true

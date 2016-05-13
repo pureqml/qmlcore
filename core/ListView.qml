@@ -124,18 +124,13 @@ BaseView {
 
 		var horizontal = this.orientation === this.Horizontal
 
-		var w = this.width, h = this.height
-		if (horizontal && w <= 0)
-			return
-
-		if (!horizontal && h <= 0)
-			return
 
 		var items = this._items
 		var n = items.length
 		if (!n)
 			return
 
+		var w = this.width, h = this.height
 		//log("layout " + n + " into " + w + "x" + h)
 		var created = false
 		var p = 0

@@ -139,7 +139,7 @@ BaseView {
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		for(var i = 0; i < n && p + c < size; ++i) {
+		for(var i = 0; i < n && (itemsCount == 0 || p + c < size); ++i) {
 			var item = items[i]
 
 			if (!item) {

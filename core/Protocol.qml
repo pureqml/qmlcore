@@ -10,11 +10,11 @@ Object {
 			return;
 		this.loading = true
 		this.url = url
-		log("request", this.baseUrl + url, data)
+		log("request", this.baseUrl + url)
 		var self = this;
 		$.ajax({
 			url: self.baseUrl + url,
-			data: data,
+			data: JSON.stringify(data),
 			type: type || 'GET',
 			headers: headers || {}
 		}).done(function(res) {

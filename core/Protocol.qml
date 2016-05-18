@@ -38,10 +38,14 @@ Object {
 
 		var do_request = function() {
 			self.requestImpl(url, data, function(res) {
-				if (res.error)
-					log("Request failed: " + res.error.message);
-				else
+				if (!res) {
+					log("No content");
 					callback(res)
+				} else if (res.error) {
+					log("Request failed: " + res.error.message);
+				} else {
+					callback(res)
+				}
 			}, type, headers)
 		}
 

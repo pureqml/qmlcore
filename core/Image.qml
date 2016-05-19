@@ -43,17 +43,30 @@ Item {
 				case image.PreserveAspectFit:
 					style['background-repeat'] = 'no-repeat'
 					style['background-position'] = 'center'
-					var wPart = image.width / tmp.naturalWidth
-					var hPart = image.height / tmp.naturalHeight
+					var w = image.width
+					var h = image.height
+					var wPart = w / tmp.naturalWidth
+					var hPart = h / tmp.naturalHeight
 					var wRatio = 100
 					var hRatio = 100
+
+					if (wPart === 0) {
+						wPart = hPart
+						w = hPart * tmp.naturalWidth
+					}
+
+					if (hPart === 0) {
+						hPart = wPart
+						h = wPart * tmp.naturalHeight
+					}
+
 					if (wPart > hPart)
 						wRatio = Math.floor(100 / wPart * hPart)
 					else
 						hRatio = Math.floor(100 / hPart * wPart)
 					style['background-size'] = wRatio + '% ' + hRatio + '%'
-					image.paintedWidth = image.width * wRatio / 100
-					image.paintedHeight = image.height * hRatio / 100
+					image.paintedWidth = w * wRatio / 100
+					image.paintedHeight = h * hRatio / 100
 					break;
 				case image.PreserveAspectCrop:
 					style['background-repeat'] = 'no-repeat'

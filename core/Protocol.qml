@@ -17,9 +17,9 @@ Object {
 			data: JSON.stringify(data),
 			type: type || 'GET',
 			headers: headers || {}
-		}).done(function(res) {
+		}).done(function(res, status, jqXHR) {
 			if (callback)
-				callback(res)
+				callback(res, status, jqXHR)
 			self.loading = false 
 		}).fail(function(xhr, status, err) {
 			log("ajax request failed: " + JSON.stringify(status) + " status: " + xhr.status + " text: " + xhr.responseText)
@@ -37,10 +37,10 @@ Object {
 		var self = this;
 
 		var do_request = function() {
-			self.requestImpl(url, data, function(res) {
+			self.requestImpl(url, data, function(res, status, jqXHR) {
 				if (!res) {
 					log("No content");
-					callback(res)
+					callback(res, status, jqXHR)
 				} else if (res.error) {
 					log("Request failed: " + res.error.message);
 				} else {

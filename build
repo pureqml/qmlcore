@@ -48,7 +48,7 @@ def process_template_jinja2(destination, source, context):
 	template = env.get_template(name)
 	destination = path.join(destination, context['html'] + '.html')
 	with open(destination, 'w') as fd:
-		fd.write(template.render(**context))
+		fd.write(template.render(**context).encode('utf-8'))
 
 def process_template(destination, source, context):
 	t = context['templater']

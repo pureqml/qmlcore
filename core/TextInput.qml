@@ -1,4 +1,5 @@
 Item {
+	property enum horizontalAlignment { AlignLeft, AlignRight, AlignHCenter, Justify };
 	height: 20;
 	width: 173;
 	property string text;
@@ -17,6 +18,14 @@ Item {
 			case 'backgroundColor': this.style('background', value); break
 			case 'passwordMode': this.element[0].setAttribute('type', value ? 'password' : 'text'); break
 			case 'borderWidth': this.style('borderStyle', value ? 'inherit' : 'hidden'); break
+			case 'horizontalAlignment':
+				switch(value) {
+				case this.AlignLeft:	this.style('text-align', 'left'); break
+				case this.AlignRight:	this.style('text-align', 'right'); break
+				case this.AlignHCenter:	this.style('text-align', 'center'); break
+				case this.AlignJustify:	this.style('text-align', 'justify'); break
+				}
+				break
 		}
 
 		qml.core.Item.prototype._update.apply(this, arguments);

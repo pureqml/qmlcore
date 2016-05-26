@@ -11,6 +11,7 @@ Item {
 	property bool	flasPlayerPaused: false;
 	property bool	waiting: false;
 	property bool	seeking: false;
+	property bool	desktop: context.system.device == System.Desktop;
 	property float	volume: 1.0;
 	property int	duration;
 	property int	progress;
@@ -92,8 +93,7 @@ Item {
 	onLoopChanged: { if (this._player) this._player.attr('loop', this.loop) }
 
 	onCompleted: {
-		if (navigator.userAgent.indexOf('Android') >= 0 || navigator.userAgent.indexOf('iPhone') >= 0)
-			//navigator.userAgent.indexOf('Chromium'))
+		if (!this.desktop)
 			this.flash = false
 
 		if (!this.flash) {

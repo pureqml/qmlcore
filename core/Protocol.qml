@@ -5,19 +5,26 @@ Object {
 	property string baseUrl;
 	property string url;
 
-	requestImpl(url, data, callback, type, headers): {
+	requestImpl(url, data, callback, type, headers, dataType): {
 		if (!this.enabled)
 			return;
 		this.loading = true
 		this.url = url
 		log("request", this.baseUrl + url)
-		var self = this;
-		$.ajax({
-			url: self.baseUrl + url,
+
+		var settings = {
+			url: this.baseUrl + url,
 			data: JSON.stringify(data),
 			type: type || 'GET',
+			crossDomain: true,
 			headers: headers || {}
-		}).done(function(res, status, jqXHR) {
+		}
+
+		if (dataType)
+			settings.dataType = dataType
+
+		var self = this;
+		$.ajax(settings).done(function(res) {
 			if (callback)
 				callback(res, status, jqXHR)
 			self.loading = false 
@@ -30,7 +37,7 @@ Object {
 		})
 	}
 
-	request(url, data, callback, type, headers): {
+	request(url, data, callback, type, headers, dataType): {
 		if (!this.enabled)
 			return;
 
@@ -46,7 +53,7 @@ Object {
 				} else {
 					callback(res)
 				}
-			}, type, headers)
+			}, type, headers, dataType)
 		}
 
 		do_request()

@@ -16,7 +16,6 @@ Object {
 			url: this.baseUrl + url,
 			data: JSON.stringify(data),
 			type: type || 'GET',
-			crossDomain: true,
 			headers: headers || {}
 		}
 

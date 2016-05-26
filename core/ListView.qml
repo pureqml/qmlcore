@@ -127,8 +127,10 @@ BaseView {
 
 		var items = this._items
 		var n = items.length
-		if (!n)
+		if (!n) {
+			this.rendered = true
 			return
+		}
 
 		var w = this.width, h = this.height
 		//log("layout " + n + " into " + w + "x" + h)

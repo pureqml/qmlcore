@@ -26,7 +26,7 @@ Object {
 			if (callback)
 				callback({ result: 0, error: { message: "ajax error"} })
 			self.loading = false 
-			self.error(status, self.url, type || 'GET')
+			self.error(status, xhr, self.url, type || 'GET')
 		})
 	}
 

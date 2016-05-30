@@ -35,8 +35,7 @@ Item {
 		this.element.remove()
 		this.element = $(document.createElement('input'))
 		var self = this
-		this.element[0].onkeyup = function() { self.text = this.value }
-		this.element[0].onkeydown = function(event) { if (self._processKey(event)) event.preventDefault();}
+		this.element[0].oninput = function() { self.text = this.value }
 		this.parent.element.append(this.element)
 		this.style('borderStyle', 'hidden')
 	}

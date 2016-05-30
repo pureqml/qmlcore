@@ -14,7 +14,6 @@ Object {
 
 		var settings = {
 			url: this.baseUrl + url,
-			data: JSON.stringify(data),
 			type: type || 'GET',
 			headers: headers || {}
 		}
@@ -22,8 +21,12 @@ Object {
 		if (dataType)
 			settings.dataType = dataType
 
+		if (data)
+			settings.data = JSON.stringify(data)
+
 		var self = this;
-		$.ajax(settings).done(function(res) {
+		$.ajax(settings).done(function(res, status, jqXHR) {
+			log("ajax request done")
 			if (callback)
 				callback(res, status, jqXHR)
 			self.loading = false 
@@ -36,7 +39,7 @@ Object {
 		})
 	}
 
-	request(url, data, callback, type, headers, dataType): {
+	request(url, callback, type, headers, data, dataType): {
 		if (!this.enabled)
 			return;
 

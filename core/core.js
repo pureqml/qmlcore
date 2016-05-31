@@ -91,20 +91,6 @@ if ('webOS' in window) {
 	exports.core.vendor = "LG"
 	exports.core.device = 1
 	exports.core.os = "webOS"
-
-	var self = this
-	var history = window.history
-	history.pushState({ "data": "data" }, "back pressed stub")
-
-	window.addEventListener('popstate', function (event) {
-		event.preventDefault()
-		history.pushState({ "data": "data" }, "back pressed stub")
-		if (!event.state)
-			return
-		// Emulate 'Back' pressing.
-		jQuery.event.trigger({ type: 'keydown', which: 27 })
-	});
-
 	log("loaded")
 }
 
@@ -187,6 +173,7 @@ if (exports.core.os == "smartTV")
 		34: 'ChannelDown',
 		27: 'Back',
 		19: 'Pause',
+		461: 'Back',
 		403: 'Red',
 		404: 'Green',
 		405: 'Yellow',
@@ -194,6 +181,7 @@ if (exports.core.os == "smartTV")
 		457: 'Menu',
 		412: 'Rewind',
 		417: 'FastForward',
+		457: 'Info',
 		413: 'Stop',
 		415: 'Play'
 	}

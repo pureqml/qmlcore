@@ -1,5 +1,6 @@
 Layout {
-	property int maxWidth: 1000;
+	property int hSpacing: spacing;
+	property int vSpacing: spacing;
 
 	onWidthChanged: { this._delayedLayout.schedule() }
 
@@ -13,16 +14,16 @@ Layout {
 					c.x = 0;
 					c.y = yMax + c.anchors.topMargin;// + (cY === 0 ? 0 : this.spacing);
 					cY = yMax;// + this.spacing;
-					yMax = c.y + c.height + this.spacing;
+					yMax = c.y + c.height + this.vSpacing;
 				} else {
 					c.x = cX;
 					c.y = cY + c.anchors.topMargin;
 				}
 				if (yMax < c.y + c.height)
-					yMax = c.y + c.height + this.spacing;
+					yMax = c.y + c.height + this.vSpacing;
 				if (xMax < c.x + c.width)
 					xMax = c.x + c.width;
-				cX = c.x + c.width + this.spacing;
+				cX = c.x + c.width + this.hSpacing;
 			}
 		}
 		this.contentHeight = yMax;

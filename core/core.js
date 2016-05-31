@@ -186,11 +186,16 @@ if (exports.core.os == "smartTV")
 		33: 'ChannelUp',
 		34: 'ChannelDown',
 		27: 'Back',
+		19: 'Pause',
 		403: 'Red',
 		404: 'Green',
 		405: 'Yellow',
 		406: 'Blue',
-		457: 'Menu'
+		457: 'Menu',
+		412: 'Rewind',
+		417: 'FastForward',
+		413: 'Stop',
+		415: 'Play'
 	}
 } else if (exports.core.os == "operaOS") {
 	exports.core.keyCodes = {

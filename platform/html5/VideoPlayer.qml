@@ -153,7 +153,7 @@ Item {
 			)
 		}
 		this.element.append(this._player)
-		if (this.autoPlay)
+		if (this.autoPlay && this.source)
 			this.play()
 
 		volumeStorage.read();

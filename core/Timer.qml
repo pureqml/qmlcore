@@ -16,6 +16,11 @@ Object {
 			this._emitTriggered();
 	}
 
+	onRunningChanged: {
+		if (value && this.triggeredOnStart)
+			this.triggered()
+	}
+
 	onCompleted: {
 		if (this.running && this.triggeredOnStart)
 			this.triggered()

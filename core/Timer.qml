@@ -9,6 +9,8 @@ Object {
 	restart:	{ this._restart(); this.running = true; }
 	stop:		{ this.running = false; }
 
+	onTriggered: { if (!this.repeat) this.running = false }
+
 	start: {
 		var oldRunning = this.running;
 		this.running = true;

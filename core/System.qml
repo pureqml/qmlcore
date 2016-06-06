@@ -20,7 +20,7 @@ Object {
 	_updateLayoutType: {
 		if (!this.contextWidth || !this.contextHeight)
 			return
-		var min = this.contextWidth < this.contextHeight ? this.contextWidth : this.contextHeight
+		var min = this.contextWidth;// < this.contextHeight ? this.contextWidth : this.contextHeight
 
 		if (min <= 320)
 			this.layoutType = this.MobileS

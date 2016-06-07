@@ -173,6 +173,7 @@ if (exports.core.os == "smartTV")
 		34: 'ChannelDown',
 		27: 'Back',
 		19: 'Pause',
+		48: '0',
 		461: 'Back',
 		403: 'Red',
 		404: 'Green',

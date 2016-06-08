@@ -35,6 +35,6 @@ Layout {
 		var delayedLayout = this._delayedLayout
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
 	}
-
 }

@@ -12,6 +12,11 @@ Layout {
 		this._delayedLayout.schedule()
 	}
 
+	onActiveFocusChanged: {
+		if (value && this.count)
+			this.children[this.currentIndex].setFocus()
+	}
+
 	function _layout() {
 		this.count = this.children.length;
 		for (var i = 0; i < this.count; ++i)

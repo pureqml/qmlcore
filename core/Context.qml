@@ -30,6 +30,7 @@ Item {
 			"div.text { width: auto; height: auto; visibility: inherit; } " +
 			"div " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
 			"a " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
+			"textarea { position: absolute; visibility: inherit; } " +
 			"input { position: absolute; visibility: inherit; } " +
 			"img { position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " } " +
 			"</style>"

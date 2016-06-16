@@ -12,6 +12,7 @@ Item {
 
 	function _update(name, value) {
 		switch (name) {
+			case 'text': if (value != this.element[0].value) this.element[0].value = value; break
 			case 'width': this._updateSize(); break
 			case 'height': this._updateSize(); break
 			case 'color': this.style('color', value); break

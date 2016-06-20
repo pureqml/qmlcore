@@ -18,9 +18,15 @@ Object {
 
 	function append(row) {
 		var l = this._rows.length
-		this._rows.push(row)
-		this.count = this._rows.length
-		this.rowsInserted(l, l + 1)
+		if (Array.isArray(row)) {
+			Array.prototype.push.apply(this._rows, row)
+			this.count = this._rows.length
+			this.rowsInserted(l, l + row.length)
+		} else {
+			this._rows.push(row)
+			this.count = this._rows.length
+			this.rowsInserted(l, l + 1)
+		}
 	}
 
 	function insert(idx, row) {

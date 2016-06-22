@@ -150,7 +150,8 @@ Item {
 	function _onRowsRemoved(begin, end) {
 		log("rows removed", begin, end)
 		var items = this._items
-		for(var i = begin; i < end; ++i) {
+		//remove every delegate until the end of items (index shifted)
+		for(var i = begin; i < items.length; ++i) {
 			var item = items[i];
 			if (item && item.element)
 				item.element.remove()

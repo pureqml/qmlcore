@@ -74,7 +74,7 @@ Object {
 			n = 1
 		this._rows.splice(idx, n)
 		this.count = this._rows.length
-		this.rowsRemoved(idx, n)
+		this.rowsRemoved(idx, idx + n)
 	}
 
 	function addChild(child) {

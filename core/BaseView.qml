@@ -186,6 +186,7 @@ Item {
 
 	function _createDelegate(idx) {
 		var row = this.model.get(idx)
+		row['index'] = idx
 		this._local['model'] = row
 		var item = this.delegate()
 		this._items[idx] = item

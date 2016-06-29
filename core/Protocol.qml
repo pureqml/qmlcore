@@ -53,7 +53,7 @@ Object {
 				} else if (res.error) {
 					log("Request failed: " + res.error.message);
 				} else {
-					callback(res)
+					callback(res, status, jqXHR)
 				}
 			}, type, headers, dataType)
 		}

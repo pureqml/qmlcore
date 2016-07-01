@@ -385,14 +385,14 @@ exports.core.Object.prototype._emitSignal = function(name) {
 }
 
 exports.core.Object.prototype._get = function (name) {
-	if (name in this)
-		return this[name];
 	var object = this;
 	while(object) {
 		if (name in object._local)
 			return object._local[name];
 		object = object.parent;
 	}
+	if (name in this)
+		return this[name];
 	log(name, this);
 	throw ("invalid property requested: '" + name + "' in context of " + this);
 }

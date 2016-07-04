@@ -9,6 +9,7 @@ Object {
 	property bool supportTransforms;
 	property bool portrait: parent.width < parent.height;
 	property bool landscape: !portrait;
+	property bool pageActive: true;
 	property int contextWidth: parent.width;
 	property int contextHeight: parent.height;
 	property enum device { Desktop, Tv, Mobile };
@@ -64,5 +65,9 @@ Object {
 		this.language = navigator.language
 		this.support3dTransforms = window.Modernizr && window.Modernizr.csstransforms3d
 		this.supportTransforms = window.Modernizr && window.Modernizr.csstransforms
+
+		var self = this
+		window.onfocus = function() { self.pageActive = true }
+		window.onblur = function() { self.pageActive = false }
 	}
 }

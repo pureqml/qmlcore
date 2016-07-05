@@ -150,7 +150,9 @@ def handle_expression_array(s, l, t):
 	return "".join(t)
 expression_array.setParseAction(handle_expression_array)
 
-expression_definition = (QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array)
+expression_definition = (QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
+	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True) | \
+	Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array)
 
 expression_ops = infixNotation(expression_definition, [
 	('!', 1, opAssoc.RIGHT, handle_unary_op),

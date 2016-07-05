@@ -137,8 +137,11 @@ Item {
 				switch(value) {
 				case this.NoWrap:		this.style('white-space', 'nowrap'); break
 				case this.WordWrap:		this.style('white-space', 'normal'); break
-				case this.WrapAnywhere:	this.style('white-space', 'nowrap'); break	//TODO: implement.
-				case this.Wrap:			this.style('white-space', 'nowrap'); break	//TODO: implement.
+				case this.Wrap:
+				case this.WrapAnywhere:
+					this.style('white-space', 'normal')
+					this.style('word-break', 'break-all')
+					break
 				}
 				this._updateSize();
 				break

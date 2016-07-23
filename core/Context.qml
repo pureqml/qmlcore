@@ -130,7 +130,6 @@ Item {
 	}
 
 	function scheduleAction(action) {
-		var da = this._delayedActions
 		this._delayedActions.push(action)
 		if (this._completed && this._delayedTimeout === undefined) //do not schedule any processing before creation process ends
 			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)

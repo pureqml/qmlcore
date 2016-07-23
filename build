@@ -15,16 +15,39 @@ parser.add_argument('--devel', '-d', action='store_true', default=False, help='d
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
 args = parser.parse_args()
 
+def minify_uglify(out, src, root, name, app, platform, manifest):
+	call(["uglifyjs",
+		src,
+		"-c",
+		"-m"
+		], stdout = out)
+
+def minify_gcc(out, src, root, name, app, platform, manifest):
+	call(["java", "-jar", path.join(root, "compiler/gcc/compiler.jar"),
+		"--warning_level", "VERBOSE",
+		"--externs", path.join(root, "compiler/gcc/jquery-1.9.js"),
+		"--process_jquery_primitives",
+		"--jscomp_off=missingProperties",
+		src], stdout = out)
+
 def minify(root, name, app, platform, manifest):
 	src = path.join(".app." + platform, "qml.%s.js" % app)
 	dstname = "qml.%s.min.js" %app
+	tool = manifest.get('minify', True)
+	if isinstance(tool, bool):
+		tool = 'uglify-js'
+
 	with open(path.join(".app." + platform, dstname), "w") as out:
-		call(["java", "-jar", path.join(root, "compiler/gcc/compiler.jar"),
-			"--warning_level", "VERBOSE",
-			"--externs", path.join(root, "compiler/gcc/jquery-1.9.js"),
-			"--process_jquery_primitives",
-			"--jscomp_off=missingProperties",
-			src], stdout = out)
+		if tool == 'uglify-js':
+			try:
+				minify_uglify(out, src, root, name, app, platform, manifest)
+			except:
+				print "WARNING: you don't seem to have uglifyjs installed. please run `sudo npm install -g uglify-js`, falling back to gcc"
+				tool = 'gcc'
+
+		if tool == 'gcc':
+			minify_gcc(out, src, root, name, app, platform, manifest)
+
 	if not args.keep_temp:
 		os.remove(src)
 	return dstname

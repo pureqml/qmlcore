@@ -68,7 +68,6 @@ BaseView {
 	}
 
 	function indexAt(x, y) {
-		var items = this._items
 		x -= this.content.x
 		y -= this.content.y
 		var horizontal = this.flow == this.FlowLeftToRight

@@ -125,7 +125,7 @@ def generate():
 	process_files(generator, args.app, project_dirs)
 	print "generating sources..."
 	namespace = "qml"
-	app = "'use strict'\n"
+	app = ""
 	app += "var log = console.log.bind(console)\n"
 	app += "/** @const */\n"
 	app += "/** @param {string} text @param {...} args */\n"

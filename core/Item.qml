@@ -34,7 +34,6 @@ Object {
 
 	constructor: {
 		this._styles = {}
-		this._modernizrCache = {}
 		if (this.parent) {
 			if (this.element)
 				throw "double ctor call"
@@ -296,9 +295,7 @@ Object {
 			var value = this._styles[name]
 			var rule = []
 
-			var prefixedName = this._modernizrCache[name]
-			if (prefixedName === undefined)
-				this._modernizrCache[name] = prefixedName = window.Modernizr.prefixedCSS(name)
+			var prefixedName = this._get('context').getPrefixedName(name)
 			rule.push(prefixedName !== false? prefixedName: name)
 			if (Array.isArray(value))
 				value = value.join(',')

@@ -12,6 +12,10 @@ Item {
 		this._delayedActions = []
 	}
 
+	function getClass(name) {
+		return this._prefix + name
+	}
+
 	function init(options) {
 		log('Context: initializing...')
 		this._local['context'] = this
@@ -29,7 +33,8 @@ Item {
 		var w, h
 
 		var div = document.getElementById(divId)
-		if (div !== null) {
+		var topLevel = div === null
+		if (!topLevel) {
 			div = $(div)
 			w = div.width()
 			h = div.height()
@@ -45,14 +50,14 @@ Item {
 		}
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
-		var mangleRule = function() {
+		var mangleRule = function(selector, rule) {
 			if (prefix)
 				return prefix
 		}
 
 		$('head').append($("<style>" +
 			"div#" + divId + " { position: absolute; visibility: inherit; left: 0px; top: 0px; } " +
-			"div.qml-core-text { width: auto; height: auto; visibility: inherit; } " +
+			"div." + this.getClass('core-text') + " { width: auto; height: auto; visibility: inherit; } " +
 			"body { overflow-x: hidden; }" +
 			"div " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
 			"a " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +

@@ -16,14 +16,25 @@ Item {
 		log('Context: initializing...')
 		this._local['context'] = this;
 
-		var win = $(window);
-		var w = win.width();
-		var h = win.height();
-		log("Context: window size: " + w + "x" + h);
+		var win = $(window)
+		var w, h
 
-		var body = $('body');
-		var div = $('<div id="' + divId + '"></div>');
-		body.append(div);
+		var div = document.getElementById(divId)
+		if (div !== null) {
+			div = $(div)
+			w = div.width()
+			h = div.height()
+			log('Context: found element by id, size: ' + w + 'x' + h)
+			win.on('resize', function() { this.width = div.width(); this.height = div.height(); }.bind(this));
+		} else {
+			w = win.width();
+			h = win.height();
+			log("Context: window size: " + w + "x" + h);
+			div = $('<div id="' + divId + '"></div>')
+			win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
+			$('body').append(div);
+		}
+
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
 		$('head').append($("<style>" +
 			"body { overflow-x: hidden; }" +
@@ -42,7 +53,6 @@ Item {
 		this.height = h
 		this.style('visibility', 'hidden')
 
-		win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));
 		win.on('hashchange', function(event) { this.hash = window.location.hash; }.bind(this));
 

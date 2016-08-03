@@ -96,7 +96,7 @@ Item {
 	}
 
 	function start(name) {
-		console.log('Context: starting')
+		log('Context: starting')
 		var proto;
 		if (typeof name == 'string') {
 			//log('creating component...', name);
@@ -107,16 +107,16 @@ Item {
 		}
 		else
 			proto = name;
-		console.log('Context: creating instance')
+		log('Context: creating instance')
 		var instance = Object.create(proto.prototype);
-		console.log('Context: calling ctor')
+		log('Context: calling ctor')
 		proto.apply(instance, [this]);
-		console.log('Context: started')
+		log('Context: started')
 		this._started = true
-		// console.log('Context: calling on completed')
-		console.log('Context: signalling layout')
+		// log('Context: calling on completed')
+		log('Context: signalling layout')
 		this.boxChanged()
-		console.log('Context: done')
+		log('Context: done')
 		return instance;
 	}
 

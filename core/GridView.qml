@@ -190,7 +190,7 @@ BaseView {
 			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing
 			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing
 		}
-		//console.log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
+		//log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		this.rendered = true
 		if (created)
 			this._get('context')._complete()

@@ -449,13 +449,13 @@ class generator(object):
 		text += "%s\n" %self.generate_components()
 		return "%s = %s();\n" %(ns, self.wrap(text))
 
-	def generate_startup(self):
+	def generate_startup(self, ns, app):
 		r = ""
 		r += "try {\n"
 		startup = []
-		startup.append("\tqml._context = new qml.core.Context()")
-		startup.append("\tqml._context.init(\"<div id='context'></div>\")")
+		startup.append("\t%s._context = new qml.core.Context()" %ns)
+		startup.append("\t%s._context.init('qml-context-%s')" %(ns, app))
 		startup += self.startup
 		r += "\n".join(startup)
-		r += "\n} catch(ex) { log(\"qml initialization failed: \", ex, ex.stack) }\n"
+		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns
 		return r

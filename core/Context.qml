@@ -12,7 +12,7 @@ Item {
 		this._delayedActions = []
 	}
 
-	function init(html) {
+	function init(divId) {
 		log('Context: initializing...')
 		this._local['context'] = this;
 
@@ -22,7 +22,7 @@ Item {
 		log("Context: window size: " + w + "x" + h);
 
 		var body = $('body');
-		var div = $(html);
+		var div = $('<div id="' + divId + '"></div>');
 		body.append(div);
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
 		$('head').append($("<style>" +

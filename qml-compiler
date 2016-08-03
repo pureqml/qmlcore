@@ -133,7 +133,7 @@ def generate():
 	app += "var qsTr = function(text, args) { return qml._context.qsTr.apply(qml._context, arguments) }\n"
 	app += "/** @const @type {!Object} */\n"
 	app += "var " + generator.generate(namespace)
-	app += generator.generate_startup(namespace, args.app)
+	app += generator.generate_startup(namespace, args.app, args.prefix)
 	with open(os.path.join(output_dir, namespace + "." + args.app + ".js"), "wt") as f:
 		f.write(app)
 	print "done"

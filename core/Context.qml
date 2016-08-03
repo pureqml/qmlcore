@@ -12,9 +12,14 @@ Item {
 		this._delayedActions = []
 	}
 
-	function init(divId) {
+	function init(options) {
 		log('Context: initializing...')
-		this._local['context'] = this;
+		this._local['context'] = this
+
+		var prefixed = !!options.prefixed
+		var divId = options.id
+
+		this._prefixed = prefixed
 
 		var win = $(window)
 		var w, h

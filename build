@@ -92,8 +92,12 @@ def copy(source, destination, context):
 			process_template(destination, src, context)
 		else:
 			name, ext = path.splitext(name)
-			if ext == '.html' and context['html'] == name:
-				process_template(destination, src, context)
+			if ext == '.html':
+				if context['html'] == name:
+					process_template(destination, src, context)
+				else:
+					if name not in context['apps']: #skip templates used for another apps.
+						copy_src.append(src)
 			else:
 				copy_src.append(src)
 	if copy_src:
@@ -131,7 +135,7 @@ def build(root, name, platform, app, html, manifest):
 	templater = manifest.get('templater', 'simple')
 
 	print "copying resources..."
-	context = { 'id': app, 'app': script, 'html': html, 'templater': templater }
+	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest['apps'].itervalues()) }
 
 	copy(path.join(root, 'dist'), target, context)
 
@@ -140,7 +144,6 @@ def build(root, name, platform, app, html, manifest):
 	platform_dist = path.join(platform_path, 'dist')
 	if path.isdir(platform_dist):
 		template_path.append(platform_dist)
-
 
 	project_dist = path.join(os.getcwd(), 'dist')
 	if path.isdir(project_dist):

@@ -23,7 +23,7 @@ Item {
 	height: paintedHeight;
 
 	constructor: {
-		this.element.addClass('text')
+		this.element.addClass('qml-core-text')
 		this._fragment = []
 		this._setText(this.text)
 		var self = this

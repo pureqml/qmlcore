@@ -449,12 +449,12 @@ class generator(object):
 		text += "%s\n" %self.generate_components()
 		return "%s = %s();\n" %(ns, self.wrap(text))
 
-	def generate_startup(self, ns, app, prefixed):
+	def generate_startup(self, ns, app, prefix):
 		r = ""
 		r += "try {\n"
 		startup = []
 		startup.append("\t%s._context = new qml.core.Context()" %ns)
-		startup.append("\t%s._context.init({id: 'qml-context-%s', prefixed: %s})" %(ns, app, 'true' if prefixed else 'false'))
+		startup.append("\t%s._context.init({id: 'qml-context-%s', prefix: '%s'})" %(ns, app, prefix))
 		startup += self.startup
 		r += "\n".join(startup)
 		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns

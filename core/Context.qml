@@ -16,10 +16,14 @@ Item {
 		log('Context: initializing...')
 		this._local['context'] = this
 
-		var prefixed = !!options.prefixed
+		var prefix = options.prefix
 		var divId = options.id
 
-		this._prefixed = prefixed
+		if (prefix) {
+			prefix += '-'
+			//log('Context: using prefix', prefix)
+		}
+		this._prefix = prefix
 
 		var win = $(window)
 		var w, h
@@ -41,10 +45,15 @@ Item {
 		}
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
+		var mangleRule = function() {
+			if (prefix)
+				return prefix
+		}
+
 		$('head').append($("<style>" +
-			"body { overflow-x: hidden; }" +
-			"div#context { position: absolute; visibility: inherit; left: 0px; top: 0px; } " +
+			"div#" + divId + " { position: absolute; visibility: inherit; left: 0px; top: 0px; } " +
 			"div.text { width: auto; height: auto; visibility: inherit; } " +
+			"body { overflow-x: hidden; }" +
 			"div " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
 			"a " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
 			"textarea { position: absolute; visibility: inherit; } " +

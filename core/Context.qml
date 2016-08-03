@@ -52,18 +52,20 @@ Item {
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
 		var mangleRule = function(selector, rule) {
 			if (prefix)
-				return prefix
+				return selector + '.' + prefix + 'core-item ' + rule + ' '
+			else
+				return selector + ' ' + rule + ' '
 		}
 
 		$('head').append($("<style>" +
-			"div#" + divId + " { position: absolute; visibility: inherit; left: 0px; top: 0px; } " +
-			"div." + this.getClass('core-text') + " { width: auto; height: auto; visibility: inherit; } " +
-			"body { overflow-x: hidden; }" +
-			"div " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
-			"a " + "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; } " +
-			"textarea { position: absolute; visibility: inherit; } " +
-			"input { position: absolute; visibility: inherit; } " +
-			"img { position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " } " +
+			"div#" + divId + " { position: absolute; visibility: inherit; left: 0px; top: 0px; }" +
+			"div." + this.getClass('core-text') + " { width: auto; height: auto; visibility: inherit; }" +
+			(topLevel? "body { overflow-x: hidden; }": "") + //fixme: do we need style here in non-top-level mode?
+			mangleRule('div', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; }") +
+			mangleRule('a', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; }") +
+			mangleRule('textarea', "{ position: absolute; visibility: inherit; }") +
+			mangleRule('input', "{ position: absolute; visibility: inherit; }") +
+			mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }") +
 			"</style>"
 		));
 

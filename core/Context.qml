@@ -16,6 +16,14 @@ Item {
 		return this._prefix + name
 	}
 
+	function createElement(tag) {
+		var el = document.createElement(tag)
+		if (this._prefix) {
+			el.classList.add(this.getClass('core-item'))
+		}
+		return el
+	}
+
 	function init(options) {
 		log('Context: initializing...')
 		this._local['context'] = this

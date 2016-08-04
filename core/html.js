@@ -127,6 +127,12 @@ exports.Window = function(context, dom) {
 	_globals.core.EventEmitter.apply(this)
 	this._context = context
 	this.dom = dom
+
+	var self = this
+	this.onListener('load',
+		function() { dom.onload = function() { log('ONLOAD');  self.emit('load') } },
+		function() { }
+	)
 }
 
 exports.Window.prototype = Object.create(_globals.core.EventEmitter.prototype)

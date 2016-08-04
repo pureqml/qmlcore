@@ -475,7 +475,8 @@ exports.core.normalizeColor = function(spec) {
 }
 
 /** @constructor */
-exports.core.DelayedAction = function(action) {
+exports.core.DelayedAction = function(context, action) {
+	this.context = context
 	this.action = function() {
 		this._scheduled = false
 		action()
@@ -485,7 +486,7 @@ exports.core.DelayedAction = function(action) {
 exports.core.DelayedAction.prototype.schedule = function() {
 	if (!this._scheduled) {
 		this._scheduled = true
-		qml._context.scheduleAction(this.action)
+		this.context.scheduleAction(this.action)
 	}
 }
 

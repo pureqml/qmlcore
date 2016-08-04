@@ -9,7 +9,7 @@ Item {
 
 	constructor: {
 		var self = this
-		this._delayedLoad = new qml.core.DelayedAction(function() {
+		this._delayedLoad = new qml.core.DelayedAction(this.getContext(), function() {
 			self._load()
 		})
 

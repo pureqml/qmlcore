@@ -27,7 +27,7 @@ Item {
 		this._fragment = []
 		this._setText(this.text)
 		var self = this
-		this._delayedUpdateSize = new qml.core.DelayedAction(function() {
+		this._delayedUpdateSize = new qml.core.DelayedAction(this.getContext(), function() {
 			self._updateSizeImpl()
 		})
 	}

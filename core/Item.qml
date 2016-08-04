@@ -37,7 +37,7 @@ Object {
 			if (this.element)
 				throw "double ctor call"
 
-			this.element = $(this.getContext().createElement('div'))
+			this.element = this.getContext().createElement('div')
 			this.parent.element.append(this.element)
 			var self = this
 			var updateVisibility = function(value) {

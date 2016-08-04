@@ -304,7 +304,7 @@ exports.core.EventEmitter.prototype.removeListener = function(name, callback) {
 	if (!(name in this._eventHandlers))
 		return
 
-	var handlers = this._eventHandlers[name].push(callback)
+	var handlers = this._eventHandlers[name]
 	var idx = handlers.indexOf(callback)
 	if (idx >= 0)
 		handlers.splice(idx, 1)

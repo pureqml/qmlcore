@@ -332,7 +332,7 @@ exports.core.EventEmitter.prototype.removeListener = function(name, callback) {
  */
 
 exports.core.Object = function(parent) {
-	exports.core.EventEmitter.apply(this, arguments)
+	exports.core.EventEmitter.apply(this)
 
 	this.parent = parent
 	this.children = []

@@ -53,7 +53,9 @@ Item {
 			w = win.width();
 			h = win.height();
 			log("Context: window size: " + w + "x" + h);
-			div = $('<div id="' + divId + '"></div>')
+			div = this.createElement('div')
+			div.id = divId
+			div = $(div)
 			win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 			$('body').append(div);
 		}

@@ -173,7 +173,7 @@ if 'apps' in manifest:
 	apps = manifest['apps']
 
 if not platforms:
-	print "WARNING: .manifest was not found, building for html5 platform"
+	print "WARNING: .manifest/platforms were not found, building for html5 platform..."
 	platforms = ['html5']
 
 for platform in platforms:

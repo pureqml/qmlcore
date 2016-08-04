@@ -38,7 +38,7 @@ Object {
 			if (this.element)
 				throw "double ctor call"
 
-			this.element = $(this._get('context').createElement('div'))
+			this.element = $(this.getContext().createElement('div'))
 			this.parent.element.append(this.element)
 			var self = this
 			var updateVisibility = function(value) {
@@ -295,7 +295,7 @@ Object {
 			var value = this._styles[name]
 			var rule = []
 
-			var prefixedName = this._get('context').getPrefixedName(name)
+			var prefixedName = this.getContext().getPrefixedName(name)
 			rule.push(prefixedName !== false? prefixedName: name)
 			if (Array.isArray(value))
 				value = value.join(',')

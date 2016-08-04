@@ -23,7 +23,7 @@ Item {
 	height: paintedHeight;
 
 	constructor: {
-		this.element.addClass(this._get('context').getClass('text'))
+		this.element.addClass(this.getContext().getClass('text'))
 		this._fragment = []
 		this._setText(this.text)
 		var self = this
@@ -41,7 +41,7 @@ Item {
 			return
 
 		var fragment = document.createDocumentFragment()
-		var temp = this._get('context').createElement('div')
+		var temp = this.getContext().createElement('div')
 
 		temp.innerHTML = html
 		while (temp.firstChild) {

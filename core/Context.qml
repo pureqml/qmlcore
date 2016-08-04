@@ -5,6 +5,7 @@ Item {
 	property System system: System { }
 
 	constructor: {
+		this._context = this
 		this._started = false
 		this._completed = false
 		this._modernizrCache = {}

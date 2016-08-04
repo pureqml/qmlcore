@@ -294,8 +294,10 @@ exports.core.safeCall = function(args, onError) {
  */
 
 exports.core.Object = function(parent) {
-	this.parent = parent;
+	this.parent = parent
 	this.children = []
+
+	this._context = parent? parent._context: null
 	this._local = {}
 	this._changedHandlers = {}
 	this._signalHandlers = {}
@@ -398,7 +400,7 @@ exports.core.Object.prototype._get = function (name) {
 }
 
 exports.core.Object.prototype.getContext = function () {
-	return this._get('context')
+	return this._context
 }
 
 exports.core.Object.prototype.setAnimation = function (name, animation) {

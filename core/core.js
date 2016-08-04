@@ -285,6 +285,10 @@ exports.core.EventEmitter = function() {
 exports.core.EventEmitter.prototype.constructor = exports.core.EventEmitter
 
 exports.core.EventEmitter.prototype.on = function (name, callback) {
+	if (name in this._eventHandlers)
+		this._eventHandlers[name].push(callback)
+	else
+		this._eventHandlers[name] = [callback]
 }
 
 exports.core.EventEmitter.prototype.emit = function(name) {
@@ -297,7 +301,10 @@ exports.core.EventEmitter.prototype.emit = function(name) {
 }
 
 exports.core.EventEmitter.prototype.removeListener = function(name, callback) {
-	var handlers = (name in this._eventHandlers)? this._eventHandlers[name].push(callback): []
+	if (!(name in this._eventHandlers))
+		return
+
+	var handlers = this._eventHandlers[name].push(callback)
 	var idx = handlers.indexOf(callback)
 	if (idx >= 0)
 		handlers.splice(idx, 1)

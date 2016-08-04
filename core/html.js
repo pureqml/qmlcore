@@ -104,6 +104,9 @@ exports.Element.prototype.updateStyle = function() {
 		rules.push(rule.join(':'))
 	}
 
-	var dom = element[0]
-	dom.setAttribute('style', rules.join(';'))
+	this.dom.setAttribute('style', rules.join(';'))
+}
+
+exports.Element.prototype.append = function(el) {
+	this.dom.appendChild(el.dom)
 }

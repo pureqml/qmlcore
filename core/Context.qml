@@ -38,13 +38,14 @@ Item {
 		}
 		this._prefix = prefix
 
-		var win = $(window)
+		var win = new _globals.core.html.Window(this, window)
 		var w, h
 
+		var html = _globals.core.html
 		var div = document.getElementById(divId)
 		var topLevel = div === null
 		if (!topLevel) {
-			div = new _globals.core.html.Element(this, div)
+			div = new html.Element(this, div)
 			w = div.width()
 			h = div.height()
 			log('Context: found element by id, size: ' + w + 'x' + h)
@@ -56,7 +57,8 @@ Item {
 			div = this.createElement('div')
 			div.id = divId
 			win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
-			$('body').append(div.dom);
+			var body = html.getElement('body')
+			body.append(div.dom);
 		}
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
@@ -67,7 +69,7 @@ Item {
 				return selector + ' ' + rule + ' '
 		}
 
-		$('head').append($("<style>" +
+		html.getElement('head').setHtml("<style>" +
 			"div#" + divId + " { position: absolute; visibility: inherit; left: 0px; top: 0px; }" +
 			"div." + this.getClass('core-text') + " { width: auto; height: auto; visibility: inherit; }" +
 			(topLevel? "body { overflow-x: hidden; }": "") + //fixme: do we need style here in non-top-level mode?
@@ -77,7 +79,7 @@ Item {
 			mangleRule('input', "{ position: absolute; visibility: inherit; }") +
 			mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }") +
 			"</style>"
-		));
+		)
 
 		this.element = div
 		this.width = w

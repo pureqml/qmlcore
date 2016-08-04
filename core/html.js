@@ -6,7 +6,14 @@ exports.Element = function(context, dom) {
 	_globals.core.EventEmitter.apply(this)
 	this._context = context
 	this.dom = dom
+	this._fragment = []
 	this._styles = {}
+}
+
+exports.Window = function(context, dom) {
+	_globals.core.EventEmitter.apply(this)
+	this._context = context
+	this.dom = dom
 }
 
 exports.Element.prototype = Object.create(_globals.core.EventEmitter.prototype)
@@ -114,4 +121,21 @@ exports.Element.prototype.append = function(el) {
 
 exports.Element.prototype.remove = function() {
 	this.dom.remove()
+}
+
+exports.Window = function(context, dom) {
+	_globals.core.EventEmitter.apply(this)
+	this._context = context
+	this.dom = dom
+}
+
+exports.Window.prototype = Object.create(_globals.core.EventEmitter.prototype)
+exports.Window.prototype.constructor = exports.Window
+
+
+exports.getElement = function(tag) {
+	var tags = document.getElementsByTagName('body')
+	if (tags.length != 1)
+		throw new Error('no tag ' + tag + '/multiple tags')
+	return new exports.Element(this, tags[0])
 }

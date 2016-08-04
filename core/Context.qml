@@ -18,9 +18,9 @@ Item {
 	}
 
 	function createElement(tag) {
-		var el = document.createElement(tag)
+		var el = new _globals.core.html.Element(document.createElement(tag))
 		if (this._prefix) {
-			el.classList.add(this.getClass('core-item'))
+			el.addClass(this.getClass('core-item'))
 		}
 		return el
 	}
@@ -44,7 +44,7 @@ Item {
 		var div = document.getElementById(divId)
 		var topLevel = div === null
 		if (!topLevel) {
-			div = $(div)
+			div = new _globals.core.html.Element(div)
 			w = div.width()
 			h = div.height()
 			log('Context: found element by id, size: ' + w + 'x' + h)

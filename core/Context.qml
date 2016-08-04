@@ -105,7 +105,7 @@ Item {
 			div.on(name, onFullscreenChanged)
 		})
 
-		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
+		document.addEventListener('onkeydown', function(event) { if (self._processKey(event)) event.preventDefault(); } ) //fixme: add html.Document instead
 	}
 
 	function _onCompleted(callback) {

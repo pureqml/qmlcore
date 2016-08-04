@@ -134,7 +134,7 @@ exports.Window.prototype.constructor = exports.Window
 
 
 exports.getElement = function(tag) {
-	var tags = document.getElementsByTagName('body')
+	var tags = document.getElementsByTagName(tag)
 	if (tags.length != 1)
 		throw new Error('no tag ' + tag + '/multiple tags')
 	return new exports.Element(this, tags[0])

@@ -110,3 +110,7 @@ exports.Element.prototype.updateStyle = function() {
 exports.Element.prototype.append = function(el) {
 	this.dom.appendChild(el.dom)
 }
+
+exports.Element.prototype.remove = function() {
+	this.dom.remove()
+}

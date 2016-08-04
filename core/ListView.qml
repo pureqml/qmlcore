@@ -198,7 +198,7 @@ BaseView {
 		}
 		this.rendered = true
 		if (created)
-			this._get('context')._complete()
+			this.getContext()._complete()
 	}
 
 	onOrientationChanged: { this._delayedLayout.schedule() }

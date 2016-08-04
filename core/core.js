@@ -393,8 +393,12 @@ exports.core.Object.prototype._get = function (name) {
 	}
 	if (name in this)
 		return this[name];
-	log(name, this);
-	throw ("invalid property requested: '" + name + "' in context of " + this);
+
+	throw new Error("invalid property requested: '" + name);
+}
+
+exports.core.Object.prototype.getContext = function () {
+	return this._get('context')
 }
 
 exports.core.Object.prototype.setAnimation = function (name, animation) {
@@ -459,7 +463,7 @@ exports.core.Color = function(value) {
 		this.b = parseInt(triplet.substring(4, 6), 16)
 		this.a = (len == 8)? parseInt(triplet.substring(6, 8), 16): 255
 	} else
-		throw "invalid color specification: " + value
+		throw new Error("invalid color specification: " + value)
 }
 exports.core.Color.prototype.constructor = exports.core.Color
 /** @const */

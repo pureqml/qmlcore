@@ -274,24 +274,56 @@ exports.core.safeCall = function(args, onError) {
 	return function(callback) { return safeCallImpl(callback, args, onError) }
 }
 
+/**
+ * @constructor
+ */
+
+exports.core.EventEmitter = function() {
+	this._eventHandlers = {}
+}
+
+exports.core.EventEmitter.prototype.constructor = exports.core.EventEmitter
+
+exports.core.EventEmitter.prototype.on = function (name, callback) {
+}
+
+exports.core.EventEmitter.prototype.emit = function(name) {
+	var args = copyArguments(arguments, 1)
+	var invoker = exports.core.safeCall(args, function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) })
+	if (name in this._eventHandlers) {
+		var handlers = this._eventHandlers[name]
+		handlers.forEach(invoker)
+	}
+}
+
+exports.core.EventEmitter.prototype.removeListener = function(name, callback) {
+	var handlers = (name in this._eventHandlers)? this._eventHandlers[name].push(callback): []
+	var idx = handlers.indexOf(callback)
+	if (idx >= 0)
+		handlers.splice(idx, 1)
+}
+
+
 
 /**
  * @constructor
  */
 
 exports.core.Object = function(parent) {
+	exports.core.EventEmitter.apply(this, arguments)
+
 	this.parent = parent
 	this.children = []
 
 	this._context = parent? parent._context: null
 	this._local = {}
 	this._changedHandlers = {}
-	this._signalHandlers = {}
 	this._pressedHandlers = {}
 	this._animations = {}
 	this._updaters = {}
 }
 
+exports.core.Object.prototype = Object.create(exports.core.EventEmitter.prototype)
 exports.core.Object.prototype.constructor = exports.core.Object
 
 exports.core.Object.prototype.addChild = function(child) {
@@ -352,22 +384,6 @@ exports.core.Object.prototype._update = function(name, value) {
 	if (name in this._changedHandlers) {
 		var handlers = this._changedHandlers[name]
 		var invoker = exports.core.safeCall([value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
-		handlers.forEach(invoker)
-	}
-}
-
-exports.core.Object.prototype.on = function (name, callback) {
-	if (name in this._signalHandlers)
-		this._signalHandlers[name].push(callback);
-	else
-		this._signalHandlers[name] = [callback];
-}
-
-exports.core.Object.prototype._emitSignal = function(name) {
-	var args = copyArguments(arguments, 1)
-	var invoker = exports.core.safeCall(args, function(ex) { log("signal " + name + " handler failed:", ex, ex.stack) })
-	if (name in this._signalHandlers) {
-		var handlers = this._signalHandlers[name]
 		handlers.forEach(invoker)
 	}
 }
@@ -596,6 +612,6 @@ exports.addAliasProperty = function(self, name, getObject, getter, setter) {
 exports.addSignal = function(self, name) {
 	self[name] = (function() {
 		var args = copyArguments(arguments, 0, name)
-		self._emitSignal.apply(self, args)
+		self.emit.apply(self, args)
 	})
 }

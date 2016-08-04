@@ -167,7 +167,7 @@ Item {
 	}
 
 	function _processActions() {
-		var invoker = qml.core.safeCall([], function (ex) { log('exception in delayed action', ex) })
+		var invoker = qml.core.safeCall([], function (ex) { log('exception in delayed action', ex, ex.stack) })
 		while (this._delayedActions.length) {
 			var actions = this._delayedActions
 			this._delayedActions = []

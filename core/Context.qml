@@ -55,10 +55,10 @@ Item {
 			h = win.height();
 			log("Context: window size: " + w + "x" + h);
 			div = this.createElement('div')
-			div.id = divId
+			div.dom.id = divId //html specific
 			win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
 			var body = html.getElement('body')
-			body.append(div.dom);
+			body.append(div);
 		}
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "

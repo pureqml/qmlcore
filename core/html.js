@@ -2,8 +2,9 @@
  * @constructor
  */
 
-exports.Element = function(dom) {
+exports.Element = function(context, dom) {
 	_globals.core.EventEmitter.apply(this)
+	this._context = context
 	this.dom = dom
 	this._styles = {}
 }
@@ -65,7 +66,7 @@ exports.Element.prototype.style = function(name, style) {
 
 
 exports.Element.prototype.updateStyle = function() {
-	var element = this.element
+	var element = this.dom
 	if (!element)
 		return
 
@@ -90,7 +91,7 @@ exports.Element.prototype.updateStyle = function() {
 		var value = this._styles[name]
 		var rule = []
 
-		var prefixedName = this.getContext().getPrefixedName(name)
+		var prefixedName = this._context.getPrefixedName(name)
 		rule.push(prefixedName !== false? prefixedName: name)
 		if (Array.isArray(value))
 			value = value.join(',')

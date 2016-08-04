@@ -258,7 +258,7 @@ Object {
 	function _updateStyle() {
 		var element = this.element
 		if (element)
-			element._updateStyle()
+			element.updateStyle()
 	}
 
 	function _processKey(event) {

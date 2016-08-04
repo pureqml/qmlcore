@@ -124,7 +124,7 @@ def build(root, name, platform, app, html, manifest):
 
 	if args.devel:
 		options.insert(0, '-w')
-	if args.web_prefix:
+	if args.web_prefix or (('web-prefix' in manifest) and manifest['web-prefix']):
 		options.insert(0, '-p')
 
 	call([path.join(root, 'qml-compiler')] + options)

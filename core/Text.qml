@@ -33,22 +33,7 @@ Item {
 	}
 
 	function _setText(html) {
-		var dom = this.element[0]
-		this._fragment.forEach(function(node) { dom.removeChild(node) })
-		this._fragment = []
-
-		if (html === '')
-			return
-
-		var fragment = document.createDocumentFragment()
-		var temp = this.getContext().createElement('div')
-
-		temp.innerHTML = html
-		while (temp.firstChild) {
-			this._fragment.push(temp.firstChild)
-			fragment.appendChild(temp.firstChild)
-		}
-		dom.appendChild(fragment)
+		this.element.setHtml(html)
 	}
 
 	function onChanged (name, callback) {

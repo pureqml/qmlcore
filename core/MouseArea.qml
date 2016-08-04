@@ -21,8 +21,6 @@ Item {
 	property bool touchEnabled: true;
 	property bool hoverEnabled: true;
 	property bool wheelEnabled: true;
-	property bool verticalSwipable: true;
-	property bool horizontalSwipable: true;
 
 	property alias hover: containsMouse;
 	property alias hoverable: hoverEnabled;
@@ -41,20 +39,6 @@ Item {
 		} else {
 			this.element.unbind('touchmove touchend touchstart')
 		}
-	}
-
-	onVerticalSwipableChanged: {
-		if (value && this.element.verticalSwipe)
-			this.element.verticalSwipe(this.verticalSwipeHandler.bind(this))
-		else
-			this.element.unbind('verticalSwipe')
-	}
-
-	onHorizontalSwipableChanged: {
-		if (value && this.element.verticalSwipe)
-			this.element.horizontalSwipe(this.horizontalSwipeHandler.bind(this))
-		else
-			this.element.unbind('horizontalSwipe')
 	}
 
 	onRecursiveVisibleChanged: {
@@ -97,26 +81,6 @@ Item {
 		}
 	}
 
-	horizontalSwipeHandler(event): {
-		if (!event || !this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
-			return
-
-		this.pressed = !event.end
-		this.horizontalSwiped(event)
-
-		event.preventDefault()
-	}
-
-	verticalSwipeHandler(event): {
-		if (!event || !this.hoverEnabled || !this.recursiveVisible || !('ontouchstart' in window))
-			return
-
-		this.pressed = !event.end
-		this.verticalSwiped(event)
-
-		event.preventDefault()
-	}
-
 	onContainsMouseChanged: {
 		if (this.containsMouse) {
 			this.entered()
@@ -145,13 +109,52 @@ Item {
 			return false
 	}
 
+	onTouchStart(event): {
+		var box = this.toScreen()
+		var e = event.originalEvent.touches[0]
+		var x = e.pageX - box[0]
+		var y = e.pageY - box[1]
+		this._startX = x
+		this._startY = y
+		this._orientation = null;
+		this._startTarget = event.target;
+	}
+
+	onTouchMove(event): {
+		var box = this.toScreen()
+		var e = event.originalEvent.touches[0]
+		var x = e.pageX - box[0]
+		var y = e.pageY - box[1]
+		var dx = x - this._startX
+		var dy = y - this._startY
+		var adx = Math.abs(dx)
+		var ady = Math.abs(dy)
+		var motion = adx > 5 || ady > 5
+		if (!motion)
+			return
+
+		if (!this._orientation)
+			this._orientation = adx > ady ? 'horizontal' : 'vertical'
+
+		// for delegated events, the target may change over time
+		// this ensures we notify the right target and simulates the mouseleave behavior
+		while (event.target && event.target !== this._startTarget)
+			event.target = event.target.parentNode;
+		if (event.target !== this._startTarget) {
+			event.target = this._startTarget;
+			stopHandler.call(this, $.Event(stopEvent + '.' + namespace, event));
+			return;
+		}
+
+		if (this._orientation == 'horizontal')
+			this.horizontalSwiped(event)
+		else
+			this.verticalSwiped(event)
+	}
+
 	onCompleted: {
 		var self = this
 
-		if (this.element.verticalSwipe && this.verticalSwipable)
-			this.element.verticalSwipe(this.verticalSwipeHandler.bind(this))
-		if (this.element.horizontalSwipe && this.horizontalSwipable)
-			this.element.horizontalSwipe(this.horizontalSwipeHandler.bind(this))
 		if (this.clickable)
 			this.element.click(this.clicked.bind(this))
 		if (this.wheelEnabled)

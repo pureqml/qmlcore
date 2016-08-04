@@ -138,6 +138,13 @@ exports.Window = function(context, dom) {
 exports.Window.prototype = Object.create(_globals.core.EventEmitter.prototype)
 exports.Window.prototype.constructor = exports.Window
 
+exports.Window.prototype.width = function() {
+	return this.dom.innerWidth
+}
+
+exports.Window.prototype.height = function() {
+	return this.dom.innerHeight
+}
 
 exports.getElement = function(tag) {
 	var tags = document.getElementsByTagName(tag)

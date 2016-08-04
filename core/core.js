@@ -280,6 +280,8 @@ exports.core.safeCall = function(args, onError) {
 
 exports.core.EventEmitter = function() {
 	this._eventHandlers = {}
+	this._onFirstListener = {}
+	this._onLastListener = {}
 }
 
 exports.core.EventEmitter.prototype.constructor = exports.core.EventEmitter
@@ -287,8 +289,16 @@ exports.core.EventEmitter.prototype.constructor = exports.core.EventEmitter
 exports.core.EventEmitter.prototype.on = function (name, callback) {
 	if (name in this._eventHandlers)
 		this._eventHandlers[name].push(callback)
-	else
+	else {
+		if (name in this._onFirstListener)
+			this._onFirstListener[name]()
 		this._eventHandlers[name] = [callback]
+	}
+}
+
+exports.core.EventEmitter.prototype.onListener = function(name, first, last) {
+	this._onFirstListener[name] = first
+	this._onLastListener[name] = last
 }
 
 exports.core.EventEmitter.prototype.emit = function(name) {
@@ -308,6 +318,11 @@ exports.core.EventEmitter.prototype.removeListener = function(name, callback) {
 	var idx = handlers.indexOf(callback)
 	if (idx >= 0)
 		handlers.splice(idx, 1)
+	if (!handlers.length) {
+		delete this._eventHandlers[name]
+		if (name in this._onLastListener)
+			this._onLastListener[name]()
+	}
 }
 
 

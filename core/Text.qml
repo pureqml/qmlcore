@@ -24,7 +24,6 @@ Item {
 
 	constructor: {
 		this.element.addClass(this.getContext().getClass('text'))
-		this._fragment = []
 		this._setText(this.text)
 		var self = this
 		this._delayedUpdateSize = new qml.core.DelayedAction(this.getContext(), function() {

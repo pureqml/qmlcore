@@ -163,7 +163,7 @@ class component_generator(object):
 		r = []
 		ident = "\t" * ident_n
 		for name in self.signals:
-			r.append("%sexports.%s.prototype.%s = function() { var args = exports.core.copyArguments(arguments, 0, '%s'); this._emitSignal.apply(this, args) }" %(ident, self.name, name, name))
+			r.append("%sexports.%s.prototype.%s = function() { var args = exports.core.copyArguments(arguments, 0, '%s'); this.emit.apply(this, args) }" %(ident, self.name, name, name))
 
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode

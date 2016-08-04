@@ -3,11 +3,12 @@
  */
 
 exports.Element = function(dom) {
+	_globals.core.EventEmitter.apply(this)
 	this.dom = dom
 	this._styles = {}
 }
 
-exports.Element.prototype = Object.create(_globals.core.EventEmitter)
+exports.Element.prototype = Object.create(_globals.core.EventEmitter.prototype)
 exports.Element.prototype.constructor = exports.Element
 
 exports.Element.prototype.addClass = function(cls) {

@@ -55,9 +55,8 @@ Item {
 			log("Context: window size: " + w + "x" + h);
 			div = this.createElement('div')
 			div.id = divId
-			div = $(div)
 			win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
-			$('body').append(div);
+			$('body').append(div.dom);
 		}
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
@@ -95,10 +94,15 @@ Item {
 		} .bind(this) );
 
 		var self = this;
-		div.bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e) {
+
+		var onFullscreenChanged = function(e) {
 			var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 			self.fullscreen = state
-		});
+		}
+		'webkitfullscreenchange mozfullscreenchange fullscreenchange'.split(' ').forEach(function(name) {
+			div.on(name, onFullscreenChanged)
+		})
+
 		$(document).keydown(function(event) { if (self._processKey(event)) event.preventDefault(); } );
 	}
 

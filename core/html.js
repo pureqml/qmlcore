@@ -131,7 +131,7 @@ exports.Window = function(context, dom) {
 	var self = this
 	this.onListener('load',
 		function() { dom.onload = function() { log('ONLOAD');  self.emit('load') } },
-		function() { }
+		function() { dom.onload = undefined }
 	)
 }
 

@@ -12,7 +12,7 @@ exports.core.vendor = ""
 exports.trace = { key: false, focus: false }
 
 var copyArguments = function(args, src, prefix) {
-	var copy = Array.prototype.slice.call(arguments, src)
+	var copy = Array.prototype.slice.call(args, src)
 	if (prefix !== undefined)
 		copy.unshift(prefix)
 	return copy

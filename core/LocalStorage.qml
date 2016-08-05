@@ -24,7 +24,7 @@ Object {
 		if (!this._storage) {
 			this._storage = window.localStorage;
 			if (!this._storage)
-				throw "no local storage support"
+				throw new Error("no local storage support")
 		}
 	}
 

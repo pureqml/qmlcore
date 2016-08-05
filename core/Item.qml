@@ -35,7 +35,7 @@ Object {
 	constructor: {
 		if (this.parent) {
 			if (this.element)
-				throw "double ctor call"
+				throw new Error('double ctor call')
 
 			this.element = this.getContext().createElement('div')
 			this.parent.element.append(this.element)
@@ -73,7 +73,7 @@ Object {
 
 		if (css !== undefined) {
 			if (!animation)
-				throw "resetting transition was not implemented"
+				throw new Error('resetting transition was not implemented')
 
 			animation._target = name
 			return this.setTransition(css, animation)
@@ -202,7 +202,7 @@ Object {
 
 	function _focusChild  (child) {
 		if (child.parent !== this)
-			throw "invalid object passed as child"
+			throw new Error('invalid object passed as child')
 		if (this.focusedChild === child)
 			return
 		if (this.focusedChild)

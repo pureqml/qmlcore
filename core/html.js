@@ -43,11 +43,19 @@ exports.Element.prototype.setHtml = function(html) {
 }
 
 exports.Element.prototype.width = function() {
-	return this.dom.offsetWidth
+	return this.dom.clientWidth
 }
 
 exports.Element.prototype.height = function() {
-	return this.dom.offsetHeight
+	return this.dom.clientHeight
+}
+
+exports.Element.prototype.fullWidth = function() {
+	return this.dom.scrollWidth
+}
+
+exports.Element.prototype.fullHeight = function() {
+	return this.dom.scrollHeight
 }
 
 exports.Element.prototype.style = function(name, style) {

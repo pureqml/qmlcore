@@ -69,9 +69,8 @@ Item {
 	}
 
 	function _reflectSize() {
-		var dom = this.element[0]
-		this.paintedWidth = dom.offsetWidth
-		this.paintedHeight = dom.offsetHeight
+		this.paintedWidth = this.element.fullWidth()
+		this.paintedHeight = this.element.fullHeight()
 	}
 
 	function _updateSizeImpl() {

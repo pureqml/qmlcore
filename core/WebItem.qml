@@ -9,26 +9,41 @@ Rectangle {
 	constructor:		{ this.style('cursor', this.cursor) }
 	onCursorChanged: 	{ this.style('cursor', value) }
 
+	function _bindClick() {
+		if (!this._clicked)
+			this._clicked = this.clicked.bind(this)
+		this.element.on('click', this._clicked)
+	}
+
 	onClickableChanged: {
 		if (value)
-			this.element.click(this.clicked.bind(this))
+			this._bindClick()
 		else
-			this.element.unbind('click')
+			this.element.removeListener('click', this._clicked)
+	}
+
+	function _bindHover(value) {
+		var self = this
+		var onEnter = function() { self.hover = true }
+		var onLeave = function() { self.hover = false }
+		if (value) {
+			this.element.on('mouseenter', onEnter)
+			this.element.on('mouseleave', onLeave)
+		} else {
+			this.element.removeListener('mouseenter', onEnter)
+			this.element.removeListener('mouseleave', onLeave)
+		}
 	}
 
 	onHoverableChanged: {
-		var self = this
-		if (value)
-			this.element.hover(function() { self.hover = true }, function() { self.hover = false })
-		else
-			this.element.unbind('mouseenter mouseleave')
+		this._bindHover(value)
 	}
 
 	onCompleted: {
 		var self = this
 		if (this.clickable)
-			this.element.click(this.clicked.bind(this))
+			this._bindClick()
 		if (this.hoverable)
-			this.element.hover(function() { self.hover = true }, function() { self.hover = false })
+			this._bindHover(true)
 	}
 }

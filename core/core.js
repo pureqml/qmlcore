@@ -290,8 +290,10 @@ exports.core.EventEmitter.prototype.on = function (name, callback) {
 	if (name in this._eventHandlers)
 		this._eventHandlers[name].push(callback)
 	else {
-		if (name in this._onFirstListener)
+		if (name in this._onFirstListener) {
+			log('first listener to', name)
 			this._onFirstListener[name]()
+		}
 		this._eventHandlers[name] = [callback]
 	}
 }
@@ -311,13 +313,15 @@ exports.core.EventEmitter.prototype.emit = function(name) {
 }
 
 exports.core.EventEmitter.prototype.removeListener = function(name, callback) {
-	if (!(name in this._eventHandlers))
+	if (!(name in this._eventHandlers) || callback === undefined || callback === null)
 		return
 
 	var handlers = this._eventHandlers[name]
 	var idx = handlers.indexOf(callback)
 	if (idx >= 0)
 		handlers.splice(idx, 1)
+	else
+		console.log('failed to remove listener for', name, 'from', this)
 	if (!handlers.length) {
 		delete this._eventHandlers[name]
 		if (name in this._onLastListener)

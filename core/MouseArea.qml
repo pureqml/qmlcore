@@ -46,11 +46,17 @@ Item {
 			this.containsMouse = false
 	}
 
+	function _bindClick() {
+		if (!this._clicked)
+			this._clicked = this.clicked.bind(this)
+		this.element.on('click', this._clicked)
+	}
+
 	onClickableChanged: {
 		if (value)
-			this.element.click(this.clicked.bind(this))
+			this._bindClick()
 		else
-			this.element.unbind('click')
+			this.element.removeListener('click', this._clicked)
 	}
 
 	onWheelEnabledChanged: {
@@ -63,22 +69,36 @@ Item {
 
 	onPressableChanged: {
 		var self = this
+		var onDown = function() { self.pressed = true }
+		var onUp = function() { self.pressed = false }
 		if (value) {
-			this.element.mousedown(function() { self.pressed = true })
-			this.element.mouseup(function() { self.pressed = false })
+			this.element.on('mousedown', onDown)
+			this.element.on('mouseup', onUp)
 		} else {
-			this.element.unbind('mousedown mouseup')
+			this.element.removeListener('mousedown', onDown)
+			this.element.removeListener('mouseup', onUp)
 		}
 	}
 
-	onHoverEnabledChanged: {
+	function _bindHover(value) {
 		var self = this
+		var onEnter = function() { self.hover = true }
+		var onLeave = function() { self.hover = false }
+		var onMove = function(event) { if (self.updatePosition(event)) event.preventDefault() }
 		if (value) {
-			this.element.hover(function() { self.hover = true }, function() { self.hover = false })
-			this.element.mousemove(function(event) { if (self.updatePosition(event)) event.preventDefault() })
+			this.element.on('mouseenter', onEnter)
+			this.element.on('mouseleave', onLeave)
+			this.element.on('mousemove', onMove)
 		} else {
-			this.element.unbind('mouseenter mouseleave mousemove')
+			this.element.removeListener('mouseenter', onEnter)
+			this.element.removeListener('mouseleave', onLeave)
+			this.element.removeListener('mousemove', onMove)
 		}
+	}
+
+
+	onHoverEnabledChanged: {
+		this._bindHover(value)
 	}
 
 	onContainsMouseChanged: {
@@ -156,24 +176,24 @@ Item {
 		var self = this
 
 		if (this.clickable)
-			this.element.click(this.clicked.bind(this))
+			this._bindClick()
 		if (this.wheelEnabled)
 			this.element.on('mousewheel', function(event) { self.wheelEvent(event.originalEvent.wheelDelta / 120) })
 		if (this.pressable) {
-			this.element.mousedown(function() { self.pressed = true })
-			this.element.mouseup(function() { self.pressed = false })
+			this.element.on('mousedown', function() { self.pressed = true })
+			this.element.on('mouseup', function() { self.pressed = false })
 		}
-		if (this.hoverEnabled) {
-			this.element.hover(function() { self.containsMouse = true }, function() { self.containsMouse = false })
-			this.element.mousemove(function(event) { self.mouseMove(); if (self.updatePosition(event)) event.preventDefault() })
-		}
+
+		if (this.hoverEnabled)
+			this._bindHover(true)
+
 		if (this.touchEnabled) {
 			if ('ontouchstart' in window)
-				this.element.bind('touchstart', function(event) { self.touchStart(event) })
+				this.element.on('touchstart', function(event) { self.touchStart(event) })
 			if ('ontouchend' in window)
-				this.element.bind('touchend', function(event) { self.touchEnd(event) })
+				this.element.on('touchend', function(event) { self.touchEnd(event) })
 			if ('ontouchmove' in window)
-				this.element.bind('touchmove', function(event) { self.touchMove(event) })
+				this.element.on('touchmove', function(event) { self.touchMove(event) })
 		}
 	}
 }

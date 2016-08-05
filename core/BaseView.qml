@@ -117,7 +117,7 @@ Item {
 				this._onRowsInserted(items.length, model.count)
 		}
 		if (items.length != model.count)
-			throw "reset failed"
+			throw new Error("reset: items length does reflect model size")
 		this._delayedLayout.schedule()
 	}
 
@@ -128,7 +128,7 @@ Item {
 		for(var i = begin; i < end; ++i)
 			items.splice(i, 0, null)
 		if (items.length != this.model.count)
-			throw "insert failed"
+			throw new Error("insert: items length does reflect model size")
 		this._delayedLayout.schedule()
 	}
 
@@ -143,7 +143,7 @@ Item {
 			items[i] = null
 		}
 		if (items.length != this.model.count)
-			throw "change failed"
+			throw new Error("change: items length does reflect model size")
 		this._delayedLayout.schedule()
 	}
 
@@ -159,7 +159,7 @@ Item {
 		}
 		items.splice(begin, end - begin)
 		if (items.length != this.model.count)
-			throw "remove failed"
+			throw new Error("remove: items length does reflect model size")
 		this._delayedLayout.schedule()
 	}
 

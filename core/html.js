@@ -9,7 +9,8 @@ exports.Element = function(context, dom) {
 	this._fragment = []
 	this._styles = {}
 	var self = this
-	this.onListener('click', function() { dom.onclick = self.emit('click') }, function() { dom.onclick = undefined })
+	var onClick = function() { log('CLICK'); self.emit('click') }
+	this.onListener('click', function() { dom.addEventListener('click', onClick) }, function() { dom.removeEventListener('click', onClick) })
 }
 
 exports.Window = function(context, dom) {

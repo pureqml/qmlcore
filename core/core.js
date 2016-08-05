@@ -291,7 +291,7 @@ exports.core.EventEmitter.prototype.on = function (name, callback) {
 		this._eventHandlers[name].push(callback)
 	else {
 		if (name in this._onFirstListener) {
-			log('first listener to', name)
+			//log('first listener to', name)
 			this._onFirstListener[name]()
 		}
 		this._eventHandlers[name] = [callback]

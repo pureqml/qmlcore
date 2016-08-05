@@ -13,12 +13,6 @@ exports.Element = function(context, dom) {
 	this.onListener('click', function() { dom.addEventListener('click', onClick) }, function() { dom.removeEventListener('click', onClick) })
 }
 
-exports.Window = function(context, dom) {
-	_globals.core.EventEmitter.apply(this)
-	this._context = context
-	this.dom = dom
-}
-
 exports.Element.prototype = Object.create(_globals.core.EventEmitter.prototype)
 exports.Element.prototype.constructor = exports.Element
 

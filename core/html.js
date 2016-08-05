@@ -8,6 +8,8 @@ exports.Element = function(context, dom) {
 	this.dom = dom
 	this._fragment = []
 	this._styles = {}
+	var self = this
+	this.onListener('click', function() { dom.onclick = self.emit('click') }, function() { dom.onclick = undefined })
 }
 
 exports.Window = function(context, dom) {

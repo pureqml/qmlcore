@@ -292,7 +292,10 @@ exports.core.EventEmitter.prototype.on = function (name, callback) {
 	else {
 		if (name in this._onFirstListener) {
 			//log('first listener to', name)
-			this._onFirstListener[name]()
+			this._onFirstListener[name](name)
+		} else if ('' in this._onFirstListener) {
+			//log('first listener to', name)
+			this._onFirstListener[''](name)
 		}
 		this._eventHandlers[name] = [callback]
 	}
@@ -325,7 +328,11 @@ exports.core.EventEmitter.prototype.removeListener = function(name, callback) {
 	if (!handlers.length) {
 		delete this._eventHandlers[name]
 		if (name in this._onLastListener)
-			this._onLastListener[name]()
+			this._onLastListener[name](name)
+		else if ('' in this._onLastListener) {
+			//log('first listener to', name)
+			this._onLastListener[''](name)
+		}
 	}
 }
 

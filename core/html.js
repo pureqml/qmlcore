@@ -2,15 +2,30 @@
  * @constructor
  */
 
+var registerGenericListener = function(target) {
+	target.onListener('',
+		function(name) {
+			//log('registering generic event', name)
+			var callback = function() {
+				target.emit(name)
+			}
+			target.dom.addEventListener(name, callback)
+		},
+		function(name) {
+			//fixme: implement removing callback
+			//return remove callback from first callback?
+		}
+	)
+}
+
 exports.Element = function(context, dom) {
 	_globals.core.EventEmitter.apply(this)
 	this._context = context
 	this.dom = dom
 	this._fragment = []
 	this._styles = {}
-	var self = this
-	var onClick = function() { log('CLICK'); self.emit('click') }
-	this.onListener('click', function() { dom.addEventListener('click', onClick) }, function() { dom.removeEventListener('click', onClick) })
+
+	registerGenericListener(this)
 }
 
 exports.Element.prototype = Object.create(_globals.core.EventEmitter.prototype)
@@ -133,11 +148,7 @@ exports.Window = function(context, dom) {
 	this._context = context
 	this.dom = dom
 
-	var self = this
-	this.onListener('load',
-		function() { dom.onload = function() { self.emit('load') } },
-		function() { dom.onload = undefined }
-	)
+	registerGenericListener(this)
 }
 
 exports.Window.prototype = Object.create(_globals.core.EventEmitter.prototype)

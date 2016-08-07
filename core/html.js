@@ -91,6 +91,9 @@ exports.Element.prototype.style = function(name, style) {
 		return this._styles[name]
 }
 
+exports.Element.prototype.setAttribute = function(name, value) {
+	this.dom.setAttribute(name, value)
+}
 
 exports.Element.prototype.updateStyle = function() {
 	var element = this.dom

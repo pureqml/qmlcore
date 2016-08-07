@@ -139,7 +139,7 @@ exports.Element.prototype.updateStyle = function() {
 }
 
 exports.Element.prototype.append = function(el) {
-	this.dom.appendChild(el.dom)
+	this.dom.appendChild((el instanceof Node)? el: el.dom)
 }
 
 exports.Element.prototype.remove = function() {

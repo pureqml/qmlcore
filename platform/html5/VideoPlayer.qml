@@ -36,7 +36,7 @@ Item {
 			}
 			this.flasPlayerPaused = false
 		} else {
-			this._player.get(0).play()
+			this._player.play()
 		}
 
 		this.applyVolume();
@@ -44,13 +44,13 @@ Item {
 
 	seek(value): {
 		if (!this.flash)
-			this._player.get(0).currentTime += value
+			this._player.currentTime += value
 		//TODO: Impl for flash player.
 	}
 
 	seekTo(value): {
 		if (!this.flash)
-			this._player.get(0).currentTime = value
+			this._player.currentTime = value
 		//TODO: Impl for flash player.
 	}
 
@@ -63,7 +63,7 @@ Item {
 		var source = this.source
 		log("source changed to", source)
 		if (!this.flash) {
-			this._player.attr('src', this.source)
+			this._player.setAttribute('src', this.source)
 		}
 		if (this.autoPlay)
 			this.play()
@@ -77,7 +77,7 @@ Item {
 			$('#videoPlayer').attr('width', value)
 			$('embed[name=videoPlayer]').attr('width', value)
 		} else
-			this._player.attr('width', this.width)
+			this._player.setAttribute('width', this.width)
 	}
 
 	onHeightChanged: {
@@ -87,10 +87,10 @@ Item {
 			$('#videoPlayer').attr('height', value)
 			$('embed[name=videoPlayer]').attr('height', value)
 		} else
-			this._player.attr('height', this.height)
+			this._player.setAttribute('height', this.height)
 	}
 
-	onLoopChanged: { if (this._player) this._player.attr('loop', this.loop) }
+	onLoopChanged: { if (this._player) this._player.setAttribute('loop', this.loop) }
 
 	onCompleted: {
 		if (!this.desktop)
@@ -103,9 +103,9 @@ Item {
 				'" autoplay=' + (this.autoPlay? "autoplay": "") +
 				'>')
 			this._player.css('background-color', 'black')
-			this._player.attr('loop', this.loop)
+			this._player.setAttribute('loop', this.loop)
 
-			var player = this._player.get(0)
+			var player = this._player
 			var self = this
 			player.addEventListener('error', function () { log("Player error occured"); self.error() })
 			player.addEventListener('play', function () { self.waiting = false; self.paused = player.paused })
@@ -138,8 +138,8 @@ Item {
 					self.buffered = player.buffered.end(last) - player.buffered.start(last)
 			})
 		} else {
-			console.log("creating object")
-			this._player = $(
+			console.log("creating object...")
+			this._player = this.element.setHtml(
 				'<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="" id="videoPlayer" width="' + this.width + '" height="' + this.height + '">' +
 				'<param name="movie"  value="flashlsChromeless.swf?inline=1" />' +
 				'<param name="quality" value="autohigh" />' +
@@ -150,9 +150,8 @@ Item {
 				'<param name="wmode" value="window" />' +
 				'<embed src="flashlsChromeless.swf?inline=1" width="' + this.width + '" height="' + this.height + '" name="videoPlayer" quality="autohigh" bgcolor="#0" align="middle" allowFullScreen="true" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" swliveconnect="true" wmode="window" pluginspage="http://www.macromedia.com/go/getflashplayer"> </embed>' +
 				'</object>'
-			)
+			)[0]
 		}
-		this.element.append(this._player)
 		if (this.autoPlay && this.source)
 			this.play()
 
@@ -167,10 +166,10 @@ Item {
 		running: true;
 
 		onTriggered: {
-			this.parent.duration = this.parent._player.get(0).duration ? this.parent._player.get(0).duration : 0
-			this.parent.muted = this.parent._player.get(0).muted
-			this.parent.ready = this.parent._player.get(0).readyState || this.parent.flash;	//TODO: temporary fix.
-			this.parent.paused = this.parent.ready && (this.parent._player.get(0).paused || this.parent.flasPlayerPaused);
+			this.parent.duration = this.parent._player.duration ? this.parent._player.duration : 0
+			this.parent.muted = this.parent._player.muted
+			this.parent.ready = this.parent._player.readyState || this.parent.flash;	//TODO: temporary fix.
+			this.parent.paused = this.parent.ready && (this.parent._player.paused || this.parent.flasPlayerPaused);
 		}
 	}
 
@@ -218,7 +217,7 @@ Item {
 				return
 			player.playerVolume(100 * this.volume)
 		} else if (this._player) {
-			this._player.get(0).volume = this.volume
+			this._player.volume = this.volume
 		}
 	}
 
@@ -230,13 +229,13 @@ Item {
 			player.playerPause()
 			this.flasPlayerPaused = true
 		} else if (this._player) {
-			this._player.get(0).pause()
+			this._player.pause()
 		}
 	}
 
 	volumeUp:			{ this.volume += 0.1; }
 	volumeDown:			{ this.volume -= 0.1; }
-	toggleMute:			{ this._player.get(0).muted = !this._player.get(0).muted }
+	toggleMute:			{ this._player.muted = !this._player.muted }
 	onVolumeChanged:	{ this.applyVolume(); }
 	onReadyChanged:		{ log("ReadyState: " + this.ready); }
 

@@ -128,10 +128,11 @@ Item {
 	}
 
 	function _complete() {
-		if (!this._started)
+		if (!this._started || this._runningComplete)
 			return
 
 		this._completed = true
+		this._runningComplete = true
 
 		var invoker = qml.core.safeCall([], function (ex) { log("onCompleted failed:", ex, ex.stack) })
 		do {
@@ -142,6 +143,7 @@ Item {
 			}
 			this._processActions()
 		} while(this._completedHandlers.length)
+		this._runningComplete = false
 	}
 
 	function start(name) {

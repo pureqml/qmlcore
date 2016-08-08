@@ -52,6 +52,7 @@ exports.Element.prototype.setHtml = function(html) {
 		fragment.appendChild(temp.firstChild)
 	}
 	dom.appendChild(fragment)
+	return dom.children
 }
 
 exports.Element.prototype.width = function() {

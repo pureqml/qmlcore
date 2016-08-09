@@ -23,6 +23,9 @@ Layout {
 			this.children[i].visible = (i == this.currentIndex);
 
 		var c = this.children[this.currentIndex];
+		if (!c)
+			return
+
 		this.contentHeight = c.height;
 		this.contentWidth = c.width;
 	}

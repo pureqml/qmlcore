@@ -29,15 +29,25 @@ Item {
 
 	onTouchEnabledChanged: {
 		if (value) {
-			var self = this
-			if ('ontouchstart' in window)
-				this.element.bind('touchstart', function(event) { self.touchStart(event) })
-			if ('ontouchend' in window)
-				this.element.bind('touchend', function(event) { self.touchEnd(event) })
-			if ('ontouchmove' in window)
-				this.element.bind('touchmove', function(event) { self.touchMove(event) })
-		} else {
-			this.element.unbind('touchmove touchend touchstart')
+			if (value) {
+				if (!this._touchStart)
+					this._touchStart = (function(event) { this.touchStart(event) }).bind(this)
+				if (!this._touchEnd)
+					this._touchEnd = (function(event) { this.touchEnd(event) }).bind(this)
+				if (!this._touchMove)
+					this._touchMove = (function(event) { this.touchMove(event) }).bind(this)
+
+				if ('ontouchstart' in window)
+					this.element.on('touchstart', this._touchStart)
+				if ('ontouchend' in window)
+					this.element.on('touchend', this._touchEnd)
+				if ('ontouchmove' in window)
+					this.element.on('touchmove', this._touchMove)
+			} else {
+				this.element.removeListener('touchstart', this._touchStart)
+				this.element.removeListener('touchend', this._touchEnd)
+				this.element.removeListener('touchmove', this._touchMove)
+			}
 		}
 	}
 

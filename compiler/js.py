@@ -222,7 +222,7 @@ class component_generator(object):
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				if "." in value:
-					raiseException("expected identifier, not expression")
+					raise Exception("expected identifier, not expression")
 				r.append("%sthis._setId('%s')" %(ident, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")

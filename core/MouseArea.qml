@@ -28,7 +28,6 @@ Item {
 	onCursorChanged: { this.style('cursor', value) }
 
 	function _bindTouch(value) {
-		log('UPDATE TOUCH', value)
 		if (value) {
 			if (!this._touchStart)
 				this._touchStart = (function(event) { log('TS'); this.touchStart(event) }).bind(this)

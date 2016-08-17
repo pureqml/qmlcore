@@ -3,11 +3,13 @@
  */
 
 var registerGenericListener = function(target) {
+	var copyArguments = _globals.core.copyArguments
 	target.onListener('',
 		function(name) {
 			//log('registering generic event', name)
 			var callback = function() {
-				target.emit(name)
+				var args = copyArguments(arguments, 0, name)
+				target.emit.apply(target, args)
 			}
 			target.dom.addEventListener(name, callback)
 		},

@@ -29,23 +29,20 @@ Item {
 
 	function _bindTouch(value) {
 		if (value) {
-			if (!this._touchStart)
-				this._touchStart = (function(event) { log('TS'); this.touchStart(event) }).bind(this)
-			if (!this._touchEnd)
-				this._touchEnd = (function(event) { this.touchEnd(event) }).bind(this)
-			if (!this._touchMove)
-				this._touchMove = (function(event) { this.touchMove(event) }).bind(this)
+			var touchStart = function(event) { this.touchStart(event) }.bind(this)
+			var touchEnd = function(event) { this.touchEnd(event) }.bind(this)
+			var touchMove = (function(event) { this.touchMove(event) }).bind(this)
 
 			if ('ontouchstart' in window)
-				this.element.on('touchstart', this._touchStart)
+				this.element.on('touchstart', touchStart)
 			if ('ontouchend' in window)
-				this.element.on('touchend', this._touchEnd)
+				this.element.on('touchend', touchEnd)
 			if ('ontouchmove' in window)
-				this.element.on('touchmove', this._touchMove)
+				this.element.on('touchmove', touchMove)
 		} else {
-			this.element.removeListener('touchstart', this._touchStart)
-			this.element.removeListener('touchend', this._touchEnd)
-			this.element.removeListener('touchmove', this._touchMove)
+			this.element.removeListener('touchstart', touchStart)
+			this.element.removeListener('touchend', touchEnd)
+			this.element.removeListener('touchmove', touchMove)
 		}
 	}
 
@@ -58,31 +55,36 @@ Item {
 			this.containsMouse = false
 	}
 
-	function _bindClick() {
-		if (!this._clicked)
-			this._clicked = this.clicked.bind(this)
-		this.element.on('click', this._clicked)
+	function _bindClick(value) {
+		var clicked = this.clicked.bind(this)
+		if (value) {
+			this.element.on('click', clicked)
+		} else {
+			this.element.removeListener('click', clicked)
+		}
 	}
 
 	onClickableChanged: {
+		this._bindClick(value)
+	}
+
+	function _bindWheel(value) {
+		var onWheel = function(event) { this.wheelEvent(event.originalEvent.wheelDelta / 120) }.bind(this)
+
 		if (value)
-			this._bindClick()
+			this.element.on('mousewheel', onWheel)
 		else
-			this.element.removeListener('click', this._clicked)
+			this.element.removeListener('mousewheel', onWheel)
 	}
 
 	onWheelEnabledChanged: {
-		var self = this
-		if (value)
-			this.element.on('mousewheel', function(event) { self.wheelEvent(event.originalEvent.wheelDelta / 120) })
-		else
-			this.element.unbind('mousewheel')
+		this._bindWheel(value)
 	}
 
-	onPressableChanged: {
-		var self = this
-		var onDown = function() { self.pressed = true }
-		var onUp = function() { self.pressed = false }
+	function _bindPressable(value) {
+		var onDown = function() { this.pressed = true }.bind(this)
+		var onUp = function() { this.pressed = false }.bind(this)
+
 		if (value) {
 			this.element.on('mousedown', onDown)
 			this.element.on('mouseup', onUp)
@@ -92,11 +94,14 @@ Item {
 		}
 	}
 
+	onPressableChanged: {
+		this._bindPressable(value)
+	}
+
 	function _bindHover(value) {
-		var self = this
-		var onEnter = function() { self.hover = true }
-		var onLeave = function() { self.hover = false }
-		var onMove = function(event) { if (self.updatePosition(event)) event.preventDefault() }
+		var onEnter = function() { this.hover = true }.bind(this)
+		var onLeave = function() { this.hover = false }.bind(this)
+		var onMove = function(event) { if (this.updatePosition(event)) event.preventDefault() }.bind(this)
 		if (value) {
 			this.element.on('mouseenter', onEnter)
 			this.element.on('mouseleave', onLeave)
@@ -129,8 +134,8 @@ Item {
 			return false
 
 		var box = this.toScreen()
-		var x = event.pageX - box[0]
-		var y = event.pageY - box[1]
+		var x = event.clientX - box[0]
+		var y = event.clientY - box[1]
 
 		if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
 			this.mouseX = x
@@ -185,16 +190,13 @@ Item {
 	}
 
 	onCompleted: {
-		var self = this
-
 		if (this.clickable)
-			this._bindClick()
+			this._bindClick(true)
 		if (this.wheelEnabled)
-			this.element.on('mousewheel', function(event) { self.wheelEvent(event.originalEvent.wheelDelta / 120) })
-		if (this.pressable) {
-			this.element.on('mousedown', function() { self.pressed = true })
-			this.element.on('mouseup', function() { self.pressed = false })
-		}
+			this._bindWheel(true)
+
+		if (this.pressable)
+			this._bindPressable(true)
 
 		if (this.hoverEnabled)
 			this._bindHover(true)

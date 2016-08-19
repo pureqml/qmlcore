@@ -62,7 +62,7 @@ Item {
 	onSourceChanged: {
 		var source = this.source
 		log("source changed to", source)
-		if (!this.flash) {
+		if (!this.flash && this._player) {
 			this._player.setAttribute('src', this.source)
 		}
 		if (this.autoPlay)

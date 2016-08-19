@@ -91,7 +91,7 @@ Object {
 	function style(name, style) {
 		var element = this.element
 		if (element)
-			element.style(name, style)
+			return element.style(name, style)
 		else
 			log('WARNING: style skipped:', name, style)
 	}

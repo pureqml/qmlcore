@@ -7,6 +7,7 @@ Object {
 	property bool webkit;
 	property bool support3dTransforms;
 	property bool supportTransforms;
+	property bool supportTransitions;
 	property bool portrait: parent.width < parent.height;
 	property bool landscape: !portrait;
 	property bool pageActive: true;
@@ -65,6 +66,7 @@ Object {
 		this.language = navigator.language
 		this.support3dTransforms = window.Modernizr && window.Modernizr.csstransforms3d
 		this.supportTransforms = window.Modernizr && window.Modernizr.csstransforms
+		this.supportTransitions = window.Modernizr && window.Modernizr.csstransitions
 
 		var self = this
 		window.onfocus = function() { self.pageActive = true }

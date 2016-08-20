@@ -140,6 +140,7 @@ Item {
 		if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
 			this.mouseX = x
 			this.mouseY = y
+			this.mouseMove()
 			return true
 		}
 		else

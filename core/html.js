@@ -168,6 +168,10 @@ exports.Window.prototype.height = function() {
 	return this.dom.innerHeight
 }
 
+exports.Window.prototype.scrollY = function() {
+	return this.dom.scrollY
+}
+
 exports.getElement = function(tag) {
 	var tags = document.getElementsByTagName(tag)
 	if (tags.length != 1)

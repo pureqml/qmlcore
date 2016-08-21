@@ -87,7 +87,7 @@ Item {
 		this.height = h
 		this.style('visibility', 'hidden')
 
-		win.on('scroll', function(event) { this.scrollY = win.scrollTop(); }.bind(this));
+		win.on('scroll', function(event) { this.scrollY = win.scrollY(); }.bind(this));
 		win.on('hashchange', function(event) { this.hash = window.location.hash; }.bind(this));
 
 		win.on('load', function() {

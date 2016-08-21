@@ -268,7 +268,7 @@ Object {
 				return true
 		}
 
-		var key = qml.core.keyCodes[event.which];
+		var key = qml.core.keyCodes[event.which || event.keyCode];
 		if (key) {
 			if (key in this._pressedHandlers) {
 				var handlers = this._pressedHandlers[key]

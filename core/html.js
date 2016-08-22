@@ -146,7 +146,8 @@ exports.Element.prototype.append = function(el) {
 }
 
 exports.Element.prototype.remove = function() {
-	this.dom.remove()
+	var dom = this.dom
+	dom.parentNode.removeChild(dom)
 }
 
 exports.Window = function(context, dom) {

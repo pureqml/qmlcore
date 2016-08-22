@@ -360,7 +360,7 @@ class generator(object):
 		self.imports[name] = data
 
 	def wrap(self, code, use_globals = False):
-		return "(function() {\n'use strict';\n/** @const */\nvar exports = %s;\n%s\nreturn exports;\n} )" %("_globals" if use_globals else "{}", code)
+		return "(function() {/** @const */\nvar exports = %s;\n%s\nreturn exports;\n} )" %("_globals" if use_globals else "{}", code)
 
 	def find_component(self, package, name):
 		if name == "Object":

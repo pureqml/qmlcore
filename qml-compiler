@@ -14,6 +14,7 @@ parser.add_argument("-a", dest="app")
 parser.add_argument("-p", dest="prefix", default = False, action = 'store_true')
 parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
+parser.add_argument("-S", dest="strict", default=True, action="store_false")
 args = parser.parse_args()
 
 if args.wait:
@@ -127,7 +128,8 @@ def generate():
 	print "generating sources..."
 	namespace = "qml"
 	app = ""
-	app += "'use strict'\n"
+	if args.strict:
+		app += "'use strict'\n"
 	app += "var log = console.log.bind(console)\n"
 	app += "/** @const */\n"
 	app += "/** @param {string} text @param {...} args */\n"

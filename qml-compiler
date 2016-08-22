@@ -127,6 +127,7 @@ def generate():
 	print "generating sources..."
 	namespace = "qml"
 	app = ""
+	app += "'use strict'\n"
 	app += "var log = console.log.bind(console)\n"
 	app += "/** @const */\n"
 	app += "/** @param {string} text @param {...} args */\n"

@@ -106,7 +106,7 @@ Item {
 			div.on(name, onFullscreenChanged)
 		})
 
-		document.addEventListener('onkeydown', function(event) { if (self._processKey(event)) event.preventDefault(); } ) //fixme: add html.Document instead
+		win.on('keydown', function(event) { if (self._processKey(event)) event.preventDefault(); }.bind(this) ) //fixme: add html.Document instead
 	}
 
 	function _onCompleted(callback) {

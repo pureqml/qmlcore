@@ -9,7 +9,7 @@ from StringIO import StringIO
 import argparse
 import re
 
-parser = argparse.ArgumentParser('qml translation tool')
+parser = argparse.ArgumentParser('qml2js build tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
 parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')

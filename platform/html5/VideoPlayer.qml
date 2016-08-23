@@ -1,23 +1,56 @@
 Item {
 	signal finished;
 	signal error;
-	property bool	autoPlay;
 	property string	source;
+	property Color	backgroundColor: "#000";
+	property float	volume: 1.0;
 	property bool	loop: false;
-	property bool	flash : true;
-	property bool	ready : false;
-	property bool	paused: false;
+	property bool	flash: true;
+	property bool	ready: false;
 	property bool	muted: false;
-	property bool	flasPlayerPaused: false;
+	property bool	paused: false;
+	property bool	autoPlay: false;
 	property bool	waiting: false;
 	property bool	seeking: false;
-	property bool	desktop: context.system.device == System.Desktop;
-	property float	volume: 1.0;
+	property bool	flasPlayerPaused: false;
 	property int	duration;
 	property int	progress;
 	property int	buffered;
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
+
+	//Timer {
+		//interval: 500;
+		//repeat: true;
+		//running: true;
+
+		//onTriggered: {
+			//var player = this.parent.element.dom
+			//this.parent.duration = player.duration ? this.parent._player.duration : 0
+			//this.parent.muted = player.muted
+			//this.parent.ready = player.readyState || this.parent.flash;	//TODO: temporary fix.
+			//this.parent.paused = this.parent.ready && (player.paused || this.parent.flasPlayerPaused);
+		//}
+	//}
+
+	function _update(name, value) {
+		switch (name) {
+			case 'loop': this.element.dom.loop = value; break
+			case 'backgroundColor': if (!this.flash) this.element.dom.style.backgroundColor = value; break
+		}
+
+		qml.core.Item.prototype._update.apply(this, arguments);
+	}
+
+	//getObject(name): {
+		//if (window.document[name])
+			//return window.document[name];
+		//if (navigator.appName.indexOf("Microsoft Internet")==-1) {
+			//if (document.embeds && document.embeds[name])
+				//return document.embeds[name];
+		//} else
+			//return document.getElementById(name)
+	//}
 
 	play: {
 		if (!this.source)
@@ -25,18 +58,19 @@ Item {
 
 		log("play", this.source)
 		if (this.flash) {
-			var player = this.getObject('videoPlayer')
-			if (!player || !player.playerLoad) //flash player is not ready yet
-				return
-			if (this.flasPlayerPaused) {
-				player.playerPlay()
-			} else {
-				player.playerLoad(this.source)
-				player.playerPlay(-1)
-			}
-			this.flasPlayerPaused = false
+			//var player = this.getObject('videoPlayer')
+			//if (!player || !player.playerLoad) //flash player is not ready yet
+				//return
+			//if (this.flasPlayerPaused) {
+				//player.playerPlay()
+			//} else {
+				//player.playerLoad(this.source)
+				//player.playerPlay(-1)
+			//}
+			//this.flasPlayerPaused = false
+			//this.element.dom.playerPlay()
 		} else {
-			this._player.play()
+			this.element.dom.play()
 		}
 
 		this.applyVolume();
@@ -44,133 +78,19 @@ Item {
 
 	seek(value): {
 		if (!this.flash)
-			this._player.currentTime += value
+			this.element.dom.currentTime += value
 		//TODO: Impl for flash player.
 	}
 
 	seekTo(value): {
 		if (!this.flash)
-			this._player.currentTime = value
+			this.element.dom.currentTime = value
 		//TODO: Impl for flash player.
 	}
 
 	onAutoPlayChanged: {
 		if (value)
 			this.play()
-	}
-
-	onSourceChanged: {
-		var source = this.source
-		log("source changed to", source)
-		if (!this.flash && this._player) {
-			this._player.setAttribute('src', this.source)
-		}
-		if (this.autoPlay)
-			this.play()
-	}
-
-	onWidthChanged: {
-		if (!this._player)
-			return;
-
-		if (this.flash) {
-			$('#videoPlayer').attr('width', value)
-			$('embed[name=videoPlayer]').attr('width', value)
-		} else
-			this._player.setAttribute('width', this.width)
-	}
-
-	onHeightChanged: {
-		if (!this._player)
-			return;
-		if (this.flash) {
-			$('#videoPlayer').attr('height', value)
-			$('embed[name=videoPlayer]').attr('height', value)
-		} else
-			this._player.setAttribute('height', this.height)
-	}
-
-	onLoopChanged: { if (this._player) this._player.setAttribute('loop', this.loop) }
-
-	onCompleted: {
-		if (!this.desktop)
-			this.flash = false
-
-		if (!this.flash) {
-			this._player = $('<video preload="metadata" width="' + this.width +
-				'" height="' + this.height +
-				'" src="' + this.src +
-				'" autoplay=' + (this.autoPlay? "autoplay": "") +
-				'>')
-			this._player.css('background-color', 'black')
-			this._player.setAttribute('loop', this.loop)
-
-			var player = this._player
-			var self = this
-			player.addEventListener('error', function () { log("Player error occured"); self.error() })
-			player.addEventListener('play', function () { self.waiting = false; self.paused = player.paused })
-			player.addEventListener('pause', function () { self.paused = player.paused })
-			player.addEventListener('ended', function () { self.finished() })
-			player.addEventListener('seeked', function () { log("seeked"); self.seeking = false; self.waiting = false })
-			player.addEventListener('canplay', function () { log("canplay", player.readyState); self.ready = player.readyState })
-			player.addEventListener('seeking', function () { log("seeking"); self.seeking = true; self.waiting = true })
-			player.addEventListener('waiting', function () { log("waiting"); self.waiting = true })
-			player.addEventListener('volumechange', function () { self.muted = player.muted })
-			player.addEventListener('stolled', function () { log("Was stolled", player.networkState); })
-			player.addEventListener('emptied', function () { log("Was emptied", player.networkState); })
-			player.addEventListener('canplaythrough', function () { log("Canplaythrough"); })
-
-			player.addEventListener('timeupdate', function () {
-				self.waiting = false
-				if (!self.seeking)
-					self.progress = player.currentTime
-			})
-
-			player.addEventListener('durationchange', function () {
-				var d = player.duration
-				self.duration = isFinite(d) ? d : 0
-			})
-
-			player.addEventListener('progress', function () {
-				var last = player.buffered.length - 1
-				self.waiting = false
-				if (last >= 0)
-					self.buffered = player.buffered.end(last) - player.buffered.start(last)
-			})
-		} else {
-			console.log("creating object...")
-			this._player = this.element.setHtml(
-				'<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="" id="videoPlayer" width="' + this.width + '" height="' + this.height + '">' +
-				'<param name="movie"  value="flashlsChromeless.swf?inline=1" />' +
-				'<param name="quality" value="autohigh" />' +
-				'<param name="swliveconnect" value="true" />' +
-				'<param name="allowScriptAccess" value="sameDomain" />' +
-				'<param name="bgcolor" value="#0" />' +
-				'<param name="allowFullScreen" value="true" />' +
-				'<param name="wmode" value="window" />' +
-				'<embed src="flashlsChromeless.swf?inline=1" width="' + this.width + '" height="' + this.height + '" name="videoPlayer" quality="autohigh" bgcolor="#0" align="middle" allowFullScreen="true" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" swliveconnect="true" wmode="window" pluginspage="http://www.macromedia.com/go/getflashplayer"> </embed>' +
-				'</object>'
-			)[0]
-		}
-		if (this.autoPlay && this.source)
-			this.play()
-
-		volumeStorage.read();
-
-		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0;
-	}
-
-	Timer {
-		interval: 500;
-		repeat: true;
-		running: true;
-
-		onTriggered: {
-			this.parent.duration = this.parent._player.duration ? this.parent._player.duration : 0
-			this.parent.muted = this.parent._player.muted
-			this.parent.ready = this.parent._player.readyState || this.parent.flash;	//TODO: temporary fix.
-			this.parent.paused = this.parent.ready && (this.parent._player.paused || this.parent.flasPlayerPaused);
-		}
 	}
 
 	Timer {
@@ -193,16 +113,6 @@ Item {
 		}
 	}
 
-	getObject(name): {
-		if (window.document[name])
-			return window.document[name];
-		if (navigator.appName.indexOf("Microsoft Internet")==-1) {
-			if (document.embeds && document.embeds[name])
-				return document.embeds[name];
-		} else
-			return document.getElementById(name)
-	}
-
 	applyVolume: {
 		if (this.volume > 1.0)
 			this.volume = 1.0;
@@ -210,39 +120,21 @@ Item {
 			this.volume = 0.0;
 
 		volumeStorage.value = this.volume
-
-		if (this.flash) {
-			var player = this.getObject('videoPlayer')
-			if (!player || !player.playerLoad)
-				return
-			player.playerVolume(100 * this.volume)
-		} else if (this._player) {
-			this._player.volume = this.volume
-		}
+		if (!this.flash)
+			this.element.dom.volume = this.volume
 	}
 
-	pause: {
-		if (this.flash) {
-			var player = this.getObject('videoPlayer')
-			if (!player || !player.playerLoad)
-				return
-			player.playerPause()
-			this.flasPlayerPaused = true
-		} else if (this._player) {
-			this._player.pause()
-		}
-	}
-
-	volumeUp:			{ this.volume += 0.1; }
-	volumeDown:			{ this.volume -= 0.1; }
-	toggleMute:			{ this._player.muted = !this._player.muted }
-	onVolumeChanged:	{ this.applyVolume(); }
-	onReadyChanged:		{ log("ReadyState: " + this.ready); }
+	pause: { this.element.dom.pause() }
+	volumeUp:			{ this.volume += 0.1 }
+	volumeDown:			{ this.volume -= 0.1 }
+	toggleMute:			{ this.element.dom.muted = !this.element.dom.muted }
+	onVolumeChanged:	{ this.applyVolume() }
+	onReadyChanged:		{ log("ReadyState: " + this.ready) }
 
 	onError: {
 		this.paused = false
 		this.waiting = false
-		var player = this._player.get(0)
+		var player = this.element.dom
 
 		if (this.flash || !player || !player.error)
 			return
@@ -267,5 +159,102 @@ Item {
 				break;
 			}
 		}
+	}
+
+	constructor: {
+		if (_globals.core.device)	// 0 value for desktop
+			this.flash = false
+
+		log("Player:", this.flash)
+		var player
+		if (!this.flash) {
+			player = this.getContext().createElement('video')
+			player.dom.preload = "metadata"
+
+			var dom = player.dom
+			var self = this
+			player.on('play', function() { self.waiting = false; self.paused = dom.paused }.bind(this))
+			player.on('error', function() { log("Player error occured"); self.error() }.bind(this))
+			player.on('pause', function() { self.paused = dom.paused }.bind(this))
+			player.on('ended', function() { self.finished() }.bind(this))
+			player.on('seeked', function() { log("seeked"); self.seeking = false; self.waiting = false }.bind(this))
+			player.on('canplay', function() { log("canplay", dom.readyState); self.ready = dom.readyState }.bind(this))
+			player.on('seeking', function() { log("seeking"); self.seeking = true; self.waiting = true }.bind(this))
+			player.on('waiting', function() { log("waiting"); self.waiting = true }.bind(this))
+			player.on('stolled', function() { log("Was stolled", dom.networkState); }.bind(this))
+			player.on('emptied', function() { log("Was emptied", dom.networkState); }.bind(this))
+			player.on('volumechange', function() { self.muted = dom.muted }.bind(this))
+			player.on('canplaythrough', function() { log("Canplaythrough"); }.bind(this))
+
+			player.on('timeupdate', function() {
+				self.waiting = false
+				if (!self.seeking)
+					self.progress = dom.currentTime
+			}.bind(this))
+
+			player.on('durationchange', function () {
+				var d = dom.duration
+				self.duration = isFinite(d) ? d : 0
+			}.bind(this))
+
+			player.on('progress', function () {
+				var last = dom.buffered.length - 1
+				self.waiting = false
+				if (last >= 0)
+					self.buffered = dom.buffered.end(last) - dom.buffered.start(last)
+			}.bind(this))
+		} else {
+			player = this.getContext().createElement('object')
+			player.dom.setAttribute("classid", "clsid:d27cdb6e-ae6d-11cf-96b8-444553540000")
+			player.dom.setAttribute("id", "videoPlayer")
+			player.setHtml(
+				'<param name="movie"  value="flashlsChromeless.swf?inline=1" />' +
+				'<param name="quality" value="autohigh" />' +
+				'<param name="swliveconnect" value="true" />' +
+				'<param name="allowScriptAccess" value="sameDomain" />' +
+				'<param name="bgcolor" value="#0" />' +
+				'<param name="allowFullScreen" value="true" />' +
+				'<param name="wmode" value="window" />' +
+				'<embed src="flashlsChromeless.swf?inline=1" width="' + this.width + '" height="' + this.height + '" name="videoPlayer" quality="autohigh" bgcolor="#0" align="middle" allowFullScreen="true" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" swliveconnect="true" wmode="window" pluginspage="http://www.macromedia.com/go/getflashplayer"> </embed>'
+			)
+		}
+		this.element.remove()
+		this.element = player
+		this.parent.element.append(this.element)
+	}
+
+	onSourceChanged: {
+		if (!this.flash) {
+			this.element.dom.src = value
+			if (this.autoPlay)
+				this.play()
+		}
+	}
+
+	onWidthChanged: {
+		if (!this.flash)
+			return
+
+		this.element.dom.setAttribute("width", this.width)
+		this.element.dom.children[7].setAttribute("width", this.width)
+	}
+
+	onHeightChanged: {
+		if (!this.flash)
+			return
+
+		this.element.dom.setAttribute("height", this.height)
+		this.element.dom.children[7].setAttribute("height", this.height)
+	}
+
+	onCompleted: {
+		if (this.autoPlay && this.source)
+			this.play()
+
+		volumeStorage.read()
+		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0
+
+		if (!this.flash)
+			player.dom.style.backgroundColor = this.backgroundColor;
 	}
 }

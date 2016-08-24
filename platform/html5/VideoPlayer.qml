@@ -107,6 +107,7 @@ Item {
 			if (player && player.playerLoad) {
 				console.log("flash player is ready")
 				player.playerLoad(parent.source)
+				player.playerVolume(parent.volume * 100)
 				if (parent.autoPlay)
 					parent.play()
 				parent.ready = true
@@ -125,7 +126,8 @@ Item {
 			this.element.dom.volume = this.volume
 		} else {
 			var player = this.getFlashMovieObject('videoPlayer')
-			player.playerVolume(this.volume * 100)
+			if (player.playerVolume)
+				player.playerVolume(this.volume * 100)
 		}
 	}
 

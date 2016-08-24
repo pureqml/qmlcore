@@ -121,8 +121,12 @@ Item {
 			this.volume = 0.0;
 
 		volumeStorage.value = this.volume
-		if (!this.flash)
+		if (!this.flash) {
 			this.element.dom.volume = this.volume
+		} else {
+			var player = this.getFlashMovieObject('videoPlayer')
+			player.playerVolume(this.volume * 100)
+		}
 	}
 
 	pause: {
@@ -274,7 +278,7 @@ Item {
 
 		this.element.dom.setAttribute("height", this.height)
 		var player = this.getFlashMovieObject('videoPlayer')
-		player.setAttribute("height", this.width)
+		player.setAttribute("height", this.height)
 	}
 
 	onCompleted: {

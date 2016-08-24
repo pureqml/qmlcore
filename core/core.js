@@ -97,11 +97,6 @@ var _checkDevice = function(target, info) {
 	if (navigator.userAgent.indexOf(target) < 0)
 		return
 
-	log = function(dummy) {
-		var args = copyArguments(arguments)
-		console.log("[QML] " + args.join(" "))
-	}
-
 	log("[QML] " + target)
 	exports.core.vendor = info.vendor
 	exports.core.device = info.device

@@ -12,7 +12,6 @@ Item {
 	property bool	autoPlay: false;
 	property bool	waiting: false;
 	property bool	seeking: false;
-	property bool	flasPlayerPaused: false;
 	property int	duration;
 	property int	progress;
 	property int	buffered;
@@ -42,15 +41,16 @@ Item {
 		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	//getObject(name): {
-		//if (window.document[name])
-			//return window.document[name];
-		//if (navigator.appName.indexOf("Microsoft Internet")==-1) {
-			//if (document.embeds && document.embeds[name])
-				//return document.embeds[name];
-		//} else
-			//return document.getElementById(name)
-	//}
+	getFlashMovieObject(movieName):
+	{
+		if (window.document[movieName])
+			return window.document[movieName];
+		if (navigator.appName.indexOf("Microsoft Internet")==-1)
+			if (document.embeds && document.embeds[movieName])
+				return document.embeds[movieName];
+		else
+			return document.getElementById(movieName);
+	}
 
 	play: {
 		if (!this.source)
@@ -58,17 +58,11 @@ Item {
 
 		log("play", this.source)
 		if (this.flash) {
-			//var player = this.getObject('videoPlayer')
-			//if (!player || !player.playerLoad) //flash player is not ready yet
-				//return
-			//if (this.flasPlayerPaused) {
-				//player.playerPlay()
-			//} else {
-				//player.playerLoad(this.source)
-				//player.playerPlay(-1)
-			//}
-			//this.flasPlayerPaused = false
-			//this.element.dom.playerPlay()
+			var player = this.getFlashMovieObject('videoPlayer')
+			if (!player || !player.playerLoad) //flash player is not ready yet
+				return
+
+			player.playerPlay()
 		} else {
 			this.element.dom.play()
 		}
@@ -77,15 +71,21 @@ Item {
 	}
 
 	seek(value): {
-		if (!this.flash)
+		if (!this.flash) {
 			this.element.dom.currentTime += value
-		//TODO: Impl for flash player.
+		} else {
+			var player = parent.getFlashMovieObject('videoPlayer')
+			player.playerSeek(player.getPosition() + value)
+		}
 	}
 
 	seekTo(value): {
-		if (!this.flash)
+		if (!this.flash) {
 			this.element.dom.currentTime = value
-		//TODO: Impl for flash player.
+		} else {
+			var player = parent.getFlashMovieObject('videoPlayer')
+			player.playerSeek(value)
+		}
 	}
 
 	onAutoPlayChanged: {
@@ -96,19 +96,20 @@ Item {
 	Timer {
 		interval: 100;
 		repeat: true;
-		running: true; //fixme: rewrite as 'parent.flash && !parent.flashReady'
+		running: !parent.ready && parent.flash;
 
 		onTriggered: {
 			var parent = this.parent
 			if (!parent.flash)
 				return
 
-			var player = parent.getObject('videoPlayer')
+			var player = parent.getFlashMovieObject('videoPlayer')
 			if (player && player.playerLoad) {
 				console.log("flash player is ready")
-				this.running = false;
+				player.playerLoad(parent.source)
 				if (parent.autoPlay)
 					parent.play()
+				parent.ready = true
 			}
 		}
 	}
@@ -124,7 +125,16 @@ Item {
 			this.element.dom.volume = this.volume
 	}
 
-	pause: { this.element.dom.pause() }
+	pause: {
+		if (!this.flash) {
+			this.element.dom.pause()
+		} else {
+			var player = this.getFlashMovieObject('videoPlayer')
+			if (player.playerPlay)
+				player.playerPlay(-1)
+		}
+	}
+
 	volumeUp:			{ this.volume += 0.1 }
 	volumeDown:			{ this.volume -= 0.1 }
 	toggleMute:			{ this.element.dom.muted = !this.element.dom.muted }
@@ -192,12 +202,12 @@ Item {
 					self.progress = dom.currentTime
 			}.bind(this))
 
-			player.on('durationchange', function () {
+			player.on('durationchange', function() {
 				var d = dom.duration
 				self.duration = isFinite(d) ? d : 0
 			}.bind(this))
 
-			player.on('progress', function () {
+			player.on('progress', function() {
 				var last = dom.buffered.length - 1
 				self.waiting = false
 				if (last >= 0)
@@ -205,19 +215,33 @@ Item {
 			}.bind(this))
 		} else {
 			player = this.getContext().createElement('object')
-			player.dom.setAttribute("classid", "clsid:d27cdb6e-ae6d-11cf-96b8-444553540000")
+			player.dom.setAttribute("classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000")
 			player.dom.setAttribute("id", "videoPlayer")
+			player.dom.setAttribute("width", this.width)
+			player.dom.setAttribute("height", this.height)
 			player.setHtml(
-				'<param name="movie"  value="flashlsChromeless.swf?inline=1" />' +
+				'<param name="movie"  value="./flashlsChromeless.swf?inline=1" />' +
 				'<param name="quality" value="autohigh" />' +
 				'<param name="swliveconnect" value="true" />' +
 				'<param name="allowScriptAccess" value="sameDomain" />' +
 				'<param name="bgcolor" value="#0" />' +
 				'<param name="allowFullScreen" value="true" />' +
 				'<param name="wmode" value="window" />' +
-				'<embed src="flashlsChromeless.swf?inline=1" width="' + this.width + '" height="' + this.height + '" name="videoPlayer" quality="autohigh" bgcolor="#0" align="middle" allowFullScreen="true" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" swliveconnect="true" wmode="window" pluginspage="http://www.macromedia.com/go/getflashplayer"> </embed>'
+				'<param name="FlashVars" value="callback=flashlsCallback" />' +
+				'<embed src="./flashlsChromeless.swf?inline=1" width="720" height="480" name="videoPlayer"' +
+					'quality="autohigh"' +
+					'bgcolor="#0"' +
+					'align="middle" allowFullScreen="true"' +
+					'allowScriptAccess="sameDomain"' +
+					'type="application/x-shockwave-flash"' +
+					'swliveconnect="true"' +
+					'wmode="window"' +
+					'FlashVars="callback=flashlsCallback"' +
+					'pluginspage="http://www.macromedia.com/go/getflashplayer" >' +
+				'</embed>'
 			)
 		}
+
 		this.element.remove()
 		this.element = player
 		this.parent.element.append(this.element)
@@ -228,6 +252,10 @@ Item {
 			this.element.dom.src = value
 			if (this.autoPlay)
 				this.play()
+		} else {
+			var player = this.getFlashMovieObject('videoPlayer')
+			if (player.playerLoad)
+				player.playerLoad(value)
 		}
 	}
 
@@ -236,7 +264,8 @@ Item {
 			return
 
 		this.element.dom.setAttribute("width", this.width)
-		this.element.dom.children[7].setAttribute("width", this.width)
+		var player = this.getFlashMovieObject('videoPlayer')
+		player.setAttribute("width", this.width)
 	}
 
 	onHeightChanged: {
@@ -244,7 +273,8 @@ Item {
 			return
 
 		this.element.dom.setAttribute("height", this.height)
-		this.element.dom.children[7].setAttribute("height", this.height)
+		var player = this.getFlashMovieObject('videoPlayer')
+		player.setAttribute("height", this.width)
 	}
 
 	onCompleted: {

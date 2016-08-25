@@ -120,7 +120,7 @@ Item {
 		qml.core.Item.prototype._update.apply(this, arguments)
 	}
 
-	function _enterFullscreenMode() { return window.Modernizr.prefixed('requestFullscreen', this.element.get(0))() }
+	function _enterFullscreenMode() { return window.Modernizr.prefixed('requestFullscreen', this.element.dom)() }
 	function _exitFullscreenMode() { return window.Modernizr.prefixed('exitFullscreen', document)() }
 
 	function _inFullscreenMode() {

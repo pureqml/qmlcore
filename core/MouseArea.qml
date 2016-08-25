@@ -149,7 +149,7 @@ Item {
 
 	onTouchStart(event): {
 		var box = this.toScreen()
-		var e = event.originalEvent.touches[0]
+		var e = event.touches[0]
 		var x = e.pageX - box[0]
 		var y = e.pageY - box[1]
 		this._startX = x
@@ -160,7 +160,7 @@ Item {
 
 	onTouchMove(event): {
 		var box = this.toScreen()
-		var e = event.originalEvent.touches[0]
+		var e = event.touches[0]
 		var x = e.pageX - box[0]
 		var y = e.pageY - box[1]
 		var dx = x - this._startX

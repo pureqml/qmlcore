@@ -9,35 +9,49 @@ Object {
 	property real saturate;
 	property Shadow shadow : Shadow { }
 
-	function _addStyle(property, style, units) {
+	function _addStyle(array, property, style, units) {
 		var value = this[property]
-		if (!value)
-			return ''
-		return (style || property) + '(' + value + (units || '') + ') '
+		if (value)
+			array.push((style || property) + '(' + value + (units || '') + ') ')
 	}
 
 	function _getFilterStyle() {
 		var style = []
-		style.push(this._addStyle('blur', 'blur', 'px'))
-		style.push(this._addStyle('grayscale'))
-		style.push(this._addStyle('sepia'))
-		style.push(this._addStyle('brightness'))
-		style.push(this._addStyle('contrast'))
-		style.push(this._addStyle('hueRotate', 'hue-rotate', 'deg'))
-		style.push(this._addStyle('invert'))
-		style.push(this._addStyle('saturate'))
-		return style.join('')
+		this._addStyle(style, 'blur', 'blur', 'px')
+		this._addStyle(style, 'grayscale')
+		this._addStyle(style, 'sepia')
+		this._addStyle(style, 'brightness')
+		this._addStyle(style, 'contrast')
+		this._addStyle(style, 'hueRotate', 'hue-rotate', 'deg')
+		this._addStyle(style, 'invert')
+		this._addStyle(style, 'saturate')
+		return style
 	}
 
 	function _updateStyle() {
-		var filterStyle = this._getFilterStyle()
+		var filterStyle = this._getFilterStyle().join('')
 		var parent = this.parent
-		//chromium bug
-		//https://github.com/Modernizr/Modernizr/issues/981
-		var style = {'-webkit-filter': filterStyle, 'filter': filterStyle }
-		if (this.shadow && !this.shadow._empty())
+
+		var style = {}
+		var updateStyle = false
+
+		if (filterStyle.length > 0) {
+			//chromium bug
+			//https://github.com/Modernizr/Modernizr/issues/981
+			style['-webkit-filter'] = filterStyle
+			style['filter'] = filterStyle
+			updateStyle = true
+		}
+
+		if (this.shadow && !this.shadow._empty()) {
 			style['box-shadow'] = this.shadow._getFilterStyle()
-		parent.style(style)
+			updateStyle = true
+		}
+
+		if (updateStyle) {
+			//log(style)
+			parent.style(style)
+		}
 	}
 
 	function _update(name, value) {

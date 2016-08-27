@@ -256,13 +256,13 @@ Item {
 	onSourceChanged: {
 		if (!this.flash) {
 			this.element.dom.src = value
-			if (this.autoPlay)
-				this.play()
 		} else {
 			var player = this.getFlashMovieObject('videoPlayer')
 			if (player.playerLoad)
 				player.playerLoad(value)
 		}
+		if (this.autoPlay)
+			this.play()
 	}
 
 	onWidthChanged: {

@@ -68,7 +68,7 @@ def replace_enums(text, generator, registry):
 	return text
 
 
-id_re = re.compile(r'([a-z]\w*)\.')
+id_re = re.compile(r'([_a-z]\w*)\.')
 def process(text, generator, registry):
 	id_set = registry.id_set
 	text, invalid = scan(text)

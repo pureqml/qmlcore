@@ -132,7 +132,8 @@ exports.Element.prototype.updateStyle = function() {
 		var unit = (typeof value === 'number')? cssUnits[name] || '': ''
 		value += unit
 
-		var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
+		//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
+		var prefixedValue = value
 		rule.push(prefixedValue !== false? prefixedValue: value)
 
 		rules.push(rule.join(':'))

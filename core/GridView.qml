@@ -193,7 +193,7 @@ BaseView {
 		//log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		this.rendered = true
 		if (created)
-			this.getContext()._complete()
+			this._context._complete()
 	}
 
 

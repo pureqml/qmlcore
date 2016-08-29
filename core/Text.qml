@@ -23,10 +23,10 @@ Item {
 	height: paintedHeight;
 
 	constructor: {
-		this.element.addClass(this.getContext().getClass('text'))
+		this.element.addClass(this._context.getClass('text'))
 		this._setText(this.text)
 		var self = this
-		this._delayedUpdateSize = new qml.core.DelayedAction(this.getContext(), function() {
+		this._delayedUpdateSize = new qml.core.DelayedAction(this._context, function() {
 			self._updateSizeImpl()
 		})
 	}

@@ -429,10 +429,6 @@ exports.core.Object.prototype._get = function (name) {
 	throw new Error("invalid property requested: '" + name);
 }
 
-exports.core.Object.prototype.getContext = function () {
-	return this._context
-}
-
 exports.core.Object.prototype.setAnimation = function (name, animation) {
 	this._animations[name] = animation;
 }

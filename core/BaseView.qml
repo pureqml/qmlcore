@@ -23,7 +23,7 @@ Item {
 	constructor: {
 		this._items = []
 		var self = this
-		this._delayedLayout = new qml.core.DelayedAction(this.getContext(), function() {
+		this._delayedLayout = new qml.core.DelayedAction(this._context, function() {
 			self._layout()
 		})
 	}

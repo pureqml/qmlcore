@@ -320,7 +320,7 @@ class component_generator(object):
 			if name != "completed":
 				r.append("%sthis.on('%s', (function(%s) %s ).bind(this));" %(ident, name, ",".join(args), code))
 			else:
-				r.append("%sthis.getContext()._onCompleted((function() %s ).bind(this));" %(ident, code))
+				r.append("%sthis._context._onCompleted((function() %s ).bind(this));" %(ident, code))
 		for name, code in self.changed_handlers.iteritems():
 			code = process(code, self, registry)
 			r.append("%sthis.onChanged('%s', (function(value) %s ).bind(this));" %(ident, name, code))

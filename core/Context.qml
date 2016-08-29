@@ -8,9 +8,17 @@ Item {
 		this._context = this
 		this._started = false
 		this._completed = false
-		this._modernizrCache = {}
 		this._completedHandlers = []
 		this._delayedActions = []
+		var cache = {}
+		if(_globals.core.os === 'smartTV') {
+			['transition-property',
+				'transition-delay',
+				'transition-duration',
+				'transition-timing-function']
+			.forEach(function(p) { cache[p] = p })
+		}
+		this._modernizrCache = cache
 	}
 
 	function getClass(name) {

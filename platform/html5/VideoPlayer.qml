@@ -184,7 +184,7 @@ Item {
 		log("Player:", this.flash)
 		var player
 		if (!this.flash) {
-			player = this.getContext().createElement('video')
+			player = this._context.createElement('video')
 			player.dom.preload = "metadata"
 
 			var dom = player.dom
@@ -220,7 +220,7 @@ Item {
 					self.buffered = dom.buffered.end(last) - dom.buffered.start(last)
 			}.bind(this))
 		} else {
-			player = this.getContext().createElement('object')
+			player = this._context.createElement('object')
 			player.dom.setAttribute("classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000")
 			player.dom.setAttribute("id", "videoPlayer")
 			player.dom.setAttribute("width", this.width)

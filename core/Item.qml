@@ -221,14 +221,16 @@ Object {
 		if (!window.Modernizr.csstransitions)
 			return false
 
+		var context = this._context
+
 		var transition = {
-			property: window.Modernizr.prefixedCSS('transition-property'),
-			delay: window.Modernizr.prefixedCSS('transition-delay'),
-			duration: window.Modernizr.prefixedCSS('transition-duration'),
-			timing: window.Modernizr.prefixedCSS('transition-timing-function')
+			property: context.getPrefixedName('transition-property'),
+			delay: context.getPrefixedName('transition-delay'),
+			duration: context.getPrefixedName('transition-duration'),
+			timing: context.getPrefixedName('transition-timing-function')
 		}
 
-		name = window.Modernizr.prefixedCSS(name) || name //replace transform: <prefix>rotate hack
+		name = context.getPrefixedName(name) || name //replace transform: <prefix>rotate hack
 
 		var property = this.style(transition.property) || []
 		var duration = this.style(transition.duration) || []

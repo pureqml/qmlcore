@@ -60,4 +60,34 @@ Object {
 
 		do_request()
 	}
+
+	requestXHR(request): {
+		var url = this.baseUrl + request.url
+		var xhr = new XMLHttpRequest()
+		var error = request.errorCallback,
+			data = request.data,
+			headers = request.headers,
+			callback = request.callback,
+			settings = request.settings
+
+		if (error)
+			xhr.addEventListener('error', function(event) { log("Error");error(event) })
+
+		if (callback)
+			xhr.addEventListener('load', function(event) { log("Done"); callback(event) })
+
+		xhr.open(request.type || 'GET', url);
+
+		for (var i in settings)
+			xhr[i] = settings[i]
+
+		for (var i in headers)
+			xhr.setRequestHeader(i, settings[i])
+
+		log("request", url)
+		if (request.data)
+			xhr.send(request.data)
+		else
+			xhr.send()
+	}
 }

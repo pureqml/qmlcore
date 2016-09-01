@@ -15,9 +15,8 @@ Item {
 	}
 
 	Timer {
-		id: buttonsPollTimer;
 		interval: 100;
-		repeat: gamepadManagerProto.count;
+		repeat: true;
 		running: gamepadManagerProto.count;
 		triggeredOnStart: true;
 
@@ -69,7 +68,6 @@ Item {
 				if (gp.axes[3])
 					gpItem.rightJoystickY(gp.axes[3])
 			}
-
 			if (gp.buttons.length >= 16) {
 				// Functional buttons.
 				if (gp.buttons[0].pressed)
@@ -117,7 +115,7 @@ Item {
 					log("button 16")
 
 			if (event.which)
-				jQuery.event.trigger(event)
+				this._context._processKey(event)
 		}
 	}
 

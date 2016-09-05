@@ -73,7 +73,7 @@ if ('webOS' in window) {
 		console.log("[QML] " + args.join(" "))
 	}
 
-	log("WebOS deteceted")
+	log("WebOS detected")
 	exports.core.vendor = "LG"
 	exports.core.device = 1
 	exports.core.os = "webOS"
@@ -81,11 +81,6 @@ if ('webOS' in window) {
 }
 
 if ('tizen' in window) {
-	log = function(dummy) {
-		var args = copyArguments(arguments)
-		console.log("[QML] " + args.join(" "))
-	}
-
 	log("[QML] Tizen")
 	exports.core.vendor = "samsung"
 	exports.core.device = 1

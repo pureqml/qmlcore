@@ -15,6 +15,11 @@ Object {
 		this._buildIndexMap()
 	}
 
+	function setCompare(cmp) {
+		this._cmp = cmp
+		this._buildIndexMap()
+	}
+
 	function _buildIndexMap() {
 		this.clear()
 		var targetRows = this.target._rows
@@ -27,16 +32,18 @@ Object {
 				if (this._filter(targetRows[i])) {
 					var last = this._indexes.length
 					this._indexes.push(i)
-					++this.count
-					this.rowsInserted(last, last + 1)
 				}
 		} else {
 			for (var i = 0; i < targetRows.length; ++i) {
 				this._indexes.push(i)
-				++this.count
-				this.rowsInserted(i, i + 1)
 			}
 		}
+		if (this._cmp) {
+			var self = this
+			this._indexes = this._indexes.sort(function(a, b) { return self._cmp(targetRows[a], targetRows[b]) })
+		}
+		this.count = this._indexes.length
+		this.rowsInserted(0, this.count)
 	}
 
 	function get(idx) {

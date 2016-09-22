@@ -13,6 +13,7 @@ Layout {
 		var children = this.children;
 		var p = 0
 		var h = 0
+		this.count = children.length
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
 			if (!('height' in c))

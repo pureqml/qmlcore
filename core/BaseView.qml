@@ -1,24 +1,18 @@
-Item {
+BaseLayout {
 	property Object model;
 	property Item delegate;
-
-	property int count;
-	property int currentIndex;
 	property int contentX;
 	property int contentY;
-	property int contentWidth: 1;
-	property int contentHeight: 1;
 	property int scrollingStep: 0;
-
-	property bool handleNavigationKeys: true;
-	property bool keyNavigationWraps: true;
 	property bool contentFollowsCurrentItem: true;
 	property bool pageScrolling: false;
 	property bool rendered: false;
-
-	property enum positionMode { Beginning, Center, End, Visible, Contain, Page };
-
 	property bool trace;
+	property enum positionMode { Beginning, Center, End, Visible, Contain, Page };
+	contentWidth: 1;
+	contentHeight: 1;
+	keyNavigationWraps: true;
+	handleNavigationKeys: true;
 
 	constructor: {
 		this._items = []

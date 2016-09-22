@@ -7,6 +7,7 @@ Layout {
 	function _layout() {
 		var children = this.children;
 		var cX = 0, cY = 0, xMax = 0, yMax = 0;
+		this.count = children.length
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
 			if (c.recursiveVisible) {

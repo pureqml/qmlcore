@@ -1,64 +1,34 @@
 Object {
-	signal error;
-	property bool enabled: true;
 	property bool loading: false;
 	property string baseUrl;
 	property string url;
 
-	requestImpl(url, data, callback, type, headers, dataType): {
-		if (!this.enabled)
-			return;
+	fetchRequest(request): {
+		var url = this.baseUrl + request.url
+		var error = request.errorCallback,
+			data = request.data,
+			headers = request.headers,
+			callback = request.callback,
+			settings = request.settings
+
 		this.loading = true
-		this.url = url
-		log("request", this.baseUrl + url)
+		var self = this
 
-		var settings = {
-			url: this.baseUrl + url,
-			type: type || 'GET',
-			headers: headers || {}
-		}
-
-		if (dataType)
-			settings.dataType = dataType
-
-		if (data)
-			settings.data = JSON.stringify(data)
-
-		var self = this;
-		$.ajax(settings).done(function(res, status, jqXHR) {
-			log("ajax request done")
-			if (callback)
-				callback(res, status, jqXHR)
-			self.loading = false 
-		}).fail(function(xhr, status, err) {
-			log("ajax request failed: " + JSON.stringify(status) + " status: " + xhr.status + " text: " + xhr.responseText)
-			if (callback)
-				callback({ result: 0, error: { message: "ajax error"} })
-			self.loading = false 
-			self.error(status, xhr, self.url, type || 'GET')
-		})
-	}
-
-	request(url, callback, type, headers, data, dataType): {
-		if (!this.enabled)
-			return;
-
-		var self = this;
-
-		var do_request = function() {
-			self.requestImpl(url, data, function(res, status, jqXHR) {
-				if (!res) {
-					log("No content");
-					callback(res, status, jqXHR)
-				} else if (res.error) {
-					log("Request failed: " + res.error.message);
-				} else {
-					callback(res, status, jqXHR)
-				}
-			}, type, headers, dataType)
-		}
-
-		do_request()
+		fetch(url, {
+				method: request.type || 'GET',
+				header: headers || {},
+				body: request.body || ''
+			})
+			.then(function(response) {
+				if (callback)
+					callback(response)
+				self.loading = false
+			})
+			.catch(function(err) {
+				if (error)
+					error(err)
+				self.loading = false
+			})
 	}
 
 	requestXHR(request): {

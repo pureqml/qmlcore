@@ -103,6 +103,10 @@ def copy(source, destination, context):
 	if copy_src:
 		call(['cp', '-r'] + copy_src + [destination])
 
+def find_platform_path(root, platform):
+	core_path = path.join(root, 'platform', platform)
+	return core_path
+
 def build(root, name, platform, app, html, manifest):
 	print "building %s.%s for %s..." %(name, app, platform)
 	target = '.app.' + platform
@@ -111,7 +115,7 @@ def build(root, name, platform, app, html, manifest):
 	except:
 		pass
 
-	platform_path = path.join(root, 'platform', platform)
+	platform_path = find_platform_path(root, platform)
 
 	if not os.path.exists(platform_path):
 		raise Exception("no platform '%s' found" %platform)

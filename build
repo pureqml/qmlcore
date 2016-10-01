@@ -112,6 +112,10 @@ def build(root, name, platform, app, html, manifest):
 		pass
 
 	platform_path = path.join(root, 'platform', platform)
+
+	if not os.path.exists(platform_path):
+		raise Exception("no platform '%s' found" %platform)
+
 	try:
 		with open(path.join(platform_path, '.manifest')) as f:
 			platform_manifest = json.load(f)

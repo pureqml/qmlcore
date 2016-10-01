@@ -1,8 +1,3 @@
-//samsung guts
-var widgetAPI
-var tvKey
-var pluginAPI
-
 var Modernizr = window.Modernizr
 
 exports.core.os = navigator.platform
@@ -10,6 +5,38 @@ exports.core.device = 0
 exports.core.vendor = ""
 
 exports.trace = { key: false, focus: false }
+
+exports.core.keyCodes = {
+	13: 'Select',
+	27: 'Back',
+	37: 'Left',
+	32: 'Space',
+	33: 'PageUp',
+	34: 'PageDown',
+	38: 'Up',
+	39: 'Right',
+	40: 'Down',
+	48: '0',
+	49: '1',
+	50: '2',
+	51: '3',
+	52: '4',
+	53: '5',
+	54: '6',
+	55: '7',
+	56: '8',
+	57: '9',
+	112: 'Red',
+	113: 'Green',
+	114: 'Yellow',
+	115: 'Blue',
+	// Gamepad special buttons.
+	6661: 'L1',
+	6662: 'L2',
+	6663: 'R1',
+	6664: 'R2',
+	6665: 'Start'
+}
 
 var copyArguments = function(args, src, prefix) {
 	var copy = Array.prototype.slice.call(args, src)
@@ -20,74 +47,7 @@ var copyArguments = function(args, src, prefix) {
 
 exports.core.copyArguments = copyArguments
 
-if ('Common' in window) {
-	alert("[QML] samsung smart tv")
-	exports.core.vendor = "samsung"
-	exports.core.device = 1
-	exports.core.os = "smartTV"
-
-	log = function(dummy) {
-		var args = copyArguments(arguments)
-		alert("[QML] " + args.join(" "))
-	}
-
-	log("loading")
-	widgetAPI = new window.Common.API.Widget() // Creates Common module
-	log("widget ok")
-	tvKey = new window.Common.API.TVKeyValue()
-	log("tv ok")
-	widgetAPI.sendReadyEvent() // Sends 'ready' message to the Application Manager
-	log("registering keys")
-
-	window.onShow = function() {
-		var NNaviPlugin = document.getElementById("pluginObjectNNavi");
-		pluginAPI = new window.Common.API.Plugin()
-		pluginAPI.registFullWidgetKey()
-		pluginAPI.SetBannerState(1);
-		NNaviPlugin.SetBannerState(2);
-		pluginAPI.unregistKey(tvKey.KEY_VOL_UP);
-		pluginAPI.unregistKey(tvKey.KEY_VOL_DOWN);
-		pluginAPI.unregistKey(tvKey.KEY_MUTE);
-		log("plugin ok, sending ready")
-	}
-
-	log("loaded")
-}
-
-if ('VK_UNSUPPORTED' in window) {
-	log = function(dummy) {
-		var args = copyArguments(arguments)
-		console.log("[QML] " + args.join(" "))
-	}
-	log("operatv deteceted")
-	exports.core.vendor = "operatv"
-	exports.core.device = 1
-	exports.core.os = "operaOS"
-
-	log("loaded")
-}
-
-if ('webOS' in window) {
-	log = function(dummy) {
-		var args = copyArguments(arguments)
-		console.log("[QML] " + args.join(" "))
-	}
-
-	log("WebOS detected")
-	exports.core.vendor = "LG"
-	exports.core.device = 1
-	exports.core.os = "webOS"
-	log("loaded")
-}
-
-if ('tizen' in window) {
-	log("[QML] Tizen")
-	exports.core.vendor = "samsung"
-	exports.core.device = 1
-	exports.core.os = "tizen"
-	log("loaded")
-}
-
+/* INIT */
 var _checkDevice = function(target, info) {
 	if (navigator.userAgent.indexOf(target) < 0)
 		return
@@ -104,136 +64,6 @@ _checkDevice('Android', { 'vendor': 'google', 'device': 2, 'os': 'android' })
 _checkDevice('iPhone', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
 _checkDevice('iPad', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
 _checkDevice('iPod', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
-
-if (exports.core.os == "smartTV")
-{
-	exports.core.keyCodes = {
-		4: 'Left',
-		5: 'Right',
-		17: '0',
-		101: '1',
-		98: '2',
-		6: '3',
-		8: '4',
-		9: '5',
-		10: '6',
-		12: '7',
-		13: '8',
-		14: '9',
-		20: 'Green',
-		21: 'Yellow',
-		22: 'Blue',
-		68: 'PageUp',
-		65: 'PageDown',
-		88: 'Back',
-		108: 'Red',
-		262: 'Menu',
-		29461: 'Down',
-		29460: 'Up',
-		29443: 'Select'
-	}
-} else if (exports.core.os == "tizen") {
-	exports.core.keyCodes = {
-		37: 'Left',
-		38: 'Up',
-		39: 'Right',
-		40: 'Down',
-		13: 'Select',
-		403: 'Red',
-		404: 'Green',
-		405: 'Yellow',
-		406: 'Blue',
-		427: 'ChannelUp',
-		428: 'ChannelDown',
-		457: 'Menu',
-		10009: 'Back'
-	}
-} else if (exports.core.os == "webOS") {
-	exports.core.keyCodes = {
-		37: 'Left',
-		38: 'Up',
-		39: 'Right',
-		40: 'Down',
-		13: 'Select',
-		33: 'ChannelUp',
-		34: 'ChannelDown',
-		27: 'Back',
-		19: 'Pause',
-		48: '0',
-		49: '1',
-		50: '2',
-		51: '3',
-		52: '4',
-		53: '5',
-		54: '6',
-		55: '7',
-		56: '8',
-		57: '9',
-		461: 'Back',
-		403: 'Red',
-		404: 'Green',
-		405: 'Yellow',
-		406: 'Blue',
-		457: 'Menu',
-		412: 'Rewind',
-		417: 'FastForward',
-		457: 'Info',
-		413: 'Stop',
-		415: 'Play'
-	}
-} else if (exports.core.os == "operaOS") {
-	exports.core.keyCodes = {
-		8: 'Back',
-		13: 'Select',
-		27: 'Back',
-		37: 'Left',
-		33: 'PageUp',
-		34: 'PageDown',
-		38: 'Up',
-		39: 'Right',
-		40: 'Down',
-		403: 'Red',
-		404: 'Green',
-		405: 'Yellow',
-		406: 'Blue',
-		412: 'Rewind',
-		413: 'Stop',
-		415: 'Play',
-		417: 'FastForward'
-	}
-} else {
-	exports.core.keyCodes = {
-		13: 'Select',
-		27: 'Back',
-		37: 'Left',
-		32: 'Space',
-		33: 'PageUp',
-		34: 'PageDown',
-		38: 'Up',
-		39: 'Right',
-		40: 'Down',
-		48: '0',
-		49: '1',
-		50: '2',
-		51: '3',
-		52: '4',
-		53: '5',
-		54: '6',
-		55: '7',
-		56: '8',
-		57: '9',
-		112: 'Red',
-		113: 'Green',
-		114: 'Yellow',
-		115: 'Blue',
-		// Gamepad special buttons.
-		6661: 'L1',
-		6662: 'L2',
-		6663: 'R1',
-		6664: 'R2',
-		6665: 'Start'
-	}
-}
 
 var colorTable = {
 	'maroon':	'800000',

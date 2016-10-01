@@ -104,8 +104,17 @@ def copy(source, destination, context):
 		call(['cp', '-r'] + copy_src + [destination])
 
 def find_platform_path(root, platform):
-	core_path = path.join(root, 'platform', platform)
-	return core_path
+	platform_path = path.join(root, 'platform', platform)
+	if path.exists(platform_path):
+		return platform_path
+
+	plugins_root = path.normpath(path.join(root, '..'))
+	for dir in os.listdir(plugins_root): #fixme: optimize me
+		if dir.startswith('qml2js-'):
+			platform_path = path.join(plugins_root, dir, 'platform', platform)
+			if path.exists(platform_path):
+				return platform_path
+	raise Exception("no platform '%s' found" %platform)
 
 def build(root, name, platform, app, html, manifest):
 	print "building %s.%s for %s..." %(name, app, platform)
@@ -116,9 +125,6 @@ def build(root, name, platform, app, html, manifest):
 		pass
 
 	platform_path = find_platform_path(root, platform)
-
-	if not os.path.exists(platform_path):
-		raise Exception("no platform '%s' found" %platform)
 
 	try:
 		with open(path.join(platform_path, '.manifest')) as f:

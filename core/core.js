@@ -47,7 +47,8 @@ var copyArguments = function(args, src, prefix) {
 
 exports.core.copyArguments = copyArguments
 
-/* INIT */
+/* ${init.js} */
+
 var _checkDevice = function(target, info) {
 	if (navigator.userAgent.indexOf(target) < 0)
 		return

@@ -113,6 +113,7 @@ def process_files(generator, app, dirs):
 	for project_dir in dirs:
 		if project_dir == '.':
 			project_dir = os.getcwd()
+
 		for dirpath, dirnames, filenames in os.walk(project_dir, topdown = True):
 			dirnames[:] = [name for name in dirnames if name[0] != '.']
 			if '.nocompile' in filenames:
@@ -123,6 +124,14 @@ def process_files(generator, app, dirs):
 
 def generate():
 	generator = compiler.js.generator()
+
+#reading .core.js files to bootstrap platform specific initialization
+	init_js = ''
+	for project_dir in project_dirs:
+		init_path = os.path.join(project_dir, '.core.js')
+		if os.path.exists(init_path):
+			with open(init_path) as f:
+				init_js += f.read()
 
 	process_files(generator, args.app, project_dirs)
 	print "generating sources..."
@@ -137,6 +146,8 @@ def generate():
 	app += "/** @const @type {!Object} */\n"
 	app += "var " + generator.generate(namespace)
 	app += generator.generate_startup(namespace, args.app, namespace if args.prefix else '')
+	app = app.replace('/* ${init.js} */', init_js)
+
 	with open(os.path.join(output_dir, namespace + "." + args.app + ".js"), "wt") as f:
 		f.write(app)
 	print "done"

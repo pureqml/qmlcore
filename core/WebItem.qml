@@ -40,7 +40,6 @@ Rectangle {
 	}
 
 	onCompleted: {
-		var self = this
 		if (this.clickable)
 			this._bindClick()
 		if (this.hoverable)

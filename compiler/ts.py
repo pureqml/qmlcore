@@ -53,6 +53,9 @@ class Message(object):
 		self.source = source
 		self.translation = translation
 
+	def __cmp__(self, o):
+		return cmp(self.source, o.source)
+
 	def load(self, el):
 		for child in el:
 			if child.tag == 'source':
@@ -76,6 +79,9 @@ class Context(object):
 	def __init__(self, name = None):
 		self.name = name
 		self.__messages = {}
+
+	def __cmp__(self, o):
+		return cmp(self.name, o.name)
 
 	def add(self, src, loc):
 		if src in self.__messages:
@@ -103,19 +109,24 @@ class Context(object):
 		ctx = ET.SubElement(parent, 'context')
 		name = ET.SubElement(ctx, 'name')
 		name.text = self.name
-		for msg in self.__messages.itervalues():
+		for msg in sorted(self.__messages.itervalues()):
 			msg.save(ctx)
 
 class Ts(object):
 	def __init__(self, path = ''):
 		self.__file = path
 		self.__contexts = {}
+		self.version = None
+		self.language = None
 		if os.path.exists(path):
 			self._load(path)
 
 	def _load(self, path):
 		tree = ET.parse(path)
-		for el in tree.getroot():
+		root = tree.getroot()
+		self.language = root.attrib.get('language', None)
+		self.version = root.attrib.get('version', None)
+		for el in root:
 			if el.tag == 'context':
 				context = Context()
 				context.load(el)
@@ -123,7 +134,12 @@ class Ts(object):
 
 	def save(self):
 		root = ET.Element('TS')
-		for ctx in self.__contexts.itervalues():
+		if self.version:
+			root.attrib['version'] = self.version
+		if self.language:
+			root.attrib['language'] = self.language
+
+		for ctx in sorted(self.__contexts.itervalues()):
 			ctx.save(root)
 
 		rough_string = ET.tostring(root, 'utf-8')

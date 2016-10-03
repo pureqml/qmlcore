@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+import argparse
+from compiler.ts import Ts
+
+parser = argparse.ArgumentParser()
+parser.add_argument("directory", nargs='+')
+parser.add_argument("--ts", '-t', help='tr file to write to')
+args = parser.parse_args()
+
+ts = Ts()
+ts.scan(args.directory)

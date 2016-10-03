@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import lang
+import json
 from code import process, parse_deps, generate_accessors, replace_enums
 
 def get_package(name):
@@ -456,6 +457,7 @@ class generator(object):
 		r = ""
 		r += "try {\n"
 		startup = []
+		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
 		startup.append("\t%s._context = new qml.core.Context()" %ns)
 		startup.append("\t%s._context.init({id: 'qml-context-%s', prefix: '%s'})" %(ns, app, prefix))
 		startup += self.startup
@@ -470,7 +472,8 @@ class generator(object):
 		for ctx in ts:
 			for msg in ctx:
 				source, type, text = msg.source, msg.translation.type, msg.translation.text
-				print source, type, text
-				texts = data.setdefault(source, {})
-				texts[ctx.name] = text
-		self.l10n[lang] = data
+				if type == 'just-obsoleted':
+					texts = data.setdefault(source, {})
+					texts[ctx.name] = text
+		if data:
+			self.l10n[lang] = data

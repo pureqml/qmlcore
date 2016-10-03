@@ -3,6 +3,7 @@ Item {
 	property int scrollY;
 	property string hash;
 	property System system: System { }
+	signal languageChanged;
 
 	constructor: {
 		this._context = this

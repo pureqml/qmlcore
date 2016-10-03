@@ -129,8 +129,9 @@ class Ts(object):
 		rough_string = ET.tostring(root, 'utf-8')
 		reparsed = minidom.parseString(rough_string)
 		text = reparsed.toprettyxml(indent="  ")
-		with open(self.__file + '.new', 'wb') as f:
-			f.write(text.encode('utf-8'))
+		text = text.encode('utf-8')
+		with open(self.__file, 'wb') as f:
+			f.write(text)
 
 	def scan_file(self, path, context):
 		with open(path) as f:

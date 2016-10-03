@@ -91,7 +91,7 @@ def process_file(generator, app, dirpath, filename):
 		com = ".".join(dirpath.split(os.path.sep)[-1:] + [name])
 		generator.add_js(com, data)
 	elif ext == '.ts':
-		generator.add_ts(name, path)
+		generator.add_ts(path)
 
 
 notifier = None

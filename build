@@ -14,6 +14,7 @@ parser.add_argument('--minify', '-m', action='store_true', default=False, help='
 parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
 parser.add_argument('--web-prefix', '-p', action='store_true', default=False, help='web prefix for hybrid sites/apps')
+parser.add_argument('--update-translation', '-u', action='store_true', default=False, help='update translation only')
 args = parser.parse_args()
 
 def minify_uglify(out, src, root, name, app, platform, manifest):
@@ -185,6 +186,12 @@ platforms = None
 apps = {'app': 'index.html' }
 with open('.manifest') as f:
 	manifest = json.load(f)
+
+if args.update_translation:
+	languages = manifest.get('languages', [])
+	for language in languages:
+		call([os.path.join(root, 'update-ts'), '--ts', name, '.'])
+	sys.exit(0)
 
 name = manifest['name']
 

@@ -64,6 +64,7 @@ Object {
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
 		this.language = navigator.language
+		this._context.language = this.language.split('-')[0]
 		this.support3dTransforms = window.Modernizr && window.Modernizr.csstransforms3d
 		this.supportTransforms = window.Modernizr && window.Modernizr.csstransforms
 		this.supportTransitions = window.Modernizr && window.Modernizr.csstransitions

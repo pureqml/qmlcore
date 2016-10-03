@@ -38,13 +38,16 @@ class Translation(object):
 		self.text = None
 
 	def load(self, el):
-		self.type = el.attrib['type'] if 'type' in el.attrib else 'obsoleted'
+		self.type = el.attrib['type'] if 'type' in el.attrib else 'just-obsoleted'
 		self.text = el.text
 
 	def save(self, parent):
 		tr = ET.SubElement(parent, 'translation')
 		if self.type is not None:
-			tr.attrib['type'] = self.type
+			if self.type == 'just-obsoleted':
+				tr.attrib['type'] = 'obsoleted'
+			else:
+				tr.attrib['type'] = self.type
 		tr.text = self.text if self.text is not None else ''
 
 class Message(object):
@@ -90,7 +93,7 @@ class Context(object):
 		if src in self.__messages:
 			msg = self.__messages.get(src)
 			assert msg.source == src
-			if msg.translation.type == 'obsoleted':
+			if msg.translation.type == 'obsoleted' or msg.translation.type == 'just-obsoleted':
 				msg.translation.type = None #update status
 		else:
 			self.__messages[src] = Message(loc, src)

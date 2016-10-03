@@ -12,9 +12,9 @@ class Ts(object):
 			for dirpath, dirname, files in os.walk(directory):
 				dirname[:] = filter(lambda name: name[0] != '.' and not name.startswith('qml2js'), dirname)
 
-			for file in files:
-				_, ext = os.path.splitext(file)
-				if ext != '.qml':
-					continue
-				path = os.path.join(dirpath, file)
-
+				for file in files:
+					_, ext = os.path.splitext(file)
+					if ext != '.qml':
+						continue
+					path = os.path.join(dirpath, file)
+					print path

@@ -38,7 +38,7 @@ class Translation(object):
 		self.text = None
 
 	def load(self, el):
-		self.type = el.attrib['type'] if 'type' in el.attrib else None
+		self.type = el.attrib['type'] if 'type' in el.attrib else 'obsoleted'
 		self.text = el.text
 
 	def save(self, parent):

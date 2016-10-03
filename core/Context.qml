@@ -28,6 +28,7 @@ Item {
 	function init(options) {
 		log('Context: initializing...')
 		this._local['context'] = this
+		this.l10n = options.l10n || {}
 
 		var prefix = options.prefix
 		var divId = options.id

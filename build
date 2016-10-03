@@ -190,6 +190,7 @@ with open('.manifest') as f:
 if args.update_translation:
 	languages = manifest.get('languages', [])
 	for language in languages:
+		print 'updating translation for language', language
 		call([os.path.join(root, 'update-ts'), '--ts', language + '.ts', '.'])
 	sys.exit(0)
 

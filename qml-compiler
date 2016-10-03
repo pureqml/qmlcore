@@ -90,6 +90,8 @@ def process_file(generator, app, dirpath, filename):
 		print "including js file...", path
 		com = ".".join(dirpath.split(os.path.sep)[-1:] + [name])
 		generator.add_js(com, data)
+	elif ext == '.ts':
+		generator.add_ts(name, path)
 
 
 notifier = None

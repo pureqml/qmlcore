@@ -336,6 +336,7 @@ class generator(object):
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
+		self.l10n = {}
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -461,3 +462,15 @@ class generator(object):
 		r += "\n".join(startup)
 		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns
 		return r
+
+	def add_ts(self, lang, path):
+		from ts import Ts
+		ts = Ts(path)
+		data = {}
+		for ctx in ts:
+			for msg in ctx:
+				source, type, text = msg.source, msg.translation.type, msg.translation.text
+				print source, type, text
+				texts = data.setdefault(source, {})
+				texts[ctx.name] = text
+		self.l10n[lang] = data

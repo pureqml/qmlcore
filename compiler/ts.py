@@ -83,6 +83,9 @@ class Context(object):
 	def __cmp__(self, o):
 		return cmp(self.name, o.name)
 
+	def __iter__(self):
+		return self.__messages.itervalues()
+
 	def add(self, src, loc):
 		if src in self.__messages:
 			msg = self.__messages.get(src)
@@ -120,6 +123,9 @@ class Ts(object):
 		self.language = None
 		if os.path.exists(path):
 			self._load(path)
+
+	def __iter__(self):
+		return self.__contexts.itervalues()
 
 	def _load(self, path):
 		tree = ET.parse(path)

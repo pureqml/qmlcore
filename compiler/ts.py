@@ -3,13 +3,18 @@ import re
 import xml.etree.ElementTree as ET
 from xml.dom import minidom #beautify
 
+tr_re = re.compile(r'\W(qsTr|qsTranslate|tr|QT_TR_NOOP|QT_TRANSLATE_NOOP)\s*\(\s*(.*?)\s*\)')
+q1_re = re.compile(r'"(.*(?<!\\))"')
+q2_re = re.compile(r'\'(.*(?<!\\))\'')
+
 def scan(text, file = ''):
 	locs = []
 	for m in tr_re.finditer(text):
 		type = m.group(1)
 		args = m.group(2)
-		if q1_re.match(args) or q2_re.match(args):
-			locs.append((type, args, m.pos))
+		m = q1_re.match(args) or q2_re.match(args)
+		if m:
+			locs.append((type, m.group(1), m.pos))
 	return locs
 
 class Location(object):
@@ -101,10 +106,6 @@ class Context(object):
 		name.text = self.name
 		for msg in self.__messages.itervalues():
 			msg.save(ctx)
-
-tr_re = re.compile(r'\W(qsTr|qsTranslate|tr|QT_TR_NOOP|QT_TRANSLATE_NOOP)\s*\(\s*(.*?)\s*\)')
-q1_re = re.compile(r'".*(?<!\\)"')
-q2_re = re.compile(r'\'.*(?<!\\)\'')
 
 class Ts(object):
 	def __init__(self, path = ''):

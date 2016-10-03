@@ -1,11 +1,12 @@
 import os
 
 class Ts(object):
-	def __init__(self):
-		pass
+	def __init__(self, path = ''):
+		if os.path.exists(path):
+			self._load(path)
 
-	def load(self, path):
-		pass
+	def _load(self, path):
+		print 'STUB'
 
 	def scan(self, dirs):
 		for directory in dirs:

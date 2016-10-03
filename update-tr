@@ -8,5 +8,5 @@ parser.add_argument("directory", nargs='+')
 parser.add_argument("--ts", '-t', help='tr file to write to')
 args = parser.parse_args()
 
-ts = Ts()
+ts = Ts(args.ts)
 ts.scan(args.directory)

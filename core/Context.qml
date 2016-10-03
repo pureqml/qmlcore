@@ -198,6 +198,13 @@ Item {
 
 	function qsTr(text) {
 		var args = arguments
+		var lang = this.language
+		var messages = this.l10n[lang] || {}
+		var contexts = messages[text] || {}
+		for(name in contexts) {
+			text = contexts[name] //fixme: add context handling here
+			break
+		}
 		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
 	}
 

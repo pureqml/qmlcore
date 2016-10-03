@@ -38,7 +38,7 @@ class Translation(object):
 		self.text = None
 
 	def load(self, el):
-		self.type = el.attrib['type'] if 'type' in el else None
+		self.type = el.attrib['type'] if 'type' in el.attrib else None
 		self.text = el.text
 
 	def save(self, parent):
@@ -48,10 +48,9 @@ class Translation(object):
 		tr.text = self.text if self.text is not None else ''
 
 class Message(object):
-	def __init__(self, loc = None, source = None, status = None, translation = Translation('unfinished')):
+	def __init__(self, loc = None, source = None, translation = Translation('unfinished')):
 		self.location = loc
 		self.source = source
-		self.status = status
 		self.translation = translation
 
 	def load(self, el):
@@ -82,8 +81,8 @@ class Context(object):
 		if src in self.__messages:
 			msg = self.__messages.get(src)
 			assert msg.source == src
-			if msg.status == 'obsoleted':
-				msg.status = None #update status
+			if msg.translation.type == 'obsoleted':
+				msg.translation.type = None #update status
 		else:
 			self.__messages[src] = Message(loc, src)
 
@@ -110,9 +109,9 @@ class Context(object):
 class Ts(object):
 	def __init__(self, path = ''):
 		self.__file = path
+		self.__contexts = {}
 		if os.path.exists(path):
 			self._load(path)
-		self.__contexts = {}
 
 	def _load(self, path):
 		tree = ET.parse(path)
@@ -120,6 +119,7 @@ class Ts(object):
 			if el.tag == 'context':
 				context = Context()
 				context.load(el)
+				self.__contexts[context.name] = context
 
 	def save(self):
 		root = ET.Element('TS')
@@ -130,7 +130,7 @@ class Ts(object):
 		reparsed = minidom.parseString(rough_string)
 		text = reparsed.toprettyxml(indent="  ")
 		with open(self.__file + '.new', 'wb') as f:
-			f.write(text)
+			f.write(text.encode('utf-8'))
 
 	def scan_file(self, path, context):
 		with open(path) as f:

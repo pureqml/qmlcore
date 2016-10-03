@@ -10,3 +10,4 @@ args = parser.parse_args()
 
 ts = Ts(args.ts)
 ts.scan(args.directory)
+ts.save()

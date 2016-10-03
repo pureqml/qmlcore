@@ -1,6 +1,16 @@
 import os
 import re
 import xml.etree.ElementTree as ET
+from xml.dom import minidom #beautify
+
+def scan(text, file = ''):
+	locs = []
+	for m in tr_re.finditer(text):
+		type = m.group(1)
+		args = m.group(2)
+		if q1_re.match(args) or q2_re.match(args):
+			locs.append((type, args, m.pos))
+	return locs
 
 class Location(object):
 	def __init__(self, filename = None, line = None):
@@ -12,6 +22,11 @@ class Location(object):
 		self.filename = attr['filename']
 		self.line = attr['line']
 
+	def save(self, parent):
+		loc = ET.SubElement(parent, 'location')
+		loc.attrib['filename'] = self.filename
+		loc.attrib['line'] = str(self.line)
+
 class Translation(object):
 	def __init__(self, type = None, text = None):
 		self.type = type
@@ -21,8 +36,14 @@ class Translation(object):
 		self.type = el.attrib['type'] if 'type' in el else None
 		self.text = el.text
 
+	def save(self, parent):
+		tr = ET.SubElement(parent, 'translation')
+		if self.type is not None:
+			tr.attrib['type'] = self.type
+		tr.text = self.text if self.text is not None else ''
+
 class Message(object):
-	def __init__(self, loc = None, source = None, status = None, translation = None):
+	def __init__(self, loc = None, source = None, status = None, translation = Translation('unfinished')):
 		self.location = loc
 		self.source = source
 		self.status = status
@@ -39,6 +60,14 @@ class Message(object):
 				self.translation = Translation()
 				self.translation.load(child)
 
+	def save(self, parent):
+		msg = ET.SubElement(parent, 'message')
+		if self.location is not None:
+			self.location.save(msg)
+		src = ET.SubElement(msg, 'source')
+		src.text = self.source
+		self.translation.save(msg)
+
 class Context(object):
 	def __init__(self, name = None):
 		self.name = name
@@ -51,7 +80,7 @@ class Context(object):
 			if msg.status == 'obsoleted':
 				msg.status = None #update status
 		else:
-			self.__messages[src] = Message(loc, src, 'unfinished', None)
+			self.__messages[src] = Message(loc, src)
 
 	def load(self, el):
 		for child in el:
@@ -63,19 +92,19 @@ class Context(object):
 				self.__messages[msg.source] = msg
 			elif child.tag == 'name':
 				self.name = child.text
+		if self.name is None:
+			raise Exception('context without name')
+
+	def save(self, parent):
+		ctx = ET.SubElement(parent, 'context')
+		name = ET.SubElement(ctx, 'name')
+		name.text = self.name
+		for msg in self.__messages.itervalues():
+			msg.save(ctx)
 
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr|QT_TR_NOOP|QT_TRANSLATE_NOOP)\s*\(\s*(.*?)\s*\)')
 q1_re = re.compile(r'".*(?<!\\)"')
 q2_re = re.compile(r'\'.*(?<!\\)\'')
-
-def scan(text, file = ''):
-	locs = []
-	for m in tr_re.finditer(text):
-		type = m.group(1)
-		args = m.group(2)
-		if q1_re.match(args) or q2_re.match(args):
-			locs.append((type, args, m.pos))
-	return locs
 
 class Ts(object):
 	def __init__(self, path = ''):
@@ -92,15 +121,24 @@ class Ts(object):
 				context.load(el)
 
 	def save(self):
-		print self.__contexts
+		root = ET.Element('TS')
+		for ctx in self.__contexts.itervalues():
+			ctx.save(root)
+
+		rough_string = ET.tostring(root, 'utf-8')
+		reparsed = minidom.parseString(rough_string)
+		text = reparsed.toprettyxml(indent="  ")
+		with open(self.__file + '.new', 'wb') as f:
+			f.write(text)
 
 	def scan_file(self, path, context):
 		with open(path) as f:
 			text = f.read()
 
-		ctx = self.__contexts.setdefault(context, Context(context))
-
+		ctx = None
 		for _type, source, pos in scan(text):
+			if ctx is None:
+				ctx = self.__contexts.setdefault(context, Context(context))
 			line = 1 + text[0:pos].count('\n')
 			ctx.add(source, Location(os.path.normpath(path), line))
 

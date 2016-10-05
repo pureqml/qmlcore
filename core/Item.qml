@@ -35,7 +35,7 @@ Object {
 	constructor: {
 		if (this.parent) {
 			if (this.element)
-				throw new Error('double ctor call')
+				return; //already created by base class (mixin ctor)
 
 			this.element = this._context.createElement(this.getTag())
 			this.parent.element.append(this.element)

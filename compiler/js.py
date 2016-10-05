@@ -125,7 +125,14 @@ class component_generator(object):
 			raise Exception("unhandled element: %s" %child)
 
 	def generate_ctor(self, registry):
-		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
+		bases = [self.component.name]
+		if self.component.mixins:
+			bases += list(self.component.mixins) #pyparser bug __add__ returns None
+		ctor = ''
+		for base in bases:
+			ctor += "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, base))
+		ctor += self.ctor
+		return ctor
 
 	def generate(self, registry):
 		ctor  = "/**\n * @constructor\n"

@@ -95,6 +95,10 @@ exports.core.safeCall = function(args, onError) {
 	return function(callback) { return safeCallImpl(callback, args, onError) }
 }
 
+exports.core.extend = function(dst, src) {
+	log('MIXIN SKIPPED', dst, src)
+}
+
 /**
  * @constructor
  */

@@ -163,6 +163,16 @@ class component_generator(object):
 		safe_var = escape(var)
 		return "\tfunction %s_%s () {\n%s\n\t}\n\t%s_%s.call(%s)" %(prefix, safe_var, code, prefix, safe_var, var)
 
+	def generate_mixins(self, registry, ident_n = 1):
+		r = []
+		ident = "\t" * ident_n
+
+		for mixin in self.component.mixins:
+			mixin_type = registry.find_component(self.package, mixin)
+			r.append("%sexports.core.extend(exports.%s.prototype, exports.%s.prototype)" %(ident, self.name, mixin_type))
+
+		return "\n".join(r)
+
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
 
@@ -172,10 +182,6 @@ class component_generator(object):
 
 		r = []
 		ident = "\t" * ident_n
-
-		for mixin in self.component.mixins:
-			mixin_type = registry.find_component(self.package, mixin)
-			print "WARNING: skipped mixin %s -> %s" %(mixin, mixin_type)
 
 		for name in self.signals:
 			r.append("%sexports.%s.prototype.%s = function() { var args = exports.core.copyArguments(arguments, 0, '%s'); this.emit.apply(this, args) }" %(ident, self.name, name, name))
@@ -425,6 +431,11 @@ class generator(object):
 
 		for name, gen in self.components.iteritems():
 			code = gen.generate_prototype(self)
+			if code:
+				r.append(code)
+
+		for name, gen in self.components.iteritems():
+			code = gen.generate_mixins(self)
 			if code:
 				r.append(code)
 

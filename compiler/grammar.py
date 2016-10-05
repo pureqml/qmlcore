@@ -5,10 +5,6 @@ def handle_component_declaration(s, l, t):
 	#print "component>", t
 	return lang.Component(t[0], t[1])
 
-def handle_root_component_declaration(s, l, t):
-	#print "root component>", t
-	return lang.Component(t[0], t[2], t[1])
-
 def handle_assignment(s, l, t):
 	#print "assignment>", t
 	return lang.Assignment(t[0], t[1])
@@ -71,7 +67,6 @@ type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Z]"), alphanums)
 identifier = Word(srange("[a-z_]"), alphanums + "_")
 code = originalTextFor(nestedExpr("{", "}", None, None))
-component_type_list = component_type + ZeroOrMore("," + component_type)
 
 enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
@@ -187,10 +182,7 @@ expression << expression_ops
 expression_list_definition = expression + ZeroOrMore(Literal(",") + expression)
 expression_list << Optional(expression_list_definition)
 
-root_component_declaration = (component_type + Group(Optional(Keyword("extends").suppress() + component_type_list)) + component_scope)
-root_component_declaration.setParseAction(handle_root_component_declaration)
-
-source = root_component_declaration
+source = component_declaration
 source = source.ignore(cStyleComment)
 source = source.ignore(dblSlashComment)
 #source.setDefaultWhitespaceChars(" \t\r\f")

@@ -391,9 +391,12 @@ class generator(object):
 
 			code = "//=====[component %s]=====================\n\n" %name
 			code += gen.generate(self)
-			base_type = self.find_component(gen.package, gen.component.name)
 
-			base_class[name] = base_type
+			base_types = [self.find_component(gen.package, gen.component.name)]
+			for mixin in gen.component.mixins:
+				base_types += [self.find_component(gen.package, mixin)]
+			base_class[name] = base_types
+
 			r.append(code)
 
 		deps = []
@@ -401,7 +404,8 @@ class generator(object):
 		def visit(type):
 			if type in visited:
 				return
-			visit(base_class[type])
+			for base in base_class[type]:
+				visit(base)
 			deps.append(type)
 			visited.add(type)
 
@@ -410,7 +414,7 @@ class generator(object):
 
 		for type in deps:
 			code = ""
-			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_class[type])
+			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_class[type][0])
 			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(type, type)
 			r.append(code)
 

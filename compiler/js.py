@@ -125,14 +125,7 @@ class component_generator(object):
 			raise Exception("unhandled element: %s" %child)
 
 	def generate_ctor(self, registry):
-		bases = [self.component.name]
-		if self.component.mixins:
-			bases += list(self.component.mixins) #pyparser bug __add__ returns None
-		ctor = ''
-		for base in bases:
-			ctor += "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, base))
-		ctor += self.ctor
-		return ctor
+		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
 
 	def generate(self, registry):
 		ctor  = "/**\n * @constructor\n"
@@ -163,16 +156,6 @@ class component_generator(object):
 		safe_var = escape(var)
 		return "\tfunction %s_%s () {\n%s\n\t}\n\t%s_%s.call(%s)" %(prefix, safe_var, code, prefix, safe_var, var)
 
-	def generate_mixins(self, registry, ident_n = 1):
-		r = []
-		ident = "\t" * ident_n
-
-		for mixin in self.component.mixins:
-			mixin_type = registry.find_component(self.package, mixin)
-			r.append("%sexports.core.extend(exports.%s.prototype, exports.%s.prototype)" %(ident, self.name, mixin_type))
-
-		return "\n".join(r)
-
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
 
@@ -182,7 +165,6 @@ class component_generator(object):
 
 		r = []
 		ident = "\t" * ident_n
-
 		for name in self.signals:
 			r.append("%sexports.%s.prototype.%s = function() { var args = exports.core.copyArguments(arguments, 0, '%s'); this.emit.apply(this, args) }" %(ident, self.name, name, name))
 
@@ -402,12 +384,9 @@ class generator(object):
 
 			code = "//=====[component %s]=====================\n\n" %name
 			code += gen.generate(self)
+			base_type = self.find_component(gen.package, gen.component.name)
 
-			base_types = [self.find_component(gen.package, gen.component.name)]
-			for mixin in gen.component.mixins:
-				base_types += [self.find_component(gen.package, mixin)]
-			base_class[name] = base_types
-
+			base_class[name] = base_type
 			r.append(code)
 
 		deps = []
@@ -415,8 +394,7 @@ class generator(object):
 		def visit(type):
 			if type in visited:
 				return
-			for base in base_class[type]:
-				visit(base)
+			visit(base_class[type])
 			deps.append(type)
 			visited.add(type)
 
@@ -425,17 +403,12 @@ class generator(object):
 
 		for type in deps:
 			code = ""
-			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_class[type][0])
+			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_class[type])
 			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(type, type)
 			r.append(code)
 
 		for name, gen in self.components.iteritems():
 			code = gen.generate_prototype(self)
-			if code:
-				r.append(code)
-
-		for name, gen in self.components.iteritems():
-			code = gen.generate_mixins(self)
 			if code:
 				r.append(code)
 

@@ -95,17 +95,6 @@ exports.core.safeCall = function(args, onError) {
 	return function(callback) { return safeCallImpl(callback, args, onError) }
 }
 
-exports.core.extend = function(dst, src) {
-	while(src) {
-		Object.getOwnPropertyNames(src).forEach(function(prop) {
-			var desc = Object.getOwnPropertyDescriptor(src, prop)
-			if (!(prop in dst))
-				Object.defineProperty(dst, prop, desc)
-		})
-		src = Object.getPrototypeOf(src)
-	}
-}
-
 /**
  * @constructor
  */

@@ -1,7 +1,8 @@
 class Component(object):
-	def __init__(self, name, children):
+	def __init__(self, name, children, mixins = []):
 		self.name = name
 		self.children = children
+		self.mixins = mixins
 
 class Property(object):
 	def __init__(self, type, name, value = None):

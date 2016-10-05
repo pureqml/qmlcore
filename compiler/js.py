@@ -172,6 +172,11 @@ class component_generator(object):
 
 		r = []
 		ident = "\t" * ident_n
+
+		for mixin in self.component.mixins:
+			mixin_type = registry.find_component(self.package, mixin)
+			print "WARNING: skipped mixin %s -> %s" %(mixin, mixin_type)
+
 		for name in self.signals:
 			r.append("%sexports.%s.prototype.%s = function() { var args = exports.core.copyArguments(arguments, 0, '%s'); this.emit.apply(this, args) }" %(ident, self.name, name, name))
 

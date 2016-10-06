@@ -332,6 +332,7 @@ class component_generator(object):
 class generator(object):
 	def __init__(self):
 		self.components = {}
+		self.used_packages = set()
 		self.used_components = set()
 		self.imports = {}
 		self.packages = {}
@@ -347,6 +348,7 @@ class generator(object):
 		if not declaration:
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
 			self.used_components.add(name)
+			self.used_packages.add(package)
 			self.startup.append("\tqml._context.start(qml.%s)" %name)
 
 		if package not in self.packages:
@@ -388,6 +390,7 @@ class generator(object):
 
 		self.id_set = set(['context'])
 		gen.collect_id(self.id_set)
+		self.used_packages.add(gen.package)
 
 		code = ''
 		code += "//=====[component %s]=====================\n\n" %name
@@ -443,7 +446,7 @@ class generator(object):
 	def generate_imports(self):
 		r = []
 		packages = {}
-		for package in sorted(self.packages.keys()):
+		for package in sorted(self.used_packages):
 			path = package.split(".")
 			ns = packages
 			for p in path:

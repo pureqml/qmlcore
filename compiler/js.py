@@ -366,6 +366,11 @@ class generator(object):
 		if name == "Object":
 			return "core.Object"
 
+		dot = name.rfind('.')
+		if dot >= 0:
+			package = name[:dot]
+			name = name[dot + 1:]
+
 		if package in self.packages and name in self.packages[package]:
 			return "%s.%s" %(package, name)
 		for package_name, components in self.packages.iteritems():

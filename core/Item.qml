@@ -37,8 +37,7 @@ Object {
 			if (this.element)
 				throw new Error('double ctor call')
 
-			this.element = this._context.createElement(this.getTag())
-			this.parent.element.append(this.element)
+			this.createElement(this.getTag())
 			var self = this
 			var updateVisibility = function(value) {
 				self._recursiveVisible = value
@@ -49,7 +48,12 @@ Object {
 		} //no parent == top level element, skip
 	}
 
-	function getTag() {	return 'div'	}
+	function getTag() { return 'div' }
+
+	function createElement(tag) {
+		this.element = this._context.createElement(tag)
+		this.parent.element.append(this.element)
+	}
 
 	function toScreen() {
 		var item = this

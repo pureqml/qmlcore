@@ -332,6 +332,8 @@ class component_generator(object):
 class generator(object):
 	def __init__(self):
 		self.components = {}
+		self.used_components = set()
+		self.generated_components = set()
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
@@ -372,50 +374,33 @@ class generator(object):
 			name = name[dot + 1:]
 
 		if package in self.packages and name in self.packages[package]:
+			self.used_components.add((package, name))
 			return "%s.%s" %(package, name)
 		for package_name, components in self.packages.iteritems():
 			if name in components:
+				self.used_components.add((package, name))
 				return "%s.%s" %(package_name, name)
 		raise Exception("component %s was not found" %name)
 
 	def generate_components(self):
-		r, base_class = [], {}
+		code = ''
 
 		for name, gen in self.components.iteritems():
 			self.id_set = set(['context'])
 			gen.collect_id(self.id_set)
 
-			code = "//=====[component %s]=====================\n\n" %name
+			code += "//=====[component %s]=====================\n\n" %name
 			code += gen.generate(self)
+
+			type = name
 			base_type = self.find_component(gen.package, gen.component.name)
 
-			base_class[name] = base_type
-			r.append(code)
-
-		deps = []
-		visited = set(['core.Object'])
-		def visit(type):
-			if type in visited:
-				return
-			visit(base_class[type])
-			deps.append(type)
-			visited.add(type)
-
-		for type in base_class.iterkeys():
-			visit(type)
-
-		for type in deps:
-			code = ""
-			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_class[type])
+			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_type)
 			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(type, type)
-			r.append(code)
 
-		for name, gen in self.components.iteritems():
-			code = gen.generate_prototype(self)
-			if code:
-				r.append(code)
+			code += gen.generate_prototype(self)
 
-		return "\n".join(r)
+		return code
 
 	def generate_imports(self):
 		r = []

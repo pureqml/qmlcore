@@ -64,7 +64,7 @@ expression_list = Forward()
 component_declaration = Forward()
 
 type = Word(alphas, alphanums)
-component_type = Word(srange("[A-Z]"), alphanums)
+component_type = Word(srange("[A-Za-z\_]"), alphanums + "._")
 identifier = Word(srange("[a-z_]"), alphanums + "_")
 code = originalTextFor(nestedExpr("{", "}", None, None))
 

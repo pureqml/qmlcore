@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import lang
 import json
 from code import process, parse_deps, generate_accessors, replace_enums

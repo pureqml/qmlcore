@@ -333,7 +333,6 @@ class generator(object):
 	def __init__(self):
 		self.components = {}
 		self.used_components = set()
-		self.generated_components = set()
 		self.imports = {}
 		self.packages = {}
 		self.startup = []
@@ -347,6 +346,7 @@ class generator(object):
 
 		if not declaration:
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
+			self.used_components.add(name)
 			self.startup.append("\tqml._context.start(qml.%s)" %name)
 
 		if package not in self.packages:
@@ -374,11 +374,12 @@ class generator(object):
 			name = name[dot + 1:]
 
 		if package in self.packages and name in self.packages[package]:
-			self.used_components.add((package, name))
+			self.used_components.add(package + '.' + name)
 			return "%s.%s" %(package, name)
+
 		for package_name, components in self.packages.iteritems():
 			if name in components:
-				self.used_components.add((package, name))
+				self.used_components.add(package_name + '.' + name)
 				return "%s.%s" %(package_name, name)
 		raise Exception("component %s was not found" %name)
 
@@ -402,12 +403,42 @@ class generator(object):
 
 
 	def generate_components(self):
-		code = ''
+		generated = set(['core.Object'])
+		queue = ['core.Context']
+		code, base_class = {}, {}
 
-		for gen in self.components.itervalues():
-			code += self.generate_component(gen)
+		while queue or self.used_components:
+			for component in self.used_components:
+				if component not in generated:
+					queue.append(component)
+			self.used_components = set()
 
-		return code
+			if queue:
+				name = queue.pop(0)
+				component = self.components[name]
+				base_type = self.find_component(component.package, component.component.name)
+				base_class[name] = base_type
+
+				code[name] = self.generate_component(component)
+				generated.add(name)
+
+		r = ''
+		order = []
+		visited = set(['core.Object'])
+		def visit(type):
+			if type in visited:
+				return
+			visit(base_class[type])
+			order.append(type)
+			visited.add(type)
+
+		for type in base_class.iterkeys():
+			visit(type)
+
+		for type in order:
+			r += code[type]
+
+		return r
 
 	def generate_imports(self):
 		r = []

@@ -469,6 +469,7 @@ class generator(object):
 		return "\n".join(r)
 
 	def generate(self, ns):
+		code = self.generate_components() + '\n' #must be called first, generates used_packages/components sets
 		text = ""
 		text += "/** @const */\n"
 		text += "var _globals = exports\n"
@@ -476,7 +477,7 @@ class generator(object):
 		text += "//========================================\n\n"
 		text += "/** @const @type {!Object} */\n"
 		text += "var core = _globals.core.core\n"
-		text += "%s\n" %self.generate_components()
+		text += code
 		return "%s = %s();\n" %(ns, self.wrap(text))
 
 	def generate_startup(self, ns, app, prefix):

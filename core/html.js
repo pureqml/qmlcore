@@ -116,7 +116,12 @@ exports.Element.prototype.updateStyle = function() {
 		'margin-left': 'px',
 		'margin-top': 'px',
 		'margin-right': 'px',
-		'margin-bottom': 'px'
+		'margin-bottom': 'px',
+
+		'padding-left': 'px',
+		'padding-top': 'px',
+		'padding-right': 'px',
+		'padding-bottom': 'px'
 	}
 
 	var rules = []

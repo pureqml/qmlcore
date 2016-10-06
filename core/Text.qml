@@ -95,9 +95,9 @@ Item {
 			style = {'height': this.height }
 
 		switch(this.verticalAlignment) {
-		case this.AlignTop:		style['margin-top'] = 0; break
-		case this.AlignBottom:	style['margin-top'] = this.height - this.paintedHeight; break
-		case this.AlignVCenter:	style['margin-top'] = (this.height - this.paintedHeight) / 2; break
+		case this.AlignTop:		style['padding-top'] = 0; break
+		case this.AlignBottom:	style['padding-top'] = this.height - this.paintedHeight; break
+		case this.AlignVCenter:	style['padding-top'] = (this.height - this.paintedHeight) / 2; break
 		}
 		this.style(style)
 	}

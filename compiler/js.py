@@ -392,11 +392,10 @@ class generator(object):
 			code += "//=====[component %s]=====================\n\n" %name
 			code += gen.generate(self)
 
-			type = name
 			base_type = self.find_component(gen.package, gen.component.name)
 
-			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(type, base_type)
-			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(type, type)
+			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(name, base_type)
+			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(name, name)
 
 			code += gen.generate_prototype(self)
 

@@ -382,22 +382,30 @@ class generator(object):
 				return "%s.%s" %(package_name, name)
 		raise Exception("component %s was not found" %name)
 
+	def generate_component(self, gen):
+		name = gen.name
+
+		self.id_set = set(['context'])
+		gen.collect_id(self.id_set)
+
+		code = ''
+		code += "//=====[component %s]=====================\n\n" %name
+		code += gen.generate(self)
+
+		base_type = self.find_component(gen.package, gen.component.name)
+
+		code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(name, base_type)
+		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(name, name)
+
+		code += gen.generate_prototype(self)
+		return code
+
+
 	def generate_components(self):
 		code = ''
 
-		for name, gen in self.components.iteritems():
-			self.id_set = set(['context'])
-			gen.collect_id(self.id_set)
-
-			code += "//=====[component %s]=====================\n\n" %name
-			code += gen.generate(self)
-
-			base_type = self.find_component(gen.package, gen.component.name)
-
-			code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(name, base_type)
-			code += "\texports.%s.prototype.constructor = exports.%s;\n" %(name, name)
-
-			code += gen.generate_prototype(self)
+		for gen in self.components.itervalues():
+			code += self.generate_component(gen)
 
 		return code
 

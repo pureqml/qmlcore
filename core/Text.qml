@@ -82,9 +82,9 @@ Item {
 
 		var wrap = this.wrapMode != Text.NoWrap
 		if (!wrap)
-			this.style({ width: 'auto', height: 'auto' }) //no need to reset it to width, it's already there
+			this.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
 		else
-			this.style('height', 'auto')
+			this.style({ 'height': 'auto', 'padding-top': 0})
 
 		this._reflectSize()
 

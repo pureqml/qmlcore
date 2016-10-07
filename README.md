@@ -18,7 +18,7 @@ Any modern python 2.x will go well. Jinja2 is better option for templating in ca
 Please find resulting files in .app.html5/*
 
 ## How does it work
-Qml compiler scans source directories for qml file and parses each one. Filename starting with uppercase letter considered component, lowercase instantiated. Project-wide options stored in ```.manifest``` file. 
+Qml compiler scans source directories for qml file and parses each one. Filename starting with uppercase letter considered component, lowercase instantiated. Project-wide options stored in ```.manifest``` file. Result of the compilation is single javascript file with minimum dependencies (modernizr only), ready to use in mobile and desktop environment, accompanied by sample .html launcher and flash video player. 
 
 ## Manifest options
 Manifest is a collection of project-wide hacks we used to botch various projects. Some of them may or may not be useful.

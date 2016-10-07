@@ -34,6 +34,7 @@ Object {
 	property int viewY;
 
 	constructor: {
+		this._topPadding = 0
 		if (this.parent) {
 			if (this.element)
 				throw new Error('double ctor call')
@@ -121,7 +122,7 @@ Object {
 				break;
 
 			case 'height':
-				this.style('height', value);
+				this.style('height', value - this._topPadding);
 				this.boxChanged()
 				break;
 
@@ -318,8 +319,6 @@ Object {
 		}
 		return false;
 	}
-
-
 
 	onVisibleChanged: { this._updateVisibility() }
 	setFocus: { this.forceActiveFocus(); }

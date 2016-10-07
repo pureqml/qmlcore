@@ -95,10 +95,12 @@ Item {
 			style = {'height': this.height }
 
 		switch(this.verticalAlignment) {
-		case this.AlignTop:		style['padding-top'] = 0; break
-		case this.AlignBottom:	style['padding-top'] = this.height - this.paintedHeight; break
-		case this.AlignVCenter:	style['padding-top'] = (this.height - this.paintedHeight) / 2; break
+			case this.AlignTop:		this._topPadding = 0; break
+			case this.AlignBottom:	this._topPadding = this.height - this.paintedHeight; break
+			case this.AlignVCenter:	this._topPadding = (this.height - this.paintedHeight) / 2; break
 		}
+		style['padding-top'] = this._topPadding
+		style['height'] = this.height - this._topPadding
 		this.style(style)
 	}
 

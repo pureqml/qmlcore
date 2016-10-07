@@ -80,7 +80,7 @@ Item {
 			mangleRule('a', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; }") +
 			mangleRule('textarea', "{ position: absolute; visibility: inherit; }") +
 			mangleRule('input', "{ position: absolute; visibility: inherit; }") +
-			mangleRule('pre', "{ position: absolute; visibility: inherit; }") +
+			mangleRule('pre', "{ position: absolute; visibility: inherit; margin: 0px;}") +
 			mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
 		)
 		html.getElement('head').append(style)

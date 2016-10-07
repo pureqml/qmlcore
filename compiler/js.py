@@ -1,5 +1,6 @@
 import lang
 import json
+import re
 from code import process, parse_deps, generate_accessors, replace_enums
 
 def get_package(name):
@@ -11,6 +12,11 @@ def split_name(name):
 
 def escape(name):
 	return name.replace('.', '__')
+
+id_re = re.compile(r'[^a-zA-Z0-9_]')
+
+def escape_id(name):
+	return id_re.sub('_', name)
 
 class component_generator(object):
 	def __init__(self, name, component, prototype = False):
@@ -344,6 +350,7 @@ class generator(object):
 			raise Exception("duplicate component " + name)
 
 		package, component_name = split_name(name)
+		package = escape_id(package)
 
 		if not declaration:
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])

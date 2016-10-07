@@ -15,7 +15,21 @@ parser.add_argument('--devel', '-d', action='store_true', default=False, help='d
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
 parser.add_argument('--web-prefix', '-p', action='store_true', default=False, help='web prefix for hybrid sites/apps')
 parser.add_argument('--update-translation', '-u', action='store_true', default=False, help='update translation only')
+parser.add_argument('--boilerplate', action='store_true', default = False, help = 'create simple skeleton project')
 args = parser.parse_args()
+
+root = os.path.dirname(sys.argv[0])
+
+if args.boilerplate:
+	if path.exists('.manifest') or path.exists('app.qml'):
+		print 'ERROR: will not overwrite any file, you already have your project set up, run ./qml2js/build'
+		sys.exit(1)
+	with open('.manifest', 'w') as f:
+		f.write("{\n  \"app\" : [\"app\"]\n}\n")
+	with open('app.qml', 'w') as app:
+		with open(path.join(root, 'app.qml')) as template:
+			app.write(template.read())
+	sys.exit(0)
 
 def minify_uglify(out, src, root, name, app, platform, manifest):
 	call(["uglifyjs",
@@ -179,8 +193,6 @@ def build(root, platform, app, html, manifest):
 	if path.isdir('res'):
 		call(['cp', '-ur', 'res', target])
 
-
-root = os.path.dirname(sys.argv[0])
 
 platforms = None
 apps = {'app': 'index.html' }

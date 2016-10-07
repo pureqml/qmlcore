@@ -31,6 +31,8 @@ def handle_assignment_scope(s, l, t):
 def handle_nested_identifier_rvalue(s, l, t):
 	#print "nested-id>", t
 	path = t[0].split(".")
+	if path[0] == 'this':
+		return 'this'
 	if path[0] == "model":
 		return "this._get('model').%s" %".".join(path[1:])
 	path = ["_get('%s')" %x for x in path]

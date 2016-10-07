@@ -31,14 +31,14 @@ if args.boilerplate:
 			app.write(template.read())
 	sys.exit(0)
 
-def minify_uglify(out, src, root, name, app, platform, manifest):
+def minify_uglify(out, src, root, app, platform, manifest):
 	call(["uglifyjs",
 		src,
 		"-c",
 		"-m"
 		], stdout = out)
 
-def minify_gcc(out, src, root, name, app, platform, manifest):
+def minify_gcc(out, src, root, app, platform, manifest):
 	call(["java", "-jar", path.join(root, "compiler/gcc/compiler.jar"),
 		"--warning_level", "VERBOSE",
 		"--externs", path.join(root, "compiler/gcc/jquery-1.9.js"),
@@ -46,7 +46,7 @@ def minify_gcc(out, src, root, name, app, platform, manifest):
 		"--jscomp_off=missingProperties",
 		src], stdout = out)
 
-def minify(root, name, app, platform, manifest):
+def minify(root, app, platform, manifest):
 	src = path.join(".app." + platform, "qml.%s.js" % app)
 	dstname = "qml.%s.min.js" %app
 	tool = manifest.get('minify', True)
@@ -56,13 +56,13 @@ def minify(root, name, app, platform, manifest):
 	with open(path.join(".app." + platform, dstname), "w") as out:
 		if tool == 'uglify-js':
 			try:
-				minify_uglify(out, src, root, name, app, platform, manifest)
+				minify_uglify(out, src, root, app, platform, manifest)
 			except:
 				print "WARNING: you don't seem to have uglifyjs installed. please run `sudo npm install -g uglify-js`, falling back to gcc"
 				tool = 'gcc'
 
 		if tool == 'gcc':
-			minify_gcc(out, src, root, name, app, platform, manifest)
+			minify_gcc(out, src, root, app, platform, manifest)
 
 	if not args.keep_temp:
 		os.remove(src)
@@ -168,7 +168,7 @@ def build(root, platform, app, html, manifest):
 	script = 'qml.%s.js' %app #fixme
 
 	if args.minify or (('minify' in manifest) and manifest['minify']):
-		script = minify(root, name, app, platform, manifest)
+		script = minify(root, app, platform, manifest)
 	templater = manifest.get('templater', 'simple')
 
 	print "copying resources..."

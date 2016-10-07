@@ -9,8 +9,9 @@ Object {
 	property real rotate;
 
 	property bool focus;					///< this item can be focused
+	property bool focused: focusedChild === this; ///< this item is focused among its siblings
 	property bool activeFocus;				///< this item can receive events and really focused at this moment
-	property Item focusedChild;				///< this item is focused among its siblings
+	property Item focusedChild;				///< current focused item (this item only)
 
 	property bool visible: true;			///< this item and its children are visible
 	property bool recursiveVisible: true;	///< this item is actually visible on screen (all parents are visible as well)

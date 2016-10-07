@@ -25,7 +25,7 @@ if args.boilerplate:
 		print 'ERROR: will not overwrite any file, you already have your project set up, run ./qml2js/build'
 		sys.exit(1)
 	with open('.manifest', 'w') as f:
-		f.write("{\n  \"app\" : [\"app\"]\n}\n")
+		f.write("{ }\n")
 	with open('app.qml', 'w') as app:
 		with open(path.join(root, 'app.qml')) as template:
 			app.write(template.read())

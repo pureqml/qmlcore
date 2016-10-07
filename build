@@ -29,6 +29,7 @@ if args.boilerplate:
 	with open('app.qml', 'w') as app:
 		with open(path.join(root, 'app.qml')) as template:
 			app.write(template.read())
+	print 'finished, run ./qml2js/build now'
 	sys.exit(0)
 
 def minify_uglify(out, src, root, app, platform, manifest):

@@ -1,4 +1,4 @@
-# Qml2js: QML to JS translator
+# QML2JS: QML to JS translator
 Qml2js is simple tool we(small team of QML advocates) used for years, simplifying building of html5 UI for both mobile and desktop targets.
 It was designed with original QML in mind, but it's not 100% compatible and better in some aspects. The main concepts are the same though, so if you're familiar with original QML, you could start right away. 
 

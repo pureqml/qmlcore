@@ -1,20 +1,20 @@
+/// base component for every visible objects.
 Object {
-	property int x;
-	property int y;
-	property int z;
-	property int width;
-	property int height;
-	property real radius;
-	property bool clip;
+	property int x;							///< x coordinate
+	property int y;							///< y coordinate
+	property int z;							///< z coordinate
+	property int width;						///< width of visible area
+	property int height;					///< height of visible area
+	property bool clip;						///< clip all children outside rectangular area defined by x, y, width, height
 	property real rotate;
 
-	property bool focus;
-	property bool activeFocus;
-	property Item focusedChild;
+	property bool focus;					///< this item can be focused
+	property bool activeFocus;				///< this item can receive events and really focused at this moment
+	property Item focusedChild;				///< this item is focused among its siblings
 
-	property bool visible: true;
-	property bool recursiveVisible: true;
-	property real opacity: 1;
+	property bool visible: true;			///< this item and its children are visible
+	property bool recursiveVisible: true;	///< this item is actually visible on screen (all parents are visible as well)
+	property real opacity: 1;				///< opacity of the item
 
 	property Anchors anchors: Anchors { }
 	property Effects effects: Effects { }

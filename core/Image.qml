@@ -1,9 +1,9 @@
 Item {
-	property enum status { Null, Ready, Loading, Error };
-	property string source;
+	property enum status { Null, Ready, Loading, Error };	///< image status
+	property string source;									///< image URL
 
-	property int paintedWidth;
-	property int paintedHeight;
+	property int paintedWidth;								///< real image width
+	property int paintedHeight;								///< real image height
 
 	property enum fillMode { Stretch, PreserveAspectFit, PreserveAspectCrop, Tile, TileVertically, TileHorizontally };
 

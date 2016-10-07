@@ -1,8 +1,9 @@
 Item {
-	property color color: "#0000";
+	property color color: "#0000";		///< rectangle background color
 
-	property Border border: Border {}
-	property Gradient gradient;
+	property real radius;				///< round corner radius
+	property Border border: Border {}	///< object holding properties of the border
+	property Gradient gradient;			///< if gradient object was set, it displays gradient instead of solid color
 
 	function _mapCSSAttribute(name) {
 		var attr = {color: 'background-color'}[name]

@@ -1,6 +1,6 @@
 Item {
-	property string text;
-	property color color;
+	property string text;		///< text to be displayed
+	property color color;		///< color of the text
 
 	property enum wrapMode {
 		NoWrap, WordWrap, WrapAnywhere, Wrap
@@ -16,8 +16,8 @@ Item {
 
 	property Font font: Font {}
 
-	property int paintedWidth;
-	property int paintedHeight;
+	property int paintedWidth;		///< real width of the text without any layout applied
+	property int paintedHeight;		///< real height of this text without any layout applied
 
 	width: paintedWidth;
 	height: paintedHeight;

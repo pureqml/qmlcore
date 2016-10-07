@@ -37,6 +37,10 @@ Manifest is a collection of project-wide hacks we used to botch various projects
 * ```-u, --update-translation``` update translation files, specified in manifest.languages
 * ```--boilerplate``` initialises bare minimum for quicker kick-off in current directory.
 
+# Localisation
+Qml2js uses Qt-approach to localisation. You write code in your default language, then generate/update (build -u) .ts translation files,
+translate them with qt linguist, and compile project. Qml2js recognizes tr, qsTr, qsTranslate function, as well as QT_TR_NOOP/QT_TRANSLATE_NOOP macros.
+
 # Controls library
 Qml2js contains bare minimum of platform controls: images, texts, rectangles and model-view-delegate classes. Various controls that might be useful are in separate repository. 
 Just clone it ```git clone git@github.com:pureqml/controls.git``` in your project and that's it!

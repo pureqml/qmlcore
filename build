@@ -195,7 +195,7 @@ def build(root, platform, app, html, manifest):
 
 
 platforms = None
-apps = {'app': 'index.html' }
+apps = {'app': 'index' }
 with open('.manifest') as f:
 	manifest = json.load(f)
 

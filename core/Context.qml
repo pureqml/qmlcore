@@ -202,7 +202,7 @@ Item {
 		var lang = this.language
 		var messages = this.l10n[lang] || {}
 		var contexts = messages[text] || {}
-		for(name in contexts) {
+		for(var name in contexts) {
 			text = contexts[name] //fixme: add context handling here
 			break
 		}

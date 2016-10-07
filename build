@@ -158,7 +158,7 @@ def build(root, name, platform, app, html, manifest):
 	templater = manifest.get('templater', 'simple')
 
 	print "copying resources..."
-	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest['apps'].itervalues()) }
+	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest['apps'].itervalues() if 'apps' in manifest else {app: 'index'}) }
 
 	copy(path.join(root, 'dist'), target, context)
 
@@ -203,7 +203,6 @@ if 'apps' in manifest:
 	apps = manifest['apps']
 
 if not platforms:
-	print "WARNING: .manifest/platforms were not found, building for html5 platform..."
 	platforms = ['html5']
 
 for platform in platforms:

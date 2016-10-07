@@ -117,8 +117,8 @@ def find_platform_path(root, platform):
 				return platform_path
 	raise Exception("no platform '%s' found" %platform)
 
-def build(root, name, platform, app, html, manifest):
-	print "building %s.%s for %s..." %(name, app, platform)
+def build(root, platform, app, html, manifest):
+	print "building %s for %s..." %(app, platform)
 	target = '.app.' + platform
 	try:
 		os.mkdir(target)
@@ -194,8 +194,6 @@ if args.update_translation:
 		call([os.path.join(root, 'update-ts'), '--ts', language + '.ts', '.'])
 	sys.exit(0)
 
-name = manifest['name']
-
 if 'platforms' in manifest:
 	platforms = manifest['platforms']
 
@@ -208,4 +206,4 @@ if not platforms:
 for platform in platforms:
 	for app in apps:
 		html = apps[app]
-		build(root, name, platform, app, html, manifest)
+		build(root, platform, app, html, manifest)

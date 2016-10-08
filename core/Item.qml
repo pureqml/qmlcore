@@ -229,8 +229,6 @@ Object {
 		if (!window.Modernizr.csstransitions)
 			return false
 
-		var context = this._context
-
 		var transition = {
 			property: context.getPrefixedName('transition-property'),
 			delay: context.getPrefixedName('transition-delay'),

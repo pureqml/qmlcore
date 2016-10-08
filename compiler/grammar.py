@@ -21,8 +21,12 @@ def handle_enum_property_declaration(s, l, t):
 	return lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None)
 
 def handle_method_declaration(s, l, t):
-	name = t[0]
-	return lang.Method(name, t[1], t[2]) if name != 'constructor' else lang.Constructor(t[1], t[2])
+	event_handler = t[0] != 'function'
+	if event_handler:
+		name, args, code = t[0], t[1], t[2]
+	else:
+		name, args, code = t[1], t[2], t[3]
+	return lang.Method(name, args, code, event_handler) if name != 'constructor' else lang.Constructor(args, code)
 
 def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t
@@ -124,7 +128,7 @@ assign_scope.setParseAction(handle_assignment_scope)
 method_declaration = nested_identifier_lvalue + Group(Optional(Literal("(").suppress() + identifier + ZeroOrMore(Literal(",").suppress() + identifier) + Literal(")").suppress() )) + Literal(":").suppress() + code
 method_declaration.setParseAction(handle_method_declaration)
 
-method_declaration_qml = Keyword("function").suppress() + nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(identifier + ZeroOrMore(Literal(",").suppress() + identifier)) + Literal(")").suppress() ) + code
+method_declaration_qml = Keyword("function") + nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(identifier + ZeroOrMore(Literal(",").suppress() + identifier)) + Literal(")").suppress() ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + nested_identifier_lvalue_list + Literal("{").suppress() + component_declaration + Literal("}").suppress()

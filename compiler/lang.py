@@ -46,10 +46,11 @@ class Constructor(object):
 		self.code = code
 
 class Method(object):
-	def __init__(self, name, args, code):
+	def __init__(self, name, args, code, event):
 		self.name = name
 		self.args = args
 		self.code = code
+		self.event = event
 
 class IdAssignment(object):
 	def __init__(self, name):

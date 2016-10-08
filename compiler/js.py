@@ -100,7 +100,7 @@ class component_generator(object):
 				self.animations[target] = component_generator(self.package + ".<anonymous-animation>", child.animation)
 		elif t is lang.Method:
 			name, args, code = child.name, child.args, child.code
-			if len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper(): #onXyzzy
+			if child.event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper(): #onXyzzy
 				name = name[2].lower() + name[3:]
 				if name.endswith("Pressed"):
 					name = name[0].upper() + name[1:-7]

@@ -3,6 +3,8 @@ import json
 import re
 from code import process, parse_deps, generate_accessors, replace_enums
 
+root_type = 'core.CoreObject'
+
 def get_package(name):
 	return ".".join(name.split(".")[:-1])
 
@@ -374,8 +376,8 @@ class generator(object):
 		return "(function() {/** @const */\nvar exports = %s;\n%s\nreturn exports;\n} )" %("_globals" if use_globals else "{}", code)
 
 	def find_component(self, package, name):
-		if name == "Object":
-			return "core.Object"
+		if name == "CoreObject":
+			return root_type
 
 		dot = name.rfind('.')
 		if dot >= 0:
@@ -413,7 +415,7 @@ class generator(object):
 
 
 	def generate_components(self):
-		generated = set(['core.Object'])
+		generated = set([root_type])
 		queue = ['core.Context']
 		code, base_class = {}, {}
 
@@ -434,7 +436,7 @@ class generator(object):
 
 		r = ''
 		order = []
-		visited = set(['core.Object'])
+		visited = set([root_type])
 		def visit(type):
 			if type in visited:
 				return
@@ -450,7 +452,7 @@ class generator(object):
 
 		return r
 
-	def generate_imports(self):
+	def generate_prologue(self):
 		r = []
 		packages = {}
 		for package in sorted(self.used_packages):
@@ -469,25 +471,39 @@ class generator(object):
 				check(package, packages[ns])
 		check(path, packages)
 
-		for name, code in self.imports.iteritems():
-			safe_name = name
-			if safe_name.endswith(".js"):
-				safe_name = safe_name[:-3]
-			safe_name = safe_name.replace('/', '.')
-			code = "//=====[import %s]=====================\n\n" %name + code
-			r.append("_globals.%s = %s()" %(safe_name, self.wrap(code, name == "core.core"))) #hack: core.core use _globals as its exports
+		if 'core.core' in self.imports:
+			r.append(self.generate_import('core.core', self.imports['core.core']))
+		return '\n'.join(r)
+
+	def generate_import(self, name, code):
+		r = []
+		safe_name = name
+		if safe_name.endswith(".js"):
+			safe_name = safe_name[:-3]
+		safe_name = safe_name.replace('/', '.')
+		code = "//=====[import %s]=====================\n\n" %name + code
+		r.append("_globals.%s = %s()" %(safe_name, self.wrap(code, name == "core.core"))) #hack: core.core use _globals as its exports
 		return "\n".join(r)
+
+
+	def generate_imports(self):
+		r = ''
+		for name, code in self.imports.iteritems():
+			if name != 'core.core':
+				r += self.generate_import(name, code)
+		return r
 
 	def generate(self, ns):
 		code = self.generate_components() + '\n' #must be called first, generates used_packages/components sets
 		text = ""
 		text += "/** @const */\n"
 		text += "var _globals = exports\n"
-		text += "%s\n" %self.generate_imports()
+		text += "%s\n" %self.generate_prologue()
 		text += "//========================================\n\n"
-		text += "/** @const @type {!Object} */\n"
+		text += "/** @const @type {!CoreObject} */\n"
 		text += "var core = _globals.core.core\n"
 		text += code
+		text += "%s\n" %self.generate_imports()
 		return "%s = %s();\n" %(ns, self.wrap(text))
 
 	def generate_startup(self, ns, app, prefix):

@@ -26,7 +26,7 @@ CoreObject {
 	}
 
 	function emit (name) {
-		var args = copyArguments(arguments, 1)
+		var args = _globals.core.copyArguments(arguments, 1)
 		var invoker = exports.core.safeCall(args, function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) })
 		if (name in this._eventHandlers) {
 			var handlers = this._eventHandlers[name]

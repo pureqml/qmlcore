@@ -145,7 +145,7 @@ def generate():
 	app += "/** @const */\n"
 	app += "/** @param {string} text @param {...} args */\n"
 	app += "var qsTr = function(text, args) { return %s._context.qsTr.apply(qml._context, arguments) }\n" %namespace
-	app += "/** @const @type {!Object} */\n"
+	app += "/** @const @type {!CoreObject} */\n"
 	app += "var " + generator.generate(namespace)
 	app += generator.generate_startup(namespace, args.app, namespace if args.prefix else '')
 	app = app.replace('/* ${init.js} */', init_js)

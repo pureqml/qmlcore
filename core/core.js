@@ -99,6 +99,7 @@ exports.core.safeCall = function(args, onError) {
  * @constructor
  */
 exports.core.CoreObject = function() { }
+exports.core.CoreObject.prototype.constructor = exports.core.CoreObject
 
 
 /** @constructor */

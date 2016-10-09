@@ -17,7 +17,7 @@ Any modern python 2.x will go well. Jinja2 is better option for templating in ca
 * Run ./qml2js/build
 Please find resulting files in .app.html5/*
 
-## How does it work
+## How it works
 Qml compiler scans source directories for qml file and parses each one. Filename starting with uppercase letter considered component, lowercase instantiated. Project-wide options stored in ```.manifest``` file. Result of the compilation is single javascript file with minimum dependencies (modernizr only), ready to use in mobile and desktop environment, accompanied by sample .html launcher and flash video player. 
 
 ## Manifest options

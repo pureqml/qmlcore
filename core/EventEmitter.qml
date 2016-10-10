@@ -16,6 +16,8 @@ CoreObject {
 				//log('first listener to', name)
 				this._onFirstListener[''](name)
 			}
+			if (this._eventHandlers[name])
+				throw new Error('listener callback added event handler')
 			this._eventHandlers[name] = [callback]
 		}
 	}

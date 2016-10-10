@@ -490,7 +490,7 @@ class generator(object):
 		r = ''
 		for name, code in self.imports.iteritems():
 			if name != 'core.core':
-				r += self.generate_import(name, code)
+				r += self.generate_import(name, code) + '\n'
 		return r
 
 	def generate(self, ns):

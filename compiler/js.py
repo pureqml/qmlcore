@@ -388,11 +388,20 @@ class generator(object):
 			self.used_components.add(package + '.' + name)
 			return "%s.%s" %(package, name)
 
+		candidates = []
 		for package_name, components in self.packages.iteritems():
 			if name in components:
-				self.used_components.add(package_name + '.' + name)
-				return "%s.%s" %(package_name, name)
-		raise Exception("component %s was not found" %name)
+				candidates.append(package_name)
+
+		if not candidates:
+			raise Exception("component %s was not found" %name)
+
+		if len(candidates) > 1:
+			raise Exception("ambigous component, you have to specify one of the packages explicitly: %s" % " ".join(map(lambda p: "%s.%s" %(p, name), candidates)))
+
+		package_name = candidates[0]
+		self.used_components.add(package_name + '.' + name)
+		return "%s.%s" %(package_name, name)
 
 	def generate_component(self, gen):
 		name = gen.name

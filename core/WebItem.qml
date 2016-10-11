@@ -9,30 +9,26 @@ Rectangle {
 	constructor:		{ this.style('cursor', this.cursor) }
 	onCursorChanged: 	{ this.style('cursor', value) }
 
-	function _bindClick() {
-		if (!this._clicked)
-			this._clicked = this.clicked.bind(this)
-		this.element.on('click', this._clicked)
+	function _bindClick(value) {
+		if (value && !this._clickBinder) {
+			this._clickBinder = new _globals.core.EventBinder(this.element)
+			this._clickBinder.on('click', this.clicked.bind(this))
+		}
+		this._clickBinder.enable(value)
 	}
 
 	onClickableChanged: {
-		if (value)
-			this._bindClick()
-		else
-			this.element.removeListener('click', this._clicked)
+		this._bindClick(value)
 	}
 
 	function _bindHover(value) {
-		var self = this
-		var onEnter = function() { self.hover = true }
-		var onLeave = function() { self.hover = false }
-		if (value) {
-			this.element.on('mouseenter', onEnter)
-			this.element.on('mouseleave', onLeave)
-		} else {
-			this.element.removeListener('mouseenter', onEnter)
-			this.element.removeListener('mouseleave', onLeave)
+		if (value && !this._hoverBinder) {
+			this._hoverBinder = new _globals.core.EventBinder(this.element)
+			this._hoverBinder.on('mouseenter', function() { this.hover = true }.bind(this))
+			this._hoverBinder.on('mouseleave', function() { this.hover = false }.bind(this))
 		}
+		if (this._hoverBinder)
+			this._hoverBinder.enable(value)
 	}
 
 	onHoverableChanged: {
@@ -40,9 +36,7 @@ Rectangle {
 	}
 
 	onCompleted: {
-		if (this.clickable)
-			this._bindClick()
-		if (this.hoverable)
-			this._bindHover(true)
+		this._bindClick(this.clickable)
+		this._bindHover(this.hoverable)
 	}
 }

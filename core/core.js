@@ -302,3 +302,33 @@ exports.addSignal = function(self, name) {
 		self.emit.apply(self, args)
 	})
 }
+
+exports.core.EventBinder = function(target) {
+	this.target = target
+	this.callbacks = {}
+	this.enabled = false
+}
+
+exports.core.EventBinder.prototype.on = function(event, callback) {
+	if (event in this.callbacks)
+		throw new Error('double adding of event (' + event + ')')
+	this.callbacks[event] = callback
+	if (this.enabled)
+		this.target.on(event, callback)
+}
+
+exports.core.EventBinder.prototype.constructor = exports.core.EventBinder
+
+exports.core.EventBinder.prototype.enable = function(value) {
+	if (value != this.enabled) {
+		var target = this.target
+		this.enabled = value
+		if (value) {
+			for(var event in this.callbacks)
+				target.on(event, this.callbacks[event])
+		} else {
+			for(var event in this.callbacks)
+				target.removeListener(event, this.callbacks[event])
+		}
+	}
+}

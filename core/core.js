@@ -159,9 +159,14 @@ exports.core.Color.prototype.constructor = exports.core.Color
 /** @const */
 var Color = exports.core.Color
 
+exports.core.Color.prototype.get = function() {
+	return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
+}
+
 exports.core.normalizeColor = function(spec) {
 	return (new Color(spec)).get()
 }
+
 
 /** @constructor */
 exports.core.DelayedAction = function(context, action) {
@@ -177,10 +182,6 @@ exports.core.DelayedAction.prototype.schedule = function() {
 		this._scheduled = true
 		this.context.scheduleAction(this.action)
 	}
-}
-
-exports.core.Color.prototype.get = function() {
-	return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 }
 
 var requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }

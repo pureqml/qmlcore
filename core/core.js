@@ -303,6 +303,10 @@ exports.addSignal = function(self, name) {
 	})
 }
 
+exports.createSignalForwarder = function(object, name) {
+	return (function() { object.emit.apply(object, copyArguments(arguments, 0, name)) })
+}
+
 exports.core.EventBinder = function(target) {
 	this.target = target
 	this.callbacks = {}

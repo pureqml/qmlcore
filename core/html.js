@@ -1,7 +1,3 @@
-/**
- * @constructor
- */
-
 var registerGenericListener = function(target) {
 	var copyArguments = _globals.core.copyArguments
 	target.onListener('',
@@ -19,6 +15,10 @@ var registerGenericListener = function(target) {
 		}
 	)
 }
+
+/**
+ * @constructor
+ */
 
 exports.Element = function(context, dom) {
 	_globals.core.EventEmitter.apply(this)

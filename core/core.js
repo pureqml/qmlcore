@@ -307,6 +307,7 @@ exports.core.createSignalForwarder = function(object, name) {
 	return (function() { object.emit.apply(object, copyArguments(arguments, 0, name)) })
 }
 
+/** @constructor */
 exports.core.EventBinder = function(target) {
 	this.target = target
 	this.callbacks = {}

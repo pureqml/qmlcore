@@ -37,15 +37,18 @@ CoreObject {
 	}
 
 	function removeListener (name, callback) {
-		if (!(name in this._eventHandlers) || callback === undefined || callback === null)
+		if (!(name in this._eventHandlers) || callback === undefined || callback === null) {
+			log('invalid removeListener(' + name + ', ' + callback + ') invocation')
 			return
+		}
 
 		var handlers = this._eventHandlers[name]
 		var idx = handlers.indexOf(callback)
 		if (idx >= 0)
 			handlers.splice(idx, 1)
 		else
-			console.log('failed to remove listener for', name, 'from', this)
+			log('failed to remove listener for', name, 'from', this)
+
 		if (!handlers.length) {
 			delete this._eventHandlers[name]
 			if (name in this._onLastListener)

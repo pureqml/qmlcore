@@ -28,22 +28,22 @@ Item {
 	onCursorChanged: { this.style('cursor', value) }
 
 	function _bindTouch(value) {
-		if (value) {
+		if (value && !this._touchBinder) {
+			this._touchBinder = new _globals.core.EventBinder(this.element)
+
 			var touchStart = function(event) { this.touchStart(event) }.bind(this)
 			var touchEnd = function(event) { this.touchEnd(event) }.bind(this)
 			var touchMove = (function(event) { this.touchMove(event) }).bind(this)
 
 			if ('ontouchstart' in window)
-				this.element.on('touchstart', touchStart)
+				this._touchBinder.on('touchstart', touchStart)
 			if ('ontouchend' in window)
-				this.element.on('touchend', touchEnd)
+				this._touchBinder.on('touchend', touchEnd)
 			if ('ontouchmove' in window)
-				this.element.on('touchmove', touchMove)
-		} else {
-			this.element.removeListener('touchstart', touchStart)
-			this.element.removeListener('touchend', touchEnd)
-			this.element.removeListener('touchmove', touchMove)
+				this._touchBinder.on('touchmove', touchMove)
 		}
+		if (this._touchBinder)
+			this._touchBinder.enable(value)
 	}
 
 	onTouchEnabledChanged: {
@@ -56,12 +56,12 @@ Item {
 	}
 
 	function _bindClick(value) {
-		var clicked = this.clicked.bind(this)
-		if (value) {
-			this.element.on('click', clicked)
-		} else {
-			this.element.removeListener('click', clicked)
+		if (value && !this._clickBinder) {
+			this._clickBinder = new _globals.core.EventBinder(this.element)
+			this._clickBinder.on('click', this.clicked.bind(this))
 		}
+		if (this._clickBinder)
+			this._clickBinder.enable(value)
 	}
 
 	onClickableChanged: {
@@ -69,12 +69,12 @@ Item {
 	}
 
 	function _bindWheel(value) {
-		var onWheel = function(event) { this.wheelEvent(event.originalEvent.wheelDelta / 120) }.bind(this)
-
-		if (value)
-			this.element.on('mousewheel', onWheel)
-		else
-			this.element.removeListener('mousewheel', onWheel)
+		if (value && !this._wheelBinder) {
+			this._clickBinder = new _globals.core.EventBinder(this.element)
+			this._clickBinder.on('mousewheel', function(event) { this.wheelEvent(event.originalEvent.wheelDelta / 120) }.bind(this))
+		}
+		if (this._clickBinder)
+			this._clickBinder.enable(value)
 	}
 
 	onWheelEnabledChanged: {
@@ -82,16 +82,13 @@ Item {
 	}
 
 	function _bindPressable(value) {
-		var onDown = function() { this.pressed = true }.bind(this)
-		var onUp = function() { this.pressed = false }.bind(this)
-
-		if (value) {
-			this.element.on('mousedown', onDown)
-			this.element.on('mouseup', onUp)
-		} else {
-			this.element.removeListener('mousedown', onDown)
-			this.element.removeListener('mouseup', onUp)
+		if (value && !this._pressableBinder) {
+			this._pressableBinder = new _globals.core.EventBinder(this.element)
+			this._pressableBinder.on('mousedown', function()	{ this.pressed = true }.bind(this))
+			this._pressableBinder.on('mouseup', function()		{ this.pressed = false }.bind(this))
 		}
+		if (this._pressableBinder)
+			this._pressableBinder.enable(value)
 	}
 
 	onPressableChanged: {
@@ -99,18 +96,14 @@ Item {
 	}
 
 	function _bindHover(value) {
-		var onEnter = function() { this.hover = true }.bind(this)
-		var onLeave = function() { this.hover = false }.bind(this)
-		var onMove = function(event) { if (this.updatePosition(event)) event.preventDefault() }.bind(this)
-		if (value) {
-			this.element.on('mouseenter', onEnter)
-			this.element.on('mouseleave', onLeave)
-			this.element.on('mousemove', onMove)
-		} else {
-			this.element.removeListener('mouseenter', onEnter)
-			this.element.removeListener('mouseleave', onLeave)
-			this.element.removeListener('mousemove', onMove)
+		if (value && !this._hoverBinder) {
+			this._hoverBinder = new _globals.core.EventBinder(this.element)
+			this._hoverBinder.on('mouseenter', function() { this.hover = true }.bind(this))
+			this._hoverBinder.on('mouseleave', function() { this.hover = false }.bind(this))
+			this._hoverBinder.on('mousemove', function(event) { if (this.updatePosition(event)) event.preventDefault() }.bind(this))
 		}
+		if (this._hoverBinder)
+			this._hoverBinder.enable(value)
 	}
 
 

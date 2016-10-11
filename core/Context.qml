@@ -41,6 +41,7 @@ Item {
 		this._prefix = prefix
 
 		var win = new _globals.core.html.Window(this, window)
+		this.window = win
 		var w, h
 
 		var html = _globals.core.html

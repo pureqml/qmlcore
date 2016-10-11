@@ -180,7 +180,6 @@ Item {
 			event.target = event.target.parentNode;
 		if (event.target !== this._startTarget) {
 			event.target = this._startTarget;
-			stopHandler.call(this, $.Event(stopEvent + '.' + namespace, event));
 			return;
 		}
 

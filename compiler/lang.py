@@ -1,10 +1,21 @@
-class Component(object):
+class DocumentationString(object):
+	def __init__(self, text, prev):
+		self.text = text
+		self.prev = prev
+
+class Entity(object):
+	def __init__(self):
+		self.doc = None
+
+class Component(Entity):
 	def __init__(self, name, children):
+		super(Component, self).__init__()
 		self.name = name
 		self.children = children
 
-class Property(object):
+class Property(Entity):
 	def __init__(self, type, name, value = None):
+		super(Property, self).__init__()
 		self.type = type
 		self.name = name
 		self.value = value
@@ -28,49 +39,59 @@ class Property(object):
 		#print "?trivial", value
 		return False
 
-class AliasProperty(object):
+class AliasProperty(Entity):
 	def __init__(self, name, target):
+		super(AliasProperty, self).__init__()
 		self.name = name
 		self.target = target
 
-class EnumProperty(object):
+class EnumProperty(Entity):
 	def __init__(self, name, values, default):
+		super(EnumProperty, self).__init__()
 		self.name = name
 		self.values = values
 		self.default = default
 
-class Constructor(object):
+class Constructor(Entity):
 	def __init__(self, args, code):
+		super(Constructor, self).__init__()
 		if len(args) != 0:
 			raise Exception("no arguments for constructor allowed")
 		self.code = code
 
-class Method(object):
+class Method(Entity):
 	def __init__(self, name, args, code, event):
+		super(Method, self).__init__()
 		self.name = name
 		self.args = args
 		self.code = code
 		self.event = event
 
-class IdAssignment(object):
+class IdAssignment(Entity):
 	def __init__(self, name):
+		super(IdAssignment, self).__init__()
 		self.name = name
 
-class Assignment(object):
+class Assignment(Entity):
 	def __init__(self, target, value):
+		super(Assignment, self).__init__()
 		self.target = target
 		self.value = value
 
-class AssignmentScope(object):
+class AssignmentScope(Entity):
 	def __init__(self, target, values):
+		super(AssignmentScope, self).__init__()
 		self.target = target
 		self.values = values
 
-class Behavior(object):
+class Behavior(Entity):
 	def __init__(self, target, animation):
+		super(Behavior, self).__init__()
 		self.target = target
 		self.animation = animation
 
-class Signal(object):
+class Signal(Entity):
 	def __init__(self, name):
+		super(Signal, self).__init__()
 		self.name = name
+

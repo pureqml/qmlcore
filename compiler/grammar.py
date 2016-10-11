@@ -1,24 +1,35 @@
 from pyparsing import *
 import lang
 
+doc_next = None
+doc_prev_component = None
+
+def component(com):
+	global doc_next, doc_prev_component
+	if doc_next:
+		com.doc = doc_next
+		doc_next = None
+	doc_prev_component = com
+	return com
+
 def handle_component_declaration(s, l, t):
 	#print "component>", t
-	return lang.Component(t[0], t[1])
+	return component(lang.Component(t[0], t[1]))
 
 def handle_assignment(s, l, t):
 	#print "assignment>", t
-	return lang.Assignment(t[0], t[1])
+	return component(lang.Assignment(t[0], t[1]))
 
 def handle_property_declaration(s, l, t):
 	#print "property>", t
 	default = t[2] if len(t) > 2 else None
-	return lang.Property(t[0], t[1], default)
+	return component(lang.Property(t[0], t[1], default))
 
 def handle_alias_property_declaration(s, l, t):
-	return lang.AliasProperty(t[0], t[1])
+	return component(lang.AliasProperty(t[0], t[1]))
 
 def handle_enum_property_declaration(s, l, t):
-	return lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None)
+	return component(lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None))
 
 def handle_method_declaration(s, l, t):
 	event_handler = t[0] != 'function'
@@ -26,11 +37,11 @@ def handle_method_declaration(s, l, t):
 		name, args, code = t[0], t[1], t[2]
 	else:
 		name, args, code = t[1], t[2], t[3]
-	return lang.Method(name, args, code, event_handler) if name != 'constructor' else lang.Constructor(args, code)
+	return component(lang.Method(name, args, code, event_handler) if name != 'constructor' else lang.Constructor(args, code))
 
 def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t
-	return lang.AssignmentScope(t[0], t[1])
+	return component(lang.AssignmentScope(t[0], t[1]))
 
 def handle_nested_identifier_rvalue(s, l, t):
 	#print "nested-id>", t
@@ -48,14 +59,14 @@ def handle_enum_value(s, l, t):
 
 def handle_id_declaration(s, l, t):
 	#print "id>", t
-	return lang.IdAssignment(t[0])
+	return component(lang.IdAssignment(t[0]))
 
 def handle_behavior_declaration(s, l, t):
 	#print "behavior>", t
-	return lang.Behavior(t[0], t[1])
+	return component(lang.Behavior(t[0], t[1]))
 
 def handle_signal_declaration(s, l, t):
-	return lang.Signal(t[0])
+	return component(lang.Signal(t[0]))
 
 def handle_builtin(s, l, t):
 	#print "builtin> ", t
@@ -64,6 +75,17 @@ def handle_builtin(s, l, t):
 def handle_function_call(s, l, t):
 	#print "func> ", t
 	return "%s(%s)" % (t[0], ",".join(t[1:]))
+
+def handle_documentation_string(s, l, t):
+	global doc_next, doc_prev_component
+	text = t[0]
+	if text.startswith('///<'):
+		if doc_prev_component:
+			doc_prev_component.doc = lang.DocumentationString(text[4:].strip(), True)
+		else:
+			print 'WARNING: unused documentation string at line %d' %l
+	elif text.startswith('///'):
+		doc_next = lang.DocumentationString(text[3:].strip(), False)
 
 expression = Forward()
 expression_list = Forward()
@@ -187,6 +209,8 @@ expression << expression_ops
 
 expression_list_definition = expression + ZeroOrMore(Literal(",") + expression)
 expression_list << Optional(expression_list_definition)
+
+dblSlashComment.setParseAction(handle_documentation_string)
 
 source = component_declaration
 source = source.ignore(cStyleComment)

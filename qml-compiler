@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-import pyparsing
+import compiler.pyparsing
 import compiler.grammar
 import compiler.js
 import compiler.lang
@@ -36,7 +36,7 @@ grammar_source = compiler.lang.__file__
 with open(grammar_source, "rb") as f:
 	data += f.read()
 
-grammar_source = pyparsing.__file__
+grammar_source = compiler.pyparsing.__file__
 with open(grammar_source, "rb") as f:
 	data += f.read()
 

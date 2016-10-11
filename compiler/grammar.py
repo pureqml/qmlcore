@@ -81,11 +81,11 @@ def handle_documentation_string(s, l, t):
 	text = t[0]
 	if text.startswith('///<'):
 		if doc_prev_component:
-			doc_prev_component.doc = lang.DocumentationString(text[4:].strip(), True)
+			doc_prev_component.doc = lang.DocumentationString(text[4:].strip())
 		else:
 			print 'WARNING: unused documentation string at line %d' %l
 	elif text.startswith('///'):
-		doc_next = lang.DocumentationString(text[3:].strip(), False)
+		doc_next = lang.DocumentationString(text[3:].strip())
 
 expression = Forward()
 expression_list = Forward()

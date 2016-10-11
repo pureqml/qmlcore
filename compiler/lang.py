@@ -1,7 +1,6 @@
 class DocumentationString(object):
-	def __init__(self, text, prev):
+	def __init__(self, text):
 		self.text = text
-		self.prev = prev
 
 class Entity(object):
 	def __init__(self):

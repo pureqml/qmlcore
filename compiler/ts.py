@@ -172,7 +172,7 @@ class Ts(object):
 	def scan(self, dirs):
 		for directory in dirs:
 			for dirpath, dirname, files in os.walk(directory):
-				dirname[:] = filter(lambda name: name[0] != '.' and not name.startswith('qml2js'), dirname)
+				dirname[:] = filter(lambda name: name[0] != '.' and not name.startswith('qmlcore'), dirname)
 
 				for file in files:
 					basename, ext = os.path.splitext(file)

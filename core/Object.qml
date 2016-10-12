@@ -1,3 +1,4 @@
+///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
 	constructor: {
 		exports.core.EventEmitter.apply(this)
@@ -13,10 +14,12 @@ EventEmitter {
 		this._updaters = {}
 	}
 
+	///adds child object to children
 	function addChild(child) {
 		this.children.push(child);
 	}
 
+	/// @internal sets id
 	function _setId(name) {
 		var p = this;
 		while(p) {
@@ -25,6 +28,7 @@ EventEmitter {
 		}
 	}
 
+	/// register callback on property's value changed
 	function onChanged(name, callback) {
 		if (name in this._changedHandlers)
 			this._changedHandlers[name].push(callback);
@@ -32,6 +36,7 @@ EventEmitter {
 			this._changedHandlers[name] = [callback];
 	}
 
+	/// removes 'on changed' callback
 	function removeOnChanged(name, callback) {
 		if (name in this._changedHandlers) {
 			var handlers = this._changedHandlers[name];
@@ -43,6 +48,7 @@ EventEmitter {
 		}
 	}
 
+	/// @internal removes dynamic value updater
 	function _removeUpdater (name, callback) {
 		if (name in this._updaters)
 			this._updaters[name]();
@@ -53,6 +59,7 @@ EventEmitter {
 			delete this._updaters[name]
 	}
 
+	/// registers key handler
 	function onPressed (name, callback) {
 		var wrapper
 		if (name != 'Key')
@@ -74,6 +81,7 @@ EventEmitter {
 		}
 	}
 
+	/// gets object by id
 	function _get (name) {
 		var object = this;
 		while(object) {
@@ -87,14 +95,17 @@ EventEmitter {
 		throw new Error("invalid property requested: '" + name);
 	}
 
+	/// sets animation on given property
 	function setAnimation (name, animation) {
 		this._animations[name] = animation;
 	}
 
+	/// gets animation on given property
 	function getAnimation (name, animation) {
 		var a = this._animations[name]
 		return (a && a.enabled())? a: null;
 	}
 
+	/// called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy
 	function _tryFocus () { return false }
 }

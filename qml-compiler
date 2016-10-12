@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 
+import compiler.doc
 import compiler.pyparsing
 import compiler.grammar
 import compiler.js
@@ -17,15 +18,16 @@ parser.add_argument("-p", dest="prefix", default = False, action = 'store_true')
 parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
 parser.add_argument("-S", dest="strict", default=True, action="store_false")
-parser.add_argument("-D", dest="doc", default='doc')
+parser.add_argument("-D", dest="doc")
 args = parser.parse_args()
+
+documentation = compiler.doc.Documentation(args.doc) if args.doc else None
 
 if args.wait:
 	try:
 		import pyinotify
 	except:
 		raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
-
 
 compiler.grammar.source.parseWithTabs()
 

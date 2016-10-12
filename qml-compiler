@@ -84,6 +84,8 @@ def process_file(generator, app, dirpath, filename):
 				cPickle.dump(tree, f)
 
 		assert(len(tree) == 1)
+		if documentation and name[0].isupper():
+			documentation.add(com, tree[0])
 		generator.add_component(com, tree[0], name[0].isupper())
 	elif ext == ".js":
 		with open(path) as f:

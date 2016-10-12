@@ -1,6 +1,18 @@
 import os
 import os.path
 
+class Component(object):
+	def __init__(self, package, name, component):
+		self.package = package
+		self.name = name
+		self.component = component
+
+	def generate(self, documentation):
+		r = []
+		package, name = self.package, self.name
+		r.append('#%s.%s' %(package, name))
+		return '\n'.join(r)
+
 class Documentation(object):
 	def __init__(self, root):
 		self.root = root
@@ -9,7 +21,7 @@ class Documentation(object):
 	def add(self, name, component):
 		package, name = self.split_name(name)
 		components = self.packages.setdefault(package, {})
-		components[name] = component
+		components[name] = Component(package, name, component)
 
 	def split_name(self, name):
 		idx = name.rfind('.')
@@ -17,7 +29,8 @@ class Documentation(object):
 
 	def generate_component(self, package, name, component):
 		#print package, name, component
-		pass
+		with open(os.path.join(self.root, package, name + '.md'), 'wt') as f:
+			f.write(component.generate(self))
 
 	def generate_package(self, package, components):
 		path = os.path.join(self.root, package)

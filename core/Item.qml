@@ -29,9 +29,9 @@ Object {
 	property AnchorLine verticalCenter:		AnchorLine	{ boxIndex: 5; }
 
 	//do not use, view internal
-	signal boxChanged;
-	property int viewX;
-	property int viewY;
+	signal boxChanged;						///< emitted when position or size changed
+	property int viewX;						///< x position in view (if any)
+	property int viewY;						///< y position in view (if any)
 
 	constructor: {
 		this._topPadding = 0
@@ -50,13 +50,16 @@ Object {
 		} //no parent == top level element, skip
 	}
 
+	/// returns tag for corresponding element
 	function getTag() { return 'div' }
 
+	/// default implementation of element creation routine.
 	function createElement(tag) {
 		this.element = this._context.createElement(tag)
 		this.parent.element.append(this.element)
 	}
 
+	/// map relative component coordinates to absolute screen ones
 	function toScreen() {
 		var item = this
 		var x = 0, y = 0
@@ -73,6 +76,7 @@ Object {
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
+	/// tries to set animation on name using css transitions, returns true on success
 	function _updateAnimation(name, animation) {
 		if (!window.Modernizr.csstransitions || (animation && !animation.cssTransition))
 			return false
@@ -90,12 +94,13 @@ Object {
 		}
 	}
 
+	/// sets animation on given property
 	function setAnimation (name, animation) {
 		if (!this._updateAnimation(name, animation))
 			qml.core.Object.prototype.setAnimation.apply(this, arguments);
 	}
 
-
+	/// passes style (or styles { a:, b:, c: ... }) to underlying element
 	function style(name, style) {
 		var element = this.element
 		if (element)
@@ -104,16 +109,19 @@ Object {
 			log('WARNING: style skipped:', name, style)
 	}
 
+	/// adds child, focus it if child accepts focus
 	function addChild (child) {
 		qml.core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
 	}
 
+	/// returns css rule by property name
 	function _mapCSSAttribute (name) {
 		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', translateX: 'transform', visible: 'visibility'}[name]
 	}
 
+	/// @internal
 	function _update (name, value) {
 		switch(name) {
 			case 'width':
@@ -151,6 +159,7 @@ Object {
 		qml.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	/// updates recursive visibility status
 	function _updateVisibility () {
 		var visible = ('visible' in this)? this.visible: true
 		this.recursiveVisible = this._recursiveVisible && this.visible
@@ -158,6 +167,7 @@ Object {
 			this.parent._tryFocus() //try repair local focus on visibility changed
 	}
 
+	/// sets current global focus to component
 	function forceActiveFocus () {
 		var item = this;
 		while(item.parent) {
@@ -166,6 +176,7 @@ Object {
 		}
 	}
 
+	/// tries to focus children or item itself
 	function _tryFocus () {
 		if (!this.visible)
 			return false
@@ -184,6 +195,7 @@ Object {
 		return this.focus
 	}
 
+	/// propagates focus to parent, if not set there
 	function _propagateFocusToParents () {
 		var item = this;
 		while(item.parent && (!item.parent.focusedChild || !item.parent.focusedChild.visible)) {
@@ -191,6 +203,8 @@ Object {
 			item = item.parent
 		}
 	}
+
+	/// returns status of global focus
 	function hasActiveFocus () {
 		var item = this
 		while(item.parent) {
@@ -202,6 +216,7 @@ Object {
 		return true
 	}
 
+	/// @internal focus subtree of current focused child
 	function _focusTree (active) {
 		this.activeFocus = active;
 		if (this.focusedChild)

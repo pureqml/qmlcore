@@ -70,15 +70,35 @@ class Documentation(object):
 		with open(os.path.join(self.root, package, name + '.md'), 'wt') as f:
 			f.write(component.generate(self))
 
-	def generate_package(self, package, components):
-		path = os.path.join(self.root, package)
-		if not os.path.exists(path):
-			os.mkdir(path)
-		for name, component in components.iteritems():
-			self.generate_component(package, name, component)
-
 	def generate(self):
+		with open(os.path.join(self.root, '.nocompile'), 'wt') as f:
+			pass
+
+		toc = []
+
+		toc.append('site_name: QML Documentation')
+		toc.append('docs_dir: .')
+
+		toc.append('pages:')
+
 		if not os.path.exists(self.root):
 			os.mkdir(self.root)
-		for name, components in self.packages.iteritems():
-			self.generate_package(name, components)
+
+		for package, components in sorted(self.packages.iteritems()):
+			toc.append("- '%s': '%s.md'" %(package, package))
+
+			package_toc = []
+			path = os.path.join(self.root, package)
+			if not os.path.exists(path):
+				os.mkdir(path)
+
+			for name, component in components.iteritems():
+				package_toc.append('- [%s/%s]' %(package, name))
+				toc.append("- '%s.%s': '%s/%s.md'" %(package, name, package, name))
+				self.generate_component(package, name, component)
+
+			with open(os.path.join(self.root, package + '.md'), 'wt') as f:
+				f.write('\n'.join(package_toc))
+
+		with open(os.path.join(self.root, 'mkdocs.yml'), 'wt') as f:
+			f.write('\n'.join(toc))

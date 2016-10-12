@@ -155,6 +155,10 @@ def generate():
 
 	with open(os.path.join(output_dir, namespace + "." + args.app + ".js"), "wt") as f:
 		f.write(app)
+
+	if documentation:
+		documentation.generate()
+
 	print "done"
 
 

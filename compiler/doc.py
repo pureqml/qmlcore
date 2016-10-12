@@ -91,7 +91,7 @@ class Documentation(object):
 		for package, components in sorted(self.packages.iteritems()):
 			toc.append("- '%s': '%s.md'" %(package, package))
 
-			package_toc = []
+			package_toc = ['# Package Components', '']
 			path = os.path.join(self.root, package)
 			if not os.path.exists(path):
 				os.mkdir(path)

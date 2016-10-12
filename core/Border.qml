@@ -1,6 +1,7 @@
+/// class controlling border rendering
 Object {
-	property int width;
-	property color color;
+	property int width;		///< width of the border
+	property color color;	///< color of the border
 
 	property BorderMargin left :	BorderMargin	{ name: "left"; }
 	property BorderMargin right :	BorderMargin	{ name: "right"; }
@@ -14,5 +15,4 @@ Object {
 		}
 		qml.core.Object.prototype._update.apply(this, arguments)
 	}
-
 }

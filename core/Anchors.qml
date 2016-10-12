@@ -1,3 +1,5 @@
+///Anchors, generic class to handle auto-adjusting positioning, used in Item
+
 Object {
 	property AnchorLine bottom;
 	property AnchorLine verticalCenter;

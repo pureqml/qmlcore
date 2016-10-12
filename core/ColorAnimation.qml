@@ -1,3 +1,4 @@
+///Animation for color-typed properties
 Animation {
 
 	function interpolate(dst, src, t) {

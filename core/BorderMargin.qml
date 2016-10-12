@@ -1,3 +1,8 @@
+/**
+@internal
+Margin for one size of the border
+*/
+
 Object {
 	property string name;
 	property int margin;
@@ -23,6 +28,4 @@ Object {
 		}
 		qml.core.Object.prototype._update.apply(this, arguments);
 	}
-
-
 }

@@ -12,6 +12,25 @@ def component(com):
 	doc_prev_component = com
 	return com
 
+def document(text, line, prev):
+	text = text.strip()
+	if not text:
+		print 'WARNING: empty documentation string at line %d' %line
+		return
+
+	global doc_next, doc_prev_component
+	if prev:
+		if doc_prev_component:
+			if doc_prev_component.doc is not None:
+				print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
+			doc_prev_component.doc = lang.DocumentationString(text)
+		else:
+			print 'WARNING: unused documentation string %s at line %d' %(text, line)
+	else:
+		if doc_next is not None:
+			print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
+		doc_next = lang.DocumentationString(text)
+
 def handle_component_declaration(s, l, t):
 	#print "component>", t
 	return component(lang.Component(t[0], t[1]))
@@ -77,15 +96,13 @@ def handle_function_call(s, l, t):
 	return "%s(%s)" % (t[0], ",".join(t[1:]))
 
 def handle_documentation_string(s, l, t):
-	global doc_next, doc_prev_component
 	text = t[0]
 	if text.startswith('///<'):
-		if doc_prev_component:
-			doc_prev_component.doc = lang.DocumentationString(text[4:].strip())
-		else:
-			print 'WARNING: unused documentation string at line %d' %l
+		document(text[4:], l, True)
 	elif text.startswith('///'):
-		doc_next = lang.DocumentationString(text[3:].strip())
+		document(text[3:], l, False)
+	elif text.startswith('/**'):
+		document(text[3:], l, False)
 
 expression = Forward()
 expression_list = Forward()
@@ -210,10 +227,10 @@ expression << expression_ops
 expression_list_definition = expression + ZeroOrMore(Literal(",") + expression)
 expression_list << Optional(expression_list_definition)
 
-dblSlashComment.setParseAction(handle_documentation_string)
-
 source = component_declaration
+cStyleComment.setParseAction(handle_documentation_string)
 source = source.ignore(cStyleComment)
+dblSlashComment.setParseAction(handle_documentation_string)
 source = source.ignore(dblSlashComment)
 #source.setDefaultWhitespaceChars(" \t\r\f")
 ParserElement.enablePackrat()

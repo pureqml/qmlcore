@@ -46,7 +46,7 @@ class Component(object):
 	def generate(self, documentation):
 		r = []
 		package, name = self.package, self.name
-		r.append('# %s.%s Component' %(package, name))
+		r.append('# %s.%s' %(package, name))
 		r.append('')
 		self.process_children(r)
 		return '\n'.join(r)

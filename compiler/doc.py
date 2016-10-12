@@ -96,7 +96,7 @@ class Documentation(object):
 				os.mkdir(path)
 
 			for name, component in components.iteritems():
-				package_toc.append('- [%s/%s]' %(package, name))
+				package_toc.append('- [%s.%s](%s/%s.md)' %(package, name, package, name))
 				toc.append("- '%s.%s': '%s/%s.md'" %(package, name, package, name))
 				self.generate_component(package, name, component)
 

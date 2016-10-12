@@ -3,7 +3,7 @@ QmlCore is simple set of tools we (small team of QML advocates) used for years, 
 It was designed with original QML in mind, but it's not 100% compatible and better in some aspects. The main concepts are the same though, so if you're familiar with original QML, you could start right away. 
 
 ## Usage
-Qml2js provides a set of tools written in python2 (sorry about that, lol)
+QmlCore provides a set of tools written in python2 (sorry about that, lol)
 Usually you don't need to use them directly. ```build``` provides convenient wrapper around them all. 
 
 ### Prerequisites
@@ -11,10 +11,10 @@ Any modern python 2.x will go well. Jinja2 is better option for templating in ca
 
 ## Simple how-to
 * Create project directory, ```cd <project-dir>```
-* Clone qml2js to it: ```git clone git@github.com:pureqml/qml2js.git```
-* Run ./qml2js --boilerplate
+* Clone QmlCore to it: ```git clone git@github.com:pureqml/qmlcore.git```
+* Run ./qmlcore --boilerplate
 * Look into app.qml
-* Run ./qml2js/build
+* Run ./qmlcore/build
 Please find resulting files in .app.html5/*
 
 ## How it works
@@ -38,11 +38,11 @@ Manifest is a collection of project-wide hacks we used to botch various projects
 * ```--boilerplate``` initialises bare minimum for quicker kick-off in current directory.
 
 # Localisation
-Qml2js uses Qt-approach to localisation. You write code in your default language, then generate/update (build -u) .ts translation files,
-translate them with qt linguist, and compile project. Qml2js recognizes tr, qsTr, qsTranslate function, as well as QT_TR_NOOP/QT_TRANSLATE_NOOP macros.
+QmlCore uses Qt-approach to localisation. You write code in your default language, then generate/update (build -u) .ts translation files,
+translate them with qt linguist, and compile project. QmlCore recognizes tr, qsTr, qsTranslate function, as well as QT_TR_NOOP/QT_TRANSLATE_NOOP macros.
 
 # Controls library
-Qml2js contains bare minimum of platform controls: images, texts, rectangles and model-view-delegate classes. Various controls that might be useful are in separate repository. 
+QmlCore contains bare minimum of platform controls: images, texts, rectangles and model-view-delegate classes. Various controls that might be useful are in separate repository. 
 Just clone it ```git clone git@github.com:pureqml/controls.git``` in your project and that's it!
 
 # QML differences

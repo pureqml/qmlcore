@@ -4,3 +4,6 @@ class Documentation(object):
 
 	def add(self, name, component):
 		print name, component
+
+	def generate(self):
+		pass

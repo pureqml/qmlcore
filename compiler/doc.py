@@ -34,6 +34,8 @@ class Component(object):
 			values.append(child)
 
 		self.generate_section(r, 'Property', 'Properties', children)
+		self.generate_section(r, 'AliasProperty', 'Alias Properties', children)
+		self.generate_section(r, 'Method', 'Methods', children)
 		return r
 
 	def document(self, r, component):

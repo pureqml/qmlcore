@@ -9,7 +9,7 @@ from StringIO import StringIO
 import argparse
 import re
 
-parser = argparse.ArgumentParser('qml2js build tool')
+parser = argparse.ArgumentParser('qmlcore build tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
 parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
@@ -22,14 +22,14 @@ root = os.path.dirname(sys.argv[0])
 
 if args.boilerplate:
 	if path.exists('.manifest') or path.exists('app.qml'):
-		print 'ERROR: will not overwrite any file, you already have your project set up, run ./qml2js/build'
+		print 'ERROR: will not overwrite any file, you already have your project set up, run ./qmlcore/build'
 		sys.exit(1)
 	with open('.manifest', 'w') as f:
 		f.write("{ }\n")
 	with open('app.qml', 'w') as app:
 		with open(path.join(root, 'app.qml')) as template:
 			app.write(template.read())
-	print 'finished, run ./qml2js/build now'
+	print 'finished, run ./qmlcore/build now'
 	sys.exit(0)
 
 def minify_uglify(out, src, root, app, platform, manifest):
@@ -126,7 +126,7 @@ def find_platform_path(root, platform):
 
 	plugins_root = path.normpath(path.join(root, '..'))
 	for dir in os.listdir(plugins_root): #fixme: optimize me
-		if dir.startswith('qml2js-'):
+		if dir.startswith('qmlcore-'):
 			platform_path = path.join(plugins_root, dir, 'platform', platform)
 			if path.exists(platform_path):
 				return platform_path

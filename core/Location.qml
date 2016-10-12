@@ -12,6 +12,7 @@ Object {
 		var self = this
 		var location = window.location
 		window.onhashchange = function() { self.hash = location.hash }
+		window.onpopstate = function() { self.updateActualValues() }
 	}
 
 	updateActualValues: {

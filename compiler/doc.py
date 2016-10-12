@@ -71,6 +71,9 @@ class Documentation(object):
 			f.write(component.generate(self))
 
 	def generate(self):
+		if not os.path.exists(self.root):
+			os.mkdir(self.root)
+
 		with open(os.path.join(self.root, '.nocompile'), 'wt') as f:
 			pass
 
@@ -80,9 +83,6 @@ class Documentation(object):
 		toc.append('docs_dir: .')
 
 		toc.append('pages:')
-
-		if not os.path.exists(self.root):
-			os.mkdir(self.root)
 
 		for package, components in sorted(self.packages.iteritems()):
 			toc.append("- '%s': '%s.md'" %(package, package))

@@ -272,11 +272,8 @@ class component_generator(object):
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(target)
 			r.append("""\
-	core.addAliasProperty(this, '%s',
-		(function() { return %s; }).bind(this),
-		(function() { return %s._get('%s'); }).bind(this),
-		(function(value) { %s.%s = value; }).bind(this));
-""" %(name, get, get, pname, get, pname))
+	core.addAliasProperty(this, '%s', (function() { return %s; }).bind(this), '%s')
+""" %(name, get, pname))
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				continue

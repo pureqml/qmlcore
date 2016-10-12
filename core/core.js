@@ -286,14 +286,15 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	})
 }
 
-exports.addAliasProperty = function(self, name, getObject, getter, setter) {
-	var target = getObject();
-	target.onChanged(name, function(value) { self._update(name, value); });
+exports.addAliasProperty = function(self, name, getObject, srcProperty) {
+	var target = getObject()
+	target.onChanged(name, function(value) { self._update(name, value) })
+
 	Object.defineProperty(self, name, {
-		get: getter,
-		set: setter,
+		get: function() { return this[srcProperty] }.bind(target),
+		set: function(value) { this[srcProperty] = value }.bind(target),
 		enumerable: true
-	});
+	})
 }
 
 exports.addSignal = function(self, name) {

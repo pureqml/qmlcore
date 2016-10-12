@@ -17,6 +17,7 @@ parser.add_argument("-p", dest="prefix", default = False, action = 'store_true')
 parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
 parser.add_argument("-S", dest="strict", default=True, action="store_false")
+parser.add_argument("-D", dest="doc", default='doc')
 args = parser.parse_args()
 
 if args.wait:

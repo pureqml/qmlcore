@@ -1,18 +1,19 @@
+///base class for all views, holds content, creates delegates and provides common api
 BaseLayout {
-	property Object model;
-	property Item delegate;
-	property int contentX;
-	property int contentY;
-	property int scrollingStep: 0;
-	property bool contentFollowsCurrentItem: true;
+	property Object model;			///< model object to attach to
+	property Item delegate;			///< delegate - template object, filled with model row
+	property int contentX;			///< x offset to visible part of the content surface
+	property int contentY;			///< y offset to visible part of the content surface
+	property int scrollingStep: 0;	///< scrolling step
+	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
 	property bool pageScrolling: false;
 	property bool rendered: false;
 	property bool trace;
-	property enum positionMode { Beginning, Center, End, Visible, Contain, Page };
-	contentWidth: 1;
-	contentHeight: 1;
-	keyNavigationWraps: true;
-	handleNavigationKeys: true;
+	property enum positionMode { Beginning, Center, End, Visible, Contain, Page }; ///< position mode for auto-scrolling/position methods
+	contentWidth: 1;				///< content width
+	contentHeight: 1;				///< content height
+	keyNavigationWraps: true;		///< key navigation wraps from end to beginning and vise versa
+	handleNavigationKeys: true;		///< handle navigation keys
 
 	constructor: {
 		this._items = []
@@ -22,11 +23,13 @@ BaseLayout {
 		})
 	}
 
+	/// returns index of item by x,y coordinates
 	function itemAt(x, y) {
 		var idx = this.indexAt(x, y)
 		return idx >= 0? this._items[idx]: null
 	}
 
+	/// @internal focuses current item
 	function focusCurrent() {
 		var n = this.count
 		if (n == 0)
@@ -58,6 +61,7 @@ BaseLayout {
 		this.focusCurrent()
 	}
 
+	/** @private */
 	function _onReset() {
 		var model = this.model
 		var items = this._items
@@ -83,6 +87,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
+	/** @private */
 	function _onRowsInserted(begin, end) {
 		if (this.trace)
 			log("rows inserted", begin, end)
@@ -94,6 +99,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
+	/** @private */
 	function _onRowsChanged(begin, end) {
 		if (this.trace)
 			log("rows changed", begin, end)
@@ -109,6 +115,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
+	/** @private */
 	function _onRowsRemoved(begin, end) {
 		log("rows removed", begin, end)
 		var items = this._items
@@ -125,6 +132,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
+	/** @private */
 	function _attach() {
 		if (this._attached || !this.model || !this.delegate)
 			return
@@ -137,6 +145,7 @@ BaseLayout {
 		this._onReset()
 	}
 
+	/** @private */
 	function _update(name, value) {
 		switch(name) {
 		case 'delegate':
@@ -147,6 +156,7 @@ BaseLayout {
 		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	/// @internal creates delegate in given item slot
 	function _createDelegate(idx) {
 		var row = this.model.get(idx)
 		row['index'] = idx

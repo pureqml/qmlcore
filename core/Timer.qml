@@ -1,16 +1,20 @@
+/// class handles periodic tasks
 Object {
-	signal triggered;
+	signal triggered;					///< this signal triggered when timer fires
 
-	property int interval: 1000;
-	property bool repeat;
-	property bool running;
-	property bool triggeredOnStart;
+	property int interval: 1000;		///< interval, ms
+	property bool repeat;				///< makes this timer periodic
+	property bool running;				///< current timer status, true - running, false - paused
+	property bool triggeredOnStart;		///< fire timer's signal on start or activation
 
+	/// restart timer, activate if stopped
 	restart:	{ this._restart(); this.running = true; }
+	/// stops timer
 	stop:		{ this.running = false; }
 
 	onTriggered: { if (!this.repeat) this.running = false }
 
+	/// starts timer
 	start: {
 		var oldRunning = this.running;
 		this.running = true;
@@ -28,6 +32,7 @@ Object {
 			this.triggered()
 	}
 
+	/** @private */
 	function _update(name, value) {
 		switch(name) {
 			case 'running': this._restart(); break;

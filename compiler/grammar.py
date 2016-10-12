@@ -102,7 +102,8 @@ def handle_documentation_string(s, l, t):
 	elif text.startswith('///'):
 		document(text[3:], l, False)
 	elif text.startswith('/**'):
-		document(text[3:], l, False)
+		end = text.rfind('*/')
+		document(text[3:end], l, False)
 
 expression = Forward()
 expression_list = Forward()

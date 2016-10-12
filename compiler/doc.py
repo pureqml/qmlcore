@@ -80,7 +80,10 @@ class Documentation(object):
 		toc = []
 
 		toc.append('site_name: QML Documentation')
+		toc.append('use_directory_urls: false')
 		toc.append('docs_dir: .')
+		toc.append('site_dir: html')
+		toc.append('repo_url: https://github.com/pureqml/qmlcore/')
 
 		toc.append('pages:')
 

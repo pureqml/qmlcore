@@ -35,12 +35,11 @@ EventEmitter {
 	function removeOnChanged(name, callback) {
 		if (name in this._changedHandlers) {
 			var handlers = this._changedHandlers[name];
-			for(var i = 0; i < handlers.length; ) {
-				if (handlers[i] === callback) {
-					handlers.splice(i, 1)
-				} else
-					++i
-			}
+			var idx = handlers.indexOf(callback)
+			if (idx >= 0)
+				handlers.splice(idx, 1)
+			else
+				log('failed to remove changed listener for', name, 'from', this)
 		}
 	}
 

@@ -7,7 +7,7 @@ Object {
 	}
 
 	function _getDeclaration() {
-		return qml.core.normalizeColor(this.color) + " " + Math.floor(100 * this.position) + "%"
+		return _globals.core.normalizeColor(this.color) + " " + Math.floor(100 * this.position) + "%"
 	}
 
 }

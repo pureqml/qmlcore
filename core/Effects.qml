@@ -56,7 +56,7 @@ Object {
 
 	function _update(name, value) {
 		this._updateStyle()
-		qml.core.Object.prototype._update.apply(this, arguments)
+		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 
 }

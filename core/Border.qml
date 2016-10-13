@@ -11,8 +11,8 @@ Object {
 	function _update(name, value) {
 		switch(name) {
 			case 'width': this.parent.style({'border-width': value, 'margin-left': -value, 'margin-top': -value}); break;
-			case 'color': this.parent.style('border-color', qml.core.normalizeColor(value)); break;
+			case 'color': this.parent.style('border-color', _globals.core.normalizeColor(value)); break;
 		}
-		qml.core.Object.prototype._update.apply(this, arguments)
+		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 }

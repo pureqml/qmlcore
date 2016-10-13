@@ -181,7 +181,7 @@ Object {
 				anchors.verticalCenter = anchors.centerIn.verticalCenter
 				break
 		}
-		qml.core.Object.prototype._update.apply(this, arguments)
+		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 
 }

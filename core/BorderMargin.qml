@@ -14,7 +14,7 @@ Object {
 			if (pp) {
 				var cssname = 'border-' + this.name
 				if (this.margin) {
-					pp.style(cssname, this.margin + "px solid " + new qml.core.Color(this.color).get())
+					pp.style(cssname, this.margin + "px solid " + new _globals.core.Color(this.color).get())
 				} else
 					pp.style(cssname, '')
 			}
@@ -26,6 +26,6 @@ Object {
 			case 'margin': this._updateStyle(); break
 			case 'color': this._updateStyle(); break
 		}
-		qml.core.Object.prototype._update.apply(this, arguments);
+		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 }

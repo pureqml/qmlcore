@@ -97,7 +97,7 @@ Object {
 	/// sets animation on given property
 	function setAnimation (name, animation) {
 		if (!this._updateAnimation(name, animation))
-			qml.core.Object.prototype.setAnimation.apply(this, arguments);
+			_globals.core.Object.prototype.setAnimation.apply(this, arguments);
 	}
 
 	/// passes style (or styles { a:, b:, c: ... }) to underlying element
@@ -111,7 +111,7 @@ Object {
 
 	/// adds child, focus it if child accepts focus
 	function addChild (child) {
-		qml.core.Object.prototype.addChild.apply(this, arguments)
+		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
 	}
@@ -156,7 +156,7 @@ Object {
 			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
 			case 'rotate':	this.style('transform', 'rotate(' + value + 'deg)'); break
 		}
-		qml.core.Object.prototype._update.apply(this, arguments);
+		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	/// updates recursive visibility status
@@ -299,11 +299,11 @@ Object {
 				return true
 		}
 
-		var key = qml.core.keyCodes[event.which || event.keyCode];
+		var key = _globals.core.keyCodes[event.which || event.keyCode];
 		if (key) {
 			if (key in this._pressedHandlers) {
 				var handlers = this._pressedHandlers[key]
-				var invoker = qml.core.safeCall([key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
+				var invoker = _globals.core.safeCall([key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {
@@ -316,7 +316,7 @@ Object {
 
 			if ('Key' in this._pressedHandlers) {
 				var handlers = this._pressedHandlers['Key']
-				var invoker = qml.core.safeCall([key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
+				var invoker = _globals.core.safeCall([key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {

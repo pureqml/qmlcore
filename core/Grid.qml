@@ -7,7 +7,7 @@ Layout {
 	function _layout() {
 		var children = this.children;
 		var cX = 0, cY = 0, xMax = 0, yMax = 0;
-		var vsp = this.verticalSpacing || this.spacing, hsp = this.hSpacing || this.spacing
+		var vsp = this.verticalSpacing || this.spacing, hsp = this.horizontalSpacing || this.spacing
 		this.count = children.length
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
@@ -54,6 +54,6 @@ Layout {
 			case 'horizontalSpacing': this._delayedLayout.schedule(); break;
 			case 'verticalSpacing': this._delayedLayout.schedule(); break;
 		}
-		qml.core.Layout.prototype._update.apply(this, arguments);
+		_globals.core.Layout.prototype._update.apply(this, arguments);
 	}
 }

@@ -17,10 +17,6 @@ BaseLayout {
 
 	constructor: {
 		this._items = []
-		var self = this
-		this._delayedLayout = new _globals.core.DelayedAction(this._context, function() {
-			self._layout()
-		})
 	}
 
 	/// returns index of item by x,y coordinates

@@ -7,4 +7,19 @@ Item {
 	property int contentHeight;				///< content height
 	property bool keyNavigationWraps;		///< key navigation wraps from first to last and vise versa
 	property bool handleNavigationKeys;		///< handle navigation keys, move focus
+
+	constructor: {
+		this.count = 0
+		var self = this
+		this._delayedLayout = new qml.core.DelayedAction(this._context, function() {
+			self._layout()
+		})
+	}
+
+	function _update(name, value) {
+		switch(name) {
+			case 'spacing': this._delayedLayout.schedule(); break;
+		}
+		qml.core.Item.prototype._update.apply(this, arguments);
+	}
 }

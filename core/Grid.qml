@@ -10,6 +10,7 @@ Layout {
 		this.count = children.length
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
+			var fullWidth = c.width + c.anchors.leftMargin || c.anchors.margins + c.anchors.rightMargin || c.anchors.margins
 			if (c.recursiveVisible) {
 				if (this.width - cX < c.width) {
 					c.x = 0;

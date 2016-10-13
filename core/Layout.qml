@@ -7,7 +7,7 @@ BaseLayout {
 	constructor: {
 		this.count = 0
 		var self = this
-		this._delayedLayout = new qml.core.DelayedAction(this._context, function() {
+		this._delayedLayout = new _globals.core.DelayedAction(this._context, function() {
 			self._layout()
 		})
 	}

@@ -39,7 +39,7 @@ Object {
 			case 'interval': this._restart(); break;
 			case 'repeat': this._restart(); break;
 		}
-		qml.core.Object.prototype._update.apply(this, arguments);
+		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	function _restart() {

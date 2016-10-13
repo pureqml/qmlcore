@@ -18,7 +18,7 @@ BaseLayout {
 	constructor: {
 		this._items = []
 		var self = this
-		this._delayedLayout = new qml.core.DelayedAction(this._context, function() {
+		this._delayedLayout = new _globals.core.DelayedAction(this._context, function() {
 			self._layout()
 		})
 	}
@@ -153,7 +153,7 @@ BaseLayout {
 				value.visible = false
 			break
 		}
-		qml.core.Item.prototype._update.apply(this, arguments);
+		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
 	/// @internal creates delegate in given item slot

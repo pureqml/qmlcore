@@ -9,7 +9,7 @@ Item {
 
 	constructor: {
 		var self = this
-		this._delayedLoad = new qml.core.DelayedAction(this._context, function() {
+		this._delayedLoad = new _globals.core.DelayedAction(this._context, function() {
 			self._load()
 		})
 
@@ -123,7 +123,7 @@ Item {
 					this.load();
 				break;
 		}
-		qml.core.Item.prototype._update.apply(this, arguments);
+		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
 }

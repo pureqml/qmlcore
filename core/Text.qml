@@ -26,7 +26,7 @@ Item {
 		this.element.addClass(this._context.getClass('text'))
 		this._setText(this.text)
 		var self = this
-		this._delayedUpdateSize = new qml.core.DelayedAction(this._context, function() {
+		this._delayedUpdateSize = new _globals.core.DelayedAction(this._context, function() {
 			self._updateSizeImpl()
 		})
 	}
@@ -47,7 +47,7 @@ Item {
 					this._enableSizeUpdate()
 			}
 		}
-		qml.core.Object.prototype.onChanged.apply(this, arguments);
+		_globals.core.Object.prototype.onChanged.apply(this, arguments);
 	}
 
 	function on(name, callback) {
@@ -55,7 +55,7 @@ Item {
 			if (name == 'boxChanged')
 				this._enableSizeUpdate()
 		}
-		qml.core.Object.prototype.on.apply(this, arguments)
+		_globals.core.Object.prototype.on.apply(this, arguments)
 	}
 
 	function _enableSizeUpdate() {
@@ -107,7 +107,7 @@ Item {
 	function _update(name, value) {
 		switch(name) {
 			case 'text': this._setText(value); this._updateSize(); break;
-			case 'color': this.style('color', qml.core.normalizeColor(value)); break;
+			case 'color': this.style('color', _globals.core.normalizeColor(value)); break;
 			case 'width': this._updateSize(); break;
 			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
 			case 'horizontalAlignment':
@@ -131,6 +131,6 @@ Item {
 				this._updateSize();
 				break
 		}
-		qml.core.Item.prototype._update.apply(this, arguments);
+		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 }

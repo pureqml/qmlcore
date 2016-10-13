@@ -121,7 +121,7 @@ Item {
 		switch(name) {
 			case 'fullscreen': if (value) this._enterFullscreenMode(); else this._exitFullscreenMode(); break
 		}
-		qml.core.Item.prototype._update.apply(this, arguments)
+		_globals.core.Item.prototype._update.apply(this, arguments)
 	}
 
 	function _enterFullscreenMode() { return window.Modernizr.prefixed('requestFullscreen', this.element.dom)() }
@@ -138,7 +138,7 @@ Item {
 		this._completed = true
 		this._runningComplete = true
 
-		var invoker = qml.core.safeCall([], function (ex) { log("onCompleted failed:", ex, ex.stack) })
+		var invoker = _globals.core.safeCall([], function (ex) { log("onCompleted failed:", ex, ex.stack) })
 		do {
 			while(this._completedHandlers.length) {
 				var ch = this._completedHandlers
@@ -176,7 +176,7 @@ Item {
 	}
 
 	function _processActions() {
-		var invoker = qml.core.safeCall([], function (ex) { log('exception in delayed action', ex, ex.stack) })
+		var invoker = _globals.core.safeCall([], function (ex) { log('exception in delayed action', ex, ex.stack) })
 		while (this._delayedActions.length) {
 			var actions = this._delayedActions
 			this._delayedActions = []

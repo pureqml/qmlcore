@@ -45,7 +45,7 @@ Item {
 
 			for (var i = 0; i < this.children.length; ++i) {
 				var c = this.children[i]
-				if (c instanceof qml.core.Gamepad && c.connected && c.index == gp.index) {
+				if (c instanceof _globals.core.Gamepad && c.connected && c.index == gp.index) {
 					gpItem = c
 					break
 				}
@@ -129,7 +129,7 @@ Item {
 
 		for (var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (c instanceof qml.core.Gamepad && !c.connected) {
+			if (c instanceof _globals.core.Gamepad && !c.connected) {
 				c.index = g.index
 				c.connected = true
 				c.deviceInfo = g.id
@@ -150,7 +150,7 @@ Item {
 
 		for (var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (c instanceof qml.core.Gamepad && c.index == g.index) {
+			if (c instanceof _globals.core.Gamepad && c.index == g.index) {
 				c.index = -1
 				c.connected = false
 				c.deviceInfo = ""

@@ -32,7 +32,7 @@ Layout {
 	}
 
 	function addChild(child) {
-		qml.core.Item.prototype.addChild.apply(this, arguments)
+		_globals.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))

@@ -21,7 +21,7 @@ Object {
 			case 'lineHeight':	this.parent.style('line-height', value + "px"); this.parent._updateSize(); break;
 			case 'weight':	this.parent.style('font-weight', value); this.parent._updateSize(); break;
 		}
-		qml.core.Object.prototype._update.apply(this, arguments);
+		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
 

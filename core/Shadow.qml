@@ -7,7 +7,7 @@ Object {
 
 	function _update(name, value) {
 		this.parent._updateStyle()
-		qml.core.Object.prototype._update.apply(this, arguments);
+		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	function _empty() {
@@ -18,7 +18,7 @@ Object {
 		var style = this.x + "px " + this.y + "px " + this.blur + "px "
 		if (this.spread > 0)
 			style += this.spread + "px "
-		style += new qml.core.Color(this.color).get()
+		style += new _globals.core.Color(this.color).get()
 		return style
 	}
 

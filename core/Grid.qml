@@ -1,13 +1,13 @@
 Layout {
-	property int hSpacing;
-	property int vSpacing;
+	property int horizontalSpacing;
+	property int verticalSpacing;
 
 	onWidthChanged: { this._delayedLayout.schedule() }
 
 	function _layout() {
 		var children = this.children;
 		var cX = 0, cY = 0, xMax = 0, yMax = 0;
-		var vsp = this.vSpacing || this.spacing, hsp = this.hSpacing || this.spacing
+		var vsp = this.verticalSpacing || this.spacing, hsp = this.hSpacing || this.spacing
 		this.count = children.length
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
@@ -51,8 +51,8 @@ Layout {
 
 	function _update(name, value) {
 		switch(name) {
-			case 'hSpacing': this._delayedLayout.schedule(); break;
-			case 'vSpacing': this._delayedLayout.schedule(); break;
+			case 'horizontalSpacing': this._delayedLayout.schedule(); break;
+			case 'verticalSpacing': this._delayedLayout.schedule(); break;
 		}
 		qml.core.Layout.prototype._update.apply(this, arguments);
 	}

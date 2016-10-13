@@ -4,6 +4,7 @@ Item {
 	signal disconnected;
 
 	property int count: 0;
+	property bool gamepadChildrensCount: 0;
 	property variant _gamepads;
 
 	Timer {
@@ -17,7 +18,7 @@ Item {
 	Timer {
 		interval: 100;
 		repeat: true;
-		running: gamepadManagerProto.count;
+		running: gamepadManagerProto.gamepadChildrensCount;
 		triggeredOnStart: true;
 
 		onTriggered: { gamepadManagerProto.gpButtonCheckLoop() }
@@ -113,20 +114,26 @@ Item {
 			if (gp.buttons.length >= 17)
 				if (gp.buttons[16].pressed)
 					log("button 16")
-
 			if (event.which)
 				this._context._processKey(event)
 		}
 	}
 
 	gamepadConnectedHandler(event): {
-		log("GP connected", event.gamepad)
+		this.connected(event.gamepad)
+
 		if (!this._gamepads)
 			this._gamepads = {}
+		this._gamepads[event.gamepad.index] = event.gamepad
+		++this.count
+
+		if (!_globals.core.Gamepad) {
+			log("No 'Gamepad' instance found, add at least one 'Gamepad' item inside 'GamepadManager' scope.")
+			return
+		}
 
 		var children = this.children
 		var g = event.gamepad
-
 		for (var i = 0; i < children.length; ++i) {
 			var c = children[i]
 			if (c instanceof _globals.core.Gamepad && !c.connected) {
@@ -135,16 +142,22 @@ Item {
 				c.deviceInfo = g.id
 				c.buttonsCount = g.buttons.length
 				c.axesCount = g.axes.length
+				++this.gamepadChildrensCount
 				break
 			}
 		}
-
-		this._gamepads[event.gamepad.index] = event.gamepad
-		++this.count
 	}
 
 	gamepadDisconnectedHandler(event): {
-		log("GP disconnected", event.gamepad)
+		this.disconnected(event.gamepad)
+		delete this._gamepads[event.gamepad.index]
+		--this.count
+
+		if (!_globals.core.Gamepad) {
+			log("No 'Gamepad' instance found, add at least one 'Gamepad' item inside 'GamepadManager' scope.")
+			return
+		}
+
 		var g = event.gamepad
 		var children = this.children
 
@@ -156,11 +169,10 @@ Item {
 				c.deviceInfo = ""
 				c.buttonsCount = 0
 				c.axesCount = 0
+				--this.gamepadChildrensCount
 				break
 			}
 		}
-		delete this._gamepads[event.gamepad.index]
-		--this.count
 	}
 
 	onCompleted: {

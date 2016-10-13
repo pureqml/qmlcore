@@ -45,7 +45,11 @@ Layout {
 		var delayedLayout = this._delayedLayout
 		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
+		child.anchors.onChanged('margins', delayedLayout.schedule.bind(delayedLayout))
+		child.anchors.onChanged('leftMargin', delayedLayout.schedule.bind(delayedLayout))
+		child.anchors.onChanged('rightMargin', delayedLayout.schedule.bind(delayedLayout))
+		child.anchors.onChanged('topMargin', delayedLayout.schedule.bind(delayedLayout))
+		child.anchors.onChanged('bottomMargin', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 	}
 

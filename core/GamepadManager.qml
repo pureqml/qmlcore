@@ -1,28 +1,29 @@
 Item {
-	id: gamepadManagerProto;
 	signal connected;
 	signal disconnected;
 
 	property int count: 0;
 	property bool gamepadChildrensCount: 0;
 	property variant _gamepads;
+	property int gamepadPollingInterval: 1000;
+	property int eventPollingInterval: 8; //120fps
 
 	Timer {
 		id: startupTimer;
-		interval: 1000;
+		interval: parent.gamepadPollingInterval;
 		repeat: false;
 		triggeredOnStart: true;
 
-		onTriggered: { gamepadManagerProto.pollGamepads() }
+		onTriggered: { this.parent.pollGamepads() }
 	}
 
 	Timer {
-		interval: 100;
+		interval: parent.eventPollingInterval;
 		repeat: true;
-		running: gamepadManagerProto.gamepadChildrensCount;
+		running: parent.gamepadChildrensCount;
 		triggeredOnStart: true;
 
-		onTriggered: { gamepadManagerProto.gpButtonCheckLoop() }
+		onTriggered: { this.parent.gpButtonCheckLoop() }
 	}
 
 	pollGamepads: {

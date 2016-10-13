@@ -1,6 +1,7 @@
+/// Gris is a usefull way to automatically position its children 
 Layout {
-	property int horizontalSpacing;
-	property int verticalSpacing;
+	property int horizontalSpacing; ///< horizontal spacing between rows, overrides regular spacing, pixels
+	property int verticalSpacing; ///< vertical spacing between columns, overrides regular spacing, pixels
 
 	onWidthChanged: { this._delayedLayout.schedule() }
 

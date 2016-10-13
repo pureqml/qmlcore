@@ -62,6 +62,7 @@ Item {
 	}
 
 	gamepadConnectedHandler(event): {
+		log('connected', event.gamepad.id)
 		this.connected(event.gamepad)
 
 		if (!this._gamepads)

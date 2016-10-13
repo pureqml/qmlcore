@@ -1,3 +1,4 @@
+/// Colored rectangle with optional rounded corners, border and/or gradient.
 Item {
 	property color color: "#0000";		///< rectangle background color
 

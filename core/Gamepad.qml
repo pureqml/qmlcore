@@ -29,6 +29,11 @@ Item {
 		}
 	}
 
+	function get(name, idx) {
+		var values = this._state[name] || []
+		return values[idx] || 0
+	}
+
 	function poll(gp) {
 		var event = { 'type': 'keydown', 'source': 'gamepad', 'index': gp.index }
 		if (gp.axes) {

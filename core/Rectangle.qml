@@ -19,7 +19,7 @@ Item {
 			case 'gradient': {
 				if (value) {
 					var decl = value._getDeclaration()
-					this.style({ 'background-color': '', 'background': 'linear-gradient(to ' + decl + ')' })
+					this.style({ 'background-color': '', 'background': 'linear-gradient(' + decl + ')' })
 				} else {
 					this.style('background', '')
 					this._update('color', _globals.core.normalizeColor(this.color)) //restore color

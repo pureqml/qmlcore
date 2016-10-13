@@ -18,6 +18,8 @@ Object {
 	property int leftMargin;
 	property int rightMargin;
 
+	signal marginsUpdated;
+
 	/** @private */
 	function _updateLeft() {
 		var anchors = this
@@ -180,6 +182,13 @@ Object {
 				anchors.horizontalCenter = anchors.centerIn.horizontalCenter
 				anchors.verticalCenter = anchors.centerIn.verticalCenter
 				break
+
+			case 'leftMargin':
+			case 'rightMargin':
+			case 'topMargin':
+			case 'bottomMargin':
+			case 'margins':
+				this.marginsUpdated();
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments)
 	}

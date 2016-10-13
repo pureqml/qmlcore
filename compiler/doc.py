@@ -55,6 +55,7 @@ class Component(object):
 class Documentation(object):
 	def __init__(self, root):
 		self.root = root
+		self.mdroot = os.path.join(root, 'md')
 		self.packages = {}
 
 	def add(self, name, component):
@@ -68,12 +69,12 @@ class Documentation(object):
 
 	def generate_component(self, package, name, component):
 		#print package, name, component
-		with open(os.path.join(self.root, package, name + '.md'), 'wt') as f:
+		with open(os.path.join(self.mdroot, package, name + '.md'), 'wt') as f:
 			f.write(component.generate(self))
 
 	def generate(self):
-		if not os.path.exists(self.root):
-			os.mkdir(self.root)
+		if not os.path.exists(self.mdroot):
+			os.makedirs(self.mdroot)
 
 		with open(os.path.join(self.root, '.nocompile'), 'wt') as f:
 			pass
@@ -83,7 +84,7 @@ class Documentation(object):
 		toc.append('site_name: QML Documentation')
 		toc.append('use_directory_urls: false')
 		toc.append('docs_dir: .')
-		toc.append('site_dir: html')
+		toc.append('site_dir: ../html')
 		toc.append('repo_url: https://github.com/pureqml/qmlcore/')
 
 		toc.append('pages:')
@@ -92,7 +93,7 @@ class Documentation(object):
 			toc.append("- '%s': '%s.md'" %(package, package))
 
 			package_toc = ['# Package Components', '']
-			path = os.path.join(self.root, package)
+			path = os.path.join(self.mdroot, package)
 			if not os.path.exists(path):
 				os.mkdir(path)
 
@@ -101,8 +102,8 @@ class Documentation(object):
 				toc.append("- '%s.%s': '%s/%s.md'" %(package, name, package, name))
 				self.generate_component(package, name, component)
 
-			with open(os.path.join(self.root, package + '.md'), 'wt') as f:
+			with open(os.path.join(self.mdroot, package + '.md'), 'wt') as f:
 				f.write('\n'.join(package_toc))
 
-		with open(os.path.join(self.root, 'mkdocs.yml'), 'wt') as f:
+		with open(os.path.join(self.mdroot, 'mkdocs.yml'), 'wt') as f:
 			f.write('\n'.join(toc))

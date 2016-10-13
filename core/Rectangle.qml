@@ -16,16 +16,6 @@ Item {
 	function _update(name, value) {
 		switch(name) {
 			case 'color': this.style('background-color', _globals.core.normalizeColor(value)); break;
-			case 'gradient': {
-				if (value) {
-					var decl = value._getDeclaration()
-					this.style({ 'background-color': '', 'background': 'linear-gradient(' + decl + ')' })
-				} else {
-					this.style('background', '')
-					this._update('color', _globals.core.normalizeColor(this.color)) //restore color
-				}
-				break;
-			}
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}

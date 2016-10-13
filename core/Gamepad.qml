@@ -1,8 +1,6 @@
 Item {
-	signal leftJoystickX;
-	signal leftJoystickY;
-	signal rightJoystickX;
-	signal rightJoystickY;
+	signal axes;
+	signal button;
 
 	property int index;
 	property int buttonsCount;
@@ -10,23 +8,49 @@ Item {
 	property bool connected: false;
 	property string deviceInfo;
 
+	constructor : {
+		this._state = {}
+	}
+
+	function _set(name, idx, n, value) {
+		//log(name, idx, value)
+		var _state = this._state
+		var values
+		if (!(name in _state))
+			values = _state[name] = Array(n)
+		else
+			values = _state[name]
+
+		var old = values[idx] || 0
+		var delta = value - old
+		if (delta != 0) {
+			values[idx] = value
+			this.emit(name, idx, value, delta)
+		}
+	}
+
 	function poll(gp) {
 		var event = { 'type': 'keydown', 'source': 'gamepad', 'index': gp.index }
-		if (gp.axes && gp.axes.length >= 4) {
-			// Left joystick.
-			if (gp.axes[0])
-				this.leftJoystickX(gp.axes[0])
-			if (gp.axes[1])
-				this.leftJoystickY(gp.axes[1])
-
-			// Right joystick.
-			if (gp.axes[2])
-				this.rightJoystickX(gp.axes[2])
-			if (gp.axes[3])
-				this.rightJoystickY(gp.axes[3])
+		if (gp.axes) {
+			var axes = gp.axes
+			var n = axes.length
+			for(var i = 0; i < n; ++i) {
+				this._set('axes', i, n, axes[i])
+			}
 		}
-		if (gp.buttons.length >= 16) {
+		if (gp.buttons) {
+			var buttons = gp.buttons
+			var n = buttons.length
+			for(var i = 0; i < n; ++i) {
+				this._set('button', i, n, buttons[i].value)
+			}
+		}
+	}
+
+/*
+	//add translation here
 			// Functional buttons.
+		if (gp.buttons.length >= 16) {}
 			if (gp.buttons[0].pressed)
 				event.which = 114
 			else if (gp.buttons[1].pressed)
@@ -72,5 +96,7 @@ Item {
 				log("button 16")
 		if (event.which)
 			this._context._processKey(event)
-	}
+
+*/
+
 }

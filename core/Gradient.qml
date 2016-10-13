@@ -1,5 +1,6 @@
 Object {
-	property enum orientation { Vertical, Horizontal };
+	property enum orientation { Vertical, Horizontal, BottomRight, TopRight, Custom };
+	property real angle;
 
 	constructor: {
 		this.stops = []
@@ -13,6 +14,15 @@ Object {
 	function _getDeclaration() {
 		var decl = []
 		var orientation = this.orientation == this.Vertical? 'bottom': 'left'
+
+		switch(this.orientation) {
+				case this.Vertical:	orientation = 'to bottom'; break
+				case this.Horizontal:	orientation = 'to left'; break
+				case this.BottomRight:	orientation = 'to bottom right'; break
+				case this.TopRight:	orientation = 'to top right'; break
+				case this.Custom:	orientation = this.angle + 'deg'; break
+		}
+
 		decl.push(orientation)
 
 		var stops = this.stops

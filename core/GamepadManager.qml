@@ -11,6 +11,7 @@ Item {
 		id: startupTimer;
 		interval: 1000;
 		repeat: false;
+		triggeredOnStart: true;
 
 		onTriggered: { gamepadManagerProto.pollGamepads() }
 	}

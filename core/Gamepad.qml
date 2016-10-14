@@ -10,6 +10,15 @@ Item {
 
 	constructor : {
 		this._state = {}
+		this._mapping = {
+			axes: [ "leftStickX", "leftStickY", "rightStickX", "rightStickY"],
+			button: [
+				"a", "b", "x", "y",
+				"leftBumper", "rightBumper", "leftTrigger", "rightTrigger",
+				"back", "start", "leftStick", "rightStick",
+				"up", "down", "left", "right"
+			]
+		}
 	}
 
 	function _set(name, idx, n, value) {
@@ -25,7 +34,9 @@ Item {
 		var delta = value - old
 		if (delta != 0) {
 			values[idx] = value
-			this.emit(name, idx, value, delta)
+			var mapping = this._mapping[name] || []
+			var mapName = mapping[idx]
+			if (mapName) this.emit(mapName, value, delta); else this.emit(name, idx, value, delta)
 		}
 	}
 

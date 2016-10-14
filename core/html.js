@@ -1,17 +1,20 @@
 var registerGenericListener = function(target) {
 	var copyArguments = _globals.core.copyArguments
+	var prefix = '_domEventHandler_'
 	target.onListener('',
 		function(name) {
 			//log('registering generic event', name)
-			var callback = function() {
+			var pname = prefix + name
+			var callback = target[pname] = function() {
 				var args = copyArguments(arguments, 0, name)
 				target.emit.apply(target, args)
 			}
 			target.dom.addEventListener(name, callback)
 		},
 		function(name) {
-			//fixme: implement removing callback
-			//return remove callback from first callback?
+			//log('removing generic event', name)
+			var pname = prefix + name
+			target.dom.removeEventListener(name, target[pname])
 		}
 	)
 }

@@ -29,13 +29,7 @@ exports.core.keyCodes = {
 	112: 'Red',
 	113: 'Green',
 	114: 'Yellow',
-	115: 'Blue',
-	// Gamepad special buttons.
-	6661: 'L1',
-	6662: 'L2',
-	6663: 'R1',
-	6664: 'R2',
-	6665: 'Start'
+	115: 'Blue'
 }
 
 var copyArguments = function(args, src, prefix) {

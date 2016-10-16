@@ -82,7 +82,7 @@ Item {
 			mangleRule('textarea', "{ position: absolute; visibility: inherit; }") +
 			mangleRule('input', "{ position: absolute; visibility: inherit; }") +
 			mangleRule('canvas', "{ position: absolute; visibility: inherit; }") +
-			mangleRule('svg', "{ position: absolute; visibility: inherit; }") +
+			mangleRule('svg', "{ position: absolute; visibility: inherit; overflow: visible; }") +
 			mangleRule('pre', "{ position: absolute; visibility: inherit; margin: 0px;}") +
 			mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
 		)

@@ -19,6 +19,7 @@ parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
 parser.add_argument("-S", dest="strict", default=True, action="store_false")
 parser.add_argument("-D", dest="doc")
+parser.add_argument("-r", dest="release", default=False, action='store_true')
 args = parser.parse_args()
 
 documentation = compiler.doc.Documentation(args.doc) if args.doc else None
@@ -144,7 +145,10 @@ def generate():
 	app = ""
 	if args.strict:
 		app += "'use strict'\n"
-	app += "var log = null\n"
+	if args.release:
+		app += "var log = function() { }\n"
+	else:
+		app += "var log = null\n"
 	app += "/** @const */\n"
 	app += "/** @param {string} text @param {...} args */\n"
 	app += "var qsTr = function(text, args) { return %s._context.qsTr.apply(qml._context, arguments) }\n" %namespace

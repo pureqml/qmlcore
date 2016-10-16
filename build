@@ -17,6 +17,7 @@ parser.add_argument('--web-prefix', '-p', action='store_true', default=False, he
 parser.add_argument('--update-translation', '-u', action='store_true', default=False, help='update translation only')
 parser.add_argument('--boilerplate', action='store_true', default = False, help = 'create simple skeleton project')
 parser.add_argument('--doc', '-D', help='generate documentation in given directory')
+parser.add_argument('--release', '-r', help='generate release code (no logs)', default = False, action = 'store_true')
 args = parser.parse_args()
 
 root = os.path.dirname(sys.argv[0])
@@ -156,6 +157,9 @@ def build(root, platform, app, html, manifest):
 	options = ['-o', target, path.join(root, 'core'), platform_path]
 	options.extend(paths)
 	options.extend(['.', '-a', app])
+
+	if args.release:
+		options.insert(0, '-r')
 
 	if args.devel:
 		options.insert(0, '-w')

@@ -144,7 +144,7 @@ def generate():
 	app = ""
 	if args.strict:
 		app += "'use strict'\n"
-	app += "var log = console.log.bind(console)\n"
+	app += "var log = null\n"
 	app += "/** @const */\n"
 	app += "/** @param {string} text @param {...} args */\n"
 	app += "var qsTr = function(text, args) { return %s._context.qsTr.apply(qml._context, arguments) }\n" %namespace

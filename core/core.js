@@ -1,3 +1,5 @@
+//WARNING: no log() function usage before init.js
+
 var Modernizr = window.Modernizr
 
 exports.core.os = navigator.platform

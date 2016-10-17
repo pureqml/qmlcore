@@ -1,5 +1,4 @@
 BaseView {
-	property int spacing;
 	property enum orientation { Vertical, Horizontal };
 
 	function move(dx, dy) {

@@ -16,7 +16,7 @@ Item {
 				"a", "b", "x", "y",
 				"leftBumper", "rightBumper", "leftTrigger", "rightTrigger",
 				"back", "start", "leftStick", "rightStick",
-				"up", "down", "left", "right"
+				"up", "down", "left", "right", "guide"
 			]
 		}
 	}

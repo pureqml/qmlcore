@@ -3,6 +3,7 @@ controls property animation behavior in declarative way
 Animation class works only for integral types, please use ColorAnimation for animating color properties
 */
 Object {
+	property int delay: 0;					///< delay in ms
 	property int duration: 200;				///< duration in ms
 	property bool cssTransition: true;		///< use css transition if possible
 	property bool running: false;			///< currently running

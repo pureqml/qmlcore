@@ -263,10 +263,11 @@ Object {
 			property.push(name)
 			duration.push(animation.duration + 'ms')
 			timing.push(animation.easing)
-			delay.push('0s')
+			delay.push(animation.delay + 'ms')
 		} else { //property already set, adjust the params
 			duration[idx] = animation.duration + 'ms'
 			timing[idx] = animation.easing
+			delay[idx] = animation.delay + 'ms'
 		}
 
 		var style = {}

@@ -2,6 +2,7 @@
 Layout {
 	property int horizontalSpacing; ///< horizontal spacing between rows, overrides regular spacing, pixels
 	property int verticalSpacing; ///< vertical spacing between columns, overrides regular spacing, pixels
+	property int rowsCount; ///< read-only property, represents number of row in a grid
 
 	property enum horizontalAlignment {
 		AlignLeft, AlignRight, AlignHCenter, AlignJustify
@@ -44,6 +45,7 @@ Layout {
 					xMax = cX - hsp;
 			}
 		}
+		this.rowsCount = rows.length;
 		rows.push({idx: children.length, width: cX - hsp}) // add last point
 
 		this.contentHeight = yMax;

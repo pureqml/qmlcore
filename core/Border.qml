@@ -4,10 +4,10 @@ Object {
 	property color color;	///< color of the border
 	property string style;	///< style of the border
 
-	property BorderMargin left :	BorderMargin	{ name: "left"; }
-	property BorderMargin right :	BorderMargin	{ name: "right"; }
-	property BorderMargin top :		BorderMargin	{ name: "top"; }
-	property BorderMargin bottom :	BorderMargin	{ name: "bottom"; }
+	property BorderSide left:	BorderSide	{ name: "left"; }
+	property BorderSide right:	BorderSide	{ name: "right"; }
+	property BorderSide top:	BorderSide	{ name: "top"; }
+	property BorderSide bottom:	BorderSide	{ name: "bottom"; }
 
 	function _update(name, value) {
 		switch(name) {

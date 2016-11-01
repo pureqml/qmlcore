@@ -1,11 +1,11 @@
 /**
 @internal
-Margin for one size of the border
+Component aimed to adjust individual preferences of each border side
 */
 
 Object {
 	property string name;
-	property int margin;
+	property int width;
 	property color color;
 
 	function _updateStyle() {
@@ -13,8 +13,8 @@ Object {
 			var pp = this.parent.parent
 			if (pp) {
 				var cssname = 'border-' + this.name
-				if (this.margin) {
-					pp.style(cssname, this.margin + "px solid " + new _globals.core.Color(this.color).get())
+				if (this.width) {
+					pp.style(cssname, this.width + "px solid " + new _globals.core.Color(this.color).get())
 				} else
 					pp.style(cssname, '')
 			}
@@ -23,7 +23,7 @@ Object {
 
 	function _update(name, value) {
 		switch(name) {
-			case 'margin': this._updateStyle(); break
+			case 'width': this._updateStyle(); break
 			case 'color': this._updateStyle(); break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);

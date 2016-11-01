@@ -277,7 +277,7 @@ Object {
 		style[transition.delay] = delay
 
 		//FIXME: smarttv 2003 animation won't work without this shit =(
-		if (this._context.system.os === 'smartTV') {
+		if (this._context.system.os === 'smartTV' || this._context.system.os === 'netcast') {
 			style["transition-property"] = property
 			style["transition-duration"] = duration
 			style["transition-delay"] = delay

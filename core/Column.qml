@@ -10,6 +10,9 @@ Layout {
 	}
 
 	function _layout() {
+		if (!this.recursiveVisible)
+			return
+			
 		var children = this.children;
 		var p = 0
 		var w = 0

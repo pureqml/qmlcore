@@ -150,6 +150,9 @@ def build(root, platform, app, html, manifest):
 	except:
 		platform_manifest = {}
 
+	if not platform_manifest.get('standalone', True):
+		raise Exception('%s is not a standalone platform' %platform)
+
 	paths = []
 	if 'path' in manifest:
 		paths = manifest['path']

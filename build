@@ -159,6 +159,11 @@ def build(root, platform, app, html, manifest):
 
 	options = ['-o', target, path.join(root, 'core'), platform_path]
 	options.extend(paths)
+
+	for subplatform in platform_manifest.get('requires', []): #fixme: no recursive processing
+		subplatform_path = find_platform_path(root, subplatform)
+		options.append(subplatform_path)
+
 	options.extend(['.', '-a', app])
 
 	if args.release:

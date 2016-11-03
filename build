@@ -225,7 +225,7 @@ if 'apps' in manifest:
 	apps = manifest['apps']
 
 if not platforms:
-	platforms = ['html5']
+	platforms = ['web']
 
 for platform in platforms:
 	for app in apps:

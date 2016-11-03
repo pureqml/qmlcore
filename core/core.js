@@ -1,7 +1,5 @@
 //WARNING: no log() function usage before init.js
 
-var Modernizr = window.Modernizr
-
 exports.core.os = navigator.platform
 exports.core.device = 0
 exports.core.vendor = ""
@@ -183,6 +181,7 @@ exports.core.DelayedAction.prototype.schedule = function() {
 	}
 }
 
+var Modernizr = window.Modernizr
 var requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
 var cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }
 

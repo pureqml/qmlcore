@@ -356,6 +356,8 @@ class generator(object):
 			self.used_components.add(name)
 			self.used_packages.add(package)
 			self.startup.append("\tqml._context.start(qml.%s)" %name)
+		else:
+			name = package + '.' + component_name
 
 		if package not in self.packages:
 			self.packages[package] = set()

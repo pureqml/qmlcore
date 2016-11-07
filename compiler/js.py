@@ -464,6 +464,9 @@ class generator(object):
 		return r
 
 	def generate_prologue(self):
+		for name in self.imports.iterkeys():
+			self.used_packages.add(get_package(name))
+
 		r = []
 		packages = {}
 		for package in sorted(self.used_packages):

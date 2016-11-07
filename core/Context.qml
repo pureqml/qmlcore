@@ -19,7 +19,7 @@ Item {
 	}
 
 	function createElement(tag) {
-		var el = new _globals.core.html.Element(this, document.createElement(tag))
+		var el = new _globals.html5.html.Element(this, document.createElement(tag))
 		if (this._prefix) {
 			el.addClass(this.getClass('core-item'))
 		}
@@ -40,11 +40,11 @@ Item {
 		}
 		this._prefix = prefix
 
-		var win = new _globals.core.html.Window(this, window)
+		var win = new _globals.html5.html.Window(this, window)
 		this.window = win
 		var w, h
 
-		var html = _globals.core.html
+		var html = _globals.html5.html
 		var div = document.getElementById(divId)
 		var topLevel = div === null
 		if (!topLevel) {

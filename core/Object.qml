@@ -14,6 +14,18 @@ EventEmitter {
 		this._updaters = {}
 	}
 
+	discard: {
+		_globals.core.EventEmitter.prototype.discard.apply(this)
+
+		this.parent = null
+		this._context = null
+		this._local = {}
+		this._changedHandlers = {}
+		this._pressedHandlers = {}
+		this._animations = {}
+		this._updaters = {}
+	}
+
 	///adds child object to children
 	function addChild(child) {
 		this.children.push(child);

@@ -101,10 +101,7 @@ BaseLayout {
 			log("rows changed", begin, end)
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
-			var item = items[i];
-			if (item && item.element)
-				item.element.remove()
-			items[i] = null
+			this._discardDelegate(i)
 		}
 		if (items.length != this.model.count)
 			throw new Error("change: items length does reflect model size")
@@ -117,10 +114,7 @@ BaseLayout {
 		var items = this._items
 		//remove every delegate until the end of items (index shifted)
 		for(var i = begin; i < items.length; ++i) {
-			var item = items[i];
-			if (item && item.element)
-				item.element.remove()
-			items[i] = null
+			this._discardDelegate(i)
 		}
 		items.splice(begin, end - begin)
 		if (items.length != this.model.count)
@@ -165,6 +159,14 @@ BaseLayout {
 		item._local['model'] = row
 		delete this._local['model']
 		return item
+	}
+
+	/// @internal creates delegate in given item slot
+	function _discardDelegate(idx) {
+		var item = this._items[idx]
+		this._items[idx] = null
+		if (item)
+			item.discard()
 	}
 
 	content: BaseViewContent { }

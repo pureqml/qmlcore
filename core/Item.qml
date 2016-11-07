@@ -50,6 +50,12 @@ Object {
 		} //no parent == top level element, skip
 	}
 
+	discard: {
+		_globals.core.Object.prototype.discard.apply(this)
+		if (this.element)
+			this.element.remove()
+	}
+
 	/// returns tag for corresponding element
 	function getTag() { return 'div' }
 

@@ -5,6 +5,12 @@ CoreObject {
 		this._onLastListener = {}
 	}
 
+	function discard() {
+		this._eventHandlers = {}
+		this._onFirstListener = {}
+		this._onLastListener = {}
+	}
+
 	function on (name, callback) {
 		if (name in this._eventHandlers)
 			this._eventHandlers[name].push(callback)
@@ -59,4 +65,5 @@ CoreObject {
 			}
 		}
 	}
+
 }

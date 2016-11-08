@@ -154,6 +154,11 @@ exports.Element.prototype.append = function(el) {
 	this.dom.appendChild((el instanceof exports.Element)? el.dom: el)
 }
 
+exports.Element.prototype.discard = function() {
+	_globals.core.EventEmitter.prototype.discard.apply(this)
+	this.remove()
+}
+
 exports.Element.prototype.remove = function() {
 	var dom = this.dom
 	dom.parentNode.removeChild(dom)

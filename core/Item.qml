@@ -53,7 +53,7 @@ Object {
 	discard: {
 		_globals.core.Object.prototype.discard.apply(this)
 		if (this.element)
-			this.element.remove()
+			this.element.discard()
 	}
 
 	/// returns tag for corresponding element

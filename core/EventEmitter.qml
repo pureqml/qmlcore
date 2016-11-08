@@ -6,7 +6,8 @@ CoreObject {
 	}
 
 	function discard() {
-		this._eventHandlers = {}
+		for(var name in this._eventHandlers)
+			this.removeAllListeners(name)
 		this._onFirstListener = {}
 		this._onLastListener = {}
 	}
@@ -42,6 +43,16 @@ CoreObject {
 		}
 	}
 
+	function removeAllListeners(name) {
+		delete this._eventHandlers[name]
+		if (name in this._onLastListener)
+			this._onLastListener[name](name)
+		else if ('' in this._onLastListener) {
+			//log('first listener to', name)
+			this._onLastListener[''](name)
+		}
+	}
+
 	function removeListener (name, callback) {
 		if (!(name in this._eventHandlers) || callback === undefined || callback === null) {
 			log('invalid removeListener(' + name + ', ' + callback + ') invocation')
@@ -55,15 +66,8 @@ CoreObject {
 		else
 			log('failed to remove listener for', name, 'from', this)
 
-		if (!handlers.length) {
-			delete this._eventHandlers[name]
-			if (name in this._onLastListener)
-				this._onLastListener[name](name)
-			else if ('' in this._onLastListener) {
-				//log('first listener to', name)
-				this._onLastListener[''](name)
-			}
-		}
+		if (!handlers.length)
+			this.removeAllListeners(name)
 	}
 
 }

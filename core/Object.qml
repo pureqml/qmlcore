@@ -15,8 +15,13 @@ EventEmitter {
 	}
 
 	discard: {
+		var children = this.children
+		for (var i = 0; i < children.length; ++i)
+			children[i].discard()
+
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 
+		this.children = []
 		this.parent = null
 		this._context = null
 		this._local = {}

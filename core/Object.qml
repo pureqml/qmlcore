@@ -9,19 +9,21 @@ EventEmitter {
 		this._context = parent? parent._context: null
 		this._local = {}
 		this._changedHandlers = {}
+		this._changedConnections = []
 		this._pressedHandlers = {}
 		this._animations = {}
 		this._updaters = {}
 	}
 
 	discard: {
-		var children = this.children
-		for (var i = 0; i < children.length; ++i)
-			children[i].discard()
+		this._changedConnections.forEach(function(connection) {
+			connection[0].removeListener(connection[1], connection[2])
+		})
+		this._changedConnections = []
 
-		_globals.core.EventEmitter.prototype.discard.apply(this)
-
+		this.children.forEach(function(child) { child.discard() })
 		this.children = []
+
 		this.parent = null
 		this._context = null
 		this._local = {}
@@ -29,6 +31,8 @@ EventEmitter {
 		this._pressedHandlers = {}
 		this._animations = {}
 		this._updaters = {}
+
+		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}
 
 	///adds child object to children
@@ -51,6 +55,11 @@ EventEmitter {
 			this._changedHandlers[name].push(callback);
 		else
 			this._changedHandlers[name] = [callback];
+	}
+
+	function connectOnChanged(target, name, callback) {
+		target.onChanged(name, callback)
+		this._changedConnections.push([target, name, callback])
 	}
 
 	/// removes 'on changed' callback

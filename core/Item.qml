@@ -40,11 +40,10 @@ Object {
 				throw new Error('double ctor call')
 
 			this.createElement(this.getTag())
-			var self = this
 			var updateVisibility = function(value) {
-				self._recursiveVisible = value
-				self._updateVisibility()
-			}
+				this._recursiveVisible = value
+				this._updateVisibility()
+			}.bind(this)
 			updateVisibility(this.parent.recursiveVisible)
 			this.connectOnChanged(this.parent, 'recursiveVisible', updateVisibility)
 		} //no parent == top level element, skip

@@ -52,6 +52,7 @@ Object {
 
 	discard: {
 		_globals.core.Object.prototype.discard.apply(this)
+		this.focusedChild = null
 		if (this.element)
 			this.element.discard()
 	}

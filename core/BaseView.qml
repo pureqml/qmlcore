@@ -166,8 +166,11 @@ BaseLayout {
 	function _discardDelegate(idx) {
 		var item = this._items[idx]
 		this._items[idx] = null
-		if (item)
+		if (item) {
+			if (this.focusedChild === item)
+				this.focusedChild = null;
 			item.discard()
+		}
 	}
 
 	content: BaseViewContent { }

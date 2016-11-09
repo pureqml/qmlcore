@@ -126,7 +126,7 @@ Object {
 			case 'left':
 				var update_left = this._updateLeft.bind(this)
 				update_left()
-				anchors.left.parent.on('boxChanged', update_left)
+				self.connectOn(anchors.left.parent, 'boxChanged', update_left)
 				anchors.onChanged('leftMargin', update_left)
 				break
 
@@ -134,14 +134,14 @@ Object {
 				var update_right = this._updateRight.bind(this)
 				update_right()
 				self.onChanged('width', update_right)
-				anchors.right.parent.on('boxChanged', update_right)
+				self.connectOn(anchors.right.parent, 'boxChanged', update_right)
 				anchors.onChanged('rightMargin', update_right)
 				break
 
 			case 'top':
 				var update_top = this._updateTop.bind(this)
 				update_top()
-				anchors.top.parent.on('boxChanged', update_top)
+				self.connectOn(anchors.top.parent, 'boxChanged', update_top)
 				anchors.onChanged('topMargin', update_top)
 				break
 
@@ -149,7 +149,7 @@ Object {
 				var update_bottom = this._updateBottom.bind(this)
 				update_bottom()
 				self.onChanged('height', update_bottom)
-				anchors.bottom.parent.on('boxChanged', update_bottom)
+				self.connectOn(anchors.bottom.parent, 'boxChanged', update_bottom)
 				anchors.onChanged('bottomMargin', update_bottom)
 				break
 
@@ -159,7 +159,7 @@ Object {
 				self.onChanged('width', update_h_center)
 				anchors.onChanged('leftMargin', update_h_center)
 				anchors.onChanged('rightMargin', update_h_center)
-				anchors.horizontalCenter.parent.on('boxChanged', update_h_center)
+				self.connectOn(anchors.horizontalCenter.parent, 'boxChanged', update_h_center)
 				break
 
 			case 'verticalCenter':
@@ -168,7 +168,7 @@ Object {
 				self.onChanged('height', update_v_center)
 				anchors.onChanged('topMargin', update_v_center)
 				anchors.onChanged('bottomMargin', update_v_center)
-				anchors.verticalCenter.parent.on('boxChanged', update_v_center)
+				self.connectOn(anchors.verticalCenter.parent, 'boxChanged', update_v_center)
 				break
 
 			case 'fill':

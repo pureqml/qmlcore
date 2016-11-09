@@ -286,7 +286,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 exports.addAliasProperty = function(self, name, getObject, srcProperty) {
 	var target = getObject()
-	target.onChanged(srcProperty, function(value) { self._update(name, value) })
+	self.connectOnChanged(target, srcProperty, function(value) { self._update(name, value) })
 
 	Object.defineProperty(self, name, {
 		get: function() { return target[srcProperty] },

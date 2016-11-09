@@ -21,6 +21,10 @@ EventEmitter {
 		})
 		this._changedConnections = []
 
+		for(var name in this._updaters)
+			this._updaters[name]()
+		this._updaters = {}
+
 		this.children.forEach(function(child) { child.discard() })
 		this.children = []
 
@@ -30,7 +34,6 @@ EventEmitter {
 		this._changedHandlers = {}
 		this._pressedHandlers = {}
 		this._animations = {}
-		this._updaters = {}
 
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}

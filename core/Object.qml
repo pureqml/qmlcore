@@ -21,10 +21,6 @@ EventEmitter {
 		})
 		this._changedConnections = []
 
-		for(var name in this._updaters)
-			this._updaters[name]()
-		this._updaters = {}
-
 		this.children.forEach(function(child) { child.discard() })
 		this.children = []
 

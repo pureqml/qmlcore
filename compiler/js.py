@@ -293,7 +293,7 @@ class component_generator(object):
 					r.append("%s%s();" %(ident, var))
 					undep = []
 					for path, dep in deps:
-						r.append("%s%s.onChanged('%s', %s);" %(ident, path, dep, var))
+						r.append("%sthis.connectOnChanged(%s, '%s', %s);" %(ident, path, dep, var))
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
 					r.append("%sthis._removeUpdater('%s', (function() { %s }).bind(this));" %(ident, target, ";".join(undep)))
 				else:

@@ -20,7 +20,7 @@ EventEmitter {
 		this.children = []
 
 		this._changedConnections.forEach(function(connection) {
-			connection[0].removeListener(connection[1], connection[2])
+			connection[0].removeOnChanged(connection[1], connection[2])
 		})
 		this._changedConnections = []
 

@@ -16,6 +16,9 @@ EventEmitter {
 	}
 
 	discard: {
+		this.children.forEach(function(child) { child.discard() })
+		this.children = []
+
 		this._changedConnections.forEach(function(connection) {
 			connection[0].removeListener(connection[1], connection[2])
 		})
@@ -24,9 +27,6 @@ EventEmitter {
 		for(var name in this._updaters)
 			this._updaters[name]()
 		this._updaters = {}
-
-		this.children.forEach(function(child) { child.discard() })
-		this.children = []
 
 		this.parent = null
 		this._context = null

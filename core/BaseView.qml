@@ -110,7 +110,8 @@ BaseLayout {
 
 	/** @private */
 	function _onRowsRemoved(begin, end) {
-		log("rows removed", begin, end)
+		if (this.trace)
+			log("rows removed", begin, end)
 		var items = this._items
 		//remove every delegate until the end of items (index shifted)
 		for(var i = begin; i < items.length; ++i) {

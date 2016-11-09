@@ -46,7 +46,7 @@ Object {
 				self._updateVisibility()
 			}
 			updateVisibility(this.parent.recursiveVisible)
-			this.parent.onChanged('recursiveVisible', updateVisibility)
+			this.connectOnChanged(this.parent, 'recursiveVisible', updateVisibility)
 		} //no parent == top level element, skip
 	}
 

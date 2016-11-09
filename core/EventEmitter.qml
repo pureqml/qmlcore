@@ -65,7 +65,7 @@ CoreObject {
 
 	function removeListener (name, callback) {
 		if (!(name in this._eventHandlers) || callback === undefined || callback === null) {
-			log('invalid removeListener(' + name + ', ' + callback + ') invocation')
+			log('invalid removeListener(' + name + ', ' + callback + ') invocation', new Error().stack)
 			return
 		}
 

@@ -3,6 +3,7 @@ CoreObject {
 		this._eventHandlers = {}
 		this._onFirstListener = {}
 		this._onLastListener = {}
+		this._onConnections = []
 	}
 
 	function discard() {
@@ -10,6 +11,10 @@ CoreObject {
 			this.removeAllListeners(name)
 		this._onFirstListener = {}
 		this._onLastListener = {}
+		this._onConnections.forEach(function(connection) {
+			connection[0].removeListener(connection[1], connection[2])
+		})
+		this._onConnections = []
 	}
 
 	function on (name, callback) {
@@ -27,6 +32,11 @@ CoreObject {
 				throw new Error('listener callback added event handler')
 			this._eventHandlers[name] = [callback]
 		}
+	}
+
+	function connectOn(target, name, callback) {
+		target.on(name, callback)
+		this._onConnections.push([target, name, callback])
 	}
 
 	function onListener (name, first, last) {

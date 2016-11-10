@@ -44,7 +44,7 @@ Object {
 			xhr.addEventListener('error', function(event) { log("Error");error(event) })
 
 		if (callback)
-			xhr.addEventListener('load', function(event) { log("Done"); callback(event) })
+			xhr.addEventListener('load', function(event) { callback(event) })
 
 		xhr.open(request.type || 'GET', url);
 
@@ -54,7 +54,6 @@ Object {
 		for (var i in headers)
 			xhr.setRequestHeader(i, settings[i])
 
-		log("request", url)
 		if (request.data)
 			xhr.send(request.data)
 		else

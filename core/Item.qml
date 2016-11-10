@@ -19,6 +19,7 @@ Object {
 
 	property Anchors anchors: Anchors { }
 	property Effects effects: Effects { }
+	property Transform transform: Transform { }
 
 	property AnchorLine left: AnchorLine	{ boxIndex: 0; }
 	property AnchorLine top: AnchorLine		{ boxIndex: 1; }
@@ -124,7 +125,7 @@ Object {
 
 	/// returns css rule by property name
 	function _mapCSSAttribute (name) {
-		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', translateX: 'transform', visible: 'visibility', background: 'background'}[name]
+		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', transform: 'transform', visible: 'visibility', background: 'background'}[name]
 	}
 
 	/// @internal
@@ -158,7 +159,6 @@ Object {
 			case 'visible': if (this.element) this.style('visibility', value? 'inherit': 'hidden'); break;
 			case 'z':		this.style('z-index', value); break;
 			case 'radius':	this.style('border-radius', value); break;
-			case 'translateX':	this.style('transform', 'translate3d(' + value + 'px, 0px, 0px)'); break;
 			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
 			case 'rotate':	this.style('transform', 'rotate(' + value + 'deg)'); break
 		}

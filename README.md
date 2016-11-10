@@ -15,7 +15,7 @@ Any modern python 2.x will go well. Jinja2 is better option for templating in ca
 * Run ./qmlcore --boilerplate
 * Look into app.qml
 * Run ./qmlcore/build
-Please find resulting files in .app.html5/*
+Please find resulting files in .app.web/*
 
 ## How it works
 Qml compiler scans source directories for qml file and parses each one. Filename starting with uppercase letter considered component, lowercase instantiated. Project-wide options stored in ```.manifest``` file. Result of the compilation is single javascript file with minimum dependencies (modernizr only), ready to use in mobile and desktop environment, accompanied by sample .html launcher and flash video player. 
@@ -26,7 +26,7 @@ Manifest is a collection of project-wide hacks we used to botch various projects
 * ```templater``` - template engine to use, only 'simple' and 'jinja2' are supported at the moment
 * ```web-prefix``` - see -p option below, specify css rules prefix
 * ```minify``` - false/true or compiler name as string, only 'gcc' and 'uglify-js' are supported. google closure compiler requires java to run. 
-* ```platforms``` use additional platform/*/ files, default and only platform is 'html5' for now
+* ```platforms``` use additional platform/*/ files, default and only platform is 'web' for now
 * ```path``` - additional directories to search sources for
 
 ## build tool command line options

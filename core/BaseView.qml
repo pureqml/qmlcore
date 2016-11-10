@@ -149,14 +149,20 @@ BaseLayout {
 
 	/// @internal creates delegate in given item slot
 	function _createDelegate(idx) {
+		var items = this._items
+		if (items[idx] !== null)
+			return
+
 		var row = this.model.get(idx)
 		row['index'] = idx
 		this._local['model'] = row
+
 		var item = this.delegate()
-		this._items[idx] = item
+		items[idx] = item
 		item.view = this
 		item.element.remove()
 		this.content.element.append(item.element)
+
 		item._local['model'] = row
 		delete this._local['model']
 		return item

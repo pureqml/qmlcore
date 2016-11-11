@@ -184,7 +184,7 @@ BaseLayout {
 		}
 	}
 
-	content: BaseViewContent { }
+	property BaseViewContent content: BaseViewContent { }
 
 	onContentXChanged: { this.content.x = -value; }
 	onContentYChanged: { this.content.y = -value; }

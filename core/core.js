@@ -212,6 +212,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	}
 
 	var storageName = '__property_' + name
+	var forwardName = '__forward_' + name
 
 	Object.defineProperty(proto, name, {
 		get: function() {
@@ -275,6 +276,21 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			}
 			var oldValue = p.value
 			if (oldValue !== newValue) {
+				var forwardTarget = this[forwardName]
+				if (forwardTarget !== undefined) {
+					if (oldValue !== null && (oldValue instanceof Object)) {
+						//forward property update for mixins
+						var forwardedOldValue = oldValue[forwardTarget]
+						if (newValue !== forwardedOldValue) {
+							oldValue[forwardTarget] = newValue
+							this._update(name, newValue, forwardedOldValue)
+						}
+						return
+					} else if (newValue instanceof Object) {
+						//first assignment of mixin
+						this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
+					}
+				}
 				p.value = newValue
 				if ((!animation || !animation.running) && newValue == defaultValue)
 					delete this[storageName]

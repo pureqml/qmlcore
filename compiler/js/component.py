@@ -248,8 +248,8 @@ class component_generator(object):
 				r.append("%sthis._setId('%s')" %(ident, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
-			# else:
-			# 	self.check_target_property(registry, target)
+			else:
+				self.check_target_property(registry, target)
 
 			if isinstance(value, component_generator):
 				var = "%s_%s" %(parent, escape(target))

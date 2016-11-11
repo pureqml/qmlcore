@@ -186,8 +186,35 @@ class component_generator(object):
 
 		return "\n".join(r)
 
-	def check_target_property(self, target):
-		return
+	def find_property(self, registry, property):
+		if property in self.properties:
+			return self.properties[property]
+
+		base = registry.find_component(self.package, self.component.name)
+		if base != 'core.CoreObject':
+			return registry.components[base].find_property(registry, property)
+
+	def check_target_property(self, registry, target):
+		path = target.split('.')
+
+		current = self
+
+		if len(path) > 1 and (path[0] in registry.id_set): #fixme: add tracking of type here, put id component in current
+			return
+
+		while len(path) > 1:
+			name = path.pop(0)
+			print 'going down', name
+			prop = current.find_property(registry, name)
+			if not prop:
+				raise Exception('unknown property %s in %s' %(target, current.name))
+			component = registry.find_component(current.package, prop.type)
+			current = registry.components[component]
+			print current.name, current
+
+		if not current.find_property(registry, path[0]):
+			raise Exception('unknown property %s in %s' %(target, current.name))
+
 
 	def generate_creators(self, registry, parent, ident_n = 1):
 		prologue = []
@@ -223,8 +250,8 @@ class component_generator(object):
 				r.append("%sthis._setId('%s')" %(ident, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
-			else:
-				self.check_target_property(target)
+			# else:
+			# 	self.check_target_property(registry, target)
 
 			if isinstance(value, component_generator):
 				var = "%s_%s" %(parent, escape(target))

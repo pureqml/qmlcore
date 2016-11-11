@@ -6,7 +6,6 @@ Object {
 	property int width;						///< width of visible area
 	property int height;					///< height of visible area
 	property bool clip;						///< clip all children outside rectangular area defined by x, y, width, height
-	property real rotate;
 
 	property bool focus;					///< this item can be focused
 	property bool focused: focusedChild === this; ///< this item is focused among its siblings
@@ -160,7 +159,6 @@ Object {
 			case 'z':		this.style('z-index', value); break;
 			case 'radius':	this.style('border-radius', value); break;
 			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
-			case 'rotate':	this.style('transform', 'rotate(' + value + 'deg)'); break
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}

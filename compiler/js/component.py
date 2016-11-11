@@ -187,8 +187,14 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def find_property(self, registry, property):
+		if self.component.name == 'ListElement':
+			return True
 		if property in self.properties:
 			return self.properties[property]
+		if property in self.enums:
+			return self.enums[property]
+		if property in self.aliases:
+			return self.aliases[property]
 
 		base = registry.find_component(self.package, self.component.name)
 		if base != 'core.CoreObject':
@@ -201,12 +207,11 @@ class component_generator(object):
 			if (path[0] in registry.id_set):
 				return
 
-			prop = self.find_property(registry, path[0])
-			if not prop:
-				raise Exception('unknown property %s in %s' %(target, self.name))
+			if not self.find_property(registry, path[0]):
+				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
 		else: #len(path) == 1
 			if not self.find_property(registry, target):
-				raise Exception('unknown property %s in %s' %(target, self.name))
+				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
 
 
 	def generate_creators(self, registry, parent, ident_n = 1):

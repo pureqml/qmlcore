@@ -197,23 +197,16 @@ class component_generator(object):
 	def check_target_property(self, registry, target):
 		path = target.split('.')
 
-		current = self
+		if len(path) > 1:
+			if (path[0] in registry.id_set):
+				return
 
-		if len(path) > 1 and (path[0] in registry.id_set): #fixme: add tracking of type here, put id component in current
-			return
-
-		while len(path) > 1:
-			name = path.pop(0)
-			print 'going down', name
-			prop = current.find_property(registry, name)
+			prop = self.find_property(registry, path[0])
 			if not prop:
-				raise Exception('unknown property %s in %s' %(target, current.name))
-			component = registry.find_component(current.package, prop.type)
-			current = registry.components[component]
-			print current.name, current
-
-		if not current.find_property(registry, path[0]):
-			raise Exception('unknown property %s in %s' %(target, current.name))
+				raise Exception('unknown property %s in %s' %(target, self.name))
+		else: #len(path) == 1
+			if not self.find_property(registry, target):
+				raise Exception('unknown property %s in %s' %(target, self.name))
 
 
 	def generate_creators(self, registry, parent, ident_n = 1):

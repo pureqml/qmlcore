@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
-import compiler.doc
+import compiler.doc.md
+import compiler.doc.qml
 import compiler.pyparsing
 import compiler.grammar
 import compiler.js
@@ -19,10 +20,14 @@ parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
 parser.add_argument("-S", dest="strict", default=True, action="store_false")
 parser.add_argument("-D", dest="doc")
+parser.add_argument("-Df", dest="doc_format")
 parser.add_argument("-r", dest="release", default=False, action='store_true')
 args = parser.parse_args()
 
-documentation = compiler.doc.Documentation(args.doc) if args.doc else None
+if args.doc_format == "qml":
+    documentation = compiler.doc.qml.Documentation(args.doc) if args.doc else None
+else:
+    documentation = compiler.doc.md.Documentation(args.doc) if args.doc else None
 
 if args.wait:
 	try:

@@ -17,6 +17,7 @@ parser.add_argument('--web-prefix', '-p', action='store_true', default=False, he
 parser.add_argument('--update-translation', '-u', action='store_true', default=False, help='update translation only')
 parser.add_argument('--boilerplate', action='store_true', default = False, help = 'create simple skeleton project')
 parser.add_argument('--doc', '-D', help='generate documentation in given directory')
+parser.add_argument('--doc-format', '-Df', help='documentation format ("qml" or "md")')
 parser.add_argument('--release', '-r', help='generate release code (no logs)', default = False, action = 'store_true')
 args = parser.parse_args()
 
@@ -174,6 +175,9 @@ def build(root, platform, app, html, manifest):
 
 	if args.doc:
 		options.extend(['-D', args.doc])
+
+	if args.doc_format:
+		options.extend(['-Df', args.doc_format])
 
 	if not (platform_manifest.get('strict', True) and manifest.get('strict', True)):
 		options.insert(0, '-S')

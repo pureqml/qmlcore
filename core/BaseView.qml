@@ -170,6 +170,8 @@ BaseLayout {
 	}
 
 	function _discardItem(item) {
+		if (item === null)
+			return
 		if (this.focusedChild === item)
 			this.focusedChild = null;
 		item.discard()

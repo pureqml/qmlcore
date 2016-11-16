@@ -57,11 +57,13 @@ var _checkDevice = function(target, info) {
 	log("loaded")
 }
 
-_checkDevice('Blackberry', { 'vendor': 'blackberry', 'device': 2, 'os': 'blackberry' })
-_checkDevice('Android', { 'vendor': 'google', 'device': 2, 'os': 'android' })
-_checkDevice('iPhone', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
-_checkDevice('iPad', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
-_checkDevice('iPod', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
+if (!exports.core.vendor) {
+	_checkDevice('Blackberry', { 'vendor': 'blackberry', 'device': 2, 'os': 'blackberry' })
+	_checkDevice('Android', { 'vendor': 'google', 'device': 2, 'os': 'android' })
+	_checkDevice('iPhone', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
+	_checkDevice('iPad', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
+	_checkDevice('iPod', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
+}
 
 var colorTable = {
 	'maroon':	'800000',

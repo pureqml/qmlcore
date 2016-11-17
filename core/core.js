@@ -165,12 +165,12 @@ exports.core.Color.prototype.constructor = exports.core.Color
 /** @const */
 var Color = exports.core.Color
 
-exports.core.Color.prototype.get = function() {
+exports.core.Color.prototype.rgba = function() {
 	return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 }
 
 exports.core.normalizeColor = function(spec) {
-	return (new Color(spec)).get()
+	return (new Color(spec)).rgba()
 }
 
 exports.core.mixColor = function(specA, specB, r) {

@@ -1,6 +1,7 @@
 from compiler.js import get_package, split_name, escape
 from compiler.code import process, parse_deps, generate_accessors, replace_enums
 from compiler import lang
+import json
 
 class component_generator(object):
 	def __init__(self, name, component, prototype = False):
@@ -19,6 +20,7 @@ class component_generator(object):
 		self.changed_handlers = {}
 		self.key_handlers = {}
 		self.signals = set()
+		self.elements = []
 		self.id = None
 		self.prototype = prototype
 		self.ctor = ''
@@ -109,6 +111,8 @@ class component_generator(object):
 			if name in self.signals:
 				raise Exception("duplicate signal " + name)
 			self.signals.add(name)
+		elif t is lang.ListElement:
+			self.elements.append(child.data)
 		else:
 			raise Exception("unhandled element: %s" %child)
 
@@ -322,9 +326,13 @@ class component_generator(object):
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
 			r.append(self.wrap_creator("setup", var, gen.generate_setup_code(registry, var, 2)))
-			r.append("\t%s.addChild(%s);" %(parent, var));
+			r.append("\t%s.addChild(%s)" %(parent, var));
 			r.append("")
 			idx += 1
+
+		if self.elements:
+			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))
+
 		if not self.prototype:
 			for name, argscode in self.methods.iteritems():
 				args, code = argscode

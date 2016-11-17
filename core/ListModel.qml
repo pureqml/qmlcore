@@ -10,11 +10,13 @@ Object {
 		this._rows = []
 	}
 
-	function clear() {
-		this._rows = []
+	function assign(rows) {
+		this._rows = rows
 		this.count = this._rows.length
 		this.reset()
 	}
+
+	function clear() { this.assign([]) }
 
 	function append(row) {
 		var l = this._rows.length

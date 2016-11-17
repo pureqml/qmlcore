@@ -33,7 +33,7 @@ Object {
 
 	function insert(idx, row) {
 		if (idx < 0 || idx > this._rows.length)
-			throw new Error('index ' + idx + ' out of bounds')
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
 		this._rows.splice(idx, 0, row)
 		this.count = this._rows.length
 		this.rowsInserted(idx, idx + 1)
@@ -41,7 +41,7 @@ Object {
 
 	function set(idx, row) {
 		if (idx < 0 || idx >= this._rows.length)
-			throw new Error('index ' + idx + ' out of bounds')
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
 		if (!(row instanceof Object))
 			throw new Error('row is non-object')
 		this._rows[idx] = row
@@ -50,7 +50,7 @@ Object {
 
 	function get(idx) {
 		if (idx < 0 || idx >= this._rows.length)
-			throw new Error('index ' + idx + ' out of bounds')
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
 		var row = this._rows[idx]
 		if (!(row instanceof Object))
 			throw new Error('row is non-object')
@@ -60,7 +60,7 @@ Object {
 
 	function setProperty(idx, name, value) {
 		if (idx < 0 || idx >= this._rows.length)
-			throw new Error('index ' + idx + ' out of bounds')
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
 		var row = this._rows[idx]
 		if (!(row instanceof Object))
 			throw new Error('row is non-object, invalid index? (' + idx + ')')

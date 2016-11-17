@@ -4,11 +4,6 @@ import lang
 doc_next = None
 doc_prev_component = None
 
-def quote(text):
-	if text.startswith('"') or text.startswith('\''):
-		return text
-	return '"' + text + '"'
-
 def component(com):
 	global doc_next, doc_prev_component
 	if doc_next:
@@ -131,6 +126,14 @@ null_value = Keyword("null")
 bool_value = Keyword("true") | Keyword("false")
 number = Word("01234567890+-.")
 
+quoted_string_value = \
+	QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
+	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True)
+
+unquoted_string_value = \
+	QuotedString('"', escChar='\\', unquoteResults = True, multiline=True) | \
+	QuotedString("'", escChar='\\', unquoteResults = True, multiline=True)
+
 enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
 enum_value.setParseAction(handle_enum_value)
@@ -192,10 +195,10 @@ behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
 json_value = Forward()
-json_object = Suppress("{") + delimitedList(Group((quotedString | identifier) + Suppress(":") + json_value) | empty, Suppress(";") | Suppress(",")) + Suppress('}')
+json_object = Suppress("{") + delimitedList(Group((unquoted_string_value | identifier) + Suppress(":") + json_value) | empty, Suppress(";") | Suppress(",")) + Suppress('}')
 json_object.setParseAction(handle_json_object)
 json_array = Suppress("[") + delimitedList(json_value) + Suppress("]")
-json_value << (null_value | bool_value | number | quotedString | json_array | json_object)
+json_value << (null_value | bool_value | number | unquoted_string_value | json_array | json_object)
 
 list_element_declaration = Keyword("ListElement").suppress() - json_object
 list_element_declaration.setParseAction(handle_list_element)
@@ -220,11 +223,10 @@ def handle_ternary_op(s, l, t):
 expression_array = Literal("[") + Optional(expression + ZeroOrMore(Literal(",") + expression)) + Literal("]")
 def handle_expression_array(s, l, t):
 	return "".join(t)
+
 expression_array.setParseAction(handle_expression_array)
 
-expression_definition = (QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
-	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True) | \
-	bool_value | number | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array)
+expression_definition = bool_value | number | quoted_string_value | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array
 
 expression_ops = infixNotation(expression_definition, [
 	('!', 1, opAssoc.RIGHT, handle_unary_op),

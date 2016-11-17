@@ -124,7 +124,7 @@ class component_generator(object):
 		base_type = registry.find_component(self.package, self.component.name)
 		ctor += " * @extends {exports.%s}\n" %base_type
 		ctor += " */\n"
-		ctor += "\texports.%s = function(parent) {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
+		ctor += "\texports.%s = function(parent, _delegate) {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
 		return ctor
 
 	def generate_animations(self, registry, parent):
@@ -263,7 +263,7 @@ class component_generator(object):
 					r.append(self.wrap_creator("create", var, code))
 					r.append("%sthis.%s = %s" %(ident, target, var))
 				else:
-					code = "var %s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent)
+					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
 					p, c = value.generate_creators(registry, var, ident_n + 1)
 					code += self.wrap_creator("create", var, c)
 					code += "\n"
@@ -307,6 +307,8 @@ class component_generator(object):
 					r.append("%s%s();" %(ident, var))
 					undep = []
 					for path, dep in deps:
+						if dep == 'model':
+							path, dep = "this._get('_delegate')", '_row'
 						r.append("%sthis.connectOnChanged(%s, '%s', %s);" %(ident, path, dep, var))
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
 					r.append("%sthis._removeUpdater('%s', (function() { %s }).bind(this));" %(ident, target, ";".join(undep)))

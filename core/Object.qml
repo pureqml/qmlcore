@@ -8,6 +8,8 @@ EventEmitter {
 
 		this._context = parent? parent._context: null
 		this._local = {}
+		if (_delegate === true)
+			this._local._delegate = this
 		this._changedHandlers = {}
 		this._changedConnections = []
 		this._pressedHandlers = {}

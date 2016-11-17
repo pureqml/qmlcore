@@ -90,6 +90,11 @@ BaseLayout {
 		var items = this._items
 		for(var i = begin; i < end; ++i)
 			items.splice(i, 0, null)
+
+		//update delegated to the end of the list
+		for(var i = end; i < items.length; ++i)
+			this._updateDelegate(i)
+
 		if (items.length != this.model.count)
 			throw new Error("insert: items length does reflect model size")
 		this._delayedLayout.schedule()
@@ -99,9 +104,10 @@ BaseLayout {
 	function _onRowsChanged(begin, end) {
 		if (this.trace)
 			log("rows changed", begin, end)
+
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
-			this._discardDelegate(i)
+			this._updateDelegate(i)
 		}
 		if (items.length != this.model.count)
 			throw new Error("change: items length does reflect model size")
@@ -112,12 +118,14 @@ BaseLayout {
 	function _onRowsRemoved(begin, end) {
 		if (this.trace)
 			log("rows removed", begin, end)
+
 		var items = this._items
-		//remove every delegate until the end of items (index shifted)
 		var removedItems = items.splice(begin, end - begin)
 		removedItems.forEach(function(item) { this._discardItem(item) }.bind(this))
+
+		//update every delegate until the end of items (index shifted)
 		for(var i = begin; i < items.length; ++i) {
-			this._discardDelegate(i)
+			this._updateDelegate(i)
 		}
 		if (items.length != this.model.count)
 			throw new Error("remove: items length does reflect model size")
@@ -167,6 +175,13 @@ BaseLayout {
 		item._local['model'] = row
 		delete this._local['model']
 		return item
+	}
+
+	function _updateDelegate(idx) {
+		var item = this._items[idx]
+		if (item) {
+			_globals.core.Object.prototype._update.apply(item, ['_row']);
+		}
 	}
 
 	function _discardItem(item) {

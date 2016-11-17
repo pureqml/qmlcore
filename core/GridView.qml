@@ -70,8 +70,8 @@ BaseView {
 		x -= this.content.x
 		y -= this.content.y
 		var horizontal = this.flow == this.FlowLeftToRight
-		x = Math.floor(x / this.cellWidth)
-		y = Math.floor(y / this.cellHeight)
+		x = Math.floor(x / (this.cellWidth + this.spacing))
+		y = Math.floor(y / (this.cellHeight + this.spacing))
 		if (!horizontal) {
 			return x * this.rows + y
 		} else {
@@ -132,7 +132,7 @@ BaseView {
 		var x = 0, y = 0
 		var cx = this.content.x, cy = this.content.y
 
-		var atEnd = function() { return horizontal? cy + y >= h: cx + x >= w }
+		var atEnd = horizontal? function() { return cy + y >= h }: function() { return cx + x >= w }
 
 		var itemsCount = 0
 		for(var i = 0; i < n && !atEnd(); ++i) {

@@ -125,7 +125,7 @@ exports.core.Color = function(value) {
 		this.r = parseInt(value[0], 10)
 		this.g = parseInt(value[1], 10)
 		this.b = parseInt(value[2], 10)
-		this.a = parseInt(value[3], 10)
+		this.a = Math.floor(parseFloat(value[3]) * 255)
 		return
 	}
 	else {

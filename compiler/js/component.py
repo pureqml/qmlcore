@@ -223,7 +223,7 @@ class component_generator(object):
 
 		if not self.prototype:
 			for name in self.signals:
-				r.append("%score.addSignal(this, '%s')" %(ident, name))
+				r.append("%sthis.%s = function() { this.emit.apply(this, exports.core.copyArguments(arguments, 0, '%s')) }" %(ident, name, name))
 
 		if not self.prototype:
 			for name, prop in self.properties.iteritems():

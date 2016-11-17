@@ -67,7 +67,7 @@ class component_generator(object):
 				raise Exception("duplicate property " + child.name)
 			self.enums[child.name] = child
 		elif t is lang.Assignment:
-			if self.component.name != 'ListElement' and child.target == 'id':
+			if child.target == 'id':
 				raise Exception('assigning non-id for id')
 			self.assign(child.target, child.value)
 		elif t is lang.IdAssignment:
@@ -187,8 +187,6 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def find_property(self, registry, property):
-		if self.component.name == 'ListElement':
-			return True
 		if property in self.properties:
 			return self.properties[property]
 		if property in self.enums:
@@ -242,7 +240,7 @@ class component_generator(object):
 			idx += 1
 
 		for target, value in self.assignments.iteritems():
-			if target == "id" and self.component.name != 'ListElement':
+			if target == "id":
 				if "." in value:
 					raise Exception("expected identifier, not expression")
 				r.append("%sthis._setId('%s')" %(ident, value))

@@ -4,6 +4,11 @@ import lang
 doc_next = None
 doc_prev_component = None
 
+def quote(text):
+	if text.startswith('"') or text.startswith('\''):
+		return text
+	return '"' + text + '"'
+
 def component(com):
 	global doc_next, doc_prev_component
 	if doc_next:
@@ -105,6 +110,15 @@ def handle_documentation_string(s, l, t):
 		end = text.rfind('*/')
 		document(text[3:end], l, False)
 
+def handle_json_object(s, l, tokens):
+	obj = {}
+	for key, value in tokens:
+		obj[key] = value
+	return obj
+
+def handle_list_element(s, l, t):
+	return lang.ListElement(t[0])
+
 expression = Forward()
 expression_list = Forward()
 component_declaration = Forward()
@@ -113,6 +127,9 @@ type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Za-z_]"), alphanums + "._")
 identifier = Word(srange("[a-z_]"), alphanums + "_")
 code = originalTextFor(nestedExpr("{", "}", None, None))
+null_value = Keyword("null")
+bool_value = Keyword("true") | Keyword("false")
+number = Word("01234567890+-.")
 
 enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
@@ -174,7 +191,16 @@ method_declaration_qml.setParseAction(handle_method_declaration)
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + nested_identifier_lvalue_list + Literal("{").suppress() + component_declaration + Literal("}").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
-scope_declaration = behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
+json_value = Forward()
+json_object = Suppress("{") + delimitedList(Group((quotedString | identifier) + Suppress(":") + json_value) | empty, Suppress(";") | Suppress(",")) + Suppress('}')
+json_object.setParseAction(handle_json_object)
+json_array = Suppress("[") + delimitedList(json_value) + Suppress("]")
+json_value << (null_value | bool_value | number | quotedString | json_array | json_object)
+
+list_element_declaration = Keyword("ListElement").suppress() - json_object
+list_element_declaration.setParseAction(handle_list_element)
+
+scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
 component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
 
 component_declaration << (component_type + component_scope)
@@ -198,7 +224,7 @@ expression_array.setParseAction(handle_expression_array)
 
 expression_definition = (QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
 	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True) | \
-	Keyword("true") | Keyword("false") | Word("01234567890+-.") | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array)
+	bool_value | number | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array)
 
 expression_ops = infixNotation(expression_definition, [
 	('!', 1, opAssoc.RIGHT, handle_unary_op),

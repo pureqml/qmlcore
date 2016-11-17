@@ -94,3 +94,7 @@ class Signal(Entity):
 		super(Signal, self).__init__()
 		self.name = name
 
+class ListElement(Entity):
+	def __init__(self, data):
+		super(ListElement, self).__init__()
+		self.data = data

@@ -87,13 +87,12 @@ def handle_behavior_declaration(s, l, t):
 def handle_signal_declaration(s, l, t):
 	return component(lang.Signal(t[0]))
 
-def handle_builtin(s, l, t):
-	#print "builtin> ", t
-	return "".join(t)
-
 def handle_function_call(s, l, t):
 	#print "func> ", t
-	return "%s(%s)" % (t[0], ",".join(t[1:]))
+	name = t[0]
+	if name[0].islower():
+		name = '_globals.' + name
+	return "%s(%s)" % (name, ",".join(t[1:]))
 
 def handle_documentation_string(s, l, t):
 	text = t[0]
@@ -138,12 +137,8 @@ enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
 enum_value.setParseAction(handle_enum_value)
 
-builtin = Keyword("Math") + Literal(".") + Word(alphanums) + Optional(Literal("(") + expression_list + Literal(")"))
-builtin.setParseAction(handle_builtin)
-
-function_call = Word(alphanums) + Literal("(").suppress() + expression_list + Literal(")").suppress() + \
+function_call = Word(alphanums + '._') + Literal("(").suppress() + expression_list + Literal(")").suppress() + \
 	ZeroOrMore(Literal(".").suppress() + Literal("arg").suppress() + Literal("(").suppress() + expression + Literal(")").suppress())
-
 function_call.setParseAction(handle_function_call)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
@@ -226,7 +221,7 @@ def handle_expression_array(s, l, t):
 
 expression_array.setParseAction(handle_expression_array)
 
-expression_definition = bool_value | number | quoted_string_value | builtin | function_call | nested_identifier_rvalue | enum_value | expression_array
+expression_definition = bool_value | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
 
 expression_ops = infixNotation(expression_definition, [
 	('!', 1, opAssoc.RIGHT, handle_unary_op),
@@ -253,7 +248,7 @@ expression_ops.setParseAction(lambda s, l, t: "(%s)" %t[0])
 
 expression << expression_ops
 
-expression_list_definition = expression + ZeroOrMore(Literal(",") + expression)
+expression_list_definition = expression + ZeroOrMore(Suppress(",") + expression)
 expression_list << Optional(expression_list_definition)
 
 source = component_declaration

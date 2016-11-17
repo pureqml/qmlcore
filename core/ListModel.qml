@@ -65,8 +65,10 @@ Object {
 		if (!(row instanceof Object))
 			throw new Error('row is non-object, invalid index? (' + idx + ')')
 
-		row[name] = value
-		this.rowsChanged(idx, idx + 1)
+		if (row[name] !== value) {
+			row[name] = value
+			this.rowsChanged(idx, idx + 1)
+		}
 	}
 
 	function remove(idx, n) {

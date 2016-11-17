@@ -112,9 +112,8 @@ exports.core.Color = function(value) {
 	}
 	if (typeof value !== 'string')
 	{
-		this.r = 255
+		this.r = this.b = this.a = 255
 		this.g = 0
-		this.b = 255
 		log("invalid color specification: " + value)
 		return
 	}

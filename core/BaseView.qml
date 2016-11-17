@@ -99,6 +99,7 @@ BaseLayout {
 	function _onRowsChanged(begin, end) {
 		if (this.trace)
 			log("rows changed", begin, end)
+
 		var items = this._items
 		for(var i = begin; i < end; ++i) {
 			this._discardDelegate(i)
@@ -167,6 +168,13 @@ BaseLayout {
 		item._local['model'] = row
 		delete this._local['model']
 		return item
+	}
+
+	function _updateItem(idx) {
+		var item = this._items[idx]
+		if (item) {
+			item.emitChanged('_row')
+		}
 	}
 
 	function _discardItem(item) {

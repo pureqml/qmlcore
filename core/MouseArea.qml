@@ -71,7 +71,7 @@ Item {
 	function _bindWheel(value) {
 		if (value && !this._wheelBinder) {
 			this._clickBinder = new _globals.core.EventBinder(this.element)
-			this._clickBinder.on('mousewheel', function(event) { this.wheelEvent(event.originalEvent.wheelDelta / 120) }.bind(this))
+			this._clickBinder.on('mousewheel', function(event) { this.wheelEvent(event.wheelDelta / 120) }.bind(this))
 		}
 		if (this._clickBinder)
 			this._clickBinder.enable(value)

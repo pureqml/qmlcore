@@ -1,5 +1,5 @@
 from compiler.js import get_package, split_name, escape
-from compiler.code import process, parse_deps, generate_accessors, replace_enums
+from compiler.js.code import process, parse_deps, generate_accessors, replace_enums
 from compiler import lang
 import json
 

@@ -103,6 +103,13 @@ exports.core.CoreObject.prototype.constructor = exports.core.CoreObject
 
 /** @constructor */
 exports.core.Color = function(value) {
+	if (Array.isArray(value)) {
+		this.r = value[0]
+		this.g = value[1]
+		this.b = value[2]
+		this.a = value[3] !== undefined? value[3]: 255
+		return
+	}
 	if (typeof value !== 'string')
 	{
 		this.r = 255
@@ -164,6 +171,13 @@ exports.core.Color.prototype.get = function() {
 
 exports.core.normalizeColor = function(spec) {
 	return (new Color(spec)).get()
+}
+
+exports.core.mixColor = function(specA, specB, r) {
+	var a = new Color(specA)
+	var b = new Color(specB)
+	var mix = function(a, b, r) { return Math.floor((a - b) * r + b) }
+	return new Color([mix(a.r, b.r, r), mix(a.g, b.g, r), mix(a.b, b.b, r), mix(a.a, b.a, r)]).get()
 }
 
 

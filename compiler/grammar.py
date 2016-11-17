@@ -113,6 +113,10 @@ def handle_json_object(s, l, tokens):
 def handle_list_element(s, l, t):
 	return lang.ListElement(t[0])
 
+def handle_number(s, l, t):
+	value = t[0]
+	return float(value) if '.' in value else int(value)
+
 expression = Forward()
 expression_list = Forward()
 component_declaration = Forward()
@@ -124,6 +128,7 @@ code = originalTextFor(nestedExpr("{", "}", None, None))
 null_value = Keyword("null")
 bool_value = Keyword("true") | Keyword("false")
 number = Word("01234567890+-.")
+number.setParseAction(handle_number)
 
 quoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
@@ -209,10 +214,10 @@ def handle_unary_op(s, l, t):
 	return " ".join(t[0])
 def handle_binary_op(s, l, t):
 	#print "EXPR", t
-	return " ".join(t[0])
+	return " ".join(map(str, t[0]))
 def handle_ternary_op(s, l, t):
 	#print "EXPR", t
-	return " ".join(t[0])
+	return " ".join(map(str, t[0]))
 
 
 expression_array = Literal("[") + Optional(expression + ZeroOrMore(Literal(",") + expression)) + Literal("]")

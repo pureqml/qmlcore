@@ -70,8 +70,8 @@ BaseView {
 		x -= this.content.x
 		y -= this.content.y
 		var horizontal = this.flow == this.FlowLeftToRight
-		x = Math.floor(x / this.cellWidth)
-		y = Math.floor(y / this.cellHeight)
+		x = Math.floor(x / (this.cellWidth + this.spacing))
+		y = Math.floor(y / (this.cellHeight + this.spacing))
 		if (!horizontal) {
 			return x * this.rows + y
 		} else {

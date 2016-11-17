@@ -18,7 +18,7 @@ Object {
 		var style = this.x + "px " + this.y + "px " + this.blur + "px "
 		if (this.spread > 0)
 			style += this.spread + "px "
-		style += new _globals.core.Color(this.color).get()
+		style += _globals.core.normalizeColor(this.color)
 		return style
 	}
 

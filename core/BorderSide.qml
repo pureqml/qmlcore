@@ -14,7 +14,7 @@ Object {
 			if (pp) {
 				var cssname = 'border-' + this.name
 				if (this.width) {
-					pp.style(cssname, this.width + "px solid " + new _globals.core.Color(this.color).get())
+					pp.style(cssname, this.width + "px solid " + _globals.core.normalizeColor(this.color))
 				} else
 					pp.style(cssname, '')
 			}

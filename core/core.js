@@ -176,7 +176,7 @@ exports.core.normalizeColor = function(spec) {
 exports.core.mixColor = function(specA, specB, r) {
 	var a = new Color(specA)
 	var b = new Color(specB)
-	var mix = function(a, b, r) { return Math.floor((a - b) * r + b) }
+	var mix = function(a, b, r) { return Math.floor((b - a) * r + a) }
 	return new Color([mix(a.r, b.r, r), mix(a.g, b.g, r), mix(a.b, b.b, r), mix(a.a, b.a, r)]).get()
 }
 

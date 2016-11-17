@@ -161,7 +161,7 @@ class component_generator(object):
 		r.append("%sexports.%s.prototype.componentName = '%s'" %(ident, self.name, self.name))
 
 		for name in self.signals:
-			r.append("%sexports.%s.prototype.%s = function() { var args = exports.core.copyArguments(arguments, 0, '%s'); this.emit.apply(this, args) }" %(ident, self.name, name, name))
+			r.append("%sexports.%s.prototype.%s = function() { this.emit.apply(this, exports.core.copyArguments(arguments, 0, '%s')) }" %(ident, self.name, name, name))
 
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode

@@ -46,6 +46,11 @@ exports.core.copyArguments = copyArguments
 if (log === null)
 	log = console.log.bind(console)
 
+/** @const */
+/** @param {string} text @param {...} args */
+_globals.qsTr = function(text, args) { return _globals._context.qsTr.apply(qml._context, arguments) }
+
+
 var _checkDevice = function(target, info) {
 	if (navigator.userAgent.indexOf(target) < 0)
 		return

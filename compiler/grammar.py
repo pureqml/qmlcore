@@ -211,7 +211,7 @@ component_declaration.setParseAction(handle_component_declaration)
 
 def handle_unary_op(s, l, t):
 	#print "EXPR", t
-	return " ".join(t[0])
+	return " ".join(map(str, t[0]))
 def handle_binary_op(s, l, t):
 	#print "EXPR", t
 	return " ".join(map(str, t[0]))

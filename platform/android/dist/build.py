@@ -22,4 +22,9 @@ parser.add_argument('--app', '-a', help='application name', default="app")
 parser.add_argument('--title', '-t', help='application title', default="App")
 args = parser.parse_args()
 
-build(args.app, args.title)
+
+res = os.system('cordova --version')
+if res == 0:
+    build(args.app, args.title)
+else:
+    print 'Install "cordova" first: https://cordova.apache.org/docs/en/latest/guide/cli/'

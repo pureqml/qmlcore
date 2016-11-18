@@ -24,7 +24,7 @@ StyleCache.prototype.register = function(rules) {
 
 StyleCache.prototype.classify = function(rules) {
 	var total = this.total
-	if (total < 100)
+	if (total < 1000)
 		return ''
 
 	rules.sort() //mind vendor prefixes!
@@ -36,7 +36,7 @@ StyleCache.prototype.classify = function(rules) {
 	rules.forEach(function(rule, idx) {
 		var hits = self.stats[rule]
 		var usage = hits / total
-		if (usage > 0.1) {
+		if (usage > 0.01) {
 			classified.push(rule)
 			hot.push(idx)
 		}
@@ -203,7 +203,7 @@ exports.Element.prototype.updateStyle = function() {
 	}
 	var classes = cache.classify(rules)
 	if (classes.length > 0)
-		log('classify', classes)
+		log('classify', classes, rules)
 	this.dom.setAttribute('style', rules.join(';'))
 }
 

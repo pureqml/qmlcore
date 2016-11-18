@@ -186,30 +186,81 @@ exports.core.mixColor = function(specA, specB, r) {
 
 exports.core.ModelUpdate = function() {
 	this._updates = []
+	this._updateIndex = 0
+	this.count = 0
 }
+
 exports.core.ModelUpdate.prototype.constructor = exports.core.ModelUpdate
 
 exports.core.ModelUpdate.prototype.reset = function(model) {
-	var updates = []
-	var n = model.count
-	for(var i = 0; i < n; ++i)
-		updates.push(model.get(i))
-	this._updates = updates
+	this._updates = []
+	this._updateIndex = 0
+	this.count = model.count
+}
+
+exports.core.ModelUpdate.prototype._addRange = function(begin, end) {
+	for(var i = begin; i < end; ++i) {
+		this._updates[i] = true
+	}
+}
+
+exports.core.ModelUpdate.prototype._setUpdateIndex = function(begin) {
+	var n = this._updates.length
+	this._updates.slice(begin, n - begin) //remove tail of sparse update array
+	this._updateIndex = begin
 }
 
 exports.core.ModelUpdate.prototype.insert = function(model, begin, end) {
-	
+	var d = end - begin
+	if (d === 0)
+		return
+
+	this._setUpdateIndex(begin)
+	this.count += d
+	if (this.count != model.count)
+		throw new Error('unbalanced insert ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
 }
 
 exports.core.ModelUpdate.prototype.update = function(model, begin, end) {
-	
+	if (begin >= end || begin >= this._updateIndex)
+		return
+
+	if (end >= this._updateIndex) {
+		this._setUpdateIndex(begin)
+		return
+	}
+
+	this._addRange(begin, end)
 }
 
 exports.core.ModelUpdate.prototype.remove = function(model, begin, end) {
-	
+	var d = end - begin
+	if (d === 0)
+		return
+
+	this._setUpdateIndex(begin)
+	this.count -= d
+	if (this.count != model.count)
+		throw new Error('unbalanced remove ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
 }
 
 exports.core.ModelUpdate.prototype.apply = function(view) {
+	var model = view.model
+	this._updates.forEach(function(value, idx) { view._updateDelegate(idx) })
+	var d = this.count - view._items.length
+
+	if (d > 0) {
+		while(d--) {
+			view._items.push(null)
+		}
+	} else if (d < 0) {
+		view._items.splice(this.count, -d)
+	}
+
+	for(var i = this._updateIndex; i < this.count; ++i)
+		view._updateDelegate(i)
+	this._updateIndex = this.count
+	this._updates = []
 }
 
 /** @constructor */

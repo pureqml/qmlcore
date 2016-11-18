@@ -17,6 +17,7 @@ BaseLayout {
 
 	constructor: {
 		this._items = []
+		this._modelEvents = []
 	}
 
 	/// returns index of item by x,y coordinates
@@ -64,22 +65,8 @@ BaseLayout {
 		if (this.trace)
 			log("reset", items.length, model.count)
 
-		if (items.length == model.count && items.length == 0)
-			return
-
-		if (items.length > model.count) {
-			if (model.count != items.length)
-				this._onRowsRemoved(model.count, items.length)
-			if (items.length > 0)
-				this._onRowsChanged(0, items.length)
-		} else {
-			if (items.length > 0)
-				this._onRowsChanged(0, items.length)
-			if (model.count != items.length)
-				this._onRowsInserted(items.length, model.count)
-		}
-		if (items.length != model.count)
-			throw new Error("reset: items length does reflect model size")
+		var ModelEvent = _globals.core.ModelEvent
+		this._modelEvents.push(new ModelEvent(model, ModelEvent.Reset))
 		this._delayedLayout.schedule()
 	}
 
@@ -87,16 +74,10 @@ BaseLayout {
 	function _onRowsInserted(begin, end) {
 		if (this.trace)
 			log("rows inserted", begin, end)
-		var items = this._items
+
+		var ModelEvent = _globals.core.ModelEvent
 		for(var i = begin; i < end; ++i)
-			items.splice(i, 0, null)
-
-		//update delegated to the end of the list
-		for(var i = end; i < items.length; ++i)
-			this._updateDelegate(i)
-
-		if (items.length != this.model.count)
-			throw new Error("insert: items length does reflect model size")
+			this._modelEvents.push(new ModelEvent(model, ModelEvent.Insert, begin, end))
 		this._delayedLayout.schedule()
 	}
 
@@ -105,12 +86,9 @@ BaseLayout {
 		if (this.trace)
 			log("rows changed", begin, end)
 
-		var items = this._items
-		for(var i = begin; i < end; ++i) {
-			this._updateDelegate(i)
-		}
-		if (items.length != this.model.count)
-			throw new Error("change: items length does reflect model size")
+		var ModelEvent = _globals.core.ModelEvent
+		for(var i = begin; i < end; ++i)
+			this._modelEvents.push(new ModelEvent(model, ModelEvent.Change, begin, end))
 		this._delayedLayout.schedule()
 	}
 
@@ -119,16 +97,9 @@ BaseLayout {
 		if (this.trace)
 			log("rows removed", begin, end)
 
-		var items = this._items
-		var removedItems = items.splice(begin, end - begin)
-		removedItems.forEach(function(item) { this._discardItem(item) }.bind(this))
-
-		//update every delegate until the end of items (index shifted)
-		for(var i = begin; i < items.length; ++i) {
-			this._updateDelegate(i)
-		}
-		if (items.length != this.model.count)
-			throw new Error("remove: items length does reflect model size")
+		var ModelEvent = _globals.core.ModelEvent
+		for(var i = begin; i < end; ++i)
+			this._modelEvents.push(new ModelEvent(model, ModelEvent.Remove, begin, end))
 		this._delayedLayout.schedule()
 	}
 
@@ -199,6 +170,11 @@ BaseLayout {
 			this._discardItem(item)
 			this._items[idx] = null
 		}
+	}
+
+	function _updateItems() {
+		log('update items', this._modelEvents.length)
+		qml.core.BaseLayout.prototype._updateItems.apply(this)
 	}
 
 	property BaseViewContent content: BaseViewContent { }

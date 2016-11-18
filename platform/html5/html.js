@@ -207,7 +207,7 @@ exports.Element.prototype.updateStyle = function() {
 		rules.push(rule)
 	}
 	var cls = cache.classify(rules)
-	if (cls.length > 0) {
+	if (cls.length > 0 && this._class !== cls) {
 		var classList = this.dom.classList
 		if (this._class !== undefined)
 			classList.remove(this._class)

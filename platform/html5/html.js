@@ -46,7 +46,7 @@ StyleCache.prototype.classify = function(rules) {
 			hot.push(idx)
 		}
 	})
-	if (!hot.length)
+	if (hot.length < 2)
 		return ''
 	hot.forEach(function(offset, idx) {
 		rules.splice(offset - idx, 1)

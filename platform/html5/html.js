@@ -35,7 +35,6 @@ StyleCache.prototype.register = function(rules) {
 		return cls
 
 	var cls = classes[rule] = this.prefix + this.classes_total++
-	var style = this.style
 	this._addRule('.' + cls, rule)
 	return cls
 }
@@ -46,13 +45,11 @@ StyleCache.prototype.classify = function(rules) {
 		return ''
 
 	rules.sort() //mind vendor prefixes!
-	var n = rules.length
-	var classes = []
 	var classified = []
 	var hot = []
-	var self = this
+	var stats = this.stats
 	rules.forEach(function(rule, idx) {
-		var hits = self.stats[rule]
+		var hits = stats[rule]
 		var usage = hits / total
 		if (usage > 0.05) { //fixme: usage threshold
 			classified.push(rule)
@@ -64,7 +61,7 @@ StyleCache.prototype.classify = function(rules) {
 	hot.forEach(function(offset, idx) {
 		rules.splice(offset - idx, 1)
 	})
-	return self.register(classified)
+	return this.register(classified)
 }
 
 var registerGenericListener = function(target) {

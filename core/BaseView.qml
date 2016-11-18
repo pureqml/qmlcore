@@ -86,6 +86,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows changed", begin, end)
 
+		var model = this.model
 		var ModelEvent = _globals.core.ModelEvent
 		for(var i = begin; i < end; ++i)
 			this._modelEvents.push(new ModelEvent(model, ModelEvent.Change, begin, end))

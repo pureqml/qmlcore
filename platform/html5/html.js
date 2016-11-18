@@ -1,11 +1,52 @@
 var StyleCache = function () {
-	this._stats = {}
+	this.total = 0
+	this.stats = {}
+	this.classes = {}
+	this.classes_total = 0
 }
 
 StyleCache.prototype.constructor = StyleCache
 
 StyleCache.prototype.add = function(rule) {
-	this._stats[rule] = (this._stats[rule] || 0) + 1
+	this.stats[rule] = (this.stats[rule] || 0) + 1
+	++this.total
+}
+
+StyleCache.prototype.register = function(rules) {
+	var key = rules.join('+')
+	var classes = this.classes
+	var cls = classes[key]
+	if (cls !== undefined)
+		return cls
+
+	return classes[key] = 'cls_' + this.classes_total++
+}
+
+StyleCache.prototype.classify = function(rules) {
+	var total = this.total
+	if (total < 100)
+		return ''
+
+	rules.sort() //mind vendor prefixes!
+	var n = rules.length
+	var classes = []
+	var classified = []
+	var hot = []
+	var self = this
+	rules.forEach(function(rule, idx) {
+		var hits = self.stats[rule]
+		var usage = hits / total
+		if (usage > 0.1) {
+			classified.push(rule)
+			hot.push(idx)
+		}
+	})
+	if (!hot.length)
+		return ''
+	hot.forEach(function(offset, idx) {
+		rules.splice(offset - idx, 1)
+	})
+	return self.register(classified)
 }
 
 var registerGenericListener = function(target) {
@@ -160,7 +201,9 @@ exports.Element.prototype.updateStyle = function() {
 
 		rules.push(rule)
 	}
-
+	var classes = cache.classify(rules)
+	if (classes.length > 0)
+		log('classify', classes)
 	this.dom.setAttribute('style', rules.join(';'))
 }
 

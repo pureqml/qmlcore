@@ -98,6 +98,7 @@ exports.Element = function(context, dom) {
 	this.dom = dom
 	this._fragment = []
 	this._styles = {}
+	this._class = ''
 
 	registerGenericListener(this)
 }
@@ -217,12 +218,13 @@ exports.Element.prototype.updateStyle = function() {
 		rules.push(rule)
 	}
 	var cls = cache.classify(rules)
-	if (cls.length > 0 && this._class !== cls) {
+	if (cls !== this._class) {
 		var classList = element.classList
-		if (this._class !== undefined)
+		if (this._class !== '')
 			classList.remove(this._class)
 		this._class = cls
-		classList.add(cls)
+		if (cls !== '')
+			classList.add(cls)
 	}
 	this.dom.setAttribute('style', rules.join(';'))
 }

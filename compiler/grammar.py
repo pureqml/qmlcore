@@ -147,7 +147,6 @@ function_call = Word(alphanums + '._') + Literal("(").suppress() + expression_li
 function_call.setParseAction(handle_function_call)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
-nested_identifier_lvalue_list = Group(nested_identifier_lvalue + ZeroOrMore(Literal(",").suppress() + nested_identifier_lvalue))
 
 nested_identifier_rvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
@@ -175,7 +174,7 @@ alias_property_declaration = Keyword("property").suppress() + Keyword("alias").s
 alias_property_declaration.setParseAction(handle_alias_property_declaration)
 
 enum_property_declaration = Keyword("property").suppress() + Keyword("enum").suppress() + identifier + \
-	Literal("{").suppress() + Group(enum_element + ZeroOrMore(Literal(",").suppress() + enum_element)) + Literal("}").suppress() + Optional(Literal(':').suppress() + enum_element) + expression_end
+	Literal("{").suppress() + Group(delimitedList(enum_element, ',')) + Literal("}").suppress() + Optional(Literal(':').suppress() + enum_element) + expression_end
 enum_property_declaration.setParseAction(handle_enum_property_declaration)
 
 property_declaration.setParseAction(handle_property_declaration)
@@ -185,13 +184,13 @@ assign_scope_declaration.setParseAction(handle_assignment)
 assign_scope = nested_identifier_lvalue + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
 assign_scope.setParseAction(handle_assignment_scope)
 
-method_declaration = nested_identifier_lvalue + Group(Optional(Literal("(").suppress() + identifier + ZeroOrMore(Literal(",").suppress() + identifier) + Literal(")").suppress() )) + Literal(":").suppress() + code
+method_declaration = nested_identifier_lvalue + Group(Optional(Literal("(").suppress() + delimitedList(identifier, ",") + Literal(")").suppress() )) + Literal(":").suppress() + code
 method_declaration.setParseAction(handle_method_declaration)
 
-method_declaration_qml = Keyword("function") + nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(identifier + ZeroOrMore(Literal(",").suppress() + identifier)) + Literal(")").suppress() ) + code
+method_declaration_qml = Keyword("function") + nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(delimitedList(identifier, ",")) + Literal(")").suppress() ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
-behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + nested_identifier_lvalue_list + Literal("{").suppress() + component_declaration + Literal("}").suppress()
+behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + Group(delimitedList(nested_identifier_lvalue, ',')) + Literal("{").suppress() + component_declaration + Literal("}").suppress()
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
 json_value = Forward()
@@ -220,7 +219,7 @@ def handle_ternary_op(s, l, t):
 	return " ".join(map(str, t[0]))
 
 
-expression_array = Literal("[") + Optional(expression + ZeroOrMore(Literal(",") + expression)) + Literal("]")
+expression_array = Literal("[") + Optional(delimitedList(expression, ",")) + Literal("]")
 def handle_expression_array(s, l, t):
 	return "".join(t)
 
@@ -252,9 +251,7 @@ expression_ops = infixNotation(expression_definition, [
 expression_ops.setParseAction(lambda s, l, t: "(%s)" %t[0])
 
 expression << expression_ops
-
-expression_list_definition = expression + ZeroOrMore(Suppress(",") + expression)
-expression_list << Optional(expression_list_definition)
+expression_list << Optional(delimitedList(expression, ","))
 
 source = component_declaration
 cStyleComment.setParseAction(handle_documentation_string)

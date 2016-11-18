@@ -17,7 +17,7 @@ BaseLayout {
 
 	constructor: {
 		this._items = []
-		this._modelEvents = []
+		this._modelUpdate = new _globals.core.ModelUpdate()
 	}
 
 	/// returns index of item by x,y coordinates
@@ -61,12 +61,10 @@ BaseLayout {
 	/** @private */
 	function _onReset() {
 		var model = this.model
-		var items = this._items
 		if (this.trace)
-			log("reset", items.length, model.count)
+			log("reset", this._items.length, model.count)
 
-		var ModelEvent = _globals.core.ModelEvent
-		this._modelEvents.push(new ModelEvent(model, ModelEvent.Reset))
+		this._modelUpdate.reset(model)
 		this._delayedLayout.schedule()
 	}
 
@@ -75,9 +73,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows inserted", begin, end)
 
-		var ModelEvent = _globals.core.ModelEvent
-		for(var i = begin; i < end; ++i)
-			this._modelEvents.push(new ModelEvent(model, ModelEvent.Insert, begin, end))
+		this._modelUpdate.insert(this.model, begin, end)
 		this._delayedLayout.schedule()
 	}
 
@@ -86,10 +82,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows changed", begin, end)
 
-		var model = this.model
-		var ModelEvent = _globals.core.ModelEvent
-		for(var i = begin; i < end; ++i)
-			this._modelEvents.push(new ModelEvent(model, ModelEvent.Change, begin, end))
+		this._modelUpdate.update(this.model, begin, end)
 		this._delayedLayout.schedule()
 	}
 
@@ -98,9 +91,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows removed", begin, end)
 
-		var ModelEvent = _globals.core.ModelEvent
-		for(var i = begin; i < end; ++i)
-			this._modelEvents.push(new ModelEvent(model, ModelEvent.Remove, begin, end))
+		this._modelUpdate.remove(this.model, begin, end)
 		this._delayedLayout.schedule()
 	}
 
@@ -174,7 +165,7 @@ BaseLayout {
 	}
 
 	function _updateItems() {
-		log('update items', this._modelEvents.length)
+		this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._updateItems.apply(this)
 	}
 

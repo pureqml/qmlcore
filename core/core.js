@@ -184,37 +184,33 @@ exports.core.mixColor = function(specA, specB, r) {
 	return [mix(a.r, b.r, r), mix(a.g, b.g, r), mix(a.b, b.b, r), mix(a.a, b.a, r)]
 }
 
-/** @const */
-var ModelEventReset  = 0
-/** @const */
-var ModelEventInsert = 1
-/** @const */
-var ModelEventUpdate = 2
-/** @const */
-var ModelEventRemove = 3
+exports.core.ModelUpdate = function() {
+	this._updates = []
+}
+exports.core.ModelUpdate.prototype.constructor = exports.core.ModelUpdate
 
-exports.core.ModelEvent = function(model, event, begin, end) {
-	this.event = event
-	this.begin = begin
-	this.end = end
-	this.data = []
-	if (event === ModelEventInsert || event == ModelEventUpdate) {
-		for(var i = begin; i < end; ++i)
-			this.data.push(model.get(i))
-	}
+exports.core.ModelUpdate.prototype.reset = function(model) {
+	var updates = []
+	var n = model.count
+	for(var i = 0; i < n; ++i)
+		updates.push(model.get(i))
+	this._updates = updates
 }
 
-exports.core.ModelEvent.prototype.constructor = exports.core.ModelEvent
+exports.core.ModelUpdate.prototype.insert = function(model, begin, end) {
+	
+}
 
-/** @const */
-exports.core.ModelEvent.Reset = 0
-/** @const */
-exports.core.ModelEvent.Insert = 1
-/** @const */
-exports.core.ModelEvent.Update = 2
-/** @const */
-exports.core.ModelEvent.Remove = 3
+exports.core.ModelUpdate.prototype.update = function(model, begin, end) {
+	
+}
 
+exports.core.ModelUpdate.prototype.remove = function(model, begin, end) {
+	
+}
+
+exports.core.ModelUpdate.prototype.apply = function(view) {
+}
 
 /** @constructor */
 exports.core.DelayedAction = function(context, action) {

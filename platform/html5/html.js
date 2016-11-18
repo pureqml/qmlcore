@@ -1,3 +1,13 @@
+var StyleCache = function () {
+	this._stats = {}
+}
+
+StyleCache.prototype.constructor = StyleCache
+
+StyleCache.prototype.add = function(rule) {
+	this._stats[rule] = (this._stats[rule] || 0) + 1
+}
+
 var registerGenericListener = function(target) {
 	var copyArguments = _globals.core.copyArguments
 	var prefix = '_domEventHandler_'
@@ -24,6 +34,9 @@ var registerGenericListener = function(target) {
  */
 
 exports.Element = function(context, dom) {
+	if (!context._styleCache)
+		context._styleCache = new StyleCache()
+
 	_globals.core.EventEmitter.apply(this)
 	this._context = context
 	this.dom = dom
@@ -127,6 +140,7 @@ exports.Element.prototype.updateStyle = function() {
 		'padding-bottom': 'px'
 	}
 
+	var cache = this._context._styleCache
 	var rules = []
 	for(var name in this._styles) {
 		var value = this._styles[name]
@@ -142,6 +156,7 @@ exports.Element.prototype.updateStyle = function() {
 		//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
 		//var prefixedValue = value
 		var rule = ruleName + ':' + value //+ (prefixedValue !== false? prefixedValue: value)
+		cache.add(rule)
 
 		rules.push(rule)
 	}

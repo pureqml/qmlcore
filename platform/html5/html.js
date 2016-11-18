@@ -42,7 +42,7 @@ StyleCache.prototype.register = function(rules) {
 
 StyleCache.prototype.classify = function(rules) {
 	var total = this.total
-	if (total < 100) //fixme: initial population threshold
+	if (total < 10) //fixme: initial population threshold
 		return ''
 
 	rules.sort() //mind vendor prefixes!
@@ -53,8 +53,8 @@ StyleCache.prototype.classify = function(rules) {
 	var self = this
 	rules.forEach(function(rule, idx) {
 		var hits = self.stats[rule]
-		var usage = hits
-		if (usage > 100) { //fixme: usage threshold
+		var usage = hits / total
+		if (usage > 0.05) { //fixme: usage threshold
 			classified.push(rule)
 			hot.push(idx)
 		}

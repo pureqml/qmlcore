@@ -412,6 +412,9 @@ exports.addAliasProperty = function(self, name, getObject, srcProperty) {
 	})
 }
 
+exports.core.createSignal = function(name) {
+	return function() { this.emit.apply(this, copyArguments(arguments, 0, name)) }
+}
 exports.core.createSignalForwarder = function(object, name) {
 	return (function() { object.emit.apply(object, copyArguments(arguments, 0, name)) })
 }

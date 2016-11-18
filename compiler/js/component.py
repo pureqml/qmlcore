@@ -161,7 +161,7 @@ class component_generator(object):
 		r.append("%sexports.%s.prototype.componentName = '%s'" %(ident, self.name, self.name))
 
 		for name in self.signals:
-			r.append("%sexports.%s.prototype.%s = function() { this.emit.apply(this, exports.core.copyArguments(arguments, 0, '%s')) }" %(ident, self.name, name, name))
+			r.append("%sexports.%s.prototype.%s = _globals.core.createSignal('%s')" %(ident, self.name, name, name))
 
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode
@@ -223,7 +223,7 @@ class component_generator(object):
 
 		if not self.prototype:
 			for name in self.signals:
-				r.append("%sthis.%s = function() { this.emit.apply(this, exports.core.copyArguments(arguments, 0, '%s')) }" %(ident, name, name))
+				r.append("%sthis.%s = _globals.core.createSignal('%s').bind(this)" %(ident, name, name))
 
 		if not self.prototype:
 			for name, prop in self.properties.iteritems():

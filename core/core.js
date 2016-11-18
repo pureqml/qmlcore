@@ -254,7 +254,8 @@ exports.core.ModelUpdate.prototype.apply = function(view) {
 			view._items.push(null)
 		}
 	} else if (d < 0) {
-		view._items.splice(this.count, -d)
+		var removed = view._items.splice(this.count, -d)
+		removed.forEach(function(item) { view._discardItem(item) })
 	}
 
 	for(var i = this._updateIndex; i < this.count; ++i)

@@ -130,10 +130,9 @@ exports.Element.prototype.updateStyle = function() {
 	var rules = []
 	for(var name in this._styles) {
 		var value = this._styles[name]
-		var rule = []
 
 		var prefixedName = this._context.getPrefixedName(name)
-		rule.push(prefixedName !== false? prefixedName: name)
+		var ruleName = prefixedName !== false? prefixedName: name
 		if (Array.isArray(value))
 			value = value.join(',')
 
@@ -141,10 +140,10 @@ exports.Element.prototype.updateStyle = function() {
 		value += unit
 
 		//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
-		var prefixedValue = value
-		rule.push(prefixedValue !== false? prefixedValue: value)
+		//var prefixedValue = value
+		var rule = ruleName + ':' + value //+ (prefixedValue !== false? prefixedValue: value)
 
-		rules.push(rule.join(':'))
+		rules.push(rule)
 	}
 
 	this.dom.setAttribute('style', rules.join(';'))

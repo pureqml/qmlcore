@@ -1,11 +1,23 @@
 var StyleCache = function (prefix) {
+	var style = document.createElement('style')
+	style.type = 'text/css'
+	document.head.appendChild(style)
+
 	this.prefix = prefix + 'C-'
-	this.style = document.createElement('style')
-	document.head.appendChild(this.style)
+	this.style = style
 	this.total = 0
 	this.stats = {}
 	this.classes = {}
 	this.classes_total = 0
+
+	if(! (style.sheet || {}).insertRule) {
+		var sheet = (style.styleSheet || style.sheet)
+		this._addRule = function(name, rules) { sheet.addRule(name, rules) }
+	}
+	else {
+		var sheet = style.sheet
+		this._addRule = function(name, rules) { sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length) }
+	}
 }
 
 StyleCache.prototype.constructor = StyleCache
@@ -16,14 +28,15 @@ StyleCache.prototype.add = function(rule) {
 }
 
 StyleCache.prototype.register = function(rules) {
-	var key = rules.join('+')
+	var rule = rules.join(';')
 	var classes = this.classes
-	var cls = classes[key]
+	var cls = classes[rule]
 	if (cls !== undefined)
 		return cls
 
-	var cls = classes[key] = this.prefix + this.classes_total++
-	this.style.appendChild(document.createTextNode(cls + '{' + rules.join(';') + '}'))
+	var cls = classes[rule] = this.prefix + this.classes_total++
+	var style = this.style
+	this._addRule('.' + cls, rule)
 	return cls
 }
 
@@ -208,7 +221,7 @@ exports.Element.prototype.updateStyle = function() {
 	}
 	var cls = cache.classify(rules)
 	if (cls.length > 0 && this._class !== cls) {
-		var classList = this.dom.classList
+		var classList = element.classList
 		if (this._class !== undefined)
 			classList.remove(this._class)
 		this._class = cls

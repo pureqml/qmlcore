@@ -60,8 +60,11 @@ def scan(text):
 enum_re = re.compile(r'([A-Z]\w*)\.([A-Z]\w*)')
 def replace_enums(text, generator, registry):
 	def replace_enum(m):
-		component = registry.find_component(generator.package, m.group(1))
-		return "_globals.%s.prototype.%s" %(component, m.group(2))
+		try:
+			component = registry.find_component(generator.package, m.group(1))
+			return "_globals.%s.prototype.%s" %(component, m.group(2))
+		except:
+			return m.group(0)
 
 	text = enum_re.sub(replace_enum, text)
 	#print text

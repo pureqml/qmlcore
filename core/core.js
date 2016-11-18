@@ -184,6 +184,37 @@ exports.core.mixColor = function(specA, specB, r) {
 	return [mix(a.r, b.r, r), mix(a.g, b.g, r), mix(a.b, b.b, r), mix(a.a, b.a, r)]
 }
 
+/** @const */
+var ModelEventReset  = 0
+/** @const */
+var ModelEventInsert = 1
+/** @const */
+var ModelEventUpdate = 2
+/** @const */
+var ModelEventRemove = 3
+
+exports.core.ModelEvent = function(model, event, begin, end) {
+	this.event = event
+	this.begin = begin
+	this.end = end
+	this.data = []
+	if (event === ModelEventInsert || event == ModelEventUpdate) {
+		for(var i = begin; i < end; ++i)
+			this.data.push(model.get(i))
+	}
+}
+
+exports.core.ModelEvent.prototype.constructor = exports.core.ModelEvent
+
+/** @const */
+exports.core.ModelEvent.Reset = 0
+/** @const */
+exports.core.ModelEvent.Insert = 1
+/** @const */
+exports.core.ModelEvent.Update = 2
+/** @const */
+exports.core.ModelEvent.Remove = 3
+
 
 /** @constructor */
 exports.core.DelayedAction = function(context, action) {

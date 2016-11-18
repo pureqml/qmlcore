@@ -1,4 +1,7 @@
-var StyleCache = function () {
+var StyleCache = function (prefix) {
+	this.prefix = prefix + 'C-'
+	this.style = document.createElement('style')
+	document.head.appendChild(this.style)
 	this.total = 0
 	this.stats = {}
 	this.classes = {}
@@ -19,7 +22,9 @@ StyleCache.prototype.register = function(rules) {
 	if (cls !== undefined)
 		return cls
 
-	return classes[key] = 'cls_' + this.classes_total++
+	var cls = classes[key] = this.prefix + this.classes_total++
+	this.style.appendChild(document.createTextNode(cls + '{' + rules.join(';') + '}'))
+	return cls
 }
 
 StyleCache.prototype.classify = function(rules) {
@@ -76,7 +81,7 @@ var registerGenericListener = function(target) {
 
 exports.Element = function(context, dom) {
 	if (!context._styleCache)
-		context._styleCache = new StyleCache()
+		context._styleCache = new StyleCache(context._prefix)
 
 	_globals.core.EventEmitter.apply(this)
 	this._context = context
@@ -201,9 +206,14 @@ exports.Element.prototype.updateStyle = function() {
 
 		rules.push(rule)
 	}
-	var classes = cache.classify(rules)
-	if (classes.length > 0)
-		log('classify', classes, rules)
+	var cls = cache.classify(rules)
+	if (cls.length > 0) {
+		var classList = this.dom.classList
+		if (this._class !== undefined)
+			classList.remove(this._class)
+		this._class = cls
+		classList.add(cls)
+	}
 	this.dom.setAttribute('style', rules.join(';'))
 }
 

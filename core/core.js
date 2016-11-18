@@ -245,7 +245,6 @@ exports.core.ModelUpdate.prototype.remove = function(model, begin, end) {
 }
 
 exports.core.ModelUpdate.prototype.apply = function(view) {
-	var model = view.model
 	this._updates.forEach(function(value, idx) { view._updateDelegate(idx) })
 	var d = this.count - view._items.length
 

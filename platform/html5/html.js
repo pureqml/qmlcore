@@ -64,6 +64,17 @@ StyleCache.prototype.classify = function(rules) {
 	return this.register(classified)
 }
 
+var _modernizrCache = {}
+
+var getPrefixedName = function(name) {
+	var prefixedName = _modernizrCache[name]
+	if (prefixedName === undefined)
+		_modernizrCache[name] = prefixedName = window.Modernizr.prefixedCSS(name)
+	return prefixedName
+}
+
+exports.getPrefixedName = getPrefixedName
+
 var registerGenericListener = function(target) {
 	var copyArguments = _globals.core.copyArguments
 	var prefix = '_domEventHandler_'
@@ -207,7 +218,7 @@ exports.Element.prototype.updateStyle = function() {
 	for(var name in this._styles) {
 		var value = this._styles[name]
 
-		var prefixedName = this._context.getPrefixedName(name)
+		var prefixedName = getPrefixedName(name)
 		var ruleName = prefixedName !== false? prefixedName: name
 		if (Array.isArray(value))
 			value = value.join(',')

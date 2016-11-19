@@ -11,7 +11,6 @@ Item {
 		this._completed = false
 		this._completedHandlers = []
 		this._delayedActions = []
-		this._modernizrCache = {}
 	}
 
 	function getClass(name) {
@@ -188,13 +187,6 @@ Item {
 			actions.forEach(invoker)
 		}
 		this._delayedTimeout = undefined
-	}
-
-	function getPrefixedName(name) {
-		var prefixedName = this._modernizrCache[name]
-		if (prefixedName === undefined)
-			this._modernizrCache[name] = prefixedName = window.Modernizr.prefixedCSS(name)
-		return prefixedName
 	}
 
 	function scheduleAction(action) {

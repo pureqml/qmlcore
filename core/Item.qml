@@ -248,14 +248,15 @@ Object {
 		if (!window.Modernizr.csstransitions)
 			return false
 
+		var html5 = _globals.html5.html
 		var transition = {
-			property: context.getPrefixedName('transition-property'),
-			delay: context.getPrefixedName('transition-delay'),
-			duration: context.getPrefixedName('transition-duration'),
-			timing: context.getPrefixedName('transition-timing-function')
+			property: html5.getPrefixedName('transition-property'),
+			delay: html5.getPrefixedName('transition-delay'),
+			duration: html5.getPrefixedName('transition-duration'),
+			timing: html5.getPrefixedName('transition-timing-function')
 		}
 
-		name = context.getPrefixedName(name) || name //replace transform: <prefix>rotate hack
+		name = html5.getPrefixedName(name) || name //replace transform: <prefix>rotate hack
 
 		var property = this.style(transition.property) || []
 		var duration = this.style(transition.duration) || []

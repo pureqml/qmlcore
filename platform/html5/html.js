@@ -85,13 +85,18 @@ var registerGenericListener = function(target) {
 	)
 }
 
+exports.autoClassify = false
+
 /**
  * @constructor
  */
 
 exports.Element = function(context, dom) {
-	if (!context._styleCache)
-		context._styleCache = new StyleCache(context._prefix)
+	if (exports.autoClassify) {
+		if (!context._styleCache)
+			context._styleCache = new StyleCache(context._prefix)
+	} else
+		context._styleCache = null
 
 	_globals.core.EventEmitter.apply(this)
 	this._context = context
@@ -213,11 +218,13 @@ exports.Element.prototype.updateStyle = function() {
 		//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
 		//var prefixedValue = value
 		var rule = ruleName + ':' + value //+ (prefixedValue !== false? prefixedValue: value)
-		cache.add(rule)
+
+		if (cache)
+			cache.add(rule)
 
 		rules.push(rule)
 	}
-	var cls = cache.classify(rules)
+	var cls = cache? cache.classify(rules): ''
 	if (cls !== this._class) {
 		var classList = element.classList
 		if (this._class !== '')

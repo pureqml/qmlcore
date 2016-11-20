@@ -279,10 +279,6 @@ exports.core.DelayedAction.prototype.schedule = function() {
 	}
 }
 
-var Modernizr = window.Modernizr
-var requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
-var cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }
-
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
 	switch(type) {
@@ -332,7 +328,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
 				if (p.frameRequest)
-					cancelAnimationFrame(p.frameRequest)
+					_globals.html5.html.cancelAnimationFrame(p.frameRequest)
 
 				var now = new Date()
 				p.started = now.getTime() + now.getMilliseconds() / 1000.0
@@ -343,7 +339,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				var self = this
 
 				var complete = function() {
-					cancelAnimationFrame(p.frameRequest)
+					_globals.html5.html.cancelAnimationFrame(p.frameRequest)
 					p.frameRequest = undefined
 					animation.complete = function() { }
 					animation.running = false
@@ -363,11 +359,11 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					} else {
 						p.interpolatedValue = convert(animation.interpolate(dst, src, t))
 						self._update(name, p.interpolatedValue, src)
-						p.frameRequest = requestAnimationFrame(nextFrame)
+						p.frameRequest = _globals.html5.html.requestAnimationFrame(nextFrame)
 					}
 				}
 
-				p.frameRequest = requestAnimationFrame(nextFrame)
+				p.frameRequest = _globals.html5.html.requestAnimationFrame(nextFrame)
 
 				animation.running = true
 				animation.complete = complete

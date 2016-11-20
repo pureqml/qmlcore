@@ -290,3 +290,7 @@ exports.getElement = function(tag) {
 		throw new Error('no tag ' + tag + '/multiple tags')
 	return new exports.Element(this, tags[0])
 }
+
+var Modernizr = window.Modernizr
+exports.requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
+exports.cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }

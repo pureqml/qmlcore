@@ -3,7 +3,7 @@ Object {
 	property string baseUrl;
 	property string url;
 
-	fetchRequest(request): {
+	function fetchRequest(request) {
 		var url = this.baseUrl + request.url
 		var error = request.errorCallback,
 			data = request.data,
@@ -31,7 +31,7 @@ Object {
 			})
 	}
 
-	requestXHR(request): {
+	function requestXHR(request) {
 		var url = this.baseUrl + request.url
 		var xhr = new XMLHttpRequest()
 		var error = request.errorCallback,

@@ -122,7 +122,7 @@ Item {
 		}
 	}
 
-	updatePosition(event): {
+	function updatePosition(event) {
 		if (!this.recursiveVisible)
 			return false
 

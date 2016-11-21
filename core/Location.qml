@@ -15,7 +15,7 @@ Object {
 		window.onpopstate = function() { self.updateActualValues() }
 	}
 
-	updateActualValues: {
+	function updateActualValues() {
 		this.hash = window.location.hash
 		this.host = window.location.host
 		this.href = window.location.href
@@ -28,12 +28,12 @@ Object {
 		this.historyState = (typeof state === "string") ? state : JSON.stringify(state)
 	}
 
-	changeHref(href): {
+	function changeHref(href) {
 		window.location.href = href
 		this.updateActualValues()
 	}
 
-	pushState(state, title, url): {
+	function pushState(state, title, url) {
 		window.history.pushState(state, title, url)
 		this.updateActualValues()
 	}

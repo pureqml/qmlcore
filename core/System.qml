@@ -19,7 +19,7 @@ Object {
 	onContextWidthChanged: { this._updateLayoutType() }
 	onContextHeightChanged: { this._updateLayoutType() }
 
-	_updateLayoutType: {
+	function _updateLayoutType() {
 		if (!this.contextWidth || !this.contextHeight)
 			return
 		var min = this.contextWidth;// < this.contextHeight ? this.contextWidth : this.contextHeight

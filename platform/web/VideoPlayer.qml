@@ -41,7 +41,7 @@ Item {
 		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	getFlashMovieObject(movieName):
+	function getFlashMovieObject(movieName)
 	{
 		if (window.document[movieName])
 			return window.document[movieName];
@@ -52,7 +52,7 @@ Item {
 			return document.getElementById(movieName);
 	}
 
-	play: {
+	function play() {
 		if (!this.source)
 			return
 
@@ -70,7 +70,7 @@ Item {
 		this.applyVolume();
 	}
 
-	seek(value): {
+	function seek(value) {
 		if (!this.flash) {
 			this.element.dom.currentTime += value
 		} else {
@@ -79,7 +79,7 @@ Item {
 		}
 	}
 
-	seekTo(value): {
+	function seekTo(value) {
 		if (!this.flash) {
 			this.element.dom.currentTime = value
 		} else {
@@ -88,7 +88,7 @@ Item {
 		}
 	}
 
-	onAutoPlayChanged: {
+	function onAutoPlayChanged() {
 		if (value)
 			this.play()
 	}
@@ -115,7 +115,7 @@ Item {
 		}
 	}
 
-	applyVolume: {
+	function applyVolume() {
 		if (this.volume > 1.0)
 			this.volume = 1.0;
 		else if (this.volume < 0.0)
@@ -131,7 +131,7 @@ Item {
 		}
 	}
 
-	pause: {
+	function pause() {
 		if (!this.flash) {
 			this.element.dom.pause()
 		} else {
@@ -141,11 +141,11 @@ Item {
 		}
 	}
 
-	volumeUp:			{ this.volume += 0.1 }
-	volumeDown:			{ this.volume -= 0.1 }
-	toggleMute:			{ this.element.dom.muted = !this.element.dom.muted }
-	onVolumeChanged:	{ this.applyVolume() }
-	onReadyChanged:		{ log("ReadyState: " + this.ready) }
+	function volumeUp()			{ this.volume += 0.1 }
+	function volumeDown()			{ this.volume -= 0.1 }
+	function toggleMute()			{ this.element.dom.muted = !this.element.dom.muted }
+	function onVolumeChanged()	{ this.applyVolume() }
+	function onReadyChanged()		{ log("ReadyState: " + this.ready) }
 
 	onError: {
 		this.paused = false

@@ -1,6 +1,7 @@
 Item {
 	property string text;		///< text to be displayed
 	property color color;		///< color of the text
+	property Shadow shadow: Shadow { }
 
 	property enum wrapMode {
 		NoWrap, WordWrap, WrapAnywhere, Wrap
@@ -56,6 +57,15 @@ Item {
 				this._enableSizeUpdate()
 		}
 		_globals.core.Object.prototype.on.apply(this, arguments)
+	}
+
+	function _updateStyle() {
+		log(this.shadow._getFilterStyle())
+		if (this.shadow && !this.shadow._empty())
+			this.style('text-shadow', this.shadow._getFilterStyle())
+		else
+			this.style('text-shadow', '')
+		_globals.core.Item.prototype._updateStyle.apply(this, arguments)
 	}
 
 	function _enableSizeUpdate() {

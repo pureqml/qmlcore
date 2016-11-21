@@ -3,7 +3,6 @@ Object {
 	property bool italic;
 	property bool bold;
 	property bool underline;
-	property bool shadow;
 	property int pixelSize;
 	property int pointSize;
 	property int lineHeight;
@@ -17,7 +16,6 @@ Object {
 			case 'italic': 		this.parent.style('font-style', value? 'italic': 'normal'); this.parent._updateSize(); break
 			case 'bold': 		this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize(); break
 			case 'underline':	this.parent.style('text-decoration', value? 'underline': ''); this.parent._updateSize(); break
-			case 'shadow':		this.parent.style('text-shadow', value? '1px 1px black': 'none'); this.parent._updateSize(); break;
 			case 'lineHeight':	this.parent.style('line-height', value + "px"); this.parent._updateSize(); break;
 			case 'weight':	this.parent.style('font-weight', value); this.parent._updateSize(); break;
 		}

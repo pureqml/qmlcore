@@ -60,7 +60,6 @@ Item {
 	}
 
 	function _updateStyle() {
-		log(this.shadow._getFilterStyle())
 		if (this.shadow && !this.shadow._empty())
 			this.style('text-shadow', this.shadow._getFilterStyle())
 		else

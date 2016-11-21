@@ -187,7 +187,7 @@ assign_scope.setParseAction(handle_assignment_scope)
 method_declaration = nested_identifier_lvalue + Group(Optional(Literal("(").suppress() + delimitedList(identifier, ",") + Literal(")").suppress() )) + Literal(":").suppress() + code
 method_declaration.setParseAction(handle_method_declaration)
 
-method_declaration_qml = Keyword("function") + nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(delimitedList(identifier, ",")) + Literal(")").suppress() ) + code
+method_declaration_qml = Keyword("function") - nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(delimitedList(identifier, ",")) + Literal(")").suppress() ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + Group(delimitedList(nested_identifier_lvalue, ',')) + Literal("{").suppress() + component_declaration + Literal("}").suppress()

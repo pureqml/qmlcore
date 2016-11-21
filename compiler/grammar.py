@@ -33,6 +33,12 @@ def document(text, line, prev):
 
 def handle_component_declaration(s, l, t):
 	#print "component>", t
+	type = t[0]
+	idx = type.rfind('.')
+	if idx >= 0:
+		type = type[idx + 1:]
+	if type[0].islower():
+		raise ParseException(s, l, 'lowercase component name')
 	return component(lang.Component(t[0], t[1]))
 
 def handle_assignment(s, l, t):

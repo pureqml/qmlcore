@@ -213,7 +213,7 @@ class component_generator(object):
 				return
 
 			if not self.find_property(registry, path[0]):
-				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
+				raise Exception('unknown property %s in %s (%s)' %(path[0], self.name, self.component.name))
 		else: #len(path) == 1
 			if not self.find_property(registry, target):
 				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))

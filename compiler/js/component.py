@@ -113,6 +113,9 @@ class component_generator(object):
 			self.signals.add(name)
 		elif t is lang.ListElement:
 			self.elements.append(child.data)
+		elif t is lang.AssignmentScope:
+			for assign in child.values:
+				self.assign(child.target + '.' + assign.target, assign.value)
 		else:
 			raise Exception("unhandled element: %s" %child)
 

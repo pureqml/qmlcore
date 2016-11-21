@@ -4,7 +4,7 @@ BaseLayout {
 	handleNavigationKeys: true;
 	keyNavigationWraps: true;
 
-	function focusNextChild() {
+	focusNextChild: {
 		var idx = 0;
 		if (this.focusedChild)
 			idx = this.children.indexOf(this.focusedChild)
@@ -17,7 +17,7 @@ BaseLayout {
 		this.focusChild(this.children[idx])
 	}
 
-	function focusPrevChild() {
+	focusPrevChild: {
 		var idx = 0;
 		if (this.focusedChild)
 			idx = this.children.indexOf(this.focusedChild)

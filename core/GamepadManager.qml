@@ -26,7 +26,7 @@ Item {
 		onTriggered: { this.parent.gpButtonCheckLoop() }
 	}
 
-	function pollGamepads() {
+	pollGamepads: {
 		clearInterval(this._gpPollInterval)
 		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
 		for (var i = 0; i < gamepads.length; ++i) {
@@ -36,7 +36,7 @@ Item {
 		}
 	}
 
-	function gpButtonCheckLoop() {
+	gpButtonCheckLoop: {
 		clearInterval(this._gpButtonsPollInterval);
 		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
 		for (var i in gamepads) {
@@ -61,7 +61,7 @@ Item {
 		}
 	}
 
-	function gamepadConnectedHandler(event) {
+	gamepadConnectedHandler(event): {
 		log('connected', event.gamepad.id)
 		this.connected(event.gamepad)
 
@@ -91,7 +91,7 @@ Item {
 		}
 	}
 
-	function gamepadDisconnectedHandler(event) {
+	gamepadDisconnectedHandler(event): {
 		this.disconnected(event.gamepad)
 		delete this._gamepads[event.gamepad.index]
 		--this.count

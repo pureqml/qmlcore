@@ -8,15 +8,14 @@ Object {
 	property bool triggeredOnStart;		///< fire timer's signal on start or activation
 
 	/// restart timer, activate if stopped
-	function restart()	{ this._restart(); this.running = true; }
-
+	restart:	{ this._restart(); this.running = true; }
 	/// stops timer
-	function stop()		{ this.running = false; }
+	stop:		{ this.running = false; }
 
-	onTriggered:		{ if (!this.repeat) this.running = false }
+	onTriggered: { if (!this.repeat) this.running = false }
 
 	/// starts timer
-	function start() {
+	start: {
 		var oldRunning = this.running;
 		this.running = true;
 		if (this.triggeredOnStart && !oldRunning)

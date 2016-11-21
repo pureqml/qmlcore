@@ -9,13 +9,13 @@ Object {
 	property bool running: false;			///< currently running
 	property string easing: "ease";			///< easing function
 
-	constructor:		{ this._disabled = 0 }
+	constructor:	{ this._disabled = 0 }
 	/// disable animation.
-	function disable()	{ ++this._disabled }
+	disable:		{ ++this._disabled }
 	/// enable animation.
-	function enable()	{ --this._disabled }
+	enable:			{ --this._disabled }
 	/// returns true if animation is enabled
-	function enabled()	{ return this._disabled == 0 }
+	enabled:		{ return this._disabled == 0 }
 
 	/// @private
 	function _update(name, value) {

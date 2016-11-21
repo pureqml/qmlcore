@@ -12,7 +12,7 @@ Object {
 		this._storage.setItem(this.name, this.value)
 	}
 
-	function read() {
+	read: {
 		this.init()
 		var value = this.name? this._storage.getItem(this.name): "";
 		if (value !== null && value !== undefined)
@@ -20,7 +20,7 @@ Object {
 		//log("localStorage: read", this.name, this.value)
 	}
 
-	function init() {
+	init: {
 		if (!this._storage) {
 			this._storage = window.localStorage;
 			if (!this._storage)

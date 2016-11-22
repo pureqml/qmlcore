@@ -125,7 +125,7 @@ class component_generator(object):
 		code = '%s%s.__create()' %(ident, target)
 		if not value.prototype:
 			p, c = value.generate_creators(registry, target, ident_n)
-			code += '\n' + p + '\n' + code
+			code += '\n' + p + '\n' + c
 		return code
 
 	def call_setup(self, registry, ident_n, target, value):

@@ -125,7 +125,7 @@ class component_generator(object):
 		if parent is not None:
 			target = parent + '.' + target
 		if not value.prototype:
-			p, code = value.generate_creators(registry, target, ident_n + 1)
+			p, code = value.generate_creators(registry, target, ident_n)
 			return p + code
 		else:
 			return '%s%s.__create()' %(ident, target)
@@ -136,7 +136,7 @@ class component_generator(object):
 		if parent is not None:
 			target = parent + '.' + target
 		if not value.prototype:
-			return value.generate_setup_code(registry, target, ident_n + 1)
+			return value.generate_setup_code(registry, target, ident_n)
 		else:
 			return '%s%s.__setup()' %(ident, target)
 

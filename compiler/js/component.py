@@ -313,7 +313,7 @@ class component_generator(object):
 			get, pname = generate_accessors(target)
 			r.append("""\
 	core.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')
-""" %(parent, name, get, pname, parent))
+""" %(parent, name, get, parent, pname))
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				continue

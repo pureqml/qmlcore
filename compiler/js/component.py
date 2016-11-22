@@ -160,6 +160,8 @@ class component_generator(object):
 			target_parent, target = split_name(name)
 			if not target_parent:
 				target_parent = parent
+			else:
+				target_parent = self.get_rvalue(parent, target_parent)
 			r.append("\t%s.setAnimation('%s', %s);\n" %(target_parent, target, var))
 		return "\n".join(r)
 

@@ -157,12 +157,10 @@ class component_generator(object):
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
 			r.append(self.call_create(registry, 1, var, animation))
 			r.append(self.call_setup(registry, 1, var, animation))
-			name_parent, target = split_name(name)
-			if not parent:
-				name_parent = 'this'
-			else:
-				name_parent = self.get_lvalue(parent, name_parent)
-			r.append("\t%s.setAnimation('%s', %s);\n" %(name_parent, target, var))
+			target_parent, target = split_name(name)
+			if not target_parent:
+				target_parent = parent
+			r.append("\t%s.setAnimation('%s', %s);\n" %(target_parent, target, var))
 		return "\n".join(r)
 
 	def generate_prototype(self, registry, ident_n = 1):
@@ -295,12 +293,12 @@ class component_generator(object):
 
 		return "\n".join(prologue), "\n".join(r)
 
-	def get_lvalue(self, parent, target):
+	def get_rvalue(self, parent, target):
 		path = target.split(".")
 		path = ["_get('%s')" %x for x in path]
 		return "%s.%s" % (parent, ".".join(path))
 
-	def get_target_lvalue(self, parent, target):
+	def get_lvalue(self, parent, target):
 		path = target.split(".")
 		path = ["_get('%s')" %x for x in path[:-1]] + [path[-1]]
 		return "%s.%s" % (parent, ".".join(path))
@@ -319,7 +317,7 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_lvalue = self.get_target_lvalue(parent, target)
+			target_lvalue = self.get_lvalue(parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
 				deps = parse_deps(value)
@@ -332,6 +330,7 @@ class component_generator(object):
 					for path, dep in deps:
 						if dep == 'model':
 							path, dep = "%s._get('_delegate')" %parent, '_row'
+						path = path.replace('this', parent) #fixme: pass parent to parse_deps
 						r.append("%s%s.connectOnChanged(%s, '%s', %s);" %(ident, parent, path, dep, var))
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
 					r.append("%s%s._removeUpdater('%s', (function() { %s }).bind(%s))" %(ident, parent, target, ";".join(undep), parent))

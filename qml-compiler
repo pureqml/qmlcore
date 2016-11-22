@@ -2,6 +2,7 @@
 
 import compiler.doc.md
 import compiler.doc.qml
+import compiler.doc.json
 import compiler.pyparsing
 import compiler.grammar
 import compiler.js
@@ -26,6 +27,8 @@ args = parser.parse_args()
 
 if args.doc_format == "qml":
     documentation = compiler.doc.qml.Documentation(args.doc) if args.doc else None
+elif args.doc_format == "json":
+    documentation = compiler.doc.json.Documentation(args.doc) if args.doc else None
 else:
     documentation = compiler.doc.md.Documentation(args.doc) if args.doc else None
 

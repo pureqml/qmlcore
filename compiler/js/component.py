@@ -236,7 +236,7 @@ class component_generator(object):
 
 		if not self.prototype:
 			for name in self.signals:
-				r.append("%sthis.%s = _globals.core.createSignal('%s').bind(this)" %(ident, name, name))
+				r.append("%s%s.%s = _globals.core.createSignal('%s').bind(this)" %(ident, parent, name, name))
 
 			for name, prop in self.properties.iteritems():
 				args = [parent, "'%s'" %prop.type, "'%s'" %name]
@@ -258,7 +258,7 @@ class component_generator(object):
 			if target == "id":
 				if "." in value:
 					raise Exception("expected identifier, not expression")
-				r.append("%sthis._setId('%s')" %(ident, value))
+				r.append("%s%s._setId('%s')" %(ident, parent, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
 			else:
@@ -266,14 +266,16 @@ class component_generator(object):
 
 			if isinstance(value, component_generator):
 				if target != "delegate":
-					prologue.append("%sthis.%s = new _globals.%s(%s);" %(ident, target, registry.find_component(value.package, value.component.name), parent))
-					r.append('%sthis.%s.__create()' %(ident, target))
+					prologue.append("%s%s.%s = new _globals.%s(%s);" %(ident, parent, target, registry.find_component(value.package, value.component.name), parent))
+					r.append('%s%s.%s.__create()' %(ident, parent, target))
+					if not value.prototype:
+						print 'SKIPPED', value.name
 				else:
 					var = "%s_%s" %(parent, escape(target))
 					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
 					code += '%s.__create()\n' %var
 					code += '%s.__setup()\n' %var
-					r.append("%sthis.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(this)" %(ident, target, p, code, ident, var))
+					r.append("%s%s.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(this)" %(ident, parent, target, p, code, ident, var))
 
 		return "\n".join(prologue), "\n".join(r)
 
@@ -294,8 +296,8 @@ class component_generator(object):
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(target)
 			r.append("""\
-	core.addAliasProperty(this, '%s', (function() { return %s; }).bind(this), '%s')
-""" %(name, get, pname))
+	core.addAliasProperty(%s, '%s', (function() { return %s; }).bind(this), '%s')
+""" %(parent, name, get, pname))
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				continue
@@ -308,27 +310,31 @@ class component_generator(object):
 				if deps:
 					suffix = "_var_%s__%s" %(escape(parent), escape(target))
 					var = "_update" + suffix
-					r.append("%svar %s = (function() { %s = (%s); }).bind(this);" %(ident, var, target_lvalue, value))
+					r.append("%svar %s = (function() { %s = (%s); }).bind(%s)" %(ident, var, target_lvalue, value, parent))
 					r.append("%s%s();" %(ident, var))
 					undep = []
 					for path, dep in deps:
 						if dep == 'model':
-							path, dep = "this._get('_delegate')", '_row'
-						r.append("%sthis.connectOnChanged(%s, '%s', %s);" %(ident, path, dep, var))
+							path, dep = "%s._get('_delegate')" %parent, '_row'
+						r.append("%s%s.connectOnChanged(%s, '%s', %s);" %(ident, parent, path, dep, var))
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
-					r.append("%sthis._removeUpdater('%s', (function() { %s }).bind(this));" %(ident, target, ";".join(undep)))
+					r.append("%s%s._removeUpdater('%s', (function() { %s }).bind(%s))" %(ident, parent, target, ";".join(undep), parent))
 				else:
-					r.append("%sthis._removeUpdater('%s'); %s = (%s);" %(ident, target, target_lvalue, value))
+					r.append("%s%s._removeUpdater('%s'); %s = (%s);" %(ident, parent, target, target_lvalue, value))
 
 			elif t is component_generator:
 				if target == "delegate":
 					continue
-				r.append('%sthis.%s.__setup()' %(ident, target))
+				r.append('%s%s.%s.__setup()' %(ident, parent, target))
+				if not value.prototype:
+					print 'SKIPPED SETUP', value.name
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
 		for idx, gen in enumerate(self.children):
-			r.append("\t%sthis.children[%d].__setup()" %(ident, idx));
+			r.append("\t%s%s.children[%d].__setup()" %(ident, parent, idx))
+			if not gen.prototype:
+				print 'SKIPPED SETUP', gen.name
 
 		if self.elements:
 			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))
@@ -337,20 +343,20 @@ class component_generator(object):
 			for name, argscode in self.methods.iteritems():
 				args, code = argscode
 				code = process(code, self, registry)
-				r.append("%sthis.%s = (function(%s) %s ).bind(this);" %(ident, name, ",".join(args), code))
+				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, parent, name, ",".join(args), code, parent))
 
 		for name, argscode in self.signal_handlers.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)
 			if name != "completed":
-				r.append("%sthis.on('%s', (function(%s) %s ).bind(this));" %(ident, name, ",".join(args), code))
+				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, parent, name, ",".join(args), code, parent))
 			else:
-				r.append("%sthis._context._onCompleted((function() %s ).bind(this));" %(ident, code))
+				r.append("%s%s._context._onCompleted((function() %s ).bind(%s))" %(ident, parent, code, parent))
 		for name, code in self.changed_handlers.iteritems():
 			code = process(code, self, registry)
-			r.append("%sthis.onChanged('%s', (function(value) %s ).bind(this));" %(ident, name, code))
+			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, parent, name, code, parent))
 		for name, code in self.key_handlers.iteritems():
 			code = process(code, self, registry)
-			r.append("%sthis.onPressed('%s', (function(key, event) %s ).bind(this));" %(ident, name, code))
+			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, parent, name, code, parent))
 		r.append(self.generate_animations(registry, parent))
 		return "\n".join(r)

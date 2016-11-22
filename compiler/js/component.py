@@ -281,14 +281,16 @@ class component_generator(object):
 				self.check_target_property(registry, target)
 
 			if isinstance(value, component_generator):
+				var = "%s_%s" %(parent, escape(target))
+				prologue.append('\tvar %s' %var)
 				if target != "delegate":
-					prologue.append("%s%s.%s = new _globals.%s(%s)" %(ident, parent, target, registry.find_component(value.package, value.component.name), parent))
-					r.append(self.call_create(registry, ident_n, target, value))
+					prologue.append("%s%s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
+					r.append(self.call_create(registry, ident_n, var, value))
+					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
-					var = "%s_%s" %(parent, escape(target))
 					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
-					code += self.call_create(registry, ident_n, target, value) + '\n'
-					code += self.call_setup(registry, ident_n, target, value) + '\n'
+					code += self.call_create(registry, ident_n, var, value) + '\n'
+					code += self.call_setup(registry, ident_n, var, value) + '\n'
 					r.append("%s%s.%s = (function() {\n%s\n%s\nreturn %s\n}).bind(%s)" %(ident, parent, target, code, ident, var, parent))
 
 		return "\n".join(prologue), "\n".join(r)
@@ -317,7 +319,7 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_lvalue = self.get_target_lvalue(parent, target)
+			target_lvalue = self.get_target_lvalue('this', target)
 			if t is str:
 				value = replace_enums(value, self, registry)
 				deps = parse_deps(value)
@@ -339,7 +341,9 @@ class component_generator(object):
 			elif t is component_generator:
 				if target == "delegate":
 					continue
-				r.append(self.call_setup(registry, ident_n, target, value))
+				var = "%s_%s" %(parent, escape(target))
+				r.append('var %s = %s.%s' %(var, parent, target))
+				r.append(self.call_setup(registry, ident_n, var, value))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 

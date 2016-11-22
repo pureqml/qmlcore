@@ -130,11 +130,11 @@ Item {
 			case 'wrapMode':
 				switch(value) {
 				case this.NoWrap:
-					this.style('white-space', 'nowrap', 'word-break': '' })
+					this.style({'white-space': 'nowrap', 'word-break': '' })
 					break
 				case this.Wrap:
 				case this.WordWrap:
-					this.style({'white-space', 'normal', 'word-break': '' })
+					this.style({'white-space': 'normal', 'word-break': '' })
 					break
 				case this.WrapAnywhere:
 					this.style({ 'white-space': 'normal', 'word-break': 'break-all' })

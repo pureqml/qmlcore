@@ -104,6 +104,8 @@ exports.core.safeCall = function(args, onError) {
  */
 exports.core.CoreObject = function() { }
 exports.core.CoreObject.prototype.constructor = exports.core.CoreObject
+exports.core.CoreObject.prototype.__create = function() { }
+exports.core.CoreObject.prototype.__setup = function() { }
 
 
 /** @constructor */

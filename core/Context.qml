@@ -154,22 +154,9 @@ Item {
 		this._runningComplete = false
 	}
 
-	function start(name) {
-		log('Context: starting')
-		var proto;
-		if (typeof name == 'string') {
-			//log('creating component...', name);
-			var path = name.split('.');
-			proto = exports;
-			for (var i = 0; i < path.length; ++i)
-				proto = proto[path[i]]
-		}
-		else
-			proto = name;
-		log('Context: creating instance')
-		var instance = Object.create(proto.prototype);
-		log('Context: calling ctor')
-		proto.apply(instance, [this]);
+	function start(instance) {
+		instance.__create()
+		instance.__setup()
 		log('Context: started')
 		this._started = true
 		// log('Context: calling on completed')

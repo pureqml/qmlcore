@@ -122,21 +122,24 @@ class component_generator(object):
 	def generate_ctor(self, registry):
 		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
 
+	def get_base_type(self, registry):
+		return registry.find_component(self.package, self.component.name)
+
 	def generate(self, registry):
+		base_type = self.get_base_type(registry)
 		ctor  = "/**\n * @constructor\n"
-		base_type = registry.find_component(self.package, self.component.name)
 		ctor += " * @extends {exports.%s}\n" %base_type
 		ctor += " */\n"
-		ctor += "\texports.%s = function(parent, _delegate) {\n%s\n%s\n%s\n}\n" %(self.name, self.generate_ctor(registry), "\n".join(self.generate_creators(registry, "this")), self.generate_setup_code(registry, "this"))
+		ctor += "\texports.%s = function(parent, _delegate) {\n%s\n}\n" %(self.name, self.generate_ctor(registry))
 		return ctor
 
 	def generate_animations(self, registry, parent):
 		r = []
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + escape(name)
-			r.append("\tvar %s = new _globals.%s(%s);" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append(self.wrap_creator("create", var, "\n".join(animation.generate_creators(registry, var, 2))))
-			r.append(self.wrap_creator("setup", var, animation.generate_setup_code(registry, var, 2)))
+			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
+			r.append("\t%s.__create()")
+			r.append("\t%s.__setup()")
 			parent, target = split_name(name)
 			if not parent:
 				parent = 'this'
@@ -144,12 +147,6 @@ class component_generator(object):
 				parent = self.get_lvalue(parent)
 			r.append("\t%s.setAnimation('%s', %s);\n" %(parent, target, var))
 		return "\n".join(r)
-
-	def wrap_creator(self, prefix, var, code):
-		if not code.strip():
-			return ""
-		safe_var = escape(var)
-		return "\tfunction %s_%s () {\n%s\n\t}\n\t%s_%s.call(%s)" %(prefix, safe_var, code, prefix, safe_var, var)
 
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
@@ -190,6 +187,19 @@ class component_generator(object):
 			if prop.default is not None:
 				args.append("exports.%s.%s" %(self.name, prop.default))
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
+
+		base_type = self.get_base_type(registry)
+		p, code = self.generate_creators(registry, 'this', ident_n + 1)
+		b = '\t%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
+		r.append('%sexports.%s.prototype.__create = function() {\n%s\n%s\n%s\n}' \
+			%(ident, self.name, b, p, code))
+
+		code = self.generate_setup_code(registry, 'this', ident_n + 1)
+		b = '\t%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
+		r.append('%sexports.%s.prototype.__setup = function() {\n%s\n%s\n}' \
+			%(ident, self.name, b, code))
+
+		r.append('')
 
 		return "\n".join(r)
 
@@ -237,16 +247,12 @@ class component_generator(object):
 			for name, prop in self.enums.iteritems():
 				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)
 
-		idx = 0
-		for gen in self.children:
+		for idx, gen in enumerate(self.children):
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
-			prologue.append("\tvar %s;" %var)
-			r.append("\t%s = new _globals.%s(%s);" %(var, component, parent))
-			p, code = gen.generate_creators(registry, var, ident_n + 1)
-			prologue.append(p)
-			r.append(self.wrap_creator("create", var, code))
-			idx += 1
+			prologue.append("\tvar %s = new _globals.%s(%s);" %(var, component, parent))
+			r.append('\t%s.__create()' %var)
+			r.append("\t%s.addChild(%s)" %(parent, var));
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":
@@ -259,20 +265,14 @@ class component_generator(object):
 				self.check_target_property(registry, target)
 
 			if isinstance(value, component_generator):
-				var = "%s_%s" %(parent, escape(target))
-				prologue.append("%svar %s;" %(ident, var))
 				if target != "delegate":
-					r.append("%s%s = new _globals.%s(%s);" %(ident, var, registry.find_component(value.package, value.component.name), parent))
-					p, code = value.generate_creators(registry, var, ident_n + 1)
-					prologue.append(p)
-					r.append(self.wrap_creator("create", var, code))
-					r.append("%sthis.%s = %s" %(ident, target, var))
+					prologue.append("%sthis.%s = new _globals.%s(%s);" %(ident, target, registry.find_component(value.package, value.component.name), parent))
+					r.append('%sthis.%s.__create()' %(ident, target))
 				else:
+					var = "%s_%s" %(parent, escape(target))
 					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
-					p, c = value.generate_creators(registry, var, ident_n + 1)
-					code += self.wrap_creator("create", var, c)
-					code += "\n"
-					code += self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1))
+					code += '%s.__create()\n' %var
+					code += '%s.__setup()\n' %var
 					r.append("%sthis.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(this)" %(ident, target, p, code, ident, var))
 
 		return "\n".join(prologue), "\n".join(r)
@@ -323,19 +323,12 @@ class component_generator(object):
 			elif t is component_generator:
 				if target == "delegate":
 					continue
-				var = "%s_%s" %(parent, escape(target))
-				r.append(self.wrap_creator("setup", var, value.generate_setup_code(registry, var, ident_n + 1)))
+				r.append('%sthis.%s.__setup()' %(ident, target))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
-		idx = 0
-		for gen in self.children:
-			var = "%s_child%d" %(parent, idx)
-			component = registry.find_component(self.package, gen.component.name)
-			r.append(self.wrap_creator("setup", var, gen.generate_setup_code(registry, var, 2)))
-			r.append("\t%s.addChild(%s)" %(parent, var));
-			r.append("")
-			idx += 1
+		for idx, gen in enumerate(self.children):
+			r.append("\t%sthis.children[%d].__setup()" %(ident, idx));
 
 		if self.elements:
 			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))

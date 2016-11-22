@@ -25,7 +25,7 @@ class generator(object):
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
 			self.used_components.add(name)
 			self.used_packages.add(package)
-			self.startup.append("\tqml._context.start(qml.%s)" %name)
+			self.startup.append("\tqml._context.start(new qml.%s(qml._context))" %name)
 		else:
 			name = package + '.' + component_name
 
@@ -85,8 +85,8 @@ class generator(object):
 
 		base_type = self.find_component(gen.package, gen.component.name)
 
-		code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(name, base_type)
-		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(name, name)
+		code += "\texports.%s.prototype = Object.create(_globals.%s.prototype)\n" %(name, base_type)
+		code += "\texports.%s.prototype.constructor = exports.%s\n" %(name, name)
 
 		code += gen.generate_prototype(self)
 		return code

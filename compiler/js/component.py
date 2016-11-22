@@ -267,8 +267,8 @@ class component_generator(object):
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
 			prologue.append("\tvar %s = new _globals.%s(%s)" %(var, component, parent))
-			prologue.append("\t%s.addChild(%s)" %(parent, var));
 			r.append(self.call_create(registry, ident_n, var, gen))
+			r.append("\t%s.addChild(%s)" %(parent, var));
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":

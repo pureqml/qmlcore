@@ -228,12 +228,14 @@ class component_generator(object):
 			for name in self.signals:
 				r.append("%sthis.%s = _globals.core.createSignal('%s').bind(this)" %(ident, name, name))
 
-		if not self.prototype:
 			for name, prop in self.properties.iteritems():
 				args = [parent, "'%s'" %prop.type, "'%s'" %name]
 				if prop.is_trivial():
 					args.append(prop.value)
 				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
+
+			for name, prop in self.enums.iteritems():
+				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)
 
 		idx = 0
 		for gen in self.children:

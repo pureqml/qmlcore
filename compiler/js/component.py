@@ -342,14 +342,14 @@ class component_generator(object):
 				if target == "delegate":
 					continue
 				var = "%s_%s" %(parent, escape(target))
-				r.append('var %s = %s.%s' %(var, parent, target))
+				r.append('%svar %s = %s.%s' %(ident, var, parent, target))
 				r.append(self.call_setup(registry, ident_n, var, value))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
 		for idx, gen in enumerate(self.children):
 			var = '%s_child%d' %(escape(parent), idx)
-			r.append('var %s = %s.children[%d]' %(var, parent, idx))
+			r.append('%svar %s = %s.children[%d]' %(ident, var, parent, idx))
 			r.append(self.call_setup(registry, ident_n, var, gen))
 
 		if self.elements:

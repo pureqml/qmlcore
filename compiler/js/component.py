@@ -122,19 +122,19 @@ class component_generator(object):
 	def call_create(self, registry, ident_n, target, value):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
+		code = '%s%s.__create()' %(ident, target)
 		if not value.prototype:
-			p, code = value.generate_creators(registry, target, ident_n)
-			return p + '\n' + code
-		else:
-			return '%s%s.__create()' %(ident, target)
+			p, c = value.generate_creators(registry, target, ident_n)
+			code += '\n' + p + '\n' + code
+		return code
 
 	def call_setup(self, registry, ident_n, target, value):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
+		code = '%s%s.__setup()' %(ident, target)
 		if not value.prototype:
-			return value.generate_setup_code(registry, target, ident_n)
-		else:
-			return '%s%s.__setup()' %(ident, target)
+			code += '\n' + value.generate_setup_code(registry, target, ident_n)
+		return code
 
 	def generate_ctor(self, registry):
 		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor

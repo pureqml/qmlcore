@@ -138,8 +138,8 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + escape(name)
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append("\t%s.__create()")
-			r.append("\t%s.__setup()")
+			r.append(self.call_create('\t', var, animation))
+			r.append(self.call_setup('\t', var, animation))
 			parent, target = split_name(name)
 			if not parent:
 				parent = 'this'
@@ -228,6 +228,21 @@ class component_generator(object):
 			if not self.find_property(registry, target):
 				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
 
+	def call_create(self, ident, target, value, parent = None):
+		assert isinstance(value, component_generator)
+		if parent is not None:
+			target = parent + '.' + target
+		if not value.prototype:
+			print 'SKIPPED CREATE', value.name
+		return '%s%s.__create()' %(ident, target)
+
+	def call_setup(self, ident, target, value, parent = None):
+		assert isinstance(value, component_generator)
+		if parent is not None:
+			target = parent + '.' + target
+		if not value.prototype:
+			print 'SKIPPED SETUP', value.name
+		return '%s%s.__setup()' %(ident, target)
 
 	def generate_creators(self, registry, parent, ident_n = 1):
 		prologue = []
@@ -251,7 +266,7 @@ class component_generator(object):
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
 			prologue.append("\tvar %s = new _globals.%s(%s);" %(var, component, parent))
-			r.append('\t%s.__create()' %var)
+			r.append(self.call_create(ident, var, gen, parent = parent))
 			r.append("\t%s.addChild(%s)" %(parent, var));
 
 		for target, value in self.assignments.iteritems():
@@ -267,14 +282,12 @@ class component_generator(object):
 			if isinstance(value, component_generator):
 				if target != "delegate":
 					prologue.append("%s%s.%s = new _globals.%s(%s);" %(ident, parent, target, registry.find_component(value.package, value.component.name), parent))
-					r.append('%s%s.%s.__create()' %(ident, parent, target))
-					if not value.prototype:
-						print 'SKIPPED', value.name
+					r.append(self.call_create(ident, target, value, parent = parent))
 				else:
 					var = "%s_%s" %(parent, escape(target))
 					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
-					code += '%s.__create()\n' %var
-					code += '%s.__setup()\n' %var
+					code += self.call_create(ident, target, value, parent = parent) + '\n'
+					code += self.call_setup(ident, target, value, parent = parent) + '\n'
 					r.append("%s%s.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(this)" %(ident, parent, target, p, code, ident, var))
 
 		return "\n".join(prologue), "\n".join(r)
@@ -325,16 +338,12 @@ class component_generator(object):
 			elif t is component_generator:
 				if target == "delegate":
 					continue
-				r.append('%s%s.%s.__setup()' %(ident, parent, target))
-				if not value.prototype:
-					print 'SKIPPED SETUP', value.name
+				r.append(self.call_setup(ident, target, value, parent = parent))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
 		for idx, gen in enumerate(self.children):
-			r.append("\t%s%s.children[%d].__setup()" %(ident, parent, idx))
-			if not gen.prototype:
-				print 'SKIPPED SETUP', gen.name
+			r.append(self.call_setup(ident, "children[%d]" %idx, gen, parent = parent))
 
 		if self.elements:
 			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))

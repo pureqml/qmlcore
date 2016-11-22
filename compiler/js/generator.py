@@ -193,6 +193,8 @@ class generator(object):
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
 		startup.append("\t%s._context = new qml.core.Context()" %ns)
+		startup.append('\t%s._context.__create()' %ns)
+		startup.append('\t%s._context.__setup()' %ns)
 		startup.append("\t%s._context.init({id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, prefix))
 		startup += self.startup
 		r += "\n".join(startup)

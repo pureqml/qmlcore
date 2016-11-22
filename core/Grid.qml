@@ -1,55 +1,97 @@
-/// Gris is a usefull way to automatically position its children 
+/// Grid is a usefull way to automatically position its children 
 Layout {
 	property int horizontalSpacing; ///< horizontal spacing between rows, overrides regular spacing, pixels
 	property int verticalSpacing; ///< vertical spacing between columns, overrides regular spacing, pixels
 	property int rowsCount; ///< read-only property, represents number of row in a grid
+	height: flow === Layout.FlowTopToBottom ? contentHeight : height;
+	width: flow === Layout.FlowLeftToRight ? contentWidth : width;
 
 	property enum horizontalAlignment {
 		AlignLeft, AlignRight, AlignHCenter, AlignJustify
 	};
 
-	onWidthChanged: { this._delayedLayout.schedule() }
+	property enum flow { FlowTopToBottom, FlowLeftToRight };
+
+	onWidthChanged: {
+		if (this.flow == this.FlowTopToBottom)
+			this._delayedLayout.schedule() 
+	}
+
+	onHeightChanged: {
+		if (this.flow == this.FlowLeftToRight)
+			this._delayedLayout.schedule() 
+	}
+
+	onFlowChanged: { 
+		this._delayedLayout.schedule() 
+	}
 
 	function _layout() {
 		var children = this.children;
-		var cX = 0, cY = 0, xMax = 0, yMax = 0;
-		var vsp = this.verticalSpacing || this.spacing, hsp = this.horizontalSpacing || this.spacing
+		var crossPos = 0, directPos = 0, crossMax = 0, directMax = 0;
+		var dsp = this.verticalSpacing || this.spacing,
+			csp = this.horizontalSpacing || this.spacing // Cross Spacing
 		this.count = children.length
 		var rows = []
-		rows.push({idx: 0, width: 0}) //starting value
+		rows.push({idx: 0, size: 0}) //starting value
+		var horizontal = this.flow == this.FlowLeftToRight
+		var size = horizontal ? this.height : this.width
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			var tm = c.anchors.topMargin || c.anchors.margins
-			var bm = c.anchors.bottomMargin || c.anchors.margins
-			var lm = c.anchors.leftMargin || c.anchors.margins
-			var rm = c.anchors.rightMargin || c.anchors.margins
-			var fullw = c.width + rm + lm
-			var fullh = c.height + tm + bm
+			if (!horizontal) {
+				var dbm = c.anchors.topMargin || c.anchors.margins // Direct Before Margin
+				var dam = c.anchors.bottomMargin || c.anchors.margins // Direct After Margin
+				var cbm = c.anchors.leftMargin || c.anchors.margins // Cross Before Margin
+				var cam = c.anchors.rightMargin || c.anchors.margins // Cross After Margin
+				var crossSize = c.width + cam + cbm
+				var directSize = c.height + dbm + dam
+			} else {
+				var dbm = c.anchors.leftMargin || c.anchors.margins // Direct Before Margin
+				var dam = c.anchors.rightMargin || c.anchors.margins // Direct After Margin
+				var cbm = c.anchors.topMargin || c.anchors.margins // Cross Before Margin
+				var cam = c.anchors.bottomMargin || c.anchors.margins // Cross After Margin
+				var crossSize = c.height + cam + cbm
+				var directSize = c.width + dbm + dam
+			}
+
 			if (c.recursiveVisible) {
-				if (this.width - cX < fullw) { // not enough space to put the item, initiate a new row
-					rows.push({idx: i, width: cX - hsp})
-					c.x = lm;
-					cY = yMax + vsp;
-					c.y = cY + tm;
-					yMax = cY + fullh;
+				if (size - crossPos < crossSize) { // not enough space to put the item, initiate a new row
+					rows.push({idx: i, size: crossPos - csp})
+					directPos = directMax + dsp;
+					directMax = directPos + directSize;
+					if (horizontal) {
+						c.y = cbm;
+						c.x = directPos + dbm;
+					} else {
+						c.x = cbm;
+						c.y = directPos + dbm;
+					}
 				} else {
-					c.x = cX + lm;
-					c.y = cY + tm;
+					if (horizontal) {
+						c.y = crossPos + cbm;
+						c.x = directPos + dbm;
+					} else  {
+						c.x = crossPos + cbm;
+						c.y = directPos + dbm;
+					}
 				}
-				if (yMax < cY + fullh)
-					yMax = cY + fullh;
+				if (directMax < directPos + directSize)
+					directMax = directPos + directSize;
 
-				cX = c.x + c.width + rm + hsp;
+				if (!horizontal)
+					crossPos = c.x + c.width + cam + csp;
+				else
+					crossPos = c.y + c.height + cam + csp;
 
-				if (xMax < cX - hsp)
-					xMax = cX - hsp;
+				if (crossMax < crossPos - csp)
+					crossMax = crossPos - csp;
 			}
 		}
 		this.rowsCount = rows.length;
-		rows.push({idx: children.length, width: cX - hsp}) // add last point
+		rows.push({idx: children.length, size: crossPos - csp}) // add last point
 
-		this.contentHeight = yMax;
-		this.contentWidth = xMax;
+		this.contentHeight = horizontal ? crossMax : directMax;
+		this.contentWidth = horizontal ? directMax : crossMax;
 		
 		if (this.horizontalAlignment === this.AlignLeft)
 			return
@@ -63,23 +105,29 @@ Layout {
 			row = rows[i+1]
 
 			if (right)
-				shift = this.width - row.width
+				shift = size - row.size
 			else if (center)
-				shift = (this.width - row.width) / 2
+				shift = (size - row.size) / 2
 			else if (justify)
-				shift = (this.width - row.width)
+				shift = (size - row.size)
 
 			if (shift !== 0) {
 				var cindex = rows[i].idx, lindex = row.idx
 				if (right || center) {
 		 			for (; cindex < lindex; ++cindex) {
-						children[cindex].x += shift
+		 				if (!horizontal)
+							children[cindex].x += shift
+						else
+							children[cindex].y += shift
 		 			}
 		 		} else if (justify) {
 		 			var c = lindex - cindex + 1
 		 			var sp = shift / c
 		 			for (; cindex < lindex; ++cindex) {
-						children[cindex].x += sp * (cindex + c - lindex)
+		 				if (!horizontal)
+							children[cindex].x += sp * (cindex + c - lindex)
+						else
+							children[cindex].y += sp * (cindex + c - lindex)
 		 			}
 		 		}
 		 	}

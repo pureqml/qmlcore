@@ -319,7 +319,7 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_lvalue = self.get_target_lvalue('this', target)
+			target_lvalue = self.get_target_lvalue(parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
 				deps = parse_deps(value)

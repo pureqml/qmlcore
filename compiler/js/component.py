@@ -332,8 +332,8 @@ class component_generator(object):
 					for path, dep in deps:
 						if dep == 'model':
 							path, dep = "%s._get('_delegate')" %parent, '_row'
-						path = path.replace('this', parent) #fixme: pass parent to parse_deps
-						r.append("%s%s.connectOnChanged(%s, '%s', %s);" %(ident, parent, path, dep, var))
+						path = path.replace('this.', parent + '.') #fixme: pass parent to parse_deps
+						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, path, dep, var))
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
 					r.append("%s%s._removeUpdater('%s', (function() { %s }).bind(%s))" %(ident, parent, target, ";".join(undep), parent))
 				else:

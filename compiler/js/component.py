@@ -140,12 +140,12 @@ class component_generator(object):
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
 			r.append(self.call_create('\t', var, animation))
 			r.append(self.call_setup('\t', var, animation))
-			parent, target = split_name(name)
+			name_parent, target = split_name(name)
 			if not parent:
-				parent = 'this'
+				name_parent = 'this'
 			else:
-				parent = self.get_lvalue(parent)
-			r.append("\t%s.setAnimation('%s', %s);\n" %(parent, target, var))
+				name_parent = self.get_lvalue(parent, name_parent)
+			r.append("\t%s.setAnimation('%s', %s);\n" %(name_parent, target, var))
 		return "\n".join(r)
 
 	def generate_prototype(self, registry, ident_n = 1):
@@ -251,7 +251,7 @@ class component_generator(object):
 
 		if not self.prototype:
 			for name in self.signals:
-				r.append("%s%s.%s = _globals.core.createSignal('%s').bind(this)" %(ident, parent, name, name))
+				r.append("%s%s.%s = _globals.core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
 
 			for name, prop in self.properties.iteritems():
 				args = [parent, "'%s'" %prop.type, "'%s'" %name]
@@ -288,19 +288,19 @@ class component_generator(object):
 					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
 					code += self.call_create(ident, target, value, parent = parent) + '\n'
 					code += self.call_setup(ident, target, value, parent = parent) + '\n'
-					r.append("%s%s.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(this)" %(ident, parent, target, p, code, ident, var))
+					r.append("%s%s.%s = (function() { %s\n%s\n%s\nreturn %s }).bind(%s)" %(ident, parent, target, p, code, ident, var, parent))
 
 		return "\n".join(prologue), "\n".join(r)
 
-	def get_lvalue(self, target):
+	def get_lvalue(self, parent, target):
 		path = target.split(".")
 		path = ["_get('%s')" %x for x in path]
-		return "this.%s" % ".".join(path)
+		return "%s.%s" % (parent, ".".join(path))
 
-	def get_target_lvalue(self, target):
+	def get_target_lvalue(self, parent, target):
 		path = target.split(".")
 		path = ["_get('%s')" %x for x in path[:-1]] + [path[-1]]
-		return "this.%s" % ".".join(path)
+		return "%s.%s" % (parent, ".".join(path))
 
 
 	def generate_setup_code(self, registry, parent, ident_n = 1):
@@ -309,14 +309,14 @@ class component_generator(object):
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(target)
 			r.append("""\
-	core.addAliasProperty(%s, '%s', (function() { return %s; }).bind(this), '%s')
-""" %(parent, name, get, pname))
+	core.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')
+""" %(parent, name, get, pname, parent))
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_lvalue = self.get_target_lvalue(target)
+			target_lvalue = self.get_target_lvalue(parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
 				deps = parse_deps(value)

@@ -322,7 +322,7 @@ class component_generator(object):
 			target_lvalue = self.get_lvalue(parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
-				deps = parse_deps(value)
+				deps = parse_deps(parent, value)
 				if deps:
 					suffix = "_var_%s__%s" %(escape(parent), escape(target))
 					var = "_update" + suffix
@@ -332,7 +332,6 @@ class component_generator(object):
 					for path, dep in deps:
 						if dep == 'model':
 							path, dep = "%s._get('_delegate')" %parent, '_row'
-						path = path.replace('this.', parent + '.') #fixme: pass parent to parse_deps
 						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, path, dep, var))
 						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
 					r.append("%s%s._removeUpdater('%s', (function() { %s }).bind(%s))" %(ident, parent, target, ";".join(undep), parent))

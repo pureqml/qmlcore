@@ -96,16 +96,17 @@ def process(text, generator, registry):
 gets_re = re.compile(r'this(\._get\(\'.*?\'\))+')
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
 
-def parse_deps(text):
+def parse_deps(parent, text):
 	deps = []
 	for m in gets_re.finditer(text):
 		gets = m.group(0).split('.')
+		gets = map(lambda x: parent if x == 'this' else x, gets)
 		target = gets[-1]
 		target = target[target.index('\'') + 1:target.rindex('\'')]
 		gets = gets[:-1]
 		deps.append((".".join(gets), target))
 	for m in tr_re.finditer(text):
-		deps.append(('this._context', 'language'))
+		deps.append((parent + '._context', 'language'))
 	return deps
 
 def mangle_path(path):

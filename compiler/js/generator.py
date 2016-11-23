@@ -25,7 +25,7 @@ class generator(object):
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
 			self.used_components.add(name)
 			self.used_packages.add(package)
-			self.startup.append("\tqml._context.start(qml.%s)" %name)
+			self.startup.append("\tqml._context.start(new qml.%s(qml._context))" %name)
 		else:
 			name = package + '.' + component_name
 
@@ -85,8 +85,8 @@ class generator(object):
 
 		base_type = self.find_component(gen.package, gen.component.name)
 
-		code += "\texports.%s.prototype = Object.create(exports.%s.prototype);\n" %(name, base_type)
-		code += "\texports.%s.prototype.constructor = exports.%s;\n" %(name, name)
+		code += "\texports.%s.prototype = Object.create(_globals.%s.prototype)\n" %(name, base_type)
+		code += "\texports.%s.prototype.constructor = exports.%s\n" %(name, name)
 
 		code += gen.generate_prototype(self)
 		return code
@@ -193,6 +193,8 @@ class generator(object):
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
 		startup.append("\t%s._context = new qml.core.Context()" %ns)
+		startup.append('\t%s._context.__create()' %ns)
+		startup.append('\t%s._context.__setup()' %ns)
 		startup.append("\t%s._context.init({id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, prefix))
 		startup += self.startup
 		r += "\n".join(startup)

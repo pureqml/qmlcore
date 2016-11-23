@@ -7,8 +7,9 @@ def split_name(name):
 	r = name.split(".")
 	return ".".join(r[:-1]), r[-1]
 
+_escape_re = re.compile('\W')
 def escape(name):
-	return name.replace('.', '__')
+	return _escape_re.sub('_', name)
 
 _id_re = re.compile(r'[^a-zA-Z0-9_]')
 

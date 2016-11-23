@@ -301,6 +301,11 @@ class component_generator(object):
 					code += self.call_setup(registry, ident_n, var, value) + '\n'
 					r.append("%s%s.%s = (function() {\n%s\n%s\nreturn %s\n}).bind(%s)" %(ident, parent, target, code, ident, var, parent))
 
+		for name, target in self.aliases.iteritems():
+			get, pname = generate_accessors(target)
+			r.append("%score.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')" \
+				%(ident, parent, name, get, parent, pname))
+
 		return "\n".join(prologue), "\n".join(r)
 
 	def get_rvalue(self, parent, target):
@@ -317,11 +322,7 @@ class component_generator(object):
 	def generate_setup_code(self, registry, parent, ident_n = 1):
 		r = []
 		ident = "\t" * ident_n
-		for name, target in self.aliases.iteritems():
-			get, pname = generate_accessors(target)
-			r.append("""\
-	core.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')
-""" %(parent, name, get, parent, pname))
+
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				continue

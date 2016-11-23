@@ -8,29 +8,24 @@ class Component(object):
 		self.name = name
 		self.component = component
 
-	def generate_section(self, r, type, title, data, comma):
-		if type not in data:
-			return
 
-		values = data[type]
+	def generate_section(self, r, title, values, comma):
+
+		last = values[-1].name
 		r.append('\t\t"%s": {' %title)
-		for value in values[:-1]:
+		for value in values:
+			localComma = "" if last == value.name else ","
 			if value.doc is not None:
-				r.append('\t\t\t"%s": "%s",' %(value.name, value.doc.text))
+				r.append('\t\t\t"%s": "%s"%s' %(value.name, value.doc.text, localComma))
 			else:
-				r.append('\t\t\t"%s": "",' %value.name)
-
-		last = values[-1]
-		if last.doc is not None:
-			r.append('\t\t\t"%s": "%s"' %(last.name, last.doc.text))
-		else:
-			r.append('\t\t\t"%s": ""' %last.name)
+				r.append('\t\t\t"%s": ""%s' %(value.name, localComma))
 
 		if comma:
 			r.append('\t\t},')
 			r.append('')
 		else:
 			r.append('\t\t}')
+
 
 	def process_children(self, r):
 		component = self.component
@@ -42,10 +37,26 @@ class Component(object):
 			values = children.setdefault(category, [])
 			values.append(child)
 
-		self.generate_section(r, 'Property', 'Properties', children, True)
-		self.generate_section(r, 'AliasProperty', 'Alias Properties', children, True)
-		self.generate_section(r, 'Signal', 'Signals', children, True)
-		self.generate_section(r, 'Method', 'Methods', children, False)
+		data = []
+                if 'Property' in children:
+                    data.append(('Property', 'Properties'))
+
+                if 'AliasProperty' in children:
+                    data.append(('AliasProperty', 'Alias Properties'))
+
+                if 'Signal' in children:
+                    data.append(('Signal', 'Signals'))
+
+                if 'Method' in children:
+                    data.append(('Method', 'Methods'))
+
+		if len(data) == 0:
+                    return r
+
+		lastName = data[-1][0]
+                for d in data:
+                    self.generate_section(r, d[1], children[d[0]], False if lastName == d[0] else True)
+
 		return r
 
 	def document(self, r, component):

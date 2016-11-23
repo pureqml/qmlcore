@@ -302,6 +302,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			case 'real':	defaultValue = 0.0; break
 			case 'string':	defaultValue = ""; break
 			case 'array':	defaultValue = []; break
+			case 'Color':	defaultValue = '#0000'; break
 			default:
 				defaultValue = (type[0].toUpperCase() == type[0])? null: undefined
 		}

@@ -208,19 +208,21 @@ class component_generator(object):
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		base_type = self.get_base_type(registry)
+
+		setup_code = self.generate_setup_code(registry, 'this', ident_n + 2).strip()
+		if setup_code:
+			b = '\t%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
+			setup_code = '%sexports.%s.prototype.__setup = function() {\n%s\n%s\n}' \
+				%(ident, self.name, b, setup_code)
+
 		p, code = self.generate_creators(registry, 'this', ident_n + 1)
 		p = p.strip()
 		code = code.strip()
 		if p or code:
 			b = '\t%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
-			r.append('%sexports.%s.prototype.__create = function() {\n%s\n%s\n%s\n}' \
-				%(ident, self.name, b, p, code))
+			r.append('%sexports.%s.prototype.__create = function() {\n%s\n%s\n%s\n%s\n}' \
+				%(ident, self.name, b, p, code, setup_code))
 
-		code = self.generate_setup_code(registry, 'this', ident_n + 1).strip()
-		if code:
-			b = '\t%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
-			r.append('%sexports.%s.prototype.__setup = function() {\n%s\n%s\n}' \
-				%(ident, self.name, b, code))
 
 		r.append('')
 
@@ -352,15 +354,13 @@ class component_generator(object):
 				if target == "delegate":
 					continue
 				var = "%s$%s" %(escape(parent), escape(target))
-				r.append('%svar %s = %s.%s' %(ident, var, parent, target))
 				r.append(self.call_setup(registry, ident_n, var, value))
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
-		for idx, gen in enumerate(self.children):
+		for idx, value in enumerate(self.children):
 			var = '%s$child%d' %(escape(parent), idx)
-			r.append('%svar %s = %s.children[%d]' %(ident, var, parent, idx))
-			r.append(self.call_setup(registry, ident_n, var, gen))
+			r.append(self.call_setup(registry, ident_n, var, value))
 
 		if self.elements:
 			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))

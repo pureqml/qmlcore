@@ -345,6 +345,7 @@ class component_generator(object):
 						undep.append("[%s, '%s', %s]" %(depvar, dep, var))
 					r.append("%s%s._removeUpdater('%s', [%s])" %(ident, parent, target, ",".join(undep)))
 				else:
+					r.append('//assigning %s to %s' %(target, value))
 					r.append("%s%s._removeUpdater('%s'); %s = (%s);" %(ident, parent, target, target_lvalue, value))
 
 			elif t is component_generator:

@@ -282,8 +282,8 @@ class component_generator(object):
 
 			if isinstance(value, component_generator):
 				var = "%s_%s" %(parent, escape(target))
-				prologue.append('\tvar %s' %var)
 				if target != "delegate":
+					prologue.append('\tvar %s' %var)
 					prologue.append("%s%s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
 					r.append(self.call_create(registry, ident_n, var, value))
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))

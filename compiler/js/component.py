@@ -122,7 +122,8 @@ class component_generator(object):
 	def call_create(self, registry, ident_n, target, value):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
-		code = '%s%s.__create()' %(ident, target)
+		code = '\n//creating component %s\n' %value.component.name
+		code += '%s%s.__create()\n' %(ident, target)
 		if not value.prototype:
 			p, c = value.generate_creators(registry, target, ident_n)
 			code += '\n' + p + '\n' + c
@@ -131,7 +132,8 @@ class component_generator(object):
 	def call_setup(self, registry, ident_n, target, value):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
-		code = '%s%s.__setup()' %(ident, target)
+		code = '\n//setting up component %s\n' %value.component.name
+		code += '%s%s.__setup()' %(ident, target)
 		if not value.prototype:
 			code += '\n' + value.generate_setup_code(registry, target, ident_n)
 		return code
@@ -329,6 +331,7 @@ class component_generator(object):
 				deps = parse_deps(parent, value)
 				if deps:
 					var = "update$%s$%s" %(escape(parent), escape(target))
+					r.append('//assigning %s to %s' %(target, value))
 					r.append("%svar %s = (function() { %s = (%s); }).bind(%s)" %(ident, var, target_lvalue, value, parent))
 					r.append("%s%s();" %(ident, var))
 					undep = []

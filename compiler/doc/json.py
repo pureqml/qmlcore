@@ -110,7 +110,8 @@ class Documentation(object):
 			toc.append('\t\t\t"file": "%s.json",' %package)
 			toc.append('\t\t\t"content": {')
 
-			package_toc = ['PackageComponents {']
+			package_toc = ['{']
+			package_toc.append('\t"%s": {' %package)
 			path = os.path.join(self.jsonroot, package)
 			if not os.path.exists(path):
 				os.mkdir(path)
@@ -118,9 +119,10 @@ class Documentation(object):
 			lastComp = components.keys()[-1]
 			for name, component in components.iteritems():
 				comma = "" if lastComp == name else ","
-				package_toc.append('\tComponent { name: "%s.%s"; path: "%s/%s.json"; }' %(package, name, package, name))
+				package_toc.append('\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
 				toc.append('\t\t\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
 				self.generate_component(package, name, component)
+			package_toc.append('\t}')
 			toc.append('\t\t\t}')
 
 			with open(os.path.join(self.jsonroot, package + '.json'), 'wt') as f:

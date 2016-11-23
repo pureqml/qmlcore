@@ -119,7 +119,7 @@ class Documentation(object):
 			for name, component in components.iteritems():
 				comma = "" if lastComp == name else ","
 				package_toc.append('\tComponent { name: "%s.%s"; path: "%s/%s.json"; }' %(package, name, package, name))
-				toc.append("\t\t\t\t'%s': '%s/%s.json'%s" %(name, package, name, comma))
+				toc.append('\t\t\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
 				self.generate_component(package, name, component)
 			toc.append('\t\t\t}')
 

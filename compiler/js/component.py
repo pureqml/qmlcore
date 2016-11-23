@@ -156,7 +156,7 @@ class component_generator(object):
 		r = []
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + escape(name)
-			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
+			r.append("%svar %s = new _globals.%s(%s)" %(ident, var, registry.find_component(self.package, animation.component.name), parent))
 			r.append(self.call_create(registry, 1, var, animation))
 			r.append(self.call_setup(registry, 1, var, animation))
 			target_parent, target = split_name(name)
@@ -274,7 +274,7 @@ class component_generator(object):
 		for idx, gen in enumerate(self.children):
 			var = "%s$child%d" %(escape(parent), idx)
 			component = registry.find_component(self.package, gen.component.name)
-			prologue.append("\tvar %s = new _globals.%s(%s)" %(var, component, parent))
+			prologue.append("%svar %s = new _globals.%s(%s)" %(ident, var, component, parent))
 			r.append(self.call_create(registry, ident_n, var, gen))
 			r.append("\t%s.addChild(%s)" %(parent, var));
 

@@ -268,7 +268,7 @@ class component_generator(object):
 				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)
 
 		for idx, gen in enumerate(self.children):
-			var = "%s_child%d" %(parent, idx)
+			var = "%s$child%d" %(escape(parent), idx)
 			component = registry.find_component(self.package, gen.component.name)
 			prologue.append("\tvar %s = new _globals.%s(%s)" %(var, component, parent))
 			r.append(self.call_create(registry, ident_n, var, gen))
@@ -285,7 +285,7 @@ class component_generator(object):
 				self.check_target_property(registry, target)
 
 			if isinstance(value, component_generator):
-				var = "%s_%s" %(parent, escape(target))
+				var = "%s$%s" %(escape(parent), escape(target))
 				if target != "delegate":
 					prologue.append('\tvar %s' %var)
 					prologue.append("%s%s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
@@ -328,18 +328,18 @@ class component_generator(object):
 				value = replace_enums(value, self, registry)
 				deps = parse_deps(parent, value)
 				if deps:
-					suffix = "_var_%s__%s" %(escape(parent), escape(target))
-					var = "_update" + suffix
+					var = "_update$%s$%s" %(escape(parent), escape(target))
 					r.append("%svar %s = (function() { %s = (%s); }).bind(%s)" %(ident, var, target_lvalue, value, parent))
 					r.append("%s%s();" %(ident, var))
 					undep = []
-					for path, dep in deps:
+					for idx, _dep in enumerate(deps):
+						path, dep = _dep
 						if dep == 'model':
 							path, dep = "%s._get('_delegate')" %parent, '_row'
-						depvar = "dep_%s_%s_%s_%s" %(escape(parent), escape(target), escape(path), escape(dep))
+						depvar = "dep$%s$%s$%d" %(escape(parent), escape(target), idx)
 						r.append('%svar %s = %s' %(ident, depvar, path))
 						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))
-						undep.append("[%s, '%s', _update%s]" %(depvar, dep, suffix))
+						undep.append("[%s, '%s', %s]" %(depvar, dep, var))
 					r.append("%s%s._removeUpdater('%s', [%s])" %(ident, parent, target, ",".join(undep)))
 				else:
 					r.append("%s%s._removeUpdater('%s'); %s = (%s);" %(ident, parent, target, target_lvalue, value))
@@ -354,7 +354,7 @@ class component_generator(object):
 				raise Exception("skip assignment %s = %s" %(target, value))
 
 		for idx, gen in enumerate(self.children):
-			var = '%s_child%d' %(escape(parent), idx)
+			var = '%s$child%d' %(escape(parent), idx)
 			r.append('%svar %s = %s.children[%d]' %(ident, var, parent, idx))
 			r.append(self.call_setup(registry, ident_n, var, gen))
 

@@ -207,14 +207,18 @@ class component_generator(object):
 
 		base_type = self.get_base_type(registry)
 		p, code = self.generate_creators(registry, 'this', ident_n + 1)
-		b = '\t%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
-		r.append('%sexports.%s.prototype.__create = function() {\n%s\n%s\n%s\n}' \
-			%(ident, self.name, b, p, code))
+		p = p.strip()
+		code = code.strip()
+		if p or code:
+			b = '\t%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
+			r.append('%sexports.%s.prototype.__create = function() {\n%s\n%s\n%s\n}' \
+				%(ident, self.name, b, p, code))
 
-		code = self.generate_setup_code(registry, 'this', ident_n + 1)
-		b = '\t%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
-		r.append('%sexports.%s.prototype.__setup = function() {\n%s\n%s\n}' \
-			%(ident, self.name, b, code))
+		code = self.generate_setup_code(registry, 'this', ident_n + 1).strip()
+		if code:
+			b = '\t%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
+			r.append('%sexports.%s.prototype.__setup = function() {\n%s\n%s\n}' \
+				%(ident, self.name, b, code))
 
 		r.append('')
 

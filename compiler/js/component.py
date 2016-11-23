@@ -336,9 +336,11 @@ class component_generator(object):
 					for path, dep in deps:
 						if dep == 'model':
 							path, dep = "%s._get('_delegate')" %parent, '_row'
-						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, path, dep, var))
-						undep.append("%s.removeOnChanged('%s', _update%s)" %(path, dep, suffix))
-					r.append("%s%s._removeUpdater('%s', (function() { %s }).bind(%s))" %(ident, parent, target, ";".join(undep), parent))
+						depvar = "dep_%s_%s_%s_%s" %(escape(parent), escape(target), escape(path), escape(dep))
+						r.append('%svar %s = %s' %(ident, depvar, path))
+						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))
+						undep.append("[%s, '%s', _update%s]" %(depvar, dep, suffix))
+					r.append("%s%s._removeUpdater('%s', [%s])" %(ident, parent, target, ",".join(undep)))
 				else:
 					r.append("%s%s._removeUpdater('%s'); %s = (%s);" %(ident, parent, target, target_lvalue, value))
 

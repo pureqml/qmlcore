@@ -32,6 +32,8 @@ EventEmitter {
 		this._changedHandlers = {}
 		this._pressedHandlers = {}
 		this._animations = {}
+		for(var name in this._updaters)
+			this._removeUpdaters(name)
 
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}
@@ -76,14 +78,22 @@ EventEmitter {
 	}
 
 	/// @internal removes dynamic value updater
-	function _removeUpdater (name, callback) {
-		if (name in this._updaters)
-			this._updaters[name]();
+	function _removeUpdater (name, newUpdaters) {
+		var updaters = this._updaters
+		var oldUpdaters = updaters[name]
+		if (oldUpdaters !== undefined) {
+			oldUpdaters.forEach(function(data) {
+				var object = data[0]
+				var name = data[1]
+				var callback = data[2]
+				object.removeOnChanged(name, callback)
+			})
+		}
 
-		if (callback) {
-			this._updaters[name] = callback;
-		} else
-			delete this._updaters[name]
+		if (newUpdaters)
+			updaters[name] = newUpdaters
+		else
+			delete updaters[name]
 	}
 
 	/// registers key handler

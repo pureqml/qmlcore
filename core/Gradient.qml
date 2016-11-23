@@ -7,9 +7,12 @@ Object {
 	}
 
 	function addChild(child) {
-		this.stops.push(child)
-		this.stops.sort(function(a, b) { return a.position > b.position; })
-		this._update()
+		_globals.core.Object.prototype.addChild.apply(this, arguments)
+		if (child instanceof _globals.core.GradientStop) {
+			this.stops.push(child)
+			this.stops.sort(function(a, b) { return a.position > b.position; })
+			this._update()
+		}
 	}
 
 	function _update() {

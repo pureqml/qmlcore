@@ -328,7 +328,7 @@ class component_generator(object):
 				value = replace_enums(value, self, registry)
 				deps = parse_deps(parent, value)
 				if deps:
-					var = "_update$%s$%s" %(escape(parent), escape(target))
+					var = "update$%s$%s" %(escape(parent), escape(target))
 					r.append("%svar %s = (function() { %s = (%s); }).bind(%s)" %(ident, var, target_lvalue, value, parent))
 					r.append("%s%s();" %(ident, var))
 					undep = []
@@ -347,7 +347,7 @@ class component_generator(object):
 			elif t is component_generator:
 				if target == "delegate":
 					continue
-				var = "%s_%s" %(parent, escape(target))
+				var = "%s$%s" %(escape(parent), escape(target))
 				r.append('%svar %s = %s.%s' %(ident, var, parent, target))
 				r.append(self.call_setup(registry, ident_n, var, value))
 			else:

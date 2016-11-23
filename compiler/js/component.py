@@ -254,6 +254,19 @@ class component_generator(object):
 		r = []
 		ident = "\t" * ident_n
 
+		if not self.prototype:
+			for name in self.signals:
+				r.append("%s%s.%s = _globals.core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
+
+			for name, prop in self.properties.iteritems():
+				args = [parent, "'%s'" %prop.type, "'%s'" %name]
+				if prop.is_trivial():
+					args.append(prop.value)
+				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
+
+			for name, prop in self.enums.iteritems():
+				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)
+
 		for idx, gen in enumerate(self.children):
 			var = "%s_child%d" %(parent, idx)
 			component = registry.find_component(self.package, gen.component.name)
@@ -283,19 +296,6 @@ class component_generator(object):
 					code += self.call_create(registry, ident_n, var, value) + '\n'
 					code += self.call_setup(registry, ident_n, var, value) + '\n'
 					r.append("%s%s.%s = (function() {\n%s\n%s\nreturn %s\n}).bind(%s)" %(ident, parent, target, code, ident, var, parent))
-
-		if not self.prototype:
-			for name in self.signals:
-				r.append("%s%s.%s = _globals.core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
-
-			for name, prop in self.properties.iteritems():
-				args = [parent, "'%s'" %prop.type, "'%s'" %name]
-				if prop.is_trivial():
-					args.append(prop.value)
-				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
-
-			for name, prop in self.enums.iteritems():
-				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)
 
 		return "\n".join(prologue), "\n".join(r)
 

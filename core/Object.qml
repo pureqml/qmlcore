@@ -32,8 +32,9 @@ EventEmitter {
 		this._changedHandlers = {}
 		this._pressedHandlers = {}
 		this._animations = {}
-		for(var name in this._updaters)
-			this._removeUpdaters(name)
+		//for(var name in this._updaters) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
+		//	this._removeUpdater(name)
+		this._updaters = {}
 
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}

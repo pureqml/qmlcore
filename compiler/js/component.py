@@ -234,7 +234,7 @@ class component_generator(object):
 				r.append(code)
 			if setup_code:
 				r.append(setup_code)
-			r.append("%s})();\n" %ident)
+			r.append("%s}).apply(null);\n" %ident)
 
 		r.append('')
 

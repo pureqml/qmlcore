@@ -211,25 +211,19 @@ class component_generator(object):
 
 		base_type = self.get_base_type(registry)
 
+		code = self.generate_creators(registry, 'this', '__closure', ident_n + 1)
+		b = '\t%s_globals.%s.prototype.__create.call(this, __closure.__base = { })' %(ident, base_type)
+		code = '%sexports.%s.prototype.__create = function(__closure) {\n%s\n%s\n%s}' \
+			%(ident, self.name, b, code, ident)
+
+		setup_code = self.generate_setup_code(registry, 'this', '__closure', ident_n + 2)
+		b = '%s_globals.%s.prototype.__setup.call(this, __closure.__base)' %(ident, base_type)
+		setup_code = '%sexports.%s.prototype.__setup = function(__closure) {\n%s\n%s\n}' \
+			%(ident, self.name, b, setup_code)
+
 		r.append('')
-
-		code = self.generate_creators(registry, 'this', '__closure', ident_n + 1).strip()
-		if code:
-			b = '\t%s_globals.%s.prototype.__create.apply(this, arguments)' %(ident, base_type)
-			code = '%sexports.%s.prototype.__create = function(__closure) {\n%s\n%s\n%s}' \
-				%(ident, self.name, b, code, ident)
-
-		setup_code = self.generate_setup_code(registry, 'this', '__closure', ident_n + 2).strip()
-		if setup_code:
-			b = '%s_globals.%s.prototype.__setup.apply(this, arguments)' %(ident, base_type)
-			setup_code = '%sexports.%s.prototype.__setup = function(__closure) {\n%s\n%s\n}' \
-				%(ident, self.name, b, setup_code)
-
-		if code:
-			r.append(code)
-		if setup_code:
-			r.append(setup_code)
-
+		r.append(code)
+		r.append(setup_code)
 		r.append('')
 
 		return "\n".join(r)

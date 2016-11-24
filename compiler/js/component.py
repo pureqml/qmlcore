@@ -126,8 +126,7 @@ class component_generator(object):
 		code += '%s%s.__create()\n' %(ident, target)
 		if not value.prototype:
 			p, c = value.generate_creators(registry, target, ident_n)
-			code += '\n' + p + '\n' + c
-		return code
+		return p, code
 
 	def call_setup(self, registry, ident_n, target, value):
 		assert isinstance(value, component_generator)
@@ -157,7 +156,7 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + escape(name)
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append(self.call_create(registry, 1, var, animation))
+			r.append("\n".join(self.call_create(registry, 1, var, animation)))
 			r.append(self.call_setup(registry, 1, var, animation))
 			target_parent, target = split_name(name)
 			if not target_parent:
@@ -284,7 +283,9 @@ class component_generator(object):
 			component = registry.find_component(self.package, gen.component.name)
 			prologue.append("%svar %s" %(ident, var))
 			r.append("%s%s = new _globals.%s(%s)" %(ident, var, component, parent))
-			r.append(self.call_create(registry, ident_n, var, gen))
+			p, code = self.call_create(registry, ident_n, var, gen)
+			prologue.append(p)
+			r.append(code)
 			r.append("%s%s.addChild(%s)" %(ident, parent, var));
 
 		for target, value in self.assignments.iteritems():
@@ -301,12 +302,15 @@ class component_generator(object):
 				var = "%s$%s" %(escape(parent), escape(target))
 				if target != "delegate":
 					prologue.append('\tvar %s' %var)
+					r.append("//creating component %s" %value.name)
 					r.append("%s%s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
-					r.append(self.call_create(registry, ident_n, var, value))
+					p, code = self.call_create(registry, ident_n, var, value)
+					prologue.append(p)
+					r.append(code)
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
 					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
-					code += self.call_create(registry, ident_n, var, value) + '\n'
+					code += "\n".join(self.call_create(registry, ident_n, var, value)) + '\n'
 					code += self.call_setup(registry, ident_n, var, value) + '\n'
 					r.append("%s%s.%s = (function() {\n%s\n%s\nreturn %s\n}).bind(%s)" %(ident, parent, target, code, ident, var, parent))
 

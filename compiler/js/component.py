@@ -218,7 +218,7 @@ class component_generator(object):
 		p, code = self.generate_creators(registry, 'this', ident_n + 1)
 		p = p.strip()
 		code = code.strip()
-		if p or code:
+		if p or code or setup_code:
 			b = '\t%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
 			r.append('%sexports.%s.prototype.__create = function() {\n%s\n%s\n%s\n%s\n}' \
 				%(ident, self.name, b, p, code, setup_code))

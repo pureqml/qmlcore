@@ -295,8 +295,8 @@ class component_generator(object):
 				self.check_target_property(registry, target)
 
 			if isinstance(value, component_generator):
-				var = "%s$%s" %(escape(parent), escape(target))
 				if target != "delegate":
+					var = "%s$%s" %(escape(parent), escape(target))
 					r.append("//creating component %s" %value.name)
 					r.append("%svar %s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
 					r.append("%s%s.%s = %s" %(ident, closure, var, var))
@@ -304,11 +304,11 @@ class component_generator(object):
 					r.append(code)
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
-					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
-					code += "%svar closure = {%s : %s}\n" %(ident, var, var)
-					code += self.call_create(registry, ident_n, var, value, 'closure') + '\n'
-					code += self.call_setup(registry, ident_n, var, value, 'closure') + '\n'
-					r.append("%s%s.%s = (function() {\n%s\n%s\nreturn %s\n}).bind(%s)" %(ident, parent, target, code, ident, var, parent))
+					code = "%svar delegate = new _globals.%s(%s, true)\n" %(ident, registry.find_component(value.package, value.component.name), parent)
+					code += "%svar closure = {delegate : delegate}\n" %(ident)
+					code += self.call_create(registry, ident_n, 'delegate', value, 'closure') + '\n'
+					code += self.call_setup(registry, ident_n, 'delegate', value, 'closure') + '\n'
+					r.append("%s%s.%s = (function() {\n%s\n%s\nreturn delegate\n}).bind(%s)" %(ident, parent, target, code, ident, parent))
 
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(target)

@@ -253,6 +253,9 @@ class component_generator(object):
 			if not self.find_property(registry, target):
 				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
 
+	def is_trivial_assignment(self, target, value):
+		return ("." not in target) and lang.value_is_trivial(value)
+
 	def generate_creators(self, registry, parent, ident_n = 1):
 		prologue = []
 		r = []
@@ -285,6 +288,9 @@ class component_generator(object):
 				r.append("%s%s._setId('%s')" %(ident, parent, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
+			elif self.is_trivial_assignment(target, value):
+				r.append("%s%s._removeUpdater('%s')" %(ident, parent, target))
+				r.append("%s%s.%s = %s" %(ident, parent, target, value))
 			else:
 				self.check_target_property(registry, target)
 
@@ -324,7 +330,7 @@ class component_generator(object):
 		ident = "\t" * ident_n
 
 		for target, value in self.assignments.iteritems():
-			if target == "id":
+			if target == "id" or self.is_trivial_assignment(target, value): #already processed in __create
 				continue
 			t = type(value)
 			#print self.name, target, value

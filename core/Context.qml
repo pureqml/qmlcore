@@ -155,8 +155,9 @@ Item {
 	}
 
 	function start(instance) {
-		instance.__create()
-		instance.__setup()
+		var closure = {}
+		instance.__create(closure)
+		instance.__setup(closure)
 		log('Context: started')
 		this._started = true
 		// log('Context: calling on completed')

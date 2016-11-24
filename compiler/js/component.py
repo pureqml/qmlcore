@@ -135,6 +135,7 @@ class component_generator(object):
 		code = '\n//setting up component %s\n' %value.component.name
 		code += '%svar %s = %s.%s\n' %(ident, target, closure, target)
 		code += '%s%s.__setup(%s.__closure_%s)\n' %(ident, target, closure, target)
+		code += '%sdelete %s.__closure_%s\n' %(ident, closure, target)
 		if not value.prototype:
 			code += '\n' + value.generate_setup_code(registry, target, closure, ident_n)
 		return code
@@ -221,7 +222,7 @@ class component_generator(object):
 			%(ident, self.name, b, code, ident)
 
 		setup_code = self.generate_setup_code(registry, 'this', '__closure', ident_n + 2).strip()
-		b = '%s_globals.%s.prototype.__setup.call(this, __closure.__base)' %(ident, base_type)
+		b = '%s_globals.%s.prototype.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, base_type)
 		if setup_code:
 			generate = True
 		setup_code = '%sexports.%s.prototype.__setup = function(__closure) {\n%s\n%s\n}' \

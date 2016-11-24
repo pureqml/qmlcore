@@ -121,16 +121,17 @@ EventEmitter {
 
 	/// gets object by id
 	function _get (name) {
-		var object = this;
+		if (name in this)
+			return this[name]
+
+		var object = this
 		while(object) {
 			if (name in object._local)
-				return object._local[name];
-			object = object.parent;
+				return object._local[name]
+			object = object.parent
 		}
-		if (name in this)
-			return this[name];
 
-		throw new Error("invalid property requested: '" + name);
+		throw new Error("invalid property requested: '" + name)
 	}
 
 	/// sets animation on given property

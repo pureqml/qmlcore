@@ -16,9 +16,10 @@ class Component(object):
 		for value in values:
 			localComma = "" if last == value.name else ","
 			if value.doc is not None:
-				r.append('\t\t\t"%s": "%s"%s' %(value.name, value.doc.text, localComma))
+                                internal = "true" if "@private" in value.doc.text else "false"
+				r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, value.doc.text, internal, localComma))
 			else:
-				r.append('\t\t\t"%s": ""%s' %(value.name, localComma))
+				r.append('\t\t\t"%s": { "text": "", "internal": false }%s' %(value.name, localComma))
 
 		if comma:
 			r.append('\t\t},')

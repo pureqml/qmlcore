@@ -123,7 +123,7 @@ class component_generator(object):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
 		code = '\n//creating component %s\n' %value.component.name
-		code += '%s%s.__create(%s)\n' %(ident, target, closure)
+		code += '%s%s.__create(%s.__closure_%s = { })\n' %(ident, target, closure, target)
 		if not value.prototype:
 			c = value.generate_creators(registry, target, closure, ident_n)
 			code += c
@@ -134,7 +134,7 @@ class component_generator(object):
 		ident = '\t' * ident_n
 		code = '\n//setting up component %s\n' %value.component.name
 		code += '%svar %s = %s.%s\n' %(ident, target, closure, target)
-		code += '%s%s.__setup(%s)\n' %(ident, target, closure)
+		code += '%s%s.__setup(%s.__closure_%s)\n' %(ident, target, closure, target)
 		if not value.prototype:
 			code += '\n' + value.generate_setup_code(registry, target, closure, ident_n)
 		return code

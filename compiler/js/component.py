@@ -223,14 +223,14 @@ class component_generator(object):
 				%(ident, self.name, b, setup_code)
 
 		if prologue or code or setup_code:
-			r.append("%s(function() {" %ident)
+			r.append(";%s(function() {" %ident)
 			if prologue:
 				r.append(prologue)
 			if code:
 				r.append(code)
 			if setup_code:
 				r.append(setup_code)
-			r.append("%s})()\n" %ident)
+			r.append("%s})();\n" %ident)
 
 		r.append('')
 

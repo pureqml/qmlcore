@@ -305,8 +305,9 @@ class component_generator(object):
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
 					code = "%svar %s = new _globals.%s(%s, true)\n" %(ident, var, registry.find_component(value.package, value.component.name), parent)
-					code += self.call_create(registry, ident_n, var, value, closure) + '\n'
-					code += self.call_setup(registry, ident_n, var, value, closure) + '\n'
+					code += "%svar closure = {%s : %s}\n" %(ident, var, var)
+					code += self.call_create(registry, ident_n, var, value, 'closure') + '\n'
+					code += self.call_setup(registry, ident_n, var, value, 'closure') + '\n'
 					r.append("%s%s.%s = (function() {\n%s\n%s\nreturn %s\n}).bind(%s)" %(ident, parent, target, code, ident, var, parent))
 
 		for name, target in self.aliases.iteritems():

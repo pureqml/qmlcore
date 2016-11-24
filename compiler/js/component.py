@@ -158,9 +158,9 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_%s_on_%s" %(escape(parent), escape(name))
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append("\tvar closure = { %s: %s }" %(var, var))
-			r.append(self.call_create(registry, 1, var, animation, 'closure'))
-			r.append(self.call_setup(registry, 1, var, animation, 'closure'))
+			r.append("\tvar %s__closure = { %s: %s }" %(var, var, var))
+			r.append(self.call_create(registry, 1, var, animation, var + '__closure'))
+			r.append(self.call_setup(registry, 1, var, animation, var + '__closure'))
 			target_parent, target = split_name(name)
 			if not target_parent:
 				target_parent = parent
@@ -299,9 +299,9 @@ class component_generator(object):
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
 					code = "%svar delegate = new _globals.%s(%s, true)\n" %(ident, registry.find_component(value.package, value.component.name), parent)
-					code += "%svar closure = {delegate : delegate}\n" %(ident)
-					code += self.call_create(registry, ident_n, 'delegate', value, 'closure') + '\n'
-					code += self.call_setup(registry, ident_n, 'delegate', value, 'closure') + '\n'
+					code += "%svar __closure = { delegate: delegate }\n" %(ident)
+					code += self.call_create(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
+					code += self.call_setup(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
 					r.append("%s%s.%s = (function() {\n%s\n%sreturn delegate\n}).bind(%s)" %(ident, parent, target, code, ident, parent))
 
 		for name, target in self.aliases.iteritems():

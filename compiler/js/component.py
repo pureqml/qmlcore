@@ -156,7 +156,7 @@ class component_generator(object):
 	def generate_animations(self, registry, parent):
 		r = []
 		for name, animation in self.animations.iteritems():
-			var = "behavior_on_" + escape(name)
+			var = "behavior_%s_on_%s" %(escape(parent), escape(name))
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
 			r.append("\tvar closure = { %s: %s }" %(var, var))
 			r.append(self.call_create(registry, 1, var, animation, 'closure'))

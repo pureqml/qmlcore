@@ -123,19 +123,18 @@ class component_generator(object):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
 		code = '\n//creating component %s\n' %value.component.name
-		code += '%s%s.__create()\n' %(ident, target)
+		code += '%s%s.__create(__closure)\n' %(ident, target)
 		if not value.prototype:
-			p, c = value.generate_creators(registry, target, ident_n)
+			c = value.generate_creators(registry, target, ident_n)
 			code += c
-		else:
-			p = ''
-		return p, code
+		return code
 
 	def call_setup(self, registry, ident_n, target, value):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
 		code = '\n//setting up component %s\n' %value.component.name
-		code += '%s%s.__setup()' %(ident, target)
+		code += '%svar %s = __closure.%s\n' %(ident, target, target)
+		code += '%s%s.__setup(__closure)\n' %(ident, target)
 		if not value.prototype:
 			code += '\n' + value.generate_setup_code(registry, target, ident_n)
 		return code
@@ -159,7 +158,8 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_on_" + escape(name)
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append("\n".join(self.call_create(registry, 1, var, animation)))
+			r.append("\tvar __closure = {}")
+			r.append(self.call_create(registry, 1, var, animation))
 			r.append(self.call_setup(registry, 1, var, animation))
 			target_parent, target = split_name(name)
 			if not target_parent:
@@ -211,30 +211,24 @@ class component_generator(object):
 
 		base_type = self.get_base_type(registry)
 
-		prologue, code = self.generate_creators(registry, 'root', ident_n + 1)
-		prologue, code = prologue.strip(), code.strip()
-		if prologue or code:
-			b = '%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
-			code = 'var root = this\n' + code
-			code = '%sexports.%s.prototype.__create = function() {\n%s\n%s\n}' \
-				%(ident, self.name, b, code)
+		r.append('')
 
-		setup_code = self.generate_setup_code(registry, 'root', ident_n + 2).strip()
+		code = self.generate_creators(registry, 'this', ident_n + 1).strip()
+		if code:
+			b = '\t%s_globals.%s.prototype.__create.apply(this, arguments)' %(ident, base_type)
+			code = '%sexports.%s.prototype.__create = function(__closure) {\n%s\n%s\n%s}' \
+				%(ident, self.name, b, code, ident)
+
+		setup_code = self.generate_setup_code(registry, 'this', ident_n + 2).strip()
 		if setup_code:
-			b = '%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
-			setup_code = 'var root = this\n' + setup_code
-			setup_code = '%sexports.%s.prototype.__setup = function() {\n%s\n%s\n}' \
+			b = '%s_globals.%s.prototype.__setup.apply(this, arguments)' %(ident, base_type)
+			setup_code = '%sexports.%s.prototype.__setup = function(__closure) {\n%s\n%s\n}' \
 				%(ident, self.name, b, setup_code)
 
-		if prologue or code or setup_code:
-			r.append(";%s(function() {" %ident)
-			if prologue:
-				r.append(prologue)
-			if code:
-				r.append(code)
-			if setup_code:
-				r.append(setup_code)
-			r.append("%s}).apply(null);\n" %ident)
+		if code:
+			r.append(code)
+		if setup_code:
+			r.append(setup_code)
 
 		r.append('')
 
@@ -266,7 +260,6 @@ class component_generator(object):
 				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
 
 	def generate_creators(self, registry, parent, ident_n = 1):
-		prologue = []
 		r = []
 		ident = "\t" * ident_n
 
@@ -286,10 +279,9 @@ class component_generator(object):
 		for idx, gen in enumerate(self.children):
 			var = "%s$child%d" %(escape(parent), idx)
 			component = registry.find_component(self.package, gen.component.name)
-			prologue.append("%svar %s" %(ident, var))
-			r.append("%s%s = new _globals.%s(%s)" %(ident, var, component, parent))
-			p, code = self.call_create(registry, ident_n, var, gen)
-			prologue.append(p)
+			r.append("%svar %s = new _globals.%s(%s)" %(ident, var, component, parent))
+			r.append("%s__closure.%s = %s" %(ident, var, var))
+			code = self.call_create(registry, ident_n, var, gen)
 			r.append(code)
 
 		for target, value in self.assignments.iteritems():
@@ -305,11 +297,10 @@ class component_generator(object):
 			if isinstance(value, component_generator):
 				var = "%s$%s" %(escape(parent), escape(target))
 				if target != "delegate":
-					prologue.append("%svar %s" %(ident, var))
 					r.append("//creating component %s" %value.name)
-					r.append("%s%s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
-					p, code = self.call_create(registry, ident_n, var, value)
-					prologue.append(p)
+					r.append("%svar %s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
+					r.append("%s__closure.%s = %s" %(ident, var, var))
+					code = self.call_create(registry, ident_n, var, value)
 					r.append(code)
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
@@ -323,7 +314,7 @@ class component_generator(object):
 			r.append("%score.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')" \
 				%(ident, parent, name, get, parent, pname))
 
-		return "\n".join(prologue), "\n".join(r)
+		return "\n".join(r)
 
 	def get_rvalue(self, parent, target):
 		path = target.split(".")
@@ -339,7 +330,6 @@ class component_generator(object):
 	def generate_setup_code(self, registry, parent, ident_n = 1):
 		r = []
 		ident = "\t" * ident_n
-
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":

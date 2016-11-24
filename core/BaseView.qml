@@ -5,6 +5,7 @@ BaseLayout {
 	property int contentX;			///< x offset to visible part of the content surface
 	property int contentY;			///< y offset to visible part of the content surface
 	property int scrollingStep: 0;	///< scrolling step
+	property int animationDuration: 0;
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
 	property bool pageScrolling: false;
 	property bool rendered: false;
@@ -169,7 +170,9 @@ BaseLayout {
 		qml.core.BaseLayout.prototype._updateItems.apply(this)
 	}
 
-	property BaseViewContent content: BaseViewContent { }
+	property BaseViewContent content: BaseViewContent {
+		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; } }
+	}
 
 	onContentXChanged: { this.content.x = -value; }
 	onContentYChanged: { this.content.y = -value; }
@@ -189,7 +192,4 @@ BaseLayout {
 
 		delayedLayout.schedule()
 	}
-
-//	Behavior on contentX { Animation { duration: 300; } }
-//	Behavior on contentY { Animation { duration: 300; } }
 }

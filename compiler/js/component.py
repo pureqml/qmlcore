@@ -382,10 +382,6 @@ class component_generator(object):
 			code = process(code, self, registry)
 			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, parent, name, code, parent))
 
-		for name, target in self.aliases.iteritems():
-			r.append("%s%s._update('%s', %s.%s)" \
-				%(ident, parent, name, parent, name))
-
 		r.append(self.generate_animations(registry, parent))
 
 		for idx, value in enumerate(self.children):

@@ -158,6 +158,7 @@ Item {
 		var closure = {}
 		instance.__create(closure)
 		instance.__setup(closure)
+		closure = undefined
 		log('Context: started')
 		this._started = true
 		// log('Context: calling on completed')

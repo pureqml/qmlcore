@@ -323,6 +323,10 @@ class component_generator(object):
 		r = []
 		ident = "\t" * ident_n
 
+		for idx, value in enumerate(self.children):
+			var = '%s$child%d' %(escape(parent), idx)
+			r.append(self.call_setup(registry, ident_n, var, value))
+
 		for target, value in self.assignments.iteritems():
 			if target == "id":
 				continue
@@ -359,13 +363,6 @@ class component_generator(object):
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
-		for idx, value in enumerate(self.children):
-			var = '%s$child%d' %(escape(parent), idx)
-			r.append(self.call_setup(registry, ident_n, var, value))
-
-		if self.elements:
-			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))
-
 		if not self.prototype:
 			for name, argscode in self.methods.iteritems():
 				args, code = argscode
@@ -391,4 +388,8 @@ class component_generator(object):
 				%(ident, parent, name, parent, name))
 
 		r.append(self.generate_animations(registry, parent))
+
+		if self.elements:
+			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))
+
 		return "\n".join(r)

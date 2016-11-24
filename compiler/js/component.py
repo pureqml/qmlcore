@@ -282,9 +282,10 @@ class component_generator(object):
 		for idx, gen in enumerate(self.children):
 			var = "%s$child%d" %(escape(parent), idx)
 			component = registry.find_component(self.package, gen.component.name)
-			prologue.append("%svar %s = new _globals.%s(%s)" %(ident, var, component, parent))
+			prologue.append("%svar %s" %(ident, var))
+			r.append("%s%s = new _globals.%s(%s)" %(ident, var, component, parent))
 			r.append(self.call_create(registry, ident_n, var, gen))
-			r.append("\t%s.addChild(%s)" %(parent, var));
+			r.append("%s%s.addChild(%s)" %(ident, parent, var));
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":
@@ -300,7 +301,7 @@ class component_generator(object):
 				var = "%s$%s" %(escape(parent), escape(target))
 				if target != "delegate":
 					prologue.append('\tvar %s' %var)
-					prologue.append("%s%s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
+					r.append("%s%s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
 					r.append(self.call_create(registry, ident_n, var, value))
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:

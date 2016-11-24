@@ -209,20 +209,28 @@ class component_generator(object):
 
 		base_type = self.get_base_type(registry)
 
+		prologue, code = self.generate_creators(registry, 'this', ident_n + 1)
+		prologue, code = prologue.strip(), code.strip()
+		if prologue or code:
+			b = '%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
+			code = '%sexports.%s.prototype.__create = function() {\n%s\n%s\n}' \
+				%(ident, self.name, b, code)
+
 		setup_code = self.generate_setup_code(registry, 'this', ident_n + 2).strip()
 		if setup_code:
-			b = '\t%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
+			b = '%s_globals.%s.prototype.__setup.apply(this)' %(ident, base_type)
 			setup_code = '%sexports.%s.prototype.__setup = function() {\n%s\n%s\n}' \
 				%(ident, self.name, b, setup_code)
 
-		p, code = self.generate_creators(registry, 'this', ident_n + 1)
-		p = p.strip()
-		code = code.strip()
-		if p or code or setup_code:
-			b = '\t%s_globals.%s.prototype.__create.apply(this)' %(ident, base_type)
-			r.append('%sexports.%s.prototype.__create = function() {\n%s\n%s\n%s\n%s\n}' \
-				%(ident, self.name, b, p, code, setup_code))
-
+		if prologue or code or setup_code:
+			r.append("%s(function() {" %ident)
+			if prologue:
+				r.append(prologue)
+			if code:
+				r.append(code)
+			if setup_code:
+				r.append(setup_code)
+			r.append("%s})()\n" %ident)
 
 		r.append('')
 

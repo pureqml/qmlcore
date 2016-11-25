@@ -60,28 +60,28 @@ Layout {
 					directPos = directMax + dsp;
 					directMax = directPos + directSize;
 					if (horizontal) {
-						c.viewY = cbm;
-						c.viewX = directPos + dbm;
+						c.y = cbm;
+						c.x = directPos + dbm;
 					} else {
-						c.viewX = cbm;
-						c.viewY = directPos + dbm;
+						c.x = cbm;
+						c.y = directPos + dbm;
 					}
 				} else {
 					if (horizontal) {
-						c.viewY = crossPos + cbm;
-						c.viewX = directPos + dbm;
+						c.y = crossPos + cbm;
+						c.x = directPos + dbm;
 					} else  {
-						c.viewX = crossPos + cbm;
-						c.viewY = directPos + dbm;
+						c.x = crossPos + cbm;
+						c.y = directPos + dbm;
 					}
 				}
 				if (directMax < directPos + directSize)
 					directMax = directPos + directSize;
 
 				if (!horizontal)
-					crossPos = c.viewX + c.width + cam + csp;
+					crossPos = c.x + c.width + cam + csp;
 				else
-					crossPos = c.viewY + c.height + cam + csp;
+					crossPos = c.y + c.height + cam + csp;
 
 				if (crossMax < crossPos - csp)
 					crossMax = crossPos - csp;
@@ -116,18 +116,18 @@ Layout {
 				if (right || center) {
 		 			for (; cindex < lindex; ++cindex) {
 		 				if (!horizontal)
-							children[cindex].viewX += shift
+							children[cindex].x += shift
 						else
-							children[cindex].viewY += shift
+							children[cindex].y += shift
 		 			}
 		 		} else if (justify) {
 		 			var c = lindex - cindex + 1
 		 			var sp = shift / c
 		 			for (; cindex < lindex; ++cindex) {
 		 				if (!horizontal)
-							children[cindex].viewX += sp * (cindex + c - lindex)
+							children[cindex].x += sp * (cindex + c - lindex)
 						else
-							children[cindex].viewY += sp * (cindex + c - lindex)
+							children[cindex].y += sp * (cindex + c - lindex)
 		 			}
 		 		}
 		 	}

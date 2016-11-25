@@ -144,7 +144,7 @@ BaseLayout {
 	function _updateDelegate(idx) {
 		var item = this._items[idx]
 		if (item) {
-			_globals.core.Object.prototype._update.apply(item, ['_row']);
+			_globals.core.Object.prototype._update.call(item, '_row')
 		}
 	}
 

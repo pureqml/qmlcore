@@ -10,16 +10,17 @@ class Component(object):
 
 
 	def generate_section(self, r, title, values, comma):
-
 		last = values[-1].name
 		r.append('\t\t"%s": {' %title)
+
 		for value in values:
 			localComma = "" if last == value.name else ","
+                        typeName = value.type if hasattr(value, 'type') else ""
 			if value.doc is not None:
                                 internal = "true" if "@private" in value.doc.text else "false"
-				r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, value.doc.text, internal, localComma))
+				r.append('\t\t\t"%s": { "text": "%s", "internal": %s, "type": "%s" }%s' %(value.name, value.doc.text, internal, typeName, localComma))
 			else:
-				r.append('\t\t\t"%s": { "text": "", "internal": false }%s' %(value.name, localComma))
+				r.append('\t\t\t"%s": { "text": "", "internal": false, "type": "%s" }%s' %(value.name, typeName, localComma))
 
 		if comma:
 			r.append('\t\t},')
@@ -112,7 +113,6 @@ class Documentation(object):
 		toc.append('\t"docs_dir": ".",')
 		toc.append('\t"site_dir": "../html",')
 		toc.append('\t"repo_url": "https://github.com/pureqml/qmlcore/",')
-
 		toc.append('\t"pages": {')
 
 		pack = sorted(self.packages.iteritems())

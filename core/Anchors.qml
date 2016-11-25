@@ -124,6 +124,9 @@ Object {
 
 		switch(name) {
 			case 'left':
+				self._removeUpdater('x')
+				if (this.right)
+					self._removeUpdater('width')
 				var update_left = this._updateLeft.bind(this)
 				update_left()
 				self.connectOn(anchors.left.parent, 'boxChanged', update_left)
@@ -131,6 +134,9 @@ Object {
 				break
 
 			case 'right':
+				self._removeUpdater('x')
+				if (this.left)
+					self._removeUpdater('width')
 				var update_right = this._updateRight.bind(this)
 				update_right()
 				self.onChanged('width', update_right)
@@ -139,6 +145,9 @@ Object {
 				break
 
 			case 'top':
+				self._removeUpdater('y')
+				if (this.bottom)
+					self._removeUpdater('height')
 				var update_top = this._updateTop.bind(this)
 				update_top()
 				self.connectOn(anchors.top.parent, 'boxChanged', update_top)
@@ -146,6 +155,9 @@ Object {
 				break
 
 			case 'bottom':
+				self._removeUpdater('y')
+				if (this.top)
+					self._removeUpdater('height')
 				var update_bottom = this._updateBottom.bind(this)
 				update_bottom()
 				self.onChanged('height', update_bottom)
@@ -154,6 +166,7 @@ Object {
 				break
 
 			case 'horizontalCenter':
+				self._removeUpdater('x')
 				var update_h_center = this._updateHCenter.bind(this)
 				update_h_center()
 				self.onChanged('width', update_h_center)
@@ -163,6 +176,7 @@ Object {
 				break
 
 			case 'verticalCenter':
+				self._removeUpdater('y')
 				var update_v_center = this._updateVCenter.bind(this)
 				update_v_center()
 				self.onChanged('height', update_v_center)

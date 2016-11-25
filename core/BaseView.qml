@@ -144,6 +144,9 @@ BaseLayout {
 	function _updateDelegate(idx) {
 		var item = this._items[idx]
 		if (item) {
+			var row = this.model.get(idx)
+			row['index'] = idx
+			item._local['model'] = row
 			_globals.core.Object.prototype._update.call(item, '_row')
 		}
 	}

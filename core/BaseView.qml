@@ -156,15 +156,6 @@ BaseLayout {
 		item.discard()
 	}
 
-	/// @internal creates delegate in given item slot
-	function _discardDelegate(idx) {
-		var item = this._items[idx]
-		if (item) {
-			this._discardItem(item)
-			this._items[idx] = null
-		}
-	}
-
 	function _updateItems() {
 		this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._updateItems.apply(this)

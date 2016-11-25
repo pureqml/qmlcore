@@ -1,3 +1,5 @@
+import re
+
 def value_is_trivial(value):
 	if value is None or not isinstance(value, str):
 		return False
@@ -74,10 +76,18 @@ class IdAssignment(Entity):
 		self.name = name
 
 class Assignment(Entity):
+	re_name = re.compile('<property-name>')
+
 	def __init__(self, target, value):
 		super(Assignment, self).__init__()
 		self.target = target
-		self.value = value
+
+		def replace_name(m):
+			dot = target.rfind('.')
+			name = target.substr(dot + 1) if dot >= 0 else target
+			return name
+
+		self.value = Assignment.re_name.sub(replace_name, value) if isinstance(value, str) else value
 
 	def is_trivial(self):
 		return value_is_trivial(self.value)

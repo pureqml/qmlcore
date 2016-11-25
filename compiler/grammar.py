@@ -214,6 +214,9 @@ component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)
 component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
 
+def handle_percent_op(s, l, t):
+	value = t[0][0]
+	return "(this._get('parent')._get('<property-name>') * (%s / 100))" %value
 def handle_unary_op(s, l, t):
 	#print "EXPR", t
 	return " ".join(map(str, t[0]))
@@ -234,6 +237,8 @@ expression_array.setParseAction(handle_expression_array)
 expression_definition = bool_value | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
 
 expression_ops = infixNotation(expression_definition, [
+	('%', 1, opAssoc.LEFT, handle_percent_op),
+
 	('!', 1, opAssoc.RIGHT, handle_unary_op),
 	('%', 2, opAssoc.LEFT, handle_binary_op),
 	('*', 2, opAssoc.LEFT, handle_binary_op),

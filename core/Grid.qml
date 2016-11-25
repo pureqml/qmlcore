@@ -3,8 +3,6 @@ Layout {
 	property int horizontalSpacing; ///< horizontal spacing between rows, overrides regular spacing, pixels
 	property int verticalSpacing; ///< vertical spacing between columns, overrides regular spacing, pixels
 	property int rowsCount; ///< read-only property, represents number of row in a grid
-	height: flow === Grid.FlowTopToBottom ? contentHeight : height;
-	width: flow === Grid.FlowLeftToRight ? contentWidth : width;
 
 	property enum horizontalAlignment {
 		AlignLeft, AlignRight, AlignHCenter, AlignJustify

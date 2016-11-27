@@ -2,12 +2,12 @@
 
 import sys
 import os
-from os import path
 import json
-from subprocess import call
-from StringIO import StringIO
+import subprocess
 import argparse
 import re
+from os import path
+from StringIO import StringIO
 
 parser = argparse.ArgumentParser('qmlcore build tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
@@ -34,6 +34,11 @@ if args.boilerplate:
 			app.write(template.read())
 	print 'finished, run ./qmlcore/build now'
 	sys.exit(0)
+
+def call(*args, **kw):
+	code = subprocess.call(*args, **kw)
+	if code != 0:
+		raise Exception('command %s failed with code %d' %(" ".join(*args), code))
 
 def minify_uglify(out, src, root, app, platform, manifest):
 	call(["uglifyjs",

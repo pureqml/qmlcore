@@ -1,4 +1,4 @@
-/// @internal Anchor's vertical or horizontal line (left, right, center)
+/// @private Anchor's vertical or horizontal line (left, right, center)
 Object {
 	property int boxIndex;
 

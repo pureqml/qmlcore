@@ -44,7 +44,7 @@ EventEmitter {
 		this.children.push(child);
 	}
 
-	/// @internal sets id
+	/// @private sets id
 	function _setId(name) {
 		var p = this;
 		while(p) {
@@ -78,7 +78,7 @@ EventEmitter {
 		}
 	}
 
-	/// @internal removes dynamic value updater
+	/// @private removes dynamic value updater
 	function _removeUpdater (name, newUpdaters) {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]

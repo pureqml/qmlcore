@@ -233,7 +233,7 @@ BaseView {
 			this._context._complete()
 	}
 
-	/// @internal creates delegate in given item slot
+	/// @private creates delegate in given item slot
 	function _createDelegate(idx) {
 		var item = _globals.core.BaseView.prototype._createDelegate.apply(this, arguments)
 		var delayedLayout = this._delayedLayout

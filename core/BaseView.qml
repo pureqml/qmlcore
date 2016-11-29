@@ -27,7 +27,7 @@ BaseLayout {
 		return idx >= 0? this._items[idx]: null
 	}
 
-	/// @internal focuses current item
+	/// @private focuses current item
 	function focusCurrent() {
 		var n = this.count
 		if (n == 0)
@@ -120,7 +120,7 @@ BaseLayout {
 		_globals.core.Item.prototype._update.apply(this, arguments);
 	}
 
-	/// @internal creates delegate in given item slot
+	/// @private creates delegate in given item slot
 	function _createDelegate(idx) {
 		var items = this._items
 		if (items[idx] !== null)

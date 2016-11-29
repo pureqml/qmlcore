@@ -128,7 +128,7 @@ Object {
 		return {width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', transform: 'transform', visible: 'visibility', background: 'background'}[name]
 	}
 
-	/// @internal
+	/// @private
 	function _update (name, value) {
 		switch(name) {
 			case 'width':
@@ -221,7 +221,7 @@ Object {
 		return true
 	}
 
-	/// @internal focus subtree of current focused child
+	/// @private focus subtree of current focused child
 	function _focusTree (active) {
 		this.activeFocus = active;
 		if (this.focusedChild)

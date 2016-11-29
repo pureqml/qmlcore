@@ -26,12 +26,12 @@ Object {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	/// @internal
+	/// @private
 	function interpolate(dst, src, t) {
 		return t * (dst - src) + src;
 	}
 
-	/// @internal
+	/// @private
 	function complete() { }
 
 }

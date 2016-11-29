@@ -1,5 +1,5 @@
 /**
-@internal
+@private
 Component aimed to adjust individual preferences of each border side
 */
 

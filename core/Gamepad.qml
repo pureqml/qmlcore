@@ -1,13 +1,13 @@
 Item {
-	signal axes;
-	signal button;
+	signal axes;						///< emitted when one of the axes is changed
+	signal button;						///< emitted when any button is pressed
+	property int index;					///< gamepad index in order of appearance
+	property int buttonsCount;			///< supported buttons count
+	property int axesCount;				///< supported axes count
+	property bool connected: false;		///< is gamepad connected or not
+	property string deviceInfo;			///< gamepad device info string
 
-	property int index;
-	property int buttonsCount;
-	property int axesCount;
-	property bool connected: false;
-	property string deviceInfo;
-
+	/// @private
 	constructor : {
 		this._state = {}
 		this._mapping = {
@@ -21,6 +21,7 @@ Item {
 		}
 	}
 
+	/// @private
 	function _set(name, idx, n, value) {
 		//log(name, idx, value)
 		var _state = this._state
@@ -40,11 +41,14 @@ Item {
 		}
 	}
 
+	/// @private
 	function get(name, idx) {
 		var values = this._state[name] || []
 		return values[idx] || 0
 	}
 
+
+	/// @private
 	function poll(gp) {
 		var event = { 'type': 'keydown', 'source': 'gamepad', 'index': gp.index }
 		if (gp.axes) {

@@ -11,6 +11,8 @@ Object {
 	property bool portrait: parent.width < parent.height;
 	property bool landscape: !portrait;
 	property bool pageActive: true;
+	property int screenWidth;
+	property int screenHeight;
 	property int contextWidth: parent.width;
 	property int contextHeight: parent.height;
 	property enum device { Desktop, Tv, Mobile };
@@ -72,5 +74,8 @@ Object {
 		var self = this
 		window.onfocus = function() { self.pageActive = true }
 		window.onblur = function() { self.pageActive = false }
+
+		this.screenWidth = window.screen.width
+		this.screenHeight = window.screen.height
 	}
 }

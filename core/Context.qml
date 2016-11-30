@@ -87,6 +87,7 @@ Item {
 			mangleRule('video', "{ position: absolute; visibility: inherit; }") +
 			mangleRule('svg', "{ position: absolute; visibility: inherit; overflow: visible; }") +
 			mangleRule('pre', "{ position: absolute; visibility: inherit; margin: 0px;}") +
+			mangleRule('select', "{ position: absolute; visibility: inherit; margin: 0px;}") +
 			mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
 		)
 		html.getElement('head').append(style)

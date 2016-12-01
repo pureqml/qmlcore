@@ -182,19 +182,11 @@ Item {
 			this.verticalSwiped(event)
 	}
 
-	onCompleted: {
-		if (this.clickable)
-			this._bindClick(true)
-		if (this.wheelEnabled)
-			this._bindWheel(true)
-
-		if (this.pressable)
-			this._bindPressable(true)
-
-		if (this.hoverEnabled)
-			this._bindHover(true)
-
-		if (this.touchEnabled)
-			this._bindTouch(true)
+	constructor: {
+		this._bindClick(this.clickable)
+		this._bindWheel(this.wheelEnabled)
+		this._bindPressable(this.pressable)
+		this._bindHover(this.hoverEnabled)
+		this._bindTouch(this.touchEnabled)
 	}
 }

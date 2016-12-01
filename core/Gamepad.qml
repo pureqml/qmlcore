@@ -1,3 +1,4 @@
+///item for gamepad device instance, provide common API
 Item {
 	signal axes;						///< emitted when one of the axes is changed
 	signal button;						///< emitted when any button is pressed

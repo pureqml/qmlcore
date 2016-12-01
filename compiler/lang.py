@@ -82,12 +82,14 @@ class Assignment(Entity):
 		super(Assignment, self).__init__()
 		self.target = target
 
-		def replace_name(m):
-			dot = target.rfind('.')
-			name = target.substr(dot + 1) if dot >= 0 else target
-			return name
+		dot = target.rfind('.')
+		property_name = target[dot + 1:] if dot >= 0 else target
+		if property_name == 'x':
+			property_name = 'width'
+		elif property_name == 'y':
+			property_name = 'height'
 
-		self.value = Assignment.re_name.sub(replace_name, value) if isinstance(value, str) else value
+		self.value = Assignment.re_name.sub(property_name, value) if isinstance(value, str) else value
 
 	def is_trivial(self):
 		return value_is_trivial(self.value)

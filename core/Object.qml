@@ -1,7 +1,7 @@
 ///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
 	constructor: {
-		exports.core.EventEmitter.apply(this)
+		_globals.core.EventEmitter.apply(this)
 
 		this.parent = parent
 		this.children = []
@@ -114,7 +114,7 @@ EventEmitter {
 	function _update (name, value) {
 		if (name in this._changedHandlers) {
 			var handlers = this._changedHandlers[name]
-			var invoker = exports.core.safeCall([value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+			var invoker = _globals.core.safeCall([value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 			handlers.forEach(invoker)
 		}
 	}

@@ -314,7 +314,7 @@ Object {
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {
-						if (exports.trace.key)
+						if (_globals.core.trace.key)
 							log("key", key, "handled by", this, new Error().stack)
 						return true;
 					}
@@ -327,7 +327,7 @@ Object {
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {
-						if (exports.trace.key)
+						if (_globals.core.trace.key)
 							log("key", key, "handled by", this, new Error().stack)
 						return true
 					}

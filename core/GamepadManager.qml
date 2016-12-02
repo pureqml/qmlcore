@@ -1,12 +1,13 @@
+///gamepad manager item holds Gamepad items and provide common API
 Item {
-	signal connected;
-	signal disconnected;
+	signal connected;		///< emitted when any gamepad is connected
+	signal disconnected;	///< emitted when gamepad is disconnected
 
-	property int count: 0;
-	property bool gamepadChildrensCount: 0;
-	property variant _gamepads;
-	property int gamepadPollingInterval: 1000;
-	property int eventPollingInterval: 8; //120fps
+	property variant _gamepads;	///< @private
+	property int count: 0;						///< count of the all connected gamepad devices
+	property int gamepadChildrensCount: 0;		///< count of Gamepad instances inside scope
+	property int gamepadPollingInterval: 1000;	///< startup delay before gamepads polling because there is no gamepad events
+	property int eventPollingInterval: 8;		///< gamepad event polling timer interval default value is 8ms (for 120fps) because there is no gamepad events
 
 	Timer {
 		id: startupTimer;
@@ -26,6 +27,7 @@ Item {
 		onTriggered: { this.parent.gpButtonCheckLoop() }
 	}
 
+	/// @private
 	pollGamepads: {
 		clearInterval(this._gpPollInterval)
 		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
@@ -36,6 +38,7 @@ Item {
 		}
 	}
 
+	/// @private
 	gpButtonCheckLoop: {
 		clearInterval(this._gpButtonsPollInterval);
 		var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
@@ -61,6 +64,7 @@ Item {
 		}
 	}
 
+	/// @private
 	gamepadConnectedHandler(event): {
 		log('connected', event.gamepad.id)
 		this.connected(event.gamepad)
@@ -91,6 +95,7 @@ Item {
 		}
 	}
 
+	/// @private
 	gamepadDisconnectedHandler(event): {
 		this.disconnected(event.gamepad)
 		delete this._gamepads[event.gamepad.index]
@@ -118,6 +123,7 @@ Item {
 		}
 	}
 
+	/// @private
 	onCompleted: {
 		this._gpButtonsPollInterval = {}
 		this._gpPollInterval = {}

@@ -142,7 +142,7 @@ class component_generator(object):
 		return code
 
 	def generate_ctor(self, registry):
-		return "\texports.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
+		return "\t_globals.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
 
 	def get_base_type(self, registry):
 		return registry.find_component(self.package, self.component.name)
@@ -150,9 +150,9 @@ class component_generator(object):
 	def generate(self, registry):
 		base_type = self.get_base_type(registry)
 		ctor  = "/**\n * @constructor\n"
-		ctor += " * @extends {exports.%s}\n" %base_type
+		ctor += " * @extends {_globals.%s}\n" %base_type
 		ctor += " */\n"
-		ctor += "\texports.%s = function(parent, _delegate) {\n%s\n}\n" %(self.name, self.generate_ctor(registry))
+		ctor += "\t_globals.%s = function(parent, _delegate) {\n%s\n}\n" %(self.name, self.generate_ctor(registry))
 		return ctor
 
 	def generate_animations(self, registry, parent):
@@ -181,18 +181,18 @@ class component_generator(object):
 		r = []
 		ident = "\t" * ident_n
 
-		r.append("%sexports.%s.prototype.componentName = '%s'" %(ident, self.name, self.name))
+		r.append("%s_globals.%s.prototype.componentName = '%s'" %(ident, self.name, self.name))
 
 		for name in self.signals:
-			r.append("%sexports.%s.prototype.%s = _globals.core.createSignal('%s')" %(ident, self.name, name, name))
+			r.append("%s_globals.%s.prototype.%s = _globals.core.createSignal('%s')" %(ident, self.name, name, name))
 
 		for name, argscode in self.methods.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)
-			r.append("%sexports.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
+			r.append("%s_globals.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
 
 		for name, prop in self.properties.iteritems():
-			args = ["exports.%s.prototype" %self.name, "'%s'" %prop.type, "'%s'" %name]
+			args = ["_globals.%s.prototype" %self.name, "'%s'" %prop.type, "'%s'" %name]
 			if prop.is_trivial():
 				args.append(prop.value)
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
@@ -202,13 +202,13 @@ class component_generator(object):
 
 			for i in xrange(0, len(values)):
 				r.append("/** @const @type {number} */")
-				r.append("%sexports.%s.prototype.%s = %d" %(ident, self.name, values[i], i))
+				r.append("%s_globals.%s.prototype.%s = %d" %(ident, self.name, values[i], i))
 				r.append("/** @const @type {number} */")
-				r.append("%sexports.%s.%s = %d" %(ident, self.name, values[i], i))
+				r.append("%s_globals.%s.%s = %d" %(ident, self.name, values[i], i))
 
-			args = ["exports.%s.prototype" %self.name, "'enum'", "'%s'" %name]
+			args = ["_globals.%s.prototype" %self.name, "'enum'", "'%s'" %name]
 			if prop.default is not None:
-				args.append("exports.%s.%s" %(self.name, prop.default))
+				args.append("_globals.%s.%s" %(self.name, prop.default))
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		base_type = self.get_base_type(registry)
@@ -219,14 +219,14 @@ class component_generator(object):
 		if code:
 			generate = True
 		b = '\t%s_globals.%s.prototype.__create.call(this, __closure.__base = { })' %(ident, base_type)
-		code = '%sexports.%s.prototype.__create = function(__closure) {\n%s\n%s\n%s}' \
+		code = '%s_globals.%s.prototype.__create = function(__closure) {\n%s\n%s\n%s}' \
 			%(ident, self.name, b, code, ident)
 
 		setup_code = self.generate_setup_code(registry, 'this', '__closure', ident_n + 2).strip()
 		b = '%s_globals.%s.prototype.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, base_type)
 		if setup_code:
 			generate = True
-		setup_code = '%sexports.%s.prototype.__setup = function(__closure) {\n%s\n%s\n}' \
+		setup_code = '%s_globals.%s.prototype.__setup = function(__closure) {\n%s\n%s\n}' \
 			%(ident, self.name, b, setup_code)
 
 		if generate:

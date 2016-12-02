@@ -86,8 +86,8 @@ class generator(object):
 
 		base_type = self.find_component(gen.package, gen.component.name)
 
-		code += "\texports.%s.prototype = Object.create(_globals.%s.prototype)\n" %(name, base_type)
-		code += "\texports.%s.prototype.constructor = exports.%s\n" %(name, name)
+		code += "\t_globals.%s.prototype = Object.create(_globals.%s.prototype)\n" %(name, base_type)
+		code += "\t_globals.%s.prototype.constructor = _globals.%s\n" %(name, name)
 
 		code += gen.generate_prototype(self)
 		return code
@@ -145,7 +145,7 @@ class generator(object):
 					ns[p] = {}
 				ns = ns[p]
 
-		path = "exports"
+		path = "_globals"
 		def check(path, packages):
 			for ns in packages.iterkeys():
 				package = path + "." + ns

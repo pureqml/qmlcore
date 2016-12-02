@@ -45,7 +45,7 @@ CoreObject {
 	}
 
 	function emit (name) {
-		var invoker = exports.core.safeCall(
+		var invoker = _globals.core.safeCall(
 			_globals.core.copyArguments(arguments, 1),
 			function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) }
 		)

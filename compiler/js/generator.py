@@ -5,7 +5,8 @@ from compiler.js.component import component_generator
 root_type = 'core.CoreObject'
 
 class generator(object):
-	def __init__(self):
+	def __init__(self, ns):
+		self.ns = ns
 		self.components = {}
 		self.used_packages = set()
 		self.used_components = set()
@@ -174,7 +175,7 @@ class generator(object):
 				r += self.generate_import(name, code) + '\n'
 		return r
 
-	def generate(self, ns):
+	def generate(self):
 		code = self.generate_components() + '\n' #must be called first, generates used_packages/components sets
 		text = ""
 		text += "/** @const */\n"
@@ -185,7 +186,7 @@ class generator(object):
 		text += "var core = _globals.core.core\n"
 		text += code
 		text += "%s\n" %self.generate_imports()
-		return "%s = %s();\n" %(ns, self.wrap(text))
+		return "%s = %s();\n" %(self.ns, self.wrap(text))
 
 	def generate_startup(self, ns, app, prefix):
 		r = ""

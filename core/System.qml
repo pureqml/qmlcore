@@ -1,24 +1,28 @@
+///object for storing general info about device and platform
 Object {
-	property string userAgent;
-	property string language;
-	property string browser;
-	property string vendor;
-	property string os;
-	property bool webkit;
-	property bool support3dTransforms;
-	property bool supportTransforms;
-	property bool supportTransitions;
-	property bool portrait: parent.width < parent.height;
-	property bool landscape: !portrait;
-	property bool pageActive: true;
-	property int screenWidth;
-	property int screenHeight;
-	property enum device { Desktop, Tv, Mobile };
-	property enum layoutType { MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL, Laptop4K };
+	property string userAgent;	///< browser userAgent value
+	property string language;	///< platform language
+	property string browser;	///< browser name
+	property string vendor;		///< current vendor name
+	property string os;			///< operation system name
+	property bool webkit;		///< webkit supported flag
+	property bool support3dTransforms;	///< CSS transforms3d supported flag
+	property bool supportTransforms;	///< CSS transforms supported flag
+	property bool supportTransitions;	///< CSS transitions supported flag
+	property bool portrait: parent.width < parent.height;	///< portrait oriented screen flag
+	property bool landscape: !portrait;				///< landscape oriented screen flag
+	property bool pageActive: true;					///< page active flag
+	property int screenWidth;						///< device screen width value
+	property int screenHeight;						///< device screen height value
+	property enum device { Desktop, Tv, Mobile };	///< device type enumeration, values: Desktop, Tv or Mobile
+	property enum layoutType { MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL, Laptop4K };	///< layout type enumeration, values: MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL and Laptop4K
 
+	/// @private
 	onContextWidthChanged: { this._updateLayoutType() }
+	/// @private
 	onContextHeightChanged: { this._updateLayoutType() }
 
+	/// @private
 	_updateLayoutType: {
 		if (!this.contextWidth || !this.contextHeight)
 			return
@@ -40,6 +44,7 @@ Object {
 			this.layoutType = this.Laptop4K
 	}
 
+	/// @private
 	constructor: {
 		var browser = ""
 		if (navigator.userAgent.indexOf('Chromium') >= 0)

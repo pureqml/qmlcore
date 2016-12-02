@@ -137,7 +137,8 @@ def process_files(generator, app, dirs):
 				process_file(generator, app, dirpath, filename)
 
 def generate():
-	generator = compiler.js.generator()
+	namespace = "qml"
+	generator = compiler.js.generator(namespace)
 
 #reading .core.js files to bootstrap platform specific initialization
 	init_js = ''
@@ -149,7 +150,6 @@ def generate():
 
 	process_files(generator, args.app, project_dirs)
 	print "generating sources..."
-	namespace = "qml"
 	app = ""
 	if args.strict:
 		app += "'use strict'\n"
@@ -158,7 +158,7 @@ def generate():
 	else:
 		app += "var log = null\n"
 	app += "/** @const @type {!CoreObject} */\n"
-	app += "var " + generator.generate(namespace)
+	app += "var " + generator.generate()
 	app += generator.generate_startup(namespace, args.app, namespace if args.prefix else '')
 	app = app.replace('/* ${init.js} */', init_js)
 

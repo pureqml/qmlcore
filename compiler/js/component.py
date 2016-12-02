@@ -111,8 +111,6 @@ class component_generator(object):
 			name = child.name
 			if name in self.signals:
 				raise Exception("duplicate signal " + name)
-			if name == 'completed':
-				raise Exception("signal 'completed' is reserved for system use")
 			self.signals.add(name)
 		elif t is lang.ListElement:
 			self.elements.append(child.data)
@@ -379,17 +377,13 @@ class component_generator(object):
 				code = process(code, self, registry)
 				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, parent, name, ",".join(args), code, parent))
 
-		fire_completed = False
 		for name, argscode in self.signal_handlers.iteritems():
 			args, code = argscode
 			code = process(code, self, registry)
-			r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, parent, name, ",".join(args), code, parent))
-			if name == "completed":
-				fire_completed = True
-
-		if fire_completed:
-			r.append("%s%s._context._onCompleted(%s.emit.bind(%s, 'completed'))" %(ident, parent, parent, parent))
-
+			if name != "completed":
+				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, parent, name, ",".join(args), code, parent))
+			else:
+				r.append("%s%s._context._onCompleted((function() %s ).bind(%s))" %(ident, parent, code, parent))
 		for name, code in self.changed_handlers.iteritems():
 			code = process(code, self, registry)
 			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, parent, name, code, parent))

@@ -1,32 +1,34 @@
+///item provide mouse and touch events API
 Item {
-	signal entered;
-	signal exited;
-	signal clicked;
-	signal canceled;
-	signal wheelEvent;
-	signal verticalSwiped;
-	signal horizontalSwiped;
-	signal mouseMove;
-	signal touchEnd;
-	signal touchMove;
-	signal touchStart;
+	signal entered;				///< emitted when mouse entered the item's area
+	signal exited;				///< emitted when mouse leaved the item's area
+	signal clicked;				///< emitted on mouse click
+	signal canceled;			///< emitted when mouse leaved the item's area while mouse button was pressed
+	signal wheelEvent;			///< emitted when mouse wheel scrolling
+	signal verticalSwiped;		///< emitted on vertical swipe
+	signal horizontalSwiped;	///< emitted on horizontal swipe
+	signal mouseMove;			///< emitted on mouse moved inside the item's area
+	signal touchEnd;			///< emitted on touch event end
+	signal touchMove;			///< emitted on mouse move while touching
+	signal touchStart;			///< emitted on touch event start
 
-	property real mouseX;
-	property real mouseY;
-	property string cursor;
-	property bool pressed;
-	property bool containsMouse;
-	property bool clickable: true;
-	property bool pressable: true;
-	property bool touchEnabled: true;
-	property bool hoverEnabled: true;
-	property bool wheelEnabled: true;
+	property real mouseX;				///< mouse x coordinate
+	property real mouseY;				///< mouse y coordinate
+	property string cursor;				///< mouse cursor inside the item's area
+	property bool pressed;				///< mouse pressed flag
+	property bool containsMouse;		///< mouse inside item's area flag
+	property bool clickable: true;		///< enable mouse click event handling flag
+	property bool pressable: true;		///< enable mouse click event handling flag
+	property bool touchEnabled: true;	///< enable touch events handling flag
+	property bool hoverEnabled: true;	///< enable mouse hover event handling flag
+	property bool wheelEnabled: true;	///< enable mouse click event handling flag
+	property alias hover: containsMouse;	///< containsMouse property alias
+	property alias hoverable: hoverEnabled;	///< hoverEnabled property alias
 
-	property alias hover: containsMouse;
-	property alias hoverable: hoverEnabled;
-
+	/// @private
 	onCursorChanged: { this.style('cursor', value) }
 
+	/// @private
 	function _bindTouch(value) {
 		if (value && !this._touchBinder) {
 			this._touchBinder = new _globals.core.EventBinder(this.element)
@@ -46,15 +48,18 @@ Item {
 			this._touchBinder.enable(value)
 	}
 
+	/// @private
 	onTouchEnabledChanged: {
 		this._bindTouch(value)
 	}
 
+	/// @private
 	onRecursiveVisibleChanged: {
 		if (!value)
 			this.containsMouse = false
 	}
 
+	/// @private
 	function _bindClick(value) {
 		if (value && !this._clickBinder) {
 			this._clickBinder = new _globals.core.EventBinder(this.element)
@@ -64,10 +69,12 @@ Item {
 			this._clickBinder.enable(value)
 	}
 
+	/// @private
 	onClickableChanged: {
 		this._bindClick(value)
 	}
 
+	/// @private
 	function _bindWheel(value) {
 		if (value && !this._wheelBinder) {
 			this._clickBinder = new _globals.core.EventBinder(this.element)
@@ -77,10 +84,12 @@ Item {
 			this._clickBinder.enable(value)
 	}
 
+	/// @private
 	onWheelEnabledChanged: {
 		this._bindWheel(value)
 	}
 
+	/// @private
 	function _bindPressable(value) {
 		if (value && !this._pressableBinder) {
 			this._pressableBinder = new _globals.core.EventBinder(this.element)
@@ -91,10 +100,12 @@ Item {
 			this._pressableBinder.enable(value)
 	}
 
+	/// @private
 	onPressableChanged: {
 		this._bindPressable(value)
 	}
 
+	/// @private
 	function _bindHover(value) {
 		if (value && !this._hoverBinder) {
 			this._hoverBinder = new _globals.core.EventBinder(this.element)
@@ -106,11 +117,12 @@ Item {
 			this._hoverBinder.enable(value)
 	}
 
-
+	/// @private
 	onHoverEnabledChanged: {
 		this._bindHover(value)
 	}
 
+	/// @private
 	onContainsMouseChanged: {
 		if (this.containsMouse) {
 			this.entered()
@@ -122,6 +134,7 @@ Item {
 		}
 	}
 
+	/// @private
 	updatePosition(event): {
 		if (!this.recursiveVisible)
 			return false
@@ -140,6 +153,7 @@ Item {
 			return false
 	}
 
+	/// @private
 	onTouchStart(event): {
 		var box = this.toScreen()
 		var e = event.touches[0]
@@ -151,6 +165,7 @@ Item {
 		this._startTarget = event.target;
 	}
 
+	/// @private
 	onTouchMove(event): {
 		var box = this.toScreen()
 		var e = event.touches[0]
@@ -182,6 +197,7 @@ Item {
 			this.verticalSwiped(event)
 	}
 
+	/// @private
 	constructor: {
 		this._bindClick(this.clickable)
 		this._bindWheel(this.wheelEnabled)

@@ -34,7 +34,7 @@ class generator(object):
 			self.packages[package] = set()
 		self.packages[package].add(component_name)
 
-		gen = component_generator(name, component, True)
+		gen = component_generator(self.ns, name, component, True)
 		self.components[name] = gen
 
 	def add_js(self, name, data):

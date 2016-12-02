@@ -4,7 +4,8 @@ from compiler import lang
 import json
 
 class component_generator(object):
-	def __init__(self, name, component, prototype = False):
+	def __init__(self, ns, name, component, prototype = False):
+		self.ns = ns
 		self.name = name
 		self.component = component
 		self.aliases = {}
@@ -43,7 +44,7 @@ class component_generator(object):
 	def assign(self, target, value):
 		t = type(value)
 		if t is lang.Component:
-			value = component_generator(self.package + ".<anonymous>", value)
+			value = component_generator(self.ns, self.package + ".<anonymous>", value)
 		if t is str: #and value[0] == '"' and value[-1] == '"':
 			value = value.replace("\\\n", "")
 		self.assignments[target] = value
@@ -76,12 +77,12 @@ class component_generator(object):
 			self.id = child.name
 			self.assign("id", child.name)
 		elif t is lang.Component:
-			self.children.append(component_generator(self.package + ".<anonymous>", child))
+			self.children.append(component_generator(self.ns, self.package + ".<anonymous>", child))
 		elif t is lang.Behavior:
 			for target in child.target:
 				if target in self.animations:
 					raise Exception("duplicate animation on property " + target);
-				self.animations[target] = component_generator(self.package + ".<anonymous-animation>", child.animation)
+				self.animations[target] = component_generator(self.ns, self.package + ".<anonymous-animation>", child.animation)
 		elif t is lang.Method:
 			name, args, code = child.name, child.args, child.code
 			if child.event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper(): #onXyzzy

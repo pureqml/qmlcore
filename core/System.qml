@@ -13,8 +13,6 @@ Object {
 	property bool pageActive: true;
 	property int screenWidth;
 	property int screenHeight;
-	property int contextWidth: parent.width;
-	property int contextHeight: parent.height;
 	property enum device { Desktop, Tv, Mobile };
 	property enum layoutType { MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL, Laptop4K };
 

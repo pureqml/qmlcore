@@ -1,20 +1,23 @@
+///provides various visual effects
 Object {
-	property real blur;
-	property real grayscale;
-	property real sepia;
-	property real brightness;
-	property real contrast;
-	property real hueRotate;
-	property real invert;
-	property real saturate;
-	property Shadow shadow : Shadow { }
+	property real blur;			///< applies a blur effect to the image
+	property real grayscale;	///< converts the image to grayscale
+	property real sepia;		///< converts the image to sepia
+	property real brightness;	///< adjusts the brightness of the image
+	property real contrast;		///< adjusts the contrast of the image
+	property real hueRotate;	///< applies a hue rotation on the image. The value defines the number of degrees around the color circle the image samples will be adjusted
+	property real invert;		///< inverts the samples in the image
+	property real saturate;		///< saturates the image
+	property Shadow shadow : Shadow { }	///< object property for the shadow adjusting
 
+	/// @private
 	function _addStyle(array, property, style, units) {
 		var value = this[property]
 		if (value)
 			array.push((style || property) + '(' + value + (units || '') + ') ')
 	}
 
+	/// @private
 	function _getFilterStyle() {
 		var style = []
 		this._addStyle(style, 'blur', 'blur', 'px')
@@ -28,6 +31,7 @@ Object {
 		return style
 	}
 
+	/// @private
 	function _updateStyle() {
 		var filterStyle = this._getFilterStyle().join('')
 		var parent = this.parent
@@ -54,9 +58,9 @@ Object {
 		}
 	}
 
+	/// @private
 	function _update(name, value) {
 		this._updateStyle()
 		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
-
 }

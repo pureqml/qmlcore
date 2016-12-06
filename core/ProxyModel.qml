@@ -1,25 +1,30 @@
+///provides target model's filtering and sorting
 Object {
-	signal reset;
-	signal rowsInserted;
-	signal rowsChanged;
-	signal rowsRemoved;
-	property int count;
-    property Object target;
+	signal reset;				///< emitted when model is reset
+	signal rowsInserted;		///< emitted when row is inserted
+	signal rowsChanged;			///< emitted when row is changed
+	signal rowsRemoved;			///< emitted when row is removed
+	property int count;			///< rows count property
+    property Object target;		///< target model object
 
+	/// @private
 	constructor: {
 		this._indexes = []
 	}
 
+	///this method set target model rows filter function, 'filter' function must return boolean value, 'true' - when row must be displayed, 'false' otherwise
 	function setFilter(filter) {
 		this._filter = filter
 		this._buildIndexMap()
 	}
 
+	///this method set a comparison function, target model rows are sorted in ascending order according to a comparison function 'cmp'
 	function setCompare(cmp) {
 		this._cmp = cmp
 		this._buildIndexMap()
 	}
 
+	/// @private
 	function _buildIndexMap() {
 		this.clear()
 		var targetRows = this.target._rows
@@ -46,6 +51,7 @@ Object {
 		this.rowsInserted(0, this.count)
 	}
 
+	///returns a model's row by index, throw exception if index is out of range or if requested row is non-object
 	function get(idx) {
 		var targetRows = this.target._rows
 		if (!targetRows)
@@ -59,16 +65,19 @@ Object {
 		return row
 	}
 
+	///remove all rows
 	function clear() {
 		this._indexes = []
 		this.count = 0
 		this.reset()
 	}
 
+	///append row to the model
 	function append(row) {
 		this.target.append = row
 	}
 
+	///place row at requested index, throws exception when index is out of range
 	function insert(idx, row) {
 		if (idx < 0 || idx > this._indexes.length)
 			throw new Error('index ' + idx + ' out of bounds')
@@ -78,6 +87,7 @@ Object {
 		this.target.rowsInserted(targetIdx, targetIdx + 1)
 	}
 
+	///replace row at 'idx' position by 'row' argument, throws exception if index is out of range or if 'row' isn't Object
 	function set(idx, row) {
 		if (idx < 0 || idx >= this._indexes.length)
 			throw new Error('index ' + idx + ' out of bounds')
@@ -88,6 +98,7 @@ Object {
 		this.target.rowsChanged(targetIdx, targetIdx + 1)
 	}
 
+	///replace a row's property, throws exception if index is out of range or if 'row' isn't Object
 	function setProperty(idx, name, value) {
 		if (idx < 0 || idx >= this._indexes.length)
 			throw new Error('index ' + idx + ' out of bounds')
@@ -100,32 +111,39 @@ Object {
 		this.target.rowsChanged(targetIdx, targetIdx + 1)
 	}
 
+	///remove rows from model from 'idx' to 'idx' + 'n' position
 	function remove(idx, n) {
 		if (idx < 0 || idx >= this._indexes.length)
 			throw new Error('index ' + idx + ' out of bounds')
 		this.target.remove(this._indexes[idx], n)
 	}
 
+	///this method is alias for 'append' method
 	function addChild(child) {
 		this.append(child)
 	}
 
+	/// @private
 	function _onReset() {
 		this.clear()
 	}
 
+	/// @private
 	function _onRowsInserted(begin, end) {
 		log("TODO: impl", begin, end)
 	}
 
+	/// @private
 	function _onRowsChanged(begin, end) {
 		log("TODO: impl", begin, end)
 	}
 
+	/// @private
 	function _onRowsRemoved(begin, end) {
 		log("TODO: impl", begin, end)
 	}
 
+	/// @private
 	onCompleted: {
 		this.target.on('reset', this._onReset.bind(this))
 		this.target.on('rowsInserted', this._onRowsInserted.bind(this))

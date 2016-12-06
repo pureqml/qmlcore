@@ -193,12 +193,12 @@ class generator(object):
 		r += "try {\n"
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append("\t%s._context = new qml.core.Context()" %ns)
+		startup.append("\t%s._context = new qml.core.Context(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, prefix))
 		startup.append('\tvar closure = {}\n')
 		startup.append('\t%s._context.__create(closure)' %ns)
 		startup.append('\t%s._context.__setup(closure)' %ns)
 		startup.append('\tclosure = undefined')
-		startup.append("\t%s._context.init({id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, prefix))
+		startup.append("\t%s._context.init()" %(ns))
 		startup += self.startup
 		r += "\n".join(startup)
 		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns

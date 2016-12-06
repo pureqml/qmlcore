@@ -74,7 +74,7 @@ Object {
 
 	///append row to the model
 	function append(row) {
-		this.target.append = row
+		this.target.append(row)
 	}
 
 	///place row at requested index, throws exception when index is out of range
@@ -130,17 +130,35 @@ Object {
 
 	/// @private
 	function _onRowsInserted(begin, end) {
-		log("TODO: impl", begin, end)
+		this._buildIndexMap()
 	}
 
 	/// @private
 	function _onRowsChanged(begin, end) {
-		log("TODO: impl", begin, end)
+		var targetRows = this.target._rows
+		if (!targetRows)
+			throw new Error('Bad target model')
+
+		for (var i = begin; i < end; ++i) {
+			var idx = this._indexes.indexOf(i)
+			if (idx >= 0)
+				this.rowsChanged(idx, idx + 1)
+		}
 	}
 
 	/// @private
 	function _onRowsRemoved(begin, end) {
-		log("TODO: impl", begin, end)
+		var targetRows = this.target._rows
+		if (!targetRows)
+			throw new Error('Bad target model')
+
+		for (var i = begin; i < end; ++i) {
+			var idx = this._indexes.indexOf(i)
+			if (idx >= 0) {
+				this._indexes.splice(idx, 1)
+				this.rowsRemoved(idx, idx + 1)
+			}
+		}
 	}
 
 	/// @private

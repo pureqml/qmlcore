@@ -88,6 +88,12 @@ Item {
 			mangleRule('svg', "{ position: absolute; visibility: inherit; overflow: visible; }") +
 			mangleRule('pre', "{ position: absolute; visibility: inherit; margin: 0px;}") +
 			mangleRule('select', "{ position: absolute; visibility: inherit; margin: 0px;}") +
+			mangleRule('h1', "{ position: absolute; visibility: inherit; margin: 0px;}") +
+			mangleRule('h2', "{ position: absolute; visibility: inherit; margin: 0px;}") +
+			mangleRule('h3', "{ position: absolute; visibility: inherit; margin: 0px;}") +
+			mangleRule('h4', "{ position: absolute; visibility: inherit; margin: 0px;}") +
+			mangleRule('h5', "{ position: absolute; visibility: inherit; margin: 0px;}") +
+			mangleRule('h6', "{ position: absolute; visibility: inherit; margin: 0px;}") +
 			mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
 		)
 		html.getElement('head').append(style)

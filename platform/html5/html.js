@@ -1,3 +1,14 @@
+exports.createAddRule = function(style) {
+	if(! (style.sheet || {}).insertRule) {
+		var sheet = (style.styleSheet || style.sheet)
+		return function(name, rules) { sheet.addRule(name, rules) }
+	}
+	else {
+		var sheet = style.sheet
+		return function(name, rules) { sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length) }
+	}
+}
+
 var StyleCache = function (prefix) {
 	var style = document.createElement('style')
 	style.type = 'text/css'
@@ -9,15 +20,7 @@ var StyleCache = function (prefix) {
 	this.stats = {}
 	this.classes = {}
 	this.classes_total = 0
-
-	if(! (style.sheet || {}).insertRule) {
-		var sheet = (style.styleSheet || style.sheet)
-		this._addRule = function(name, rules) { sheet.addRule(name, rules) }
-	}
-	else {
-		var sheet = style.sheet
-		this._addRule = function(name, rules) { sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length) }
-	}
+	this._addRule = exports.createAddRule(style)
 }
 
 StyleCache.prototype.constructor = StyleCache

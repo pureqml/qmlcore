@@ -1,16 +1,23 @@
 Item {
 	property bool fullscreen;
 	property int scrollY;
+	property Stylesheet stylesheet: Stylesheet { }
 	property System system: System { }
 	property Location location: Location { }
 	property string language;
 
 	constructor: {
+		this.options = arguments[2]
+		this.l10n = this.options.l10n || {}
+
+		this._local['context'] = this
+		this._prefix = this.options.prefix
 		this._context = this
 		this._started = false
 		this._completed = false
 		this._completedHandlers = []
 		this._delayedActions = []
+
 	}
 
 	function getClass(name) {
@@ -25,19 +32,18 @@ Item {
 		return el
 	}
 
-	function init(options) {
+	function init() {
 		log('Context: initializing...')
-		this._local['context'] = this
-		this.l10n = options.l10n || {}
 
-		var prefix = options.prefix
+		var options = this.options
+		var prefix = this._prefix
+
 		var divId = options.id
 
 		if (prefix) {
 			prefix += '-'
 			//log('Context: using prefix', prefix)
 		}
-		this._prefix = prefix
 
 		var win = new _globals.html5.html.Window(this, window)
 		this.window = win
@@ -62,41 +68,6 @@ Item {
 			var body = html.getElement('body')
 			body.append(div);
 		}
-
-		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
-		var mangleRule = function(selector, rule) {
-			if (prefix)
-				return selector + '.' + prefix + 'core-item ' + rule + ' '
-			else
-				return selector + ' ' + rule + ' '
-		}
-
-		var style = this.createElement('style')
-		style.setHtml(
-			"div#" + divId + " { position: absolute; visibility: inherit; left: 0px; top: 0px; }" +
-			"div." + this.getClass('core-text') + " { width: auto; height: auto; visibility: inherit; }" +
-			(topLevel? "body { overflow-x: hidden; }": "") + //fixme: do we need style here in non-top-level mode?
-			mangleRule('div', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; }") +
-			mangleRule('a', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; }") +
-			mangleRule('textarea', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; box-sizing: border-box; resize: none; }") +
-			mangleRule('textarea:focus', "{outline: none;}") +
-			mangleRule('input', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; box-sizing: border-box; }") +
-			mangleRule('input:focus', "{outline: none;}") +
-			mangleRule('button', "{ position: absolute; visibility: inherit; }") +
-			mangleRule('canvas', "{ position: absolute; visibility: inherit; }") +
-			mangleRule('video', "{ position: absolute; visibility: inherit; }") +
-			mangleRule('svg', "{ position: absolute; visibility: inherit; overflow: visible; }") +
-			mangleRule('pre', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('select', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('h1', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('h2', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('h3', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('h4', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('h5', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('h6', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
-		)
-		html.getElement('head').append(style)
 
 		this.element = div
 		this.width = w

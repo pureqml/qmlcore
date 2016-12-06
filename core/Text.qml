@@ -118,7 +118,7 @@ Item {
 			case 'text': this._setText(value); this._updateSize(); break;
 			case 'color': this.style('color', _globals.core.normalizeColor(value)); break;
 			case 'width': this._updateSize(); break;
-			case 'verticalAlignment': this.verticalAlignment = value; this._updateSize(); break
+			case 'verticalAlignment': this.verticalAlignment = value; this._enableSizeUpdate(); break
 			case 'horizontalAlignment':
 				switch(value) {
 				case this.AlignLeft:	this.style('text-align', 'left'); break

@@ -4,7 +4,6 @@ Object {
 		var options = context.options
 
 		var style = this.style = context.createElement('style')
-		this._addRule = _globals.html5.html.createAddRule(style)
 		style.dom.type = 'text/css'
 
 		var prefix = this.prefix = options.prefix
@@ -39,6 +38,8 @@ Object {
 			this.mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
 		)
 		_globals.html5.html.getElement('head').append(style)
+
+		this._addRule = _globals.html5.html.createAddRule(style.dom)
 	}
 	
 	function mangleSelector(selector) {
@@ -54,8 +55,8 @@ Object {
 	}
 
 	function addRule(selector, rule) {
-		var rule = this.mangleRule(selector, rule)
-		this._addRule(this.mangleSelector(selector), rule)
+		var mangledSelector = this.mangleSelector(selector)
+		this._addRule(mangledSelector, rule)
 	}
 
 }

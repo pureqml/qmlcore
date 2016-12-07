@@ -21,8 +21,6 @@ Object {
 			this.mangleRule('a', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; }") +
 			this.mangleRule('textarea', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; box-sizing: border-box; resize: none; }") +
 			this.mangleRule('textarea:focus', "{outline: none;}") +
-			this.mangleRule('input', "{ position: absolute; visibility: inherit; border-style: solid; border-width: 0px; box-sizing: border-box; }") +
-			this.mangleRule('input:focus', "{outline: none;}") +
 			this.mangleRule('button', "{ position: absolute; visibility: inherit; }") +
 			this.mangleRule('canvas', "{ position: absolute; visibility: inherit; }") +
 			this.mangleRule('video', "{ position: absolute; visibility: inherit; }") +

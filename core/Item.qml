@@ -61,7 +61,7 @@ Object {
 	function getTag() { return 'div' }
 
 	/// register style in stylesheet for corresponding tag returned from getTag
-	function registerStyle(style) { }
+	function registerStyle(style, tag) { }
 
 	/// default implementation of element creation routine.
 	function createElement(tag) {

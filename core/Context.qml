@@ -26,7 +26,7 @@ Item {
 
 	function registerStyle(item, tag) {
 		if (!(tag in this._stylesRegistered)) {
-			item.registerStyle(this.stylesheet)
+			item.registerStyle(this.stylesheet, tag)
 			this._stylesRegistered[tag] = true
 		}
 	}

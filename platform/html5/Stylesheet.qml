@@ -6,7 +6,7 @@ Object {
 		var style = this.style = context.createElement('style')
 		style.dom.type = 'text/css'
 
-		var prefix = this.prefix = options.prefix
+		this.prefix = options.prefix
 		var divId = options.id
 
 		var div = document.getElementById(divId)

@@ -17,11 +17,18 @@ Item {
 		this._completed = false
 		this._completedHandlers = []
 		this._delayedActions = []
-
+		this._stylesRegistered = {}
 	}
 
 	function getClass(name) {
 		return this._prefix + name
+	}
+
+	function registerStyle(item, tag) {
+		if (!(tag in this._stylesRegistered)) {
+			item.registerStyle(this.stylesheet)
+			this._stylesRegistered[tag] = true
+		}
 	}
 
 	function createElement(tag) {

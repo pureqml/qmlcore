@@ -60,9 +60,13 @@ Object {
 	/// returns tag for corresponding element
 	function getTag() { return 'div' }
 
+	/// register style in stylesheet for corresponding tag returned from getTag
+	function registerStyle(style) { }
+
 	/// default implementation of element creation routine.
 	function createElement(tag) {
 		this.element = this._context.createElement(tag)
+		this._context.registerStyle(this, tag)
 		this.parent.element.append(this.element)
 	}
 

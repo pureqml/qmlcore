@@ -27,12 +27,6 @@ Object {
 			this.mangleRule('svg', "{ position: absolute; visibility: inherit; overflow: visible; }") +
 			this.mangleRule('pre', "{ position: absolute; visibility: inherit; margin: 0px;}") +
 			this.mangleRule('select', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			this.mangleRule('h1', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			this.mangleRule('h2', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			this.mangleRule('h3', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			this.mangleRule('h4', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			this.mangleRule('h5', "{ position: absolute; visibility: inherit; margin: 0px;}") +
-			this.mangleRule('h6', "{ position: absolute; visibility: inherit; margin: 0px;}") +
 			this.mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
 		)
 		_globals.html5.html.getElement('head').append(style)

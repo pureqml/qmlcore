@@ -226,7 +226,7 @@ def handle_ternary_op(s, l, t):
 
 def handle_percent_number(s, l, t):
 	value = t[0]
-	return "(this._get('parent')._get('<property-name>') * ((%s) / 100))" %str(value)
+	return "(this._get('parent')._get('<property-name>') * ((%s) / 100))" %lang.to_string(value)
 
 percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)
@@ -260,7 +260,7 @@ expression_ops = infixNotation(expression_definition, [
 	('===',	2, opAssoc.LEFT, handle_binary_op),
 	('!==',	2, opAssoc.LEFT, handle_binary_op),
 ])
-expression_ops.setParseAction(lambda s, l, t: "(%s)" %t[0])
+expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 
 expression << expression_ops
 expression_list << Optional(delimitedList(expression, ","))

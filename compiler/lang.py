@@ -1,12 +1,18 @@
 import re
 
 def value_is_trivial(value):
+	if isinstance(value, bool):
+		return True
+
 	if value is None or not isinstance(value, str):
 		return False
+
 	if value[0] == '(' and value[-1] == ')':
 		value = value[1:-1]
-	if value == 'true' or value == 'false':
+
+	if value == 'true' or value == 'false' or value == 'null':
 		return True
+
 	try:
 		float(value)
 		return True
@@ -98,7 +104,10 @@ class Assignment(Entity):
 		elif property_name == 'y':
 			property_name = 'height'
 
-		self.value = Assignment.re_name.sub(property_name, value) if isinstance(value, str) else value
+		if isinstance(value, str):
+			self.value = Assignment.re_name.sub(property_name, value)
+		else:
+			self.value = to_string(value)
 
 	def is_trivial(self):
 		return value_is_trivial(self.value)

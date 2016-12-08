@@ -123,6 +123,10 @@ def handle_number(s, l, t):
 	value = t[0]
 	return float(value) if '.' in value else int(value)
 
+def handle_bool_value(s, l, t):
+	value = t[0]
+	return value == 'true'
+
 expression = Forward()
 expression_list = Forward()
 component_declaration = Forward()
@@ -133,6 +137,7 @@ identifier = Word(srange("[a-z_]"), alphanums + "_")
 code = originalTextFor(nestedExpr("{", "}", None, None))
 null_value = Keyword("null")
 bool_value = Keyword("true") | Keyword("false")
+bool_value.setParseAction(handle_bool_value)
 number = Word("01234567890+-.")
 number.setParseAction(handle_number)
 

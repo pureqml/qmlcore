@@ -29,6 +29,8 @@ def to_string(value):
 		return value
 	elif isinstance(value, bool):
 		return 'true' if value else 'false'
+	elif isinstance(value, object):
+		return value
 	else:
 		return str(value)
 

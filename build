@@ -1,11 +1,13 @@
 #!/usr/bin/env python2
 
-import sys
-import os
-import json
+from compiler import manifest as mf
+
 import subprocess
 import argparse
 import re
+import sys
+import os
+
 from os import path
 from StringIO import StringIO
 
@@ -152,21 +154,19 @@ def build(root, platform, app, html, manifest):
 
 	try:
 		with open(path.join(platform_path, '.manifest')) as f:
-			platform_manifest = json.load(f)
+			platform_manifest = mf.load(f)
 	except:
-		platform_manifest = {}
+		platform_manifest = mf.Manifest()
 
-	if not platform_manifest.get('standalone', True):
+	if not platform_manifest.standalone:
 		raise Exception('%s is not a standalone platform' %platform)
 
-	paths = []
-	if 'path' in manifest:
-		paths = manifest['path']
+	paths = manifest.path
 
 	options = ['-o', target, path.join(root, 'core'), platform_path]
 	options.extend(paths)
 
-	for subplatform in platform_manifest.get('requires', []): #fixme: no recursive processing
+	for subplatform in platform_manifest.requires: #fixme: no recursive processing
 		subplatform_path = find_platform_path(root, subplatform)
 		options.append(subplatform_path)
 
@@ -184,21 +184,21 @@ def build(root, platform, app, html, manifest):
 	if args.doc_format:
 		options.extend(['-Df', args.doc_format])
 
-	if not (platform_manifest.get('strict', True) and manifest.get('strict', True)):
+	if not (platform_manifest.strict and manifest.strict):
 		options.insert(0, '-S')
 
-	if args.web_prefix or (('web-prefix' in manifest) and manifest['web-prefix']):
+	if args.web_prefix or manifest.web_prefix:
 		options.insert(0, '-p')
 
 	call([path.join(root, 'qml-compiler')] + options)
 	script = 'qml.%s.js' %app #fixme
 
-	if args.minify or (('minify' in manifest) and manifest['minify']):
+	if args.minify or manifest.minify:
 		script = minify(root, app, platform, manifest)
-	templater = manifest.get('templater', 'simple')
+	templater = manifest.templater
 
 	print "copying resources..."
-	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest['apps'].itervalues() if 'apps' in manifest else {app: 'index'}) }
+	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest.apps.itervalues() if manifest.apps else {app: 'index'}) }
 
 	copy(path.join(root, 'dist'), target, context)
 
@@ -220,24 +220,21 @@ def build(root, platform, app, html, manifest):
 		call(['cp', '-ur', 'res', target])
 
 
-platforms = None
-apps = {'app': 'index' }
 with open('.manifest') as f:
-	manifest = json.load(f)
+	manifest = mf.load(f)
+
+apps = manifest.apps
+if not apps:
+	apps = {'app': 'index' }
 
 if args.update_translation:
-	languages = manifest.get('languages', [])
+	languages = manifest.languages
 	for language in languages:
 		print 'updating translation for language', language
 		call([os.path.join(root, 'update-ts'), '--ts', language + '.ts', '.'])
 	sys.exit(0)
 
-if 'platforms' in manifest:
-	platforms = manifest['platforms']
-
-if 'apps' in manifest:
-	apps = manifest['apps']
-
+platforms = manifest.platforms
 if not platforms:
 	platforms = ['web']
 

@@ -46,6 +46,10 @@ class Manifest(object):
 	def platforms(self):
 		return self.data.get('platforms', [])
 
+	@property
+	def package(self):
+		return self.data.get('package', '')
+
 
 def load(f):
 	return Manifest(json.load(f))

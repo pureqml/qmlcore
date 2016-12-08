@@ -67,7 +67,8 @@ class generator(object):
 			raise Exception("component %s was not found" %name)
 
 		if len(candidates) > 1:
-			raise Exception("ambigous component, you have to specify one of the packages explicitly: %s" % " ".join(map(lambda p: "%s.%s" %(p, name), candidates)))
+			raise Exception("ambiguous component %s.%s, you have to specify one of the packages explicitly: %s" \
+				%(package, name, " ".join(map(lambda p: "%s.%s" %(p, name), candidates))))
 
 		package_name = candidates[0]
 		self.used_components.add(package_name + '.' + name)

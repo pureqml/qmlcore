@@ -101,13 +101,11 @@ var registerGenericListener = function(target) {
 
 var _loadedStylesheets = {}
 
-exports.loadExternalStylesheet = function(url) {	
-	log ("loadExternalStylesheet", url)
+exports.loadExternalStylesheet = function(url) {
 	if (!_loadedStylesheets[url]) {
-		log ("crete new stylesheet", url)
 		var link = document.createElement('link')
-		link.setAttribute('href', url)//"https://fonts.googleapis.com/icon?family=Material+Icons")
 		link.setAttribute('rel', "stylesheet")
+		link.setAttribute('href', url)
 		document.head.appendChild(link)
 		_loadedStylesheets[url] = true
 	}

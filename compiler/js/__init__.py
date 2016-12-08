@@ -16,5 +16,10 @@ _id_re = re.compile(r'[^a-zA-Z0-9_]')
 def escape_id(name):
 	return _id_re.sub('_', name)
 
+def escape_package(name):
+	package = name.split('.')
+	package = map(escape_id, package)
+	return ".".join(package)
+
 from compiler.js.component import component_generator
 from compiler.js.generator import generator

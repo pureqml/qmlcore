@@ -18,6 +18,15 @@ def value_is_trivial(value):
 	#print "?trivial", value
 	return False
 
+def to_string(value):
+	if isinstance(value, str):
+		return value
+	elif isinstance(value, bool):
+		return 'true' if value else 'false'
+	else:
+		return str(value)
+
+
 class DocumentationString(object):
 	def __init__(self, text):
 		self.text = text

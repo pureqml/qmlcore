@@ -25,6 +25,7 @@ parser.add_argument("-S", dest="strict", default=True, action="store_false")
 parser.add_argument("-D", dest="doc")
 parser.add_argument("-Df", dest="doc_format")
 parser.add_argument("-r", dest="release", default=False, action='store_true')
+parser.add_argument("-v", dest="verbose", default=False, action='store_true')
 args = parser.parse_args()
 
 if args.doc_format == "qml":
@@ -101,7 +102,8 @@ def process_file(generator, app, package, dirpath, filename):
 	elif ext == ".js":
 		with open(path) as f:
 			data = f.read()
-		print "including js file...", path
+		if args.verbose:
+			print "including js file...", path
 		generator.add_js(com, data)
 	elif ext == '.ts':
 		generator.add_ts(path)
@@ -169,7 +171,8 @@ def generate():
 				init_js += f.read()
 
 	process_files(generator, args.app, project_dirs)
-	print "generating sources..."
+	if args.verbose:
+		print "generating sources..."
 	app = ""
 	if args.strict:
 		app += "'use strict'\n"

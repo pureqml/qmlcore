@@ -93,7 +93,7 @@ def process(text, generator, registry):
 	#print text
 	return text
 
-gets_re = re.compile(r'(this)(\._get\(\'.*?\'\))+(?:\.([a-zA-Z0-9\.]+))?')
+gets_re = re.compile(r'(this)((?:\._get\(\'.*?\'\))+)(?:\.([a-zA-Z0-9\.]+))?')
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
 
 def parse_deps(parent, text):

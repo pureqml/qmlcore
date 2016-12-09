@@ -61,7 +61,7 @@ def minify_gcc(out, src, root, app, platform, manifest):
 def minify(root, app, platform, manifest):
 	src = path.join(".app." + platform, "qml.%s.js" % app)
 	dstname = "qml.%s.min.js" %app
-	tool = manifest.get('minify', True)
+	tool = manifest.minify
 	if isinstance(tool, bool):
 		tool = 'uglify-js'
 

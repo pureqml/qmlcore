@@ -21,6 +21,7 @@ parser.add_argument('--boilerplate', action='store_true', default = False, help 
 parser.add_argument('--doc', '-D', help='generate documentation in given directory')
 parser.add_argument('--doc-format', '-Df', help='documentation format ("qml" or "md")')
 parser.add_argument('--release', '-r', help='generate release code (no logs)', default = False, action = 'store_true')
+parser.add_argument('--verbose', '-v', help='adds verbosity in some places', dest='verbose', default=False, action='store_true')
 args = parser.parse_args()
 
 root = os.path.dirname(sys.argv[0])
@@ -190,6 +191,9 @@ def build(root, platform, app, html, manifest):
 	if args.web_prefix or manifest.web_prefix:
 		options.insert(0, '-p')
 
+	if args.verbose:
+		options.insert(0, '-v')
+
 	call([path.join(root, 'qml-compiler')] + options)
 	script = 'qml.%s.js' %app #fixme
 
@@ -197,7 +201,8 @@ def build(root, platform, app, html, manifest):
 		script = minify(root, app, platform, manifest)
 	templater = manifest.templater
 
-	print "copying resources..."
+	if args.verbose:
+		print "copying resources..."
 	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest.apps.itervalues() if manifest.apps else {app: 'index'}) }
 
 	copy(path.join(root, 'dist'), target, context)

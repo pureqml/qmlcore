@@ -154,7 +154,6 @@ def process_files(generator, app, dirs):
 					package_dir = project_dir
 					package_name = project_dir.split(os.path.sep)[-1]
 					relpath = os.path.relpath(dirpath, package_dir)
-					print relpath
 
 				if relpath == '.':
 					relpath = []

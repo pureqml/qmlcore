@@ -21,14 +21,14 @@ def document(text, line, prev):
 	global doc_next, doc_prev_component
 	if prev:
 		if doc_prev_component:
-			if doc_prev_component.doc is not None:
-				print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
+			#if doc_prev_component.doc is not None:
+			#	print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
 			doc_prev_component.doc = lang.DocumentationString(text)
 		else:
 			print 'WARNING: unused documentation string %s at line %d' %(text, line)
 	else:
-		if doc_next is not None:
-			print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
+		#if doc_next is not None:
+		#	print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
 		doc_next = lang.DocumentationString(text)
 
 def handle_component_declaration(s, l, t):

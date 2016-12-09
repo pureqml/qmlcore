@@ -5,111 +5,120 @@ import json
 
 
 def get_max_size(val):
-    return {
-        'head': 4,
-        'axes': 13,
-        'button': 45
-    }.get(val, 0)
+	return {
+		'head': 4,
+		'axes': 13,
+		'button': 45
+	}.get(val, 0)
 
 
 def get_key_name(val):
-    return {
-        'b': 'button',
-        'a': 'axes',
-        'h': 'head'
-    }.get(val, val)
+	return {
+		'b': 'button',
+		'a': 'axes',
+		'h': 'head'
+	}.get(val, val)
 
 
 def get_button_name(name):
-    return {
-        "dpup": "up",
-        "dpright": "right",
-        "dpleft": "left",
-        "dpdown": "down",
-        "lefty": "leftStickY",
-        "righty": "rightStickY",
-        "leftx": "leftStickX",
-        "rightx": "rightStickX",
-        "righttrigger": "rightTrigger",
-        "leftshoulder": "leftBumper",
-        "rightshoulder": "rightBumper",
-        "rightstick": "rightStick",
-        "lefttrigger": "leftTrigger",
-        "leftstick": "leftStick"
-    }.get(name, name)
+	return {
+		"dpup": "up",
+		"dpright": "right",
+		"dpleft": "left",
+		"dpdown": "down",
+		"lefty": "leftStickY",
+		"righty": "rightStickY",
+		"leftx": "leftStickX",
+		"rightx": "rightStickX",
+		"righttrigger": "rightTrigger",
+		"leftshoulder": "leftBumper",
+		"rightshoulder": "rightBumper",
+		"rightstick": "rightStick",
+		"lefttrigger": "leftTrigger",
+		"leftstick": "leftStick"
+	}.get(name, name)
 
 
 def save(filename, data):
-    with open(filename, 'w') as file_:
-        file_.write(data)
+	with open(filename, 'w') as file_:
+		file_.write(data)
 
 
 def change_endian(hexString):
-    return ''.join(sum([(c,d,a,b) for a,b,c,d in zip(*[iter(hexString)]*4)], ()))
+	return ''.join(sum([(c,d,a,b) for a,b,c,d in zip(*[iter(hexString)]*4)], ()))
 
 
 def parse_file(filePath, resPath):
-    with open(filePath) as f:
-    	content = f.readlines()
-        result = []
-	platform = ""
-	for line in content:
-            line = line.strip(" \t\r\n")
+	with open(filePath) as f:
+		content = f.readlines()
+		result = {}
 
-            if len(line) == 0:
-            	continue
+		platform = ""
+		for line in content:
+			line = line.strip(" \t\r\n")
 
-            if line[0] == '#': # skip OS lines
-                platform = line[2:]
-                continue
+			if len(line) == 0:
+				continue
 
-            tokens = line.split(',')
-	    if len(tokens) <= 1:
-            	continue
+			if line[0] == '#': # skip OS lines
+				platform = line[2:]
+				continue
 
-            gamepad = {}
-            gamepad['vendorId'] = tokens[0][:16]
-            gamepad['deviceId'] = tokens[0][16:32]
-            if platform.lower() == "linux":
-                gamepad['vendorId'] = int(change_endian(gamepad['vendorId'])[8:12], 16)
-                gamepad['deviceId'] = int(change_endian(gamepad['deviceId'])[8:12], 16)
-            else:
-                gamepad['vendorId'] = int(change_endian(gamepad['vendorId'])[0:4], 16)
-                gamepad['deviceId'] = int(change_endian(gamepad['deviceId'])[0:4], 16)
+			tokens = line.split(',')
+			if len(tokens) <= 1:
+				continue
 
-            gamepad['name'] = tokens[1]
-            gamepad['mapping'] = {}
-            for t in tokens:
-            	if len(t) == 0:
-                    continue
+			gamepad = {}
+			vendor = tokens[0][:16]
+			product = tokens[0][16:32]
+			if platform.lower() == "linux":
+				vendor = str(int(change_endian(vendor)[8:12], 16))
+				product = str(int(change_endian(product)[8:12], 16))
+			else:
+				vendor = str(int(change_endian(vendor)[0:4], 16))
+				product = str(int(change_endian(product)[0:4], 16))
+			id = vendor + ":" + product
 
-            	item = t.split(':')
-                if len(item) <= 1 or item[0] == "platform" or len(item[0]) == 0 or len(item[1]) == 0:
-                    continue
+			gamepad['name'] = tokens[1]
+			gamepad['mapping'] = {}
+			gamepad['mapping']['button'] = [0] * 45	# 45 - max button number
+			gamepad['mapping']['axes'] = [0] * 13	# 13 - max axes count
+			max_button = 0
+			max_axes = 0
+			for t in tokens:
+				if len(t) == 0:
+					continue
 
-                key = get_key_name(item[1][0])
-                if key not in gamepad['mapping'].keys():
-                    gamepad['mapping'][key] = {}
-                val = get_button_name(item[0])
-                idx = item[1][1:]
-                if key != "head":
-                    gamepad['mapping'][key][idx] = val
-                else:
-                    indexes = idx.split('.')
-                    first = indexes[0]
-                    second = indexes[1]
-                    if first not in gamepad['mapping'][key].keys():
-                        gamepad['mapping'][key][first] = {}
-                    gamepad['mapping'][key][first][second] = val
+				item = t.split(':')
+				if len(item) <= 1 or item[0] == "platform" or len(item[0]) == 0 or len(item[1]) == 0:
+					continue
 
-            result.append(gamepad)
+				key = get_key_name(item[1][0])
+				if key == "head":
+					continue
 
-        save(resPath, json.dumps(result))
+				val = get_button_name(item[0])
+				idx = int(item[1][1:])
+				gamepad['mapping'][key][idx] = val
+				if key == "button":
+					if max_button < idx:
+						max_button = idx
+				elif key == "axes":
+					if max_axes < idx:
+						max_axes = idx
+
+			gamepad['mapping']['button'] = gamepad['mapping']['button'][:max_button + 1] if max_button > 0 else []
+			gamepad['mapping']['axes'] = gamepad['mapping']['axes'][:max_axes + 1] if max_axes > 0 else []
+
+			result[id] = gamepad
+			save(resPath, json.dumps(result))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
+	# input file example
+	# https://github.com/gabomdq/SDL_GameControllerDB/blob/master/gamecontrollerdb.txt
     parser.add_argument('file')
     parser.add_argument('output')
     args = parser.parse_args()

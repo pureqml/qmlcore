@@ -28,7 +28,7 @@ class Manifest(object):
 
 	@property
 	def minify(self):
-		return self.data.get('minify')
+		return self.data.get('minify', False)
 
 	@property
 	def templater(self):

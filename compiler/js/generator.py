@@ -1,5 +1,5 @@
 import json
-from compiler.js import split_name, escape_id, get_package
+from compiler.js import split_name, escape_package, get_package
 from compiler.js.component import component_generator
 
 root_type = 'core.CoreObject'
@@ -20,7 +20,7 @@ class generator(object):
 			raise Exception("duplicate component " + name)
 
 		package, component_name = split_name(name)
-		package = escape_id(package)
+		package = escape_package(package)
 
 		if not declaration:
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])

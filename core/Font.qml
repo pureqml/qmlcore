@@ -1,13 +1,15 @@
+/// adjusts text font properties
 Object {
-	property string family;
-	property bool italic;
-	property bool bold;
-	property bool underline;
-	property int pixelSize;
-	property int pointSize;
-	property int lineHeight;
-	property int weight;
+	property string family;		///< font family
+	property bool italic;		///< applies italic style
+	property bool bold;			///< applies bold style
+	property bool underline;	///< applies underline style
+	property int pixelSize;		///< font size in pixels
+	property int pointSize;		///< font size in points
+	property int lineHeight;	///< font line height in pixels
+	property int weight;		///< font weight value
 
+	/// @private
 	function _update(name, value) {
 		switch(name) {
 			case 'family':		this.parent.style('font-family', value); this.parent._updateSize(); break
@@ -21,6 +23,4 @@ Object {
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
-
-
 }

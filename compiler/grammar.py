@@ -47,8 +47,8 @@ def handle_assignment(s, l, t):
 
 def handle_property_declaration(s, l, t):
 	#print "property>", t
-	default = t[2] if len(t) > 2 else None
-	return component(lang.Property(t[0], t[1], default))
+	properties = map(lambda x: (x[0], None) if len(x) < 2 else (x[0], x[1]), t[1])
+	return component(lang.Property(t[0], properties))
 
 def handle_alias_property_declaration(s, l, t):
 	return component(lang.AliasProperty(t[0], t[1]))
@@ -177,9 +177,10 @@ assign_declaration.setParseAction(handle_assignment)
 assign_component_declaration = nested_identifier_lvalue + Literal(":").suppress() + component_declaration
 assign_component_declaration.setParseAction(handle_assignment)
 
-property_declaration = (((Keyword("property").suppress() + type + identifier + Literal(":").suppress() + expression) | \
-		(Keyword("property").suppress() + type + identifier)) + expression_end) | \
-	(Keyword("property").suppress() + type + identifier + Literal(":").suppress() + component_declaration) \
+property_name_initializer_declaration = Group(identifier + Optional(Literal(":").suppress() + expression))
+property_declaration = ((Keyword("property").suppress() + type + Group(delimitedList(property_name_initializer_declaration, ',')) + expression_end) | \
+	(Keyword("property").suppress() + type + Group(Group(identifier + Literal(":").suppress() + component_declaration))))
+property_declaration.setParseAction(handle_property_declaration)
 
 alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() + identifier + Literal(":").suppress() + nested_identifier_lvalue + expression_end
 alias_property_declaration.setParseAction(handle_alias_property_declaration)
@@ -187,8 +188,6 @@ alias_property_declaration.setParseAction(handle_alias_property_declaration)
 enum_property_declaration = Keyword("property").suppress() + Keyword("enum").suppress() + identifier + \
 	Literal("{").suppress() + Group(delimitedList(enum_element, ',')) + Literal("}").suppress() + Optional(Literal(':').suppress() + enum_element) + expression_end
 enum_property_declaration.setParseAction(handle_enum_property_declaration)
-
-property_declaration.setParseAction(handle_property_declaration)
 
 assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end
 assign_scope_declaration.setParseAction(handle_assignment)

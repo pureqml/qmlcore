@@ -357,8 +357,6 @@ class component_generator(object):
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep
-						if dep == 'model':
-							path, dep = "%s._get('_delegate')" %parent, '_row'
 						depvar = "dep$%s$%s$%d" %(escape(parent), escape(target), idx)
 						r.append('%svar %s = %s' %(ident, depvar, path))
 						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))

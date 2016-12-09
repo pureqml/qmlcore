@@ -93,18 +93,24 @@ def process(text, generator, registry):
 	#print text
 	return text
 
-gets_re = re.compile(r'this(\._get\(\'.*?\'\))+')
+gets_re = re.compile(r'(this)(\._get\(\'.*?\'\))+(?:\.([a-zA-Z0-9\.]+))?')
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
 
 def parse_deps(parent, text):
 	deps = []
 	for m in gets_re.finditer(text):
-		gets = m.group(0).split('.')
+		gets = (m.group(1) + m.group(2)).split('.')
 		gets = map(lambda x: parent if x == 'this' else x, gets)
 		target = gets[-1]
 		target = target[target.index('\'') + 1:target.rindex('\'')]
 		gets = gets[:-1]
-		deps.append((".".join(gets), target))
+		path = ".".join(gets)
+		if target == 'model':
+			signal = '_row' if m.group(3) != 'index' else '_rowIndex'
+			deps.append(("%s._get('_delegate')" %parent, '_row'))
+		else:
+			deps.append((path, target))
+
 	for m in tr_re.finditer(text):
 		deps.append((parent + '._context', 'language'))
 	return deps

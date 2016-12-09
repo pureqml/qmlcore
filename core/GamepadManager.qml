@@ -79,6 +79,23 @@ Item {
 			return
 		}
 
+		var vendorRegExp = /vendor.*?\d{1,4}/g
+		var productRegExp = /product.*?\d{1,4}/g
+		var digits = /\d{1,4}/g
+
+		var idStr = event.gamepad.id.toLowerCase()
+		var match = vendorRegExp.exec(idStr)
+		match = digits.exec(match)
+		var vendorId
+		if (match && match.length)
+			vendorId = match[0]
+
+		match = productRegExp.exec(idStr)
+		match = digits.exec(match)
+		var productId
+		if (match && match.length)
+			productId = match[0]
+
 		var children = this.children
 		var g = event.gamepad
 		for (var i = 0; i < children.length; ++i) {
@@ -89,6 +106,11 @@ Item {
 				c.deviceInfo = g.id
 				c.buttonsCount = g.buttons.length
 				c.axesCount = g.axes.length
+				if (vendorId)
+					c.vendorId = vendorId
+				if (productId)
+					c.productId = productId
+				c.standartMapping = g.mapping == "standard"
 				++this.gamepadChildrensCount
 				break
 			}

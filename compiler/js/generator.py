@@ -156,6 +156,8 @@ class generator(object):
 		path = "_globals"
 		def check(path, packages):
 			for ns in packages.iterkeys():
+				if not ns:
+					raise Exception('internal bug, empty name in packages')
 				package = path + "." + ns
 				r.append("if (!%s) /** @const */ %s = {}" %(package, package))
 				check(package, packages[ns])

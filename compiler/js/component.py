@@ -9,7 +9,8 @@ class component_generator(object):
 		self.name = name
 		self.component = component
 		self.aliases = {}
-		self.properties = {}
+		self.declared_properties = {}
+		self.properties = []
 		self.enums = {}
 		self.assignments = {}
 		self.animations = {}
@@ -50,17 +51,20 @@ class component_generator(object):
 		self.assignments[target] = value
 
 	def has_property(self, name):
-		return (name in self.properties) or (name in self.aliases) or (name in self.enums)
+		return (name in self.declared_properties) or (name in self.aliases) or (name in self.enums)
 
 	def add_child(self, child):
 		t = type(child)
 		if t is lang.Property:
-			if self.has_property(child.name):
-				raise Exception("duplicate property " + child.name)
-			self.properties[child.name] = child
-			if child.value is not None:
-				if not child.is_trivial():
-					self.assign(child.name, child.value)
+			self.properties.append(child)
+			for name, default_value in child.properties:
+				if self.has_property(name):
+					raise Exception("duplicate property " + name)
+				#print name, default_value, lang.value_is_trivial(default_value)
+				self.declared_properties[name] = child
+				if default_value is not None:
+					if not lang.value_is_trivial(default_value):
+						self.assign(name, default_value)
 		elif t is lang.AliasProperty:
 			if self.has_property(child.name):
 				raise Exception("duplicate property " + child.name)
@@ -191,11 +195,12 @@ class component_generator(object):
 			code = process(code, self, registry)
 			r.append("%s_globals.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
 
-		for name, prop in self.properties.iteritems():
-			args = ["_globals.%s.prototype" %self.name, "'%s'" %prop.type, "'%s'" %name]
-			if prop.is_trivial():
-				args.append(prop.value)
-			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
+		for prop in self.properties:
+			for name, default_value in prop.properties:
+				args = ["_globals.%s.prototype" %self.name, "'%s'" %prop.type, "'%s'" %name]
+				if lang.value_is_trivial(default_value):
+					args.append(default_value)
+				r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		for name, prop in self.enums.iteritems():
 			values = prop.values
@@ -238,8 +243,8 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def find_property(self, registry, property):
-		if property in self.properties:
-			return self.properties[property]
+		if property in self.declared_properties:
+			return self.declared_properties[property]
 		if property in self.enums:
 			return self.enums[property]
 		if property in self.aliases:
@@ -270,11 +275,12 @@ class component_generator(object):
 			for name in self.signals:
 				r.append("%s%s.%s = _globals.core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
 
-			for name, prop in self.properties.iteritems():
-				args = [parent, "'%s'" %prop.type, "'%s'" %name]
-				if prop.is_trivial():
-					args.append(prop.value)
-				r.append("\tcore.addProperty(%s)" %(", ".join(args)))
+			for prop in self.properties:
+				for name, default_value in prop.properties:
+					args = [parent, "'%s'" %prop.type, "'%s'" %name]
+					if lang.value_is_trivial(default_value):
+						args.append(default_value)
+					r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 			for name, prop in self.enums.iteritems():
 				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)

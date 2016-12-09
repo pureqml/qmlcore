@@ -50,14 +50,10 @@ class Component(Entity):
 		self.children = children
 
 class Property(Entity):
-	def __init__(self, type, name, value = None):
+	def __init__(self, type, properties):
 		super(Property, self).__init__()
 		self.type = type
-		self.name = name
-		self.value = value
-
-	def is_trivial(self):
-		return value_is_trivial(self.value)
+		self.properties = properties
 
 class AliasProperty(Entity):
 	def __init__(self, name, target):

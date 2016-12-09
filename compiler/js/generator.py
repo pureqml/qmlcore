@@ -49,10 +49,13 @@ class generator(object):
 		if name == "CoreObject":
 			return root_type
 
+		original_name = name
 		dot = name.rfind('.')
 		if dot >= 0:
-			package = name[:dot]
+			name_package = name[:dot]
 			name = name[dot + 1:]
+		else:
+			name_package = ''
 
 		if package in self.packages and name in self.packages[package]:
 			self.used_components.add(package + '.' + name)
@@ -61,10 +64,14 @@ class generator(object):
 		candidates = []
 		for package_name, components in self.packages.iteritems():
 			if name in components:
+				if name_package:
+					#match package/subpackage
+					if package_name != name_package and not package_name.endswith('.' + name_package):
+						continue
 				candidates.append(package_name)
 
 		if not candidates:
-			raise Exception("component %s was not found" %name)
+			raise Exception("component %s was not found" %(original_name))
 
 		if len(candidates) > 1:
 			raise Exception("ambiguous component %s.%s, you have to specify one of the packages explicitly: %s" \

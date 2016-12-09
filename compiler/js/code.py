@@ -107,7 +107,7 @@ def parse_deps(parent, text):
 		path = ".".join(gets)
 		if target == 'model':
 			signal = '_row' if m.group(3) != 'index' else '_rowIndex'
-			deps.append(("%s._get('_delegate')" %parent, '_row'))
+			deps.append(("%s._get('_delegate')" %parent, signal))
 		else:
 			deps.append((path, target))
 

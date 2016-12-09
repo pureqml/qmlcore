@@ -238,7 +238,10 @@ platforms = manifest.platforms
 if not platforms:
 	platforms = ['web']
 
-for platform in platforms:
-	for app in apps:
-		html = apps[app]
-		build(root, platform, app, html, manifest)
+try:
+	for platform in platforms:
+		for app in apps:
+			html = apps[app]
+			build(root, platform, app, html, manifest)
+except Exception as ex:
+	print "ERROR:", ex

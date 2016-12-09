@@ -13,6 +13,7 @@ import os, os.path
 import hashlib
 import cPickle
 import inspect
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", nargs='+')
@@ -195,7 +196,8 @@ while True:
 		generate()
 	except Exception as ex:
 		if not args.wait:
-			raise
+			print "ERROR:", ex
+			sys.exit(1)
 
 		import time, traceback
 		traceback.print_exc()

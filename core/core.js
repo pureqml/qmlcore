@@ -186,83 +186,204 @@ exports.core.mixColor = function(specA, specB, r) {
 	return [mix(a.r, b.r, r), mix(a.g, b.g, r), mix(a.b, b.b, r), mix(a.a, b.a, r)]
 }
 
-exports.core.ModelUpdate = function() {
-	this._updates = []
-	this._updateIndex = 0
-	this.count = 0
+var ModelUpdateNothing = 0
+var ModelUpdateInsert = 1
+var ModelUpdateUpdate = 2
+
+var ModelUpdateRange = function(type, length) {
+	this.type = type
+	this.length = length
 }
 
+exports.core.ModelUpdate = function() {
+	this.count = 0
+	this._reset()
+}
 exports.core.ModelUpdate.prototype.constructor = exports.core.ModelUpdate
 
-exports.core.ModelUpdate.prototype.reset = function(model) {
-	this._updates = []
-	this._updateIndex = 0
-	this.count = model.count
-}
-
-exports.core.ModelUpdate.prototype._addRange = function(begin, end) {
-	for(var i = begin; i < end; ++i) {
-		this._updates[i] = true
-	}
+exports.core.ModelUpdate.prototype._reset = function() {
+	this._ranges = [new ModelUpdateRange(ModelUpdateNothing, this.count)]
+	this._updateIndex = this.count
 }
 
 exports.core.ModelUpdate.prototype._setUpdateIndex = function(begin) {
-	var n = this._updates.length
-	this._updates.slice(begin, n - begin) //remove tail of sparse update array
-	this._updateIndex = begin
+	if (begin < this._updateIndex)
+		this._updateIndex = begin
+}
+
+exports.core.ModelUpdate.prototype._find = function(index) {
+	var ranges = this._ranges
+	var i
+	for(i = 0; i < ranges.length; ++i) {
+		var range = ranges[i]
+		if (index < range.length)
+			return { index: i, offset: index }
+		if (range.length > 0)
+			index -= range.length
+	}
+	if (index != 0)
+		throw new Error('invalid index ' + index)
+
+	return { index: i - 1, offset: 0 }
+}
+
+exports.core.ModelUpdate.prototype.reset = function(model) {
+	this.update(model, 0, Math.min(model.count, this.count))
+	if (this.count < model.count) {
+		this.insert(model, this.count, model.count)
+	} else {
+		this.remove(model, model.count, this.count)
+	}
 }
 
 exports.core.ModelUpdate.prototype.insert = function(model, begin, end) {
-	var d = end - begin
-	if (d === 0)
+	if (begin >= end)
 		return
 
 	this._setUpdateIndex(begin)
+	var ranges = this._ranges
+	var d = end - begin
 	this.count += d
 	if (this.count != model.count)
 		throw new Error('unbalanced insert ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
+
+	var res = this._find(begin)
+	var range = ranges[res.index]
+	if (range.length == 0) { //first insert
+		range.type = ModelUpdateInsert
+		range.length += d
+	} else if (range.type == ModelUpdateInsert) {
+		range.length += d
+	} else {
+		this._split(res.index, res.offset, ModelUpdateInsert, d)
+	}
 }
 
-exports.core.ModelUpdate.prototype.update = function(model, begin, end) {
-	if (begin >= end || begin >= this._updateIndex)
-		return
-
-	if (end >= this._updateIndex) {
-		this._setUpdateIndex(begin)
-		return
+exports.core.ModelUpdate.prototype._split = function(index, offset, type, length) {
+	var ranges = this._ranges
+	if (offset == 0) {
+		ranges.splice(index, 0, new ModelUpdateRange(type, length))
+		return index + 1
+	} else {
+		var range = ranges[index]
+		var right = range.length - offset
+		range.length = offset
+		if (right != 0) {
+			ranges.splice(index + 1, 0,
+				new ModelUpdateRange(type, length),
+				new ModelUpdateRange(range.type, right))
+			return index + 2
+		} else {
+			ranges.splice(index, 0,
+				new ModelUpdateRange(type, length))
+			return index + 1
+		}
 	}
-
-	this._addRange(begin, end)
 }
 
 exports.core.ModelUpdate.prototype.remove = function(model, begin, end) {
-	var d = end - begin
-	if (d === 0)
+	if (begin >= end)
 		return
 
 	this._setUpdateIndex(begin)
+	var ranges = this._ranges
+	var d = end - begin
 	this.count -= d
 	if (this.count != model.count)
 		throw new Error('unbalanced remove ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
+
+	var res = this._find(begin)
+	var range = ranges[res.index]
+	if (range.type == ModelUpdateInsert) {
+		range.length -= d
+	} else {
+		var index = this._split(res.index, res.offset, ModelUpdateInsert, -d)
+		while(d > 0) {
+			var range = ranges[index]
+			if (range.length <= d) {
+				ranges.splice(index, 1)
+				d -= ranges.length
+			} else {
+				range.length -= d
+			}
+		}
+	}
+}
+
+exports.core.ModelUpdate.prototype.update = function(model, begin, end) {
+	if (begin >= end)
+		return
+
+	var ranges = this._ranges
+	var n = end - begin
+	var res = this._find(begin)
+	var index = res.index
+	var offset = res.offset
+
+	while(n > 0) {
+		var range = ranges[index]
+		var length = range.length - offset
+		switch(range.type) {
+			case ModelUpdateNothing:
+				if (offset != 0 || length > n) {
+					range.length = offset
+					ranges.splice(index + 1, 0, new ModelUpdateRange(ModelUpdateUpdate, length))
+					n -= length
+					++index
+				} else { //length < n and offset == 0
+					range.type = ModelUpdateUpdate
+					n -= length
+				}
+				break
+			case ModelUpdateInsert:
+				if (length > 0) {
+					n -= length
+					++index
+				}
+				break
+			case ModelUpdateUpdate:
+				n -= length
+				++index
+				break
+		}
+		offset = 0
+	}
 }
 
 exports.core.ModelUpdate.prototype.apply = function(view) {
-	this._updates.forEach(function(value, idx) { view._updateDelegate(idx) })
-	var d = this.count - view._items.length
-
-	if (d > 0) {
-		while(d--) {
-			view._items.push(null)
+	var index = 0
+	var items = view._items
+	this._ranges.forEach(
+		function(range) {
+			switch(range.type) {
+				case ModelUpdateInsert:
+					var n = range.length
+					if (n > 0) {
+						while(n--)
+							items.splice(index, 0, null)
+						index += n
+					} else {
+						var deleted = items.splice(index, -n)
+						deleted.forEach(function(item) { view._discardItem(item)})
+					}
+					break
+				case ModelUpdateUpdate:
+					var n = index + range.length
+					for(var i = index; i < n; ++i)
+						view._updateDelegate(i)
+					index = n
+					break
+				default:
+					index += range.length
+			}
 		}
-	} else if (d < 0) {
-		var removed = view._items.splice(this.count, -d)
-		removed.forEach(function(item) { view._discardItem(item) })
-	}
+	)
+	if (items.length != this.count)
+		throw new Error('unbalanced items update')
 
 	for(var i = this._updateIndex; i < this.count; ++i)
-		view._updateDelegate(i)
-	this._updateIndex = this.count
-	this._updates = []
+		view._updateDelegateIndex(i)
+	this._reset()
 }
 
 /** @constructor */

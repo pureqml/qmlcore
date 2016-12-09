@@ -153,9 +153,6 @@ def process_files(generator, app, dirs):
 
 				#print dirpath, relpath
 				package = ".".join([package_name] + relpath)
-
-				 #existing behaviour, invalid, remove me in hour X
-				package = ".".join(dirpath.split(os.path.sep)[-1:])
 				process_file(generator, app, package, dirpath, filename)
 
 def generate():

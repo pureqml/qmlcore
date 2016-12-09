@@ -149,12 +149,18 @@ def process_files(generator, app, dirs):
 
 			for filename in filenames:
 				relpath = os.path.relpath(dirpath, package_dir)
+				if relpath.startswith('..'):
+					#files in current dir, reset to initial state
+					package_dir = project_dir
+					package_name = project_dir.split(os.path.sep)[-1]
+					relpath = os.path.relpath(dirpath, package_dir)
+					print relpath
+
 				if relpath == '.':
 					relpath = []
 				else:
 					relpath = relpath.split(os.path.sep)
 
-				#print dirpath, relpath
 				package = ".".join([package_name] + relpath)
 				process_file(generator, app, package, dirpath, filename)
 

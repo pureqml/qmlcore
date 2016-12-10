@@ -325,11 +325,16 @@ exports.core.ModelUpdate.prototype.update = function(model, begin, end) {
 		var length = range.length - offset
 		switch(range.type) {
 			case ModelUpdateNothing:
-				if (offset != 0 || length > n) {
+				if (offset != 0) {
 					range.length = offset
-					ranges.splice(index + 1, 0, new ModelUpdateRange(ModelUpdateUpdate, length))
-					n -= length
+					ranges.splice(index + 1, 0, new ModelUpdateRange(ModelUpdateNothing, length))
 					++index
+					//split current range, move to right range
+				} else if (length > n) {
+					//range larger than needed
+					range.length -= n
+					ranges.splice(index, 0, new ModelUpdateRange(ModelUpdateUpdate, n))
+					n -= length
 				} else { //length < n and offset == 0
 					range.type = ModelUpdateUpdate
 					n -= length

@@ -236,26 +236,17 @@ exports.core.ModelUpdate.prototype.reset = function(model) {
 	}
 }
 
-exports.core.ModelUpdate.prototype.insert = function(model, begin, end) {
-	if (begin >= end)
-		return
-
-	this._setUpdateIndex(begin)
+exports.core.ModelUpdate.prototype._merge = function() {
 	var ranges = this._ranges
-	var d = end - begin
-	this.count += d
-	if (this.count != model.count)
-		throw new Error('unbalanced insert ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
-
-	var res = this._find(begin)
-	var range = ranges[res.index]
-	if (range.length == 0) { //first insert
-		range.type = ModelUpdateInsert
-		range.length += d
-	} else if (range.type == ModelUpdateInsert) {
-		range.length += d
-	} else {
-		this._split(res.index, res.offset, ModelUpdateInsert, d)
+	var n = ranges.length - 1
+	for(var index = 0; index < n; ) {
+		var range = ranges[index]
+		var nextRange = ranges[index + 1]
+		if (range.type === nextRange) {
+			range.length += nextRange.length
+			ranges.splice(index + 1, 1)
+		} else
+			++index
 	}
 }
 
@@ -279,6 +270,30 @@ exports.core.ModelUpdate.prototype._split = function(index, offset, type, length
 			return index + 1
 		}
 	}
+}
+
+exports.core.ModelUpdate.prototype.insert = function(model, begin, end) {
+	if (begin >= end)
+		return
+
+	this._setUpdateIndex(begin)
+	var ranges = this._ranges
+	var d = end - begin
+	this.count += d
+	if (this.count != model.count)
+		throw new Error('unbalanced insert ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
+
+	var res = this._find(begin)
+	var range = ranges[res.index]
+	if (range.length == 0) { //first insert
+		range.type = ModelUpdateInsert
+		range.length += d
+	} else if (range.type == ModelUpdateInsert) {
+		range.length += d
+	} else {
+		this._split(res.index, res.offset, ModelUpdateInsert, d)
+	}
+	this._merge()
 }
 
 exports.core.ModelUpdate.prototype.remove = function(model, begin, end) {
@@ -308,6 +323,7 @@ exports.core.ModelUpdate.prototype.remove = function(model, begin, end) {
 			}
 		}
 	}
+	this._merge()
 }
 
 exports.core.ModelUpdate.prototype.update = function(model, begin, end) {

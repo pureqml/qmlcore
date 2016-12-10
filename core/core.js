@@ -334,19 +334,20 @@ exports.core.ModelUpdate.prototype.update = function(model, begin, end) {
 	var n = end - begin
 	var res = this._find(begin)
 	var index = res.index
-	var offset = res.offset
+
+	var range = ranges[index]
+	if (res.offset > 0) {
+		ranges.splice(index + 1, 0, new ModelUpdateRange(ModelUpdateNothing, range.length - res.offset))
+		range.length = res.offset
+		++index
+	}
 
 	while(n > 0) {
 		var range = ranges[index]
-		var length = range.length - offset
+		var length = range.length
 		switch(range.type) {
 			case ModelUpdateNothing:
-				if (offset != 0) {
-					range.length = offset
-					ranges.splice(index + 1, 0, new ModelUpdateRange(ModelUpdateNothing, length))
-					++index
-					//split current range, move to right range
-				} else if (length > n) {
+				if (length > n) {
 					//range larger than needed
 					range.length -= n
 					ranges.splice(index, 0, new ModelUpdateRange(ModelUpdateUpdate, n))
@@ -367,8 +368,8 @@ exports.core.ModelUpdate.prototype.update = function(model, begin, end) {
 				++index
 				break
 		}
-		offset = 0
 	}
+	this._merge()
 }
 
 exports.core.ModelUpdate.prototype.apply = function(view) {

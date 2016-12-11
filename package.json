@@ -1,0 +1,14 @@
+{
+  "name": "qmlcore",
+  "version": "1.0.0",
+  "description": "QMLCore unit tests",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pureqml/qmlcore"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "QMLCore team",
+  "license": "MIT"
+}

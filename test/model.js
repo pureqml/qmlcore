@@ -11,10 +11,12 @@ ModelMock.prototype.reset = function(n) {
 }
 
 ModelMock.prototype.insert = function(begin, end) {
+	this.count += end - begin
 	this.updater.insert(this, begin, end)
 }
 
 ModelMock.prototype.remove = function(begin, end) {
+	this.count -= end - begin
 	this.updater.remove(this, begin, end)
 }
 

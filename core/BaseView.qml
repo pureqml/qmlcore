@@ -169,7 +169,8 @@ BaseLayout {
 
 	function _discardItems(begin, end) {
 		var deleted = this._items.splice(begin, end - begin)
-		deleted.forEach(function(item) { this._discardItem(item)})
+		var view = this
+		deleted.forEach(function(item) { view._discardItem(item)})
 	}
 
 	function _insertItems(begin, end) {

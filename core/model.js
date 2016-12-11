@@ -121,6 +121,7 @@ exports.ModelUpdate.prototype.remove = function(model, begin, end) {
 
 	var res = this._find(begin)
 	var range = ranges[res.index]
+
 	if (range.type == ModelUpdateInsert) {
 		range.length -= d
 	} else {
@@ -129,7 +130,7 @@ exports.ModelUpdate.prototype.remove = function(model, begin, end) {
 			var range = ranges[index]
 			if (range.length <= d) {
 				ranges.splice(index, 1)
-				d -= ranges.length
+				d -= range.length
 			} else {
 				range.length -= d
 			}

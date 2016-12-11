@@ -1,9 +1,7 @@
+var sinon = require('sinon')
+
 var View = function() {
 	this._items = { length : 0 }
-}
-
-View.prototype.length = function(l) {
-	this._items.length = l
 }
 
 View.prototype._insertItems = function(begin, end) {

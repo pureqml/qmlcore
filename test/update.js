@@ -7,7 +7,6 @@ describe('ModelUpdate', function() {
 	describe('untouched model', function() {
 		it('should set single insert range', function() {
 			model = new Model()
-			console.log(View.prototype)
 			view = new View()
 			mock = sinon.mock(view)
 			mock.expects('_insertItems').once().withArgs(0, 6000)

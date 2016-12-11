@@ -10,5 +10,9 @@
     "test": "mocha"
   },
   "author": "QMLCore team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.6"
+  }
 }

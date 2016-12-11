@@ -50,13 +50,12 @@ exports.ModelUpdate.prototype.reset = function(model) {
 
 exports.ModelUpdate.prototype._merge = function() {
 	var ranges = this._ranges
-	var n = ranges.length - 1
-	for(var index = 0; index < n; ) {
-		var range = ranges[index]
-		var nextRange = ranges[index + 1]
-		if (range.type === nextRange) {
+	for(var index = 1; index < ranges.length; ) {
+		var range = ranges[index - 1]
+		var nextRange = ranges[index]
+		if (range.type === nextRange.type) {
 			range.length += nextRange.length
-			ranges.splice(index + 1, 1)
+			ranges.splice(index, 1)
 		} else
 			++index
 	}

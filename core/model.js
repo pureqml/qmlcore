@@ -210,7 +210,7 @@ exports.ModelUpdate.prototype.apply = function(view) {
 		}
 	)
 	if (view._items.length != this.count)
-		throw new Error('unbalanced items update')
+		throw new Error('unbalanced items update, view: ' + view._items.length + ', update:' + this.count)
 
 	for(var i = this._updateIndex; i < this.count; ++i)
 		view._updateDelegateIndex(i)

@@ -75,15 +75,34 @@ describe('ModelUpdate', function() {
 	})
 
 	describe('sequental left update', function() {
-		it('should set single remove range', function() {
+		it('should set three ranges, noop, update, noop', function() {
 			model = new Model()
 			view = new View()
 			mock = sinon.mock(view)
+
 			model.reset(5)
 			model.apply(view)
 
-			mock.expects('_updateDelegate').once().withArgs(0, 10)
+			mock.expects('_updateItems').once().withArgs(1, 4)
+
 			for(var i = 1; i < 3; ++i)
+				model.update(i, i + 1)
+			model.apply(view)
+		})
+	})
+
+	describe('sequental right update', function() {
+		it('should set three ranges, noop, update, noop', function() {
+			model = new Model()
+			view = new View()
+			mock = sinon.mock(view)
+
+			model.reset(5)
+			model.apply(view)
+
+			mock.expects('_updateItems').once().withArgs(1, 4)
+
+			for(var i = 3; i >= 1; ++i)
 				model.update(i, i + 1)
 			model.apply(view)
 		})

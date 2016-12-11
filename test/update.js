@@ -16,7 +16,7 @@ describe('ModelUpdate', function() {
 		})
 	})
 
-	describe('sequental insert', function() {
+	describe('sequental left insert', function() {
 		it('should set single insert range', function() {
 			model = new Model()
 			view = new View()
@@ -25,6 +25,51 @@ describe('ModelUpdate', function() {
 			for(var i = 0; i < 10; ++i)
 				model.insert(0, 1)
 			view.length(10)
+			model.apply(view)
+		})
+	})
+
+	describe('sequental right insert', function() {
+		it('should set single insert range', function() {
+			model = new Model()
+			view = new View()
+			mock = sinon.mock(view)
+			mock.expects('_insertItems').once().withArgs(0, 10)
+			for(var i = 0; i < 10; ++i)
+				model.insert(i, i + 1)
+			view.length(10)
+			model.apply(view)
+		})
+	})
+
+	describe('sequental left remove', function() {
+		it('should set single remove range', function() {
+			model = new Model()
+			view = new View()
+			mock = sinon.mock(view)
+			model.reset(10)
+			model.apply(view)
+
+			mock.expects('_discardItems').once().withArgs(0, 10)
+			for(var i = 0; i < 10; ++i)
+				model.remove(0, 1)
+			view.length(0)
+			model.apply(view)
+		})
+	})
+
+	describe('sequental right remove', function() {
+		it('should set single remove range', function() {
+			model = new Model()
+			view = new View()
+			mock = sinon.mock(view)
+			model.reset(10)
+			model.apply(view)
+
+			mock.expects('_discardItems').once().withArgs(0, 10)
+			for(var i = 9; i >= 0; --i)
+				model.remove(i, i + 1)
+			view.length(0)
 			model.apply(view)
 		})
 	})

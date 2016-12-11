@@ -18,7 +18,7 @@ BaseLayout {
 
 	constructor: {
 		this._items = []
-		this._modelUpdate = new _globals.core.ModelUpdate()
+		this._modelUpdate = new _globals.core.model.ModelUpdate()
 	}
 
 	/// returns index of item by x,y coordinates

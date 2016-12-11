@@ -4,12 +4,15 @@ var Model = require('./model.js')
 var View = require('./view.js')
 
 describe('ModelUpdate', function() {
-	describe('empty', function() {
-		it('should contain single noupdate range', function() {
+	describe('untouched model', function() {
+		it('should set single insert range', function() {
 			model = new Model()
-			view = sinon.mock(new View())
-			view.expects('_insertItems').once().withArgs(0, 6000)
+			console.log(View.prototype)
+			view = new View()
+			mock = sinon.mock(view)
+			mock.expects('_insertItems').once().withArgs(0, 6000)
 			model.reset(6000)
+			view.length(6000)
 			model.apply(view)
 		})
 	})

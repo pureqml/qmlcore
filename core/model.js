@@ -195,14 +195,13 @@ exports.ModelUpdate.prototype.apply = function(view) {
 						view._insertItems(index, index + n)
 						index += n
 					} else {
-						view._discardItems(index, index - n)
+						view._removeItems(index, index - n)
 					}
 					break
 				case ModelUpdateUpdate:
-					var n = index + range.length
-					for(var i = index; i < n; ++i)
-						view._updateDelegate(i)
-					index = n
+					var end = index + range.length
+					view._updateItems(index, end)
+					index = end
 					break
 				default:
 					index += range.length

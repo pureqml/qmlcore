@@ -10,7 +10,11 @@ View.prototype._insertItems = function(begin, end) {
 	if (begin < end)
 		this._items.length += end - begin
 }
-View.prototype._discardItems = function(begin, end)
+
+View.prototype._updateItems = function(begin, end) {
+}
+
+View.prototype._removeItems = function(begin, end)
 {
 	if (begin < end)
 		this._items.length -= end - begin

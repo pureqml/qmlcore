@@ -11,11 +11,12 @@ Item {
 	constructor: {
 		this.count = 0
 		this._delayedLayout = new _globals.core.DelayedAction(this._context, function() {
-			this._updateItems()
+			this._processUpdates()
 			this._layout()
 		}.bind(this))
 	}
-	function _updateItems() {}
+
+	function _processUpdates() { }
 
 	function _update(name, value) {
 		switch(name) {

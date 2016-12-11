@@ -50,7 +50,7 @@ describe('ModelUpdate', function() {
 			model.reset(10)
 			model.apply(view)
 
-			mock.expects('_discardItems').once().withArgs(0, 10)
+			mock.expects('_removeItems').once().withArgs(0, 10)
 			for(var i = 0; i < 10; ++i)
 				model.remove(0, 1)
 			view.length(0)
@@ -66,10 +66,25 @@ describe('ModelUpdate', function() {
 			model.reset(10)
 			model.apply(view)
 
-			mock.expects('_discardItems').once().withArgs(0, 10)
+			mock.expects('_removeItems').once().withArgs(0, 10)
 			for(var i = 9; i >= 0; --i)
 				model.remove(i, i + 1)
 			view.length(0)
+			model.apply(view)
+		})
+	})
+
+	describe('sequental left update', function() {
+		it('should set single remove range', function() {
+			model = new Model()
+			view = new View()
+			mock = sinon.mock(view)
+			model.reset(5)
+			model.apply(view)
+
+			mock.expects('_updateDelegate').once().withArgs(0, 10)
+			for(var i = 1; i < 3; ++i)
+				model.update(i, i + 1)
 			model.apply(view)
 		})
 	})

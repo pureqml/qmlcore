@@ -167,12 +167,6 @@ BaseLayout {
 		item.discard()
 	}
 
-	function _discardItems(begin, end) {
-		var deleted = this._items.splice(begin, end - begin)
-		var view = this
-		deleted.forEach(function(item) { view._discardItem(item)})
-	}
-
 	function _insertItems(begin, end) {
 		var n = end - begin + 2
 		var args = Array(n)
@@ -183,9 +177,20 @@ BaseLayout {
 		Array.prototype.splice.apply(this._items, args)
 	}
 
-	function _updateItems() {
+	function _removeItems(begin, end) {
+		var deleted = this._items.splice(begin, end - begin)
+		var view = this
+		deleted.forEach(function(item) { view._discardItem(item)})
+	}
+
+	function _updateItems(begin, end) {
+		for(var i = begin; i < end; ++i)
+			this._updateDelegate(i)
+	}
+
+	function _processUpdates() {
 		this._modelUpdate.apply(this)
-		qml.core.BaseLayout.prototype._updateItems.apply(this)
+		qml.core.BaseLayout.prototype._processUpdates.apply(this)
 	}
 
 	property BaseViewContent content: BaseViewContent {

@@ -87,7 +87,7 @@ describe('ModelUpdate', function() {
 			model.reset(5)
 			model.apply(view)
 
-			for(var i = 1; i < 3; ++i)
+			for(var i = 1; i <= 3; ++i)
 				model.update(i, i + 1)
 			model.apply(view)
 			sinon.assert.calledOnce(view._updateItems)
@@ -104,7 +104,7 @@ describe('ModelUpdate', function() {
 			model.reset(5)
 			model.apply(view)
 
-			for(var i = 3; i >= 1; ++i)
+			for(var i = 3; i >= 1; --i)
 				model.update(i, i + 1)
 			model.apply(view)
 

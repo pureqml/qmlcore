@@ -167,6 +167,21 @@ BaseLayout {
 		item.discard()
 	}
 
+	function _discardItems(begin, end) {
+		var deleted = this._items.splice(begin, end - begin)
+		deleted.forEach(function(item) { this._discardItem(item)})
+	}
+
+	function _insertItems(begin, end) {
+		var n = end - begin + 2
+		var args = Array(n)
+		args[0] = begin
+		args[1] = 0
+		for(var i = 2; i < n; ++i)
+			args[i] = null
+		Array.prototype.splice.apply(this._items, args)
+	}
+
 	function _updateItems() {
 		this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._updateItems.apply(this)

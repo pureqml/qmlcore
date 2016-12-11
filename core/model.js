@@ -186,19 +186,16 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 
 exports.ModelUpdate.prototype.apply = function(view) {
 	var index = 0
-	var items = view._items
 	this._ranges.forEach(
 		function(range) {
 			switch(range.type) {
 				case ModelUpdateInsert:
 					var n = range.length
 					if (n > 0) {
-						while(n--)
-							items.splice(index, 0, null)
+						view._insertItems(index, index + n)
 						index += n
 					} else {
-						var deleted = items.splice(index, -n)
-						deleted.forEach(function(item) { view._discardItem(item)})
+						view._discardItems(index, index - n)
 					}
 					break
 				case ModelUpdateUpdate:
@@ -212,7 +209,7 @@ exports.ModelUpdate.prototype.apply = function(view) {
 			}
 		}
 	)
-	if (items.length != this.count)
+	if (view._items.length != this.count)
 		throw new Error('unbalanced items update')
 
 	for(var i = this._updateIndex; i < this.count; ++i)

@@ -134,6 +134,7 @@ exports.ModelUpdate.prototype.remove = function(model, begin, end) {
 				d -= range.length
 			} else {
 				range.length -= d
+				d = 0
 			}
 		}
 	}

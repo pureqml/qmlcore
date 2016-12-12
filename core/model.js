@@ -166,7 +166,7 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 					range.length -= n
 					ranges.splice(index, 0, new ModelUpdateRange(ModelUpdateUpdate, n))
 					n -= length
-				} else { //length < n and offset == 0
+				} else { //length <= n
 					range.type = ModelUpdateUpdate
 					n -= length
 				}

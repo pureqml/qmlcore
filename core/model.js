@@ -151,7 +151,7 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 
 	var range = ranges[index]
 	if (res.offset > 0) {
-		ranges.splice(index + 1, 0, new ModelUpdateRange(ModelUpdateNothing, range.length - res.offset))
+		ranges.splice(index + 1, 0, new ModelUpdateRange(range.type, range.length - res.offset))
 		range.length = res.offset
 		++index
 		if (range.length == 0)

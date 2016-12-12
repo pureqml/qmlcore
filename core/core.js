@@ -4,7 +4,7 @@ exports.core.os = navigator.platform
 exports.core.device = 0
 exports.core.vendor = ""
 
-exports.trace = { key: false, focus: false }
+exports.core.trace = { key: false, focus: false }
 
 exports.core.keyCodes = {
 	13: 'Select',

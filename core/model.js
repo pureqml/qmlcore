@@ -196,7 +196,7 @@ exports.ModelUpdate.prototype.apply = function(view) {
 					if (n > 0) {
 						view._insertItems(index, index + n)
 						index += n
-					} else {
+					} else if (n < 0) {
 						view._removeItems(index, index - n)
 					}
 					break

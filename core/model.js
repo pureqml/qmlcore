@@ -188,7 +188,7 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 	this._merge()
 }
 
-exports.ModelUpdate.prototype.apply = function(view) {
+exports.ModelUpdate.prototype.apply = function(view, skipCheck) {
 	var index = 0
 	this._ranges.forEach(
 		function(range) {
@@ -211,7 +211,7 @@ exports.ModelUpdate.prototype.apply = function(view) {
 			}
 		}
 	)
-	if (view._items.length != this.count)
+	if (!skipCheck && view._items.length != this.count)
 		throw new Error('unbalanced items update, view: ' + view._items.length + ', update:' + this.count)
 
 	for(var i = this._updateIndex; i < this.count; ++i)

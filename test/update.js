@@ -256,7 +256,7 @@ describe('ModelUpdate', function() {
 		})
 	})
 
-	describe('remove + update', function() {
+	describe('update + remove', function() {
 		it('should call remove and update with no overlap', function() {
 			model = new Model()
 			view = new View()
@@ -274,6 +274,29 @@ describe('ModelUpdate', function() {
 
 			sinon.assert.calledOnce(view._removeItems)
 			sinon.assert.calledWith(view._removeItems, 10, 20)
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 0, 10)
+		})
+	})
+
+	describe('remove + update', function() {
+		it('should call remove and update with no overlap', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(20)
+			model.apply(view)
+
+			sinon.spy(view, '_removeItems')
+			sinon.spy(view, '_updateItems')
+
+			model.remove(0, 10)
+			for(var i = 0; i < 10; ++i)
+				model.update(i, i + 1)
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._removeItems)
+			sinon.assert.calledWith(view._removeItems, 0, 10)
 			sinon.assert.calledOnce(view._updateItems)
 			sinon.assert.calledWith(view._updateItems, 0, 10)
 		})

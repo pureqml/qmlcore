@@ -113,6 +113,48 @@ describe('ModelUpdate', function() {
 		})
 	})
 
+	describe('interlaced update', function() {
+		it('should set single-value ranges, noop, update, noop', function() {
+			model = new Model()
+			view = new View()
+			sinon.spy(view, '_updateItems')
+
+			model.reset(10)
+			model.apply(view)
+
+			for(var i = 1; i < 10; i += 2)
+				model.update(i, i + 1)
+			model.apply(view)
+
+			sinon.assert.callCount(view._updateItems, 5)
+			sinon.assert.calledWith(view._updateItems, 1, 2)
+			sinon.assert.calledWith(view._updateItems, 3, 4)
+			sinon.assert.calledWith(view._updateItems, 5, 6)
+			sinon.assert.calledWith(view._updateItems, 7, 8)
+			sinon.assert.calledWith(view._updateItems, 9, 10)
+		})
+	})
+
+	describe('interlaced full update', function() {
+		it('should set single range', function() {
+			model = new Model()
+			view = new View()
+			sinon.spy(view, '_updateItems')
+
+			model.reset(10)
+			model.apply(view)
+
+			for(var i = 1; i < 10; i += 2)
+				model.update(i, i + 1)
+			for(var i = 0; i < 9; i += 2)
+				model.update(i, i + 1)
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 0, 10)
+		})
+	})
+
 	describe('reset model, the same row count', function() {
 		it('should call insert, then update', function() {
 			model = new Model()

@@ -252,7 +252,7 @@ describe('ModelUpdate', function() {
 			sinon.assert.calledOnce(view._insertItems)
 			sinon.assert.calledWith(view._insertItems, 10, 20)
 			sinon.assert.calledOnce(view._updateItems)
-			sinon.assert.calledOnce(view._updateItems, 0, 10)
+			sinon.assert.calledWith(view._updateItems, 0, 10)
 		})
 	})
 

@@ -152,6 +152,8 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 		ranges.splice(index + 1, 0, new ModelUpdateRange(ModelUpdateNothing, range.length - res.offset))
 		range.length = res.offset
 		++index
+		if (range.length == 0)
+			throw new Error('invalid offset')
 	}
 
 	while(n > 0) {

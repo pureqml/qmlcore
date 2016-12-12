@@ -215,4 +215,50 @@ describe('ModelUpdate', function() {
 			sinon.assert.calledOnce(view._removeItems)
 		})
 	})
+
+	describe('insert + update', function() {
+		it('should call insert and update with no overlap', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(10)
+			model.apply(view)
+
+			sinon.spy(view, '_insertItems')
+			sinon.spy(view, '_updateItems')
+
+			model.insert(10, 20)
+			for(var i = 0; i < 20; ++i)
+				model.update(i, i + 1)
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._insertItems)
+			sinon.assert.calledWith(view._insertItems, 10, 20)
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledOnce(view._updateItems, 0, 10)
+		})
+	})
+
+	describe('remove + update', function() {
+		it('should call remove and update with no overlap', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(20)
+			model.apply(view)
+
+			sinon.spy(view, '_removeItems')
+			sinon.spy(view, '_updateItems')
+
+			for(var i = 0; i < 20; ++i)
+				model.update(i, i + 1)
+			model.remove(10, 20)
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._removeItems)
+			sinon.assert.calledWith(view._removeItems, 10, 20)
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 0, 10)
+		})
+	})
 })

@@ -174,10 +174,9 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 				}
 				break
 			case ModelUpdateInsert:
-				if (length > 0) {
+				if (length > 0)
 					n -= length
-					++index
-				}
+				++index
 				break
 			case ModelUpdateUpdate:
 				n -= length

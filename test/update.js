@@ -17,6 +17,23 @@ describe('ModelUpdate', function() {
 		})
 	})
 
+	describe('insert + remove', function() {
+		it('should result in no', function() {
+			model = new Model()
+			view = new View()
+			sinon.spy(view, '_insertItems')
+			sinon.spy(view, '_updateItems')
+			sinon.spy(view, '_removeItems')
+			model.insert(0, 10)
+			model.remove(0, 10)
+			model.apply(view)
+
+			sinon.assert.callCount(view._insertItems, 0)
+			sinon.assert.callCount(view._updateItems, 0)
+			sinon.assert.callCount(view._removeItems, 0)
+		})
+	})
+
 	describe('sequental left insert', function() {
 		it('should set single insert range', function() {
 			model = new Model()

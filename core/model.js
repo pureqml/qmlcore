@@ -188,9 +188,9 @@ exports.ModelUpdate.prototype.apply = function(view) {
 	var index = 0
 	this._ranges.forEach(
 		function(range) {
+			var n = range.length
 			switch(range.type) {
 				case ModelUpdateInsert:
-					var n = range.length
 					if (n > 0) {
 						view._insertItems(index, index + n)
 						index += n
@@ -199,9 +199,8 @@ exports.ModelUpdate.prototype.apply = function(view) {
 					}
 					break
 				case ModelUpdateUpdate:
-					var end = index + range.length
-					view._updateItems(index, end)
-					index = end
+					view._updateItems(index, index + n)
+					index += n
 					break
 				default:
 					index += range.length

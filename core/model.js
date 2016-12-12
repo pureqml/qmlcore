@@ -76,9 +76,9 @@ exports.ModelUpdate.prototype._split = function(index, offset, type, length) {
 				new ModelUpdateRange(range.type, right))
 			return index + 2
 		} else {
-			ranges.splice(index, 0,
+			ranges.splice(index + 1, 0,
 				new ModelUpdateRange(type, length))
-			return index + 1
+			return index + 2
 		}
 	}
 }

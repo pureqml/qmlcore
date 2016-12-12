@@ -301,4 +301,52 @@ describe('ModelUpdate', function() {
 			sinon.assert.calledWith(view._updateItems, 0, 10)
 		})
 	})
+
+	describe('remove from front + insert to back', function() {
+		it('should call to remove/insert', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(10)
+			model.apply(view)
+
+			sinon.spy(view, '_insertItems')
+			sinon.spy(view, '_removeItems')
+			sinon.spy(view, '_updateItems')
+
+			model.remove(0, 1)
+			model.insert(9, 10)
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._removeItems)
+			sinon.assert.calledWith(view._removeItems, 0, 1)
+			sinon.assert.calledOnce(view._insertItems)
+			sinon.assert.calledWith(view._insertItems, 9, 10)
+			sinon.assert.callCount(view._updateItems, 0)
+		})
+	})
+
+	describe('insert to front + remove from back', function() {
+		it('should call to remove/insert', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(10)
+			model.apply(view)
+
+			sinon.spy(view, '_insertItems')
+			sinon.spy(view, '_removeItems')
+			sinon.spy(view, '_updateItems')
+
+			model.insert(0, 1)
+			model.remove(10, 11)
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._insertItems)
+			sinon.assert.calledWith(view._insertItems, 0, 1)
+			sinon.assert.calledOnce(view._removeItems)
+			sinon.assert.calledWith(view._removeItems, 10, 11)
+			sinon.assert.callCount(view._updateItems, 0)
+		})
+	})
 })

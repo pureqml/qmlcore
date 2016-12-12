@@ -56,7 +56,9 @@ exports.ModelUpdate.prototype._merge = function() {
 		if (range.type === nextRange.type) {
 			range.length += nextRange.length
 			ranges.splice(index, 1)
-		} else
+		} else if (range.type == ModelUpdateInsert && range.length === 0) {
+			ranges.splice(index, 1)
+		}else
 			++index
 	}
 }

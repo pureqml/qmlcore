@@ -371,7 +371,6 @@ describe('ModelUpdate', function() {
 			sinon.assert.calledWith(view._updateItems, 0, 10)
 			sinon.assert.callCount(view._insertItems, 0)
 			sinon.assert.callCount(view._removeItems, 0)
-			sinon.assert.callCount(view._updateItems, 0)
 		})
 	})
 })

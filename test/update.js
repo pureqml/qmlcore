@@ -349,4 +349,29 @@ describe('ModelUpdate', function() {
 			sinon.assert.callCount(view._updateItems, 0)
 		})
 	})
+
+	describe('reset + insert same row count', function() {
+		it('should call to update', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(10)
+			model.apply(view)
+
+			sinon.spy(view, '_insertItems')
+			sinon.spy(view, '_removeItems')
+			sinon.spy(view, '_updateItems')
+
+			model.reset(0)
+			for(var i = 0; i < 10; ++i)
+				model.insert(i, i + 1)
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 0, 10)
+			sinon.assert.callCount(view._insertItems, 0)
+			sinon.assert.callCount(view._removeItems, 0)
+			sinon.assert.callCount(view._updateItems, 0)
+		})
+	})
 })

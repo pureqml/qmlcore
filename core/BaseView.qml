@@ -18,7 +18,7 @@ BaseLayout {
 
 	constructor: {
 		this._items = []
-		this._modelUpdate = new _globals.core.ModelUpdate()
+		this._modelUpdate = new _globals.core.model.ModelUpdate()
 	}
 
 	/// returns index of item by x,y coordinates
@@ -167,9 +167,30 @@ BaseLayout {
 		item.discard()
 	}
 
-	function _updateItems() {
+	function _insertItems(begin, end) {
+		var n = end - begin + 2
+		var args = Array(n)
+		args[0] = begin
+		args[1] = 0
+		for(var i = 2; i < n; ++i)
+			args[i] = null
+		Array.prototype.splice.apply(this._items, args)
+	}
+
+	function _removeItems(begin, end) {
+		var deleted = this._items.splice(begin, end - begin)
+		var view = this
+		deleted.forEach(function(item) { view._discardItem(item)})
+	}
+
+	function _updateItems(begin, end) {
+		for(var i = begin; i < end; ++i)
+			this._updateDelegate(i)
+	}
+
+	function _processUpdates() {
 		this._modelUpdate.apply(this)
-		qml.core.BaseLayout.prototype._updateItems.apply(this)
+		qml.core.BaseLayout.prototype._processUpdates.apply(this)
 	}
 
 	property BaseViewContent content: BaseViewContent {

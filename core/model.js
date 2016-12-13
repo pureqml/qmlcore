@@ -36,7 +36,7 @@ exports.ModelUpdate.prototype._find = function(index) {
 	if (index != 0)
 		throw new Error('invalid index ' + index)
 
-	return { index: i - 1, offset: range.length > 0? range.length: 0 }
+	return { index: i - 1, offset: range.length }
 }
 
 exports.ModelUpdate.prototype.reset = function(model) {
@@ -54,11 +54,21 @@ exports.ModelUpdate.prototype._merge = function() {
 		var range = ranges[index - 1]
 		var nextRange = ranges[index]
 		if (range.type === nextRange.type) {
-			range.length += nextRange.length
-			ranges.splice(index, 1)
+			if (range.type === ModelUpdateInsert && range.length < 0 && nextRange.length > 0) {
+				//removed + inserted rows reappers as updated
+				var updated = Math.min(-range.length, nextRange.length)
+				range.type = ModelUpdateUpdate
+				nextRange.length += range.length
+				range.length = updated
+				if (index > 1)
+					--index
+			} else {
+				range.length += nextRange.length
+				ranges.splice(index, 1)
+			}
 		} else if (range.type == ModelUpdateInsert && range.length === 0) {
 			ranges.splice(index, 1)
-		}else
+		} else
 			++index
 	}
 }
@@ -101,10 +111,11 @@ exports.ModelUpdate.prototype.insert = function(model, begin, end) {
 	if (range.length == 0) { //first insert
 		range.type = ModelUpdateInsert
 		range.length += d
-	} else if (range.type == ModelUpdateInsert) {
-		range.length += d
 	} else {
-		this._split(res.index, res.offset, ModelUpdateInsert, d)
+		if (res.offset >= 0)
+			this._split(res.index, res.offset, ModelUpdateInsert, d)
+		else
+			this._split(res.index + 1, 0, ModelUpdateInsert, d)
 	}
 	this._merge()
 }

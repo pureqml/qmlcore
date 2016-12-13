@@ -36,7 +36,7 @@ exports.ModelUpdate.prototype._find = function(index) {
 	if (index != 0)
 		throw new Error('invalid index ' + index)
 
-	return { index: i - 1, offset: range.length }
+	return { index: i - 1, offset: range.length > 0? range.length: 0 }
 }
 
 exports.ModelUpdate.prototype.reset = function(model) {

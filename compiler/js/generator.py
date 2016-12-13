@@ -158,7 +158,7 @@ class generator(object):
 			for ns in packages.iterkeys():
 				if not ns:
 					raise Exception('internal bug, empty name in packages')
-				package = path + "." + ns
+				package = escape_package(path + "." + ns)
 				r.append("if (!%s) /** @const */ %s = {}" %(package, package))
 				check(package, packages[ns])
 		check(path, packages)
@@ -172,7 +172,7 @@ class generator(object):
 		safe_name = name
 		if safe_name.endswith(".js"):
 			safe_name = safe_name[:-3]
-		safe_name = safe_name.replace('/', '.')
+		safe_name = escape_package(safe_name.replace('/', '.'))
 		code = "//=====[import %s]=====================\n\n" %name + code
 		r.append("_globals.%s = %s()" %(safe_name, self.wrap(code, name == "core.core"))) #hack: core.core use _globals as its exports
 		return "\n".join(r)

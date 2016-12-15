@@ -170,12 +170,12 @@ BaseView {
 					this.positionViewAtIndex(i)
 			}
 
-			item.visible = visible
+			item.visibleInView = visible
 		}
 		for( ;i < n; ++i) {
 			var item = items[i]
 			if (item)
-				item.visible = false
+				item.visibleInView = false
 		}
 
 		if (!horizontal) {

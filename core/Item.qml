@@ -14,6 +14,7 @@ Object {
 	property Item focusedChild;				///< current focused item (this item only)
 
 	property bool visible: true;			///< this item and its children are visible
+	property bool visibleInView: true;		///< this item is visible inside view content area
 	property bool recursiveVisible: true;	///< this item is actually visible on screen (all parents are visible as well)
 	property real opacity: 1;				///< opacity of the item
 
@@ -130,7 +131,7 @@ Object {
 
 	/// returns css rule by property name
 	function _mapCSSAttribute (name) {
-		return { width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', transform: 'transform', visible: 'visibility', background: 'background', color: 'color', font: 'font' }[name]
+		return { width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', transform: 'transform', visible: 'visibility', visibleInView: 'visibility', background: 'background', color: 'color', font: 'font' }[name]
 	}
 
 	/// @private
@@ -161,7 +162,11 @@ Object {
 				break;
 
 			case 'opacity': if (this.element) this.style('opacity', value); break;
-			case 'visible': if (this.element) this.style('visibility', value? 'inherit': 'hidden'); break;
+			case 'visibleInView':
+			case 'visible':
+				if (this.element)
+					this.style('visibility', (this.visible && this.visibleInView)? 'inherit': 'hidden')
+					break
 			case 'z':		this.style('z-index', value); break;
 			case 'radius':	this.style('border-radius', value); break;
 			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
@@ -171,7 +176,10 @@ Object {
 
 	/// updates recursive visibility status
 	function _updateVisibility () {
-		var visible = ('visible' in this)? this.visible: true
+		var visible = true;
+		if ('visible' in this) visible = visible && this.visible
+		if ('visibleInView' in this) visible = visible && this.visibleInView
+
 		this.recursiveVisible = this._recursiveVisible && this.visible
 		if (!visible && this.parent)
 			this.parent._tryFocus() //try repair local focus on visibility changed

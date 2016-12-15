@@ -203,13 +203,13 @@ BaseView {
 					this.positionViewAtIndex(i)
 			}
 
-			item.visible = visible
+			item.visibleInView = visible
 			p += s + this.spacing
 		}
 		for( ;i < n; ++i) {
 			var item = items[i]
 			if (item)
-				item.visible = false
+				item.visibleInView = false
 		}
 		if (p > 0)
 			p -= this.spacing;

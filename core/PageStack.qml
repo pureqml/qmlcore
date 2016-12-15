@@ -24,7 +24,7 @@ Layout {
 	function _layout() {
 		this.count = this.children.length;
 		for (var i = 0; i < this.count; ++i)
-			this.children[i].visible = (i == this.currentIndex);
+			this.children[i].visibleInView = (i == this.currentIndex);
 
 		var c = this.children[this.currentIndex];
 		if (!c)

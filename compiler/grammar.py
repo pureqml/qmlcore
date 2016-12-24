@@ -121,7 +121,10 @@ def handle_list_element(s, l, t):
 
 def handle_number(s, l, t):
 	value = t[0]
-	return float(value) if '.' in value else int(value)
+	if value.startswith('0x'):
+		return int(value[2:], 16)
+	else:
+		return float(value) if '.' in value else int(value)
 
 def handle_bool_value(s, l, t):
 	value = t[0]
@@ -138,7 +141,7 @@ code = originalTextFor(nestedExpr("{", "}", None, None))
 null_value = Keyword("null")
 bool_value = Keyword("true") | Keyword("false")
 bool_value.setParseAction(handle_bool_value)
-number = Word("01234567890+-.")
+number = Combine(Optional('0x') + Word("01234567890+-."))
 number.setParseAction(handle_number)
 
 quoted_string_value = \

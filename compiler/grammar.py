@@ -131,7 +131,8 @@ def handle_bool_value(s, l, t):
 	return value == 'true'
 
 expression = Forward()
-expression_list = Forward()
+expression_list = delimitedList(expression, ",")
+
 component_declaration = Forward()
 
 type = Word(alphas, alphanums)
@@ -156,7 +157,7 @@ enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
 enum_value.setParseAction(handle_enum_value)
 
-function_call = Word(alphanums + '._') + Literal("(").suppress() + expression_list + Literal(")").suppress() + \
+function_call = Word(alphanums + '._') + Literal("(").suppress() + Optional(expression_list) + Literal(")").suppress() + \
 	ZeroOrMore(Literal(".").suppress() + Literal("arg").suppress() + Literal("(").suppress() + expression + Literal(")").suppress())
 function_call.setParseAction(handle_function_call)
 
@@ -267,7 +268,6 @@ expression_ops = infixNotation(expression_definition, [
 expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 
 expression << expression_ops
-expression_list << Optional(delimitedList(expression, ","))
 
 source = component_declaration
 cStyleComment.setParseAction(handle_documentation_string)

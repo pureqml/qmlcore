@@ -244,25 +244,22 @@ expression_array.setParseAction(handle_expression_array)
 expression_definition = bool_value | percent_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
 
 expression_ops = infixNotation(expression_definition, [
-	('!', 1, opAssoc.RIGHT, handle_unary_op),
-	('%', 2, opAssoc.LEFT, handle_binary_op),
-	('*', 2, opAssoc.LEFT, handle_binary_op),
-	('/', 2, opAssoc.LEFT, handle_binary_op),
-	('+', 2, opAssoc.LEFT, handle_binary_op),
-	('-', 2, opAssoc.LEFT, handle_binary_op),
-	('-', 1, opAssoc.RIGHT, handle_unary_op),
+	(oneOf('! ~ + -'),	1, opAssoc.RIGHT, handle_unary_op),
+	(oneOf('* / %'),	2, opAssoc.LEFT, handle_binary_op),
+	(oneOf('+ -'),		2, opAssoc.LEFT, handle_binary_op),
+	(oneOf('<< >>'),	2, opAssoc.LEFT, handle_binary_op),
+
+	(oneOf('< <= > >= =='),	2, opAssoc.LEFT, handle_binary_op),
+	(oneOf('== != === !=='),	2, opAssoc.LEFT, handle_binary_op),
+
+	('&', 2, opAssoc.LEFT, handle_binary_op),
+	('^', 2, opAssoc.LEFT, handle_binary_op),
+	('|', 2, opAssoc.LEFT, handle_binary_op),
+
 	('&&', 2, opAssoc.LEFT, handle_binary_op),
 	('||', 2, opAssoc.LEFT, handle_binary_op),
-	(('?', ':'), 3, opAssoc.RIGHT, handle_ternary_op),
 
-	('<',	2, opAssoc.LEFT, handle_binary_op),
-	('<=',	2, opAssoc.LEFT, handle_binary_op),
-	('>',	2, opAssoc.LEFT, handle_binary_op),
-	('>=',	2, opAssoc.LEFT, handle_binary_op),
-	('==',	2, opAssoc.LEFT, handle_binary_op),
-	('!=',	2, opAssoc.LEFT, handle_binary_op),
-	('===',	2, opAssoc.LEFT, handle_binary_op),
-	('!==',	2, opAssoc.LEFT, handle_binary_op),
+	(('?', ':'), 3, opAssoc.RIGHT, handle_ternary_op),
 ])
 expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 

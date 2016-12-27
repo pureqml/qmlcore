@@ -1,10 +1,10 @@
+///object for handling XML/HTTP requests
 Object {
-	property bool loading: false;
-	property string baseUrl;
-	property string url;
+	property bool loading: false;	///< loading flag, is true when request was send and false when answer was recieved or error occured
 
+	///send request using 'fetch' method
 	fetchRequest(request): {
-		var url = this.baseUrl + request.url
+		var url = request.url
 		var error = request.errorCallback,
 			data = request.data,
 			headers = request.headers,
@@ -31,8 +31,9 @@ Object {
 			})
 	}
 
+	///send request using 'XMLHttpRequest' object
 	requestXHR(request): {
-		var url = this.baseUrl + request.url
+		var url = request.url
 		var xhr = new XMLHttpRequest()
 		var error = request.errorCallback,
 			data = request.data,
@@ -40,11 +41,12 @@ Object {
 			callback = request.callback,
 			settings = request.settings
 
+		var self = this
 		if (error)
-			xhr.addEventListener('error', function(event) { log("Error");error(event) })
+			xhr.addEventListener('error', function(event) { self.loading = false; log("Error"); error(event) })
 
 		if (callback)
-			xhr.addEventListener('load', function(event) { log("Done"); callback(event) })
+			xhr.addEventListener('load', function(event) { self.loading = false; callback(event) })
 
 		xhr.open(request.type || 'GET', url);
 
@@ -54,6 +56,7 @@ Object {
 		for (var i in headers)
 			xhr.setRequestHeader(i, headers[i])
 
+		this.loading = true
 		if (request.data)
 			xhr.send(request.data)
 		else

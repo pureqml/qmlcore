@@ -7,9 +7,9 @@ Object {
 	property string origin;			///< current protocol, hostname and port number of a URL
 	property string hostname;		///< current host name
 	property string pathname;		///< path name of the current URL
-	property string historyState;	///< current history state
 	property string protocol;		///< current protocol
 	property string search;			///< query string of the URL
+	property Object state;			///< current history state
 
 	/// @private
 	constructor: {
@@ -30,9 +30,7 @@ Object {
 		this.pathname = window.location.pathname
 		this.protocol = window.location.protocol
 		this.search = window.location.search
-
-		var state = window.history.state
-		this.historyState = (typeof state === "string") ? state : JSON.stringify(state)
+		this.state = window.history.state
 	}
 
 	///change current href value method, argument is new href value
@@ -45,9 +43,10 @@ Object {
 	pushState(state, title, url): {
 		if (window.location.hostname) {
 			window.history.pushState(state, title, url)
+			this.updateActualValues()
+		} else {
+			document.title = title
+			this.state = state
 		}
-		else
-			document.title = url
-		this.updateActualValues()
 	}
 }

@@ -1,7 +1,10 @@
 from compiler.js import get_package, split_name, escape
-from compiler.js.code import process, parse_deps, generate_accessors, replace_enums
+from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, mangle_path
 from compiler import lang
 import json
+
+def path_or_parent(path, parent):
+	return '.'.join(mangle_path(path.split('.'))) if path else parent
 
 class component_generator(object):
 	def __init__(self, ns, name, component, prototype = False):
@@ -88,27 +91,31 @@ class component_generator(object):
 					raise Exception("duplicate animation on property " + target);
 				self.animations[target] = component_generator(self.ns, self.package + ".<anonymous-animation>", child.animation)
 		elif t is lang.Method:
-			name, args, code = child.name, child.args, child.code
+			fullname, args, code = split_name(child.name), child.args, child.code
+			path, name = fullname
 			if child.event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper(): #onXyzzy
 				name = name[2].lower() + name[3:]
+				fullname = path, name
 				if name.endswith("Pressed"):
 					name = name[0].upper() + name[1:-7]
-					if name in self.key_handlers:
+					fullname = path, name
+					if fullname in self.key_handlers:
 						raise Exception("duplicate key handler " + child.name)
-					self.key_handlers[name] = code
+					self.key_handlers[fullname] = code
 				elif name.endswith("Changed"):
 					name = name[:-7]
-					if name in self.changed_handlers:
+					fullname = path, name
+					if fullname in self.changed_handlers:
 						raise Exception("duplicate signal handler " + child.name)
-					self.changed_handlers[name] = code
+					self.changed_handlers[fullname] = code
 				else:
-					if name in self.signal_handlers:
+					if fullname in self.signal_handlers:
 						raise Exception("duplicate signal handler " + child.name)
-					self.signal_handlers[name] = args, code
+					self.signal_handlers[fullname] = args, code
 			else:
-				if name in self.methods:
+				if fullname in self.methods:
 					raise Exception("duplicate method " + name)
-				self.methods[name] = args, code
+				self.methods[fullname] = args, code
 		elif t is lang.Constructor:
 			self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
 		elif t is lang.Signal:
@@ -190,7 +197,10 @@ class component_generator(object):
 		for name in self.signals:
 			r.append("%s_globals.%s.prototype.%s = _globals.core.createSignal('%s')" %(ident, self.name, name, name))
 
-		for name, argscode in self.methods.iteritems():
+		for _name, argscode in self.methods.iteritems():
+			path, name = _name
+			if path:
+				raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
 			args, code = argscode
 			code = process(code, self, registry)
 			r.append("%s_globals.%s.prototype.%s = function(%s) %s" %(ident, self.name, name, ",".join(args), code))
@@ -376,24 +386,34 @@ class component_generator(object):
 				raise Exception("skip assignment %s = %s" %(target, value))
 
 		if not self.prototype:
-			for name, argscode in self.methods.iteritems():
+			for _name, argscode in self.methods.iteritems():
+				path, name = _name
 				args, code = argscode
+				path = path_or_parent(path, parent)
 				code = process(code, self, registry)
-				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, parent, name, ",".join(args), code, parent))
+				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
 
-		for name, argscode in self.signal_handlers.iteritems():
+		for _name, argscode in self.signal_handlers.iteritems():
+			path, name = _name
 			args, code = argscode
 			code = process(code, self, registry)
+			path = path_or_parent(path, parent)
 			if name != "completed":
-				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, parent, name, ",".join(args), code, parent))
+				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, path, name, ",".join(args), code, path))
 			else:
-				r.append("%s%s._context._onCompleted((function() %s ).bind(%s))" %(ident, parent, code, parent))
-		for name, code in self.changed_handlers.iteritems():
+				r.append("%s%s._context._onCompleted((function() %s ).bind(%s))" %(ident, path, code, path))
+
+		for _name, code in self.changed_handlers.iteritems():
+			path, name = _name
 			code = process(code, self, registry)
-			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, parent, name, code, parent))
-		for name, code in self.key_handlers.iteritems():
+			path = path_or_parent(path, parent)
+			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, path, name, code, path))
+
+		for _name, code in self.key_handlers.iteritems():
+			path, name = _name
 			code = process(code, self, registry)
-			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, parent, name, code, parent))
+			path = path_or_parent(path, parent)
+			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, path, name, code, path))
 
 		r.append(self.generate_animations(registry, parent))
 

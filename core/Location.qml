@@ -8,6 +8,8 @@ Object {
 	property string hostname;		///< current host name
 	property string pathname;		///< path name of the current URL
 	property string historyState;	///< current history state
+	property string protocol;		///< current protocol
+	property string search;			///< query string of the URL
 
 	/// @private
 	constructor: {
@@ -20,12 +22,14 @@ Object {
 	/// @private
 	updateActualValues: {
 		this.hash = window.location.hash
-		this.host = window.location.host
 		this.href = window.location.href
 		this.port = window.location.port
+		this.host = window.location.host
 		this.origin = window.location.origin
 		this.hostname = window.location.hostname
 		this.pathname = window.location.pathname
+		this.protocol = window.location.protocol
+		this.search = window.location.search
 
 		var state = window.history.state
 		this.historyState = (typeof state === "string") ? state : JSON.stringify(state)
@@ -39,7 +43,11 @@ Object {
 
 	///push new state to the history
 	pushState(state, title, url): {
-		window.history.pushState(state, title, url)
+		if (window.location.hostname) {
+			window.history.pushState(state, title, url)
+		}
+		else
+			document.title = url
 		this.updateActualValues()
 	}
 }

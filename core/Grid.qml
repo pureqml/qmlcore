@@ -36,53 +36,57 @@ Layout {
 		var size = horizontal ? this.height : this.width
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (!horizontal) {
-				var dbm = c.anchors.topMargin || c.anchors.margins // Direct Before Margin
-				var dam = c.anchors.bottomMargin || c.anchors.margins // Direct After Margin
-				var cbm = c.anchors.leftMargin || c.anchors.margins // Cross Before Margin
-				var cam = c.anchors.rightMargin || c.anchors.margins // Cross After Margin
-				var crossSize = c.width + cam + cbm
-				var directSize = c.height + dbm + dam
-			} else {
-				var dbm = c.anchors.leftMargin || c.anchors.margins // Direct Before Margin
-				var dam = c.anchors.rightMargin || c.anchors.margins // Direct After Margin
-				var cbm = c.anchors.topMargin || c.anchors.margins // Cross Before Margin
-				var cam = c.anchors.bottomMargin || c.anchors.margins // Cross After Margin
-				var crossSize = c.height + cam + cbm
-				var directSize = c.width + dbm + dam
-			}
 
-			if (c.recursiveVisible) {
-				if (size - crossPos < crossSize) { // not enough space to put the item, initiate a new row
-					rows.push({idx: i, size: crossPos - csp})
-					directPos = directMax + dsp;
-					directMax = directPos + directSize;
-					if (horizontal) {
-						c.y = cbm;
-						c.x = directPos + dbm;
-					} else {
-						c.x = cbm;
-						c.y = directPos + dbm;
-					}
+			if (c instanceof _globals.core.Item) {
+
+				if (!horizontal) {
+					var dbm = c.anchors.topMargin || c.anchors.margins // Direct Before Margin
+					var dam = c.anchors.bottomMargin || c.anchors.margins // Direct After Margin
+					var cbm = c.anchors.leftMargin || c.anchors.margins // Cross Before Margin
+					var cam = c.anchors.rightMargin || c.anchors.margins // Cross After Margin
+					var crossSize = c.width + cam + cbm
+					var directSize = c.height + dbm + dam
 				} else {
-					if (horizontal) {
-						c.y = crossPos + cbm;
-						c.x = directPos + dbm;
-					} else  {
-						c.x = crossPos + cbm;
-						c.y = directPos + dbm;
-					}
+					var dbm = c.anchors.leftMargin || c.anchors.margins // Direct Before Margin
+					var dam = c.anchors.rightMargin || c.anchors.margins // Direct After Margin
+					var cbm = c.anchors.topMargin || c.anchors.margins // Cross Before Margin
+					var cam = c.anchors.bottomMargin || c.anchors.margins // Cross After Margin
+					var crossSize = c.height + cam + cbm
+					var directSize = c.width + dbm + dam
 				}
-				if (directMax < directPos + directSize)
-					directMax = directPos + directSize;
 
-				if (!horizontal)
-					crossPos = c.x + c.width + cam + csp;
-				else
-					crossPos = c.y + c.height + cam + csp;
+				if (c.recursiveVisible) {
+					if (size - crossPos < crossSize) { // not enough space to put the item, initiate a new row
+						rows.push({idx: i, size: crossPos - csp})
+						directPos = directMax + dsp;
+						directMax = directPos + directSize;
+						if (horizontal) {
+							c.y = cbm;
+							c.x = directPos + dbm;
+						} else {
+							c.x = cbm;
+							c.y = directPos + dbm;
+						}
+					} else {
+						if (horizontal) {
+							c.y = crossPos + cbm;
+							c.x = directPos + dbm;
+						} else  {
+							c.x = crossPos + cbm;
+							c.y = directPos + dbm;
+						}
+					}
+					if (directMax < directPos + directSize)
+						directMax = directPos + directSize;
 
-				if (crossMax < crossPos - csp)
-					crossMax = crossPos - csp;
+					if (!horizontal)
+						crossPos = c.x + c.width + cam + csp;
+					else
+						crossPos = c.y + c.height + cam + csp;
+
+					if (crossMax < crossPos - csp)
+						crossMax = crossPos - csp;
+				}
 			}
 		}
 		this.rowsCount = rows.length;
@@ -135,10 +139,12 @@ Layout {
 	function addChild(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
-		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
-		child.anchors.on('marginsUpdated', delayedLayout.schedule.bind(delayedLayout))
+		if (child instanceof _globals.core.Item) {
+			child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+			child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
+			child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
+			child.anchors.on('marginsUpdated', delayedLayout.schedule.bind(delayedLayout))
+		}
 	}
 
 	function _update(name, value) {

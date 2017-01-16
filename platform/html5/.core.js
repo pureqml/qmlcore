@@ -18,3 +18,5 @@ if (!exports.core.vendor) {
 	_checkDevice('iPad', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
 	_checkDevice('iPod', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
 }
+
+_globals._backend = _globals.html5.html

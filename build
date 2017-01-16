@@ -111,6 +111,8 @@ def process_template(destination, source, context):
 		raise Exception('unknown templater used: %s' %t)
 
 def copy(source, destination, context):
+	if not path.isdir(source):
+		return
 	files = [path.join(source, file_) for file_ in os.listdir(source)]
 	copy_src = []
 	for src in files:
@@ -208,6 +210,12 @@ def build(root, platform, app, html, manifest):
 	copy(path.join(root, 'dist'), target, context)
 
 	template_path = []
+
+	for subplatform in platform_manifest.requires: #fixme: no recursive processing
+		platform_path = find_platform_path(root, subplatform)
+		platform_dist = path.join(platform_path, 'dist')
+		if path.isdir(platform_dist):
+			template_path.append(platform_dist)
 
 	platform_dist = path.join(platform_path, 'dist')
 	if path.isdir(platform_dist):

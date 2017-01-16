@@ -52,16 +52,9 @@ Item {
 
 	function _update(name, value) {
 		switch(name) {
-			case 'fullscreen': if (value) this._enterFullscreenMode(); else this._exitFullscreenMode(); break
+			case 'fullscreen': if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); break
 		}
 		_globals.core.Item.prototype._update.apply(this, arguments)
-	}
-
-	function _enterFullscreenMode() { return window.Modernizr.prefixed('requestFullscreen', this.element.dom)() }
-	function _exitFullscreenMode() { return window.Modernizr.prefixed('exitFullscreen', document)() }
-
-	function _inFullscreenMode() {
-		return !!window.Modernizr.prefixed('fullscreenElement', document)
 	}
 
 	function _complete() {

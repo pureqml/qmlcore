@@ -356,17 +356,15 @@ exports.Backend = function(ctx) {
 		ctx.style('visibility', 'visible')
 	} .bind(this) );
 
-	var self = this;
-
 	var onFullscreenChanged = function(e) {
 		var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
-		self.fullscreen = state
+		ctx.fullscreen = state
 	}
 	'webkitfullscreenchange mozfullscreenchange fullscreenchange'.split(' ').forEach(function(name) {
 		div.on(name, onFullscreenChanged)
 	})
 
-	win.on('keydown', function(event) { if (self._processKey(event)) event.preventDefault(); } ) //fixme: add html.Document instead
+	win.on('keydown', function(event) { if (ctx._processKey(event)) event.preventDefault(); } ) //fixme: add html.Document instead
 }
 
 exports.Backend.prototype.constructor = exports.Backend
@@ -381,3 +379,7 @@ exports.capabilities = {
 
 exports.requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
 exports.cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }
+
+exports.enterFullscreenMode = function(el) { return Modernizr.prefixed('requestFullscreen', el.dom)() }
+exports.exitFullscreenMode = function() { return window.Modernizr.prefixed('exitFullscreen', document)() }
+exports.inFullscreenMode = function () { return !!window.Modernizr.prefixed('fullscreenElement', document) }

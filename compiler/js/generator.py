@@ -1,4 +1,5 @@
 import json
+import re
 from compiler.js import split_name, escape_package, get_package
 from compiler.js.component import component_generator
 
@@ -100,8 +101,18 @@ class generator(object):
 		code += gen.generate_prototype(self)
 		return code
 
+	used_re = re.compile(r'@used\s*{(.*?)}')
 
 	def generate_components(self):
+		#finding explicit @used declarations in code
+		for name, code in self.imports.iteritems():
+			for m in generator.used_re.finditer(code):
+				name = m.group(1).strip()
+				package, component_name = split_name(name)
+				package = escape_package(package)
+				self.used_components.add(name)
+				self.used_packages.add(package)
+
 		generated = set([root_type])
 		queue = ['core.Context']
 		code, base_class = {}, {}

@@ -1,3 +1,5 @@
+/*** @used { core.RAIIEventEmitter } **/
+
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
@@ -131,7 +133,7 @@ exports.Element = function(context, tag) {
 	} else
 		context._styleCache = null
 
-	_globals.core.EventEmitter.apply(this)
+	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._fragment = []
 	this._styles = {}
@@ -140,7 +142,7 @@ exports.Element = function(context, tag) {
 	registerGenericListener(this)
 }
 
-exports.Element.prototype = Object.create(_globals.core.EventEmitter.prototype)
+exports.Element.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
 exports.Element.prototype.constructor = exports.Element
 
 exports.Element.prototype.addClass = function(cls) {
@@ -273,7 +275,7 @@ exports.Element.prototype.append = function(el) {
 }
 
 exports.Element.prototype.discard = function() {
-	_globals.core.EventEmitter.prototype.discard.apply(this)
+	_globals.core.RAIIEventEmitter.prototype.discard.apply(this)
 	this.remove()
 }
 
@@ -283,14 +285,14 @@ exports.Element.prototype.remove = function() {
 }
 
 exports.Window = function(context, dom) {
-	_globals.core.EventEmitter.apply(this)
+	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this.dom = dom
 
 	registerGenericListener(this)
 }
 
-exports.Window.prototype = Object.create(_globals.core.EventEmitter.prototype)
+exports.Window.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
 exports.Window.prototype.constructor = exports.Window
 
 exports.Window.prototype.width = function() {

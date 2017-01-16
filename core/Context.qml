@@ -19,7 +19,7 @@ Item {
 		this._delayedActions = []
 		this._stylesRegistered = {}
 
-		this.backend = _globals.html5.html
+		this.backend = _globals._backend
 	}
 
 	function getClass(name) {

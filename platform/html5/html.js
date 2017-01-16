@@ -373,7 +373,6 @@ exports.Backend.prototype.constructor = exports.Backend
 
 var Modernizr = window.Modernizr
 
-
 exports.capabilities = {
 	csstransforms3d: Modernizr.csstransforms3d,
 	csstransforms: Modernizr.csstransforms,
@@ -382,5 +381,3 @@ exports.capabilities = {
 
 exports.requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
 exports.cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }
-
-exports.localStorage = window.localStorage

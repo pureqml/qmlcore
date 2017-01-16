@@ -22,7 +22,7 @@ Object {
 
 	init: {
 		if (!this._storage) {
-			this._storage = this._context.backend.localStorage
+			this._storage = window.localStorage;
 			if (!this._storage)
 				throw new Error("no local storage support")
 		}

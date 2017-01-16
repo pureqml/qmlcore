@@ -249,10 +249,11 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 				p = this[storageName] = { value : defaultValue }
 			}
+			var backend = this._context.backend
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
 				if (p.frameRequest)
-					_globals.html5.html.cancelAnimationFrame(p.frameRequest)
+					backend.cancelAnimationFrame(p.frameRequest)
 
 				var now = new Date()
 				p.started = now.getTime() + now.getMilliseconds() / 1000.0
@@ -263,7 +264,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				var self = this
 
 				var complete = function() {
-					_globals.html5.html.cancelAnimationFrame(p.frameRequest)
+					backend.cancelAnimationFrame(p.frameRequest)
 					p.frameRequest = undefined
 					animation.complete = function() { }
 					animation.running = false
@@ -283,11 +284,11 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					} else {
 						p.interpolatedValue = convert(animation.interpolate(dst, src, t))
 						self._update(name, p.interpolatedValue, src)
-						p.frameRequest = _globals.html5.html.requestAnimationFrame(nextFrame)
+						p.frameRequest = backend.requestAnimationFrame(nextFrame)
 					}
 				}
 
-				p.frameRequest = _globals.html5.html.requestAnimationFrame(nextFrame)
+				p.frameRequest = backend.requestAnimationFrame(nextFrame)
 
 				animation.running = true
 				animation.complete = complete

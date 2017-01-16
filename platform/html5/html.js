@@ -308,6 +308,76 @@ exports.getElement = function(tag) {
 	return new exports.Element(this, tags[0])
 }
 
+exports.Backend = function(ctx) {
+	var options = ctx.options
+	var prefix = ctx._prefix
+
+	var divId = options.id
+
+	if (prefix) {
+		prefix += '-'
+		log('Context: using prefix', prefix)
+	}
+
+	var win = new _globals.html5.html.Window(this, window)
+	ctx.window = win
+	var w, h
+
+	var html = exports
+	var div = document.getElementById(divId)
+	var topLevel = div === null
+	if (!topLevel) {
+		div = new html.Element(this, div)
+		w = div.width()
+		h = div.height()
+		log('Context: found element by id, size: ' + w + 'x' + h)
+		win.on('resize', function() { ctx.width = div.width(); ctx.height = div.height(); });
+	} else {
+		w = win.width();
+		h = win.height();
+		log("Context: window size: " + w + "x" + h);
+		div = ctx.createElement('div')
+		div.dom.id = divId //html specific
+		win.on('resize', function() { ctx.width = win.width(); ctx.height = win.height(); });
+		var body = html.getElement('body')
+		body.append(div);
+	}
+
+	ctx.element = div
+	ctx.width = w
+	ctx.height = h
+	ctx.style('visibility', 'hidden')
+
+	win.on('scroll', function(event) { ctx.scrollY = win.scrollY(); });
+
+	win.on('load', function() {
+		log('Context: window.load. calling completed()')
+		ctx._complete()
+		ctx.style('visibility', 'visible')
+	} .bind(this) );
+
+	var self = this;
+
+	var onFullscreenChanged = function(e) {
+		var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+		self.fullscreen = state
+	}
+	'webkitfullscreenchange mozfullscreenchange fullscreenchange'.split(' ').forEach(function(name) {
+		div.on(name, onFullscreenChanged)
+	})
+
+	win.on('keydown', function(event) { if (self._processKey(event)) event.preventDefault(); } ) //fixme: add html.Document instead
+}
+
+exports.Backend.prototype.constructor = exports.Backend
+
 var Modernizr = window.Modernizr
+
+exports.capabilities = {
+	csstransforms3d: Modernizr.csstransforms3d,
+	csstransforms: Modernizr.csstransforms,
+	csstransitions: Modernizr.csstransitions
+}
+
 exports.requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
 exports.cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }

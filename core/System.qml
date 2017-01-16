@@ -46,6 +46,7 @@ Object {
 
 	/// @private
 	constructor: {
+		var ctx = this._context
 		var browser = ""
 		if (navigator.userAgent.indexOf('Chromium') >= 0)
 			browser = "Chromium"
@@ -69,10 +70,11 @@ Object {
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
 		this.language = navigator.language
-		this._context.language = this.language.replace('-', '_')
-		this.support3dTransforms = window.Modernizr && window.Modernizr.csstransforms3d
-		this.supportTransforms = window.Modernizr && window.Modernizr.csstransforms
-		this.supportTransitions = window.Modernizr && window.Modernizr.csstransitions
+		ctx.language = this.language.replace('-', '_')
+
+		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false
+		this.supportTransforms = ctx.backend.capabilities.csstransforms || false
+		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
 
 		var self = this
 		window.onfocus = function() { self.pageActive = true }

@@ -18,6 +18,8 @@ Item {
 		this._completedHandlers = []
 		this._delayedActions = []
 		this._stylesRegistered = {}
+
+		this.backend = _globals.html5.html
 	}
 
 	function getClass(name) {
@@ -32,7 +34,7 @@ Item {
 	}
 
 	function createElement(tag) {
-		var el = new _globals.html5.html.Element(this, document.createElement(tag))
+		var el = new this.backend.Element(this, document.createElement(tag))
 		if (this._prefix) {
 			el.addClass(this.getClass('core-item'))
 		}
@@ -41,65 +43,7 @@ Item {
 
 	function init() {
 		log('Context: initializing...')
-
-		var options = this.options
-		var prefix = this._prefix
-
-		var divId = options.id
-
-		if (prefix) {
-			prefix += '-'
-			//log('Context: using prefix', prefix)
-		}
-
-		var win = new _globals.html5.html.Window(this, window)
-		this.window = win
-		var w, h
-
-		var html = _globals.html5.html
-		var div = document.getElementById(divId)
-		var topLevel = div === null
-		if (!topLevel) {
-			div = new html.Element(this, div)
-			w = div.width()
-			h = div.height()
-			log('Context: found element by id, size: ' + w + 'x' + h)
-			win.on('resize', function() { this.width = div.width(); this.height = div.height(); }.bind(this));
-		} else {
-			w = win.width();
-			h = win.height();
-			log("Context: window size: " + w + "x" + h);
-			div = this.createElement('div')
-			div.dom.id = divId //html specific
-			win.on('resize', function() { this.width = win.width(); this.height = win.height(); }.bind(this));
-			var body = html.getElement('body')
-			body.append(div);
-		}
-
-		this.element = div
-		this.width = w
-		this.height = h
-		this.style('visibility', 'hidden')
-
-		win.on('scroll', function(event) { this.scrollY = win.scrollY(); }.bind(this));
-
-		win.on('load', function() {
-			log('Context: window.load. calling completed()')
-			this._complete()
-			this.style('visibility', 'visible')
-		} .bind(this) );
-
-		var self = this;
-
-		var onFullscreenChanged = function(e) {
-			var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
-			self.fullscreen = state
-		}
-		'webkitfullscreenchange mozfullscreenchange fullscreenchange'.split(' ').forEach(function(name) {
-			div.on(name, onFullscreenChanged)
-		})
-
-		win.on('keydown', function(event) { if (self._processKey(event)) event.preventDefault(); }.bind(this) ) //fixme: add html.Document instead
+		new this.backend.Backend(this)
 	}
 
 	function _onCompleted(callback) {

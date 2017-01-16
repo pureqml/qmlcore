@@ -91,7 +91,7 @@ Object {
 
 	/// tries to set animation on name using css transitions, returns true on success
 	function _updateAnimation(name, animation) {
-		if (!window.Modernizr.csstransitions || (animation && !animation.cssTransition))
+		if (!this._context.backend.capabilities.csstransitions || (animation && !animation.cssTransition))
 			return false
 
 		var css = this._mapCSSAttribute(name)
@@ -259,10 +259,11 @@ Object {
 	}
 
 	function setTransition(name, animation) {
-		if (!window.Modernizr.csstransitions)
+		var backend = this._context.backend
+		if (!backend.capabilities.csstransitions)
 			return false
 
-		var html5 = _globals.html5.html
+		var html5 = backend //remove me
 		var transition = {
 			property: html5.getPrefixedName('transition-property'),
 			delay: html5.getPrefixedName('transition-delay'),

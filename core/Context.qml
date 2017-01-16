@@ -34,7 +34,7 @@ Item {
 	}
 
 	function createElement(tag) {
-		var el = new this.backend.Element(this, document.createElement(tag))
+		var el = new this.backend.Element(this, tag)
 		if (this._prefix) {
 			el.addClass(this.getClass('core-item'))
 		}

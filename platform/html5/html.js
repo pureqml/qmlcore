@@ -119,7 +119,12 @@ exports.autoClassify = false
  * @constructor
  */
 
-exports.Element = function(context, dom) {
+exports.Element = function(context, tag) {
+	if (typeof tag === 'string')
+		this.dom = document.createElement(tag)
+	else
+		this.dom = tag
+
 	if (exports.autoClassify) {
 		if (!context._styleCache)
 			context._styleCache = new StyleCache(context._prefix)
@@ -128,7 +133,6 @@ exports.Element = function(context, dom) {
 
 	_globals.core.EventEmitter.apply(this)
 	this._context = context
-	this.dom = dom
 	this._fragment = []
 	this._styles = {}
 	this._class = ''

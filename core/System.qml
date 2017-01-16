@@ -47,29 +47,13 @@ Object {
 	/// @private
 	constructor: {
 		var ctx = this._context
-		var browser = ""
-		if (navigator.userAgent.indexOf('Chromium') >= 0)
-			browser = "Chromium"
-		else if (navigator.userAgent.indexOf('Chrome') >= 0)
-			browser = "Chrome"
-		else if (navigator.userAgent.indexOf('Opera') >= 0)
-			browser = "Opera"
-		else if (navigator.userAgent.indexOf('Firefox') >= 0)
-			browser = "Firefox"
-		else if (navigator.userAgent.indexOf('Safari') >= 0)
-			browser = "Safari"
-		else if (navigator.userAgent.indexOf('MSIE') >= 0)
-			browser = "IE"
-		else if (navigator.userAgent.indexOf('YaBrowser') >= 0)
-			browser = "Yandex"
-
-		this.browser = browser
-		this.userAgent = navigator.userAgent
-		this.webkit = navigator.userAgent.toLowerCase().indexOf('webkit') >= 0
+		this.browser = _globals.core.browser
+		this.userAgent = _globals.core.userAgent
+		this.webkit = this.userAgent.toLowerCase().indexOf('webkit') >= 0
 		this.device = _globals.core.device
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
-		this.language = navigator.language
+		this.language = _globals.core.language
 		ctx.language = this.language.replace('-', '_')
 
 		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false

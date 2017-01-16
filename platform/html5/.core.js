@@ -1,4 +1,6 @@
 exports.core.os = navigator.platform
+exports.core.userAgent = navigator.userAgent
+exports.core.language = navigator.language
 
 var _checkDevice = function(target, info) {
 	if (navigator.userAgent.indexOf(target) < 0)
@@ -19,4 +21,22 @@ if (!exports.core.vendor) {
 	_checkDevice('iPod', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
 }
 
-_globals._backend = _globals.html5.html
+if (navigator.userAgent.indexOf('Chromium') >= 0)
+	exports.core.browser = "Chromium"
+else if (navigator.userAgent.indexOf('Chrome') >= 0)
+	exports.core.browser = "Chrome"
+else if (navigator.userAgent.indexOf('Opera') >= 0)
+	exports.core.browser = "Opera"
+else if (navigator.userAgent.indexOf('Firefox') >= 0)
+	exports.core.browser = "Firefox"
+else if (navigator.userAgent.indexOf('Safari') >= 0)
+	exports.core.browser = "Safari"
+else if (navigator.userAgent.indexOf('MSIE') >= 0)
+	exports.core.browser = "IE"
+else if (navigator.userAgent.indexOf('YaBrowser') >= 0)
+	exports.core.browser = "Yandex"
+else
+	exports.core.browser = ''
+
+
+_globals._backend = 'html5'

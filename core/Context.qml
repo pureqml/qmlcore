@@ -19,12 +19,7 @@ Item {
 		this._delayedActions = []
 		this._stylesRegistered = {}
 
-		//fixme: move it somewhere in platform/xxxx
-		switch(_globals._backend)
-		{
-		case 'html5':	this.backend = _globals.html.html5
-		case 'pure':	this.backend = _globals.pure.backend
-		}
+		this.backend = _globals._backend()
 	}
 
 	function getClass(name) {

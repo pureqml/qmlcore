@@ -37,58 +37,59 @@ Layout {
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
 
-			if (c instanceof _globals.core.Item) {
+			if (!('height' in c) || !('width' in c))
+				continue
 
-				if (!horizontal) {
-					var dbm = c.anchors.topMargin || c.anchors.margins // Direct Before Margin
-					var dam = c.anchors.bottomMargin || c.anchors.margins // Direct After Margin
-					var cbm = c.anchors.leftMargin || c.anchors.margins // Cross Before Margin
-					var cam = c.anchors.rightMargin || c.anchors.margins // Cross After Margin
-					var crossSize = c.width + cam + cbm
-					var directSize = c.height + dbm + dam
-				} else {
-					var dbm = c.anchors.leftMargin || c.anchors.margins // Direct Before Margin
-					var dam = c.anchors.rightMargin || c.anchors.margins // Direct After Margin
-					var cbm = c.anchors.topMargin || c.anchors.margins // Cross Before Margin
-					var cam = c.anchors.bottomMargin || c.anchors.margins // Cross After Margin
-					var crossSize = c.height + cam + cbm
-					var directSize = c.width + dbm + dam
-				}
+			if (!horizontal) {
+				var dbm = c.anchors.topMargin || c.anchors.margins // Direct Before Margin
+				var dam = c.anchors.bottomMargin || c.anchors.margins // Direct After Margin
+				var cbm = c.anchors.leftMargin || c.anchors.margins // Cross Before Margin
+				var cam = c.anchors.rightMargin || c.anchors.margins // Cross After Margin
+				var crossSize = c.width + cam + cbm
+				var directSize = c.height + dbm + dam
+			} else {
+				var dbm = c.anchors.leftMargin || c.anchors.margins // Direct Before Margin
+				var dam = c.anchors.rightMargin || c.anchors.margins // Direct After Margin
+				var cbm = c.anchors.topMargin || c.anchors.margins // Cross Before Margin
+				var cam = c.anchors.bottomMargin || c.anchors.margins // Cross After Margin
+				var crossSize = c.height + cam + cbm
+				var directSize = c.width + dbm + dam
+			}
 
-				if (c.recursiveVisible) {
-					if (size - crossPos < crossSize) { // not enough space to put the item, initiate a new row
-						rows.push({idx: i, size: crossPos - csp})
-						directPos = directMax + dsp;
-						directMax = directPos + directSize;
-						if (horizontal) {
-							c.y = cbm;
-							c.x = directPos + dbm;
-						} else {
-							c.x = cbm;
-							c.y = directPos + dbm;
-						}
+			if (c.recursiveVisible) {
+				if (size - crossPos < crossSize) { // not enough space to put the item, initiate a new row
+					rows.push({idx: i, size: crossPos - csp})
+					directPos = directMax + dsp;
+					directMax = directPos + directSize;
+					if (horizontal) {
+						c.y = cbm;
+						c.x = directPos + dbm;
 					} else {
-						if (horizontal) {
-							c.y = crossPos + cbm;
-							c.x = directPos + dbm;
-						} else  {
-							c.x = crossPos + cbm;
-							c.y = directPos + dbm;
-						}
+						c.x = cbm;
+						c.y = directPos + dbm;
 					}
-					if (directMax < directPos + directSize)
-						directMax = directPos + directSize;
-
-					if (!horizontal)
-						crossPos = c.x + c.width + cam + csp;
-					else
-						crossPos = c.y + c.height + cam + csp;
-
-					if (crossMax < crossPos - csp)
-						crossMax = crossPos - csp;
+				} else {
+					if (horizontal) {
+						c.y = crossPos + cbm;
+						c.x = directPos + dbm;
+					} else  {
+						c.x = crossPos + cbm;
+						c.y = directPos + dbm;
+					}
 				}
+				if (directMax < directPos + directSize)
+					directMax = directPos + directSize;
+
+				if (!horizontal)
+					crossPos = c.x + c.width + cam + csp;
+				else
+					crossPos = c.y + c.height + cam + csp;
+
+				if (crossMax < crossPos - csp)
+					crossMax = crossPos - csp;
 			}
 		}
+		
 		this.rowsCount = rows.length;
 		rows.push({idx: children.length, size: crossPos - csp}) // add last point
 

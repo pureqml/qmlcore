@@ -39,4 +39,4 @@ else
 	exports.core.browser = ''
 
 
-_globals._backend = 'html5'
+_globals._backend = function() { return _globals.html5.html }

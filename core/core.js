@@ -348,3 +348,23 @@ exports.core.EventBinder.prototype.enable = function(value) {
 		}
 	}
 }
+
+var protoEvent = function(prefix, proto, name, callback) {
+	var name = '__' + prefix + '__' + name
+	if (name in proto) {
+		proto[name] = function() {
+			try {
+				callback.apply(this, arguments)
+			} catch(ex) {
+				log('error invoking prototype event ' + prefix + ':' + name, ex, ex.stack)
+			}
+		}
+	} else
+		proto[name] = [callback]
+}
+
+exports.core._protoOn = function(proto, name, callback)
+{ protoEvent('on', proto, name, callback) }
+
+exports.core._protoChanged = function(proto, name, callback)
+{ protoEvent('changed', proto, name, callback) }

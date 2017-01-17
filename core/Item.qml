@@ -322,9 +322,12 @@ Object {
 
 		var key = _globals.core.keyCodes[event.which || event.keyCode];
 		if (key) {
+			//fixme: create invoker only if any of handlers exist
+			var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
+			var proto_callback = this['__on__' + key]
+
 			if (key in this._pressedHandlers) {
 				var handlers = this._pressedHandlers[key]
-				var invoker = _globals.core.safeCall(this, [key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {
@@ -335,9 +338,12 @@ Object {
 				}
 			}
 
+			if (proto_callback)
+				invoker(proto_callback)
+
+			var proto_callback = this['__on__Key']
 			if ('Key' in this._pressedHandlers) {
 				var handlers = this._pressedHandlers['Key']
-				var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {
@@ -347,6 +353,8 @@ Object {
 					}
 				}
 			}
+			if (proto_callback)
+				invoker(proto_callback)
 		}
 		else {
 			log("unknown key", event.which);

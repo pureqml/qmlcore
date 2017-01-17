@@ -7,15 +7,18 @@ var Element = function(context, tag) {
 Element.prototype.constructor = Element
 Element.prototype.append = function(child) { }
 
-var Backend = function(ctx) {
+exports.init = function(ctx) {
 	ctx.element = new Element(ctx, ctx.getTag())
 }
 
-Backend.prototype.constructor = Backend
-
-exports.Backend = Backend
-//exports.Element = Element
-
 exports.createElement = function(ctx, tag) {
 	return new Element(ctx, tag)
+}
+
+exports.initImage = function(image) {
+
+}
+
+exports.loadImage = function(image) {
+
 }

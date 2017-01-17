@@ -43,7 +43,7 @@ Item {
 
 	function init() {
 		log('Context: initializing...')
-		new this.backend.Backend(this)
+		new this.backend.init(this)
 	}
 
 	function _onCompleted(callback) {

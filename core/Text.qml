@@ -77,11 +77,6 @@ Item {
 			this._delayedUpdateSize.schedule()
 	}
 
-	function _reflectSize() {
-		this.paintedWidth = this.element.fullWidth()
-		this.paintedHeight = this.element.fullHeight()
-	}
-
 	function _updateSizeImpl() {
 		if (this.text.length === 0) {
 			this.paintedWidth = 0
@@ -95,7 +90,8 @@ Item {
 		else
 			this.style({ 'height': 'auto', 'padding-top': 0})
 
-		this._reflectSize()
+		this.paintedWidth = this.element.fullWidth()
+		this.paintedHeight = this.element.fullHeight()
 
 		var style
 		if (!wrap)

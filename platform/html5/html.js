@@ -371,6 +371,14 @@ exports.Backend = function(ctx) {
 	})
 
 	win.on('keydown', function(event) { if (ctx._processKey(event)) event.preventDefault(); } ) //fixme: add html.Document instead
+
+	var system = ctx.system
+	//fixme: port to event listener?
+	window.onfocus = function() { system.pageActive = true }
+	window.onblur = function() { system.pageActive = false }
+
+	ctx.screenWidth = window.screen.width
+	ctx.screenHeight = window.screen.height
 }
 
 exports.Backend.prototype.constructor = exports.Backend

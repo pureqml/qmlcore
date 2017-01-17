@@ -59,12 +59,5 @@ Object {
 		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false
 		this.supportTransforms = ctx.backend.capabilities.csstransforms || false
 		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
-
-		var self = this
-		window.onfocus = function() { self.pageActive = true }
-		window.onblur = function() { self.pageActive = false }
-
-		this.screenWidth = window.screen.width
-		this.screenHeight = window.screen.height
 	}
 }

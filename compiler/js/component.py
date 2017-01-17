@@ -245,6 +245,14 @@ class component_generator(object):
 			code = process(code, self, registry)
 			r.append("%s_globals.core._protoOn(_globals.%s.prototype, '%s', (function(%s) %s ))" %(ident, self.name, name, ", ".join(args), code))
 
+		for _name, code in self.key_handlers.iteritems():
+			path, name = _name
+			if path or not self.prototype: #sync with condition below
+				continue
+			code = process(code, self, registry)
+			r.append("%s_globals.core._protoOnKey(_globals.%s.prototype, '%s', (function(key, event) %s ))" %(ident, self.name, name, code))
+
+
 		generate = False
 
 		code = self.generate_creators(registry, 'this', '__closure', ident_n + 1).strip()
@@ -432,6 +440,8 @@ class component_generator(object):
 
 		for _name, code in self.key_handlers.iteritems():
 			path, name = _name
+			if not path and self.prototype: #sync with condition above
+				continue
 			code = process(code, self, registry)
 			path = path_or_parent(path, parent)
 			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, path, name, code, path))

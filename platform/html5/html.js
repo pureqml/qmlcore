@@ -398,6 +398,6 @@ exports.enterFullscreenMode = function(el) { return Modernizr.prefixed('requestF
 exports.exitFullscreenMode = function() { return window.Modernizr.prefixed('exitFullscreen', document)() }
 exports.inFullscreenMode = function () { return !!window.Modernizr.prefixed('fullscreenElement', document) }
 
-exports.createElement = function(tag) {
-	return new exports.Element(tag)
+exports.createElement = function(ctx, tag) {
+	return new exports.Element(ctx, tag)
 }

@@ -356,15 +356,15 @@ var protoEvent = function(prefix, proto, name, callback) {
 			try {
 				callback.apply(this, arguments)
 			} catch(ex) {
-				log('error invoking prototype event ' + prefix + ':' + name, ex, ex.stack)
+				log('error invoking base prototype event ' + prefix + ':' + name, ex, ex.stack)
 			}
 		}
 	} else
-		proto[name] = [callback]
+		proto[name] = callback
 }
 
 exports.core._protoOn = function(proto, name, callback)
 { protoEvent('on', proto, name, callback) }
 
-exports.core._protoChanged = function(proto, name, callback)
+exports.core._protoOnChanged = function(proto, name, callback)
 { protoEvent('changed', proto, name, callback) }

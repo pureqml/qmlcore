@@ -228,6 +228,23 @@ class component_generator(object):
 
 		base_type = self.get_base_type(registry)
 
+		for _name, code in self.changed_handlers.iteritems():
+			path, name = _name
+			if path or not self.prototype: #sync with condition below
+				continue
+
+			assert not path
+			code = process(code, self, registry)
+			r.append("%s_globals.core._protoOnChanged(_globals.%s.prototype, '%s', (function(value) %s ))" %(ident, self.name, name, code))
+
+		for _name, argscode in self.signal_handlers.iteritems():
+			path, name = _name
+			if path or not self.prototype or name == 'completed': #sync with condition below
+				continue
+			args, code = argscode
+			code = process(code, self, registry)
+			r.append("%s_globals.core._protoOn(_globals.%s.prototype, '%s', (function(value) %s ))" %(ident, self.name, name, code))
+
 		generate = False
 
 		code = self.generate_creators(registry, 'this', '__closure', ident_n + 1).strip()
@@ -398,6 +415,8 @@ class component_generator(object):
 			args, code = argscode
 			code = process(code, self, registry)
 			path = path_or_parent(path, parent)
+			if not path and self.prototype and name != 'completed': #sync with condition above
+				continue
 			if name != "completed":
 				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, path, name, ",".join(args), code, path))
 			else:
@@ -405,6 +424,8 @@ class component_generator(object):
 
 		for _name, code in self.changed_handlers.iteritems():
 			path, name = _name
+			if not path and self.prototype: #sync with condition above
+				continue
 			code = process(code, self, registry)
 			path = path_or_parent(path, parent)
 			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, path, name, code, path))

@@ -6,11 +6,9 @@ var _checkDevice = function(target, info) {
 	if (navigator.userAgent.indexOf(target) < 0)
 		return
 
-	log("[QML] " + target)
 	exports.core.vendor = info.vendor
 	exports.core.device = info.device
 	exports.core.os = info.os
-	log("loaded")
 }
 
 if (!exports.core.vendor) {

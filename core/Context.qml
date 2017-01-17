@@ -64,7 +64,7 @@ Item {
 		this._completed = true
 		this._runningComplete = true
 
-		var invoker = _globals.core.safeCall([], function (ex) { log("onCompleted failed:", ex, ex.stack) })
+		var invoker = _globals.core.safeCall(this, [], function (ex) { log("onCompleted failed:", ex, ex.stack) })
 		do {
 			while(this._completedHandlers.length) {
 				var ch = this._completedHandlers
@@ -91,7 +91,7 @@ Item {
 	}
 
 	function _processActions() {
-		var invoker = _globals.core.safeCall([], function (ex) { log('exception in delayed action', ex, ex.stack) })
+		var invoker = _globals.core.safeCall(this, [], function (ex) { log('exception in delayed action', ex, ex.stack) })
 		while (this._delayedActions.length) {
 			var actions = this._delayedActions
 			this._delayedActions = []

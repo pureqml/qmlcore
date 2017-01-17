@@ -114,7 +114,7 @@ EventEmitter {
 	function _update (name, value) {
 		if (name in this._changedHandlers) {
 			var handlers = this._changedHandlers[name]
-			var invoker = _globals.core.safeCall([value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+			var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 			handlers.forEach(invoker)
 		}
 	}

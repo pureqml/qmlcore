@@ -324,7 +324,7 @@ Object {
 		if (key) {
 			if (key in this._pressedHandlers) {
 				var handlers = this._pressedHandlers[key]
-				var invoker = _globals.core.safeCall([key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
+				var invoker = _globals.core.safeCall(this, [key, event], function(ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {
@@ -337,7 +337,7 @@ Object {
 
 			if ('Key' in this._pressedHandlers) {
 				var handlers = this._pressedHandlers['Key']
-				var invoker = _globals.core.safeCall([key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
+				var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("onKeyPressed handler failed:", ex, ex.stack) })
 				for(var i = handlers.length - 1; i >= 0; --i) {
 					var callback = handlers[i]
 					if (invoker(callback)) {

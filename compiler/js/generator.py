@@ -90,7 +90,7 @@ class generator(object):
 		self.used_packages.add(gen.package)
 
 		code = ''
-		code += "//=====[component %s]=====================\n\n" %name
+		code += "\n\n//=====[component %s]=====================\n\n" %name
 		code += gen.generate(self)
 
 		base_type = self.find_component(gen.package, gen.component.name)

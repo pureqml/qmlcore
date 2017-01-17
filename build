@@ -212,8 +212,8 @@ def build(root, platform, app, html, manifest):
 	template_path = []
 
 	for subplatform in platform_manifest.requires: #fixme: no recursive processing
-		platform_path = find_platform_path(root, subplatform)
-		platform_dist = path.join(platform_path, 'dist')
+		subplatform_path = find_platform_path(root, subplatform)
+		platform_dist = path.join(subplatform_path, 'dist')
 		if path.isdir(platform_dist):
 			template_path.append(platform_dist)
 
@@ -258,3 +258,5 @@ try:
 			build(root, platform, app, html, manifest)
 except Exception as ex:
 	print "ERROR:", ex
+	if args.verbose:
+		raise

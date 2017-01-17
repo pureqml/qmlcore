@@ -412,11 +412,11 @@ class component_generator(object):
 
 		for _name, argscode in self.signal_handlers.iteritems():
 			path, name = _name
+			if not path and self.prototype and name != 'completed': #sync with condition above
+				continue
 			args, code = argscode
 			code = process(code, self, registry)
 			path = path_or_parent(path, parent)
-			if not path and self.prototype and name != 'completed': #sync with condition above
-				continue
 			if name != "completed":
 				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, path, name, ",".join(args), code, path))
 			else:

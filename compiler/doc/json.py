@@ -10,6 +10,9 @@ class Component(object):
 
 
 	def generate_section(self, r, title, values, comma):
+		if not hasattr(values[-1], "name"):
+                    return
+
 		last = values[-1].name
 		r.append('\t\t"%s": {' %title)
 

@@ -243,7 +243,7 @@ class component_generator(object):
 				continue
 			args, code = argscode
 			code = process(code, self, registry)
-			r.append("%s_globals.core._protoOn(_globals.%s.prototype, '%s', (function(value) %s ))" %(ident, self.name, name, code))
+			r.append("%s_globals.core._protoOn(_globals.%s.prototype, '%s', (function(%s) %s ))" %(ident, self.name, name, ", ".join(args), code))
 
 		generate = False
 

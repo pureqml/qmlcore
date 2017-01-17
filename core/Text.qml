@@ -84,29 +84,7 @@ Item {
 			return
 		}
 
-		var wrap = this.wrapMode != Text.NoWrap
-		if (!wrap)
-			this.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
-		else
-			this.style({ 'height': 'auto', 'padding-top': 0})
-
-		this.paintedWidth = this.element.fullWidth()
-		this.paintedHeight = this.element.fullHeight()
-
-		var style
-		if (!wrap)
-			style = { width: this.width, height: this.height }
-		else
-			style = {'height': this.height }
-
-		switch(this.verticalAlignment) {
-			case this.AlignTop:		this._topPadding = 0; break
-			case this.AlignBottom:	this._topPadding = this.height - this.paintedHeight; break
-			case this.AlignVCenter:	this._topPadding = (this.height - this.paintedHeight) / 2; break
-		}
-		style['padding-top'] = this._topPadding
-		style['height'] = this.height - this._topPadding
-		this.style(style)
+		this._context.backend.layoutText(this)
 	}
 
 	function _update(name, value) {

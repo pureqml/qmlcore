@@ -462,11 +462,36 @@ exports.initImage = function(image) {
 			image.height = image.paintedHeight
 		image.status = Image.Ready
 	}
-
 }
 
 exports.loadImage = function(image) {
 	image._image.src = image.source
+}
+
+exports.layoutText = function(text) {
+	var wrap = text.wrapMode != Text.NoWrap
+	if (!wrap)
+		text.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
+	else
+		text.style({ 'height': 'auto', 'padding-top': 0})
+
+	text.paintedWidth = text.element.fullWidth()
+	text.paintedHeight = text.element.fullHeight()
+
+	var style
+	if (!wrap)
+		style = { width: text.width, height: text.height }
+	else
+		style = {'height': text.height }
+
+	switch(text.verticalAlignment) {
+		case text.AlignTop:		text._topPadding = 0; break
+		case text.AlignBottom:	text._topPadding = text.height - text.paintedHeight; break
+		case text.AlignVCenter:	text._topPadding = (text.height - text.paintedHeight) / 2; break
+	}
+	style['padding-top'] = text._topPadding
+	style['height'] = text.height - text._topPadding
+	text.style(style)
 }
 
 var Modernizr = window.Modernizr

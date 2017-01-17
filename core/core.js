@@ -368,3 +368,6 @@ exports.core._protoOn = function(proto, name, callback)
 
 exports.core._protoOnChanged = function(proto, name, callback)
 { protoEvent('changed', proto, name, callback) }
+
+exports.core._protoOnKey = function(proto, name, callback)
+{ protoEvent('key', proto, name, callback) }

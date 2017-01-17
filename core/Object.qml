@@ -112,13 +112,19 @@ EventEmitter {
 	}
 
 	function _update (name, value) {
-		if (name in this._changedHandlers) {
-			var handlers = this._changedHandlers[name]
-			var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+		var proto_callback = this['__changed__' + name]
+		var handlers = this._changedHandlers[name]
 
-			this.__protoEmit('changed', name, invoker)
+		if (proto_callback === undefined && handlers === undefined)
+			return
+
+		var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+
+		if (proto_callback !== undefined)
+			invoker(proto_callback)
+
+		if (handlers !== undefined)
 			handlers.forEach(invoker)
-		}
 	}
 
 	/// gets object by id

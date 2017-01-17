@@ -31,29 +31,26 @@ CoreObject {
 		this._onConnections.push([target, name, callback])
 	}
 
-	function __protoEmit(prefix, name, invoker) {
-		var proto_property = '__' + prefix + '__' + name
-		var proto_callback = this[proto_property]
-		if (proto_callback !== undefined) {
-			invoker(proto_callback)
-		}
-	}
-
 	function emit (name) {
 		if (name === '')
 			throw new Error('empty listener name')
+
+		var proto_callback = this['__on__' + name]
+		var handlers = this._eventHandlers[name]
+
+		if (proto_callback === undefined && handlers === undefined)
+			return
 
 		var invoker = _globals.core.safeCall(
 			this, _globals.core.copyArguments(arguments, 1),
 			function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) }
 		)
 
-		this.__protoEmit('on', name, invoker)
+		if (proto_callback !== undefined)
+			invoker(proto_callback)
 
-		if (name in this._eventHandlers) {
-			var handlers = this._eventHandlers[name]
+		if (handlers !== undefined)
 			handlers.forEach(invoker)
-		}
 	}
 
 	function removeAllListeners(name) {

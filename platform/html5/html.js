@@ -397,3 +397,7 @@ exports.cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window
 exports.enterFullscreenMode = function(el) { return Modernizr.prefixed('requestFullscreen', el.dom)() }
 exports.exitFullscreenMode = function() { return window.Modernizr.prefixed('exitFullscreen', document)() }
 exports.inFullscreenMode = function () { return !!window.Modernizr.prefixed('fullscreenElement', document) }
+
+exports.createElement = function(tag) {
+	return new exports.Element(tag)
+}

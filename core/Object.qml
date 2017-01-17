@@ -115,6 +115,8 @@ EventEmitter {
 		if (name in this._changedHandlers) {
 			var handlers = this._changedHandlers[name]
 			var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+
+			this.__protoEmit('changed', name, invoker)
 			handlers.forEach(invoker)
 		}
 	}

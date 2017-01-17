@@ -70,12 +70,12 @@ var colorTable = {
 	'transparent': '0000'
 }
 
-var safeCallImpl = function(callback, args, onError) {
-	try { return callback.apply(null, args) } catch(ex) { onError(ex) }
+var safeCallImpl = function(callback, self, args, onError) {
+	try { return callback.apply(self, args) } catch(ex) { onError(ex) }
 }
 
-exports.core.safeCall = function(args, onError) {
-	return function(callback) { return safeCallImpl(callback, args, onError) }
+exports.core.safeCall = function(self, args, onError) {
+	return function(callback) { return safeCallImpl(callback, self, args, onError) }
 }
 
 /**

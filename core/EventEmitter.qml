@@ -36,7 +36,7 @@ CoreObject {
 			throw new Error('empty listener name')
 
 		var invoker = _globals.core.safeCall(
-			_globals.core.copyArguments(arguments, 1),
+			this, _globals.core.copyArguments(arguments, 1),
 			function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) }
 		)
 

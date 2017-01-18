@@ -180,7 +180,7 @@ Object {
 		if ('visible' in this) visible = visible && this.visible
 		if ('visibleInView' in this) visible = visible && this.visibleInView
 
-		this.recursiveVisible = this._recursiveVisible && this.visible
+		this.recursiveVisible = this._recursiveVisible && visible 
 		if (!visible && this.parent)
 			this.parent._tryFocus() //try repair local focus on visibility changed
 	}
@@ -363,5 +363,6 @@ Object {
 	}
 
 	onVisibleChanged: { this._updateVisibility() }
+	onVisibleInViewChanged: { this._updateVisibility() }
 	setFocus: { this.forceActiveFocus(); }
 }

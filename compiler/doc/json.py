@@ -39,7 +39,11 @@ class Component(object):
 
 		for child in component.children:
 			category = child.__class__.__name__
+                        if (category == "Assignment"):
+                            continue
 			values = children.setdefault(category, [])
+                        if (category == "Property"):
+                            child.name = child.properties[0][0]
 			values.append(child)
 
 		data = []
@@ -54,6 +58,9 @@ class Component(object):
 
                 if 'Method' in children:
                     data.append(('Method', 'Methods'))
+
+                if 'Constructor' in children:
+                    data.append(('Constructor', 'Constructors'))
 
 		if len(data) == 0:
                     return r

@@ -18,12 +18,15 @@ class Component(object):
 
 		for value in values:
 			localComma = "" if last == value.name else ","
-                        typeName = value.type if hasattr(value, 'type') else ""
-			if value.doc is not None:
-                                internal = "true" if "@private" in value.doc.text else "false"
-				r.append('\t\t\t"%s": { "text": "%s", "internal": %s, "type": "%s" }%s' %(value.name, value.doc.text, internal, typeName, localComma))
-			else:
-				r.append('\t\t\t"%s": { "text": "", "internal": false, "type": "%s" }%s' %(value.name, typeName, localComma))
+                        docText = value.doc.text if value.doc is not None else ""
+                        internal = "true" if (value.doc is not None) and ("@private" in value.doc.text) else "false"
+                        isProperty = hasattr(value, 'type')
+                        ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
+
+                        if isProperty:
+                            r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s" }%s' %(value.name, docText, ref, internal, value.type, localComma))
+                        else:
+                            r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, docText, internal, localComma))
 
 		if comma:
 			r.append('\t\t},')
@@ -32,18 +35,24 @@ class Component(object):
 			r.append('\t\t}')
 
 
-	def process_children(self, r):
+	def process_children(self, r, package):
 		component = self.component
 
 		children = {}
 
 		for child in component.children:
 			category = child.__class__.__name__
+
                         if (category == "Assignment"):
                             continue
 			values = children.setdefault(category, [])
                         if (category == "Property"):
                             child.name = child.properties[0][0]
+                            if hasattr(child.properties[0][1], "children"):
+                                child.ref = package + "." + child.type
+                                child.defaultValue = child.properties[0][1].name
+                            else:
+                                child.defaultValue = child.properties[0][1] if child.properties[0][1] is not None else ""
 			values.append(child)
 
 		data = []
@@ -76,14 +85,14 @@ class Component(object):
 		if component.doc:
 			r.append(component.doc)
 
-	def generate(self, documentation):
+	def generate(self, documentation, package):
 		r = []
 		package, name = self.package, self.name
 		r.append('{' )
 		r.append('\t"name": "%s.%s",' %(package, name))
 		r.append('')
 		r.append('\t"content": {')
-		self.process_children(r)
+		self.process_children(r, package)
 		r.append('\t}')
 		r.append('}')
 		return '\n'.join(r)
@@ -106,7 +115,7 @@ class Documentation(object):
 	def generate_component(self, package, name, component):
 		#print package, name, component
 		with open(os.path.join(self.jsonroot, package, name + '.json'), 'wt') as f:
-			f.write(component.generate(self))
+			f.write(component.generate(self, package))
 
 	def generate(self):
 		if not os.path.exists(self.jsonroot):
@@ -143,6 +152,8 @@ class Documentation(object):
 				comma = "" if lastComp == name else ","
 				package_toc.append('\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
 				toc.append('\t\t\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
+
+                                self.add(name, component)
 				self.generate_component(package, name, component)
 			package_toc.append('\t}')
 			toc.append('\t\t\t}')

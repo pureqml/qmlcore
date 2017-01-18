@@ -59,8 +59,8 @@ class Component(object):
                 if 'Method' in children:
                     data.append(('Method', 'Methods'))
 
-                if 'Constructor' in children:
-                    data.append(('Constructor', 'Constructors'))
+                # if 'Constructor' in children:
+                    # data.append(('Constructor', 'Constructors'))
 
 		if len(data) == 0:
                     return r

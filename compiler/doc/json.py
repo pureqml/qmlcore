@@ -20,11 +20,39 @@ class Component(object):
 			localComma = "" if last == value.name else ","
                         docText = value.doc.text if value.doc is not None else ""
                         internal = "true" if (value.doc is not None) and ("@private" in value.doc.text) else "false"
-                        isProperty = hasattr(value, 'type')
+                        category = value.__class__.__name__
+
                         ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
 
-                        if isProperty:
+                        if category == 'Property':
                             r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s" }%s' %(value.name, docText, ref, internal, value.type, localComma))
+                        elif category == 'Method' and docText:
+                            argText = docText.replace(" ", "")
+                            argIdx = argText.find("@args(")
+                            if argIdx >= 0:
+                                argEnd = argText.find(")", argIdx)
+                                if argEnd > argIdx:
+                                    argText = argText[argIdx + 6:argEnd]
+                                    methodArgs = argText.split(',')
+                                    argText = '"args": ['
+
+                                    if methodArgs.count <= 0:
+                                        argText += "]"
+                                        continue
+
+                                    lastArg = methodArgs[-1]
+                                    for a in methodArgs:
+                                        elem = a.split(":")
+                                        if elem.count <= 0:
+                                            continue
+                                        argText += '{ "name": "' + elem[0] + '", "type": "' + elem[1] + '" }'
+                                        if a is not lastArg:
+                                            argText += ", "
+                                    argText += "]"
+                            else:
+                                argText = ""
+                            docText = docText.replace(docText[argIdx : docText.find(")", argIdx) + 1], "")
+                            r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name, docText, argText, internal, localComma))
                         else:
                             r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, docText, internal, localComma))
 

@@ -83,14 +83,13 @@ var getPrefixedName = function(name) {
 exports.getPrefixedName = getPrefixedName
 
 var registerGenericListener = function(target) {
-	var copyArguments = _globals.core.copyArguments
 	var prefix = '_domEventHandler_'
 	target.onListener('',
 		function(name) {
 			//log('registering generic event', name)
 			var pname = prefix + name
 			var callback = target[pname] = function() {
-				var args = copyArguments(arguments, 0, name)
+				COPY_ARGS(args, 0, name)
 				target.emit.apply(target, args)
 			}
 			target.dom.addEventListener(name, callback)

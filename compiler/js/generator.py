@@ -218,21 +218,23 @@ class generator(object):
 			if prefix is not None:
 				prefix = prefix.strip()
 				return """
+	/* %s */
 	var $n = arguments.length
 	var %s = new Array($n + %d)
 	%s[0] = %s
 	for(var $i = %d; $i < $n; ++$i) {
 		%s[$i + %d] = arguments[$i]
 	}
-""" %(name, 1 - idx, name, prefix, idx, name, 1 - idx) #format does not work well here, because of { }
+""" %(m.group(0), name, 1 - idx, name, prefix, idx, name, 1 - idx) #format does not work well here, because of { }
 			else:
 				return """
+	/* %s */
 	var $n = arguments.length
 	var %s = new Array($n - %d)
 	for(var $i = %d; $i < $n; ++$i) {
 		%s[$i - %d] = arguments[$i]
 	}
-""" %(name, idx, idx, name, idx)
+""" %(m.group(0), name, idx, idx, name, idx)
 
 		text = generator.re_copy_args.sub(copy_args, text)
 		return text

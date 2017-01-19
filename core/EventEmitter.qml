@@ -41,8 +41,10 @@ CoreObject {
 		if (proto_callback === undefined && handlers === undefined)
 			return
 
+		COPY_ARGS(args, 1)
+
 		var invoker = _globals.core.safeCall(
-			this, _globals.core.copyArguments(arguments, 1),
+			this, args,
 			function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) }
 		)
 

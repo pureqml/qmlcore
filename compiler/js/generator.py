@@ -196,6 +196,8 @@ class generator(object):
 				r += self.generate_import(name, code) + '\n'
 		return r
 
+	re_copy_args = re.compile(r'COPY_ARGS\w*\((.*?),(.*?)(?:,(.*?))?\)')
+
 	def generate(self):
 		code = self.generate_components() + '\n' #must be called first, generates used_packages/components sets
 		text = ""
@@ -207,7 +209,33 @@ class generator(object):
 		text += "var core = _globals.core.core\n"
 		text += code
 		text += "%s\n" %self.generate_imports()
-		return "%s = %s();\n" %(self.ns, self.wrap(text))
+
+		text = "%s = %s();\n" %(self.ns, self.wrap(text))
+
+		#COPY_ARGS optimization
+		def copy_args(m):
+			name, idx, prefix = m.group(1).strip(), int(m.group(2).strip()), m.group(3)
+			if prefix is not None:
+				prefix = prefix.strip()
+				return """
+	var $n = arguments.length
+	var %s = new Array($n + %d)
+	%s[0] = %s
+	for(var $i = %d; $i < $n; ++$i) {
+		%s[$i + %d] = arguments[$i]
+	}
+""" %(name, 1 - idx, name, prefix, idx, name, 1 - idx) #format does not work well here, because of { }
+			else:
+				return """
+	var $n = arguments.length
+	var %s = new Array($n - %d)
+	for(var $i = %d; $i < $n; ++$i) {
+		%s[$i - %d] = arguments[$i]
+	}
+""" %(name, idx, idx, name, idx)
+
+		text = generator.re_copy_args.sub(copy_args, text)
+		return text
 
 	def generate_startup(self, ns, app, prefix):
 		r = ""

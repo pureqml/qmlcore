@@ -31,15 +31,6 @@ exports.core.keyCodes = {
 	115: 'Blue'
 }
 
-var copyArguments = function(args, src, prefix) {
-	var copy = Array.prototype.slice.call(args, src)
-	if (prefix !== undefined)
-		copy.unshift(prefix)
-	return copy
-}
-
-exports.core.copyArguments = copyArguments
-
 /* ${init.js} */
 
 if (log === null)
@@ -312,10 +303,10 @@ exports.addAliasProperty = function(self, name, getObject, srcProperty) {
 }
 
 exports.core.createSignal = function(name) {
-	return function() { this.emit.apply(this, copyArguments(arguments, 0, name)) }
+	return function() { COPY_ARGS(args, 0, name) this.emit.apply(this, args) }
 }
 exports.core.createSignalForwarder = function(object, name) {
-	return (function() { object.emit.apply(object, copyArguments(arguments, 0, name)) })
+	return (function() { COPY_ARGS(args, 0, name) object.emit.apply(object, args) })
 }
 
 /** @constructor */

@@ -55,6 +55,28 @@ CoreObject {
 			handlers.forEach(invoker)
 	}
 
+	function emitWithArgs (name, args) {
+		if (name === '')
+			throw new Error('empty listener name')
+
+		var proto_callback = this['__on__' + name]
+		var handlers = this._eventHandlers[name]
+
+		if (proto_callback === undefined && handlers === undefined)
+			return
+
+		var invoker = _globals.core.safeCall(
+			this, args,
+			function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) }
+		)
+
+		if (proto_callback !== undefined)
+			invoker(proto_callback)
+
+		if (handlers !== undefined)
+			handlers.forEach(invoker)
+	}
+
 	function removeAllListeners(name) {
 		delete this._eventHandlers[name]
 	}

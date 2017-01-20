@@ -144,17 +144,16 @@ BaseView {
 	}
 
 	function _layout() {
-		if (!this.recursiveVisible)
-			return
-
 		var model = this.model;
 		if (!model)
 			return
 
 		this.count = model.count
 
-		var horizontal = this.orientation === this.Horizontal
+		if (!this.recursiveVisible)
+			return
 
+		var horizontal = this.orientation === this.Horizontal
 
 		var items = this._items
 		var n = items.length

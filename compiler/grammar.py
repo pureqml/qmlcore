@@ -145,13 +145,25 @@ bool_value.setParseAction(handle_bool_value)
 number = Combine(Optional('0x') + Word("01234567890+-."))
 number.setParseAction(handle_number)
 
+def handle_string(s, l, t):
+	value = t[0]
+	value = value.replace('\t', '\\t')
+	value = value.replace('\r', '\\r')
+	value = value.replace('\n', '\\n')
+	value = value.replace('\v', '\\v')
+	value = value.replace('\f', '\\f')
+	t[0] = value
+	return t
+
 quoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
 	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True)
+quoted_string_value.setParseAction(handle_string)
 
 unquoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = True, multiline=True) | \
 	QuotedString("'", escChar='\\', unquoteResults = True, multiline=True)
+quoted_string_value.setParseAction(handle_string)
 
 enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element

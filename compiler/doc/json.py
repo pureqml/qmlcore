@@ -25,7 +25,7 @@ class Component(object):
                         ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
 
                         if category == 'Property':
-                            r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s" }%s' %(value.name, docText, ref, internal, value.type, localComma))
+                            r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s", "defaultValue": "%s" }%s' %(value.name, docText, ref, internal, value.type, value.defaultValue, localComma))
                         elif category == 'Method' and docText:
                             argText = docText.replace(" ", "")
                             argIdx = argText.find("@args(")
@@ -77,10 +77,16 @@ class Component(object):
                         if (category == "Property"):
                             child.name = child.properties[0][0]
                             if hasattr(child.properties[0][1], "children"):
-                                child.ref = package + "." + child.type
+                                child.ref = package + "/" + child.type
                                 child.defaultValue = child.properties[0][1].name
                             else:
-                                child.defaultValue = child.properties[0][1] if child.properties[0][1] is not None else ""
+                                child.defaultValue = child.properties[0][1][1:-1] if child.properties[0][1] is not None else ""
+                                if child.defaultValue is not None and len(child.defaultValue) > 1:
+                                    if child.defaultValue[0] == '"':
+                                        child.defaultValue = child.defaultValue[1:]
+                                    if child.defaultValue[-1] == '"':
+                                        child.defaultValue = child.defaultValue[:-1]
+
 			values.append(child)
 
 		data = []

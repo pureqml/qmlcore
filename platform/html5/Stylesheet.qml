@@ -22,9 +22,15 @@ Object {
 		)
 		_globals.html5.html.getElement('head').append(style)
 
-		this._addRule = _globals.html5.html.createAddRule(style.dom)
+		this._addRule = _globals.html5.html.createAddRule(style.dom).bind(this)
+		this._lastId = 0
 	}
-	
+
+	function allocateClass(prefix) {
+		var globalPrefix = this.prefix
+		return (globalPrefix? globalPrefix: '') + prefix + '-' + this._lastId++
+	}
+
 	function mangleSelector(selector) {
 		var prefix = this.prefix
 		if (prefix)

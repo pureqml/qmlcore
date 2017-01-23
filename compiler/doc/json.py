@@ -27,31 +27,41 @@ class Component(object):
                         if category == 'Property':
                             r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s", "defaultValue": "%s" }%s' %(value.name, docText, ref, internal, value.type, value.defaultValue, localComma))
                         elif category == 'Method' and docText:
-                            argText = docText.replace(" ", "")
-                            argIdx = argText.find("@args(")
-                            if argIdx >= 0:
-                                argEnd = argText.find(")", argIdx)
-                                if argEnd > argIdx:
-                                    argText = argText[argIdx + 6:argEnd]
-                                    methodArgs = argText.split(',')
-                                    argText = '"args": ['
+                            argText = ""
 
-                                    if methodArgs.count <= 0:
-                                        argText += "]"
-                                        continue
+                            docLines = docText.splitlines()
+                            argText += '"params": ['
+                            paramCount = 0
+                            for line in docLines:
+                                line = line.rstrip()
+                                line = line.lstrip()
+                                argIdx = line.find("@param")
+                                if argIdx < 0:
+                                    continue
+                                paramTokens = line.split(' ')
+                                if len(paramTokens) <= 1:
+                                    continue
+                                param = paramTokens[1].split(":")
+                                if len(param) <= 1:
+                                    continue
+                                paramName = param[0]
+                                paramType = param[1]
 
-                                    lastArg = methodArgs[-1]
-                                    for a in methodArgs:
-                                        elem = a.split(":")
-                                        if elem.count <= 0:
-                                            continue
-                                        argText += '{ "name": "' + elem[0] + '", "type": "' + elem[1] + '" }'
-                                        if a is not lastArg:
-                                            argText += ", "
-                                    argText += "]"
-                            else:
-                                argText = ""
-                            docText = docText.replace(docText[argIdx : docText.find(")", argIdx) + 1], "")
+                                paramText = line[line.find(paramType) + len(paramType) + 1:]
+                                paramText = paramText.lstrip()
+                                paramText = paramText.rstrip()
+
+                                argText += '{ "name": "' + paramName + '", "type": "' + paramType + '", "text": "' + paramText + '" }'
+                                argText += ", "
+                                paramCount += 1
+                            if paramCount > 1:
+                                argText = argText[0:-2]
+                            argText += "], "
+
+                            docText = docLines[-1]
+                            docText = docText.lstrip()
+                            docText = docText.rstrip()
+
                             r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name, docText, argText, internal, localComma))
                         else:
                             r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, docText, internal, localComma))

@@ -35,9 +35,6 @@ Element.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
 Element.prototype.constructor = exports.Element
 
 Element.prototype.constructor = Element
-Element.prototype.append = function(child) {
-	this.children.push(child)
-}
 
 Element.prototype.addClass = function(cls) { }
 Element.prototype.setHtml = function(cls) { }
@@ -61,8 +58,23 @@ Element.prototype.style = function(name, style) {
 }
 Element.prototype.updateStyle = function() { }
 
+Element.prototype.append = function(child) {
+	if (child._parent !== undefined)
+		throw new Error('double append on element')
+	child._parent = this
+	this.children.push(child)
+}
+
 Element.prototype.remove = function() {
-	log('removing from parent')
+	var parent = this._parent
+	if (parent !== undefined) {
+		var idx = parent.children.indexOf(this)
+		if (idx < 0)
+			throw new Error('remove(): no child in parent children array')
+		parent.children.splice(idx, 1)
+		this._parent = undefined
+	} else
+		throw new Error('remove() called without adding to parent')
 }
 
 exports.init = function(ctx) {

@@ -26,6 +26,7 @@ var registerGenericListener = function(target) {
 var Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
+	this._styles = {}
 	this.children = []
 	registerGenericListener(this)
 }
@@ -40,8 +41,28 @@ Element.prototype.append = function(child) {
 
 Element.prototype.addClass = function(cls) { }
 Element.prototype.setHtml = function(cls) { }
-Element.prototype.style = function(name, value) {
-	log('style', name, value)
+Element.prototype.style = function(name, style) {
+	if (style !== undefined) {
+		if (style !== '') //fixme: replace it with explicit 'undefined' syntax
+			this._styles[name] = style
+		else
+			delete this._styles[name]
+	} else if (name instanceof Object) { //style({ }) assignment
+		for(var k in name) {
+			var value = name[k]
+			if (value !== '') //fixme: replace it with explicit 'undefined' syntax
+				this._styles[k] = value
+			else
+				delete this._styles[k]
+		}
+	}
+	else
+		return this._styles[name]
+}
+Element.prototype.updateStyle = function() { }
+
+Element.prototype.remove = function() {
+	log('removing from parent')
 }
 
 exports.init = function(ctx) {
@@ -65,4 +86,12 @@ exports.loadImage = function(image) {
 
 exports.layoutText = function(text) {
 	log('laying out text ' + text)
+}
+
+exports.requestAnimationFrame = function(callback) {
+	return setTimeout(callback, 0)
+}
+
+exports.cancelAnimationFrame = function (timer) {
+	clearTimeout(timer)
 }

@@ -32,8 +32,6 @@ var Element = function(context, tag) {
 }
 
 Element.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
-Element.prototype.constructor = exports.Element
-
 Element.prototype.constructor = Element
 
 Element.prototype.addClass = function(cls) { }

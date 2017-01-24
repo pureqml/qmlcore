@@ -28,6 +28,7 @@ class generator(object):
 			self.used_components.add(name)
 			self.used_packages.add(package)
 			self.startup.append("\tqml._context.start(new qml.%s(qml._context))" %name)
+			self.startup.append("\tqml._context.run()")
 		else:
 			name = package + '.' + component_name
 

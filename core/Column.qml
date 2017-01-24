@@ -21,12 +21,16 @@ Layout {
 			var c = children[i]
 			if (!('height' in c))
 				continue
+				
+			var tm = c.anchors.topMargin || c.anchors.margins
+			var bm = c.anchors.bottomMargin || c.anchors.margins
+
 			var r = c.x + c.width
 			if (r > w)
 				w = r
-			c.viewY = p + c.anchors.topMargin
+			c.viewY = p + tm
 			if (c.recursiveVisible)
-				p += c.height + c.anchors.topMargin + this.spacing
+				p += c.height + tm + bm + this.spacing
 		}
 		if (p > 0)
 			p -= this.spacing

@@ -81,7 +81,7 @@ Item {
 		instance.__create(closure)
 		instance.__setup(closure)
 		closure = undefined
-		log('Context: started')
+		log('Context: created instance')
 		this._started = true
 		// log('Context: calling on completed')
 		log('Context: signalling layout')
@@ -116,6 +116,16 @@ Item {
 			break
 		}
 		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
+	}
+
+	function run() {
+		this.backend.run(this)
+	}
+
+	function _run() {
+		log('Context: calling completed()')
+		this._complete()
+		this.style('visibility', 'visible')
 	}
 
 }

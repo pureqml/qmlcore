@@ -48,6 +48,10 @@ exports.init = function(ctx) {
 	ctx.element = new Element(ctx, ctx.getTag())
 }
 
+exports.run = function(ctx) {
+	ctx._run()
+}
+
 exports.createElement = function(ctx, tag) {
 	return new Element(ctx, tag)
 }

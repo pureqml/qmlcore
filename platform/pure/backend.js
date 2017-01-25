@@ -22,11 +22,32 @@ var registerGenericListener = function(target) {
 	)
 }
 
+var updatedItems = new Set()
+var rootItem = null
+
+var PureText = function(data) {
+	this.layout(data)
+}
+
+PureText.prototype.constructor = PureText
+PureText.prototype.layout = function(data) {
+	log('laying out "' + data.text + '"')
+}
+
+var PureImage = function(src) {
+	this.load(src)
+}
+
+PureImage.prototype.constructor = PureImage
+PureImage.prototype.load = function(src) {
+	log('loading image from ' + src)
+}
 
 var Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._styles = {}
+	this._pure = null
 	this.children = []
 	registerGenericListener(this)
 }
@@ -76,7 +97,7 @@ Element.prototype.remove = function() {
 }
 
 exports.init = function(ctx) {
-	ctx.element = new Element(ctx, ctx.getTag())
+	rootItem = ctx.element = new Element(ctx, ctx.getTag())
 }
 
 exports.run = function(ctx) {
@@ -88,14 +109,15 @@ exports.createElement = function(ctx, tag) {
 }
 
 exports.initImage = function(image) {
+	image._pure = new PureImage(image.source)
 }
 
 exports.loadImage = function(image) {
-	log('loading image from ' + image.source)
+	image._pure.load(image.source)
 }
 
 exports.layoutText = function(text) {
-	log('laying out text "' + text.text + '"')
+	text._pure = new PureText(text)
 }
 
 exports.requestAnimationFrame = function(callback) {

@@ -57,14 +57,30 @@ Element.prototype.constructor = Element
 
 Element.prototype.addClass = function(cls) { }
 Element.prototype.setHtml = function(cls) { }
+
+var importantStyles = new Set([
+	'left', 'top', 'width', 'height', 'visibility',
+	'background-color', 'border-radius',
+	'color', 'font-size', 'text-align'
+])
+
+Element.prototype._onUpdate = function(name) {
+	if (importantStyles.has(name))
+		updatedItems.add(this)
+//	else
+//		log('unhandled style ' + name)
+}
+
 Element.prototype.style = function(name, style) {
 	if (style !== undefined) {
+		this._onUpdate(name)
 		if (style !== '') //fixme: replace it with explicit 'undefined' syntax
 			this._styles[name] = style
 		else
 			delete this._styles[name]
 	} else if (name instanceof Object) { //style({ }) assignment
 		for(var k in name) {
+			this._onUpdate(k)
 			var value = name[k]
 			if (value !== '') //fixme: replace it with explicit 'undefined' syntax
 				this._styles[k] = value

@@ -95,7 +95,7 @@ exports.loadImage = function(image) {
 }
 
 exports.layoutText = function(text) {
-	log('laying out text ' + text)
+	log('laying out text "' + text.text + '"')
 }
 
 exports.requestAnimationFrame = function(callback) {

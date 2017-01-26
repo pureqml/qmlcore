@@ -98,6 +98,7 @@ Element.prototype.append = function(child) {
 		throw new Error('double append on element')
 	child._parent = this
 	this.children.push(child)
+	updatedItems.add(child)
 }
 
 Element.prototype.remove = function() {
@@ -107,6 +108,7 @@ Element.prototype.remove = function() {
 		if (idx < 0)
 			throw new Error('remove(): no child in parent children array')
 		parent.children.splice(idx, 1)
+		updatedItems.add(parent)
 		this._parent = undefined
 	} else
 		throw new Error('remove() called without adding to parent')

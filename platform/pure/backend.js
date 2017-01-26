@@ -1,6 +1,8 @@
 /*** @used { core.RAIIEventEmitter } **/
 
 exports.capabilities = {}
+var runtime = _globals.pure.runtime
+var updatedItems = new Set()
 
 var registerGenericListener = function(target) {
 	var prefix = '__nativeEventHandler_'
@@ -20,27 +22,6 @@ var registerGenericListener = function(target) {
 			//target.dom.removeEventListener(name, target[pname])
 		}
 	)
-}
-
-var updatedItems = new Set()
-var rootItem = null
-
-var PureText = function(data) {
-	this.layout(data)
-}
-
-PureText.prototype.constructor = PureText
-PureText.prototype.layout = function(data) {
-	log('laying out "' + data.text + '"')
-}
-
-var PureImage = function(src) {
-	this.load(src)
-}
-
-PureImage.prototype.constructor = PureImage
-PureImage.prototype.load = function(src) {
-	log('loading image from ' + src)
 }
 
 var Element = function(context, tag) {
@@ -115,11 +96,14 @@ Element.prototype.remove = function() {
 }
 
 exports.init = function(ctx) {
-	rootItem = ctx.element = new Element(ctx, ctx.getTag())
+	runtime.rootItem = ctx.element = new Element(ctx, ctx.getTag())
 }
 
 exports.run = function(ctx) {
 	ctx._run()
+	for(var item of updatedItems) {
+		log('update: ' + item + ' ' + item._rect)
+	}
 }
 
 exports.createElement = function(ctx, tag) {
@@ -127,7 +111,7 @@ exports.createElement = function(ctx, tag) {
 }
 
 exports.initImage = function(image) {
-	image._pure = new PureImage(image.source)
+	image._pure = new runtime.PureImage(image.source)
 }
 
 exports.loadImage = function(image) {
@@ -135,7 +119,7 @@ exports.loadImage = function(image) {
 }
 
 exports.layoutText = function(text) {
-	text._pure = new PureText(text)
+	text._pure = new runtime.PureText(text)
 }
 
 exports.requestAnimationFrame = function(callback) {

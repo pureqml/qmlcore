@@ -43,8 +43,16 @@ class component_generator(object):
 		return self.class_name + 'Component'
 
 	@property
+	def base_local_name(self):
+		return self.class_name + 'BaseComponent'
+
+	@property
 	def proto_name(self):
 		return self.class_name + 'Prototype'
+
+	@property
+	def base_proto_name(self):
+		return self.class_name + 'BasePrototype'
 
 	def collect_id(self, id_set):
 		if self.id is not None:
@@ -165,19 +173,24 @@ class component_generator(object):
 			code += '\n' + value.generate_setup_code(registry, target, closure, ident_n)
 		return code
 
-	def generate_ctor(self, registry):
-		return "\t_globals.%s.apply(this, arguments);\n" %(registry.find_component(self.package, self.component.name)) + self.ctor
-
 	def get_base_type(self, registry):
 		return registry.find_component(self.package, self.component.name)
 
 	def generate(self, registry):
 		base_type = self.get_base_type(registry)
-		ctor  = "/**\n * @constructor\n"
-		ctor += " * @extends {_globals.%s}\n" %base_type
-		ctor += " */\n"
-		ctor += "\tvar %s = _globals.%s = function(parent, _delegate) {\n%s\n}\n" %(self.local_name, self.name, self.generate_ctor(registry))
-		return ctor
+		r = []
+		r.append("\tvar %s = _globals.%s" %(self.base_local_name, base_type))
+		r.append("\tvar %s = %s.prototype" %(self.base_proto_name, self.base_local_name))
+		r.append("")
+		r.append("/**\n * @constructor")
+		r.append(" * @extends {_globals.%s}" %base_type)
+		r.append(" */")
+		r.append("\tvar %s = _globals.%s = function(parent, _delegate) {" %(self.local_name, self.name))
+		r.append("\t\t%s.apply(this, arguments)" % self.base_local_name)
+		r.append(self.ctor)
+		r.append("\t}")
+		r.append("")
+		return "\n".join(r)
 
 	def generate_animations(self, registry, parent):
 		r = []
@@ -207,7 +220,7 @@ class component_generator(object):
 
 		base_type = self.get_base_type(registry)
 
-		r.append("%svar %s = %s.prototype = Object.create(_globals.%s.prototype)\n" %(ident, self.proto_name, self.local_name, base_type))
+		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
 		r.append("%s%s.constructor = _globals.%s\n" %(ident, self.proto_name, self.name))
 
 		r.append("%s%s.componentName = '%s'" %(ident, self.proto_name, self.name))
@@ -274,12 +287,12 @@ class component_generator(object):
 		code = self.generate_creators(registry, 'this', '__closure', ident_n + 1).strip()
 		if code:
 			generate = True
-		b = '\t%s_globals.%s.prototype.__create.call(this, __closure.__base = { })' %(ident, base_type)
+		b = '\t%s%s.__create.call(this, __closure.__base = { })' %(ident, self.base_proto_name)
 		code = '%s%s.__create = function(__closure) {\n%s\n%s\n%s}' \
 			%(ident, self.proto_name, b, code, ident)
 
 		setup_code = self.generate_setup_code(registry, 'this', '__closure', ident_n + 2).strip()
-		b = '%s_globals.%s.prototype.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, base_type)
+		b = '%s%s.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
 		setup_code = '%s%s.__setup = function(__closure) {\n%s\n%s\n}' \

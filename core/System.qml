@@ -63,12 +63,13 @@ Object {
 		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
 
 		window.ondeviceorientation = function(e) {
+			var self = this
 			var abs = e.absolute
-			this.orientation = abs 
+			self.orientation = abs 
 			if (abs) {
-				this.alpha = e.alpha
-				this.beta = e.beta
-				this.gamma = e.gamma
+				self.alpha = e.alpha
+				self.beta = e.beta
+				self.gamma = e.gamma
 			}
 		}
 	}

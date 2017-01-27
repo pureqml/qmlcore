@@ -63,14 +63,5 @@ Object {
 		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
 
 		var self = this
-		window.ondeviceorientation = function(e) {
-			var abs = e.absolute
-			self.orientation = abs 
-			if (abs) {
-				self.alpha = e.alpha
-				self.beta = e.beta
-				self.gamma = e.gamma
-			}
-		}
 	}
 }

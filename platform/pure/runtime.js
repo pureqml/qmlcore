@@ -34,19 +34,29 @@ Rect.prototype.interspect = function(rect) {
 
 exports.rootItem = null
 
+var PureItem = function() { }
+
+var PureRect = function(data) { }
+PureRect.prototype = Object.create(PureItem.prototype)
+PureRect.prototype.constructor = PureRect
+
 var PureText = function(data) {
+	PureItem.call(this)
 	this.layout(data)
 }
 
+PureText.prototype = Object.create(PureItem.prototype)
 PureText.prototype.constructor = PureText
 PureText.prototype.layout = function(data) {
 	log('laying out "' + data.text + '"')
 }
 
 var PureImage = function(src) {
+	PureItem.call(this)
 	this.load(src)
 }
 
+PureImage.prototype = Object.create(PureItem.prototype)
 PureImage.prototype.constructor = PureImage
 PureImage.prototype.load = function(src) {
 	log('loading image from ' + src)

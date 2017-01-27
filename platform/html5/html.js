@@ -373,6 +373,16 @@ exports.init = function(ctx) {
 	window.onfocus = function() { system.pageActive = true }
 	window.onblur = function() { system.pageActive = false }
 
+	window.ondeviceorientation = function(e) {
+		var abs = e.absolute
+		system.orientation = abs
+		if (abs) {
+			system.alpha = e.alpha
+			system.beta = e.beta
+			system.gamma = e.gamma
+		}
+	}
+
 	ctx.screenWidth = window.screen.width
 	ctx.screenHeight = window.screen.height
 }

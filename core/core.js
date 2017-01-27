@@ -72,14 +72,15 @@ exports.core.safeCall = function(self, args, onError) {
 /**
  * @constructor
  */
-exports.core.CoreObject = function() { }
-exports.core.CoreObject.prototype.constructor = exports.core.CoreObject
-exports.core.CoreObject.prototype.__create = function() { }
-exports.core.CoreObject.prototype.__setup = function() { }
+var CoreObjectComponent = exports.core.CoreObject = function() { }
+var CoreObjectComponentPrototype = CoreObjectComponent.prototype
+CoreObjectComponentPrototype.constructor = exports.core.CoreObject
+CoreObjectComponentPrototype.__create = function() { }
+CoreObjectComponentPrototype.__setup = function() { }
 
 
 /** @constructor */
-exports.core.Color = function(value) {
+var Color = exports.core.Color = function(value) {
 	if (Array.isArray(value)) {
 		this.r = value[0]
 		this.g = value[1]
@@ -137,11 +138,11 @@ exports.core.Color = function(value) {
 	} else
 		throw new Error("invalid color specification: " + value)
 }
-exports.core.Color.prototype.constructor = exports.core.Color
+var ColorPrototype = Color.prototype
+ColorPrototype.constructor = exports.core.Color
 /** @const */
-var Color = exports.core.Color
 
-exports.core.Color.prototype.rgba = function() {
+ColorPrototype.rgba = function() {
 	return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 }
 

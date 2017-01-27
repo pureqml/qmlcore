@@ -210,27 +210,33 @@ class generator(object):
 
 		#COPY_ARGS optimization
 		def copy_args(m):
+			def expr(var, op, idx):
+				if idx != 0:
+					return "%s %s %d" %(var, op, idx)
+				else:
+					return var
+
 			name, idx, prefix = m.group(1).strip(), int(m.group(2).strip()), m.group(3)
 			if prefix is not None:
 				prefix = prefix.strip()
 				return """
 	/* %s */
 	var $n = arguments.length
-	var %s = new Array($n + %d)
+	var %s = new Array(%s)
 	%s[0] = %s
 	for(var $i = %d; $i < $n; ++$i) {
-		%s[$i + %d] = arguments[$i]
+		%s[%s] = arguments[$i]
 	}
-""" %(m.group(0), name, 1 - idx, name, prefix, idx, name, 1 - idx) #format does not work well here, because of { }
+""" %(m.group(0), name, expr('$n', '+', 1 - idx), name, prefix, idx, name, expr('$i', '+', 1 - idx)) #format does not work well here, because of { }
 			else:
 				return """
 	/* %s */
 	var $n = arguments.length
-	var %s = new Array($n - %d)
+	var %s = new Array(%s)
 	for(var $i = %d; $i < $n; ++$i) {
-		%s[$i - %d] = arguments[$i]
+		%s[%s] = arguments[$i]
 	}
-""" %(m.group(0), name, idx, idx, name, idx)
+""" %(m.group(0), name, expr('$n', '-', idx), idx, name, expr('$i', '-', idx))
 
 		text = generator.re_copy_args.sub(copy_args, text)
 		return text

@@ -24,15 +24,16 @@ var StyleCache = function (prefix) {
 	this.classes_total = 0
 	this._addRule = exports.createAddRule(style)
 }
+var StyleCachePrototype = StyleCache.prototype
 
-StyleCache.prototype.constructor = StyleCache
+StyleCachePrototype.constructor = StyleCache
 
-StyleCache.prototype.add = function(rule) {
+StyleCachePrototype.add = function(rule) {
 	this.stats[rule] = (this.stats[rule] || 0) + 1
 	++this.total
 }
 
-StyleCache.prototype.register = function(rules) {
+StyleCachePrototype.register = function(rules) {
 	var rule = rules.join(';')
 	var classes = this.classes
 	var cls = classes[rule]
@@ -44,7 +45,7 @@ StyleCache.prototype.register = function(rules) {
 	return cls
 }
 
-StyleCache.prototype.classify = function(rules) {
+StyleCachePrototype.classify = function(rules) {
 	var total = this.total
 	if (total < 10) //fixme: initial population threshold
 		return ''
@@ -141,14 +142,14 @@ exports.Element = function(context, tag) {
 	registerGenericListener(this)
 }
 
-exports.Element.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
-exports.Element.prototype.constructor = exports.Element
+var ElementPrototype = exports.Element.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
+ElementPrototype.constructor = exports.Element
 
-exports.Element.prototype.addClass = function(cls) {
+ElementPrototype.addClass = function(cls) {
 	this.dom.classList.add(cls)
 }
 
-exports.Element.prototype.setHtml = function(html) {
+ElementPrototype.setHtml = function(html) {
 	var dom = this.dom
 	this._fragment.forEach(function(node) { dom.removeChild(node) })
 	this._fragment = []
@@ -168,23 +169,23 @@ exports.Element.prototype.setHtml = function(html) {
 	return dom.children
 }
 
-exports.Element.prototype.width = function() {
+ElementPrototype.width = function() {
 	return this.dom.clientWidth
 }
 
-exports.Element.prototype.height = function() {
+ElementPrototype.height = function() {
 	return this.dom.clientHeight
 }
 
-exports.Element.prototype.fullWidth = function() {
+ElementPrototype.fullWidth = function() {
 	return this.dom.scrollWidth
 }
 
-exports.Element.prototype.fullHeight = function() {
+ElementPrototype.fullHeight = function() {
 	return this.dom.scrollHeight
 }
 
-exports.Element.prototype.style = function(name, style) {
+ElementPrototype.style = function(name, style) {
 	if (style !== undefined) {
 		if (style !== '') //fixme: replace it with explicit 'undefined' syntax
 			this._styles[name] = style
@@ -205,11 +206,11 @@ exports.Element.prototype.style = function(name, style) {
 		return this._styles[name]
 }
 
-exports.Element.prototype.setAttribute = function(name, value) {
+ElementPrototype.setAttribute = function(name, value) {
 	this.dom.setAttribute(name, value)
 }
 
-exports.Element.prototype.updateStyle = function() {
+ElementPrototype.updateStyle = function() {
 	var element = this.dom
 	if (!element)
 		return
@@ -269,16 +270,16 @@ exports.Element.prototype.updateStyle = function() {
 	this.dom.setAttribute('style', rules.join(';'))
 }
 
-exports.Element.prototype.append = function(el) {
+ElementPrototype.append = function(el) {
 	this.dom.appendChild((el instanceof exports.Element)? el.dom: el)
 }
 
-exports.Element.prototype.discard = function() {
+ElementPrototype.discard = function() {
 	_globals.core.RAIIEventEmitter.prototype.discard.apply(this)
 	this.remove()
 }
 
-exports.Element.prototype.remove = function() {
+ElementPrototype.remove = function() {
 	var dom = this.dom
 	dom.parentNode.removeChild(dom)
 }
@@ -291,18 +292,18 @@ exports.Window = function(context, dom) {
 	registerGenericListener(this)
 }
 
-exports.Window.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
-exports.Window.prototype.constructor = exports.Window
+var WindowPrototype = exports.Window.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
+WindowPrototype.constructor = exports.Window
 
-exports.Window.prototype.width = function() {
+WindowPrototype.width = function() {
 	return this.dom.innerWidth
 }
 
-exports.Window.prototype.height = function() {
+WindowPrototype.height = function() {
 	return this.dom.innerHeight
 }
 
-exports.Window.prototype.scrollY = function() {
+WindowPrototype.scrollY = function() {
 	return this.dom.scrollY
 }
 

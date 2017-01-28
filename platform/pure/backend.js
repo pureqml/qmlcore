@@ -28,10 +28,24 @@ var registerGenericListener = function(target) {
 	)
 }
 
+var _paintRect = function(renderer) {
+	var color = this._styles['background-color']
+	log('paint rect ' + this.getRect() + ' with color ' + color)
+}
+
+var _paintImage = function(renderer) {
+	log('paint image ' + this.getRect())
+}
+
+var _paintText = function(renderer) {
+	log('paint text ' + this.getRect())
+}
+
 var Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._styles = {}
+	this._paint = _paintRect
 	this.children = []
 	registerGenericListener(this)
 }
@@ -110,8 +124,12 @@ Element.prototype.getRect = function() {
 }
 
 Element.prototype.paint = function(renderer) {
+	var old = renderer.rect
+	renderer.rect = this.getRect()
+	renderer.rect.l += old.l
+	renderer.rect.t += old.t
+	this._paint(renderer)
 	this.children.forEach(function(child) {
-		log(child.getRect())
 		child.paint(renderer)
 	})
 }
@@ -131,12 +149,16 @@ exports.createElement = function(ctx, tag) {
 }
 
 exports.initImage = function(image) {
+	image._paint = _paintImage
 }
 
 exports.loadImage = function(image) {
+	log('loading image ' + image.source)
+	image.element.update()
 }
 
 exports.layoutText = function(text) {
+	text._paint = _paintText
 }
 
 exports.requestAnimationFrame = function(callback) {

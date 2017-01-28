@@ -151,7 +151,7 @@ exports.createElement = function(ctx, tag) {
 }
 
 exports.initImage = function(image) {
-	image._paint = _paintImage
+	image.element._paint = _paintImage
 }
 
 exports.loadImage = function(image) {
@@ -160,10 +160,11 @@ exports.loadImage = function(image) {
 }
 
 exports.initText = function(text) {
-	text._paint = _paintText
+	text.element._paint = _paintText
 }
 
 exports.layoutText = function(text) {
+	text.element.update()
 }
 
 exports.requestAnimationFrame = function(callback) {

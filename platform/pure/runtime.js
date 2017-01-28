@@ -93,6 +93,7 @@ Renderer.prototype.getRect = function() {
 	return new Rect(0, 0, this.w, this.h)
 }
 
+exports.Rect = Rect
 exports.PureItem = PureItem
 exports.PureRect = PureRect
 exports.PureText = PureText

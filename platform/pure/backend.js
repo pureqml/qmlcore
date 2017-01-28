@@ -32,15 +32,16 @@ var _paintRect = function(renderer) {
 	var color = this._styles['background-color']
 	if (color === undefined)
 		return
-	log('paint rect ' + this.getRect() + ' with color ' + color)
+
+	renderer.paintRectangle(this.getRect(), color)
 }
 
 var _paintImage = function(renderer) {
-	log('paint image ' + this.getRect())
+	renderer.paintImage(this.getRect())
 }
 
 var _paintText = function(renderer) {
-	log('paint text ' + this.getRect())
+	renderer.paintText(this.getRect())
 }
 
 var Element = function(context, tag) {

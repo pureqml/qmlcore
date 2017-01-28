@@ -6,6 +6,8 @@ var renderer = null
 var rootItem = null
 var updatedItems = new Set()
 
+var Rect = runtime.Rect
+
 var registerGenericListener = function(target) {
 	var prefix = '__nativeEventHandler_'
 	target.onListener('',
@@ -30,7 +32,6 @@ var Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._styles = {}
-	this._pure = new runtime.PureItem()
 	this.children = []
 	registerGenericListener(this)
 }
@@ -101,6 +102,20 @@ Element.prototype.remove = function() {
 		throw new Error('remove() called without adding to parent')
 }
 
+Element.prototype.getRect = function() {
+	var style = this._styles
+	var l = style['left'] || 0, t = style['top'] || 0
+	var w = style['width'] || 0, h = style['height'] || 0
+	return new Rect(l, t, w + l, h + t)
+}
+
+Element.prototype.paint = function(renderer) {
+	this.children.forEach(function(child) {
+		log(child.getRect())
+		child.paint(renderer)
+	})
+}
+
 exports.init = function(ctx) {
 	renderer = new runtime.Renderer(480, 640) //fixme: pass in options?
 	rootItem = ctx.element = new Element(ctx, ctx.getTag())
@@ -108,7 +123,7 @@ exports.init = function(ctx) {
 
 exports.run = function(ctx) {
 	ctx._run()
-	rootItem._pure.paint(renderer)
+	rootItem.paint(renderer)
 }
 
 exports.createElement = function(ctx, tag) {
@@ -116,15 +131,12 @@ exports.createElement = function(ctx, tag) {
 }
 
 exports.initImage = function(image) {
-	image._pure = new runtime.PureImage(image.source)
 }
 
 exports.loadImage = function(image) {
-	image._pure.load(image.source)
 }
 
 exports.layoutText = function(text) {
-	text._pure = new runtime.PureText(text)
 }
 
 exports.requestAnimationFrame = function(callback) {

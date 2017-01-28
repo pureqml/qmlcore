@@ -30,6 +30,8 @@ var registerGenericListener = function(target) {
 
 var _paintRect = function(renderer) {
 	var color = this._styles['background-color']
+	if (color === undefined)
+		return
 	log('paint rect ' + this.getRect() + ' with color ' + color)
 }
 

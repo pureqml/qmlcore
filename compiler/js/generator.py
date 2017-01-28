@@ -27,8 +27,8 @@ class generator(object):
 			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
 			self.used_components.add(name)
 			self.used_packages.add(package)
-			self.startup.append("\tqml._context.start(new qml.%s(qml._context))" %name)
-			self.startup.append("\tqml._context.run()")
+			self.startup.append("\tcontext.start(new qml.%s(context))" %name)
+			self.startup.append("\tcontext.run()")
 		else:
 			name = package + '.' + component_name
 
@@ -246,12 +246,12 @@ class generator(object):
 		r += "try {\n"
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append("\t%s._context = new qml.core.Context(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, prefix))
+		startup.append("\tvar context = %s._context = new qml.core.Context(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, prefix))
 		startup.append('\tvar closure = {}\n')
-		startup.append('\t%s._context.__create(closure)' %ns)
-		startup.append('\t%s._context.__setup(closure)' %ns)
+		startup.append('\tcontext.__create(closure)')
+		startup.append('\tcontext.__setup(closure)')
 		startup.append('\tclosure = undefined')
-		startup.append("\t%s._context.init()" %(ns))
+		startup.append('\tcontext.init()')
 		startup += self.startup
 		r += "\n".join(startup)
 		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns

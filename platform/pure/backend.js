@@ -2,6 +2,8 @@
 
 exports.capabilities = {}
 var runtime = _globals.pure.runtime
+var renderer = null
+var rootItem = null
 var updatedItems = new Set()
 
 var registerGenericListener = function(target) {
@@ -28,7 +30,7 @@ var Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._styles = {}
-	this._pure = null
+	this._pure = new runtime.PureItem()
 	this.children = []
 	registerGenericListener(this)
 }
@@ -47,7 +49,7 @@ var importantStyles = new Set([
 
 Element.prototype._onUpdate = function(name) {
 	if (importantStyles.has(name))
-		updatedItems.add(this)
+		this.update()
 //	else
 //		log('unhandled style ' + name)
 }
@@ -74,12 +76,16 @@ Element.prototype.style = function(name, style) {
 }
 Element.prototype.updateStyle = function() { }
 
+Element.prototype.update = function() {
+	updatedItems.add(this)
+}
+
 Element.prototype.append = function(child) {
 	if (child._parent !== undefined)
 		throw new Error('double append on element')
 	child._parent = this
 	this.children.push(child)
-	updatedItems.add(child)
+	child.update()
 }
 
 Element.prototype.remove = function() {
@@ -89,21 +95,20 @@ Element.prototype.remove = function() {
 		if (idx < 0)
 			throw new Error('remove(): no child in parent children array')
 		parent.children.splice(idx, 1)
-		updatedItems.add(parent)
+		parent.update()
 		this._parent = undefined
 	} else
 		throw new Error('remove() called without adding to parent')
 }
 
 exports.init = function(ctx) {
-	runtime.rootItem = ctx.element = new Element(ctx, ctx.getTag())
+	renderer = new runtime.Renderer(480, 640) //fixme: pass in options?
+	rootItem = ctx.element = new Element(ctx, ctx.getTag())
 }
 
 exports.run = function(ctx) {
 	ctx._run()
-	for(var item of updatedItems) {
-		log('update: ' + item + ' ' + item._rect)
-	}
+	rootItem._pure.paint(renderer)
 }
 
 exports.createElement = function(ctx, tag) {

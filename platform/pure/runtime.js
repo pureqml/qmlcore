@@ -51,6 +51,7 @@ var Renderer = function(w, h) {
 	this.w = w
 	this.h = h
 	this.clip = this.getRect()
+	this.rect = this.getRect()
 }
 
 Renderer.prototype.getRect = function() {

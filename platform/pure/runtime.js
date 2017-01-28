@@ -46,42 +46,6 @@ Rect.prototype.intersect = function(rect) {
 		)
 }
 
-var PureItem = function() {
-	this._dirty = new Rect()
-}
-
-PureItem.prototype.paint = function(renderer) {
-	log('paint')
-}
-
-var PureRect = function(data) {
-	PureItem.call(this)
-}
-
-PureRect.prototype = Object.create(PureItem.prototype)
-PureRect.prototype.constructor = PureRect
-
-var PureText = function(data) {
-	PureItem.call(this)
-	this.layout(data)
-}
-
-PureText.prototype = Object.create(PureItem.prototype)
-PureText.prototype.constructor = PureText
-PureText.prototype.layout = function(data) {
-	log('laying out "' + data.text + '"')
-}
-
-var PureImage = function(src) {
-	PureItem.call(this)
-	this.load(src)
-}
-
-PureImage.prototype = Object.create(PureItem.prototype)
-PureImage.prototype.constructor = PureImage
-PureImage.prototype.load = function(src) {
-	log('loading image from ' + src)
-}
 
 var Renderer = function(w, h) {
 	this.w = w
@@ -94,8 +58,4 @@ Renderer.prototype.getRect = function() {
 }
 
 exports.Rect = Rect
-exports.PureItem = PureItem
-exports.PureRect = PureRect
-exports.PureText = PureText
-exports.PureImage = PureImage
 exports.Renderer = Renderer

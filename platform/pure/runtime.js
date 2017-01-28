@@ -58,5 +58,17 @@ Renderer.prototype.getRect = function() {
 	return new Rect(0, 0, this.w, this.h)
 }
 
+Renderer.prototype.paintRectangle = function(rect, color) {
+	log('paint rect ' + rect + ' with color ' + color)
+}
+
+Renderer.prototype.paintText = function(rect) {
+	log('paint text ' + rect)
+}
+
+Renderer.prototype.paintImage = function(rect) {
+	log('paint image ' + rect)
+}
+
 exports.Rect = Rect
 exports.Renderer = Renderer

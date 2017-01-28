@@ -474,6 +474,10 @@ exports.loadImage = function(image) {
 	image._image.src = image.source
 }
 
+exports.initText = function(text) {
+	text.element.addClass(text._context.getClass('text'))
+}
+
 exports.layoutText = function(text) {
 	var wrap = text.wrapMode != Text.NoWrap
 	if (!wrap)

@@ -159,8 +159,11 @@ exports.loadImage = function(image) {
 	image.element.update()
 }
 
-exports.layoutText = function(text) {
+exports.initText = function(text) {
 	text._paint = _paintText
+}
+
+exports.layoutText = function(text) {
 }
 
 exports.requestAnimationFrame = function(callback) {

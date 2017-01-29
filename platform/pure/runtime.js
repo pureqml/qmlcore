@@ -58,10 +58,11 @@ Renderer.prototype.getRect = function() {
 	return new Rect(0, 0, this.w, this.h)
 }
 
-Renderer.prototype.paintRectangle = function(rect, color) {
+Renderer.prototype.paintRectangle = function(rect, r, g, b, a) {
 	if (!rect.valid())
 		return
-	log('paint rect ' + rect + ' with color ' + color)
+	log('paint rect ' + rect + ' with color ' + r + ' ' + g + ' ' + b + ' ' + a)
+	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
 }
 
 Renderer.prototype.paintText = function(rect) {

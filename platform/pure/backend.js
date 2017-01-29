@@ -5,6 +5,7 @@ var runtime = _globals.pure.runtime
 var renderer = null
 var rootItem = null
 var updatedItems = new Set()
+var updateTimer
 
 var Rect = runtime.Rect
 
@@ -96,6 +97,14 @@ Element.prototype.updateStyle = function() { }
 
 Element.prototype.update = function() {
 	updatedItems.add(this)
+	if (updateTimer === undefined) {
+		updateTimer = setTimeout(function() {
+			log('frame paint')
+			updateTimer = undefined
+			updatedItems = new Set()
+			rootItem.paint(renderer)
+		}, 0)
+	}
 }
 
 Element.prototype.append = function(child) {
@@ -144,7 +153,6 @@ exports.init = function(ctx) {
 
 exports.run = function(ctx) {
 	ctx._run()
-	rootItem.paint(renderer)
 }
 
 exports.createElement = function(ctx, tag) {

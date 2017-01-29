@@ -7,6 +7,8 @@ var rootItem = null
 var updatedItems = new Set()
 var updateTimer
 
+var rgba_re = /rgba\((\d+),(\d+),(\d+),(.*)\)/
+
 var Rect = runtime.Rect
 
 var registerGenericListener = function(target) {
@@ -29,12 +31,18 @@ var registerGenericListener = function(target) {
 	)
 }
 
+
 var _paintRect = function(renderer) {
 	var color = this._styles['background-color']
 	if (color === undefined)
 		return
 
-	renderer.paintRectangle(this.getRect(), color)
+	var m = rgba_re.exec(color)
+	if (m === null) {
+		log('invalid color specification: ' + color)
+		return
+	}
+	renderer.paintRectangle(this.getRect(), parseInt(m[1]), parseInt(m[2]), parseInt(m[3]), Math.floor(parseFloat(m[4]) * 255))
 }
 
 var _paintImage = function(renderer) {

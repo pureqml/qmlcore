@@ -16,8 +16,6 @@ Object {
 	property int screenHeight;						///< device screen height value
 	property enum device { Desktop, Tv, Mobile };	///< device type enumeration, values: Desktop, Tv or Mobile
 	property enum layoutType { MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL, Laptop4K };	///< layout type enumeration, values: MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL and Laptop4K
-	property real alpha, beta, gamma;
-	property bool orientation;
 
 	/// @private
 	onContextWidthChanged: { this._updateLayoutType() }
@@ -61,7 +59,5 @@ Object {
 		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false
 		this.supportTransforms = ctx.backend.capabilities.csstransforms || false
 		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
-
-		var self = this
 	}
 }

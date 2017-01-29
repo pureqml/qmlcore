@@ -4,6 +4,7 @@ Item {
 	property Stylesheet stylesheet: Stylesheet { }
 	property System system: System { }
 	property Location location: Location { }
+	property Orientation orientation: Orientation { }
 	property string language;
 
 	constructor: {

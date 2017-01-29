@@ -59,14 +59,20 @@ Renderer.prototype.getRect = function() {
 }
 
 Renderer.prototype.paintRectangle = function(rect, color) {
+	if (!rect.valid())
+		return
 	log('paint rect ' + rect + ' with color ' + color)
 }
 
 Renderer.prototype.paintText = function(rect) {
+	if (!rect.valid())
+		return
 	log('paint text ' + rect)
 }
 
 Renderer.prototype.paintImage = function(rect) {
+	if (!rect.valid())
+		return
 	log('paint image ' + rect)
 }
 

@@ -134,6 +134,8 @@ class Component(object):
 		package, name = self.package, self.name
 		r.append('{' )
 		r.append('\t"name": "%s.%s",' %(package, name))
+                comp = self.component
+                r.append('\t"text": "%s",' %(comp.doc.text if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""))
 		r.append('')
 		r.append('\t"content": {')
 		self.process_children(r, package)

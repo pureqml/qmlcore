@@ -3,14 +3,20 @@ import lang
 
 doc_next = None
 doc_prev_component = None
+doc_root_component = None
 
 def component(com):
-	global doc_next, doc_prev_component
+	global doc_next, doc_prev_component, doc_root_component
+
+	if not doc_root_component:
+                doc_root_component = doc_next
+
 	if doc_next:
 		com.doc = doc_next
 		doc_next = None
 	doc_prev_component = com
 	return com
+
 
 def document(text, line, prev):
 	text = text.strip()
@@ -290,5 +296,9 @@ source = source.ignore(dblSlashComment)
 ParserElement.enablePackrat()
 
 def parse(data):
+	global doc_root_component
+        doc_root_component = None
 	tree = source.parseString(data, parseAll = True)
+        if len(tree) > 0:
+                tree[0].doc = doc_root_component
 	return tree

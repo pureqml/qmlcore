@@ -168,11 +168,13 @@ exports.createElement = function(ctx, tag) {
 }
 
 exports.initImage = function(image) {
+	this._image = new Image()
 	image.element._paint = _paintImage
 }
 
 exports.loadImage = function(image) {
 	log('loading image ' + image.source)
+	this._image.load(image.source)
 	image.element.update()
 }
 

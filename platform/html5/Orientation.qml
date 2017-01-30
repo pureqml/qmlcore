@@ -7,17 +7,17 @@ Object {
 
 	/// @private
 	function onChanged (name, callback) {
-		if (this._orientationEnabled)
-			return
-
-		var self = this
-		window.ondeviceorientation = function(e) {
-			self.absolute = e.absolute
-			self.alpha = e.alpha
-			self.beta = e.beta
-			self.gamma = e.gamma
+		if (!this._orientationEnabled) {
+			var self = this
+			window.ondeviceorientation = function(e) {
+				self.absolute = e.absolute
+				self.alpha = e.alpha
+				self.beta = e.beta
+				self.gamma = e.gamma
+			}
+			this._orientationEnabled = true;
 		}
-		this._orientationEnabled = true;
+
 		_globals.core.Object.prototype.onChanged.apply(this, arguments);
 	}
 }

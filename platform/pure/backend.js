@@ -174,7 +174,9 @@ exports.initImage = function(image) {
 
 exports.loadImage = function(image) {
 	log('loading image ' + image.source)
-	this._image.load(image.source)
+	this._image.load(image.source, function(status) {
+		log('image status: ' + status)
+	})
 	image.element.update()
 }
 

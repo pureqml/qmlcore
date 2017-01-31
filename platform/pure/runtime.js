@@ -14,6 +14,13 @@ Rect.prototype.valid = function() {
 	return this.b > this.t && this.r > this.l
 }
 
+Rect.prototype.move = function(dx, dy) {
+	this.l += dx
+	this.t += dy
+	this.r += dx
+	this.b += dy
+}
+
 Rect.prototype.clone = function() {
 	return new Rect(this.l, this.t, this.r, this.b)
 }
@@ -52,6 +59,14 @@ var Renderer = function(w, h) {
 	this.height = h
 	this.clip = this.getRect()
 	this.rect = this.getRect()
+	this.depth = 0
+}
+
+Renderer.prototype.prefix = function() {
+	var d = this.depth, r = '' + d + ':'
+	while(d-- > 0)
+		r += '  '
+	return r
 }
 
 Renderer.prototype.getRect = function() {
@@ -61,20 +76,20 @@ Renderer.prototype.getRect = function() {
 Renderer.prototype.paintRectangle = function(rect, r, g, b, a) {
 	if (!rect.valid())
 		return
-	log('paint rect ' + rect + ' with color ' + r + ' ' + g + ' ' + b + ' ' + a)
+	log(this.prefix() + 'paint rect ' + rect + ' with color ' + r + ' ' + g + ' ' + b + ' ' + a)
 	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
 }
 
 Renderer.prototype.paintText = function(rect) {
 	if (!rect.valid())
 		return
-	log('paint text ' + rect)
+	log(this.prefix() + 'paint text ' + rect)
 }
 
 Renderer.prototype.paintImage = function(rect, image) {
 	if (!rect.valid())
 		return
-	log('paint image ' + rect + ' ' + image)
+	log(this.prefix() + 'paint image ' + rect + ' ' + image)
 	_renderImage(rect.l, rect.t, rect.r, rect.b, image)
 }
 

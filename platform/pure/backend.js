@@ -191,7 +191,7 @@ exports.loadImage = function(image) {
 	var element = image.element
 	image.status = Image.Loading
 	element._image.load(image.source, function(status) {
-		log('image status: ' + status + ' ' + element._image.width + ' ' + element._image.height)
+		log('image ' + image.source + ' status: ' + status + ' ' + element._image.width + ' ' + element._image.height)
 		image.paintedWidth = element._image.width
 		image.paintedHeight = element._image.height
 		if (!image.width)

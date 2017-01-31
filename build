@@ -260,3 +260,5 @@ except Exception as ex:
 	print "ERROR:", ex
 	if args.verbose:
 		raise
+	else:
+		sys.exit(1)

@@ -44,15 +44,15 @@ var _paintRect = function(renderer) {
 		log('invalid color specification: ' + color)
 		return
 	}
-	renderer.paintRectangle(this.getRect(), parseInt(m[1]), parseInt(m[2]), parseInt(m[3]), Math.floor(parseFloat(m[4]) * 255))
+	renderer.paintRectangle(renderer.rect, parseInt(m[1]), parseInt(m[2]), parseInt(m[3]), Math.floor(parseFloat(m[4]) * 255))
 }
 
 var _paintImage = function(renderer) {
-	renderer.paintImage(this.getRect(), this._image)
+	renderer.paintImage(renderer.rect, this._image)
 }
 
 var _paintText = function(renderer) {
-	renderer.paintText(this.getRect())
+	renderer.paintText(renderer.rect)
 }
 
 var Element = function(context, tag) {

@@ -71,10 +71,11 @@ Renderer.prototype.paintText = function(rect) {
 	log('paint text ' + rect)
 }
 
-Renderer.prototype.paintImage = function(rect) {
+Renderer.prototype.paintImage = function(rect, image) {
 	if (!rect.valid())
 		return
-	log('paint image ' + rect)
+	log('paint image ' + rect + ' ' + image)
+	_renderImage(rect.l, rect.t, rect.r, rect.b, image)
 }
 
 exports.Rect = Rect

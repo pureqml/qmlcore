@@ -19,6 +19,9 @@ class Component(object):
 		for value in values:
 			localComma = "" if last == value.name else ","
                         docText = value.doc.text if value.doc is not None else ""
+                        docLines = docText.splitlines()
+                        docText = docText.replace("\n", " ")
+
                         internal = "true" if (value.doc is not None) and ("@private" in value.doc.text) else "false"
                         category = value.__class__.__name__
 
@@ -29,7 +32,6 @@ class Component(object):
                         elif category == 'Method' and docText:
                             argText = ""
 
-                            docLines = docText.splitlines()
                             argText += '"params": ['
                             paramCount = 0
                             for line in docLines:
@@ -64,6 +66,7 @@ class Component(object):
 
                             r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name, docText, argText, internal, localComma))
                         else:
+                            docText.replace("\n", " ")
                             r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, docText, internal, localComma))
 
 		if comma:
@@ -134,8 +137,8 @@ class Component(object):
 		package, name = self.package, self.name
 		r.append('{' )
 		r.append('\t"name": "%s.%s",' %(package, name))
-                comp = self.component
-                r.append('\t"text": "%s",' %(comp.doc.text if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""))
+		comp = self.component
+		r.append('\t"text": "%s",' %(comp.doc.text.replace("\n", " ") if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""))
 		r.append('')
 		r.append('\t"content": {')
 		self.process_children(r, package)

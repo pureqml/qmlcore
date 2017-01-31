@@ -34,7 +34,7 @@ var registerGenericListener = function(target) {
 }
 
 
-var _paintRect = function(renderer) {
+var _paintRect = function(renderer, rect) {
 	var color = this._styles['background-color']
 	if (color === undefined)
 		return
@@ -44,15 +44,15 @@ var _paintRect = function(renderer) {
 		log('invalid color specification: ' + color)
 		return
 	}
-	renderer.paintRectangle(renderer.rect, parseInt(m[1]), parseInt(m[2]), parseInt(m[3]), Math.floor(parseFloat(m[4]) * 255))
+	renderer.paintRectangle(rect, parseInt(m[1]), parseInt(m[2]), parseInt(m[3]), Math.floor(parseFloat(m[4]) * 255))
 }
 
-var _paintImage = function(renderer) {
-	renderer.paintImage(renderer.rect, this._image)
+var _paintImage = function(renderer, rect) {
+	renderer.paintImage(rect, this._image)
 }
 
-var _paintText = function(renderer) {
-	renderer.paintText(renderer.rect)
+var _paintText = function(renderer, rect) {
+	renderer.paintText(rect)
 }
 
 var Element = function(context, tag) {
@@ -112,7 +112,7 @@ Element.prototype.update = function() {
 			log('frame paint')
 			updateTimer = undefined
 			updatedItems = new Set()
-			rootItem.paint(renderer)
+			rootItem.paint(renderer, 0, 0)
 		}, 0)
 	}
 }
@@ -145,19 +145,18 @@ Element.prototype.getRect = function() {
 	return new Rect(l, t, w + l, h + t)
 }
 
-Element.prototype.paint = function(renderer) {
+Element.prototype.paint = function(renderer, x, y) {
 	var visibility = this._styles['visibility']
 	if (visibility === 'hidden')
 		return
-	var old = renderer.rect
-	renderer.rect = this.getRect()
-	renderer.rect.l += old.l
-	renderer.rect.t += old.t
-	this._paint(renderer)
+
+	var rect = this.getRect()
+	rect.l += x
+	rect.t += y
+	this._paint(renderer, rect)
 	this.children.forEach(function(child) {
-		child.paint(renderer)
+		child.paint(renderer, rect.l, rect.t)
 	})
-	renderer.rect = old
 }
 
 exports.init = function(ctx) {

@@ -48,14 +48,14 @@ Rect.prototype.intersect = function(rect) {
 
 
 var Renderer = function(w, h) {
-	this.w = w
-	this.h = h
+	this.width = w
+	this.height = h
 	this.clip = this.getRect()
 	this.rect = this.getRect()
 }
 
 Renderer.prototype.getRect = function() {
-	return new Rect(0, 0, this.w, this.h)
+	return new Rect(0, 0, this.width, this.height)
 }
 
 Renderer.prototype.paintRectangle = function(rect, r, g, b, a) {

@@ -1,4 +1,6 @@
 /*** @used { core.RAIIEventEmitter } **/
+/*** @used { core.Text } **/
+/*** @used { core.Image } **/
 
 exports.capabilities = {}
 var runtime = _globals.pure.runtime
@@ -46,7 +48,7 @@ var _paintRect = function(renderer) {
 }
 
 var _paintImage = function(renderer) {
-	renderer.paintImage(this.getRect())
+	renderer.paintImage(this.getRect(), this._image)
 }
 
 var _paintText = function(renderer) {
@@ -168,16 +170,31 @@ exports.createElement = function(ctx, tag) {
 }
 
 exports.initImage = function(image) {
-	this._image = new Image()
-	image.element._paint = _paintImage
+	var element = image.element
+	element._image = new Image()
+	element._paint = _paintImage
 }
+
+var ImageStatusNull			= 0
+var ImageStatusLoaded		= 1
+var ImageStatusUnloaded		= 2
+var ImageStatusError		= 3
+
 
 exports.loadImage = function(image) {
 	log('loading image ' + image.source)
-	this._image.load(image.source, function(status) {
+	var Image = _globals.core.Image
+	var element = image.element
+	image.status = Image.Loading
+	element._image.load(image.source, function(status) {
 		log('image status: ' + status)
+		switch(status) {
+			case ImageStatusNull:	image.status = Image.Null; break
+			case ImageStatusLoaded:	image.status = Image.Ready; break
+			case ImageStatusError:	image.status = Image.Error; break
+		}
 	})
-	image.element.update()
+	element.update()
 }
 
 exports.initText = function(text) {

@@ -154,6 +154,7 @@ Element.prototype.paint = function(renderer) {
 	this.children.forEach(function(child) {
 		child.paint(renderer)
 	})
+	renderer.rect = old
 }
 
 exports.init = function(ctx) {

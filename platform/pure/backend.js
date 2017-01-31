@@ -111,7 +111,7 @@ Element.prototype.update = function() {
 		updateTimer = setTimeout(function() {
 			log('frame paint')
 			updateTimer = undefined
-			updatedItems = new Set()
+			updatedItems.clear()
 			rootItem.paint(renderer, 0, 0)
 		}, 0)
 	}
@@ -151,12 +151,13 @@ Element.prototype.paint = function(renderer, x, y) {
 		return
 
 	var rect = this.getRect()
-	rect.l += x
-	rect.t += y
+	rect.move(x, y)
 	this._paint(renderer, rect)
+	++renderer.depth
 	this.children.forEach(function(child) {
 		child.paint(renderer, rect.l, rect.t)
 	})
+	--renderer.depth
 }
 
 exports.init = function(ctx) {

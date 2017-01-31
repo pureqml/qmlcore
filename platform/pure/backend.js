@@ -146,6 +146,9 @@ Element.prototype.getRect = function() {
 }
 
 Element.prototype.paint = function(renderer) {
+	var visibility = this._styles['visibility']
+	if (visibility === 'hidden')
+		return
 	var old = renderer.rect
 	renderer.rect = this.getRect()
 	renderer.rect.l += old.l

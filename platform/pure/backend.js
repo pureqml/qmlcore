@@ -194,8 +194,8 @@ exports.loadImage = function(image) {
 			case ImageStatusLoaded:	image.status = Image.Ready; break
 			case ImageStatusError:	image.status = Image.Error; break
 		}
+		element.update()
 	})
-	element.update()
 }
 
 exports.initText = function(text) {

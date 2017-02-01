@@ -362,7 +362,8 @@ Object {
 		return false;
 	}
 
-	onVisibleChanged: { this._updateVisibility() }
-	onVisibleInViewChanged: { this._updateVisibility() }
-	setFocus: { this.forceActiveFocus(); }
+	onVisibleChanged:		{ this._updateVisibility() }
+	onVisibleInViewChanged:	{ this._updateVisibility() }
+
+	setFocus:				{ this.forceActiveFocus() }
 }

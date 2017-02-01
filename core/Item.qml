@@ -42,13 +42,22 @@ Object {
 				throw new Error('double ctor call')
 
 			this.createElement(this.getTag())
-			var updateVisibility = function(value) {
-				this._recursiveVisible = value
-				this._updateVisibility()
+			var updateVisibility = function(parentVisible) {
+				this.recursiveVisible = parentVisible && this.visible && this.visibleInView
 			}.bind(this)
 			updateVisibility(parent.recursiveVisible)
 			this.connectOnChanged(parent, 'recursiveVisible', updateVisibility)
 		} //no parent == top level element, skip
+	}
+
+	onVisibleChanged: {
+		this.recursiveVisible = value && this.visibleInView && this.parent.recursiveVisible
+		if (!value)
+			this.parent._tryFocus()
+	}
+
+	onVisibleInViewChanged: {
+		this.recursiveVisible = value && this.visible && this.parent.recursiveVisible
 	}
 
 	function discard() {
@@ -172,20 +181,6 @@ Object {
 			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
 		}
 		_globals.core.Object.prototype._update.apply(this, arguments);
-	}
-
-	/// updates recursive visibility status
-	function _updateVisibility () {
-		if (this._recursiveVisible) {
-			var visible = true;
-			if ('visible' in this) visible = visible && this.visible
-			if ('visibleInView' in this) visible = visible && this.visibleInView
-
-			this.recursiveVisible = visible
-			if (!visible && this.parent)
-				this.parent._tryFocus() //try repair local focus on visibility changed
-		} else
-			this.recursiveVisible = false
 	}
 
 	/// sets current global focus to component
@@ -364,9 +359,6 @@ Object {
 		}
 		return false;
 	}
-
-	onVisibleChanged:		{ this._updateVisibility() }
-	onVisibleInViewChanged:	{ this._updateVisibility() }
 
 	setFocus:				{ this.forceActiveFocus() }
 }

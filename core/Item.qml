@@ -176,13 +176,16 @@ Object {
 
 	/// updates recursive visibility status
 	function _updateVisibility () {
-		var visible = true;
-		if ('visible' in this) visible = visible && this.visible
-		if ('visibleInView' in this) visible = visible && this.visibleInView
+		if (this._recursiveVisible) {
+			var visible = true;
+			if ('visible' in this) visible = visible && this.visible
+			if ('visibleInView' in this) visible = visible && this.visibleInView
 
-		this.recursiveVisible = this._recursiveVisible && visible 
-		if (!visible && this.parent)
-			this.parent._tryFocus() //try repair local focus on visibility changed
+			this.recursiveVisible = visible
+			if (!visible && this.parent)
+				this.parent._tryFocus() //try repair local focus on visibility changed
+		} else
+			this.recursiveVisible = false
 	}
 
 	/// sets current global focus to component

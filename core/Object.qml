@@ -17,7 +17,7 @@ EventEmitter {
 		this._updaters = {}
 	}
 
-	discard: {
+	function discard() {
 		this._changedConnections.forEach(function(connection) {
 			connection[0].removeOnChanged(connection[1], connection[2])
 		})

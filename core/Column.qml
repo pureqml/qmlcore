@@ -40,9 +40,14 @@ Layout {
 
 	function addChild(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
+		
+		if (!('height' in child))
+			return
+
 		var delayedLayout = this._delayedLayout
 		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
+		child.anchors.on('marginsUpdated', delayedLayout.schedule.bind(delayedLayout))
 	}
 
 }

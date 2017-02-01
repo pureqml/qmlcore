@@ -22,6 +22,7 @@ parser.add_argument('--doc', '-D', help='generate documentation in given directo
 parser.add_argument('--doc-format', '-Df', help='documentation format ("qml", "md" or "json")')
 parser.add_argument('--release', '-r', help='generate release code (no logs)', default = False, action = 'store_true')
 parser.add_argument('--verbose', '-v', help='adds verbosity in some places', dest='verbose', default=False, action='store_true')
+parser.add_argument('targets', nargs='*', help='targets to build')
 args = parser.parse_args()
 
 root = os.path.dirname(sys.argv[0])
@@ -251,9 +252,13 @@ platforms = manifest.platforms
 if not platforms:
 	platforms = ['web']
 
+targets = set(args.targets)
+
 try:
 	for platform in platforms:
 		for app in apps:
+			if len(targets) > 0 and app not in targets:
+				continue
 			html = apps[app]
 			build(root, platform, app, html, manifest)
 except Exception as ex:

@@ -37,7 +37,7 @@ Object {
 
 	constructor: {
 		this._topPadding = 0
-		if (this.parent) {
+		if (parent) {
 			if (this.element)
 				throw new Error('double ctor call')
 
@@ -46,8 +46,8 @@ Object {
 				this._recursiveVisible = value
 				this._updateVisibility()
 			}.bind(this)
-			updateVisibility(this.parent.recursiveVisible)
-			this.connectOnChanged(this.parent, 'recursiveVisible', updateVisibility)
+			updateVisibility(parent.recursiveVisible)
+			this.connectOnChanged(parent, 'recursiveVisible', updateVisibility)
 		} //no parent == top level element, skip
 	}
 

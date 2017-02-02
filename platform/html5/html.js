@@ -387,6 +387,7 @@ exports.initImage = function(image) {
 	image._image.onerror = image._onError.bind(image)
 
 	image._image.onload = function() {
+		var natW = tmp.naturalWidth, natH = tmp.naturalHeight
 		image.paintedWidth = tmp.naturalWidth
 		image.paintedHeight = tmp.naturalHeight
 
@@ -402,52 +403,35 @@ exports.initImage = function(image) {
 				break;
 			case image.TileHorizontally:
 				style['background-repeat'] = 'repeat-x'
-				style['background-size'] = tmp.naturalWidth + 'px 100%'
+				style['background-size'] = natW + 'px 100%'
 				break;
-			case image.PreserveAspectFit:
-				style['background-repeat'] = 'no-repeat'
-				style['background-position'] = 'center'
-				var w = image.width
-				var h = image.height
-				var wPart = w / tmp.naturalWidth
-				var hPart = h / tmp.naturalHeight
-				var wRatio = 100
-				var hRatio = 100
-
-				if (wPart === 0) {
-					wPart = hPart
-					w = hPart * tmp.naturalWidth
-				}
-
-				if (hPart === 0) {
-					hPart = wPart
-					h = wPart * tmp.naturalHeight
-				}
-
-				if (wPart > hPart)
-					wRatio = Math.floor(100 / wPart * hPart)
-				else
-					hRatio = Math.floor(100 / hPart * wPart)
-				style['background-size'] = wRatio + '% ' + hRatio + '%'
-				image.paintedWidth = w * wRatio / 100
-				image.paintedHeight = h * hRatio / 100
+			case image.Tile:
+				style['background-repeat'] = 'repeat-y repeat-x'
+				style['background-size'] = 'auto'
 				break;
 			case image.PreserveAspectCrop:
 				style['background-repeat'] = 'no-repeat'
 				style['background-position'] = 'center'
-				var pRatio = tmp.naturalWidth / tmp.naturalHeight
-				var iRatio = image.width / image.height
-				if (pRatio < iRatio) {
-					var hRatio = Math.floor(iRatio / pRatio * 100)
-					style['background-size'] = 100 + '% ' + hRatio + '%'
-				}
-				else {
-					var wRatio = Math.floor(pRatio / iRatio * 100)
-					style['background-size'] = wRatio + '% ' + 100 + '%'
-				}
+				style['background-size'] = 'cover'
 				break;
-			case image.Tile:
-				style['background-repeat'] = 'repeat-y repeat-x'
+			case image.Pad:
+				style['background-repeat'] = 'no-repeat'
+				style['background-position'] = '0% 0%'
+				style['background-size'] = 'auto'
+				break;
+			case image.PreserveAspectFit:
+				style['background-repeat'] = 'no-repeat'
+				style['background-position'] = 'center'
+				style['background-size'] = 'contain'
+				var w = image.width, h = image.height
+				var srcRatio = natW / natH, targetRatio = w / h
+				if (srcRatio > targetRatio) { // img width aligned with target width
+					image.paintedWidth = w;
+					image.paintedHeight = w / srcRatio;
+				} else {
+					image.paintedHeight = h;
+					image.paintedWidth = h * srcRatio;
+				}
 				break;
 		}
 		image.style(style)

@@ -440,7 +440,7 @@ exports.initImage = function(image) {
 			image.width = image.paintedWidth
 		if (!image.height)
 			image.height = image.paintedHeight
-		image.status = Image.Ready
+		image.status = image.Ready
 	}
 }
 

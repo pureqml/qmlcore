@@ -5,7 +5,7 @@ Item {
 	property int paintedWidth;								///< real image width
 	property int paintedHeight;								///< real image height
 
-	property enum fillMode { Stretch, PreserveAspectFit, PreserveAspectCrop, Tile, TileVertically, TileHorizontally };
+	property enum fillMode { Stretch, PreserveAspectFit, PreserveAspectCrop, Tile, TileVertically, TileHorizontally, Pad };
 
 	constructor: {
 		var self = this
@@ -26,7 +26,7 @@ Item {
 	}
 
 	function load() {
-		this.status = (this.source.length === 0)? Image.Null: Image.Loading
+		this.status = (this.source.length === 0) ? Image.Null: Image.Loading
 		this._delayedLoad.schedule()
 	}
 
@@ -34,7 +34,6 @@ Item {
 		switch(name) {
 			case 'width':
 			case 'height':
-//			case 'rotate':
 			case 'fillMode': this.load(); break;
 			case 'source':
 				this.status = value ? this.Loading : this.Null;

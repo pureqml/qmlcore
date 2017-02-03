@@ -42,12 +42,13 @@ Object {
 				throw new Error('double ctor call')
 
 			this.createElement(this.getTag())
-			var updateVisibility = function(parentVisible) {
-				this.recursiveVisible = parentVisible && this.visible && this.visibleInView
-			}.bind(this)
-			updateVisibility(parent.recursiveVisible)
-			this.connectOnChanged(parent, 'recursiveVisible', updateVisibility)
 		} //no parent == top level element, skip
+	}
+
+	onRecursiveVisibleChanged: {
+		this.children.forEach(function(child) {
+			child.recursiveVisible = value && child.visible && child.visibleInView
+		})
 	}
 
 	onVisibleChanged: {

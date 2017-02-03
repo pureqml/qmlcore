@@ -221,7 +221,7 @@ class component_generator(object):
 		base_type = self.get_base_type(registry)
 
 		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
-		r.append("%s%s.constructor = _globals.%s\n" %(ident, self.proto_name, self.name))
+		r.append("%s%s.constructor = %s\n" %(ident, self.proto_name, self.local_name))
 
 		r.append("%s%s.componentName = '%s'" %(ident, self.proto_name, self.name))
 

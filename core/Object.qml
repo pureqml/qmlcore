@@ -1,8 +1,6 @@
 ///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
 	constructor: {
-		_globals.core.EventEmitter.apply(this)
-
 		this.parent = parent
 		this.children = []
 

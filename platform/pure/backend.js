@@ -216,12 +216,16 @@ exports.loadImage = function(image) {
 }
 
 Element.prototype.setHtml = function(html) {
-	this._text.text = html
+	var text = this._text
+	text.text = html
+	this.ui.paintedWidth = text.width
+	this.ui.paintedHeight = text.height
 	this.update()
 }
 
 exports.initText = function(text) {
 	var element = text.element
+	element.ui = text
 	element._text = new Text()
 	element._text.text = text.text
 	element._paint = _paintText

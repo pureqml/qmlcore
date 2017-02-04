@@ -68,7 +68,6 @@ Element.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
 Element.prototype.constructor = Element
 
 Element.prototype.addClass = function(cls) { }
-Element.prototype.setHtml = function(cls) { }
 
 var importantStyles = new Set([
 	'left', 'top', 'width', 'height', 'visibility',
@@ -216,8 +215,15 @@ exports.loadImage = function(image) {
 	})
 }
 
+Element.prototype.setHtml = function(html) {
+	this._text.text = html
+	this.update()
+}
+
 exports.initText = function(text) {
-	text.element._paint = _paintText
+	var element = text.element
+	element._text = new Text()
+	element._paint = _paintText
 }
 
 exports.layoutText = function(text) {

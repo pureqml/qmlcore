@@ -217,8 +217,9 @@ exports.loadImage = function(image) {
 
 Element.prototype.layoutText = function() {
 	var text = this._text, ui = this.ui, font = ui.font
-	if (font)
+	if (text.font !== font)
 		text.font = font
+
 	ui.paintedWidth = text.width
 	ui.paintedHeight = text.height
 	this.update()

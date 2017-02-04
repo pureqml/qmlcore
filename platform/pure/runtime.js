@@ -80,10 +80,11 @@ Renderer.prototype.paintRectangle = function(rect, r, g, b, a) {
 	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
 }
 
-Renderer.prototype.paintText = function(rect) {
+Renderer.prototype.paintText = function(rect, text) {
 	if (!rect.valid())
 		return
-	log(this.prefix() + 'paint text ' + rect)
+	log(this.prefix() + 'paint text ' + rect + ' ' + text)
+	_renderText(rect.l, rect.t, rect.r, rect.b, text)
 }
 
 Renderer.prototype.paintImage = function(rect, image) {

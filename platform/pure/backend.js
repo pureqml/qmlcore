@@ -52,7 +52,7 @@ var _paintImage = function(renderer, rect) {
 }
 
 var _paintText = function(renderer, rect) {
-	renderer.paintText(rect)
+	renderer.paintText(rect, this._text)
 }
 
 var Element = function(context, tag) {
@@ -223,7 +223,9 @@ Element.prototype.setHtml = function(html) {
 exports.initText = function(text) {
 	var element = text.element
 	element._text = new Text()
+	element._text.text = text.text
 	element._paint = _paintText
+	element.update()
 }
 
 exports.layoutText = function(text) {

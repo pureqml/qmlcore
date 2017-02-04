@@ -105,7 +105,14 @@ Element.prototype.style = function(name, style) {
 }
 Element.prototype.updateStyle = function() { }
 
+Element.prototype.visible = function() {
+	var visibility = this._styles['visibility']
+	return visibility !== 'hidden'
+}
+
 Element.prototype.update = function() {
+	if (!this.visible())
+		return
 	updatedItems.add(this)
 	if (updateTimer === undefined) {
 		updateTimer = setTimeout(function() {

@@ -215,12 +215,18 @@ exports.loadImage = function(image) {
 	})
 }
 
-Element.prototype.setHtml = function(html) {
-	var text = this._text
-	text.text = html
-	this.ui.paintedWidth = text.width
-	this.ui.paintedHeight = text.height
+Element.prototype.layoutText = function() {
+	var text = this._text, ui = this.ui, font = ui.font
+	if (font)
+		text.font = font
+	ui.paintedWidth = text.width
+	ui.paintedHeight = text.height
 	this.update()
+}
+
+Element.prototype.setHtml = function(html) {
+	this._text.text = html
+	this.layoutText()
 }
 
 exports.initText = function(text) {
@@ -233,7 +239,7 @@ exports.initText = function(text) {
 }
 
 exports.layoutText = function(text) {
-	text.element.update()
+	text.element.layoutText()
 }
 
 exports.requestAnimationFrame = function(callback) {

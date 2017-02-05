@@ -177,9 +177,9 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
 	switch(type) {
 		case 'enum':
-		case 'int':		convert = function(value) { return parseInt(value, 0) }; break
+		case 'int':		convert = function(value) { return ~~value }; break
 		case 'bool':	convert = function(value) { return value? true: false }; break
-		case 'real':	convert = function(value) { return parseFloat(value) }; break
+		case 'real':	convert = function(value) { return +value }; break
 		case 'string':	convert = function(value) { return String(value) }; break
 		default:		convert = function(value) { return value }; break
 	}

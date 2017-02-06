@@ -51,10 +51,6 @@ var _paintImage = function(renderer, rect) {
 	renderer.paintImage(rect, this._image)
 }
 
-var _paintText = function(renderer, rect) {
-	renderer.paintText(rect, this._text)
-}
-
 var Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
@@ -215,23 +211,43 @@ exports.loadImage = function(image) {
 	})
 }
 
-Element.prototype.layoutText = function() {
-	var text = this._text, ui = this.ui, font = ui.font
-	if (text.font !== font)
-		text.font = font
-
-	ui.paintedWidth = text.width
-	ui.paintedHeight = text.height
-	this.update()
-}
-
 Element.prototype.setHtml = function(html) {
 	this._text.text = html
 	this.layoutText()
 }
 
+Element.prototype.layoutText = function() {
+	var text = this._text, ui = this.ui, font = ui.font
+	if (text.font !== font)
+		text.font = font
+
+	var w = text.width, h = text.height
+	ui.paintedWidth = w
+	ui.paintedHeight = h
+	switch(this._styles['text-align']) {
+		case 'right':
+			this._offsetX = ui.width - w
+			break
+		case 'center':
+			this._offsetX = Math.floor((ui.width - w) / 2)
+			break
+		default:
+			this._offsetX = 0
+			break
+	}
+	// for(var name in this._styles)
+	// 	log('text style', name, this._styles[name])
+	this.update()
+}
+
+var _paintText = function(renderer, rect) {
+	renderer.paintText(rect.moved(this._offsetX, this._offsetY), this._text)
+}
+
 exports.initText = function(text) {
 	var element = text.element
+	element._offsetX = 0
+	element._offsetY = 0
 	element.ui = text
 	element._text = new Text()
 	element._text.text = text.text

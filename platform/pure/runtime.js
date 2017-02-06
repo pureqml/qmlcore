@@ -21,6 +21,10 @@ Rect.prototype.move = function(dx, dy) {
 	this.b += dy
 }
 
+Rect.prototype.moved = function(dx, dy) {
+	return new Rect(this.l + dx, this.t + dy, this.r + dx, this.b + dy)
+}
+
 Rect.prototype.clone = function() {
 	return new Rect(this.l, this.t, this.r, this.b)
 }

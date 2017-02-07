@@ -424,8 +424,12 @@ exports.initImage = function(image) {
 				style['background-position'] = 'center'
 				style['background-size'] = 'contain'
 				var w = image.width, h = image.height
-				var srcRatio = natW / natH, targetRatio = w / h
-				if (srcRatio > targetRatio) { // img width aligned with target width
+				var targetRatio = 0, srcRatio = natW / natH
+				
+				if (w && h)
+					targetRatio = w / h
+
+				if (srcRatio > targetRatio && w) { // img width aligned with target width
 					image.paintedWidth = w;
 					image.paintedHeight = w / srcRatio;
 				} else {

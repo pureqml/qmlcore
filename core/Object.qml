@@ -25,7 +25,6 @@ EventEmitter {
 		this.children = []
 
 		this.parent = null
-		this._context = null
 		this._local = {}
 		this._changedHandlers = {}
 		this._pressedHandlers = {}

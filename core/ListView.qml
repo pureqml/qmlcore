@@ -145,20 +145,24 @@ BaseView {
 
 	function _layout() {
 		var model = this.model;
-		if (!model)
+		if (!model) {
+			this.layoutFinished()
 			return
+		}
 
 		this.count = model.count
 
-		if (!this.recursiveVisible)
+		if (!this.recursiveVisible) {
+			this.layoutFinished()
 			return
+		}
 
 		var horizontal = this.orientation === this.Horizontal
 
 		var items = this._items
 		var n = items.length
 		if (!n) {
-			this.rendered = true
+			this.layoutFinished()
 			return
 		}
 
@@ -227,7 +231,7 @@ BaseView {
 			this.contentWidth = maxW
 			this.contentHeight = p
 		}
-		this.rendered = true
+		this.layoutFinished()
 		if (created)
 			this._context._complete()
 	}

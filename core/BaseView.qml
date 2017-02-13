@@ -1,5 +1,6 @@
 ///base class for all views, holds content, creates delegates and provides common api
 BaseLayout {
+	signal layoutFinished;
 	property Object model;			///< model object to attach to
 	property Item delegate;			///< delegate - template object, filled with model row
 	property int contentX;			///< x offset to visible part of the content surface
@@ -8,7 +9,6 @@ BaseLayout {
 	property int animationDuration: 0;
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
 	property bool pageScrolling: false;
-	property bool rendered: false;
 	property bool trace;
 	property enum positionMode { Beginning, Center, End, Visible, Contain, Page }; ///< position mode for auto-scrolling/position methods
 	contentWidth: 1;				///< content width

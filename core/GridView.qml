@@ -112,19 +112,25 @@ BaseView {
 			return
 
 		var model = this.model;
-		if (!model)
+		if (!model) {
+			this.layoutFinished()
 			return
+		}
 
 		this.count = model.count
-		if (!this.count)
+		if (!this.count) {
+			this.layoutFinished()
 			return
+		}
 
 		var horizontal = this.flow == this.FlowLeftToRight
 
 		var items = this._items
 		var n = items.length
-		if (!n)
+		if (!n) {
+			this.layoutFinished()
 			return
+		}
 
 		var w = this.width, h = this.height
 		//log("layout " + n + " into " + w + "x" + h)
@@ -190,7 +196,7 @@ BaseView {
 			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing
 		}
 		//log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
-		this.rendered = true
+		this.layoutFinished()
 		if (created)
 			this._context._complete()
 	}

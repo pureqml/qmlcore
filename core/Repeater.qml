@@ -2,12 +2,16 @@
 BaseView {
 
 	function _layout() {
-		if (!this.recursiveVisible)
+		if (!this.recursiveVisible) {
+			this.layoutFinished()
 			return
+		}
 
 		var model = this.model;
-		if (!model)
+		if (!model) {
+			this.layoutFinished()
 			return
+		}
 
 		var created = false;
 		var n = this.count = model.count
@@ -19,7 +23,7 @@ BaseView {
 				created = true
 			}
 		}
-		this.rendered = true
+		this.layoutFinished()
 		if (created)
 			this._context._complete()
 	}

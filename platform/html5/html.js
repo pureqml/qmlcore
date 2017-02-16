@@ -388,8 +388,16 @@ exports.initImage = function(image) {
 
 	image._image.onload = function() {
 		var natW = tmp.naturalWidth, natH = tmp.naturalHeight
-		image.paintedWidth = tmp.naturalWidth
-		image.paintedHeight = tmp.naturalHeight
+
+		if (!image.width)
+			image.width = natW
+		if (!image.height)
+			image.height = natH
+
+		if (image.fillMode !== image.PreserveAspectFit) {
+			image.paintedWidth = image.width
+			image.paintedHeight = image.height
+		}
 
 		var style = {'background-image': 'url(' + image.source + ')'}
 		switch(image.fillMode) {
@@ -399,7 +407,7 @@ exports.initImage = function(image) {
 				break;
 			case image.TileVertically:
 				style['background-repeat'] = 'repeat-y'
-				style['background-size'] = '100%'
+				style['background-size'] = '100% ' + natH + 'px'
 				break;
 			case image.TileHorizontally:
 				style['background-repeat'] = 'repeat-x'
@@ -440,10 +448,6 @@ exports.initImage = function(image) {
 		}
 		image.style(style)
 
-		if (!image.width)
-			image.width = image.paintedWidth
-		if (!image.height)
-			image.height = image.paintedHeight
 		image.status = image.Ready
 	}
 }

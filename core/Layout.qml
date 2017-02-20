@@ -1,9 +1,11 @@
+/// base layout component.
 BaseLayout {
-	width: contentWidth;
-	height: contentHeight;
-	handleNavigationKeys: true;
-	keyNavigationWraps: true;
+	width: contentWidth;		///< inner content width
+	height: contentHeight;		///< inner content height
+	handleNavigationKeys: true;	///< handle navigation keys, move focus
+	keyNavigationWraps: true;	///< key navigation wraps from first to last and vise versa
 
+	///move focus to the next child
 	focusNextChild: {
 		var idx = 0;
 		if (this.focusedChild)
@@ -17,6 +19,7 @@ BaseLayout {
 		this.focusChild(this.children[idx])
 	}
 
+	///move focus to the previous child
 	focusPrevChild: {
 		var idx = 0;
 		if (this.focusedChild)
@@ -30,5 +33,6 @@ BaseLayout {
 		this.focusChild(this.children[idx])
 	}
 
+	///@private
 	onCompleted: { this._delayedLayout.schedule() }
 }

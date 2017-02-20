@@ -16,8 +16,10 @@ Item {
 		}.bind(this))
 	}
 
+	///@private
 	function _processUpdates() { }
 
+	///@private
 	function _update(name, value) {
 		switch(name) {
 			case 'spacing': this._delayedLayout.schedule(); break;

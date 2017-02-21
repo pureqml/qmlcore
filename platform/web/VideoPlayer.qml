@@ -5,7 +5,7 @@ Item {
 	property Color	backgroundColor: "#000";
 	property float	volume: 1.0;
 	property bool	loop: false;
-	property bool	flash: true;
+	property bool	flash: false;
 	property bool	ready: false;
 	property bool	muted: false;
 	property bool	paused: false;
@@ -74,7 +74,7 @@ Item {
 		if (!this.flash) {
 			this.element.dom.currentTime += value
 		} else {
-			var player = parent.getFlashMovieObject('videoPlayer')
+			var player = this.parent.getFlashMovieObject('videoPlayer')
 			player.playerSeek(player.getPosition() + value)
 		}
 	}
@@ -83,7 +83,7 @@ Item {
 		if (!this.flash) {
 			this.element.dom.currentTime = value
 		} else {
-			var player = parent.getFlashMovieObject('videoPlayer')
+			var player = this.parent.getFlashMovieObject('videoPlayer')
 			player.playerSeek(value)
 		}
 	}
@@ -291,6 +291,6 @@ Item {
 		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0
 
 		if (!this.flash)
-			player.dom.style.backgroundColor = this.backgroundColor;
+			this.element.dom.style.backgroundColor = this.backgroundColor;
 	}
 }

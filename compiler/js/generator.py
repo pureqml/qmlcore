@@ -207,7 +207,9 @@ class generator(object):
 		text += "%s\n" %self.generate_imports()
 
 		text = "%s = %s();\n" %(self.ns, self.wrap(text))
+		return self.replace_args(text)
 
+	def replace_args(self, text):
 		#COPY_ARGS optimization
 		def copy_args(m):
 			def expr(var, op, idx):

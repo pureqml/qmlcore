@@ -175,6 +175,8 @@ def generate():
 			with open(init_path) as f:
 				init_js += f.read()
 
+	init_js = generator.replace_args(init_js)
+
 	process_files(generator, args.app, project_dirs)
 	if args.verbose:
 		print "generating sources..."

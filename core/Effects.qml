@@ -32,7 +32,7 @@ Object {
 	}
 
 	/// @private
-	function _updateStyle() {
+	function _updateStyle(updateShadow) {
 		var filterStyle = this._getFilterStyle().join('')
 		var parent = this.parent
 
@@ -47,7 +47,7 @@ Object {
 			updateStyle = true
 		}
 
-		if (this.shadow && !this.shadow._empty()) {
+		if (this.shadow && (!this.shadow._empty() || updateShadow)) {
 			style['box-shadow'] = this.shadow._getFilterStyle()
 			updateStyle = true
 		}

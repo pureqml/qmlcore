@@ -8,7 +8,7 @@ Object {
 
 	/// @private
 	function _update(name, value) {
-		this.parent._updateStyle()
+		this.parent._updateStyle(true)
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 

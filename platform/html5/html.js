@@ -387,6 +387,8 @@ exports.initImage = function(image) {
 	image._image.onerror = image._onError.bind(image)
 
 	image._image.onload = function() {
+		image.sourceWidth = tmp.naturalWidth
+		image.sourceHeight = tmp.naturalHeight
 		var natW = tmp.naturalWidth, natH = tmp.naturalHeight
 
 		if (!image.width)

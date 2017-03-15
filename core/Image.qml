@@ -2,8 +2,10 @@ Item {
 	property enum status { Null, Ready, Loading, Error };	///< image status
 	property string source;									///< image URL
 
-	property int paintedWidth;								///< real image width
-	property int paintedHeight;								///< real image height
+	property int paintedWidth;								///< actually painted image width
+	property int paintedHeight;								///< actually painted image height
+	property int sourceWidth; 								///< actual width of loaded image
+	property int sourceHeight; 								///< actual height of loaded image
 
 	property enum fillMode { Stretch, PreserveAspectFit, PreserveAspectCrop, Tile, TileVertically, TileHorizontally, Pad };
 

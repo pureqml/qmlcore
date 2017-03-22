@@ -4,6 +4,7 @@ from compiler import manifest as mf
 
 import subprocess
 import argparse
+import shutil
 import re
 import sys
 import os
@@ -115,7 +116,7 @@ def copy(source, destination, context):
 	if not path.isdir(source):
 		return
 	files = [path.join(source, file_) for file_ in os.listdir(source)]
-	copy_src = []
+	copytree(source, destination)
 	for src in files:
 		_path, name = path.split(src)
 		if name == 'index.html':
@@ -127,11 +128,7 @@ def copy(source, destination, context):
 					process_template(destination, src, context)
 				else:
 					if name not in context['apps']: #skip templates used for another apps.
-						copy_src.append(src)
-			else:
-				copy_src.append(src)
-	if copy_src:
-		call(['cp', '-r'] + copy_src + [destination])
+						shutil.copy2(src, destination)
 
 def find_platform_path(root, platform):
 	platform_path = path.join(root, 'platform', platform)
@@ -146,9 +143,24 @@ def find_platform_path(root, platform):
 				return platform_path
 	raise Exception("no platform '%s' found" %platform)
 
+
+def copytree(src, dst, symlinks=False, ignore=None):
+        for item in os.listdir(src):
+            s = os.path.join(src, item)
+            d = os.path.join(dst, item)
+            if os.path.isdir(s):
+                shutil.copytree(s, d, symlinks, ignore)
+            else:
+                shutil.copy2(s, d)
+
+
 def build(root, platform, app, html, manifest):
 	print "building %s for %s..." %(app, platform)
 	target = '.app.' + platform
+
+	if path.exists(target):
+		shutil.rmtree(target)
+
 	try:
 		os.mkdir(target)
 	except:
@@ -229,9 +241,6 @@ def build(root, platform, app, html, manifest):
 	context['template_path'] = template_path
 	for dist in template_path:
 		copy(dist, target, context)
-
-	if path.isdir('res'):
-		call(['cp', '-ur', 'res', target])
 
 
 with open('.manifest') as f:

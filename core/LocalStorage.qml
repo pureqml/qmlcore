@@ -1,3 +1,4 @@
+/// object for storing value by key name
 Object {
 	property string name;		///< stored property key name
 	property string value;		///< stored property value

@@ -1,9 +1,10 @@
+/// component for loading custom component dinamycly via its URL
 Item {
-	signal loaded;
+	signal loaded;				///< when requested component it loaded event signal
+	property string source;		///< component's URL
+	property Object item;		///< item for storing requested component
 
-	property string source;
-	property Object item;
-
+	///@private
 	function discardItem() {
 		var item = this.item
 		if (item) {
@@ -12,16 +13,19 @@ Item {
 		}
 	}
 
+	///@private
 	function discard() {
 		this.discardItem()
 		_globals.core.Item.prototype.discard.call(this)
 	}
 
+	///@internal
 	onSourceChanged: {
 		this.discardItem()
 		this._load()
 	}
 
+	///@internal
 	function _load() {
 		var source = this.source
 		if (!source)
@@ -44,6 +48,7 @@ Item {
 		this.loaded()
 	}
 
+	///@internal
 	onCompleted: {
 		this._load()
 	}

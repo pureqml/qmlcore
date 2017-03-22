@@ -1,25 +1,27 @@
 Object {
-	property string name;
-	property string value;
+	property string name;		///< stored property key name
+	property string value;		///< stored property value
 
+	///@internal
 	onNameChanged: {
 		this.read()
 	}
 
+	///@internal
 	onValueChanged: {
 		this.init()
-		//log("localStorage: write", this.name, this.value)
 		this._storage.setItem(this.name, this.value)
 	}
 
+	///@private
 	read: {
 		this.init()
 		var value = this.name? this._storage.getItem(this.name): "";
 		if (value !== null && value !== undefined)
 			this.value = value
-		//log("localStorage: read", this.name, this.value)
 	}
 
+	///@private
 	init: {
 		if (!this._storage) {
 			this._storage = window.localStorage;
@@ -28,6 +30,7 @@ Object {
 		}
 	}
 
+	///@private
 	onCompleted: {
 		this.read()
 	}

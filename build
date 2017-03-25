@@ -41,9 +41,13 @@ if args.boilerplate:
 	sys.exit(0)
 
 def call(*args, **kw):
-	code = subprocess.call(*args, **kw)
-	if code != 0:
-		raise Exception('command %s failed with code %d' %(" ".join(*args), code))
+	if os.name == 'nt':
+		cmd = ['cmd', '/c'] +  list(args)[0]
+		code = subprocess.call(cmd)
+	else:
+		code = subprocess.call(*args, **kw)
+		if code != 0:
+			raise Exception('command %s failed with code %d' %(" ".join(*args), code))
 
 def minify_uglify(out, src, root, app, platform, manifest):
 	call(["uglifyjs",
@@ -153,7 +157,6 @@ def copytree(src, dst, symlinks=False, ignore=None):
             else:
                 shutil.copy2(s, d)
 
-
 def build(root, platform, app, html, manifest):
 	print "building %s for %s..." %(app, platform)
 	target = '.app.' + platform
@@ -209,7 +212,10 @@ def build(root, platform, app, html, manifest):
 	if args.verbose:
 		options.insert(0, '-v')
 
-	call([path.join(root, 'qml-compiler')] + options)
+	if os.name == 'nt':
+		call(['python.exe', path.join(root, 'qml-compiler')] + options)
+	else:
+		call([path.join(root, 'qml-compiler')] + options)
 	script = 'qml.%s.js' %app #fixme
 
 	if args.minify or manifest.minify:

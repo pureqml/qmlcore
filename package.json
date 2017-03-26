@@ -1,7 +1,7 @@
 {
   "name": "qmlcore",
   "version": "0.9.0",
-  "description": "QMLCore - fully featured qml transpiler",
+  "description": "QML to HTML5 translator, both for mobile and desktop targets",
   "repository": {
     "type": "git",
     "url": "git://github.com/pureqml/qmlcore"

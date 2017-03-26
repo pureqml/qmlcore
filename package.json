@@ -1,6 +1,6 @@
 {
   "name": "qmlcore",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "QML to HTML5 translator, both for mobile and desktop targets",
   "repository": {
     "type": "git",

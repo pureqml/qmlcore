@@ -144,7 +144,6 @@ component_declaration = Forward()
 type = Word(alphas, alphanums)
 component_type = Word(srange("[A-Za-z_]"), alphanums + "._")
 identifier = Word(srange("[a-z_]"), alphanums + "_")
-code = originalTextFor(nestedExpr("{", "}", None, None))
 null_value = Keyword("null")
 bool_value = Keyword("true") | Keyword("false")
 bool_value.setParseAction(handle_bool_value)
@@ -165,6 +164,8 @@ quoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
 	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True)
 quoted_string_value.setParseAction(handle_string)
+
+code = originalTextFor(nestedExpr("{", "}", ignoreExpr=(quoted_string_value | cStyleComment | cppStyleComment)))
 
 unquoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = True, multiline=True) | \

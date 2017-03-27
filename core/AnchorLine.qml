@@ -5,5 +5,4 @@ Object {
 	function toScreen() {
 		return this.parent.toScreen()[this.boxIndex]
 	}
-
 }

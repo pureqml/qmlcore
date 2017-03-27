@@ -1,6 +1,6 @@
 ///Animation for color-typed properties
 Animation {
-
+	///@private
 	function interpolate(dst, src, t) {
 		var blend = _globals.core.Animation.prototype.interpolate
 		var dst_c = new _globals.core.Color(dst), src_c = new _globals.core.Color(src);
@@ -10,5 +10,4 @@ Animation {
 		var a = Math.floor(blend(dst_c.a, src_c.a, t))
 		return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 	}
-
 }

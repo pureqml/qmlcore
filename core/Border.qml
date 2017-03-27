@@ -4,11 +4,12 @@ Object {
 	property color color;	///< color of the border
 	property string style;	///< style of the border
 
-	property BorderSide left:	BorderSide	{ name: "left"; }
-	property BorderSide right:	BorderSide	{ name: "right"; }
-	property BorderSide top:	BorderSide	{ name: "top"; }
-	property BorderSide bottom:	BorderSide	{ name: "bottom"; }
+	property BorderSide left:	BorderSide	{ name: "left"; }		///< left border side
+	property BorderSide right:	BorderSide	{ name: "right"; }		///< right border side
+	property BorderSide top:	BorderSide	{ name: "top"; }		///< top border side
+	property BorderSide bottom:	BorderSide	{ name: "bottom"; }		///< bottom border side
 
+	///@private
 	function _update(name, value) {
 		switch(name) {
 			case 'width': this.parent.style({'border-width': value, 'margin-left': -value, 'margin-top': -value}); break;

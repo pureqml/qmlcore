@@ -1,12 +1,12 @@
+///view for displaying models data in grid
 BaseView {
-	property int cellWidth: 100;
-	property int cellHeight: 100;
+	property int cellWidth: 100;	///< grid cell width
+	property int cellHeight: 100;	///< grid cell height
+	property int rows;				///< grids row count (read only)
+	property int columns;			///< grid columns count (read only)
+	property enum flow { FlowLeftToRight, FlowTopToBottom };	///< content filling direction
 
-	property int rows;
-	property int columns;
-
-	property enum flow { FlowLeftToRight, FlowTopToBottom };
-
+	///@private
 	function move(dx, dy) {
 		var horizontal = this.flow == this.FlowLeftToRight
 		var x, y
@@ -27,6 +27,7 @@ BaseView {
 		}
 	}
 
+	///@private
 	onKeyPressed: {
 		if (!this.handleNavigationKeys)
 			return false;
@@ -49,6 +50,7 @@ BaseView {
 		}
 	}
 
+	///@private
 	function getItemPosition(idx) {
 		var horizontal = this.flow == this.FlowLeftToRight
 		var x, y, cw = this.cellWidth, ch = this.cellHeight
@@ -66,6 +68,7 @@ BaseView {
 		return [x, y, cw, ch]
 	}
 
+	///@private
 	function indexAt(x, y) {
 		x -= this.content.x
 		y -= this.content.y
@@ -79,6 +82,7 @@ BaseView {
 		}
 	}
 
+	///@private
 	function positionViewAtIndex(idx) {
 		var cx = this.contentX, cy = this.contentY
 		var itemBox = this.getItemPosition(idx)
@@ -107,6 +111,7 @@ BaseView {
 		}
 	}
 
+	///@private
 	function _layout() {
 		if (!this.recursiveVisible)
 			return
@@ -201,6 +206,6 @@ BaseView {
 			this._context._complete()
 	}
 
-
+	///@private
 	onFlowChanged: { this._delayedLayout.schedule() }
 }

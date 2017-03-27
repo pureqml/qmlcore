@@ -9,17 +9,12 @@ BaseLayout {
 	property int animationDuration: 0;
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
 	property bool pageScrolling: false;
-	property bool trace;
+	property bool trace;			///< @internal
 	property enum positionMode { Beginning, Center, End, Visible, Contain, Page }; ///< position mode for auto-scrolling/position methods
 	contentWidth: 1;				///< content width
 	contentHeight: 1;				///< content height
 	keyNavigationWraps: true;		///< key navigation wraps from end to beginning and vise versa
 	handleNavigationKeys: true;		///< handle navigation keys
-
-	constructor: {
-		this._items = []
-		this._modelUpdate = new _globals.core.model.ModelUpdate()
-	}
 
 	/// returns index of item by x,y coordinates
 	function itemAt(x, y) {
@@ -49,17 +44,25 @@ BaseLayout {
 			this.positionViewAtIndex(idx)
 	}
 
+	/// @private
+	constructor: {
+		this._items = []
+		this._modelUpdate = new _globals.core.model.ModelUpdate()
+	}
+
+	/// @private
 	onFocusedChildChanged: {
 		var idx = this._items.indexOf(this.focusedChild)
 		if (idx >= 0)
 			this.currentIndex = idx
 	}
 
+	/// @private
 	onCurrentIndexChanged: {
 		this.focusCurrent()
 	}
 
-	/** @private */
+	/// @private
 	function _onReset() {
 		var model = this.model
 		if (this.trace)
@@ -69,7 +72,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
-	/** @private */
+	/// @private
 	function _onRowsInserted(begin, end) {
 		if (this.trace)
 			log("rows inserted", begin, end)
@@ -78,7 +81,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
-	/** @private */
+	/// @private
 	function _onRowsChanged(begin, end) {
 		if (this.trace)
 			log("rows changed", begin, end)
@@ -87,7 +90,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
-	/** @private */
+	/// @private
 	function _onRowsRemoved(begin, end) {
 		if (this.trace)
 			log("rows removed", begin, end)
@@ -96,7 +99,7 @@ BaseLayout {
 		this._delayedLayout.schedule()
 	}
 
-	/** @private */
+	/// @private
 	function _attach() {
 		if (this._attached || !this.model || !this.delegate)
 			return
@@ -109,7 +112,7 @@ BaseLayout {
 		this._onReset()
 	}
 
-	/** @private */
+	/// @private
 	function _update(name, value) {
 		switch(name) {
 		case 'delegate':
@@ -141,6 +144,7 @@ BaseLayout {
 		return item
 	}
 
+	/// @private
 	function _updateDelegate(idx) {
 		var item = this._items[idx]
 		if (item) {
@@ -151,6 +155,7 @@ BaseLayout {
 		}
 	}
 
+	/// @private
 	function _updateDelegateIndex(idx) {
 		var item = this._items[idx]
 		if (item) {
@@ -159,6 +164,7 @@ BaseLayout {
 		}
 	}
 
+	/// @private
 	function _discardItem(item) {
 		if (item === null)
 			return
@@ -167,6 +173,7 @@ BaseLayout {
 		item.discard()
 	}
 
+	/// @private
 	function _insertItems(begin, end) {
 		var n = end - begin + 2
 		var args = Array(n)
@@ -177,32 +184,46 @@ BaseLayout {
 		Array.prototype.splice.apply(this._items, args)
 	}
 
+	/// @private
 	function _removeItems(begin, end) {
 		var deleted = this._items.splice(begin, end - begin)
 		var view = this
 		deleted.forEach(function(item) { view._discardItem(item)})
 	}
 
+	/// @private
 	function _updateItems(begin, end) {
 		for(var i = begin; i < end; ++i)
 			this._updateDelegate(i)
 	}
 
+	/// @private
 	function _processUpdates() {
 		this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._processUpdates.apply(this)
 	}
 
+	/// @internal
 	property BaseViewContent content: BaseViewContent {
 		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; } }
 	}
 
+	/// @private
 	onContentXChanged: { this.content.x = -value; }
+
+	/// @private
 	onContentYChanged: { this.content.y = -value; }
 
+	/// @private
 	onRecursiveVisibleChanged:	{ if (value) this._delayedLayout.schedule(); }
+
+	/// @private
 	onWidthChanged:				{ this._delayedLayout.schedule() }
+
+	/// @private
 	onHeightChanged:			{ this._delayedLayout.schedule() }
+
+	/// @private
 	onCompleted:				{
 		this._attach();
 		var delayedLayout = this._delayedLayout

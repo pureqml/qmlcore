@@ -1,3 +1,4 @@
+///@private
 CoreObject {
 	constructor: {
 		this._eventHandlers = {}

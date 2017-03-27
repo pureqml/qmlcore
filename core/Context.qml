@@ -1,12 +1,14 @@
+///root item
 Item {
-	property bool fullscreen;
-	property int scrollY;
-	property Stylesheet stylesheet: Stylesheet { }
-	property System system: System { }
-	property Location location: Location { }
-	property Orientation orientation: Orientation { }
-	property string language;
+	property int scrollY;		///< scrolled page vertical offset value
+	property bool fullscreen;	///< fullscreen mode enabled / disabled
+	property string language;	///< localisation language
+	property System system: System { }					///< system info object
+	property Location location: Location { }			///< web-page location object
+	property Stylesheet stylesheet: Stylesheet { }		///< @private
+	property Orientation orientation: Orientation { }	///< screen orientation object
 
+	///@private
 	constructor: {
 		this.options = arguments[2]
 		this.l10n = this.options.l10n || {}
@@ -23,10 +25,12 @@ Item {
 		this.backend = _globals._backend()
 	}
 
+	///@private
 	function getClass(name) {
 		return this._prefix + name
 	}
 
+	///@private
 	function registerStyle(item, tag) {
 		if (!(tag in this._stylesRegistered)) {
 			item.registerStyle(this.stylesheet, tag)
@@ -34,6 +38,7 @@ Item {
 		}
 	}
 
+	///@private
 	function createElement(tag) {
 		var el = this.backend.createElement(this, tag)
 		if (this._prefix) {
@@ -42,15 +47,18 @@ Item {
 		return el
 	}
 
+	///@private
 	function init() {
 		log('Context: initializing...')
 		new this.backend.init(this)
 	}
 
+	///@private
 	function _onCompleted(callback) {
 		this._completedHandlers.push(callback);
 	}
 
+	///@private
 	function _update(name, value) {
 		switch(name) {
 			case 'fullscreen': if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); break
@@ -58,6 +66,7 @@ Item {
 		_globals.core.Item.prototype._update.apply(this, arguments)
 	}
 
+	///@private
 	function _complete() {
 		if (!this._started || this._runningComplete)
 			return
@@ -77,6 +86,7 @@ Item {
 		this._runningComplete = false
 	}
 
+	///@private
 	function start(instance) {
 		var closure = {}
 		instance.__create(closure)
@@ -91,6 +101,7 @@ Item {
 		return instance;
 	}
 
+	///@private
 	function _processActions() {
 		var invoker = _globals.core.safeCall(this, [], function (ex) { log('exception in delayed action', ex, ex.stack) })
 		while (this._delayedActions.length) {
@@ -101,12 +112,15 @@ Item {
 		this._delayedTimeout = undefined
 	}
 
+	///@private
 	function scheduleAction(action) {
 		this._delayedActions.push(action)
 		if (this._completed && this._delayedTimeout === undefined) //do not schedule any processing before creation process ends
 			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
 	}
 
+	/**@param text:string text that must be translated
+	Returns input text translation*/
 	function qsTr(text) {
 		var args = arguments
 		var lang = this.language
@@ -119,14 +133,15 @@ Item {
 		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
 	}
 
+	///@private
 	function run() {
 		this.backend.run(this)
 	}
 
+	///@private
 	function _run() {
 		log('Context: calling completed()')
 		this._complete()
 		this.style('visibility', 'visible')
 	}
-
 }

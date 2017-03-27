@@ -8,7 +8,6 @@ BaseLayout {
 	property int scrollingStep: 0;	///< scrolling step
 	property int animationDuration: 0;
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
-	property bool pageScrolling: false;
 	property bool trace;			///< @internal
 	property enum positionMode { Beginning, Center, End, Visible, Contain, Page }; ///< position mode for auto-scrolling/position methods
 	contentWidth: 1;				///< content width

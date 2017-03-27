@@ -1,29 +1,29 @@
-/// Grid is a usefull way to automatically position its children 
+/// Grid is a usefull way to automatically position its children
 Layout {
 	property int horizontalSpacing; ///< horizontal spacing between rows, overrides regular spacing, pixels
 	property int verticalSpacing; ///< vertical spacing between columns, overrides regular spacing, pixels
 	property int rowsCount; ///< read-only property, represents number of row in a grid
+	property enum horizontalAlignment { AlignLeft, AlignRight, AlignHCenter, AlignJustify };	///< content horizontal alignment
+	property enum flow { FlowTopToBottom, FlowLeftToRight };	///< content filling direction
 
-	property enum horizontalAlignment {
-		AlignLeft, AlignRight, AlignHCenter, AlignJustify
-	};
-
-	property enum flow { FlowTopToBottom, FlowLeftToRight };
-
+	///@private
 	onWidthChanged: {
 		if (this.flow == this.FlowTopToBottom)
-			this._delayedLayout.schedule() 
+			this._delayedLayout.schedule()
 	}
 
+	///@private
 	onHeightChanged: {
 		if (this.flow == this.FlowLeftToRight)
-			this._delayedLayout.schedule() 
+			this._delayedLayout.schedule()
 	}
 
-	onFlowChanged: { 
-		this._delayedLayout.schedule() 
+	///@private
+	onFlowChanged: {
+		this._delayedLayout.schedule()
 	}
 
+	///@private
 	function _layout() {
 		var children = this.children;
 		var crossPos = 0, directPos = 0, crossMax = 0, directMax = 0;
@@ -89,13 +89,13 @@ Layout {
 					crossMax = crossPos - csp;
 			}
 		}
-		
+
 		this.rowsCount = rows.length;
 		rows.push({idx: children.length, size: crossPos - csp}) // add last point
 
 		this.contentHeight = horizontal ? crossMax : directMax;
 		this.contentWidth = horizontal ? directMax : crossMax;
-		
+
 		if (this.horizontalAlignment === this.AlignLeft)
 			return
 
@@ -137,6 +137,7 @@ Layout {
  		}
 	}
 
+	///@private
 	function addChild(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout
@@ -148,11 +149,12 @@ Layout {
 		}
 	}
 
+	///@private
 	function _update(name, value) {
 		switch(name) {
 			case 'horizontalSpacing':
 			case 'verticalSpacing':
-			case 'horizontalAlignment': 
+			case 'horizontalAlignment':
 				this._delayedLayout.schedule(); break;
 		}
 		_globals.core.Layout.prototype._update.apply(this, arguments);

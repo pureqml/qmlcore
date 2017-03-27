@@ -1,5 +1,6 @@
+/// this mixin provides mouse hover events handling
 Object {
-	property bool enabled: true;
+	property bool enabled: true;				///< enable/disable mixin
 	property bool clickable: true;
 	property bool activeHoverEnabled: false;
 	property bool value;
@@ -8,7 +9,7 @@ Object {
 
 	constructor: {
 		this.element = this.parent.element;
-		this.parent.style('cursor', this.cursor) 
+		this.parent.style('cursor', this.cursor)
 		this._bindClick(this.clickable)
 		this._bindHover(this.enabled)
 		this._bindActiveHover(this.activeHoverEnabled)

@@ -1,11 +1,14 @@
+/// gradient filled area, just place GradientStop in its scope
 Object {
-	property enum orientation { Vertical, Horizontal, BottomRight, TopRight, Custom };
-	property real angle;
+	property enum orientation { Vertical, Horizontal, BottomRight, TopRight, Custom };	///< gradient direction enumaration
+	property real angle;	///< angle for custom orientated gradient
 
+	///@private
 	constructor: {
 		this.stops = []
 	}
 
+	///@private
 	function addChild(child) {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		if (child instanceof _globals.core.GradientStop) {
@@ -15,12 +18,14 @@ Object {
 		}
 	}
 
+	///@private
 	function _update() {
 		var decl = this._getDeclaration()
 		if (decl)
 			this.parent.style({ 'background-color': '', 'background': 'linear-gradient(' + decl + ')' })
 	}
 
+	///@private
 	function _getDeclaration() {
 		var stops = this.stops
 		var n = stops.length
@@ -47,6 +52,7 @@ Object {
 		return decl.join()
 	}
 
+	///@private
 	onCompleted: {
 		this.parent._update('gradient', this)
 	}

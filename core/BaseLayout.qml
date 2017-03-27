@@ -8,6 +8,7 @@ Item {
 	property bool keyNavigationWraps;		///< key navigation wraps from first to last and vise versa
 	property bool handleNavigationKeys;		///< handle navigation keys, move focus
 
+	///@private
 	constructor: {
 		this.count = 0
 		this._delayedLayout = new _globals.core.DelayedAction(this._context, function() {

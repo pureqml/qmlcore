@@ -1,24 +1,23 @@
 ///Anchors, generic class to handle auto-adjusting positioning, used in Item
-
 Object {
-	property AnchorLine bottom;
-	property AnchorLine verticalCenter;
-	property AnchorLine top;
+	property AnchorLine bottom;				///< bottom anchor line
+	property AnchorLine verticalCenter;		///< target for vertical center
+	property AnchorLine top;				///< top anchor line
 
-	property AnchorLine left;
-	property AnchorLine horizontalCenter;
-	property AnchorLine right;
+	property AnchorLine left;				///< left anchor line
+	property AnchorLine horizontalCenter;	///< target for horizontal center
+	property AnchorLine right;				///< right anchor line
 
-	property Item fill;
-	property Item centerIn;
+	property Item fill;		///< target to fill
+	property Item centerIn;	///< target to place in center of it
 
-	property int margins;
-	property int bottomMargin;
-	property int topMargin;
-	property int leftMargin;
-	property int rightMargin;
+	property int margins;		///< set all margins to same value
+	property int bottomMargin;	///< bottom margin value
+	property int topMargin;		///< top margin value
+	property int leftMargin;	///< left margin value
+	property int rightMargin;	///< right margin value
 
-	signal marginsUpdated;
+	signal marginsUpdated;		///< @private
 
 	/** @private */
 	function _updateLeft() {
@@ -118,6 +117,7 @@ Object {
 		self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm - self.viewY;
 	}
 
+	///@private
 	function _update(name) {
 		var self = this.parent
 		var anchors = this

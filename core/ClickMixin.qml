@@ -1,11 +1,14 @@
+/// This mixin provides mouse click event detecting
 Object {
-	property bool enabled: true;
+	property bool enabled: true;	///< turn mixin on
 
+	///@private
 	constructor: {
 		this.element = this.parent.element;
 		this._bindClick(this.enabled)
 	}
 
+	///@private
 	function _bindClick(value) {
 		if (value && !this._cmClickBinder) {
 			this._cmClickBinder = new _globals.core.EventBinder(this.element)
@@ -15,5 +18,6 @@ Object {
 			this._cmClickBinder.enable(value)
 	}
 
+	///@private
 	onEnabledChanged: { this._bindClick(value) }
 }

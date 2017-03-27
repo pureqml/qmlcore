@@ -1,18 +1,21 @@
+/// Layout for vertical oriented content
 Layout {
+	///@private
 	onKeyPressed: {
 		if (!this.handleNavigationKeys)
 			return false;
 
-		switch(key) {
+		switch (key) {
 			case 'Up':		this.focusPrevChild(); return true;
 			case 'Down':	this.focusNextChild(); return true;
 		}
 	}
 
+	///@private
 	function _layout() {
 		if (!this.recursiveVisible)
 			return
-			
+
 		var children = this.children;
 		var p = 0
 		var w = 0
@@ -21,7 +24,7 @@ Layout {
 			var c = children[i]
 			if (!('height' in c))
 				continue
-				
+
 			var tm = c.anchors.topMargin || c.anchors.margins
 			var bm = c.anchors.bottomMargin || c.anchors.margins
 
@@ -38,9 +41,10 @@ Layout {
 		this.contentHeight = p
 	}
 
+	///@private
 	function addChild(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		
+
 		if (!('height' in child))
 			return
 
@@ -49,5 +53,4 @@ Layout {
 		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
 		child.anchors.on('marginsUpdated', delayedLayout.schedule.bind(delayedLayout))
 	}
-
 }

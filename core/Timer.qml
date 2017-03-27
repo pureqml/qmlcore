@@ -9,10 +9,9 @@ Object {
 
 	/// restart timer, activate if stopped
 	restart:	{ this._restart(); this.running = true; }
+
 	/// stops timer
 	stop:		{ this.running = false; }
-
-	onTriggered: { if (!this.repeat) this.running = false }
 
 	/// starts timer
 	start: {
@@ -22,17 +21,22 @@ Object {
 			this._emitTriggered();
 	}
 
+	/// @private
+	onTriggered: { if (!this.repeat) this.running = false }
+
+	/// @private
 	onRunningChanged: {
 		if (value && this.triggeredOnStart)
 			this.triggered()
 	}
 
+	/// @private
 	onCompleted: {
 		if (this.running && this.triggeredOnStart)
 			this.triggered()
 	}
 
-	/** @private */
+	/// @private
 	function _update(name, value) {
 		switch(name) {
 			case 'running': this._restart(); break;
@@ -42,6 +46,7 @@ Object {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
+	/// @private
 	function _restart() {
 		if (this._timeout) {
 			clearTimeout(this._timeout);

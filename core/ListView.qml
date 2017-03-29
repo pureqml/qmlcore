@@ -1,6 +1,8 @@
+///single direction (vertical or horizontal) oriented view
 BaseView {
-	property enum orientation { Vertical, Horizontal };
+	property enum orientation { Vertical, Horizontal };	///< orientation direction
 
+	///@orivate
 	function move(dx, dy) {
 		var horizontal = this.orientation == this.Horizontal
 		var x, y
@@ -21,6 +23,7 @@ BaseView {
 		}
 	}
 
+	///@orivate
 	function positionViewAtIndex(idx) {
 		var cx = this.contentX, cy = this.contentY
 		var itemBox = this.getItemPosition(idx)
@@ -53,7 +56,7 @@ BaseView {
 		}
 	}
 
-
+	///@orivate
 	onKeyPressed: {
 		if (!this.handleNavigationKeys) {
 			event.accepted = false;
@@ -91,6 +94,7 @@ BaseView {
 		}
 	}
 
+	///@orivate
 	function getItemPosition(idx) {
 		var items = this._items
 		var item = items[idx]
@@ -117,6 +121,7 @@ BaseView {
 			return [item.viewX + item.x, item.viewY + item.y, item.width, item.height]
 	}
 
+	///@orivate
 	function indexAt(x, y) {
 		var items = this._items
 		x += this.contentX
@@ -143,6 +148,7 @@ BaseView {
 		return -1
 	}
 
+	///@orivate
 	function _layout() {
 		var model = this.model;
 		if (!model) {
@@ -247,5 +253,6 @@ BaseView {
 		return item
 	}
 
+	///@orivate
 	onOrientationChanged: { this._delayedLayout.schedule() }
 }

@@ -35,6 +35,7 @@ Object {
 	property int viewX;						///< x position in view (if any)
 	property int viewY;						///< y position in view (if any)
 
+	///@private
 	constructor: {
 		this._topPadding = 0
 		if (parent) {
@@ -45,22 +46,26 @@ Object {
 		} //no parent == top level element, skip
 	}
 
+	///@private
 	onRecursiveVisibleChanged: {
 		this.children.forEach(function(child) {
 			child.recursiveVisible = value && child.visible && child.visibleInView
 		})
 	}
 
+	///@private
 	onVisibleChanged: {
 		this.recursiveVisible = value && this.visibleInView && this.parent.recursiveVisible
 		if (!value)
 			this.parent._tryFocus()
 	}
 
+	///@private
 	onVisibleInViewChanged: {
 		this.recursiveVisible = value && this.visible && this.parent.recursiveVisible
 	}
 
+	///@private
 	function discard() {
 		_globals.core.Object.prototype.discard.apply(this)
 		this.focusedChild = null
@@ -71,6 +76,7 @@ Object {
 	/// returns tag for corresponding element
 	function getTag() { return 'div' }
 
+	///@private
 	function registerStyle(style, tag) {
 		style.addRule(tag, 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
 	}
@@ -99,7 +105,7 @@ Object {
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
-	/// tries to set animation on name using css transitions, returns true on success
+	///@private tries to set animation on name using css transitions, returns true on success
 	function _updateAnimation(name, animation) {
 		if (!this._context.backend.capabilities.csstransitions || (animation && !animation.cssTransition))
 			return false
@@ -117,13 +123,13 @@ Object {
 		}
 	}
 
-	/// sets animation on given property
-	function setAnimation (name, animation) {
+	///@private sets animation on given property
+	function setAnimation(name, animation) {
 		if (!this._updateAnimation(name, animation))
 			_globals.core.Object.prototype.setAnimation.apply(this, arguments);
 	}
 
-	/// passes style (or styles { a:, b:, c: ... }) to underlying element
+	///@private passes style (or styles { a:, b:, c: ... }) to underlying element
 	function style(name, style) {
 		var element = this.element
 		if (element)
@@ -132,14 +138,14 @@ Object {
 			log('WARNING: style skipped:', name, style)
 	}
 
-	/// adds child, focus it if child accepts focus
+	///@private adds child, focus it if child accepts focus
 	function addChild (child) {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
 	}
 
-	/// returns css rule by property name
+	///@private returns css rule by property name
 	function _mapCSSAttribute (name) {
 		return { width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', transform: 'transform', visible: 'visibility', visibleInView: 'visibility', background: 'background', color: 'color', font: 'font' }[name]
 	}
@@ -184,8 +190,8 @@ Object {
 		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
-	/// sets current global focus to component
-	function forceActiveFocus () {
+	///@private sets current global focus to component
+	function forceActiveFocus() {
 		var item = this;
 		while(item.parent) {
 			item.parent._focusChild(item);
@@ -193,7 +199,7 @@ Object {
 		}
 	}
 
-	/// tries to focus children or item itself
+	///@private tries to focus children or item itself
 	function _tryFocus () {
 		if (!this.visible)
 			return false
@@ -212,7 +218,7 @@ Object {
 		return this.focus
 	}
 
-	/// propagates focus to parent, if not set there
+	///@private propagates focus to parent, if not set there
 	function _propagateFocusToParents () {
 		var item = this;
 		while(item.parent && (!item.parent.focusedChild || !item.parent.focusedChild.visible)) {
@@ -221,7 +227,7 @@ Object {
 		}
 	}
 
-	/// returns status of global focus
+	///@private returns status of global focus
 	function hasActiveFocus () {
 		var item = this
 		while(item.parent) {
@@ -240,6 +246,7 @@ Object {
 			this.focusedChild._focusTree(active);
 	}
 
+	///@private
 	function _focusChild  (child) {
 		if (child.parent !== this)
 			throw new Error('invalid object passed as child')
@@ -252,11 +259,13 @@ Object {
 			this.focusedChild._focusTree(this.hasActiveFocus())
 	}
 
+	///@private
 	function focusChild (child) {
 		this._propagateFocusToParents()
 		this._focusChild(child)
 	}
 
+	///@private
 	function setTransition(name, animation) {
 		var backend = this._context.backend
 		if (!backend.capabilities.csstransitions)
@@ -306,12 +315,14 @@ Object {
 		return true
 	}
 
+	///@private
 	function _updateStyle() {
 		var element = this.element
 		if (element)
 			element.updateStyle()
 	}
 
+	///@private
 	function _processKey(event) {
 		this._tryFocus() //soft-restore focus for invisible components
 		if (this.focusedChild && this.focusedChild.visible) {
@@ -361,5 +372,6 @@ Object {
 		return false;
 	}
 
-	setFocus:				{ this.forceActiveFocus() }
+	/// focus this item
+	setFocus: { this.forceActiveFocus() }
 }

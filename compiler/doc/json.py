@@ -56,7 +56,7 @@ class Component(object):
                                 argText += '{ "name": "' + paramName + '", "type": "' + paramType + '", "text": "' + paramText + '" }'
                                 argText += ", "
                                 paramCount += 1
-                            if paramCount > 1:
+                            if paramCount > 0:
                                 argText = argText[0:-2]
                             argText += "], "
 

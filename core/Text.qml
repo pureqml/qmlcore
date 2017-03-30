@@ -1,28 +1,18 @@
+/// item with text
 Item {
 	property string text;		///< text to be displayed
 	property color color;		///< color of the text
-	property Shadow shadow: Shadow { }
-
-	property enum wrapMode {
-		NoWrap, WordWrap, WrapAnywhere, Wrap
-	};
-
-	property enum horizontalAlignment {
-		AlignLeft, AlignRight, AlignHCenter, AlignJustify
-	};
-
-	property enum verticalAlignment {
-		AlignTop, AlignBottom, AlignVCenter
-	};
-
-	property Font font: Font {}
-
+	property Shadow shadow: Shadow { }	///< text shadow object
+	property Font font: Font { }	///< text font object
+	property enum horizontalAlignment { AlignLeft, AlignRight, AlignHCenter, AlignJustify };	///< text horizontal alignment
+	property enum verticalAlignment { AlignTop, AlignBottom, AlignVCenter };	///< text vertical alignment
+	property enum wrapMode { NoWrap, WordWrap, WrapAnywhere, Wrap };	///< multiline text wrap mode
 	property int paintedWidth;		///< real width of the text without any layout applied
 	property int paintedHeight;		///< real height of this text without any layout applied
+	width: paintedWidth;	///< @private
+	height: paintedHeight;	///< @private
 
-	width: paintedWidth;
-	height: paintedHeight;
-
+	///@private
 	constructor: {
 		this._context.backend.initText(this)
 		this._setText(this.text)
@@ -32,10 +22,12 @@ Item {
 		})
 	}
 
+	///@private
 	function _setText(html) {
 		this.element.setHtml(html)
 	}
 
+	///@private
 	function onChanged (name, callback) {
 		if (!this._updateSizeNeeded) {
 			switch(name) {
@@ -51,6 +43,7 @@ Item {
 		_globals.core.Object.prototype.onChanged.apply(this, arguments);
 	}
 
+	///@private
 	function on(name, callback) {
 		if (!this._updateSizeNeeded) {
 			if (name == 'boxChanged')
@@ -59,6 +52,7 @@ Item {
 		_globals.core.Object.prototype.on.apply(this, arguments)
 	}
 
+	///@private
 	function _updateStyle() {
 		if (this.shadow && !this.shadow._empty())
 			this.style('text-shadow', this.shadow._getFilterStyle())
@@ -67,16 +61,19 @@ Item {
 		_globals.core.Item.prototype._updateStyle.apply(this, arguments)
 	}
 
+	///@private
 	function _enableSizeUpdate() {
 		this._updateSizeNeeded = true
 		this._updateSize()
 	}
 
+	///@private
 	function _updateSize() {
 		if (this._updateSizeNeeded)
 			this._delayedUpdateSize.schedule()
 	}
 
+	///@private
 	function _updateSizeImpl() {
 		if (this.text.length === 0) {
 			this.paintedWidth = 0
@@ -87,6 +84,7 @@ Item {
 		this._context.backend.layoutText(this)
 	}
 
+	///@private
 	function _update(name, value) {
 		switch(name) {
 			case 'text': this._setText(value); this._updateSize(); break;

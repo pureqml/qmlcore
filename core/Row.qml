@@ -1,4 +1,6 @@
+/// layout for horizontal oriented content
 Layout {
+	///@private
 	onKeyPressed: {
 		if (!this.handleNavigationKeys)
 			return false;
@@ -9,10 +11,11 @@ Layout {
 		}
 	}
 
+	///@private
 	function _layout() {
 		if (!this.recursiveVisible)
 			return
-			
+
 		var children = this.children;
 		var p = 0
 		var h = 0
@@ -34,6 +37,7 @@ Layout {
 		this.contentHeight = h
 	}
 
+	///@private
 	function addChild(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
 		var delayedLayout = this._delayedLayout

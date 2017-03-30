@@ -1,20 +1,22 @@
 /// class controlling object transformation
 Object {
-	property int perspective;
-	property int translateX;
-	property int translateY;
-	property int translateZ;
-	property real rotateX;
-	property real rotateY;
-	property real rotateZ;
-	property real rotate;
-	property real scaleX;
-	property real scaleY;
-	property real skewX;
-	property real skewY;
+	property int perspective;	///< perspective transformation
+	property int translateX;	///< x-translate
+	property int translateY;	///< y-translate
+	property int translateZ;	///< z-translate
+	property real rotateX;		///< x-axis rotation
+	property real rotateY;		///< y-axis rotation
+	property real rotateZ;		///< z-axis rotation
+	property real rotate;		///< rotate relative transform point
+	property real scaleX;		///< horizontal scale
+	property real scaleY;		///< vertical scale
+	property real skewX;		///< horizontal skew
+	property real skewY;		///< vertical skew
 
+	///@private
 	constructor: { this._transforms = {} }
 
+	///@private
 	function _update(name, value) {
 		switch(name) {
 			case 'perspective':	this._transforms['perspective'] = value + 'px'; break;

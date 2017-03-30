@@ -1,6 +1,7 @@
 ///The simplest view implementation, creates elements without positioning
 BaseView {
 
+	///@private
 	function _layout() {
 		if (!this.recursiveVisible) {
 			this.layoutFinished()
@@ -27,5 +28,4 @@ BaseView {
 		if (created)
 			this._context._complete()
 	}
-
 }

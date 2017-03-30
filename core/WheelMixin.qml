@@ -1,12 +1,15 @@
+/// mixin for wheel events
 Object {
-	signal wheel;
-	property bool enabled: true;
+	signal wheel;	///< wheel move signal
+	property bool enabled: true;	///< enable mixin
 
+	///@private
 	constructor: {
 		this.element = this.parent.element;
 		this._bindWheel(this.enabled)
 	}
 
+	///@private
 	function _bindWheel(value) {
 		if (value && !this._wheelBinder) {
 			this._wheelBinder = new _globals.core.EventBinder(this.parent.element)
@@ -16,5 +19,6 @@ Object {
 			this._wheelBinder.enable(value)
 	}
 
+	///@private
 	onEnabledChanged: { this._bindWheel(value) }
 }

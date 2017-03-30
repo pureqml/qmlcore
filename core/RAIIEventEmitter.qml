@@ -1,13 +1,17 @@
+///@private
 EventEmitter {
+	///@private
 	constructor: {
 		this._onFirstListener = {}
 		this._onLastListener = {}
 	}
 
+	///@private
 	function discard() {
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}
 
+	///@private
 	function on (name, callback) {
 		if (!(name in this._eventHandlers)) {
 			if (name in this._onFirstListener) {
@@ -23,11 +27,13 @@ EventEmitter {
 		_globals.core.EventEmitter.prototype.on.call(this, name, callback)
 	}
 
+	///@private
 	function onListener (name, first, last) {
 		this._onFirstListener[name] = first
 		this._onLastListener[name] = last
 	}
 
+	///@private
 	function removeAllListeners(name) {
 		_globals.core.EventEmitter.prototype.removeAllListeners.call(this, name)
 		if (name in this._onLastListener)

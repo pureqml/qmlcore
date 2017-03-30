@@ -2,7 +2,7 @@
 Layout {
 	property int currentIndex: 0;	///< index of displaying child
 	property int count: 0;			///< childrens count
-	clip: true;
+	clip: true;	///@private
 
 	/// @private
 	onCurrentIndexChanged: {

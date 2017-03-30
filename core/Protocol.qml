@@ -2,7 +2,8 @@
 Object {
 	property bool loading: false;	///< loading flag, is true when request was send and false when answer was recieved or error occured
 
-	///send request using 'fetch' method
+	/**@param request:Object request object
+	send request using 'fetch' method*/
 	fetchRequest(request): {
 		var url = request.url
 		var error = request.errorCallback,
@@ -31,7 +32,8 @@ Object {
 			})
 	}
 
-	///send request using 'XMLHttpRequest' object
+	/**@param request:Object request object
+	send request using 'XMLHttpRequest' object*/
 	requestXHR(request): {
 		var url = request.url
 		var xhr = new XMLHttpRequest()

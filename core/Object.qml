@@ -1,5 +1,6 @@
 ///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
+	///@private
 	constructor: {
 		this.parent = parent
 		this.children = []
@@ -15,6 +16,7 @@ EventEmitter {
 		this._updaters = {}
 	}
 
+	/// discard object
 	function discard() {
 		this._changedConnections.forEach(function(connection) {
 			connection[0].removeOnChanged(connection[1], connection[2])
@@ -36,7 +38,8 @@ EventEmitter {
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}
 
-	///adds child object to children
+	/**@param child:Object object to add
+	adds child object to children*/
 	function addChild(child) {
 		this.children.push(child);
 	}
@@ -50,7 +53,7 @@ EventEmitter {
 		}
 	}
 
-	/// register callback on property's value changed
+	///@private register callback on property's value changed
 	function onChanged(name, callback) {
 		if (name in this._changedHandlers)
 			this._changedHandlers[name].push(callback);
@@ -58,12 +61,13 @@ EventEmitter {
 			this._changedHandlers[name] = [callback];
 	}
 
+	///@private
 	function connectOnChanged(target, name, callback) {
 		target.onChanged(name, callback)
 		this._changedConnections.push([target, name, callback])
 	}
 
-	/// removes 'on changed' callback
+	///@private removes 'on changed' callback
 	function removeOnChanged(name, callback) {
 		if (name in this._changedHandlers) {
 			var handlers = this._changedHandlers[name];
@@ -94,7 +98,7 @@ EventEmitter {
 			delete updaters[name]
 	}
 
-	/// registers key handler
+	///@private registers key handler
 	function onPressed (name, callback) {
 		var wrapper
 		if (name != 'Key')
@@ -108,6 +112,7 @@ EventEmitter {
 			this._pressedHandlers[name] = [wrapper];
 	}
 
+	///@private
 	function _update (name, value) {
 		var proto_callback = this['__changed__' + name]
 		var handlers = this._changedHandlers[name]
@@ -124,7 +129,7 @@ EventEmitter {
 			handlers.forEach(invoker)
 	}
 
-	/// gets object by id
+	///@private gets object by id
 	function _get (name) {
 		if (name in this)
 			return this[name]
@@ -139,17 +144,17 @@ EventEmitter {
 		throw new Error("invalid property requested: '" + name)
 	}
 
-	/// sets animation on given property
+	///@private sets animation on given property
 	function setAnimation (name, animation) {
 		this._animations[name] = animation;
 	}
 
-	/// gets animation on given property
+	///@private gets animation on given property
 	function getAnimation (name, animation) {
 		var a = this._animations[name]
 		return (a && a.enabled())? a: null;
 	}
 
-	/// called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy
+	///@private called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy
 	function _tryFocus () { return false }
 }

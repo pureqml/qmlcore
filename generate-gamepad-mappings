@@ -111,7 +111,7 @@ def parse_file(filePath, resPath):
 			gamepad['mapping']['axes'] = gamepad['mapping']['axes'][:max_axes + 1] if max_axes > 0 else []
 
 			result[id] = gamepad
-			save(resPath, json.dumps(result))
+			save(resPath, json.dumps(result, sort_keys=True))
 
 
 if __name__ == '__main__':

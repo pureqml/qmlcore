@@ -3,6 +3,7 @@
 from compiler import manifest as mf
 
 import subprocess
+import distutils
 import argparse
 import shutil
 import re
@@ -11,6 +12,7 @@ import os
 
 from os import path
 from StringIO import StringIO
+from distutils import dir_util
 
 parser = argparse.ArgumentParser('qmlcore build tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
@@ -149,20 +151,17 @@ def find_platform_path(root, platform):
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
-        for item in os.listdir(src):
-            s = os.path.join(src, item)
-            d = os.path.join(dst, item)
-            if os.path.isdir(s):
-                shutil.copytree(s, d, symlinks, ignore)
-            else:
-                shutil.copy2(s, d)
+	for item in os.listdir(src):
+		s = os.path.join(src, item)
+		d = os.path.join(dst, item)
+		if os.path.isdir(s):
+			distutils.dir_util.copy_tree(s, d)
+		else:
+			shutil.copy2(s, d)
 
 def build(root, platform, app, html, manifest):
 	print "building %s for %s..." %(app, platform)
 	target = '.app.' + platform
-
-	if path.exists(target):
-		shutil.rmtree(target)
 
 	try:
 		os.mkdir(target)

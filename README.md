@@ -12,7 +12,7 @@ Any modern python 2.x will go well. Jinja2 is better option for templating in ca
 ## Simple how-to
 * Create project directory, ```cd <project-dir>```
 * Clone QmlCore to it: ```git clone git@github.com:pureqml/qmlcore.git```
-* Run ./qmlcore --boilerplate
+* Run ./qmlcore/build --boilerplate
 * Look into app.qml
 * Run ./qmlcore/build
 Please find resulting files in .app.web/*

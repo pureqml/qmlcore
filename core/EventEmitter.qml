@@ -93,7 +93,7 @@ CoreObject {
 		var idx = handlers.indexOf(callback)
 		if (idx >= 0)
 			handlers.splice(idx, 1)
-		else
+		else if (_globals.core.trace.listeners)
 			log('failed to remove listener for', name, 'from', this)
 
 		if (!handlers.length)

@@ -3,7 +3,7 @@
 exports.core.device = 0
 exports.core.vendor = ""
 
-exports.core.trace = { key: false, focus: false }
+exports.core.trace = { key: false, focus: false, listeners: false }
 
 exports.core.keyCodes = {
 	13: 'Select',

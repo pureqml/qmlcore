@@ -115,11 +115,11 @@ def parse_file(filePath, resPath):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser()
 
 	# input file example
-	# https://github.com/gabomdq/SDL_GameControllerDB/blob/master/gamecontrollerdb.txt
-    parser.add_argument('file')
-    parser.add_argument('output')
-    args = parser.parse_args()
-    parse_file(args.file, args.output)
+	# https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt
+	parser.add_argument('file')
+	parser.add_argument('output')
+	args = parser.parse_args()
+	parse_file(args.file, args.output)

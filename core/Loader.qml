@@ -45,6 +45,7 @@ Item {
 		item.__create(closure)
 		item.__setup(closure)
 		this.item = item
+		this._context._complete()
 		this.loaded()
 	}
 

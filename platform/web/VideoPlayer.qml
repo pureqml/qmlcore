@@ -1,37 +1,25 @@
+///container item for videos
 Item {
-	signal finished;
-	signal error;
-	property string	source;
-	property Color	backgroundColor: "#000";
-	property float	volume: 1.0;
-	property bool	loop: false;
-	property bool	flash: false;
-	property bool	ready: false;
-	property bool	muted: false;
-	property bool	paused: false;
-	property bool	autoPlay: false;
-	property bool	waiting: false;
-	property bool	seeking: false;
-	property int	duration;
-	property int	progress;
-	property int	buffered;
+	signal error;		///< error occured signal
+	signal finished;	///< video finished signal
+	property string	source;	///< video source URL
+	property Color	backgroundColor: "#000";	///< default background color
+	property float	volume: 1.0;		///< video volume value [0:1]
+	property bool	loop: false;		///< video loop flag
+	property bool	flash: false;		///< use flash flag
+	property bool	ready: false;		///< read only property becomes 'true' when video is ready to play, 'false' otherwise
+	property bool	muted: false;		///< volume mute flag
+	property bool	paused: false;		///< video paused flag
+	property bool	waiting: false;		///< wating flag while video is seeking and not ready to continue playing
+	property bool	seeking: false;		///< seeking flag
+	property bool	autoPlay: false;	///< play video immediately after source changed
+	property int	duration;			///< content duration in seconds (valid only for not live videos)
+	property int	progress;			///< current playback progress in seconds
+	property int	buffered;			///< buffered contetnt in seconds
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
 
-	//Timer {
-		//interval: 500;
-		//repeat: true;
-		//running: true;
-
-		//onTriggered: {
-			//var player = this.parent.element.dom
-			//this.parent.duration = player.duration ? this.parent._player.duration : 0
-			//this.parent.muted = player.muted
-			//this.parent.ready = player.readyState || this.parent.flash;	//TODO: temporary fix.
-			//this.parent.paused = this.parent.ready && (player.paused || this.parent.flasPlayerPaused);
-		//}
-	//}
-
+	///@private
 	function _update(name, value) {
 		switch (name) {
 			case 'loop': this.element.dom.loop = value; break
@@ -41,6 +29,7 @@ Item {
 		qml.core.Item.prototype._update.apply(this, arguments);
 	}
 
+	///@private
 	getFlashMovieObject(movieName):
 	{
 		if (window.document[movieName])
@@ -52,6 +41,7 @@ Item {
 			return document.getElementById(movieName);
 	}
 
+	///play video
 	play: {
 		if (!this.source)
 			return
@@ -70,6 +60,8 @@ Item {
 		this.applyVolume();
 	}
 
+	/**@param value:int seek time in seconds
+	seek video on 'value' seconds respectivly current playback progress*/
 	seek(value): {
 		if (!this.flash) {
 			this.element.dom.currentTime += value
@@ -79,6 +71,8 @@ Item {
 		}
 	}
 
+	/**@param value:int progress time in seconds
+	set video progres to fixed second*/
 	seekTo(value): {
 		if (!this.flash) {
 			this.element.dom.currentTime = value
@@ -88,6 +82,7 @@ Item {
 		}
 	}
 
+	///@private
 	onAutoPlayChanged: {
 		if (value)
 			this.play()
@@ -115,6 +110,7 @@ Item {
 		}
 	}
 
+	///@private
 	applyVolume: {
 		if (this.volume > 1.0)
 			this.volume = 1.0;
@@ -131,6 +127,7 @@ Item {
 		}
 	}
 
+	///pause video
 	pause: {
 		if (!this.flash) {
 			this.element.dom.pause()
@@ -141,12 +138,22 @@ Item {
 		}
 	}
 
+	///increase current volume
 	volumeUp:			{ this.volume += 0.1 }
+
+	///decrease current volume
 	volumeDown:			{ this.volume -= 0.1 }
+
+	///toggle volume mute on\off
 	toggleMute:			{ this.element.dom.muted = !this.element.dom.muted }
+
+	///@private
 	onVolumeChanged:	{ this.applyVolume() }
+
+	///@private
 	onReadyChanged:		{ log("ReadyState: " + this.ready) }
 
+	///@private
 	onError: {
 		this.paused = false
 		this.waiting = false
@@ -177,6 +184,7 @@ Item {
 		}
 	}
 
+	///@private
 	constructor: {
 		if (_globals.core.device)	// 0 value for desktop
 			this.flash = false
@@ -253,6 +261,7 @@ Item {
 		this.parent.element.append(this.element)
 	}
 
+	///@private
 	onSourceChanged: {
 		if (!this.flash) {
 			this.element.dom.src = value
@@ -265,6 +274,7 @@ Item {
 			this.play()
 	}
 
+	///@private
 	onWidthChanged: {
 		if (!this.flash)
 			return
@@ -274,6 +284,7 @@ Item {
 		player.setAttribute("width", this.width)
 	}
 
+	///@private
 	onHeightChanged: {
 		if (!this.flash)
 			return
@@ -283,6 +294,7 @@ Item {
 		player.setAttribute("height", this.height)
 	}
 
+	///@private
 	onCompleted: {
 		if (this.autoPlay && this.source)
 			this.play()

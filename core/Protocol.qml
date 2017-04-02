@@ -52,6 +52,9 @@ Object {
 
 		xhr.open(request.type || 'GET', url);
 
+		if (request.withCredentials)
+			request.withCredentials = true
+
 		for (var i in settings)
 			xhr[i] = settings[i]
 

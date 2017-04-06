@@ -55,4 +55,4 @@ def load(f):
 	return Manifest(json.load(f))
 
 def loads(s):
-	return Manifest(json.loads(f))
+	return Manifest(json.loads(s))

@@ -247,9 +247,12 @@ def build(root, platform, app, html, manifest):
 	for dist in template_path:
 		copy(dist, target, context)
 
-
-with open('.manifest') as f:
-	manifest = mf.load(f)
+try:
+	with open('.manifest') as f:
+		manifest = mf.load(f)
+except IOError:
+	print '.manifest file read error, using empty fallback'
+	manifest = mf.loads("{ }\n")
 
 apps = manifest.apps
 if not apps:

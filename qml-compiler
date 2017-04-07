@@ -135,7 +135,7 @@ def process_files(generator, app, dirs):
 		package_name = project_dir.split(os.path.sep)[-1]
 
 		for dirpath, dirnames, filenames in os.walk(project_dir, topdown = True):
-			dirnames[:] = [name for name in dirnames if name[0] != '.']
+			dirnames[:] = [name for name in dirnames if name[:6] != 'build.']
 			if '.nocompile' in filenames:
 				dirnames[:] = []
 				continue

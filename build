@@ -31,15 +31,20 @@ args = parser.parse_args()
 root = os.path.dirname(sys.argv[0])
 
 if args.boilerplate:
-	if path.exists('.manifest') or path.exists('app.qml'):
-		print 'ERROR: will not overwrite any file, you already have your project set up, run ./qmlcore/build'
+	if path.exists('.manifest') or path.exists('src/app.qml'):
+		print 'ERROR: will not overwrite any file, you already have your project set up, run %s' %sys.argv[0]
 		sys.exit(1)
 	with open('.manifest', 'w') as f:
 		f.write("{ }\n")
-	with open('app.qml', 'w') as app:
+	try:
+		os.mkdir('src')
+	except:
+		pass
+
+	with open('src/app.qml', 'w') as app:
 		with open(path.join(root, 'app.qml')) as template:
 			app.write(template.read())
-	print 'finished, run ./qmlcore/build now'
+	print 'finished, run %s now' %sys.argv[0]
 	sys.exit(0)
 
 def call(*args, **kw):
@@ -188,7 +193,7 @@ def build(root, platform, app, html, manifest):
 		subplatform_path = find_platform_path(root, subplatform)
 		options.append(subplatform_path)
 
-	options.extend(['.', '-a', app])
+	options.extend([manifest.source_dir, '-a', app])
 
 	if args.release:
 		options.insert(0, '-r')
@@ -262,7 +267,7 @@ if args.update_translation:
 	languages = manifest.languages
 	for language in languages:
 		print 'updating translation for language', language
-		call([os.path.join(root, 'update-ts'), '--ts', language + '.ts', '.'])
+		call([os.path.join(root, 'update-ts'), '--ts', language + '.ts', manifest.source_dir])
 	sys.exit(0)
 
 platforms = manifest.platforms

@@ -67,13 +67,13 @@ def minify_gcc(out, src, root, app, platform, manifest):
 		src], stdout = out)
 
 def minify(root, app, platform, manifest):
-	src = path.join(".app." + platform, "qml.%s.js" % app)
+	src = path.join("build." + platform, "qml.%s.js" % app)
 	dstname = "qml.%s.min.js" %app
 	tool = manifest.minify
 	if isinstance(tool, bool):
 		tool = 'uglify-js'
 
-	with open(path.join(".app." + platform, dstname), "w") as out:
+	with open(path.join("build." + platform, dstname), "w") as out:
 		if tool == 'uglify-js':
 			try:
 				minify_uglify(out, src, root, app, platform, manifest)
@@ -161,7 +161,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 
 def build(root, platform, app, html, manifest):
 	print "building %s for %s..." %(app, platform)
-	target = '.app.' + platform
+	target = 'build.' + platform
 
 	try:
 		os.mkdir(target)

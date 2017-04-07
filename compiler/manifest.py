@@ -11,6 +11,10 @@ class Manifest(object):
 		return self.data.get('path', [])
 
 	@property
+	def source_dir(self):
+		return self.data.get('sources', 'src')
+
+	@property
 	def web_prefix(self):
 		return self.data.get('web-prefix', '')
 

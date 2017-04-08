@@ -20,10 +20,10 @@ Object {
 	/// @private
 	function _update(name, value) {
 		var parent = this.parent
-		if (this._target && parent && parent._updateAnimation && parent._updateAnimation(this._target, this.enabled() ? this: null))
-			return
+		if (this._target && parent && parent._updateAnimation)
+			parent._updateAnimation(this._target, this.enabled() ? this: null)
 
-		_globals.core.Object.prototype._update.apply(this, arguments);
+		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 
 	/// @private

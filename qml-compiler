@@ -19,6 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("directory", nargs='+')
 parser.add_argument("-a", dest="app")
 parser.add_argument("-p", dest="prefix", default = False, action = 'store_true')
+parser.add_argument("-m", dest="manifest")
 parser.add_argument("-o", dest="output", default=".")
 parser.add_argument("-w", dest="wait", default=False, action='store_true')
 parser.add_argument("-S", dest="strict", default=True, action="store_false")
@@ -47,7 +48,6 @@ data = ""
 data += inspect.getsource(compiler.grammar)
 data += inspect.getsource(compiler.lang)
 data += inspect.getsource(compiler.pyparsing)
-
 grammar_digest = hashlib.sha1(data).hexdigest()
 
 try:
@@ -57,6 +57,12 @@ except:
 
 project_dirs = args.directory
 output_dir = args.output
+root_manifest = None
+
+if args.manifest:
+	with open(args.manifest) as f:
+		root_manifest = compiler.manifest.load(f)
+
 
 def check_file(filename):
 	if filename[0] == '.':
@@ -128,11 +134,11 @@ if args.wait:
 
 def process_files(generator, app, dirs):
 	for project_dir in dirs:
-		if project_dir == '.':
-			project_dir = os.getcwd()
-
+		path = project_dir.split(os.path.sep)
 		package_dir = project_dir
-		package_name = project_dir.split(os.path.sep)[-1]
+		package_name = path[-1]
+		if root_manifest and root_manifest.package and len(path) <= 1: #root component
+			package_name = str(root_manifest.package)
 
 		for dirpath, dirnames, filenames in os.walk(project_dir, topdown = True):
 			dirnames[:] = [name for name in dirnames if name[:6] != 'build.']

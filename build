@@ -256,8 +256,8 @@ try:
 	with open('.manifest') as f:
 		manifest = mf.load(f)
 except IOError:
-	print '.manifest file read error, using empty fallback'
-	manifest = mf.loads("{ }\n")
+	print 'WARNING: could not find .manifest, using empty fallback'
+	manifest = mf.Manifest()
 
 apps = manifest.apps
 if not apps:

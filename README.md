@@ -13,9 +13,9 @@ Any modern python 2.x will go well. Jinja2 is better option for templating in ca
 * Create project directory, ```cd <project-dir>```
 * Clone QmlCore to it: ```git clone git@github.com:pureqml/qmlcore.git```
 * Run ./qmlcore/build --boilerplate
-* Look into app.qml
+* Look into ./src/app.qml
 * Run ./qmlcore/build
-Please find resulting files in .app.web/*
+Please find resulting files in build.web/*
 
 ## How it works
 Qml compiler scans source directories for qml file and parses each one. Filename starting with uppercase letter considered component, lowercase instantiated. Project-wide options stored in ```.manifest``` file. Result of the compilation is single javascript file with minimum dependencies (modernizr only), ready to use in mobile and desktop environment, accompanied by sample .html launcher and flash video player.

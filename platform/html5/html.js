@@ -233,7 +233,8 @@ ElementPrototype.updateStyle = function() {
 		'padding-left': 'px',
 		'padding-top': 'px',
 		'padding-right': 'px',
-		'padding-bottom': 'px'
+		'padding-bottom': 'px',
+		'padding': 'px'
 	}
 
 	var cache = this._context._styleCache

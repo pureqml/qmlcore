@@ -96,10 +96,14 @@ def process_file(generator, app, package, dirpath, filename):
 				tree = cPickle.load(f)
 		except:
 			print "parsing", path, "...", com
-			tree = compiler.grammar.parse(data)
-			with open(cached_path, "w") as f:
-				f.write(h + "\n")
-				cPickle.dump(tree, f)
+			try:
+				tree = compiler.grammar.parse(data)
+				with open(cached_path, "w") as f:
+					f.write(h + "\n")
+					cPickle.dump(tree, f)
+			except Exception as ex:
+				ex.filename = path
+				raise
 
 		assert(len(tree) == 1)
 		if documentation and name[0].isupper():
@@ -212,7 +216,17 @@ while True:
 		generate()
 	except Exception as ex:
 		if not args.wait:
-			print "ERROR:", ex
+			if hasattr(ex, 'filename'):
+				if hasattr(ex, 'lineno'):
+					loc = '%s:%d:%d: ' %(ex.filename, ex.lineno, ex.col)
+				else:
+					loc = '%s: ' %ex.filename
+			else:
+				loc = ''
+			msg = '%serror: %s' %(loc, ex)
+			if hasattr(ex, 'line'):
+				msg += '\n' + ex.line
+			print msg
 			if args.verbose:
 				raise
 			sys.exit(1)

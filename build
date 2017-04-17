@@ -33,7 +33,7 @@ manifest_path = None
 
 if args.boilerplate:
 	if path.exists('.manifest') or path.exists('src/app.qml'):
-		print 'ERROR: will not overwrite any file, you already have your project set up, run %s' %sys.argv[0]
+		print 'error: will not overwrite any file, you already have your project set up, run %s' %sys.argv[0]
 		sys.exit(1)
 	with open('.manifest', 'w') as f:
 		f.write("{ }\n")
@@ -264,7 +264,7 @@ try:
 		manifest = mf.load(f)
 		manifest_path = '.manifest'
 except IOError:
-	print 'WARNING: could not find .manifest, using empty fallback'
+	print 'warning: could not find .manifest, using empty fallback'
 	manifest = mf.Manifest()
 
 apps = manifest.apps
@@ -292,7 +292,7 @@ try:
 			html = apps[app]
 			build(root, platform, app, html, manifest)
 except Exception as ex:
-	print "ERROR:", ex
+	print "error:", ex
 	if args.verbose:
 		raise
 	else:

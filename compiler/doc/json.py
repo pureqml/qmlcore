@@ -18,56 +18,56 @@ class Component(object):
 
 		for value in values:
 			localComma = "" if last == value.name else ","
-                        docText = value.doc.text if value.doc is not None else ""
-                        docLines = docText.splitlines()
-                        docText = docText.replace("\n", " ")
+			docText = value.doc.text if value.doc is not None else ""
+			docLines = docText.splitlines()
+			docText = docText.replace("\n", " ")
 
-                        internal = "true" if (value.doc is not None) and ("@private" in value.doc.text) else "false"
-                        category = value.__class__.__name__
+			internal = "true" if (value.doc is not None) and ("@private" in value.doc.text or "@internal" in value.doc.text) else "false"
+			category = value.__class__.__name__
 
-                        ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
+			ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
 
-                        if category == 'Property':
-                            r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s", "defaultValue": "%s" }%s' %(value.name, docText, ref, internal, value.type, value.defaultValue, localComma))
-                        elif category == 'Method' and docText:
-                            argText = ""
+			if category == 'Property':
+				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s", "defaultValue": "%s" }%s' %(value.name, docText, ref, internal, value.type, value.defaultValue, localComma))
+			elif category == 'Method' and docText:
+				argText = ""
 
-                            argText += '"params": ['
-                            paramCount = 0
-                            for line in docLines:
-                                line = line.rstrip()
-                                line = line.lstrip()
-                                argIdx = line.find("@param")
-                                if argIdx < 0:
-                                    continue
-                                paramTokens = line.split(' ')
-                                if len(paramTokens) <= 1:
-                                    continue
-                                param = paramTokens[1].split(":")
-                                if len(param) <= 1:
-                                    continue
-                                paramName = param[0]
-                                paramType = param[1]
+				argText += '"params": ['
+				paramCount = 0
+				for line in docLines:
+					line = line.rstrip()
+					line = line.lstrip()
+					argIdx = line.find("@param")
+					if argIdx < 0:
+						continue
+					paramTokens = line.split(' ')
+					if len(paramTokens) <= 1:
+						continue
+					param = paramTokens[1].split(":")
+					if len(param) <= 1:
+						continue
+					paramName = param[0]
+					paramType = param[1]
 
-                                paramText = line[line.find(paramType) + len(paramType) + 1:]
-                                paramText = paramText.lstrip()
-                                paramText = paramText.rstrip()
+					paramText = line[line.find(paramType) + len(paramType) + 1:]
+					paramText = paramText.lstrip()
+					paramText = paramText.rstrip()
 
-                                argText += '{ "name": "' + paramName + '", "type": "' + paramType + '", "text": "' + paramText + '" }'
-                                argText += ", "
-                                paramCount += 1
-                            if paramCount > 0:
-                                argText = argText[0:-2]
-                            argText += "], "
+					argText += '{ "name": "' + paramName + '", "type": "' + paramType + '", "text": "' + paramText + '" }'
+					argText += ", "
+					paramCount += 1
+				if paramCount > 0:
+					argText = argText[0:-2]
+				argText += "], "
 
-                            docText = docLines[-1]
-                            docText = docText.lstrip()
-                            docText = docText.rstrip()
+				docText = docLines[-1]
+				docText = docText.lstrip()
+				docText = docText.rstrip()
 
-                            r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name, docText, argText, internal, localComma))
-                        else:
-                            docText.replace("\n", " ")
-                            r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, docText, internal, localComma))
+				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name, docText, argText, internal, localComma))
+			else:
+				docText.replace("\n", " ")
+				r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, docText, internal, localComma))
 
 		if comma:
 			r.append('\t\t},')
@@ -84,46 +84,46 @@ class Component(object):
 		for child in component.children:
 			category = child.__class__.__name__
 
-                        if (category == "Assignment"):
-                            continue
+			if (category == "Assignment"):
+				continue
 			values = children.setdefault(category, [])
-                        if (category == "Property"):
-                            child.name = child.properties[0][0]
-                            if hasattr(child.properties[0][1], "children"):
-                                child.ref = package + "/" + child.type
-                                child.defaultValue = child.properties[0][1].name
-                            else:
-                                child.defaultValue = child.properties[0][1][1:-1] if child.properties[0][1] is not None else ""
-                                if child.defaultValue is not None and len(child.defaultValue) > 1:
-                                    if child.defaultValue[0] == '"':
-                                        child.defaultValue = child.defaultValue[1:]
-                                    if child.defaultValue[-1] == '"':
-                                        child.defaultValue = child.defaultValue[:-1]
+			if (category == "Property"):
+				child.name = child.properties[0][0]
+				if hasattr(child.properties[0][1], "children"):
+					child.ref = package + "/" + child.type
+					child.defaultValue = child.properties[0][1].name
+				else:
+					child.defaultValue = child.properties[0][1][1:-1] if child.properties[0][1] is not None else ""
+					if child.defaultValue is not None and len(child.defaultValue) > 1:
+						if child.defaultValue[0] == '"':
+							child.defaultValue = child.defaultValue[1:]
+						if child.defaultValue[-1] == '"':
+							child.defaultValue = child.defaultValue[:-1]
 
 			values.append(child)
 
 		data = []
-                if 'Property' in children:
-                    data.append(('Property', 'Properties'))
+		if 'Property' in children:
+			data.append(('Property', 'Properties'))
 
-                if 'AliasProperty' in children:
-                    data.append(('AliasProperty', 'Alias Properties'))
+		if 'AliasProperty' in children:
+			data.append(('AliasProperty', 'Alias Properties'))
 
-                if 'Signal' in children:
-                    data.append(('Signal', 'Signals'))
+		if 'Signal' in children:
+			data.append(('Signal', 'Signals'))
 
-                if 'Method' in children:
-                    data.append(('Method', 'Methods'))
+		if 'Method' in children:
+			data.append(('Method', 'Methods'))
 
-                # if 'Constructor' in children:
-                    # data.append(('Constructor', 'Constructors'))
+		# if 'Constructor' in children:
+			# data.append(('Constructor', 'Constructors'))
 
 		if len(data) == 0:
-                    return r
+			return r
 
 		lastName = data[-1][0]
-                for d in data:
-                    self.generate_section(r, d[1], children[d[0]], False if lastName == d[0] else True)
+		for d in data:
+			self.generate_section(r, d[1], children[d[0]], False if lastName == d[0] else True)
 
 		return r
 
@@ -202,14 +202,14 @@ class Documentation(object):
 				package_toc.append('\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
 				toc.append('\t\t\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
 
-                                self.add(name, component)
+				self.add(name, component)
 				self.generate_component(package, name, component)
 			package_toc.append('\t}')
 			toc.append('\t\t\t}')
 
 			with open(os.path.join(self.jsonroot, package + '.json'), 'wt') as f:
 				f.write('\n'.join(package_toc))
-                                f.write('\n}\n')
+				f.write('\n}\n')
 
 			comma = "" if lastPack == package else ","
 			toc.append('\t\t}%s' %comma)

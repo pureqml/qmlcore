@@ -39,10 +39,6 @@ class Manifest(object):
 		return self.data.get('templater', 'simple')
 
 	@property
-	def apps(self):
-		return self.data.get('apps', {})
-
-	@property
 	def languages(self):
 		return self.data.get('languages', [])
 

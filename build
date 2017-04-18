@@ -102,7 +102,7 @@ block_re = re.compile(r'{%.*?%}', re.MULTILINE | re.IGNORECASE)
 
 def process_template_simple(destination, source, context):
 	_head, name = path.split(source)
-	destination = path.join(destination, context['html'] + '.html')
+	destination = path.join(destination, name)
 	with open(destination, 'wb') as fd, open(source) as fs:
 		data = fs.read()
 		data = var_re.sub(lambda x: context.get(x.group(1), ''), data)
@@ -112,9 +112,11 @@ def process_template_simple(destination, source, context):
 def process_template_jinja2(destination, source, context):
 	from jinja2 import Environment, FileSystemLoader
 	src, name = path.split(source)
+	with open(source) as fd:
+		template = fd.read()
 	env = Environment(loader=FileSystemLoader(context['template_path']))
-	template = env.get_template(name)
-	destination = path.join(destination, context['html'] + '.html')
+	template = env.from_string(template)
+	destination = path.join(destination, name)
 	with open(destination, 'w') as fd:
 		fd.write(template.render(**context).encode('utf-8'))
 
@@ -125,25 +127,21 @@ def process_template(destination, source, context):
 	elif t == 'jinja2':
 		process_template_jinja2(destination, source, context)
 	else:
-		raise Exception('unknown templater used: %s' %t)
+		raise Exception('unknown templater: %s' %t)
 
 def copy(source, destination, context):
 	if not path.isdir(source):
 		return
+
+	if verbose:
+		print 'copying from', source, 'to', destination
 	files = [path.join(source, file_) for file_ in os.listdir(source)]
 	copytree(source, destination)
 	for src in files:
 		_path, name = path.split(src)
-		if name == 'index.html':
+		name, ext = path.splitext(name)
+		if ext == '.html':
 			process_template(destination, src, context)
-		else:
-			name, ext = path.splitext(name)
-			if ext == '.html':
-				if context['html'] == name:
-					process_template(destination, src, context)
-				else:
-					if name not in context['apps']: #skip templates used for another apps.
-						shutil.copy2(src, destination)
 
 def find_platform_path(root, platform):
 	platform_path = path.join(root, 'platform', platform)
@@ -168,13 +166,16 @@ def copytree(src, dst, symlinks=False, ignore=None):
 		else:
 			shutil.copy2(s, d)
 
-def build(root, platform, app, html, manifest):
+def build(root, platform, apps, app, manifest):
 	print "building %s for %s..." %(app, platform)
-	target = 'build.' + platform
+	if len(apps) > 1:
+		target = path.join('build.' + platform, app)
+	else:
+		target = 'build.' + platform
 
 	try:
-		os.mkdir(target)
-	except:
+		os.makedirs(target)
+	except Exception as ex:
 		pass
 
 	platform_path = find_platform_path(root, platform)
@@ -238,7 +239,8 @@ def build(root, platform, app, html, manifest):
 
 	if verbose:
 		print "copying resources..."
-	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest.apps.itervalues() if manifest.apps else {app: 'index'}) }
+
+	context = { 'id': app, 'app': script, 'templater': templater }
 
 	copy(path.join(root, 'dist'), target, context)
 
@@ -250,17 +252,22 @@ def build(root, platform, app, html, manifest):
 		if path.isdir(platform_dist):
 			template_path.append(platform_dist)
 
-	platform_dist = path.join(platform_path, 'dist')
-	if path.isdir(platform_dist):
-		template_path.append(platform_dist)
-
 	project_dist = path.join(os.getcwd(), 'dist')
 	if path.isdir(project_dist):
 		template_path.append(project_dist)
 
+	platform_dist = path.join(platform_path, 'dist')
+	if path.isdir(platform_dist):
+		template_path.append(platform_dist)
+
 	context['template_path'] = template_path
 	for dist in template_path:
 		copy(dist, target, context)
+
+	app_dist = path.join(os.getcwd(), 'dist.' + app)
+	if path.isdir(app_dist):
+		copy(app_dist, target, context)
+
 
 try:
 	with open('.manifest') as f:
@@ -270,9 +277,12 @@ except IOError:
 	print 'warning: could not find .manifest, using empty fallback'
 	manifest = mf.Manifest()
 
-apps = manifest.apps
+apps = []
+for f in os.listdir(manifest.source_dir):
+	if f[0].islower() and f.endswith('.qml'):
+		apps.append(f[0:-4])
 if not apps:
-	apps = {'app': 'index' }
+	raise Exception('No application files found. Application file named in lowercase and has .qml extension')
 
 if args.update_translation:
 	languages = manifest.languages
@@ -290,10 +300,9 @@ targets = set(args.targets)
 try:
 	for platform in platforms:
 		for app in apps:
-			if len(targets) > 0 and app not in targets:
+			if targets and app not in targets:
 				continue
-			html = apps[app]
-			build(root, platform, app, html, manifest)
+			build(root, platform, apps, app, manifest)
 except Exception as ex:
 	print "error:", ex
 	if verbose:

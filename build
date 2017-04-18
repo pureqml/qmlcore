@@ -30,6 +30,7 @@ args = parser.parse_args()
 
 root = os.path.dirname(sys.argv[0])
 manifest_path = None
+verbose = args.verbose
 
 if args.boilerplate:
 	if path.exists('.manifest') or path.exists('src/app.qml'):
@@ -49,6 +50,8 @@ if args.boilerplate:
 	sys.exit(0)
 
 def call(*args, **kw):
+	if verbose:
+		print 'calling', args, kw
 	if os.name == 'nt':
 		cmd = ['cmd', '/c'] +  list(args)[0]
 		code = subprocess.call(cmd)
@@ -220,7 +223,7 @@ def build(root, platform, app, html, manifest):
 	if args.web_prefix or manifest.web_prefix:
 		options.insert(0, '-p')
 
-	if args.verbose:
+	if verbose:
 		options.insert(0, '-v')
 
 	if os.name == 'nt':
@@ -233,7 +236,7 @@ def build(root, platform, app, html, manifest):
 		script = minify(root, app, platform, manifest)
 	templater = manifest.templater
 
-	if args.verbose:
+	if verbose:
 		print "copying resources..."
 	context = { 'id': app, 'app': script, 'html': html, 'templater': templater, 'apps': set(manifest.apps.itervalues() if manifest.apps else {app: 'index'}) }
 
@@ -293,7 +296,7 @@ try:
 			build(root, platform, app, html, manifest)
 except Exception as ex:
 	print "error:", ex
-	if args.verbose:
+	if verbose:
 		raise
 	else:
 		sys.exit(1)

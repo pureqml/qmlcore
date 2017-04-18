@@ -22,7 +22,6 @@ Qml compiler scans source directories for qml file and parses each one. Filename
 
 ## Manifest options
 Manifest is a collection of project-wide hacks we used to botch various projects. Some of them may or may not be useful.
-* ```apps``` - dictionary of application and their templates, { app1: template1, app2: template2, app3: template1 }. Templates are taken from dist/ or platform/*/dist directory
 * ```templater``` - template engine to use, only 'simple' and 'jinja2' are supported at the moment
 * ```web-prefix``` - see -p option below, specify css rules prefix
 * ```minify``` - false/true or compiler name as string, only 'gcc' and 'uglify-js' are supported. google closure compiler requires java to run.

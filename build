@@ -120,6 +120,7 @@ def process_template_jinja2(destination, source, context):
 			self.next_index = {}
 
 		def get_source(self, env, template, updateIndex = False):
+			#print 'get', template, self.paths
 			paths = self.paths
 			for i in xrange(self.next_index.get(template, 0), len(paths)):
 				path = paths[i]
@@ -128,7 +129,9 @@ def process_template_jinja2(destination, source, context):
 					with open(src) as f:
 						text = f.read().decode('utf-8')
 						if updateIndex:
+							#print 'updated index for', template, 'to', i + 1
 							self.next_index[template] = i + 1
+					#print 'returning', src
 					return (text, src, lambda: True) #always up-to-date, fixme
 			raise TemplateNotFound(template)
 
@@ -136,7 +139,7 @@ def process_template_jinja2(destination, source, context):
 			text, fname, uptodate = self.get_source(env, name, True)
 			return env.from_string(text)
 
-	env = Environment(loader=Loader(context['template_path']))
+	env = Environment(loader=Loader(context['template_path']), cache_size = 0)
 #	env = Environment(loader=FileSystemLoader(paths))
 
 	template = env.get_template(name)

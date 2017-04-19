@@ -110,26 +110,30 @@ def process_template_simple(destination, source, context):
 		fd.write(data)
 
 def process_template_jinja2(destination, source, context):
-	from jinja2 import Environment, FileSystemLoader, FunctionLoader, ChoiceLoader, TemplateNotFound
-	paths = []
-
-	#this is dirty hack. jinja will call load_template twice, once from get_source, second one
-	for path in context['template_path']:
-		paths.append(path)
-		paths.append(path)
+	from jinja2 import Environment, FileSystemLoader, FunctionLoader, ChoiceLoader, BaseLoader, TemplateNotFound
+	paths = context['template_path']
 
 	src, name = os.path.split(source)
-	def load_template(template):
-		while paths:
-			path = paths.pop(0)
-			src = os.path.join(path, template)
-			if os.path.isfile(src):
-				with open(src) as f:
-					text = f.read().decode('utf-8')
-				return (text, src, lambda: True) #always up-to-date, fixme
-		raise TemplateNotFound(template)
+	next_index = {}
 
-	env = Environment(loader=FunctionLoader(load_template))
+	class Loader(BaseLoader):
+		def get_source(self, env, template, updateIndex = False):
+			for i in xrange(next_index.get(template, 0), len(paths)):
+				path = paths[i]
+				src = os.path.join(path, template)
+				if os.path.isfile(src):
+					with open(src) as f:
+						text = f.read().decode('utf-8')
+						if updateIndex:
+							next_index[template] = i + 1
+					return (text, src, lambda: True) #always up-to-date, fixme
+			raise TemplateNotFound(template)
+
+		def load(self, env, name, globals):
+			text, fname, uptodate = self.get_source(env, name, True)
+			return env.from_string(text)
+
+	env = Environment(loader=Loader())
 #	env = Environment(loader=FileSystemLoader(paths))
 
 	template = env.get_template(name)

@@ -1,6 +1,6 @@
-/*** @used { core.RAIIEventEmitter } **/
-/*** @used { core.Text } **/
-/*** @used { core.Image } **/
+/*** @using { core.RAIIEventEmitter } **/
+/*** @using { core.Text } **/
+/*** @using { core.Image } **/
 
 exports.capabilities = {}
 var runtime = _globals.pure.runtime

@@ -1,4 +1,4 @@
-/*** @used { core.RAIIEventEmitter } **/
+/*** @using { core.RAIIEventEmitter } **/
 
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {

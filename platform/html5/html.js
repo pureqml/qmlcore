@@ -318,8 +318,8 @@ exports.getElement = function(tag) {
 exports.init = function(ctx) {
 	var options = ctx.options
 	var prefix = ctx._prefix
-
 	var divId = options.id
+	var tag = options.tag || 'div'
 
 	if (prefix) {
 		prefix += '-'
@@ -343,8 +343,8 @@ exports.init = function(ctx) {
 		w = win.width();
 		h = win.height();
 		log("Context: window size: " + w + "x" + h);
-		div = ctx.createElement('div')
-		div.dom.id = divId //html specific
+		div = html.createElement(ctx, tag)
+		div.dom.id = divId
 		win.on('resize', function() { ctx.width = win.width(); ctx.height = win.height(); });
 		var body = html.getElement('body')
 		body.append(div);

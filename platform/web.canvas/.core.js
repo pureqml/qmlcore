@@ -1,4 +1,1 @@
-_globals._backend = function() {
-	
-	return null
-}
+_globals._backend = function() { return _globals.web.canvas.backend }

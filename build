@@ -226,12 +226,13 @@ def build(root, platform, apps, app, manifest):
 		options.append('-m')
 		options.append(manifest_path)
 
-	options.extend([path.join(root, 'core'), platform_path])
+	options.append(path.join(root, 'core'))
 	options.extend(paths)
 
 	for subplatform in platform_manifest.requires: #fixme: no recursive processing
 		subplatform_path = find_platform_path(root, subplatform)
 		options.append(subplatform_path)
+	options.append(platform_path)
 
 	options.extend([manifest.source_dir, '-a', app])
 

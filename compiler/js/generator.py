@@ -97,10 +97,10 @@ class generator(object):
 		code += gen.generate_prototype(self)
 		return code
 
-	used_re = re.compile(r'@used\s*{(.*?)}')
+	used_re = re.compile(r'@using\s*{(.*?)}')
 
 	def generate_components(self):
-		#finding explicit @used declarations in code
+		#finding explicit @using declarations in code
 		for name, code in self.imports.iteritems():
 			for m in generator.used_re.finditer(code):
 				name = m.group(1).strip()

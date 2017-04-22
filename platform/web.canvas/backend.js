@@ -24,16 +24,23 @@ var Renderer = function(canvas) {
 
 Renderer.prototype.constructor = Renderer
 
+Renderer.prototype.setClip = function(rect) {
+	this.canvas.rect(rect.l, rect.t, rect.width(), rect.height())
+	this.canvas.clip()
+}
+
 Renderer.prototype.fillRect = function(rect, color) {
 	if (color.a < 1)
 		return
 
+	this.canvas.globalAlpha = color.a / 255
 	this.canvas.fillStyle = color.rgba()
 	this.canvas.fillRect(rect.l, rect.t, rect.width(), rect.height())
 }
 
 Renderer.prototype.drawImage = function(rect, image, el) {
 	var ui = el.ui
+	this.canvas.globalAlpha = ui.opacity
 	this.canvas.drawImage(image,
 		0, 0, ui.sourceWidth, ui.sourceHeight,
 		rect.l, rect.t, ui.width, ui.height)

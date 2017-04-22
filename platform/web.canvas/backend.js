@@ -8,13 +8,20 @@ var canvas = null
 var proxy = [
 	'requestAnimationFrame', 'cancelAnimationFrame',
 	'enterFullscreenMode', 'exitFullscreenMode', 'inFullscreenMode',
-	'initImage', 'loadImage',
+	'loadImage',
 	//'initText', 'layoutText', //this should not be proxy, implement this backend methods
 ]
+
+exports.initImage = function(image) {
+	html.initImage(image)
+	image.element.ui = image
+	image.element._image = image._image
+}
 
 var Renderer = function(canvas) {
 	this.canvas = canvas
 }
+
 Renderer.prototype.constructor = Renderer
 
 Renderer.prototype.fillRect = function(rect, color) {
@@ -23,6 +30,10 @@ Renderer.prototype.fillRect = function(rect, color) {
 
 	this.canvas.fillStyle = color.rgba()
 	this.canvas.fillRect(rect.l, rect.t, rect.width(), rect.height())
+}
+
+Renderer.prototype.drawImage = function(rect, image) {
+	this.canvas.drawImage(image, rect.l, rect.t)
 }
 
 exports.init = function(ctx) {
@@ -56,12 +67,12 @@ exports.init = function(ctx) {
 	{
 		var Element = runtime.Element
 		Element.prototype.setHtml = function(html) {
-			console.log('setHtml stub')
+			//console.log('setHtml stub')
 			this.layoutText()
 		}
 
 		Element.prototype.layoutText = function() {
-			console.log('layout text stub')
+			//console.log('layout text stub')
 		}
 	}
 }
@@ -87,5 +98,5 @@ exports.initText = function(text) {
 }
 
 exports.layoutText = function(text) {
-	console.log('layoutText stub')
+	//console.log('layoutText stub')
 }

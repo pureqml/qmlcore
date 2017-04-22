@@ -183,7 +183,7 @@ Element.prototype.update = function() {
 	var ctx = this._context
 	ctx._updatedItems.add(this)
 
-	if (!ctx.renderer)
+	if (!ctx.renderer || !ctx._completed)
 		return
 
 	if (updateTimer === undefined) {

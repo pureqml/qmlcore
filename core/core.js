@@ -172,6 +172,14 @@ ColorPrototype.rgba = function() {
 	return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 }
 
+var hexByte = function(v) {
+	return ('0' + (Number(v).toString(16))).slice(-2)
+}
+
+ColorPrototype.hex = function() {
+	return '#' + hexByte(this.r) + hexByte(this.g) + hexByte(this.b) + hexByte(this.a)
+}
+
 exports.core.normalizeColor = function(spec) {
 	return (new Color(spec)).rgba()
 }

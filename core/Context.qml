@@ -142,6 +142,5 @@ Item {
 	function _run() {
 		log('Context: calling completed()')
 		this._complete()
-		this.style('visibility', 'visible')
 	}
 }

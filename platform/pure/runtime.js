@@ -1,5 +1,7 @@
 /*** @using { core.RAIIEventEmitter } **/
 
+var Color = _globals.core.Color
+
 var Rect = function(l, t, r, b) {
 	this.l = l || 0
 	this.t = t || 0
@@ -88,6 +90,7 @@ var Element = function(context, tag) {
 	this._context = context
 	this._styles = {}
 	this.children = []
+	this.dirty = new Rect()
 	registerGenericListener(this)
 }
 
@@ -143,10 +146,17 @@ var updateTimer
 var renderFrame = function(ctx, renderer) {
 	if (updateTimer === undefined) {
 		updateTimer = setTimeout(function() {
-			log('frame paint')
 			updateTimer = undefined
+			var dirty = new Rect()
+			ctx._updatedItems.forEach(function(el) {
+				dirty = dirty.union(el.dirty)
+				dirty = dirty.union(el.getScreenRect())
+			})
 			ctx._updatedItems.clear()
+			console.log('painting frame with rect', dirty)
+			ctx.renderer.setClip(dirty)
 			ctx.element.paint(ctx.renderer, 0, 0)
+			//ctx.renderer.fillRect(dirty, new Color('#ff00ff80')) //debug minimal update
 		}, 0)
 	}
 }
@@ -192,17 +202,30 @@ Element.prototype.getRect = function() {
 	return new Rect(l, t, w + l, h + t)
 }
 
+Element.prototype.getScreenRect = function() {
+	var rect = this.getRect()
+	var el = this._parent
+	while(el !== undefined) {
+		var style = el._styles
+		var l = style['left'] || 0, t = style['top'] || 0
+		rect.move(l, t)
+		el = el._parent
+	}
+	return rect
+}
+
 Element.prototype.paint = function(renderer, x, y) {
 	var visibility = this._styles['visibility']
 	if (visibility === 'hidden')
-		return
+		return new Rect()
 
 	var rect = this.getRect()
 	rect.move(x, y)
+	var dirty = rect.clone()
 
 	var color = this._styles['background-color']
 	if (color !== undefined) {
-		color = new _globals.core.Color(color)
+		color = new Color(color)
 		renderer.fillRect(rect, color, this)
 	}
 
@@ -212,8 +235,10 @@ Element.prototype.paint = function(renderer, x, y) {
 
 	//render here
 	this.children.forEach(function(child) {
-		child.paint(renderer, rect.l, rect.t)
+		dirty = dirty.union(child.paint(renderer, rect.l, rect.t))
 	})
+	this.dirty = dirty
+	return dirty
 }
 
 

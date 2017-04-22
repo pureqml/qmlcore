@@ -180,13 +180,18 @@ var updateTimer
 Element.prototype.update = function() {
 	if (!this.visible())
 		return
-	this._context._updatedItems.add(this)
+	var ctx = this._context
+	ctx._updatedItems.add(this)
+
+	if (!ctx.renderer)
+		return
+
 	if (updateTimer === undefined) {
 		updateTimer = setTimeout(function() {
 			log('frame paint')
 			updateTimer = undefined
-			this._context._updatedItems.clear()
-			this._context.element.paint(renderer, 0, 0)
+			ctx._updatedItems.clear()
+			ctx.element.paint(ctx.renderer, 0, 0)
 		}, 0)
 	}
 }

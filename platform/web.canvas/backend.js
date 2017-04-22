@@ -32,8 +32,11 @@ Renderer.prototype.fillRect = function(rect, color) {
 	this.canvas.fillRect(rect.l, rect.t, rect.width(), rect.height())
 }
 
-Renderer.prototype.drawImage = function(rect, image) {
-	this.canvas.drawImage(image, rect.l, rect.t)
+Renderer.prototype.drawImage = function(rect, image, el) {
+	var ui = el.ui
+	this.canvas.drawImage(image,
+		0, 0, ui.sourceWidth, ui.sourceHeight,
+		rect.l, rect.t, ui.width, ui.height)
 }
 
 exports.init = function(ctx) {

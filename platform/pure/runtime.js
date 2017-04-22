@@ -98,7 +98,8 @@ Element.prototype.addClass = function(cls) { }
 
 var importantStyles = new Set([
 	'left', 'top', 'width', 'height', 'visibility',
-	'background-color', 'border-radius',
+	'background-color', 'background-image',
+	'border-radius',
 	'color', 'font-size', 'text-align'
 ])
 
@@ -206,7 +207,7 @@ Element.prototype.paint = function(renderer, x, y) {
 	}
 
 	if (this._image !== undefined) {
-		renderer.drawImage(rect, this._image)
+		renderer.drawImage(rect, this._image, this)
 	}
 
 	//render here

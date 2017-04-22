@@ -2,6 +2,8 @@ exports.capabilities = { }
 
 var html = null
 var runtime = null
+var rootItem = null
+var canvas = null
 
 var proxy = [
 	'requestAnimationFrame', 'cancelAnimationFrame',
@@ -21,7 +23,10 @@ exports.init = function(ctx) {
 		exports[name] = html[name]
 	})
 
+	ctx.options.tag = 'canvas'
 	html.init(ctx)
+	canvas = ctx.element.dom
+	ctx.element = new runtime.Element(ctx, ctx.getTag())
 }
 
 exports.createElement = function(ctx, tag) {

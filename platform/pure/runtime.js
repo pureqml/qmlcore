@@ -16,6 +16,9 @@ Rect.prototype.valid = function() {
 	return this.b > this.t && this.r > this.l
 }
 
+Rect.prototype.width = function() { return this.r - this.l }
+Rect.prototype.height = function() { return this.b - this.t }
+
 Rect.prototype.move = function(dx, dy) {
 	this.l += dx
 	this.t += dy

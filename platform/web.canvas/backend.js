@@ -21,10 +21,8 @@ Renderer.prototype.fillRect = function(rect, color) {
 	if (color.a < 1)
 		return
 
-	console.log('render rect', rect, color.hex())
-	this.canvas.fillStyle = color.hex()
-	console.log(this.canvas, rect.l, rect.t, rect.r, rect.b)
-	this.canvas.fillRect(rect.l, rect.t, rect.r, rect.b)
+	this.canvas.fillStyle = color.rgba()
+	this.canvas.fillRect(rect.l, rect.t, rect.width(), rect.height())
 }
 
 exports.init = function(ctx) {
@@ -38,10 +36,22 @@ exports.init = function(ctx) {
 
 	ctx.options.tag = 'canvas'
 	html.init(ctx)
+	ctx.canvasElement = ctx.element
 	ctx.canvas = ctx.element.dom
 	ctx._updatedItems = new Set()
 	ctx.element = exports.createElement(ctx, ctx.getTag())
-	ctx.renderer = new Renderer(ctx.canvas.getContext("2d"))
+
+	var resizeCanvas = function() {
+		console.log('resizing canvas')
+		var canvas = ctx.canvas
+		canvas.setAttribute('width', ctx.width)
+		canvas.setAttribute('height', ctx.height)
+		ctx.renderer = new Renderer(canvas.getContext("2d"))
+		runtime.renderFrame(ctx)
+	}
+	resizeCanvas()
+	ctx.onChanged('width', resizeCanvas)
+	ctx.onChanged('height', resizeCanvas)
 
 	{
 		var Element = runtime.Element
@@ -58,6 +68,7 @@ exports.init = function(ctx) {
 
 exports.run = function(ctx) {
 	console.log('calling redraw')
+	ctx.canvasElement.style('visibility', 'visible')
 	runtime.renderFrame(ctx)
 }
 

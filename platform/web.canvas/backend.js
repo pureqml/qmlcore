@@ -89,7 +89,13 @@ exports.run = function(ctx) {
 exports.createElement = function(ctx, tag) {
 	if (runtime === null)
 		runtime = _globals.pure.runtime //fixme: this is called from StyleSheet too early (ctor?), fix initialisation order!
-	return new runtime.Element(ctx, tag)
+	if (html === null)
+		html = _globals.html5.html
+
+	if (tag === 'style')
+		return new html.Element(ctx, tag)
+	else
+		return new runtime.Element(ctx, tag)
 }
 
 exports.initText = function(text) {

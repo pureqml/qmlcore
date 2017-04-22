@@ -489,7 +489,9 @@ exports.layoutText = function(text) {
 	text.style(style)
 }
 
-exports.run = function() { }
+exports.run = function(ctx) {
+	ctx.element.style('visibility', 'visible')
+}
 
 var Modernizr = window.Modernizr
 

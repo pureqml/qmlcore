@@ -60,46 +60,6 @@ Rect.prototype.intersect = function(rect) {
 }
 
 
-var Renderer = function(w, h) {
-	this.width = w
-	this.height = h
-	this.clip = this.getRect()
-	this.rect = this.getRect()
-	this.depth = 0
-}
-
-Renderer.prototype.prefix = function() {
-	var d = this.depth, r = '' + d + ':'
-	while(d-- > 0)
-		r += '  '
-	return r
-}
-
-Renderer.prototype.getRect = function() {
-	return new Rect(0, 0, this.width, this.height)
-}
-
-Renderer.prototype.paintRectangle = function(rect, r, g, b, a) {
-	if (!rect.valid())
-		return
-	log(this.prefix() + 'paint rect ' + rect + ' with color ' + r + ' ' + g + ' ' + b + ' ' + a)
-	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
-}
-
-Renderer.prototype.paintText = function(rect, text) {
-	if (!rect.valid())
-		return
-	log(this.prefix() + 'paint text ' + rect + ' ' + text)
-	_renderText(rect.l, rect.t, rect.r, rect.b, text)
-}
-
-Renderer.prototype.paintImage = function(rect, image) {
-	if (!rect.valid())
-		return
-	log(this.prefix() + 'paint image ' + rect + ' ' + image)
-	_renderImage(rect.l, rect.t, rect.r, rect.b, image)
-}
-
 var registerGenericListener = function(target) {
 	var prefix = '__nativeEventHandler_'
 	target.onListener('',
@@ -120,11 +80,10 @@ var registerGenericListener = function(target) {
 	)
 }
 
-var Element = function(context, tag, paint) {
+var Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._styles = {}
-	this._paint = paint
 	this.children = []
 	registerGenericListener(this)
 }
@@ -177,6 +136,18 @@ Element.prototype.visible = function() {
 
 var updateTimer
 
+var renderFrame = function(ctx, renderer) {
+	if (updateTimer === undefined) {
+		updateTimer = setTimeout(function() {
+			log('frame paint')
+			updateTimer = undefined
+			ctx._updatedItems.clear()
+			ctx.element.paint(ctx.renderer, 0, 0)
+		}, 0)
+	}
+}
+exports.renderFrame = renderFrame
+
 Element.prototype.update = function() {
 	if (!this.visible())
 		return
@@ -186,14 +157,7 @@ Element.prototype.update = function() {
 	if (!ctx.renderer || !ctx._completed)
 		return
 
-	if (updateTimer === undefined) {
-		updateTimer = setTimeout(function() {
-			log('frame paint')
-			updateTimer = undefined
-			ctx._updatedItems.clear()
-			ctx.element.paint(ctx.renderer, 0, 0)
-		}, 0)
-	}
+	renderFrame(ctx)
 }
 
 Element.prototype.append = function(child) {
@@ -231,15 +195,19 @@ Element.prototype.paint = function(renderer, x, y) {
 
 	var rect = this.getRect()
 	rect.move(x, y)
-	this._paint(renderer, rect)
-	++renderer.depth
+
+	var color = this._styles['background-color']
+	if (color !== undefined) {
+		color = new _globals.core.Color(color)
+		renderer.fillRect(rect, color)
+	}
+
+	//render here
 	this.children.forEach(function(child) {
 		child.paint(renderer, rect.l, rect.t)
 	})
-	--renderer.depth
 }
 
 
 exports.Rect = Rect
-exports.Renderer = Renderer
 exports.Element = Element

@@ -7,27 +7,7 @@ var runtime = _globals.pure.runtime
 var renderer = null
 var rootItem = null
 
-var rgba_re = /rgba\((\d+),(\d+),(\d+),(.*)\)/
-
 var Rect = runtime.Rect
-
-var _paintRect = function(renderer, rect) {
-	var color = this._styles['background-color']
-	if (color === undefined)
-		return
-
-	var m = rgba_re.exec(color)
-	if (m === null) {
-		log('invalid color specification: ' + color)
-		return
-	}
-	renderer.paintRectangle(rect, parseInt(m[1]), parseInt(m[2]), parseInt(m[3]), Math.floor(parseFloat(m[4]) * 255))
-}
-
-var _paintImage = function(renderer, rect) {
-	renderer.paintImage(rect, this._image)
-}
-
 
 exports.init = function(ctx) {
 	renderer = new runtime.Renderer(480, 640) //fixme: pass in options?
@@ -133,3 +113,44 @@ exports.requestAnimationFrame = function(callback) {
 exports.cancelAnimationFrame = function (timer) {
 	clearTimeout(timer)
 }
+
+var Renderer = function(w, h) {
+	this.width = w
+	this.height = h
+	this.clip = this.getRect()
+	this.rect = this.getRect()
+	this.depth = 0
+}
+
+Renderer.prototype.prefix = function() {
+	var d = this.depth, r = '' + d + ':'
+	while(d-- > 0)
+		r += '  '
+	return r
+}
+
+Renderer.prototype.getRect = function() {
+	return new Rect(0, 0, this.width, this.height)
+}
+
+Renderer.prototype.paintRectangle = function(rect, r, g, b, a) {
+	if (!rect.valid())
+		return
+	log(this.prefix() + 'paint rect ' + rect + ' with color ' + r + ' ' + g + ' ' + b + ' ' + a)
+	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
+}
+
+Renderer.prototype.paintText = function(rect, text) {
+	if (!rect.valid())
+		return
+	log(this.prefix() + 'paint text ' + rect + ' ' + text)
+	_renderText(rect.l, rect.t, rect.r, rect.b, text)
+}
+
+Renderer.prototype.paintImage = function(rect, image) {
+	if (!rect.valid())
+		return
+	log(this.prefix() + 'paint image ' + rect + ' ' + image)
+	_renderImage(rect.l, rect.t, rect.r, rect.b, image)
+}
+exports.Renderer = Renderer

@@ -203,7 +203,7 @@ Element.prototype.paint = function(renderer, x, y) {
 	var color = this._styles['background-color']
 	if (color !== undefined) {
 		color = new _globals.core.Color(color)
-		renderer.fillRect(rect, color)
+		renderer.fillRect(rect, color, this)
 	}
 
 	if (this._image !== undefined) {

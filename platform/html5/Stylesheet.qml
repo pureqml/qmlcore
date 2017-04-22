@@ -4,11 +4,6 @@ Object {
 		var options = context.options
 
 		var style = this.style = context.createElement('style')
-		if (style.dom === undefined) { //platform with no dom
-			this._addRule = function() { }
-			return
-		}
-
 		style.dom.type = 'text/css'
 
 		this.prefix = options.prefix

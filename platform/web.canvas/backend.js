@@ -12,12 +12,19 @@ var proxy = [
 	//'initText', 'layoutText', //this should not be proxy, implement this backend methods
 ]
 
-var paintRect = function(renderer, rect) {
-	console.log('paintRect: ' + rect)
+var Renderer = function(canvas) {
+	this.canvas = canvas
 }
+Renderer.prototype.constructor = Renderer
 
-var paintText = function(renderer, rect) {
-	console.log('paintText: ' + rect)
+Renderer.prototype.fillRect = function(rect, color) {
+	if (color.a < 1)
+		return
+
+	console.log('render rect', rect, color.hex())
+	this.canvas.fillStyle = color.hex()
+	console.log(this.canvas, rect.l, rect.t, rect.r, rect.b)
+	this.canvas.fillRect(rect.l, rect.t, rect.r, rect.b)
 }
 
 exports.init = function(ctx) {
@@ -31,10 +38,11 @@ exports.init = function(ctx) {
 
 	ctx.options.tag = 'canvas'
 	html.init(ctx)
-	canvas = ctx.element.dom
+	ctx.canvas = ctx.element.dom
 	ctx._updatedItems = new Set()
 	ctx.element = exports.createElement(ctx, ctx.getTag())
-	ctx.renderer = new runtime.Renderer(ctx.width, ctx.height)
+	ctx.renderer = new Renderer(ctx.canvas.getContext("2d"))
+
 	{
 		var Element = runtime.Element
 		Element.prototype.setHtml = function(html) {
@@ -50,13 +58,13 @@ exports.init = function(ctx) {
 
 exports.run = function(ctx) {
 	console.log('calling redraw')
-	ctx.element.update()
+	runtime.renderFrame(ctx)
 }
 
 exports.createElement = function(ctx, tag) {
 	if (runtime === null)
 		runtime = _globals.pure.runtime //fixme: this is called from StyleSheet too early (ctor?), fix initialisation order!
-	return new runtime.Element(ctx, tag, paintRect)
+	return new runtime.Element(ctx, tag)
 }
 
 exports.initText = function(text) {
@@ -64,7 +72,6 @@ exports.initText = function(text) {
 	element._offsetX = 0
 	element._offsetY = 0
 	element.ui = text
-	element._paint = paintText
 	element.update()
 }
 

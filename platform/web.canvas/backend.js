@@ -7,7 +7,9 @@ var canvas = null
 
 var proxy = [
 	'requestAnimationFrame', 'cancelAnimationFrame',
-	'enterFullscreenMode', 'exitFullscreenMode', 'inFullscreenMode'
+	'enterFullscreenMode', 'exitFullscreenMode', 'inFullscreenMode',
+//	'initImage', 'loadImage', 'initText', 'layoutText',  //this should not be proxy, implement this backend methods
+	'run'
 ]
 
 var paintRect = function(renderer, rect) {
@@ -26,7 +28,19 @@ exports.init = function(ctx) {
 	ctx.options.tag = 'canvas'
 	html.init(ctx)
 	canvas = ctx.element.dom
+	ctx._updatedItems = new Set()
 	ctx.element = new runtime.Element(ctx, ctx.getTag())
+	{
+		var Element = runtime.Element
+		Element.prototype.setHtml = function(html) {
+			console.log('setHtml stub')
+			this.layoutText()
+		}
+
+		Element.prototype.layoutText = function() {
+			console.log('layout text stub')
+		}
+	}
 }
 
 exports.createElement = function(ctx, tag) {

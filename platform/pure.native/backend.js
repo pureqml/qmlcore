@@ -6,8 +6,6 @@ exports.capabilities = {}
 var runtime = _globals.pure.runtime
 var renderer = null
 var rootItem = null
-var updatedItems = new Set()
-var updateTimer
 
 var rgba_re = /rgba\((\d+),(\d+),(\d+),(.*)\)/
 

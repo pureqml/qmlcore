@@ -167,6 +167,7 @@ Element.prototype.style = function(name, style) {
 	else
 		return this._styles[name]
 }
+
 Element.prototype.updateStyle = function() { }
 
 Element.prototype.visible = function() {
@@ -174,16 +175,18 @@ Element.prototype.visible = function() {
 	return visibility !== 'hidden'
 }
 
+var updateTimer
+
 Element.prototype.update = function() {
 	if (!this.visible())
 		return
-	updatedItems.add(this)
+	this._context._updatedItems.add(this)
 	if (updateTimer === undefined) {
 		updateTimer = setTimeout(function() {
 			log('frame paint')
 			updateTimer = undefined
-			updatedItems.clear()
-			rootItem.paint(renderer, 0, 0)
+			this._context._updatedItems.clear()
+			this._context.element.paint(renderer, 0, 0)
 		}, 0)
 	}
 }

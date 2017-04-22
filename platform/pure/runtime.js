@@ -205,6 +205,10 @@ Element.prototype.paint = function(renderer, x, y) {
 		renderer.fillRect(rect, color)
 	}
 
+	if (this._image !== undefined) {
+		renderer.drawImage(rect, this._image)
+	}
+
 	//render here
 	this.children.forEach(function(child) {
 		child.paint(renderer, rect.l, rect.t)

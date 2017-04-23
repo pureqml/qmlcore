@@ -179,9 +179,11 @@ def generate():
 
 #reading .core.js files to bootstrap platform specific initialization
 	init_js = ''
-	for project_dir in project_dirs:
+	for project_dir in reversed(project_dirs):
 		init_path = os.path.join(project_dir, '.core.js')
 		if os.path.exists(init_path):
+			if args.verbose:
+				print 'including platform initialisation file at %s' %init_path
 			with open(init_path) as f:
 				init_js += f.read()
 

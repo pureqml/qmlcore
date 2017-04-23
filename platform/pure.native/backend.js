@@ -8,9 +8,12 @@ var renderer = null
 var rootItem = null
 
 var Rect = runtime.Rect
+var Element = runtime.Element
 
 exports.init = function(ctx) {
-	renderer = new runtime.Renderer(480, 640) //fixme: pass in options?
+	console.log('backend initialization...')
+	ctx._updatedItems = new Set()
+	renderer = new Renderer(480, 640) //fixme: pass in options?
 	rootItem = ctx.element = new Element(ctx, ctx.getTag())
 	ctx.width = renderer.width
 	ctx.height = renderer.height
@@ -21,13 +24,12 @@ exports.run = function(ctx) {
 }
 
 exports.createElement = function(ctx, tag) {
-	return new Element(ctx, tag, _paintRect)
+	return new Element(ctx, tag)
 }
 
 exports.initImage = function(image) {
 	var element = image.element
 	element._image = new Image()
-	element._paint = _paintImage
 }
 
 var ImageStatusNull			= 0
@@ -133,10 +135,10 @@ Renderer.prototype.getRect = function() {
 	return new Rect(0, 0, this.width, this.height)
 }
 
-Renderer.prototype.paintRectangle = function(rect, r, g, b, a) {
+Renderer.prototype.paintRectangle = function(rect, color) {
 	if (!rect.valid())
 		return
-	log(this.prefix() + 'paint rect ' + rect + ' with color ' + r + ' ' + g + ' ' + b + ' ' + a)
+	log(this.prefix() + 'paint rect ' + rect + ' with color ' + color)
 	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
 }
 

@@ -209,11 +209,8 @@ def build(root, platform, apps, app, manifest):
 
 	platform_path = find_platform_path(root, platform)
 
-	try:
-		with open(path.join(platform_path, '.manifest')) as f:
-			platform_manifest = mf.load(f)
-	except:
-		platform_manifest = mf.Manifest()
+	with open(path.join(platform_path, '.manifest')) as f:
+		platform_manifest = mf.load(f)
 
 	if not platform_manifest.standalone:
 		raise Exception('%s is not a standalone platform' %platform)
@@ -229,10 +226,19 @@ def build(root, platform, apps, app, manifest):
 	options.append(path.join(root, 'core'))
 	options.extend(paths)
 
-	for subplatform in platform_manifest.requires: #fixme: no recursive processing
-		subplatform_path = find_platform_path(root, subplatform)
-		options.append(subplatform_path)
-	options.append(platform_path)
+	subplatforms = [platform]
+	while subplatforms:
+		subplatforms_next = []
+
+		for subplatform in subplatforms:
+			subplatform_path = find_platform_path(root, subplatform)
+			options.append(subplatform_path)
+
+			with open(path.join(subplatform_path, '.manifest')) as f:
+				subplatform_manifest = mf.load(f)
+			subplatforms_next += subplatform_manifest.requires
+
+		subplatforms = subplatforms_next
 
 	options.extend([manifest.source_dir, '-a', app])
 

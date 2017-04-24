@@ -91,6 +91,7 @@ var Element = function(context, tag) {
 	this._styles = {}
 	this.children = []
 	this.dirty = new Rect()
+	this._updated = false
 	registerGenericListener(this)
 }
 
@@ -99,15 +100,17 @@ Element.prototype.constructor = Element
 
 Element.prototype.addClass = function(cls) { }
 
-var importantStyles = new Set([
+var importantStylesList = [
 	'left', 'top', 'width', 'height', 'visibility',
 	'background-color', 'background-image',
 	'border-radius',
 	'color', 'font-size', 'text-align'
-])
+]
+var importantStyles = {}
+importantStylesList.forEach(function(name) { importantStyles[name] = true })
 
 Element.prototype._onUpdate = function(name) {
-	if (importantStyles.has(name))
+	if (importantStyles[name])
 		this.update()
 //	else
 //		log('unhandled style ' + name)
@@ -150,9 +153,11 @@ var renderFrame = function(ctx, renderer) {
 			var dirty = new Rect()
 			ctx._updatedItems.forEach(function(el) {
 				dirty = dirty.union(el.dirty)
-				dirty = dirty.union(el.getScreenRect())
+				if (el.visible())
+					dirty = dirty.union(el.getScreenRect())
+				el._updated = false
 			})
-			ctx._updatedItems.clear()
+			ctx._updatedItems = []
 			console.log('painting frame with rect', dirty)
 			ctx.renderer.setClip(dirty)
 			ctx.element.paint(ctx.renderer, 0, 0)
@@ -163,10 +168,12 @@ var renderFrame = function(ctx, renderer) {
 exports.renderFrame = renderFrame
 
 Element.prototype.update = function() {
-	if (!this.visible())
+	if (this._updated || this.visible() || this.dirty.valid()))
 		return
+
 	var ctx = this._context
-	ctx._updatedItems.add(this)
+	ctx._updatedItems.push(this)
+	this._updated = true //scheduled for this update
 
 	if (!ctx.renderer || !ctx._completed)
 		return

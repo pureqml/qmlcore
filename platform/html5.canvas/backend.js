@@ -59,7 +59,7 @@ exports.init = function(ctx) {
 	html.init(ctx)
 	ctx.canvasElement = ctx.element
 	ctx.canvas = ctx.element.dom
-	ctx._updatedItems = new Set()
+	ctx._updatedItems = []
 	ctx.element = exports.createElement(ctx, ctx.getTag())
 
 	var resizeCanvas = function() {

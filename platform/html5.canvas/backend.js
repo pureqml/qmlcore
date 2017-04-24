@@ -41,9 +41,11 @@ Renderer.prototype.fillRect = function(rect, color) {
 Renderer.prototype.drawImage = function(rect, image, el) {
 	var ui = el.ui
 	this.canvas.globalAlpha = ui.opacity
-	this.canvas.drawImage(image,
-		0, 0, ui.sourceWidth, ui.sourceHeight,
-		rect.l, rect.t, ui.width, ui.height)
+	if (ui.sourceHeight > 0 && ui.sourceWidth > 0) {
+		this.canvas.drawImage(image,
+			0, 0, ui.sourceWidth, ui.sourceHeight,
+			rect.l, rect.t, ui.width, ui.height)
+	}
 }
 
 exports.init = function(ctx) {

@@ -16,6 +16,7 @@ exports.initImage = function(image) {
 	html.initImage(image)
 	image.element.ui = image
 	image.element._image = image._image
+	image.onChanged('status', function() { image.element.update() } )
 }
 
 var Renderer = function(canvas) {

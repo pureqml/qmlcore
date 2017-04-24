@@ -168,7 +168,7 @@ var renderFrame = function(ctx, renderer) {
 exports.renderFrame = renderFrame
 
 Element.prototype.update = function() {
-	if (this._updated || this.visible() || this.dirty.valid()))
+	if (this._updated || this.visible() || this.dirty.valid())
 		return
 
 	var ctx = this._context

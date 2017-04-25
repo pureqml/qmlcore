@@ -37,6 +37,19 @@ Rect.prototype.clone = function() {
 }
 
 Rect.prototype.union = function(rect) {
+	if (!rect.valid())
+		return
+	else if (!this.valid()) {
+		Object.assign(this, rect)
+	} else {
+		this.l = Math.min(this.l, rect.l)
+		this.t = Math.min(this.t, rect.t)
+		this.r = Math.max(this.r, rect.r)
+		this.b = Math.max(this.b, rect.b)
+	}
+}
+
+Rect.prototype.unified = function(rect) {
 	if (!this.valid())
 		return rect.clone()
 	else if (!rect.valid())
@@ -50,7 +63,7 @@ Rect.prototype.union = function(rect) {
 	)
 }
 
-Rect.prototype.intersect = function(rect) {
+Rect.prototype.intersected = function(rect) {
 	if (!this.valid())
 		return rect.clone()
 	else if (!rect.valid())
@@ -152,9 +165,9 @@ var renderFrame = function(ctx, renderer) {
 			updateTimer = undefined
 			var dirty = new Rect()
 			ctx._updatedItems.forEach(function(el) {
-				dirty = dirty.union(el.dirty)
+				dirty.union(el.dirty)
 				if (el.visible())
-					dirty = dirty.union(el.getScreenRect())
+					dirty.union(el.getScreenRect())
 				el._updated = false
 			})
 			ctx._updatedItems = []
@@ -242,7 +255,7 @@ Element.prototype.paint = function(renderer, x, y) {
 
 	//render here
 	this.children.forEach(function(child) {
-		dirty = dirty.union(child.paint(renderer, rect.l, rect.t))
+		dirty.union(child.paint(renderer, rect.l, rect.t))
 	})
 	this.dirty = dirty
 	return dirty

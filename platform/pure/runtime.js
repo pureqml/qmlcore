@@ -171,7 +171,7 @@ var renderFrame = function(ctx, renderer) {
 				el._updated = false
 			})
 			ctx._updatedItems = []
-			console.log('painting frame with rect', dirty)
+			log('painting frame with rect', dirty)
 			ctx.renderer.setClip(dirty)
 			ctx.element.paint(ctx.renderer, 0, 0)
 			//ctx.renderer.fillRect(dirty, new Color('#ff00ff80')) //debug minimal update

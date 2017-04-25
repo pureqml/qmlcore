@@ -50,7 +50,7 @@ Renderer.prototype.drawImage = function(rect, image, el) {
 }
 
 exports.init = function(ctx) {
-	console.log('init')
+	log('init')
 	html = _globals.html5.html
 	runtime = _globals.pure.runtime
 
@@ -66,7 +66,7 @@ exports.init = function(ctx) {
 	ctx.element = exports.createElement(ctx, ctx.getTag())
 
 	var resizeCanvas = function() {
-		console.log('resizing canvas')
+		log('resizing canvas')
 		var canvas = ctx.canvas
 		canvas.setAttribute('width', ctx.width)
 		canvas.setAttribute('height', ctx.height)
@@ -80,18 +80,18 @@ exports.init = function(ctx) {
 	{
 		var Element = runtime.Element
 		Element.prototype.setHtml = function(html) {
-			//console.log('setHtml stub')
+			//log('setHtml stub')
 			this.layoutText()
 		}
 
 		Element.prototype.layoutText = function() {
-			//console.log('layout text stub')
+			//log('layout text stub')
 		}
 	}
 }
 
 exports.run = function(ctx) {
-	console.log('calling redraw')
+	log('calling redraw')
 	ctx.canvasElement.style('visibility', 'visible')
 	runtime.renderFrame(ctx)
 }
@@ -117,5 +117,5 @@ exports.initText = function(text) {
 }
 
 exports.layoutText = function(text) {
-	//console.log('layoutText stub')
+	//log('layoutText stub')
 }

@@ -345,3 +345,41 @@ exports.core._protoOnChanged = function(proto, name, callback)
 
 exports.core._protoOnKey = function(proto, name, callback)
 { protoEvent('key', proto, name, callback) }
+
+var ObjectEnumerator = function(callback) {
+	this._callback = callback
+	this._queue = []
+	this.history = []
+}
+
+var ObjectEnumeratorPrototype = ObjectEnumerator.prototype
+ObjectEnumeratorPrototype.constructor = ObjectEnumerator
+
+ObjectEnumeratorPrototype.unshift = function() {
+	var q = this._queue
+	q.unshift.apply(q, arguments)
+}
+
+ObjectEnumeratorPrototype.push = function() {
+	var q = this._queue
+	q.push.apply(q, arguments)
+}
+
+ObjectEnumeratorPrototype.enumerate = function(root, arg) {
+	var args = [this, arg]
+	var queue = this._queue
+	queue.unshift(root)
+	while(queue.length) {
+		var el = queue.shift()
+		this.history.push(el)
+		var r = this._callback.apply(el, args)
+		if (r)
+			break
+	}
+}
+
+exports.forEach = function(root, callback, arg) {
+	var oe = new ObjectEnumerator(callback)
+	oe.enumerate(root, arg)
+	return arg
+}

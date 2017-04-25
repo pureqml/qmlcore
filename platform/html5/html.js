@@ -367,7 +367,17 @@ exports.init = function(ctx) {
 		div.on(name, onFullscreenChanged)
 	})
 
-	win.on('keydown', function(event) { if (ctx._processKey(event)) event.preventDefault(); } ) //fixme: add html.Document instead
+	win.on('keydown', function(event) {
+		var handlers = core.forEach(ctx, _globals.core.Item.prototype._enqueueNextChildInFocusChain, [])
+		var n = handlers.length
+		for(var i = 0; i < n; ++i) {
+			var handler = handlers[i]
+			if (handler._processKey(event)) {
+				event.preventDefault();
+				break
+			}
+		}
+	}) //fixme: add html.Document instead
 
 	var system = ctx.system
 	//fixme: port to event listener?
@@ -436,7 +446,7 @@ exports.initImage = function(image) {
 				style['background-size'] = 'contain'
 				var w = image.width, h = image.height
 				var targetRatio = 0, srcRatio = natW / natH
-				
+
 				if (w && h)
 					targetRatio = w / h
 

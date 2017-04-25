@@ -323,13 +323,17 @@ Object {
 	}
 
 	///@private
-	function _processKey(event) {
+	function _enqueueNextChildInFocusChain(queue, handlers) {
 		this._tryFocus() //soft-restore focus for invisible components
-		if (this.focusedChild && this.focusedChild.visible) {
-			if (this.focusedChild._processKey(event))
-				return true
+		var focusedChild = this.focusedChild
+		if (focusedChild && focusedChild.visible) {
+			queue.unshift(focusedChild)
+			handlers.unshift(focusedChild)
 		}
+	}
 
+	///@private
+	function _processKey(event) {
 		var key = _globals.core.keyCodes[event.which || event.keyCode];
 		if (key) {
 			//fixme: create invoker only if any of handlers exist

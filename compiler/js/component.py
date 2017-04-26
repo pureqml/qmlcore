@@ -381,7 +381,7 @@ class component_generator(object):
 					code += "%svar __closure = { delegate: delegate }\n" %(ident)
 					code += self.call_create(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
 					code += self.call_setup(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
-					r.append("%s%s.%s = (function(__parent) {\n%s\n%sreturn delegate\n}).bind(%s)" %(ident, parent, target, code, ident, parent))
+					r.append("%s%s.%s = (function(__parent) {\n%s\n%sreturn delegate\n})" %(ident, parent, target, code, ident))
 
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(target)

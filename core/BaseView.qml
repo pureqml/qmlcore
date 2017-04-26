@@ -132,7 +132,7 @@ BaseLayout {
 		row['index'] = idx
 		this._local['model'] = row
 
-		var item = this.delegate()
+		var item = this.delegate(this)
 		items[idx] = item
 		item.view = this
 		item.element.remove()

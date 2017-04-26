@@ -377,11 +377,11 @@ class component_generator(object):
 					r.append(code)
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
-					code = "%svar delegate = new _globals.%s(%s, true)\n" %(ident, registry.find_component(value.package, value.component.name), parent)
+					code = "%svar delegate = new _globals.%s(__parent, true)\n" %(ident, registry.find_component(value.package, value.component.name))
 					code += "%svar __closure = { delegate: delegate }\n" %(ident)
 					code += self.call_create(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
 					code += self.call_setup(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
-					r.append("%s%s.%s = (function() {\n%s\n%sreturn delegate\n}).bind(%s)" %(ident, parent, target, code, ident, parent))
+					r.append("%s%s.%s = (function(__parent) {\n%s\n%sreturn delegate\n}).bind(%s)" %(ident, parent, target, code, ident, parent))
 
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(target)

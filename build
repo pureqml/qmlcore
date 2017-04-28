@@ -6,6 +6,7 @@ import subprocess
 import distutils
 import argparse
 import shutil
+import fnmatch
 import re
 import sys
 import os
@@ -156,7 +157,13 @@ def process_template(destination, source, context):
 	else:
 		raise Exception('unknown templater: %s' %t)
 
-def copy(source, destination, context):
+def apply_templates(src, dst, context, templates):
+	_path, name = path.split(src)
+	for pattern in templates:
+		if fnmatch.fnmatch(name, pattern):
+			process_template(dst, src, context)
+
+def copy(source, destination, context, templates):
 	if not path.isdir(source):
 		return
 
@@ -169,8 +176,7 @@ def copy(source, destination, context):
 			print '+', src
 		_path, name = path.split(src)
 		name, ext = path.splitext(name)
-		if ext.lower() == '.html':
-			process_template(destination, src, context)
+		apply_templates(src, destination, context, templates)
 
 def find_platform_path(root, platform):
 	platform_path = path.join(root, 'platform', platform)
@@ -208,9 +214,11 @@ def build(root, platform, apps, app, manifest):
 		pass
 
 	platform_path = find_platform_path(root, platform)
+	templates = manifest.templates
 
 	with open(path.join(platform_path, '.manifest')) as f:
 		platform_manifest = mf.load(f)
+		templates = platform_manifest.templates
 
 	if not platform_manifest.standalone:
 		raise Exception('%s is not a standalone platform' %platform)
@@ -278,7 +286,7 @@ def build(root, platform, apps, app, manifest):
 
 	context = { 'id': app, 'app': script, 'templater': templater }
 
-	copy(path.join(root, 'dist'), target, context)
+	copy(path.join(root, 'dist'), target, context, templates)
 
 	template_path = []
 
@@ -305,7 +313,7 @@ def build(root, platform, apps, app, manifest):
 		idx = n - 1 - i
 		dist = template_path[idx]
 		context['template_path'] = template_path[idx:]
-		copy(dist, target, context)
+		copy(dist, target, context, templates)
 
 
 try:

@@ -215,6 +215,17 @@ def build(root, platform, apps, app, manifest):
 	plugins_root = path.normpath(path.join(root, '..'))
 	plugins_path = os.listdir(plugins_root)
 
+	def discover_package(dname):
+		package = os.path.normpath(os.path.join(plugins_root, dname))
+		try:
+			with open(os.path.join(package, '.manifest')) as f:
+				manifest = mf.load(f)
+			return manifest.public
+		except:
+			return False
+
+	pureqml_packages = map(lambda p: os.path.join(plugins_root, p), filter(discover_package, plugins_path))
+
 	platform_path = find_platform_path(root, plugins_path, platform)
 	templates = manifest.templates
 
@@ -250,7 +261,7 @@ def build(root, platform, apps, app, manifest):
 
 		subplatforms = subplatforms_next
 
-	options.extend([manifest.source_dir, '-a', app])
+	options.extend(pureqml_packages + [manifest.source_dir, '-a', app])
 
 	if args.release:
 		options.insert(0, '-r')

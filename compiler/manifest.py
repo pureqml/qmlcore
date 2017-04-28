@@ -51,6 +51,10 @@ class Manifest(object):
 		return self.data.get('package', '')
 
 	@property
+	def public(self):
+		return self.data.get('public', False)
+
+	@property
 	def templates(self):
 		return self.data.get('templates', ['*.html'])
 

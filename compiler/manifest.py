@@ -50,6 +50,11 @@ class Manifest(object):
 	def package(self):
 		return self.data.get('package', '')
 
+	@property
+	def templates(self):
+		return self.data.get('templates', ['*.html'])
+
+
 
 def load(f):
 	return Manifest(json.load(f))

@@ -178,13 +178,12 @@ def copy(source, destination, context, templates):
 		name, ext = path.splitext(name)
 		apply_templates(src, destination, context, templates)
 
-def find_platform_path(root, platform):
+def find_platform_path(root, plugins_path, platform):
 	platform_path = path.join(root, 'platform', platform)
 	if path.exists(platform_path):
 		return platform_path
 
-	plugins_root = path.normpath(path.join(root, '..'))
-	for dir in os.listdir(plugins_root): #fixme: optimize me
+	for dir in plugins_path:
 		if dir.startswith('qmlcore-'):
 			platform_path = path.join(plugins_root, dir, 'platform', platform)
 			if path.exists(platform_path):
@@ -213,7 +212,10 @@ def build(root, platform, apps, app, manifest):
 	except Exception as ex:
 		pass
 
-	platform_path = find_platform_path(root, platform)
+	plugins_root = path.normpath(path.join(root, '..'))
+	plugins_path = os.listdir(plugins_root)
+
+	platform_path = find_platform_path(root, plugins_path, platform)
 	templates = manifest.templates
 
 	with open(path.join(platform_path, '.manifest')) as f:
@@ -239,7 +241,7 @@ def build(root, platform, apps, app, manifest):
 		subplatforms_next = []
 
 		for subplatform in subplatforms:
-			subplatform_path = find_platform_path(root, subplatform)
+			subplatform_path = find_platform_path(root, plugins_path, subplatform)
 			options.append(subplatform_path)
 
 			with open(path.join(subplatform_path, '.manifest')) as f:
@@ -302,8 +304,8 @@ def build(root, platform, apps, app, manifest):
 	if path.isdir(platform_dist):
 		template_path.append(platform_dist)
 
-	for subplatform in platform_manifest.requires: #fixme: no recursive processing
-		subplatform_path = find_platform_path(root, subplatform)
+	for subplatform in platform_manifest.requires:
+		subplatform_path = find_platform_path(root, plugins_path, subplatform)
 		platform_dist = path.join(subplatform_path, 'dist')
 		if path.isdir(platform_dist):
 			template_path.append(platform_dist)

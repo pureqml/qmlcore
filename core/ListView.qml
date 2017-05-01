@@ -168,7 +168,8 @@ BaseView {
 		var items = this._items
 		var n = items.length
 		var w = this.width, h = this.height
-		//log("layout " + n + " into " + w + "x" + h)
+		if (this.trace)
+			log("layout " + n + " into " + w + "x" + h)
 		var created = false
 		var p = 0
 		var c = horizontal? this.content.x: this.content.y

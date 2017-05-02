@@ -412,7 +412,7 @@ exports.initImage = function(image) {
 			image.paintedHeight = image.height
 		}
 
-		var style = {'background-image': 'url(' + image.source + ')'}
+		var style = {'background-image': 'url("' + image.source + '")'}
 		switch(image.fillMode) {
 			case image.Stretch:
 				style['background-repeat'] = 'no-repeat'

@@ -15,6 +15,7 @@ Object {
 	constructor: {
 		var self = this
 		var location = window.location
+		this.updateActualValues()
 		window.onhashchange = function() { self.hash = location.hash }
 		window.onpopstate = function() { self.updateActualValues() }
 	}

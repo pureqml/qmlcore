@@ -141,7 +141,7 @@ EventEmitter {
 			object = object.parent
 		}
 
-		throw new Error("invalid property requested: '" + name)
+		throw new Error("invalid property requested: '" + name + "'")
 	}
 
 	///@private sets animation on given property

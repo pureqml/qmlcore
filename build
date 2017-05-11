@@ -185,7 +185,7 @@ def find_platform_path(root, plugins_path, platform):
 
 	for dir in plugins_path:
 		if dir.startswith('qmlcore-'):
-			platform_path = path.join(plugins_root, dir, 'platform', platform)
+			platform_path = path.join(dir, 'platform', platform)
 			if path.exists(platform_path):
 				return platform_path
 	raise Exception("no platform '%s' found" %platform)
@@ -200,6 +200,9 @@ def copytree(src, dst, symlinks=False, ignore=None):
 		else:
 			shutil.copy2(s, d)
 
+def listdirs(path):
+	return filter(os.path.isdir, map(lambda x: os.path.join(path, x), os.listdir(path)))
+
 def build(root, platform, apps, app, manifest):
 	print "building %s for %s..." %(app, platform)
 	if len(apps) > 1:
@@ -212,11 +215,11 @@ def build(root, platform, apps, app, manifest):
 	except Exception as ex:
 		pass
 
-	plugins_root = path.normpath(path.join(root, '..'))
-	plugins_path = os.listdir(plugins_root)
+	plugins_path = listdirs(path.normpath(path.join(root, '..')))
+	plugins_path += listdirs(path.normpath(root))
 
 	def discover_package(dname):
-		package = os.path.normpath(os.path.join(plugins_root, dname))
+		package = os.path.normpath(dname)
 		try:
 			with open(os.path.join(package, '.manifest')) as f:
 				manifest = mf.load(f)
@@ -224,7 +227,7 @@ def build(root, platform, apps, app, manifest):
 		except:
 			return False
 
-	pureqml_packages = map(lambda p: os.path.join(plugins_root, p), filter(discover_package, plugins_path))
+	pureqml_packages = filter(discover_package, plugins_path)
 
 	platform_path = find_platform_path(root, plugins_path, platform)
 	templates = manifest.templates

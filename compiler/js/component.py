@@ -215,9 +215,12 @@ class component_generator(object):
 				signal_name = name[2].lower() + name[3:] #check that there's no signal with that name
 			is_pressed = is_on and name.endswith("Pressed")
 			is_changed = is_on and name.endswith("Changed")
-			if is_changed or is_pressed:
+			if is_changed:
 				if signal_name in base_gen.signals:
 					is_changed = False
+			if is_pressed:
+				if signal_name in base_gen.signals:
+					is_pressed = False
 
 			if is_on:
 				name = name[2].lower() + name[3:]

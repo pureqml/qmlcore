@@ -202,9 +202,9 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 				p = this[storageName] = { value : defaultValue }
 			}
-			var backend = this._context.backend
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
+				var backend = this._context.backend
 				if (p.frameRequest)
 					backend.cancelAnimationFrame(p.frameRequest)
 

@@ -114,6 +114,14 @@ class component_generator(object):
 		elif t is lang.Method:
 			fullname, args, code = split_name(child.name), child.args, child.code
 			path, name = fullname
+
+			#quick dirty fix of ListModel onRowsChanged.
+			#proper way to fix it to put this code in generate(), where all components are available
+			#and check if there's signal with the same name
+			allow_on_changed = True
+			if self.component.name == 'ListModel' and name == 'onRowsChanged':
+				allow_on_changed = False
+
 			if child.event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper(): #onXyzzy
 				name = name[2].lower() + name[3:]
 				fullname = path, name
@@ -123,7 +131,7 @@ class component_generator(object):
 					if fullname in self.key_handlers:
 						raise Exception("duplicate key handler " + child.name)
 					self.key_handlers[fullname] = code
-				elif name.endswith("Changed"):
+				elif name.endswith("Changed") and allow_on_changed:
 					name = name[:-7]
 					fullname = path, name
 					if fullname in self.changed_handlers:

@@ -21,11 +21,9 @@ class component_generator(object):
 		self.base_type = None
 		self.children = []
 		self.methods = {}
-		self.signal_handlers = {}
-		self.changed_handlers = {}
-		self.key_handlers = {}
 		self.signals = set()
 		self.elements = []
+		self.generators = []
 		self.id = None
 		self.prototype = prototype
 		self.ctor = ''
@@ -70,6 +68,7 @@ class component_generator(object):
 		t = type(value)
 		if t is lang.Component:
 			value = component_generator(self.ns, self.package + ".<anonymous>", value)
+			self.generators.append(value)
 		if t is str: #and value[0] == '"' and value[-1] == '"':
 			value = value.replace("\\\n", "")
 		self.assignments[target] = value
@@ -105,46 +104,21 @@ class component_generator(object):
 			self.id = child.name
 			self.assign("id", child.name)
 		elif t is lang.Component:
-			self.children.append(component_generator(self.ns, self.package + ".<anonymous>", child))
+			value = component_generator(self.ns, self.package + ".<anonymous>", child)
+			self.generators.append(value)
+			self.children.append(value)
 		elif t is lang.Behavior:
 			for target in child.target:
 				if target in self.animations:
-					raise Exception("duplicate animation on property " + target);
-				self.animations[target] = component_generator(self.ns, self.package + ".<anonymous-animation>", child.animation)
+					raise Exception("duplicate animation on property " + target)
+				value = component_generator(self.ns, self.package + ".<anonymous-animation>", child.animation)
+				self.animations[target] = value
+				self.generators.append(value)
 		elif t is lang.Method:
 			fullname, args, code = split_name(child.name), child.args, child.code
-			path, name = fullname
-
-			#quick dirty fix of ListModel onRowsChanged.
-			#proper way to fix it to put this code in generate(), where all components are available
-			#and check if there's signal with the same name
-			allow_on_changed = True
-			if self.component.name == 'ListModel' and name == 'onRowsChanged':
-				allow_on_changed = False
-
-			if child.event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper(): #onXyzzy
-				name = name[2].lower() + name[3:]
-				fullname = path, name
-				if name.endswith("Pressed"):
-					name = name[0].upper() + name[1:-7]
-					fullname = path, name
-					if fullname in self.key_handlers:
-						raise Exception("duplicate key handler " + child.name)
-					self.key_handlers[fullname] = code
-				elif name.endswith("Changed") and allow_on_changed:
-					name = name[:-7]
-					fullname = path, name
-					if fullname in self.changed_handlers:
-						raise Exception("duplicate signal handler " + child.name)
-					self.changed_handlers[fullname] = code
-				else:
-					if fullname in self.signal_handlers:
-						raise Exception("duplicate signal handler " + child.name)
-					self.signal_handlers[fullname] = args, code
-			else:
-				if fullname in self.methods:
-					raise Exception("duplicate method " + name)
-				self.methods[fullname] = args, code
+			if fullname in self.methods:
+				raise Exception("duplicate method " + name)
+			self.methods[fullname] = args, code, child.event
 		elif t is lang.Constructor:
 			self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
 		elif t is lang.Signal:
@@ -215,6 +189,62 @@ class component_generator(object):
 				target_parent = self.get_rvalue(parent, target_parent)
 			r.append("\t%s.setAnimation('%s', %s);\n" %(target_parent, target, var))
 		return "\n".join(r)
+
+	#no cross-component access here
+	def pregenerate(self, registry):
+		for gen in self.generators:
+			gen.pregenerate(registry)
+
+		methods = self.methods
+		self.methods = {}
+		self.changed_handlers = {}
+		self.signal_handlers = {}
+		self.key_handlers = {}
+		#print 'pregenerate', self.name
+		base_type = self.get_base_type(registry)
+		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
+
+		for _name, _args in methods.iteritems():
+			path, name = _name
+			oname = name
+			args, code, event = _args
+			fullname = path, name
+
+			is_on = event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper() #onXyzzy
+			if is_on:
+				signal_name = name[2].lower() + name[3:] #check that there's no signal with that name
+			is_pressed = is_on and name.endswith("Pressed")
+			is_changed = is_on and name.endswith("Changed")
+			if is_changed:
+				if signal_name in base_gen.signals:
+					is_changed = False
+			if is_pressed:
+				if signal_name in base_gen.signals:
+					is_pressed = False
+
+			if is_on:
+				name = name[2].lower() + name[3:]
+				fullname = path, name
+				if is_pressed:
+					name = name[0].upper() + name[1:-7]
+					fullname = path, name
+					if fullname in self.key_handlers:
+						raise Exception("duplicate key handler " + oname)
+					self.key_handlers[fullname] = code
+				elif is_changed:
+					name = name[:-7]
+					fullname = path, name
+					if fullname in self.changed_handlers:
+						raise Exception("duplicate signal handler " + oname)
+					self.changed_handlers[fullname] = code
+				else:
+					if fullname in self.signal_handlers:
+						raise Exception("duplicate signal handler " + oname)
+					self.signal_handlers[fullname] = args, code
+			else:
+				if fullname in self.methods:
+					raise Exception("duplicate method " + oname)
+				self.methods[fullname] = args, code
 
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True

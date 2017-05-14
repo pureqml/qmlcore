@@ -202,33 +202,45 @@ class component_generator(object):
 		self.key_handlers = {}
 		#print 'pregenerate', self.name
 		base_type = self.get_base_type(registry)
+		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
+
 		for _name, _args in methods.iteritems():
 			path, name = _name
+			oname = name
 			args, code, event = _args
-
 			fullname = path, name
-			if event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper(): #onXyzzy
+
+			is_on = event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper() #onXyzzy
+			if is_on:
+				signal_name = name[2].lower() + name[3:] #check that there's no signal with that name
+			is_pressed = is_on and name.endswith("Pressed")
+			is_changed = is_on and name.endswith("Changed")
+			if is_changed or is_pressed:
+				if signal_name in base_gen.signals:
+					is_changed = False
+
+			if is_on:
 				name = name[2].lower() + name[3:]
 				fullname = path, name
-				if name.endswith("Pressed"):
+				if is_pressed:
 					name = name[0].upper() + name[1:-7]
 					fullname = path, name
 					if fullname in self.key_handlers:
-						raise Exception("duplicate key handler " + child.name)
+						raise Exception("duplicate key handler " + oname)
 					self.key_handlers[fullname] = code
-				elif name.endswith("Changed"):
+				elif is_changed:
 					name = name[:-7]
 					fullname = path, name
 					if fullname in self.changed_handlers:
-						raise Exception("duplicate signal handler " + child.name)
+						raise Exception("duplicate signal handler " + oname)
 					self.changed_handlers[fullname] = code
 				else:
 					if fullname in self.signal_handlers:
-						raise Exception("duplicate signal handler " + child.name)
+						raise Exception("duplicate signal handler " + oname)
 					self.signal_handlers[fullname] = args, code
 			else:
 				if fullname in self.methods:
-					raise Exception("duplicate method " + name)
+					raise Exception("duplicate method " + oname)
 				self.methods[fullname] = args, code
 
 	def generate_prototype(self, registry, ident_n = 1):

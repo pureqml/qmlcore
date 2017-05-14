@@ -113,6 +113,9 @@ class generator(object):
 		queue = ['core.Context']
 		code, base_class = {}, {}
 
+		for gen in self.components.itervalues():
+			gen.pregenerate(self)
+
 		while queue or self.used_components:
 			for component in self.used_components:
 				if component not in generated:

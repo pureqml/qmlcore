@@ -200,7 +200,7 @@ class component_generator(object):
 		self.changed_handlers = {}
 		self.signal_handlers = {}
 		self.key_handlers = {}
-		print 'pregenerate', self.name
+		#print 'pregenerate', self.name
 		base_type = self.get_base_type(registry)
 		for _name, _args in methods.iteritems():
 			path, name = _name

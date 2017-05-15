@@ -89,8 +89,8 @@ Element.prototype.layoutText = function() {
 	this.update()
 }
 
-var _paintText = function(renderer, rect) {
-	renderer.paintText(rect.moved(this._offsetX, this._offsetY), this._text)
+var _drawText = function(renderer, rect) {
+	renderer.drawText(rect.moved(this._offsetX, this._offsetY), this._text)
 }
 
 exports.initText = function(text) {
@@ -100,7 +100,7 @@ exports.initText = function(text) {
 	element.ui = text
 	element._text = new Text()
 	element._text.text = text.text
-	element._paint = _paintText
+	element._paint = _drawText
 	element.update()
 }
 
@@ -142,14 +142,14 @@ Renderer.prototype.paintRectangle = function(rect, color) {
 	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
 }
 
-Renderer.prototype.paintText = function(rect, text) {
+Renderer.prototype.drawText = function(rect, text) {
 	if (!rect.valid())
 		return
 	log(this.prefix() + 'paint text ' + rect + ' ' + text)
 	_renderText(rect.l, rect.t, rect.r, rect.b, text)
 }
 
-Renderer.prototype.paintImage = function(rect, image) {
+Renderer.prototype.drawImage = function(rect, image) {
 	if (!rect.valid())
 		return
 	log(this.prefix() + 'paint image ' + rect + ' ' + image)

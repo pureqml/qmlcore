@@ -61,8 +61,5 @@ Object {
 		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false
 		this.supportTransforms = ctx.backend.capabilities.csstransforms || false
 		this.supportTransitions = ctx.backend.capabilities.csstransitions || false
-
-		this.screenWidth = window.screen.width
-		this.screenHeight = window.screen.height
 	}
 }

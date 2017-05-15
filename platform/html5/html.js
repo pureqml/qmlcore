@@ -384,8 +384,8 @@ exports.init = function(ctx) {
 	window.onfocus = function() { system.pageActive = true }
 	window.onblur = function() { system.pageActive = false }
 
-	ctx.screenWidth = window.screen.width
-	ctx.screenHeight = window.screen.height
+	system.screenWidth = window.screen.width
+	system.screenHeight = window.screen.height
 }
 
 exports.createElement = function(ctx, tag) {

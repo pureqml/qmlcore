@@ -10,7 +10,23 @@ var rootItem = null
 var Rect = runtime.Rect
 var Element = runtime.Element
 
-var Image = function() { }
+var Image = function(ui) {
+	this.ui = ui
+}
+
+Image.prototype.load = function(source) {
+	if (!source) {
+		this.ui.status = this.ui.Null
+		return
+	}
+	log('loading image', source)
+	var ui = this.ui
+	setTimeout(function() {
+		log('image ' + source + ' loaded')
+		ui.status = ui.Ready
+	}, Math.random() * 1000)
+}
+
 var Text = function() { }
 
 exports.init = function(ctx) {
@@ -34,7 +50,7 @@ exports.createElement = function(ctx, tag) {
 
 exports.initImage = function(image) {
 	var element = image.element
-	element._image = new Image()
+	element._image = new Image(image)
 }
 
 var ImageStatusNull			= 0

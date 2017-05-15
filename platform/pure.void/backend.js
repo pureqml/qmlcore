@@ -17,6 +17,7 @@ var Renderer = function(w, h) {
 }
 
 var Image = function() { }
+var Text = function() { }
 
 exports.init = function(ctx) {
 	log('backend initialization...')

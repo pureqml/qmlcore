@@ -10,12 +10,6 @@ var rootItem = null
 var Rect = runtime.Rect
 var Element = runtime.Element
 
-var Renderer = function(w, h) {
-	this.width = w
-	this.height = h
-	log('creating renderer ' + w + 'x' + h)
-}
-
 var Image = function() { }
 var Text = function() { }
 
@@ -23,6 +17,7 @@ exports.init = function(ctx) {
 	log('backend initialization...')
 	ctx._updatedItems = []
 	renderer = new Renderer(480, 640) //fixme: pass in options?
+	ctx.renderer = renderer
 	rootItem = ctx.element = new Element(ctx, ctx.getTag())
 	ctx.width = renderer.width
 	ctx.height = renderer.height
@@ -30,6 +25,7 @@ exports.init = function(ctx) {
 
 exports.run = function(ctx) {
 	ctx._run()
+	runtime.renderFrame(ctx)
 }
 
 exports.createElement = function(ctx, tag) {
@@ -131,6 +127,10 @@ var Renderer = function(w, h) {
 	this.clip = this.getRect()
 	this.rect = this.getRect()
 	this.depth = 0
+}
+
+Renderer.prototype.setClip = function(clip) {
+	log('setting clip to ' + clip)
 }
 
 Renderer.prototype.prefix = function() {

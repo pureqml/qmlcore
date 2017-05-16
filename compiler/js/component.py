@@ -155,8 +155,8 @@ class component_generator(object):
 			code += '\n' + value.generate_setup_code(registry, target, closure, ident_n)
 		return code
 
-	def get_base_type(self, registry):
-		return registry.find_component(self.package, self.component.name)
+	def get_base_type(self, registry, register_used = True):
+		return registry.find_component(self.package, self.component.name, register_used)
 
 	def generate(self, registry):
 		base_type = self.get_base_type(registry)
@@ -201,7 +201,7 @@ class component_generator(object):
 		self.signal_handlers = {}
 		self.key_handlers = {}
 		#print 'pregenerate', self.name
-		base_type = self.get_base_type(registry)
+		base_type = self.get_base_type(registry, False)
 		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
 
 		for _name, _args in methods.iteritems():

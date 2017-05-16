@@ -47,7 +47,7 @@ class generator(object):
 	def wrap(self, code, use_globals = False):
 		return "(function() {/** @const */\nvar exports = %s;\nexports._get = function(name) { return exports[name] }\n%s\nreturn exports;\n} )" %("_globals" if use_globals else "{}", code)
 
-	def find_component(self, package, name):
+	def find_component(self, package, name, register_used = True):
 		if name == "CoreObject":
 			return root_type
 
@@ -59,7 +59,7 @@ class generator(object):
 		else:
 			name_package = ''
 
-		if package in self.packages and name in self.packages[package]:
+		if register_used and package in self.packages and name in self.packages[package]:
 			self.used_components.add(package + '.' + name)
 			return "%s.%s" %(package, name)
 
@@ -80,7 +80,8 @@ class generator(object):
 				%(package, name, " ".join(map(lambda p: "%s.%s" %(p, name), candidates))))
 
 		package_name = candidates[0]
-		self.used_components.add(package_name + '.' + name)
+		if register_used:
+			self.used_components.add(package_name + '.' + name)
 		return "%s.%s" %(package_name, name)
 
 	def generate_component(self, gen):

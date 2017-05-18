@@ -80,9 +80,9 @@ var Color = exports.core.Color = function(value) {
 		return
 	}
 	else {
-		var h = value.charAt(0);
+		var h = value[0]
 		if (h != '#')
-			triplet = colorTable[value];
+			triplet = colorTable[value]
 		else
 			triplet = value.substring(1)
 	}
@@ -96,10 +96,10 @@ var Color = exports.core.Color = function(value) {
 
 	var len = triplet.length;
 	if (len == 3 || len == 4) {
-		var r = parseInt(triplet.charAt(0), 16)
-		var g = parseInt(triplet.charAt(1), 16)
-		var b = parseInt(triplet.charAt(2), 16)
-		var a = (len == 4)? parseInt(triplet.charAt(3), 16): 15
+		var r = parseInt(triplet[0], 16)
+		var g = parseInt(triplet[1], 16)
+		var b = parseInt(triplet[2], 16)
+		var a = (len == 4)? parseInt(triplet[3], 16): 15
 		this.r = (r << 4) | r;
 		this.g = (g << 4) | g;
 		this.b = (b << 4) | b;

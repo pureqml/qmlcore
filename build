@@ -77,13 +77,13 @@ def minify_gcc(out, src, root, app, platform, manifest):
 		src], stdout = out)
 
 def minify(root, app, platform, manifest):
-	src = path.join("build." + platform, "qml.%s.js" % app)
+	src = path.join("build." + platform, app, "qml.%s.js" % app)
 	dstname = "qml.%s.min.js" %app
 	tool = manifest.minify
 	if isinstance(tool, bool):
 		tool = 'uglify-js'
 
-	with open(path.join("build." + platform, dstname), "w") as out:
+	with open(path.join("build." + platform, app, dstname), "w") as out:
 		if tool == 'uglify-js':
 			try:
 				minify_uglify(out, src, root, app, platform, manifest)

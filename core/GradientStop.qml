@@ -4,8 +4,8 @@ Object {
 	property Color color;	///< color of this stop
 
 	///@private
-	function _update() {
-		this.parent._update()
+	onPositionChanged, onColorChanged: {
+		this.parent._updateGradient()
 	}
 
 	///@private

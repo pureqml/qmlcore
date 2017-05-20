@@ -58,13 +58,7 @@ Item {
 		this._completedHandlers.push(callback);
 	}
 
-	///@private
-	function _update(name, value) {
-		switch(name) {
-			case 'fullscreen': if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); break
-		}
-		_globals.core.Item.prototype._update.apply(this, arguments)
-	}
+	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }
 
 	///@private
 	function _complete() {

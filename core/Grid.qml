@@ -149,14 +149,9 @@ Layout {
 		}
 	}
 
-	///@private
-	function _update(name, value) {
-		switch(name) {
-			case 'horizontalSpacing':
-			case 'verticalSpacing':
-			case 'horizontalAlignment':
-				this._delayedLayout.schedule(); break;
-		}
-		_globals.core.Layout.prototype._update.apply(this, arguments);
+	onHorizontalSpacingChanged,
+	onVerticalSpacingChanged,
+	onHorizontalAlignmentChanged: {
+		this._delayedLayout.schedule()
 	}
 }

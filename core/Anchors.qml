@@ -117,94 +117,99 @@ Object {
 		self.y = vcenter - self.height / 2 - parent_box[1] + tm - bm - self.viewY;
 	}
 
-	///@private
-	function _update(name) {
+	onLeftChanged: {
 		var self = this.parent
 		var anchors = this
-
-		switch(name) {
-			case 'left':
-				self._removeUpdater('x')
-				if (this.right)
-					self._removeUpdater('width')
-				var update_left = this._updateLeft.bind(this)
-				update_left()
-				self.connectOn(anchors.left.parent, 'boxChanged', update_left)
-				anchors.onChanged('leftMargin', update_left)
-				break
-
-			case 'right':
-				self._removeUpdater('x')
-				if (this.left)
-					self._removeUpdater('width')
-				var update_right = this._updateRight.bind(this)
-				update_right()
-				self.onChanged('width', update_right)
-				self.connectOn(anchors.right.parent, 'boxChanged', update_right)
-				anchors.onChanged('rightMargin', update_right)
-				break
-
-			case 'top':
-				self._removeUpdater('y')
-				if (this.bottom)
-					self._removeUpdater('height')
-				var update_top = this._updateTop.bind(this)
-				update_top()
-				self.connectOn(anchors.top.parent, 'boxChanged', update_top)
-				anchors.onChanged('topMargin', update_top)
-				break
-
-			case 'bottom':
-				self._removeUpdater('y')
-				if (this.top)
-					self._removeUpdater('height')
-				var update_bottom = this._updateBottom.bind(this)
-				update_bottom()
-				self.onChanged('height', update_bottom)
-				self.connectOn(anchors.bottom.parent, 'boxChanged', update_bottom)
-				anchors.onChanged('bottomMargin', update_bottom)
-				break
-
-			case 'horizontalCenter':
-				self._removeUpdater('x')
-				var update_h_center = this._updateHCenter.bind(this)
-				update_h_center()
-				self.onChanged('width', update_h_center)
-				anchors.onChanged('leftMargin', update_h_center)
-				anchors.onChanged('rightMargin', update_h_center)
-				self.connectOn(anchors.horizontalCenter.parent, 'boxChanged', update_h_center)
-				break
-
-			case 'verticalCenter':
-				self._removeUpdater('y')
-				var update_v_center = this._updateVCenter.bind(this)
-				update_v_center()
-				self.onChanged('height', update_v_center)
-				anchors.onChanged('topMargin', update_v_center)
-				anchors.onChanged('bottomMargin', update_v_center)
-				self.connectOn(anchors.verticalCenter.parent, 'boxChanged', update_v_center)
-				break
-
-			case 'fill':
-				anchors.left = anchors.fill.left
-				anchors.right = anchors.fill.right
-				anchors.top = anchors.fill.top
-				anchors.bottom = anchors.fill.bottom
-				break
-
-			case 'centerIn':
-				anchors.horizontalCenter = anchors.centerIn.horizontalCenter
-				anchors.verticalCenter = anchors.centerIn.verticalCenter
-				break
-
-			case 'leftMargin':
-			case 'rightMargin':
-			case 'topMargin':
-			case 'bottomMargin':
-			case 'margins':
-				this.marginsUpdated();
-		}
-		_globals.core.Object.prototype._update.apply(this, arguments)
+		self._removeUpdater('x')
+		if (this.right)
+			self._removeUpdater('width')
+		var update_left = this._updateLeft.bind(this)
+		update_left()
+		self.connectOn(anchors.left.parent, 'boxChanged', update_left)
+		anchors.onChanged('leftMargin', update_left)
 	}
 
+	onRightChanged: {
+		var self = this.parent
+		var anchors = this
+		self._removeUpdater('x')
+		if (this.left)
+			self._removeUpdater('width')
+		var update_right = this._updateRight.bind(this)
+		update_right()
+		self.onChanged('width', update_right)
+		self.connectOn(anchors.right.parent, 'boxChanged', update_right)
+		anchors.onChanged('rightMargin', update_right)
+	}
+
+	onTopChanged: {
+		var self = this.parent
+		var anchors = this
+		self._removeUpdater('y')
+		if (this.bottom)
+			self._removeUpdater('height')
+		var update_top = this._updateTop.bind(this)
+		update_top()
+		self.connectOn(anchors.top.parent, 'boxChanged', update_top)
+		anchors.onChanged('topMargin', update_top)
+	}
+
+	onButtomChanged: {
+		var self = this.parent
+		var anchors = this
+		self._removeUpdater('y')
+		if (this.top)
+			self._removeUpdater('height')
+		var update_bottom = this._updateBottom.bind(this)
+		update_bottom()
+		self.onChanged('height', update_bottom)
+		self.connectOn(anchors.bottom.parent, 'boxChanged', update_bottom)
+		anchors.onChanged('bottomMargin', update_bottom)
+	}
+
+	onHorizontalCenterCHanged: {
+		var self = this.parent
+		var anchors = this
+		self._removeUpdater('x')
+		var update_h_center = this._updateHCenter.bind(this)
+		update_h_center()
+		self.onChanged('width', update_h_center)
+		anchors.onChanged('leftMargin', update_h_center)
+		anchors.onChanged('rightMargin', update_h_center)
+		self.connectOn(anchors.horizontalCenter.parent, 'boxChanged', update_h_center)
+	}
+
+	onVerticalCenterChanged: {
+		var self = this.parent
+		var anchors = this
+		var update_v_center = this._updateVCenter.bind(this)
+		self._removeUpdater('y')
+		update_v_center()
+		self.onChanged('height', update_v_center)
+		anchors.onChanged('topMargin', update_v_center)
+		anchors.onChanged('bottomMargin', update_v_center)
+		self.connectOn(anchors.verticalCenter.parent, 'boxChanged', update_v_center)
+	}
+
+	onFillChanged: {
+		var self = this.parent
+		var anchors = this
+		anchors.left = anchors.fill.left
+		anchors.right = anchors.fill.right
+		anchors.top = anchors.fill.top
+		anchors.bottom = anchors.fill.bottom
+	}
+
+	onCenterInChanged: {
+		var self = this.parent
+		var anchors = this
+		anchors.horizontalCenter = anchors.centerIn.horizontalCenter
+		anchors.verticalCenter = anchors.centerIn.verticalCenter
+	}
+
+	onLeftMarginChanged,
+	onRightMarginChanged,
+	onTopMarginChanged,
+	onBottomMarginChanged,
+	onMarginChanged:		{ this.marginsUpdated(); }
 }

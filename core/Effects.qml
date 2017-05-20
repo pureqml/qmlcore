@@ -58,9 +58,8 @@ Object {
 		}
 	}
 
-	/// @private
-	function _update(name, value) {
-		this._updateStyle()
-		_globals.core.Object.prototype._update.apply(this, arguments)
-	}
+	onBlurChanged, onGrayscaleChanged,
+	onSepiaChanged, onBrightnessChanged,
+	onContrastChanged, onHueRotateChanged,
+	onInvertChanged, onSaturateChanged: { this._updateStyle() }
 }

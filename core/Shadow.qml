@@ -6,10 +6,9 @@ Object {
 	property real blur;				///< applies a blur effect on the shadow
 	property real spread;			///< adjusts a spread distance of the shadow
 
-	/// @private
-	function _update(name, value) {
+	onXChanged, onYChanged,
+	onColorChanged, onBlurChanged, onSpreadChanged: {
 		this.parent._updateStyle(true)
-		_globals.core.Object.prototype._update.apply(this, arguments);
 	}
 
 	/// @private

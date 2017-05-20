@@ -14,12 +14,12 @@ Object {
 		if (child instanceof _globals.core.GradientStop) {
 			this.stops.push(child)
 			this.stops.sort(function(a, b) { return a.position > b.position; })
-			this._update()
+			this._updateGradient()
 		}
 	}
 
 	///@private
-	function _update() {
+	function _updateStyle() {
 		var decl = this._getDeclaration()
 		if (decl)
 			this.parent.style({ 'background-color': '', 'background': 'linear-gradient(' + decl + ')' })

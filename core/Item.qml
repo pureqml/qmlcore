@@ -47,25 +47,6 @@ Object {
 	}
 
 	///@private
-	onRecursiveVisibleChanged: {
-		this.children.forEach(function(child) {
-			child.recursiveVisible = value && child.visible && child.visibleInView
-		})
-	}
-
-	///@private
-	onVisibleChanged: {
-		this.recursiveVisible = value && this.visibleInView && this.parent.recursiveVisible
-		if (!value)
-			this.parent._tryFocus()
-	}
-
-	///@private
-	onVisibleInViewChanged: {
-		this.recursiveVisible = value && this.visible && this.parent.recursiveVisible
-	}
-
-	///@private
 	function discard() {
 		_globals.core.Object.prototype.discard.apply(this)
 		this.focusedChild = null
@@ -150,45 +131,39 @@ Object {
 		return { width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', transform: 'transform', visible: 'visibility', visibleInView: 'visibility', background: 'background', color: 'color', font: 'font' }[name]
 	}
 
-	/// @private
-	function _update (name, value) {
-		switch(name) {
-			case 'width':
-				this.style('width', value)
-				this.boxChanged()
-				break;
-
-			case 'height':
-				this.style('height', value - this._topPadding);
-				this.boxChanged()
-				break;
-
-			case 'x':
-			case 'viewX':
-				var x = this.x + this.viewX
-				this.style('left', x);
-				this.boxChanged()
-				break;
-
-			case 'y':
-			case 'viewY':
-				var y = this.y + this.viewY
-				this.style('top', y);
-				this.boxChanged()
-				break;
-
-			case 'opacity': if (this.element) this.style('opacity', value); break;
-			case 'visibleInView':
-			case 'visible':
-				if (this.element)
-					this.style('visibility', (this.visible && this.visibleInView)? 'inherit': 'hidden')
-					break
-			case 'z':		this.style('z-index', value); break;
-			case 'radius':	this.style('border-radius', value); break;
-			case 'clip':	this.style('overflow', value? 'hidden': 'visible'); break;
-		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+	///@private
+	function _updateVisibility() {
+		if (this.element) this.style('visibility', (this.visible && this.visibleInView)? 'inherit': 'hidden')
 	}
+
+	onVisibleInViewChanged: {
+		this.recursiveVisible = value && this.visible && this.parent.recursiveVisible
+		this._updateVisibility()
+	}
+
+	onRecursiveVisibleChanged: {
+		this.children.forEach(function(child) {
+			child.recursiveVisible = value && child.visible && child.visibleInView
+		})
+	}
+
+	onVisibleChanged: {
+		this.recursiveVisible = value && this.visibleInView && this.parent.recursiveVisible
+		if (!value)
+			this.parent._tryFocus()
+		this._updateVisibility()
+	}
+
+	onWidthChanged: 	{ this.style('width', value); this.boxChanged() }
+	onHeightChanged:	{ this.style('height', value - this._topPadding); this.boxChanged() }
+	onXChanged,
+	onViewXChanged:		{ var x = this.x + this.viewX; this.style('left', x); this.boxChanged() }
+	onYChanged,
+	onViewYChanged:		{ var y = this.y + this.viewY; this.style('top', y); this.boxChanged() }
+	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }
+	onZChanged:			{ this.style('z-index', value) }
+	onRadiusChanged:	{ this.style('border-radius', value) }
+	onClipChanged:		{ this.style('overflow', value? 'hidden': 'visible') }
 
 	///@private sets current global focus to component
 	function forceActiveFocus() {

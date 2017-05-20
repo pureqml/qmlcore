@@ -111,15 +111,9 @@ BaseLayout {
 		this._onReset()
 	}
 
-	/// @private
-	function _update(name, value) {
-		switch(name) {
-		case 'delegate':
-			if (value)
-				value.visible = false
-			break
-		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
+	onDelegateChanged: {
+		if (value)
+			value.visible = false
 	}
 
 	/// @private creates delegate in given item slot

@@ -84,37 +84,37 @@ Item {
 		this._context.backend.layoutText(this)
 	}
 
-	///@private
-	function _update(name, value) {
-		switch(name) {
-			case 'text': this._setText(value); this._updateSize(); break;
-			case 'color': this.style('color', _globals.core.normalizeColor(value)); break;
-			case 'width': this._updateSize(); break;
-			case 'verticalAlignment': this.verticalAlignment = value; this._enableSizeUpdate(); break
-			case 'horizontalAlignment':
-				switch(value) {
-				case this.AlignLeft:	this.style('text-align', 'left'); break
-				case this.AlignRight:	this.style('text-align', 'right'); break
-				case this.AlignHCenter:	this.style('text-align', 'center'); break
-				case this.AlignJustify:	this.style('text-align', 'justify'); break
-				}
-				break
-			case 'wrapMode':
-				switch(value) {
-				case this.NoWrap:
-					this.style({'white-space': 'nowrap', 'word-break': '' })
-					break
-				case this.Wrap:
-				case this.WordWrap:
-					this.style({'white-space': 'normal', 'word-break': '' })
-					break
-				case this.WrapAnywhere:
-					this.style({ 'white-space': 'normal', 'word-break': 'break-all' })
-					break
-				}
-				this._updateSize();
-				break
+	onTextChanged:				{ this._setText(value); this._updateSize() }
+	onColorChanged: 			{ this.style('color', _globals.core.normalizeColor(value)) }
+	onWidthChanged:				{ this._updateSize() }
+
+	onVerticalAlignmentChanged: {
+		this.verticalAlignment = value;
+		this._enableSizeUpdate()
+	}
+
+	onHorizontalAlignmentChanged: {
+		switch(value) {
+		case this.AlignLeft:	this.style('text-align', 'left'); break
+		case this.AlignRight:	this.style('text-align', 'right'); break
+		case this.AlignHCenter:	this.style('text-align', 'center'); break
+		case this.AlignJustify:	this.style('text-align', 'justify'); break
 		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
+	}
+
+	onWrapModeChanged: {
+		switch(value) {
+		case this.NoWrap:
+			this.style({'white-space': 'nowrap', 'word-break': '' })
+			break
+		case this.Wrap:
+		case this.WordWrap:
+			this.style({'white-space': 'normal', 'word-break': '' })
+			break
+		case this.WrapAnywhere:
+			this.style({ 'white-space': 'normal', 'word-break': 'break-all' })
+			break
+		}
+		this._updateSize();
 	}
 }

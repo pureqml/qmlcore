@@ -18,12 +18,16 @@ Object {
 	enabled:		{ return this._disabled == 0 }
 
 	/// @private
-	function _update(name, value) {
+	onDelayChanged,
+	onDurationChanged,
+	onCssTransitionChanged,
+	onRunningChanged,
+	onEasingChanged: { this._updateAnimation() }
+
+	function _updateAnimation() {
 		var parent = this.parent
 		if (this._target && parent && parent._updateAnimation)
 			parent._updateAnimation(this._target, this.enabled() ? this: null)
-
-		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 
 	/// @private

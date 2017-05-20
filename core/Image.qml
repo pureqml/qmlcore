@@ -35,19 +35,13 @@ Item {
 		this._delayedLoad.schedule()
 	}
 
-	///@private
-	function _update(name, value) {
-		switch(name) {
-			case 'width':
-			case 'height':
-			case 'fillMode': this.load(); break;
-			case 'source':
-				this.status = value ? this.Loading : this.Null;
-				if (value)
-					this.load();
-				break;
-		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
-	}
+	onWidthChanged,
+	onHeightChanged,
+	onFillModeChanged: { this.load() }
 
+	onSourceChanged: {
+		this.status = value ? this.Loading : this.Null;
+		if (value)
+			this.load();
+	}
 }

@@ -21,11 +21,6 @@ Object {
 		}
 	}
 
-	function _update(name, value) {
-		switch(name) {
-			case 'width': this._updateStyle(); break
-			case 'color': this._updateStyle(); break
-		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
-	}
+	onWidthChanged,
+	onColorChanged: { this._updateStyle() }
 }

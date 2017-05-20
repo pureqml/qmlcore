@@ -202,6 +202,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 				p = this[storageName] = { value : defaultValue }
 			}
+
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
 				var backend = this._context.backend

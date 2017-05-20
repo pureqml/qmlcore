@@ -12,11 +12,5 @@ Item {
 			_globals.core.Item.prototype._mapCSSAttribute.apply(this, arguments)
 	}
 
-	///@private
-	function _update(name, value) {
-		switch(name) {
-			case 'color': this.style('background-color', _globals.core.normalizeColor(value)); break;
-		}
-		_globals.core.Item.prototype._update.apply(this, arguments);
-	}
+	onColorChanged: { this.style('background-color', _globals.core.normalizeColor(value)) }
 }

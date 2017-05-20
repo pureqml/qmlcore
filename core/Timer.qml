@@ -24,26 +24,19 @@ Object {
 	onTriggered: { if (!this.repeat) this.running = false }
 
 	/// @private
-	onRunningChanged: {
-		if (value && this.triggeredOnStart)
-			this.triggered()
-	}
-
-	/// @private
 	onCompleted: {
 		if (this.running && this.triggeredOnStart)
 			this.triggered()
 	}
 
-	/// @private
-	function _update(name, value) {
-		switch(name) {
-			case 'running': this._restart(); break;
-			case 'interval': this._restart(); break;
-			case 'repeat': this._restart(); break;
-		}
-		_globals.core.Object.prototype._update.apply(this, arguments);
+	onRunningChanged:	{
+		this._restart()
+		if (value && this.triggeredOnStart)
+			this.triggered()
 	}
+
+	onIntervalChanged:	{ this._restart() }
+	onRepeatChanged: 	{ this._restart() }
 
 	/// @private
 	function _restart() {

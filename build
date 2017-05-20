@@ -76,14 +76,14 @@ def minify_gcc(out, src, root, app, platform, manifest):
 		"--jscomp_off=missingProperties",
 		src], stdout = out)
 
-def minify(root, app, platform, manifest):
-	src = path.join("build." + platform, app, "qml.%s.js" % app)
+def minify(root, target, app, platform, manifest):
+	src = path.join(target, "qml.%s.js" % app)
 	dstname = "qml.%s.min.js" %app
 	tool = manifest.minify
 	if isinstance(tool, bool):
 		tool = 'uglify-js'
 
-	with open(path.join("build." + platform, app, dstname), "w") as out:
+	with open(path.join(target, dstname), "w") as out:
 		if tool == 'uglify-js':
 			try:
 				minify_uglify(out, src, root, app, platform, manifest)
@@ -294,7 +294,7 @@ def build(root, platform, apps, app, manifest):
 	script = 'qml.%s.js' %app #fixme
 
 	if args.minify or manifest.minify:
-		script = minify(root, app, platform, manifest)
+		script = minify(root, target, app, platform, manifest)
 	templater = manifest.templater
 
 	if verbose:

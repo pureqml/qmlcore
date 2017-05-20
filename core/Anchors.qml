@@ -154,7 +154,7 @@ Object {
 		anchors.onChanged('topMargin', update_top)
 	}
 
-	onButtomChanged: {
+	onBottomChanged: {
 		var self = this.parent
 		var anchors = this
 		self._removeUpdater('y')
@@ -167,7 +167,7 @@ Object {
 		anchors.onChanged('bottomMargin', update_bottom)
 	}
 
-	onHorizontalCenterCHanged: {
+	onHorizontalCenterChanged: {
 		var self = this.parent
 		var anchors = this
 		self._removeUpdater('x')

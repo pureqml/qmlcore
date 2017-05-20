@@ -65,10 +65,17 @@ def handle_enum_property_declaration(s, l, t):
 def handle_method_declaration(s, l, t):
 	event_handler = t[0] != 'function'
 	if event_handler:
-		name, args, code = t[0], t[1], t[2]
+		names, args, code = t[0], t[1], t[2]
 	else:
-		name, args, code = t[1], t[2], t[3]
-	return component(lang.Method(name, args, code, event_handler) if name != 'constructor' else lang.Constructor(args, code))
+		names, args, code = t[1], t[2], t[3]
+
+	if 'constructor' in list(names): #pyparsing 'in' does not work here
+		if len(names) != 1:
+			raise Exception('you cannot enumerate methods with constructor keyword')
+		assert names[0] == 'constructor'
+		return lang.Constructor(args, code)
+	else:
+		return component(lang.Method(names, args, code, event_handler))
 
 def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t
@@ -217,10 +224,10 @@ assign_scope_declaration.setParseAction(handle_assignment)
 assign_scope = nested_identifier_lvalue + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
 assign_scope.setParseAction(handle_assignment_scope)
 
-method_declaration = nested_identifier_lvalue + Group(Optional(Literal("(").suppress() + delimitedList(identifier, ",") + Literal(")").suppress() )) + Literal(":").suppress() + code
+method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Literal("(").suppress() + delimitedList(identifier, ",") + Literal(")").suppress() )) + Literal(":").suppress() + code
 method_declaration.setParseAction(handle_method_declaration)
 
-method_declaration_qml = Keyword("function") - nested_identifier_lvalue + Group(Literal("(").suppress() + Optional(delimitedList(identifier, ",")) + Literal(")").suppress() ) + code
+method_declaration_qml = Keyword("function") - Group(nested_identifier_lvalue) + Group(Literal("(").suppress() + Optional(delimitedList(identifier, ",")) + Literal(")").suppress() ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + Group(delimitedList(nested_identifier_lvalue, ',')) + Literal("{").suppress() + component_declaration + Literal("}").suppress()

@@ -373,6 +373,15 @@ class component_generator(object):
 			if not self.find_property(registry, target):
 				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
 
+	def generate_creator_function(self, registry, name, value, ident_n = 1):
+		ident = "\t" * ident_n
+		code = "%svar %s = new _globals.%s(__parent, true)\n" %(ident, name, registry.find_component(value.package, value.component.name))
+		code += "%svar __closure = { %s : %s }\n" %(ident, name, name)
+		code += self.call_create(registry, ident_n + 1, name, value, '__closure') + '\n'
+		code += self.call_setup(registry, ident_n + 1, name, value, '__closure') + '\n'
+		return "(function(__parent) {\n%s\n%sreturn %s\n})" %(code, ident, name)
+
+
 	def generate_creators(self, registry, parent, closure, ident_n = 1):
 		r = []
 		ident = "\t" * ident_n
@@ -419,11 +428,8 @@ class component_generator(object):
 					r.append(code)
 					r.append('%s%s.%s = %s' %(ident, parent, target, var))
 				else:
-					code = "%svar delegate = new _globals.%s(__parent, true)\n" %(ident, registry.find_component(value.package, value.component.name))
-					code += "%svar __closure = { delegate: delegate }\n" %(ident)
-					code += self.call_create(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
-					code += self.call_setup(registry, ident_n + 1, 'delegate', value, '__closure') + '\n'
-					r.append("%s%s.%s = (function(__parent) {\n%s\n%sreturn delegate\n})" %(ident, parent, target, code, ident))
+					code = self.generate_creator_function(registry, 'delegate', value, ident_n)
+					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(target)

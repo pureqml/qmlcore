@@ -20,11 +20,5 @@ Item {
 	///@private
 	function _processUpdates() { }
 
-	///@private
-	function _update(name, value) {
-		switch(name) {
-			case 'spacing': this._delayedLayout.schedule(); break;
-		}
-		qml.core.Item.prototype._update.apply(this, arguments);
-	}
+	onSpacingChanged: { this._delayedLayout.schedule(); }
 }

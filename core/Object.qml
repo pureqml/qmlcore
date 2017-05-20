@@ -152,7 +152,7 @@ EventEmitter {
 	///@private gets animation on given property
 	function getAnimation (name, animation) {
 		var a = this._animations[name]
-		return (a && a.enabled())? a: null;
+		return (a !== undefined && a.enabled())? a:  null;
 	}
 
 	///@private called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy

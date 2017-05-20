@@ -192,19 +192,16 @@ Object {
 	}
 
 	onFillChanged: {
-		var self = this.parent
-		var anchors = this
-		anchors.left = anchors.fill.left
-		anchors.right = anchors.fill.right
-		anchors.top = anchors.fill.top
-		anchors.bottom = anchors.fill.bottom
+		var fill = value
+		this.left = fill.left
+		this.right = fill.right
+		this.top = fill.top
+		this.bottom = fill.bottom
 	}
 
 	onCenterInChanged: {
-		var self = this.parent
-		var anchors = this
-		anchors.horizontalCenter = anchors.centerIn.horizontalCenter
-		anchors.verticalCenter = anchors.centerIn.verticalCenter
+		this.horizontalCenter = this.centerIn.horizontalCenter
+		this.verticalCenter = this.centerIn.verticalCenter
 	}
 
 	onLeftMarginChanged,

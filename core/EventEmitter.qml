@@ -21,8 +21,6 @@ CoreObject {
 		if (name in this._eventHandlers)
 			this._eventHandlers[name].push(callback)
 		else {
-			if (this._eventHandlers[name])
-				throw new Error('listener callback added event handler')
 			this._eventHandlers[name] = [callback]
 		}
 	}

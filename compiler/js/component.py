@@ -13,6 +13,7 @@ class component_generator(object):
 		self.component = component
 		self.aliases = {}
 		self.declared_properties = {}
+		self.lazy_properties = {}
 		self.properties = []
 		self.enums = {}
 		self.assignments = {}
@@ -69,7 +70,6 @@ class component_generator(object):
 		self.generators.append(value)
 		return value
 
-
 	def assign(self, target, value):
 		t = type(value)
 		if t is lang.Component:
@@ -88,10 +88,17 @@ class component_generator(object):
 			for name, default_value in child.properties:
 				if self.has_property(name):
 					raise Exception("duplicate property " + name)
-				#print name, default_value, lang.value_is_trivial(default_value)
+
+				#print self.name, name, default_value, lang.value_is_trivial(default_value)
+				if isinstance(default_value, lang.Component):
+					if len(child.properties) != 1:
+						raise Exception("property %s is lazy, hence should be declared alone" %name)
+					child.lazy = True
+					self.lazy_properties[name] = self.create_component_generator(default_value, '<lazy:%s>' %name)
+
 				self.declared_properties[name] = child
 				if default_value is not None:
-					if not lang.value_is_trivial(default_value):
+					if not child.lazy and not lang.value_is_trivial(default_value):
 						self.assign(name, default_value)
 		elif t is lang.AliasProperty:
 			if self.has_property(child.name):
@@ -250,6 +257,12 @@ class component_generator(object):
 					raise Exception("duplicate method " + oname)
 				self.methods[fullname] = args, code
 
+	def generate_lazy_property(self, registry, proto, type, name, value, ident_n = 1):
+		ident = "\t" * ident_n
+		var = 'lazy$' + name
+		code = self.generate_creator_function(registry, var, value, ident_n + 1)
+		return "%score.addLazyProperty(%s, '%s', '%s', %s)" %(ident, proto, type, name, code)
+
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
 
@@ -280,10 +293,14 @@ class component_generator(object):
 
 		for prop in self.properties:
 			for name, default_value in prop.properties:
-				args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
-				if lang.value_is_trivial(default_value):
-					args.append(default_value)
-				r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
+				if prop.lazy:
+					gen = self.lazy_properties[name]
+					r.append(self.generate_lazy_property(registry, self.proto_name, prop.type, name, gen, ident_n))
+				else:
+					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
+					if lang.value_is_trivial(default_value):
+						args.append(default_value)
+					r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		for name, prop in self.enums.iteritems():
 			values = prop.values
@@ -392,10 +409,14 @@ class component_generator(object):
 
 			for prop in self.properties:
 				for name, default_value in prop.properties:
-					args = [parent, "'%s'" %prop.type, "'%s'" %name]
-					if lang.value_is_trivial(default_value):
-						args.append(default_value)
-					r.append("\tcore.addProperty(%s)" %(", ".join(args)))
+					if prop.lazy:
+						gen = self.lazy_properties[name]
+						r.append(self.generate_lazy_property(registry, parent, prop.type, name, gen, ident_n))
+					else:
+						args = [parent, "'%s'" %prop.type, "'%s'" %name]
+						if lang.value_is_trivial(default_value):
+							args.append(default_value)
+						r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 			for name, prop in self.enums.iteritems():
 				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)

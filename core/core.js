@@ -155,6 +155,24 @@ exports.core.DelayedAction.prototype.schedule = function() {
 	}
 }
 
+exports.addLazyProperty = function(proto, type, name, creator) {
+	var storageName = '__lazy_property_' + name
+	Object.defineProperty(proto, name, {
+		get: function() {
+			var value = this[storageName]
+			if (value !== undefined)
+				return value
+			else
+				return (this[storageName] = creator(this))
+		},
+
+		set: function(newValue) {
+			throw new Error('setting attempt on readonly lazy property ' + name + ' in ' + proto.componentName)
+		},
+		enumerable: true
+	})
+}
+
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
 	switch(type) {

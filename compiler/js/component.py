@@ -64,11 +64,16 @@ class component_generator(object):
 		for g in self.children:
 			g.collect_id(id_set)
 
+	def create_component_generator(self, component, suffix = '<anonymous>'):
+		value = component_generator(self.ns, self.package + "." + suffix, component)
+		self.generators.append(value)
+		return value
+
+
 	def assign(self, target, value):
 		t = type(value)
 		if t is lang.Component:
-			value = component_generator(self.ns, self.package + ".<anonymous>", value)
-			self.generators.append(value)
+			value = self.create_component_generator(value)
 		if t is str: #and value[0] == '"' and value[-1] == '"':
 			value = value.replace("\\\n", "")
 		self.assignments[target] = value
@@ -104,16 +109,14 @@ class component_generator(object):
 			self.id = child.name
 			self.assign("id", child.name)
 		elif t is lang.Component:
-			value = component_generator(self.ns, self.package + ".<anonymous>", child)
-			self.generators.append(value)
+			value = self.create_component_generator(child)
 			self.children.append(value)
 		elif t is lang.Behavior:
 			for target in child.target:
 				if target in self.animations:
 					raise Exception("duplicate animation on property " + target)
-				value = component_generator(self.ns, self.package + ".<anonymous-animation>", child.animation)
+				value = self.create_component_generator(child.animation, "<anonymous-animation>")
 				self.animations[target] = value
-				self.generators.append(value)
 		elif t is lang.Method:
 			for name in child.name:
 				fullname, args, code = split_name(name), child.args, child.code

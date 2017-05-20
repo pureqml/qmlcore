@@ -52,6 +52,7 @@ class Component(Entity):
 class Property(Entity):
 	def __init__(self, type, properties):
 		super(Property, self).__init__()
+		self.lazy = False
 		self.type = type
 		self.properties = properties
 

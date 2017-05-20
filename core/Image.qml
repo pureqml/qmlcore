@@ -37,11 +37,6 @@ Item {
 
 	onWidthChanged,
 	onHeightChanged,
-	onFillModeChanged: { this.load() }
-
-	onSourceChanged: {
-		this.status = value ? this.Loading : this.Null;
-		if (value)
-			this.load();
-	}
+	onFillModeChanged,
+	onSourceChanged: { this.load() }
 }

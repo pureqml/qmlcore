@@ -55,10 +55,12 @@ EventEmitter {
 
 	///@private register callback on property's value changed
 	function onChanged(name, callback) {
-		if (name in this._changedHandlers)
-			this._changedHandlers[name].push(callback);
+		var storage = this._changedHandlers
+		var handlers = storage[name]
+		if (handlers !== undefined)
+			handlers.push(callback);
 		else
-			this._changedHandlers[name] = [callback];
+			storage[name] = [callback];
 	}
 
 	///@private

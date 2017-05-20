@@ -18,10 +18,12 @@ CoreObject {
 		if (name === '')
 			throw new Error('empty listener name')
 
-		if (name in this._eventHandlers)
-			this._eventHandlers[name].push(callback)
+		var storage = this._eventHandlers
+		var handlers = storage[name]
+		if (handlers !== undefined)
+			handlers.push(callback)
 		else {
-			this._eventHandlers[name] = [callback]
+			storage[name] = [callback]
 		}
 	}
 

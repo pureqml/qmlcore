@@ -121,9 +121,9 @@ Object {
 		var self = this.parent
 		var anchors = this
 		self._removeUpdater('x')
-		if (this.right)
+		if (anchors.right)
 			self._removeUpdater('width')
-		var update_left = this._updateLeft.bind(this)
+		var update_left = anchors._updateLeft.bind(this)
 		update_left()
 		self.connectOn(anchors.left.parent, 'boxChanged', update_left)
 		anchors.onChanged('leftMargin', update_left)
@@ -133,9 +133,9 @@ Object {
 		var self = this.parent
 		var anchors = this
 		self._removeUpdater('x')
-		if (this.left)
-			self._removeUpdater('width')
-		var update_right = this._updateRight.bind(this)
+		if (anchors.left)
+			anchors._removeUpdater('width')
+		var update_right = anchors._updateRight.bind(anchors)
 		update_right()
 		self.onChanged('width', update_right)
 		self.connectOn(anchors.right.parent, 'boxChanged', update_right)
@@ -146,9 +146,9 @@ Object {
 		var self = this.parent
 		var anchors = this
 		self._removeUpdater('y')
-		if (this.bottom)
+		if (anchors.bottom)
 			self._removeUpdater('height')
-		var update_top = this._updateTop.bind(this)
+		var update_top = anchors._updateTop.bind(this)
 		update_top()
 		self.connectOn(anchors.top.parent, 'boxChanged', update_top)
 		anchors.onChanged('topMargin', update_top)
@@ -158,9 +158,9 @@ Object {
 		var self = this.parent
 		var anchors = this
 		self._removeUpdater('y')
-		if (this.top)
+		if (anchors.top)
 			self._removeUpdater('height')
-		var update_bottom = this._updateBottom.bind(this)
+		var update_bottom = anchors._updateBottom.bind(this)
 		update_bottom()
 		self.onChanged('height', update_bottom)
 		self.connectOn(anchors.bottom.parent, 'boxChanged', update_bottom)
@@ -171,7 +171,7 @@ Object {
 		var self = this.parent
 		var anchors = this
 		self._removeUpdater('x')
-		var update_h_center = this._updateHCenter.bind(this)
+		var update_h_center = anchors._updateHCenter.bind(this)
 		update_h_center()
 		self.onChanged('width', update_h_center)
 		anchors.onChanged('leftMargin', update_h_center)
@@ -182,7 +182,7 @@ Object {
 	onVerticalCenterChanged: {
 		var self = this.parent
 		var anchors = this
-		var update_v_center = this._updateVCenter.bind(this)
+		var update_v_center = anchors._updateVCenter.bind(this)
 		self._removeUpdater('y')
 		update_v_center()
 		self.onChanged('height', update_v_center)
@@ -200,8 +200,8 @@ Object {
 	}
 
 	onCenterInChanged: {
-		this.horizontalCenter = this.centerIn.horizontalCenter
-		this.verticalCenter = this.centerIn.verticalCenter
+		this.horizontalCenter = value.horizontalCenter
+		this.verticalCenter = value.verticalCenter
 	}
 
 	onLeftMarginChanged,

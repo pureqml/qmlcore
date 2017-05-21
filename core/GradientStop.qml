@@ -5,7 +5,7 @@ Object {
 
 	///@private
 	onPositionChanged, onColorChanged: {
-		this.parent._updateGradient()
+		this.parent._updateStyle()
 	}
 
 	///@private

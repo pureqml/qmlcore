@@ -182,7 +182,7 @@ exports.addLazyProperty = function(proto, type, name, creator) {
 					var forwardedValue = target[forwardedTarget]
 					if (newValue !== forwardedValue) {
 						target[forwardedTarget] = newValue
-						this._update(name, newValue, forwardedTarget)
+						this._update(name, newValue, forwardedValue)
 					}
 					return
 				}

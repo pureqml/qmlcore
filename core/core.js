@@ -158,16 +158,36 @@ exports.core.DelayedAction.prototype.schedule = function() {
 
 exports.addLazyProperty = function(proto, type, name, creator) {
 	var storageName = '__lazy_property_' + name
+	var forwardName = '__forward_' + name
+
+	var get = function(object) {
+		var value = object[storageName]
+		if (value !== undefined)
+			return value
+		else
+			return (object[storageName] = creator(object))
+	}
+
 	Object.defineProperty(proto, name, {
 		get: function() {
-			var value = this[storageName]
-			if (value !== undefined)
-				return value
-			else
-				return (this[storageName] = creator(this))
+			return get(this)
 		},
 
 		set: function(newValue) {
+			var forwardedTarget = this[forwardName]
+			if (forwardedTarget !== undefined) {
+				var target = get(this)
+				if (target !== null && (target instanceof Object)) {
+					//forward property update for mixins
+					var forwardedValue = target[forwardedTarget]
+					if (newValue !== forwardedValue) {
+						target[forwardedTarget] = newValue
+						this._update(name, newValue, forwardedTarget)
+					}
+					return
+				}
+			}
+
 			throw new Error('setting attempt on readonly lazy property ' + name + ' in ' + proto.componentName)
 		},
 		enumerable: true

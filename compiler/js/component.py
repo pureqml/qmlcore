@@ -90,10 +90,9 @@ class component_generator(object):
 					raise Exception("duplicate property " + name)
 
 				#print self.name, name, default_value, lang.value_is_trivial(default_value)
-				if isinstance(default_value, lang.Component):
+				if child.lazy and isinstance(default_value, lang.Component):
 					if len(child.properties) != 1:
 						raise Exception("property %s is lazy, hence should be declared alone" %name)
-					child.lazy = True
 					self.lazy_properties[name] = self.create_component_generator(default_value, '<lazy:%s>' %name)
 
 				self.declared_properties[name] = child

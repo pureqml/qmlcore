@@ -48,7 +48,8 @@ exports.core.safeCall = function(self, args, onError) {
  */
 var CoreObjectComponent = exports.core.CoreObject = function() { }
 var CoreObjectComponentPrototype = CoreObjectComponent.prototype
-CoreObjectComponentPrototype.constructor = exports.core.CoreObject
+CoreObjectComponentPrototype.componentName = 'core.CoreObject'
+CoreObjectComponentPrototype.constructor = CoreObjectComponent
 CoreObjectComponentPrototype.__create = function() { }
 CoreObjectComponentPrototype.__setup = function() { }
 

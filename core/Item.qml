@@ -18,17 +18,17 @@ Object {
 	property bool recursiveVisible: true;	///< this item is actually visible on screen (all parents are visible as well)
 	property real opacity: 1;				///< opacity of the item
 
-	property Anchors anchors: Anchors { }
-	property Effects effects: Effects { }
-	property Transform transform: Transform { }
+	property lazy anchors: Anchors { }
+	property lazy effects: Effects { }
+	property lazy transform: Transform { }
 
-	property AnchorLine left: AnchorLine	{ boxIndex: 0; }
-	property AnchorLine top: AnchorLine		{ boxIndex: 1; }
-	property AnchorLine right: AnchorLine	{ boxIndex: 2; }
-	property AnchorLine bottom: AnchorLine	{ boxIndex: 3; }
+	property lazy left:		AnchorLine	{ boxIndex: 0; }
+	property lazy top:		AnchorLine	{ boxIndex: 1; }
+	property lazy right:	AnchorLine	{ boxIndex: 2; }
+	property lazy bottom:	AnchorLine	{ boxIndex: 3; }
 
-	property AnchorLine horizontalCenter:	AnchorLine	{ boxIndex: 4; }
-	property AnchorLine verticalCenter:		AnchorLine	{ boxIndex: 5; }
+	property lazy horizontalCenter:	AnchorLine	{ boxIndex: 4; }
+	property lazy verticalCenter:	AnchorLine	{ boxIndex: 5; }
 
 	//do not use, view internal
 	signal boxChanged;						///< emitted when position or size changed

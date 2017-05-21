@@ -2,8 +2,8 @@
 Item {
 	property string text;		///< text to be displayed
 	property color color;		///< color of the text
-	property Shadow shadow: Shadow { }	///< text shadow object
-	property Font font: Font { }	///< text font object
+	property lazy shadow: Shadow { }	///< text shadow object
+	property lazy font: Font { }	///< text font object
 	property enum horizontalAlignment { AlignLeft, AlignRight, AlignHCenter, AlignJustify };	///< text horizontal alignment
 	property enum verticalAlignment { AlignTop, AlignBottom, AlignVCenter };	///< text vertical alignment
 	property enum wrapMode { NoWrap, WordWrap, WrapAnywhere, Wrap };	///< multiline text wrap mode

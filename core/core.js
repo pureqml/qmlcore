@@ -344,12 +344,20 @@ exports.core.EventBinder.prototype.enable = function(value) {
 }
 
 var protoEvent = function(prefix, proto, name, callback) {
-	var name = '__' + prefix + '__' + name
-	var storage = proto[name]
+	var sname = '__' + prefix + '__' + name
+	//if property was in base prototype, create shallow copy and put our handler there or we would add to base prototype's array
+	var ownStorage = proto.hasOwnProperty(sname)
+	var storage = proto[sname]
 	if (storage != undefined) {
-		storage.push(callback)
+		if (ownStorage)
+			storage.push(callback)
+		else {
+			var copy = storage.slice()
+			copy.push(callback)
+			proto[sname] = copy
+		}
 	} else
-		proto[name] = [callback]
+		proto[sname] = [callback]
 }
 
 exports.core._protoOn = function(proto, name, callback)

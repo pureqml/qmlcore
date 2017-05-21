@@ -260,7 +260,7 @@ class component_generator(object):
 		ident = "\t" * ident_n
 		var = 'lazy$' + name
 		code = self.generate_creator_function(registry, var, value, ident_n + 1)
-		return "%score.addLazyProperty(%s, '%s', '%s', %s)" %(ident, proto, type, name, code)
+		return "%score.addLazyProperty(%s, '%s', %s)" %(ident, proto, name, code)
 
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True

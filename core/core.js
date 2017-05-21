@@ -156,7 +156,7 @@ exports.core.DelayedAction.prototype.schedule = function() {
 	}
 }
 
-exports.addLazyProperty = function(proto, type, name, creator) {
+exports.addLazyProperty = function(proto, name, creator) {
 	var storageName = '__lazy_property_' + name
 	var forwardName = '__forward_' + name
 

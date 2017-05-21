@@ -14,7 +14,7 @@ Object {
 		if (child instanceof _globals.core.GradientStop) {
 			this.stops.push(child)
 			this.stops.sort(function(a, b) { return a.position > b.position; })
-			this._updateGradient()
+			this._updateStyle()
 		}
 	}
 
@@ -54,6 +54,6 @@ Object {
 
 	///@private
 	onCompleted: {
-		this.parent._update('gradient', this)
+		this._updateStyle()
 	}
 }

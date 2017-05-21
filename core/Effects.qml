@@ -8,7 +8,7 @@ Object {
 	property real hueRotate;	///< applies a hue rotation on the image. The value defines the number of degrees around the color circle the image samples will be adjusted
 	property real invert;		///< inverts the samples in the image
 	property real saturate;		///< saturates the image
-	property Shadow shadow : Shadow { }	///< object property for the shadow adjusting
+	property lazy shadow : Shadow { }	///< object property for the shadow adjusting
 
 	/// @private
 	function _addStyle(array, property, style, units) {

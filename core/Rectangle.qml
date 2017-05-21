@@ -1,7 +1,7 @@
 /// Colored rectangle with optional rounded corners, border and/or gradient.
 Item {
 	property color color: "#0000";		///< rectangle background color
-	property Border border: Border {}	///< object holding properties of the border
+	property lazy border: Border {}		///< object holding properties of the border
 	property Gradient gradient;			///< if gradient object was set, it displays gradient instead of solid color
 
 	///@private

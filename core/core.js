@@ -344,16 +344,11 @@ exports.core.EventBinder.prototype.enable = function(value) {
 
 var protoEvent = function(prefix, proto, name, callback) {
 	var name = '__' + prefix + '__' + name
-	if (name in proto) {
-		proto[name] = function() {
-			try {
-				callback.apply(this, arguments)
-			} catch(ex) {
-				log('error invoking base prototype event ' + prefix + ':' + name, ex, ex.stack)
-			}
-		}
+	var storage = proto[name]
+	if (storage != undefined) {
+		storage.push(callback)
 	} else
-		proto[name] = callback
+		proto[name] = [callback]
 }
 
 exports.core._protoOn = function(proto, name, callback)

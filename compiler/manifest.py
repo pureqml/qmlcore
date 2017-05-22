@@ -7,10 +7,6 @@ class Manifest(object):
 		self.data = data
 
 	@property
-	def path(self):
-		return self.data.get('path', [])
-
-	@property
 	def source_dir(self):
 		return self.data.get('sources', 'src')
 

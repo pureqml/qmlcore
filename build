@@ -239,8 +239,6 @@ def build(root, platform, apps, app, manifest):
 	if not platform_manifest.standalone:
 		raise Exception('%s is not a standalone platform' %platform)
 
-	paths = manifest.path
-
 	options = ['-o', target]
 
 	if manifest_path:
@@ -248,7 +246,6 @@ def build(root, platform, apps, app, manifest):
 		options.append(manifest_path)
 
 	options.append(path.join(root, 'core'))
-	options.extend(paths)
 
 	subplatforms = [platform]
 	while subplatforms:
@@ -264,7 +261,8 @@ def build(root, platform, apps, app, manifest):
 
 		subplatforms = subplatforms_next
 
-	options.extend(pureqml_packages + [manifest.source_dir, '-a', app])
+	options.extend(source_dir if isinstance(source_dir, list) else [source_dir])
+	options.extend(pureqml_packages + ['-a', app])
 
 	if args.release:
 		options.insert(0, '-r')
@@ -340,19 +338,30 @@ except IOError:
 	print 'warning: could not find .manifest, using empty fallback'
 	manifest = mf.Manifest()
 
-apps = []
-for f in os.listdir(manifest.source_dir):
-	if f[0].islower() and f.endswith('.qml'):
-		apps.append(f[0:-4])
-if not apps:
-	raise Exception('No application files found. Application file named in lowercase and has .qml extension')
 
-if args.update_translation:
-	languages = manifest.languages
-	for language in languages:
-		print 'updating translation for language', language
-		call([os.path.join(root, 'update-ts'), '--ts', language + '.ts', manifest.source_dir])
-	sys.exit(0)
+apps = []
+def proc_source_dir(source_dir):
+	for f in os.listdir(source_dir):
+		if f[0].islower() and f.endswith('.qml'):
+			apps.append(f[0:-4])
+	if not apps:
+		raise Exception('No application files found. Application file named in lowercase and has .qml extension')
+
+	if args.update_translation:
+		languages = manifest.languages
+		for language in languages:
+			print 'updating translation for language', language
+			call([os.path.join(root, 'update-ts'), '--ts', language + '.ts', source_dir])
+		sys.exit(0)
+
+
+source_dir = manifest.source_dir
+if isinstance(source_dir, list):
+	for src in source_dir:
+		proc_source_dir(src)
+else:
+	proc_source_dir(source_dir)
+
 
 platforms = manifest.platforms
 if not platforms:

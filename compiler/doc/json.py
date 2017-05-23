@@ -1,3 +1,4 @@
+import re
 import os
 import os.path
 import compiler.lang as lang
@@ -27,11 +28,14 @@ class Component(object):
 
 			ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
 
+			if category == 'Method':
+				if re.match("^on.*Changed$", value.name[0]):
+					internal = "true"
+
 			if category == 'Property':
 				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s", "defaultValue": "%s" }%s' %(value.name, docText, ref, internal, value.type, value.defaultValue, localComma))
 			elif category == 'Method' and docText:
 				argText = ""
-
 				argText += '"params": ['
 				paramCount = 0
 				for line in docLines:
@@ -64,10 +68,10 @@ class Component(object):
 				docText = docText.lstrip()
 				docText = docText.rstrip()
 
-				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name, docText, argText, internal, localComma))
+				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name[0], docText, argText, internal, localComma))
 			else:
 				docText.replace("\n", " ")
-				r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name, docText, internal, localComma))
+				r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(value.name[0], docText, internal, localComma))
 
 		if comma:
 			r.append('\t\t},')

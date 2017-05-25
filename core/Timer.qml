@@ -17,7 +17,7 @@ Object {
 		var oldRunning = this.running;
 		this.running = true;
 		if (this.triggeredOnStart && !oldRunning)
-			this._emitTriggered();
+			this.triggered();
 	}
 
 	/// @private

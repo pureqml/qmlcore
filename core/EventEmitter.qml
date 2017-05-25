@@ -50,7 +50,7 @@ CoreObject {
 		)
 
 		if (proto_callback !== undefined)
-			invoker(proto_callback)
+			proto_callback.forEach(invoker)
 
 		if (handlers !== undefined)
 			handlers.forEach(invoker)
@@ -72,7 +72,7 @@ CoreObject {
 		)
 
 		if (proto_callback !== undefined)
-			invoker(proto_callback)
+			proto_callback.forEach(invoker)
 
 		if (handlers !== undefined)
 			handlers.forEach(invoker)

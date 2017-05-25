@@ -328,7 +328,7 @@ Object {
 			}
 
 			if (proto_callback)
-				invoker(proto_callback)
+				proto_callback.forEach(invoker)
 
 			var proto_callback = this['__key__Key']
 			if ('Key' in this._pressedHandlers) {
@@ -343,7 +343,7 @@ Object {
 				}
 			}
 			if (proto_callback)
-				invoker(proto_callback)
+				proto_callback.forEach(invoker)
 		}
 		else {
 			log("unknown key", event.which);

@@ -248,8 +248,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				if (p.frameRequest)
 					backend.cancelAnimationFrame(p.frameRequest)
 
-				var now = new Date()
-				p.started = now.getTime() + now.getMilliseconds() / 1000.0
+				p.started = Date.now()
 
 				var src = p.interpolatedValue !== undefined? p.interpolatedValue: p.value
 				var dst = newValue
@@ -269,8 +268,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				var duration = animation.duration
 
 				var nextFrame = function() {
-					var date = new Date()
-					var now = date.getTime() + date.getMilliseconds() / 1000.0
+					var now = Date.now()
 					var t = 1.0 * (now - p.started) / duration
 					if (t >= 1) {
 						complete()

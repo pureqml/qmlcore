@@ -29,7 +29,7 @@ class Component(object):
 			ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
 
 			if category == 'Method':
-				if re.match("^on.*Changed$", value.name[0]):
+				if re.match("^on.*Changed$", value.name[0]) or value.name[0] == "onCompleted":
 					internal = "true"
 
 			if category == 'Property':

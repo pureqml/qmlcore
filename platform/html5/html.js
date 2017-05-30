@@ -357,8 +357,6 @@ exports.init = function(ctx) {
 
 	win.on('scroll', function(event) { ctx.scrollY = win.scrollY(); });
 
-	win.on('load', function() { ctx._run() })
-
 	var onFullscreenChanged = function(e) {
 		var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 		ctx.fullscreen = state
@@ -499,8 +497,11 @@ exports.layoutText = function(text) {
 	text.style(style)
 }
 
-exports.run = function(ctx) {
-	ctx.element.style('visibility', 'visible')
+exports.run = function(ctx, onloadCallback) {
+	ctx.window.on('load', function() {
+		onloadCallback()
+		ctx.element.style('visibility', 'visible')
+	})
 }
 
 var Modernizr = window.Modernizr

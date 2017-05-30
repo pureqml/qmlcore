@@ -129,7 +129,7 @@ Item {
 
 	///@private
 	function run() {
-		this.backend.run(this)
+		this.backend.run(this, this._run.bind(this))
 	}
 
 	///@private

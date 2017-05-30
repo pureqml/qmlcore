@@ -39,8 +39,8 @@ exports.init = function(ctx) {
 	ctx.height = renderer.height
 }
 
-exports.run = function(ctx) {
-	ctx._run()
+exports.run = function(ctx, callback) {
+	callback()
 	runtime.renderFrame(ctx)
 }
 

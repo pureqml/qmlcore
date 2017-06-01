@@ -245,10 +245,11 @@ class generator(object):
 		/* %s */
 		var $n = arguments.length
 		var %s = new Array(%s)
-		for(var $i = %d; $i < $n; ++$i) {
-			%s[%s] = arguments[$i]
+		var $d = 0, $s = %d;
+		while($s < $n) {
+			%s[$d++] = arguments[$s++]
 		}
-""" %(m.group(0), name, expr('$n', '-', idx), idx, name, expr('$i', '-', idx))
+""" %(m.group(0), name, expr('$n', '-', idx), idx, name)
 
 		text = generator.re_copy_args.sub(copy_args, text)
 		return text

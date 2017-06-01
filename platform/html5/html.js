@@ -90,8 +90,7 @@ var registerGenericListener = function(target) {
 			//log('registering generic event', name)
 			var pname = prefix + name
 			var callback = target[pname] = function() {
-				COPY_ARGS(args, 0)
-				target.emitWithArgs(name, args)
+				target.emitWithArgs(name, arguments)
 			}
 			target.dom.addEventListener(name, callback)
 		},

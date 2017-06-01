@@ -19,6 +19,7 @@ Item {
 		this._started = false
 		this._completed = false
 		this._completedHandlers = []
+		this._runningComplete = false
 		this._delayedActions = []
 		this._stylesRegistered = {}
 

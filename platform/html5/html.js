@@ -325,7 +325,7 @@ exports.init = function(ctx) {
 		log('Context: using prefix', prefix)
 	}
 
-	var win = new _globals.html5.html.Window(this, window)
+	var win = new _globals.html5.html.Window(ctx, window)
 	ctx.window = win
 	var w, h
 
@@ -333,7 +333,7 @@ exports.init = function(ctx) {
 	var div = document.getElementById(divId)
 	var topLevel = div === null
 	if (!topLevel) {
-		div = new html.Element(this, div)
+		div = new html.Element(ctx, div)
 		w = div.width()
 		h = div.height()
 		log('Context: found element by id, size: ' + w + 'x' + h)

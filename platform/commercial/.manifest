@@ -1,1 +1,1 @@
-{ "requires": ["commercial"] }
+{ "standalone": false }

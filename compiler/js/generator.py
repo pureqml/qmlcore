@@ -227,6 +227,8 @@ class generator(object):
 					return var
 
 			name, idx, prefix = m.group(1).strip(), int(m.group(2).strip()), m.group(3)
+			if idx == 0 and prefix is None:
+				return "\n\t\t\t/* %s */\n\t\t\tvar %s = arguments\n" %(m.group(0), name)
 			if prefix is not None:
 				prefix = prefix.strip()
 				return """

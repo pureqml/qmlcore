@@ -14,7 +14,7 @@ Rectangle {
 
 	Image {
 		anchors.centerIn: parent;
-		source: "res/shadow.png";
+		source: "res/pureqml-splash-shadow.png";
 		opacity: parent.showGlow ? 1.0 : 0.0;
 
 		Behavior on opacity { Animation { duration: 3000; } }
@@ -23,7 +23,7 @@ Rectangle {
 	Image {
 		id: logo;
 		anchors.centerIn: parent;
-		source: "res/logo.png";
+		source: "res/pureqml-splash-logo.png";
 	}
 
 	Timer {

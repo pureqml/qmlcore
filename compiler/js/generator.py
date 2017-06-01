@@ -100,15 +100,18 @@ class generator(object):
 
 	used_re = re.compile(r'@using\s*{(.*?)}')
 
+	def scan_using(self, code):
+		for m in generator.used_re.finditer(code):
+			name = m.group(1).strip()
+			package, component_name = split_name(name)
+			package = escape_package(package)
+			self.used_components.add(name)
+			self.used_packages.add(package)
+
 	def generate_components(self):
 		#finding explicit @using declarations in code
 		for name, code in self.imports.iteritems():
-			for m in generator.used_re.finditer(code):
-				name = m.group(1).strip()
-				package, component_name = split_name(name)
-				package = escape_package(package)
-				self.used_components.add(name)
-				self.used_packages.add(package)
+			self.scan_using(code)
 
 		generated = set([root_type])
 		queue = ['core.Context']
@@ -214,6 +217,7 @@ class generator(object):
 		return self.replace_args(text)
 
 	def replace_args(self, text):
+		self.scan_using(text)
 		#COPY_ARGS optimization
 		def copy_args(m):
 			def expr(var, op, idx):

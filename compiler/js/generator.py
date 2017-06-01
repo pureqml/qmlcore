@@ -230,22 +230,22 @@ class generator(object):
 			if prefix is not None:
 				prefix = prefix.strip()
 				return """
-	/* %s */
-	var $n = arguments.length
-	var %s = new Array(%s)
-	%s[0] = %s
-	for(var $i = %d; $i < $n; ++$i) {
-		%s[%s] = arguments[$i]
-	}
+		/* %s */
+		var $n = arguments.length
+		var %s = new Array(%s)
+		%s[0] = %s
+		for(var $i = %d; $i < $n; ++$i) {
+			%s[%s] = arguments[$i]
+		}
 """ %(m.group(0), name, expr('$n', '+', 1 - idx), name, prefix, idx, name, expr('$i', '+', 1 - idx)) #format does not work well here, because of { }
 			else:
 				return """
-	/* %s */
-	var $n = arguments.length
-	var %s = new Array(%s)
-	for(var $i = %d; $i < $n; ++$i) {
-		%s[%s] = arguments[$i]
-	}
+		/* %s */
+		var $n = arguments.length
+		var %s = new Array(%s)
+		for(var $i = %d; $i < $n; ++$i) {
+			%s[%s] = arguments[$i]
+		}
 """ %(m.group(0), name, expr('$n', '-', idx), idx, name, expr('$i', '-', idx))
 
 		text = generator.re_copy_args.sub(copy_args, text)

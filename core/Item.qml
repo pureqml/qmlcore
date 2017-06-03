@@ -308,6 +308,19 @@ Object {
 	}
 
 	///@private
+	function invokeHandlers(handlers, invoker) {
+		for(var i = handlers.length - 1; i >= 0; --i) {
+			var callback = handlers[i]
+			if (invoker(callback)) {
+				if (_globals.core.trace.key)
+					log("key", key, "handled by", this, new Error().stack)
+				return true;
+			}
+		}
+		return false;
+	}
+
+	///@private
 	function _processKey(event) {
 		var key = _globals.core.keyCodes[event.which || event.keyCode];
 		if (key) {
@@ -315,43 +328,18 @@ Object {
 			var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 			var proto_callback = this['__key__' + key]
 
-			if (key in this._pressedHandlers) {
-				var handlers = this._pressedHandlers[key]
-				for(var i = handlers.length - 1; i >= 0; --i) {
-					var callback = handlers[i]
-					if (invoker(callback)) {
-						if (_globals.core.trace.key)
-							log("key", key, "handled by", this, new Error().stack)
-						return true;
-					}
-				}
-			}
+			if (key in this._pressedHandlers)
+				return this.invokeHandlers(this._pressedHandlers[key], invoker)
 
-			if (proto_callback) {
-				for (var i = proto_callback.length - 1; i >= 0; --i) {
-					var callback = proto_callback[i]
-					if (invoker(callback)) {
-						if (_globals.core.trace.key)
-							log("key", key, "handled by", this, new Error().stack)
-						return true;
-					}
-				}
-			}
+			if (proto_callback)
+				return this.invokeHandlers(proto_callback, invoker)
 
 			var proto_callback = this['__key__Key']
-			if ('Key' in this._pressedHandlers) {
-				var handlers = this._pressedHandlers['Key']
-				for(var i = handlers.length - 1; i >= 0; --i) {
-					var callback = handlers[i]
-					if (invoker(callback)) {
-						if (_globals.core.trace.key)
-							log("key", key, "handled by", this, new Error().stack)
-						return true
-					}
-				}
-			}
+			if ('Key' in this._pressedHandlers)
+				return this.invokeHandlers(this._pressedHandlers['Key'], invoker)
+
 			if (proto_callback)
-				proto_callback.forEach(invoker)
+				return this.invokeHandlers(proto_callback, invoker)
 		}
 		else {
 			log("unknown key", event.which);

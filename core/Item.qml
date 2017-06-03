@@ -327,8 +327,16 @@ Object {
 				}
 			}
 
-			if (proto_callback)
-				proto_callback.forEach(invoker)
+			if (proto_callback) {
+				for (var i = proto_callback.length - 1; i >= 0; --i) {
+					var callback = proto_callback[i]
+					if (invoker(callback)) {
+						if (_globals.core.trace.key)
+							log("key", key, "handled by", this, new Error().stack)
+						return true;
+					}
+				}
+			}
 
 			var proto_callback = this['__key__Key']
 			if ('Key' in this._pressedHandlers) {

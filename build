@@ -184,7 +184,7 @@ def find_platform_path(root, plugins_path, platform):
 		return platform_path
 
 	for dir in plugins_path:
-		if dir.startswith('qmlcore-'):
+		if os.path.basename(dir).startswith('qmlcore-'):
 			platform_path = path.join(dir, 'platform', platform)
 			if path.exists(platform_path):
 				return platform_path

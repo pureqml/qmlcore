@@ -69,7 +69,7 @@ Item {
 
 	///@private
 	function _updateSize() {
-		if (this._updateSizeNeeded)
+		if (this._updateSizeNeeded || this.clip)
 			this._delayedUpdateSize.schedule()
 	}
 

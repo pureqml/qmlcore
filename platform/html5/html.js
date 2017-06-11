@@ -470,7 +470,7 @@ exports.initText = function(text) {
 }
 
 exports.layoutText = function(text) {
-	var wrap = text.wrapMode != Text.NoWrap
+	var wrap = text.wrapMode !== _globals.core.Text.NoWrap
 	if (!wrap)
 		text.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
 	else

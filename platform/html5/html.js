@@ -357,6 +357,10 @@ exports.init = function(ctx) {
 		body.append(div);
 	}
 
+	ctx._textCanvas = html.createElement(ctx, 'canvas')
+	body.append(ctx._textCanvas)
+	ctx._textCanvasContext = ctx._textCanvas.dom.getContext('2d')
+
 	ctx.element = div
 	ctx.width = w
 	ctx.height = h
@@ -478,7 +482,24 @@ exports.initText = function(text) {
 }
 
 exports.layoutText = function(text) {
+	var ctx = text._context
+	var textCanvasContext = ctx._textCanvasContext
 	var wrap = text.wrapMode !== _globals.core.Text.NoWrap
+
+	if (!wrap && textCanvasContext !== undefined) {
+		var styles = getComputedStyle(text.element.dom)
+		var fontSize = styles.getPropertyValue('font-size')
+		var units = fontSize.slice(-2)
+		if (units === 'px') {
+			var font = styles.getPropertyValue('font')
+			textCanvasContext.font = font
+			var metrics = textCanvasContext.measureText(text.text)
+			text.paintedWidth = metrics.width
+			text.paintedHeight = parseInt(fontSize)
+			return
+		}
+	}
+
 	if (!wrap)
 		text.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
 	else

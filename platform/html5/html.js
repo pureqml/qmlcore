@@ -352,7 +352,6 @@ exports.init = function(ctx) {
 	ctx.element = div
 	ctx.width = w
 	ctx.height = h
-	ctx.style('visibility', 'hidden')
 
 	win.on('scroll', function(event) { ctx.scrollY = win.scrollY(); });
 
@@ -499,7 +498,6 @@ exports.layoutText = function(text) {
 exports.run = function(ctx, onloadCallback) {
 	ctx.window.on('load', function() {
 		onloadCallback()
-		ctx.element.style('visibility', 'visible')
 	})
 }
 

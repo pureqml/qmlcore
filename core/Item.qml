@@ -133,7 +133,12 @@ Object {
 
 	///@private
 	function _updateVisibility() {
-		this.recursiveVisible = this.visible && this.visibleInView && (this.parent !== null? this.parent.recursiveVisible: true)
+		var visible = this.visible && this.visibleInView
+
+		if (this.element)
+			this.style('visibility', visible? 'inherit': 'hidden')
+
+		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)
 	}
 
 	onVisibleInViewChanged: {
@@ -144,9 +149,6 @@ Object {
 		this.children.forEach(function(child) {
 			child.recursiveVisible = value && child.visible && child.visibleInView
 		})
-
-		if (this.element)
-			this.style('visibility', value? 'inherit': 'hidden')
 
 		if (!value)
 			this.parent._tryFocus()

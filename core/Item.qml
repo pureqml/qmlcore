@@ -133,26 +133,26 @@ Object {
 
 	///@private
 	function _updateVisibility() {
-		if (this.element) this.style('visibility', (this.visible && this.visibleInView)? 'inherit': 'hidden')
+		this.recursiveVisible = this.visible && this.visibleInView && (this.parent !== null? this.parent.recursiveVisible: true)
 	}
 
 	onVisibleInViewChanged: {
-		this.recursiveVisible = value && this.visible && this.parent.recursiveVisible
 		this._updateVisibility()
 	}
 
 	onRecursiveVisibleChanged: {
+		if (this.element)
+			this.style('visibility', value? 'inherit': 'hidden')
+
 		this.children.forEach(function(child) {
 			child.recursiveVisible = value && child.visible && child.visibleInView
 		})
-	}
 
-	onVisibleChanged: {
-		this.recursiveVisible = value && this.visibleInView && this.parent.recursiveVisible
 		if (!value)
 			this.parent._tryFocus()
-		this._updateVisibility()
 	}
+
+	onVisibleChanged:	{ this._updateVisibility() }
 
 	onWidthChanged: 	{ this.style('width', value); this.boxChanged() }
 	onHeightChanged:	{ this.style('height', value - this._topPadding); this.boxChanged() }
@@ -348,5 +348,5 @@ Object {
 	}
 
 	/// focus this item
-	setFocus: { this.forceActiveFocus() }
+	setFocus:		{ this.forceActiveFocus() }
 }

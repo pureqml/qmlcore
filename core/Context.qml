@@ -8,6 +8,8 @@ Item {
 	property Stylesheet stylesheet: Stylesheet { }		///< @private
 	property Orientation orientation: Orientation { }	///< screen orientation object
 
+	visibleInView: false; //startup
+
 	///@private
 	constructor: {
 		this.options = arguments[2]
@@ -107,6 +109,7 @@ Item {
 	///@private
 	function start(instance) {
 		var closure = {}
+		this.children.push(instance)
 		instance.__create(closure)
 		instance.__setup(closure)
 		closure = undefined
@@ -160,5 +163,6 @@ Item {
 	function _run() {
 		log('Context: calling completed()')
 		this._complete()
+		this.visibleInView = true
 	}
 }

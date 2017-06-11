@@ -15,7 +15,7 @@ Object {
 
 	property bool visible: true;			///< this item and its children are visible
 	property bool visibleInView: true;		///< this item is visible inside view content area
-	property bool recursiveVisible: true;	///< this item is actually visible on screen (all parents are visible as well)
+	property bool recursiveVisible: false;	///< this item is actually visible on screen (all parents are visible as well)
 	property real opacity: 1;				///< opacity of the item
 
 	property lazy anchors: Anchors { }
@@ -141,12 +141,12 @@ Object {
 	}
 
 	onRecursiveVisibleChanged: {
-		if (this.element)
-			this.style('visibility', value? 'inherit': 'hidden')
-
 		this.children.forEach(function(child) {
 			child.recursiveVisible = value && child.visible && child.visibleInView
 		})
+
+		if (this.element)
+			this.style('visibility', value? 'inherit': 'hidden')
 
 		if (!value)
 			this.parent._tryFocus()

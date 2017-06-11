@@ -16,40 +16,14 @@ Item {
 	constructor: {
 		this._context.backend.initText(this)
 		this._setText(this.text)
-		var self = this
 		this._delayedUpdateSize = new _globals.core.DelayedAction(this._context, function() {
-			self._updateSizeImpl()
-		})
+			this._updateSizeImpl()
+		}.bind(this))
 	}
 
 	///@private
 	function _setText(html) {
 		this.element.setHtml(html)
-	}
-
-	///@private
-	function onChanged (name, callback) {
-		if (!this._updateSizeNeeded) {
-			switch(name) {
-				case "right":
-				case "width":
-				case "bottom":
-				case "height":
-				case "verticalCenter":
-				case "horizontalCenter":
-					this._enableSizeUpdate()
-			}
-		}
-		_globals.core.Object.prototype.onChanged.apply(this, arguments);
-	}
-
-	///@private
-	function on(name, callback) {
-		if (!this._updateSizeNeeded) {
-			if (name == 'boxChanged')
-				this._enableSizeUpdate()
-		}
-		_globals.core.Object.prototype.on.apply(this, arguments)
 	}
 
 	///@private
@@ -62,15 +36,14 @@ Item {
 	}
 
 	///@private
-	function _enableSizeUpdate() {
-		this._updateSizeNeeded = true
-		this._updateSize()
+	function _updateSize() {
+		if (this.recursiveVisible)
+			this._delayedUpdateSize.schedule()
 	}
 
-	///@private
-	function _updateSize() {
-		if (this._updateSizeNeeded)
-			this._delayedUpdateSize.schedule()
+	onRecursiveVisibleChanged: {
+		if (value)
+			this._updateSizeImpl() //fixme: cancel delayed actions here
 	}
 
 	///@private

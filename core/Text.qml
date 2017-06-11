@@ -63,7 +63,7 @@ Item {
 
 	onVerticalAlignmentChanged: {
 		this.verticalAlignment = value;
-		this._enableSizeUpdate()
+		this._updateSize()
 	}
 
 	onHorizontalAlignmentChanged: {

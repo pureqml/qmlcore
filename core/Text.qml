@@ -14,6 +14,7 @@ Item {
 
 	///@private
 	constructor: {
+		this._updateInProgress = false
 		this._context.backend.initText(this)
 		this._setText(this.text)
 		var self = this
@@ -69,6 +70,8 @@ Item {
 
 	///@private
 	function _updateSize() {
+		if (this._updateInProgress)
+			return
 		if (this._updateSizeNeeded || this.clip)
 			this._delayedUpdateSize.schedule()
 	}
@@ -82,6 +85,14 @@ Item {
 		}
 
 		this._context.backend.layoutText(this)
+	}
+
+	///@private
+	function _setSize(w, h) {
+		this._updateInProgress = true
+		this.paintedWidth = w
+		this.paintedHeight = h
+		this._updateInProgress = false
 	}
 
 	onTextChanged:				{ this._setText(value); this._updateSize() }

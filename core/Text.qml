@@ -68,11 +68,16 @@ Item {
 		this._updateSize()
 	}
 
+	onRecursiveVisibleChanged: {
+		if (value)
+			this._updateSize()
+	}
+
 	///@private
 	function _updateSize() {
 		if (this._updateInProgress)
 			return
-		if (this._updateSizeNeeded || this.clip)
+		if (this.recursiveVisible && (this._updateSizeNeeded || this.clip))
 			this._delayedUpdateSize.schedule()
 	}
 

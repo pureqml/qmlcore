@@ -16,40 +16,14 @@ Item {
 	constructor: {
 		this._context.backend.initText(this)
 		this._setText(this.text)
-		var self = this
 		this._delayedUpdateSize = new _globals.core.DelayedAction(this._context, function() {
-			self._updateSizeImpl()
-		})
+			this._updateSizeImpl()
+		}.bind(this))
 	}
 
 	///@private
 	function _setText(html) {
 		this.element.setHtml(html)
-	}
-
-	///@private
-	function onChanged (name, callback) {
-		if (!this._updateSizeNeeded) {
-			switch(name) {
-				case "right":
-				case "width":
-				case "bottom":
-				case "height":
-				case "verticalCenter":
-				case "horizontalCenter":
-					this._enableSizeUpdate()
-			}
-		}
-		_globals.core.Object.prototype.onChanged.apply(this, arguments);
-	}
-
-	///@private
-	function on(name, callback) {
-		if (!this._updateSizeNeeded) {
-			if (name == 'boxChanged')
-				this._enableSizeUpdate()
-		}
-		_globals.core.Object.prototype.on.apply(this, arguments)
 	}
 
 	///@private
@@ -61,12 +35,6 @@ Item {
 		_globals.core.Item.prototype._updateStyle.apply(this, arguments)
 	}
 
-	///@private
-	function _enableSizeUpdate() {
-		this._updateSizeNeeded = true
-		this._updateSize()
-	}
-
 	onRecursiveVisibleChanged: {
 		if (value)
 			this._updateSize()
@@ -74,7 +42,7 @@ Item {
 
 	///@private
 	function _updateSize() {
-		if (this.recursiveVisible && (this._updateSizeNeeded || this.clip))
+		if (this.recursiveVisible)
 			this._delayedUpdateSize.schedule()
 	}
 
@@ -92,11 +60,6 @@ Item {
 	onTextChanged:				{ this._setText(value); this._updateSize() }
 	onColorChanged: 			{ this.style('color', _globals.core.normalizeColor(value)) }
 	onWidthChanged:				{ this._updateSize() }
-
-	onVerticalAlignmentChanged: {
-		this.verticalAlignment = value;
-		this._enableSizeUpdate()
-	}
 
 	onHorizontalAlignmentChanged: {
 		switch(value) {

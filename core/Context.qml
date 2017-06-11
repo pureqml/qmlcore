@@ -20,8 +20,7 @@ Item {
 		this._context = this
 		this._started = false
 		this._completed = false
-		this._completedHandlers = []
-		this._runningComplete = false
+		this._processingActions = false
 		this._delayedActions = []
 		this._stylesRegistered = {}
 		this._updateHandlers = null
@@ -59,7 +58,7 @@ Item {
 
 	///@private
 	function _onCompleted(callback) {
-		this._completedHandlers.push(callback);
+		this.scheduleAction(callback);
 	}
 
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }
@@ -88,22 +87,8 @@ Item {
 
 	///@private
 	function _complete() {
-		if (!this._started || this._runningComplete)
-			return
-
+		this._processActions()
 		this._completed = true
-		this._runningComplete = true
-
-		var invoker = _globals.core.safeCall(this, [], function (ex) { log("onCompleted failed:", ex, ex.stack) })
-		do {
-			while(this._completedHandlers.length) {
-				var ch = this._completedHandlers
-				this._completedHandlers = []
-				ch.forEach(invoker)
-			}
-			this._processActions()
-		} while(this._completedHandlers.length)
-		this._runningComplete = false
 	}
 
 	///@private
@@ -124,19 +109,26 @@ Item {
 
 	///@private
 	function _processActions() {
-		var invoker = _globals.core.safeCall(this, [], function (ex) { log('exception in delayed action', ex, ex.stack) })
+		if (!this._started || this._processingActions)
+			return
+
+		this._processingActions = true
+
+		var invoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
 		while (this._delayedActions.length) {
 			var actions = this._delayedActions
 			this._delayedActions = []
 			actions.forEach(invoker)
 		}
+
+		this._processingActions = false
 		this._delayedTimeout = undefined
 	}
 
 	///@private
 	function scheduleAction(action) {
 		this._delayedActions.push(action)
-		if (this._completed && this._delayedTimeout === undefined) //do not schedule any processing before creation process ends
+		if (this._completed && this._delayedTimeout === undefined)
 			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
 	}
 

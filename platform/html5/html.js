@@ -359,7 +359,7 @@ exports.init = function(ctx) {
 
 	ctx._textCanvas = html.createElement(ctx, 'canvas')
 	body.append(ctx._textCanvas)
-	ctx._textCanvasContext = ctx._textCanvas.dom.getContext('2d')
+	ctx._textCanvasContext = ('getContext' in ctx._textCanvas.dom)? ctx._textCanvas.dom.getContext('2d'): null
 
 	ctx.element = div
 	ctx.width = w
@@ -486,7 +486,7 @@ exports.layoutText = function(text) {
 	var textCanvasContext = ctx._textCanvasContext
 	var wrap = text.wrapMode !== _globals.core.Text.NoWrap
 
-	if (!wrap && textCanvasContext !== undefined) {
+	if (!wrap && textCanvasContext !== null) {
 		var styles = getComputedStyle(text.element.dom)
 		var fontSize = styles.getPropertyValue('font-size')
 		var units = fontSize.slice(-2)

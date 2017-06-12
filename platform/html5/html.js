@@ -476,7 +476,8 @@ exports.layoutText = function(text) {
 	else
 		text.style({ 'height': 'auto', 'padding-top': 0})
 
-	text._setSize(text.element.fullWidth(), text.element.fullHeight())
+	text.paintedWidth = text.element.fullWidth()
+	text.paintedHeight = text.element.fullHeight()
 
 	var style
 	if (!wrap)

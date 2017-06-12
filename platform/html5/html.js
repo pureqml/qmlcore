@@ -137,6 +137,7 @@ exports.Element = function(context, tag) {
 	this._fragment = []
 	this._styles = {}
 	this._class = ''
+	this._widthAdjust = 0
 
 	registerGenericListener(this)
 }
@@ -149,6 +150,7 @@ ElementPrototype.addClass = function(cls) {
 }
 
 ElementPrototype.setHtml = function(html) {
+	this._widthAdjust = 0 //reset any text related rounding corrections
 	var dom = this.dom
 	this._fragment.forEach(function(node) { dom.removeChild(node) })
 	this._fragment = []
@@ -169,7 +171,7 @@ ElementPrototype.setHtml = function(html) {
 }
 
 ElementPrototype.width = function() {
-	return this.dom.clientWidth
+	return this.dom.clientWidth - this._widthAdjust
 }
 
 ElementPrototype.height = function() {
@@ -177,7 +179,7 @@ ElementPrototype.height = function() {
 }
 
 ElementPrototype.fullWidth = function() {
-	return this.dom.scrollWidth
+	return this.dom.scrollWidth - this._widthAdjust
 }
 
 ElementPrototype.fullHeight = function() {
@@ -246,7 +248,13 @@ ElementPrototype.updateStyle = function() {
 		if (Array.isArray(value))
 			value = value.join(',')
 
-		var unit = (typeof value === 'number')? cssUnits[name] || '': ''
+		var unit = ''
+		if (typeof value === 'number') {
+			if (name in cssUnits)
+				unit = cssUnits[name]
+			if (name === 'width')
+				value += this._widthAdjust
+		}
 		value += unit
 
 		//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
@@ -476,12 +484,16 @@ exports.layoutText = function(text) {
 	else
 		text.style({ 'height': 'auto', 'padding-top': 0})
 
+	//this is the source of rounding error. For instance you have 186.3px wide text, this sets width to 186px and causes wrapping
 	text.paintedWidth = text.element.fullWidth()
 	text.paintedHeight = text.element.fullHeight()
 
+	//this makes style to adjust width (by adding this value), and return back _widthAdjust less
+	text.element._widthAdjust = 1
+
 	var style
 	if (!wrap)
-		style = { width: text.width, height: text.height }
+		style = { width: text.width, height: text.height } //restore original width value (see 'if' above)
 	else
 		style = {'height': text.height }
 

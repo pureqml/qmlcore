@@ -54,6 +54,9 @@ class Manifest(object):
 	def templates(self):
 		return self.data.get('templates', ['*.html'])
 
+	@property
+	def properties(self):
+		return self.data.get('properties', {})
 
 
 def load(f):

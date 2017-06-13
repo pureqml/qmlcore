@@ -141,6 +141,10 @@ Object {
 		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)
 	}
 
+	function _updateVisibilityForChild(child, value) {
+		child.recursiveVisible = value && child.visible && child.visibleInView
+	}
+
 	onVisibleInViewChanged: {
 		this._updateVisibility()
 	}

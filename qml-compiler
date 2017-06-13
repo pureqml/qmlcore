@@ -13,6 +13,7 @@ import os, os.path
 import hashlib
 import cPickle
 import inspect
+import json
 import sys
 
 parser = argparse.ArgumentParser()
@@ -58,6 +59,7 @@ except:
 project_dirs = args.directory
 output_dir = args.output
 root_manifest = None
+root_manifest_props = {}
 
 if args.manifest:
 	with open(args.manifest) as f:
@@ -156,6 +158,7 @@ def process_files(generator, app, dirs):
 					if manifest.package:
 						package_name = manifest.package.encode('utf-8')
 						package_dir = dirpath
+					root_manifest_props.update(manifest.properties)
 
 			for filename in filenames:
 				relpath = os.path.relpath(dirpath, package_dir)
@@ -190,8 +193,12 @@ def generate():
 	init_js = generator.replace_args(init_js)
 
 	process_files(generator, args.app, project_dirs)
+	if root_manifest:
+		root_manifest_props.update(root_manifest.properties)
+
 	if args.verbose:
 		print "generating sources..."
+
 	app = ""
 	if args.strict:
 		app += "'use strict'\n"
@@ -199,6 +206,17 @@ def generate():
 		app += "var log = function() { }\n"
 	else:
 		app += "var log = null\n"
+
+	def write_properties(prefix, props):
+		r = ''
+		for k, v in props.iteritems():
+			if isinstance(v, dict):
+				r += write_properties(prefix + '$' + k, v)
+			else:
+				r += "var %s$%s = %s\n" %(prefix, k, json.dumps(v))
+		return r
+	app += write_properties('$manifest', root_manifest_props)
+
 	app += "/** @const @type {!CoreObject} */\n"
 	app += "var " + generator.generate()
 	app += generator.generate_startup(namespace, args.app, namespace if args.prefix else '')

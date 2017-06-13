@@ -215,7 +215,7 @@ def generate():
 			else:
 				r += "var %s$%s = %s\n" %(prefix, k, json.dumps(v))
 		return r
-	app += write_properties('$manifest', root_manifest_props)
+	app += write_properties('$manifest', root_manifest_props).encode('utf-8')
 
 	app += "/** @const @type {!CoreObject} */\n"
 	app += "var " + generator.generate()

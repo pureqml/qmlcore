@@ -488,7 +488,6 @@ var layoutTextSetStyle = function(text, style) {
 		case text.AlignVCenter:	text._topPadding = (text.height - text.paintedHeight) / 2; break
 	}
 	style['padding-top'] = text._topPadding
-	log(text.text, text.height, text._topPadding)
 	style['height'] = text.height - text._topPadding
 	text.style(style)
 }

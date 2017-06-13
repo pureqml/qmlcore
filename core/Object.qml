@@ -122,14 +122,13 @@ EventEmitter {
 		if (protoCallbacks === undefined && handlers === undefined)
 			return
 
-		var ctx = this._context
 		var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 
 		if (protoCallbacks !== undefined)
-			ctx._callHandlers(invoker, protoCallbacks)
+			protoCallbacks.forEach(invoker)
 
 		if (handlers !== undefined)
-			ctx._callHandlers(invoker, handlers)
+			handlers.forEach(invoker)
 	}
 
 	///@private gets object by id

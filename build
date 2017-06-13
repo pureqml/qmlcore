@@ -355,7 +355,7 @@ def proc_source_dir(source_dir):
 		languages = manifest.languages
 		for language in languages:
 			print 'updating translation for language', language
-			call([os.path.join(root, 'update-ts'), '--ts', 'src/' + language + '.ts', source_dir])
+			call([os.path.join(root, 'update-ts'), '--ts', os.path.join(source_dir, language + '.ts'), source_dir])
 		sys.exit(0)
 
 

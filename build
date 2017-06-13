@@ -72,7 +72,6 @@ def minify_gcc(out, src, root, app, platform, manifest):
 	call(["java", "-jar", path.join(root, "compiler/gcc/compiler.jar"),
 		"--warning_level", "VERBOSE",
 		"--externs", path.join(root, "compiler/gcc/jquery-1.9.js"),
-		"--process_jquery_primitives",
 		"--jscomp_off=missingProperties",
 		src], stdout = out)
 

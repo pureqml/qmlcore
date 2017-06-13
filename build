@@ -248,6 +248,7 @@ def build(root, platform, apps, app, manifest):
 	options.append(path.join(root, 'core'))
 
 	subplatforms = [platform]
+	subplatforms_manifests = [manifest]
 	while subplatforms:
 		subplatforms_next = []
 
@@ -257,6 +258,7 @@ def build(root, platform, apps, app, manifest):
 
 			with open(path.join(subplatform_path, '.manifest')) as f:
 				subplatform_manifest = mf.load(f)
+				subplatforms_manifests.insert(0, subplatform_manifest)
 			subplatforms_next += subplatform_manifest.requires
 
 		subplatforms = subplatforms_next
@@ -299,6 +301,8 @@ def build(root, platform, apps, app, manifest):
 		print "copying resources..."
 
 	context = { 'id': app, 'app': script, 'templater': templater }
+	for sm in subplatforms_manifests:
+		context.update(sm.properties)
 
 	copy(path.join(root, 'dist'), target, context, templates)
 

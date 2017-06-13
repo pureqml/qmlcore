@@ -481,6 +481,18 @@ exports.initText = function(text) {
 	text.element.addClass(text._context.getClass('text'))
 }
 
+var layoutTextSetStyle = function(text, style) {
+	switch(text.verticalAlignment) {
+		case text.AlignTop:		text._topPadding = 0; break
+		case text.AlignBottom:	text._topPadding = text.height - text.paintedHeight; break
+		case text.AlignVCenter:	text._topPadding = (text.height - text.paintedHeight) / 2; break
+	}
+	style['padding-top'] = text._topPadding
+	log(text.text, text.height, text._topPadding)
+	style['height'] = text.height - text._topPadding
+	text.style(style)
+}
+
 exports.layoutText = function(text) {
 	var ctx = text._context
 	var textCanvasContext = ctx._textCanvasContext
@@ -488,7 +500,7 @@ exports.layoutText = function(text) {
 
 	if (!wrap && textCanvasContext !== null) {
 		var styles = getComputedStyle(text.element.dom)
-		var fontSize = styles.getPropertyValue('font-size')
+		var fontSize = styles.getPropertyValue('line-height')
 		var units = fontSize.slice(-2)
 		if (units === 'px') {
 			var font = styles.getPropertyValue('font')
@@ -496,6 +508,7 @@ exports.layoutText = function(text) {
 			var metrics = textCanvasContext.measureText(text.text)
 			text.paintedWidth = metrics.width
 			text.paintedHeight = parseInt(fontSize)
+			layoutTextSetStyle(text, {})
 			return
 		}
 	}
@@ -518,14 +531,7 @@ exports.layoutText = function(text) {
 	else
 		style = {'height': text.height }
 
-	switch(text.verticalAlignment) {
-		case text.AlignTop:		text._topPadding = 0; break
-		case text.AlignBottom:	text._topPadding = text.height - text.paintedHeight; break
-		case text.AlignVCenter:	text._topPadding = (text.height - text.paintedHeight) / 2; break
-	}
-	style['padding-top'] = text._topPadding
-	style['height'] = text.height - text._topPadding
-	text.style(style)
+	layoutTextSetStyle(text, style)
 }
 
 exports.run = function(ctx, onloadCallback) {

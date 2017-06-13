@@ -13,6 +13,9 @@ def value_is_trivial(value):
 	if value == 'true' or value == 'false' or value == 'null':
 		return True
 
+	if value.startswith('$manifest$'):
+		return True
+
 	try:
 		float(value)
 		return True
@@ -38,6 +41,8 @@ def handle_property_path(t):
 	path = t.split(".")
 	if path[0] == 'this':
 		return t
+	if path[0] == 'manifest':
+		return '$' + ('$'.join(path))
 	if path[0] == "model":
 		return "this._get('model').%s" %".".join(path[1:])
 	path = ["_get('%s')" %x for x in path]

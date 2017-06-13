@@ -119,15 +119,18 @@ EventEmitter {
 		var protoCallbacks = this['__changed__' + name]
 		var handlers = this._changedHandlers[name]
 
-		if (protoCallbacks === undefined && handlers === undefined)
+		var hasProtoCallbacks = protoCallbacks !== undefined
+		var hasHandlers = handlers !== undefined
+
+		if (!hasProtoCallbacks && !hasHandlers)
 			return
 
 		var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 
-		if (protoCallbacks !== undefined)
+		if (hasProtoCallbacks)
 			protoCallbacks.forEach(invoker)
 
-		if (handlers !== undefined)
+		if (hasHandlers)
 			handlers.forEach(invoker)
 	}
 

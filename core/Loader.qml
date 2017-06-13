@@ -46,7 +46,12 @@ Item {
 		item.__setup(closure)
 		this.item = item
 		this._context._complete()
+		this._updateVisibilityForChild(this.item, this.recursiveVisible)
 		this.loaded()
+	}
+
+	onRecursiveVisibleChanged: {
+		this._updateVisibilityForChild(this.item, value)
 	}
 
 	///@internal

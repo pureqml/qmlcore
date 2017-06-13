@@ -23,7 +23,6 @@ Item {
 		this._processingActions = false
 		this._delayedActions = []
 		this._stylesRegistered = {}
-		this._updateHandlers = null
 
 		this.backend = _globals._backend()
 	}
@@ -62,28 +61,6 @@ Item {
 	}
 
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }
-
-	///@private
-	function _callHandlers(invoker, handlers) {
-		if (handlers.length === 0)
-			return
-
-		if (this._updateHandlers !== null) {
-			this._updateHandlers.push({i: invoker, h: handlers})
-			return
-		}
-
-		this._updateHandlers = []
-		handlers.forEach(invoker)
-		while(this._updateHandlers.length) {
-			var handlers = this._updateHandlers
-			this._updateHandlers = []
-			handlers.forEach(function(cb) {
-				cb.h.forEach(cb.i)
-			})
-		}
-		this._updateHandlers = null
-	}
 
 	///@private
 	function _complete() {

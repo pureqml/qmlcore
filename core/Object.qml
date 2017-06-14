@@ -149,6 +149,15 @@ EventEmitter {
 		throw new Error("invalid property requested: '" + name + "'")
 	}
 
+	///@private patch property storage directly without signalling. You normally don't need it
+	function _setProperty(name, value) {
+		var storageName = '__property_' + name
+		var storage = this[storageName] || {}
+		delete storage.interpolatedValue
+		storage.value = value
+		this[storageName] = storage
+	}
+
 	///@private sets animation on given property
 	function setAnimation (name, animation) {
 		this._animations[name] = animation;

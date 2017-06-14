@@ -25,6 +25,8 @@ BaseView {
 
 	///@private
 	function positionViewAtIndex(idx) {
+		if (this.trace)
+			log('positionViewAtIndex ' + idx)
 		var cx = this.contentX, cy = this.contentY
 		var itemBox = this.getItemPosition(idx)
 		var x = itemBox[0], y = itemBox[1]
@@ -169,7 +171,7 @@ BaseView {
 		var n = items.length
 		var w = this.width, h = this.height
 		if (this.trace)
-			log("layout " + n + " into " + w + "x" + h)
+			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y)
 		var created = false
 		var p = 0
 		var c = horizontal? this.content.x: this.content.y

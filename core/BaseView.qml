@@ -219,15 +219,20 @@ BaseLayout {
 	onWidthChanged:				{ this._delayedLayout.schedule() }
 	onHeightChanged:			{ this._delayedLayout.schedule() }
 
-	/// @private
+	///@private silently updates scroll positions, because browser animates scroll
+	function _updateScrollPositions(x, y) {
+		this._setProperty('contentX', x)
+		this._setProperty('contentY', y)
+		this.content._updateScrollPositions(x, y)
+	}
+
 	onCompleted:				{
 		this._attach();
 		var delayedLayout = this._delayedLayout
 
 		var self = this
 		this.element.on('scroll', function(event) {
-			self.contentX = self.element.dom.scrollLeft
-			self.contentY = self.element.dom.scrollTop
+			self._updateScrollPositions(self.element.dom.scrollLeft, self.element.dom.scrollTop)
 		}.bind(this))
 
 		delayedLayout.schedule()

@@ -203,5 +203,26 @@ BaseView {
 	}
 
 	///@private
-	onFlowChanged: { this._delayedLayout.schedule() }
+	function _updateOverflow() {
+		var horizontal = this.flow == this.FlowLeftToRight
+		var style = {}
+		if (horizontal) {
+			style['overflow-x'] = 'auto'
+			style['overflow-y'] = 'hidden'
+		} else {
+			style['overflow-x'] = 'hidden'
+			style['overflow-y'] = 'auto'
+		}
+		this.style(style)
+	}
+
+	///@private
+	onFlowChanged: {
+		this._updateOverflow()
+		this._delayedLayout.schedule()
+	}
+
+	onCompleted: {
+		this._updateOverflow()
+	}
 }

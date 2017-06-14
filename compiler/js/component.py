@@ -76,6 +76,8 @@ class component_generator(object):
 			value = self.create_component_generator(value)
 		if t is str: #and value[0] == '"' and value[-1] == '"':
 			value = value.replace("\\\n", "")
+		if target in self.assignments:
+			raise Exception("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name))
 		self.assignments[target] = value
 
 	def has_property(self, name):

@@ -9,7 +9,7 @@ Object {
 	property real radius;					///< round corner radius
 
 	property bool focus;					///< this item can be focused
-	property bool focused: focusedChild === this; ///< this item is focused among its siblings
+	property bool focused; ///< this item is focused among its siblings
 	property bool activeFocus;				///< this item can receive events and really focused at this moment
 	property Item focusedChild;				///< current focused item (this item only)
 
@@ -233,11 +233,15 @@ Object {
 			throw new Error('invalid object passed as child')
 		if (this.focusedChild === child)
 			return
-		if (this.focusedChild)
+		if (this.focusedChild) {
 			this.focusedChild._focusTree(false)
+			this.focusedChild.focused = false
+		}
 		this.focusedChild = child
-		if (this.focusedChild)
+		if (this.focusedChild) {
 			this.focusedChild._focusTree(this.hasActiveFocus())
+			this.focusedChild.focused = true
+		}
 	}
 
 	///@private

@@ -203,13 +203,9 @@ BaseLayout {
 		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; } }
 	}
 
-	/// @private
 	onContentXChanged: { this.content.x = -value; }
-
-	/// @private
 	onContentYChanged: { this.content.y = -value; }
 
-	/// @private
 	onRecursiveVisibleChanged: {
 		if (value)
 			this._delayedLayout.schedule();
@@ -220,10 +216,7 @@ BaseLayout {
 		})
 	}
 
-	/// @private
 	onWidthChanged:				{ this._delayedLayout.schedule() }
-
-	/// @private
 	onHeightChanged:			{ this._delayedLayout.schedule() }
 
 	/// @private

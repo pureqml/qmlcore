@@ -170,8 +170,6 @@ BaseView {
 		var items = this._items
 		var n = items.length
 		var w = this.width, h = this.height
-		if (this.trace)
-			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y)
 		var created = false
 		var p = 0
 		var c = horizontal? this.content.x: this.content.y
@@ -179,11 +177,18 @@ BaseView {
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		for(var i = 0; i < n && (itemsCount == 0 || p + c < size); ++i) {
+		var prerender = this.prerender * size
+		var leftMargin = -prerender
+		var rightMargin = size + prerender
+
+		if (this.trace)
+			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y + ", prerender: " + prerender + ", range: " + leftMargin + ":" + rightMargin)
+
+		for(var i = 0; i < n && (itemsCount == 0 || p + c < rightMargin); ++i) {
 			var item = items[i]
 
 			if (!item) {
-				if (p + c >= size && itemsCount > 0)
+				if (p + c >= rightMargin && itemsCount > 0)
 					break
 				item = this._createDelegate(i)
 				created = true
@@ -192,7 +197,7 @@ BaseView {
 			++itemsCount
 
 			var s = (horizontal? item.width: item.height)
-			var visible = (p + c + s >= 0 && p + c < size)
+			var visible = (p + c + s >= leftMargin && p + c < rightMargin)
 
 			if (item.x + item.width > maxW)
 				maxW = item.width + item.x

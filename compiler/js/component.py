@@ -105,7 +105,7 @@ class component_generator(object):
 		if target in self.assignments:
 			raise Exception("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name))
 
-		self.assignments[target] = expr.eval(value, eval_context(self, target))
+		self.assignments[target] = value
 
 	def has_property(self, name):
 		return (name in self.declared_properties) or (name in self.aliases) or (name in self.enums)
@@ -230,6 +230,12 @@ class component_generator(object):
 
 	#no cross-component access here
 	def pregenerate(self, registry):
+		#convert IL assignments values to strings/component generators
+		assignments = {}
+		for target, value in self.assignments.iteritems():
+			assignments[target] = self.eval(target, value)
+		self.assignments = assignments
+
 		for gen in self.generators:
 			gen.pregenerate(registry)
 
@@ -462,8 +468,8 @@ class component_generator(object):
 		for target, value in self.assignments.iteritems():
 			if target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
-			else:
-				self.check_target_property(registry, target)
+
+			self.check_target_property(registry, target)
 
 			if isinstance(value, component_generator):
 				if target != "delegate":

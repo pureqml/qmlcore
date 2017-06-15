@@ -7,8 +7,9 @@ def path_or_parent(path, parent):
 	return '.'.join(mangle_path(path.split('.'))) if path else parent
 
 class eval_context(object):
-	def __init__(self, gen, target):
-		self._gen = gen
+	def __init__(self, registry, gen, target):
+		self.registry = registry
+		self.component_generator = gen
 		self.target = target
 
 	def reference(self, path):
@@ -22,7 +23,7 @@ class eval_context(object):
 		return "this.%s" % ".".join(path)
 
 	def component(self, value):
-		return self._gen.create_component_generator(value)
+		return self.component_generator.create_component_generator(value)
 
 	def percent_target(self):
 		target = self.target
@@ -98,8 +99,8 @@ class component_generator(object):
 		self.generators.append(value)
 		return value
 
-	def eval(self, target, value):
-		return expr.eval(value, eval_context(self, target))
+	def eval(self, registry, target, value):
+		return expr.eval(value, eval_context(registry, self, target))
 
 	def assign(self, target, value):
 		if target in self.assignments:
@@ -233,7 +234,7 @@ class component_generator(object):
 		#convert IL assignments values to strings/component generators
 		assignments = {}
 		for target, value in self.assignments.iteritems():
-			assignments[target] = self.eval(target, value)
+			assignments[target] = self.eval(registry, target, value)
 		self.assignments = assignments
 
 		for gen in self.generators:
@@ -332,7 +333,7 @@ class component_generator(object):
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
-						args.append(self.eval(name, default_value))
+						args.append(self.eval(registry, name, default_value))
 					r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		for name, prop in self.enums.iteritems():
@@ -448,7 +449,7 @@ class component_generator(object):
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):
-							args.append(self.eval(name, default_value))
+							args.append(self.eval(registry, name, default_value))
 						r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 			for name, prop in self.enums.iteritems():

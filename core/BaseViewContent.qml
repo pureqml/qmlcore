@@ -7,7 +7,7 @@ Item {
 	function _updateScrollPositions(x, y) {
 		this._setProperty('x', -x)
 		this._setProperty('y', -y)
-		this.parent._delayedLayout.schedule()
+		this.parent._layout()
 	}
 
 }

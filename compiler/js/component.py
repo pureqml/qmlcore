@@ -414,15 +414,12 @@ class component_generator(object):
 	def check_target_property(self, registry, target):
 		path = target.split('.')
 
-		if len(path) > 1:
-			if (path[0] in registry.id_set):
-				return
+		parent = path[0]
+		if (parent in registry.id_set):
+			return
 
-			if not self.find_property(registry, path[0]):
-				raise Exception('unknown property %s in %s (%s)' %(path[0], self.name, self.component.name))
-		else: #len(path) == 1
-			if not self.find_property(registry, target):
-				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
+		if not self.find_property(registry, parent):
+			raise Exception('unknown property %s in %s (%s)' %(parent, self.name, self.component.name))
 
 	def generate_creator_function(self, registry, name, value, ident_n = 1):
 		ident = "\t" * ident_n

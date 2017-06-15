@@ -120,9 +120,9 @@ Object {
 	onLeftChanged: {
 		var self = this.parent
 		var anchors = this
-		self._removeUpdater('x')
+		self._replaceUpdater('x')
 		if (anchors.right)
-			self._removeUpdater('width')
+			self._replaceUpdater('width')
 		var update_left = anchors._updateLeft.bind(this)
 		update_left()
 		self.connectOn(anchors.left.parent, 'boxChanged', update_left)
@@ -132,9 +132,9 @@ Object {
 	onRightChanged: {
 		var self = this.parent
 		var anchors = this
-		self._removeUpdater('x')
+		self._replaceUpdater('x')
 		if (anchors.left)
-			anchors._removeUpdater('width')
+			anchors._replaceUpdater('width')
 		var update_right = anchors._updateRight.bind(anchors)
 		update_right()
 		self.onChanged('width', update_right)
@@ -145,9 +145,9 @@ Object {
 	onTopChanged: {
 		var self = this.parent
 		var anchors = this
-		self._removeUpdater('y')
+		self._replaceUpdater('y')
 		if (anchors.bottom)
-			self._removeUpdater('height')
+			self._replaceUpdater('height')
 		var update_top = anchors._updateTop.bind(this)
 		update_top()
 		self.connectOn(anchors.top.parent, 'boxChanged', update_top)
@@ -157,9 +157,9 @@ Object {
 	onBottomChanged: {
 		var self = this.parent
 		var anchors = this
-		self._removeUpdater('y')
+		self._replaceUpdater('y')
 		if (anchors.top)
-			self._removeUpdater('height')
+			self._replaceUpdater('height')
 		var update_bottom = anchors._updateBottom.bind(this)
 		update_bottom()
 		self.onChanged('height', update_bottom)
@@ -170,7 +170,7 @@ Object {
 	onHorizontalCenterChanged: {
 		var self = this.parent
 		var anchors = this
-		self._removeUpdater('x')
+		self._replaceUpdater('x')
 		var update_h_center = anchors._updateHCenter.bind(this)
 		update_h_center()
 		self.onChanged('width', update_h_center)
@@ -183,7 +183,7 @@ Object {
 		var self = this.parent
 		var anchors = this
 		var update_v_center = anchors._updateVCenter.bind(this)
-		self._removeUpdater('y')
+		self._replaceUpdater('y')
 		update_v_center()
 		self.onChanged('height', update_v_center)
 		anchors.onChanged('topMargin', update_v_center)

@@ -32,7 +32,7 @@ EventEmitter {
 		this._pressedHandlers = {}
 		this._animations = {}
 		//for(var name in this._updaters) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
-		//	this._removeUpdater(name)
+		//	this._replaceUpdater(name)
 		this._updaters = {}
 
 		_globals.core.EventEmitter.prototype.discard.apply(this)
@@ -82,7 +82,7 @@ EventEmitter {
 	}
 
 	/// @private removes dynamic value updater
-	function _removeUpdater (name, newUpdaters) {
+	function _replaceUpdater (name, newUpdaters) {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
 		if (oldUpdaters !== undefined) {

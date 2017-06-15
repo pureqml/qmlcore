@@ -489,10 +489,12 @@ class component_generator(object):
 					r.append('//assigning %s to %s' %(target, value))
 					r.append("%svar %s = (function() { %s = (%s); }).bind(%s)" %(ident, var, target_lvalue, value, parent))
 					undep = []
-					for idx, _dep in enumerate(deps):
-						path, dep = _dep
-						depvar = "dep$%s$%s$%d" %(escape(parent), escape(target), idx)
-						r.append('%svar %s = %s' %(ident, depvar, path))
+					visited = set()
+					for path, dep in deps:
+						depvar = "dep$%s$%s" %(escape(parent), escape(target))
+						if depvar not in visited:
+							r.append('%svar %s = %s' %(ident, depvar, path))
+							visited.add(depvar)
 						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))
 						undep.append("[%s, '%s', %s]" %(depvar, dep, var))
 					r.append("%s%s._replaceUpdater('%s', [%s])" %(ident, parent, target, ",".join(undep)))

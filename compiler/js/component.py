@@ -1,10 +1,38 @@
 from compiler.js import get_package, split_name, escape
 from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, mangle_path
-from compiler import lang
+from compiler import lang, expr
 import json
 
 def path_or_parent(path, parent):
 	return '.'.join(mangle_path(path.split('.'))) if path else parent
+
+class eval_context(object):
+	def __init__(self, gen, target):
+		self._gen = gen
+		self.target = target
+
+	def reference(self, path):
+		if path[0] == 'this':
+			return '.'.join(path)
+		if path[0] == 'manifest':
+			return '$' + ('$'.join(path))
+		if path[0] == "model":
+			return "this._get('model').%s" %".".join(path[1:])
+		path = ["_get('%s')" %x for x in path]
+		return "this.%s" % ".".join(path)
+
+	def component(self, value):
+		return self._gen.create_component_generator(value)
+
+	def percent_target(self):
+		target = self.target
+		dot = target.rfind('.')
+		property_name = target[dot + 1:] if dot >= 0 else target
+		if property_name == 'x':
+			property_name = 'width'
+		elif property_name == 'y':
+			property_name = 'height'
+		return property_name
 
 class component_generator(object):
 	def __init__(self, ns, name, component, prototype = False):
@@ -70,15 +98,14 @@ class component_generator(object):
 		self.generators.append(value)
 		return value
 
+	def eval(self, target, value):
+		return expr.eval(value, eval_context(self, target))
+
 	def assign(self, target, value):
-		t = type(value)
-		if t is lang.Component:
-			value = self.create_component_generator(value)
-		if t is str: #and value[0] == '"' and value[-1] == '"':
-			value = value.replace("\\\n", "")
 		if target in self.assignments:
 			raise Exception("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name))
-		self.assignments[target] = value
+
+		self.assignments[target] = expr.eval(value, eval_context(self, target))
 
 	def has_property(self, name):
 		return (name in self.declared_properties) or (name in self.aliases) or (name in self.enums)
@@ -300,7 +327,7 @@ class component_generator(object):
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
-						args.append(default_value)
+						args.append(self.eval(name, default_value))
 					r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
 		for name, prop in self.enums.iteritems():
@@ -416,7 +443,7 @@ class component_generator(object):
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):
-							args.append(default_value)
+							args.append(self.eval(name, default_value))
 						r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 			for name, prop in self.enums.iteritems():

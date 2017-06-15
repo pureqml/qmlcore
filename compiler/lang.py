@@ -27,26 +27,22 @@ def value_is_trivial(value):
 	#print "?trivial", value
 	return False
 
-def to_string(value):
-	if isinstance(value, str):
-		return value
-	elif isinstance(value, bool):
-		return 'true' if value else 'false'
-	elif isinstance(value, object):
-		return value
-	else:
-		return str(value)
+class Reference(object):
+	def __init__(self, t):
+		self.path = t.split(".")
 
-def handle_property_path(t):
-	path = t.split(".")
-	if path[0] == 'this':
-		return t
-	if path[0] == 'manifest':
-		return '$' + ('$'.join(path))
-	if path[0] == "model":
-		return "this._get('model').%s" %".".join(path[1:])
-	path = ["_get('%s')" %x for x in path]
-	return "this.%s" % ".".join(path)
+class Operator(object):
+	def __init__(self, tokens):
+		self.tokens = tokens
+
+class Percent(object):
+	def __init__(self, value):
+		self.value = value
+
+class FunctionCall(object):
+	def __init__(self, name, args):
+		self.name = name
+		self.args = args
 
 class DocumentationString(object):
 	def __init__(self, text):
@@ -103,23 +99,10 @@ class IdAssignment(Entity):
 		self.name = name
 
 class Assignment(Entity):
-	re_name = re.compile('<property-name>')
-
 	def __init__(self, target, value):
 		super(Assignment, self).__init__()
 		self.target = target
-
-		dot = target.rfind('.')
-		property_name = target[dot + 1:] if dot >= 0 else target
-		if property_name == 'x':
-			property_name = 'width'
-		elif property_name == 'y':
-			property_name = 'height'
-
-		if isinstance(value, str):
-			self.value = Assignment.re_name.sub(property_name, value)
-		else:
-			self.value = to_string(value)
+		self.value = value
 
 	def is_trivial(self):
 		return value_is_trivial(self.value)

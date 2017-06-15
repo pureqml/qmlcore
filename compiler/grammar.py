@@ -83,7 +83,7 @@ def handle_assignment_scope(s, l, t):
 
 def handle_nested_identifier_rvalue(s, l, t):
 	#print "nested-id>", t
-	return lang.handle_property_path(t[0])
+	return lang.Reference(t[0])
 
 def handle_enum_value(s, l, t):
 	#print "enum>", t
@@ -105,7 +105,7 @@ def handle_function_call(s, l, t):
 	name = t[0]
 	if name[0].islower():
 		name = '_globals.' + name
-	return "%s(%s)" % (name, ",".join(t[1:]))
+	return lang.FunctionCall(name, t[1:])
 
 def handle_documentation_string(s, l, t):
 	text = t[0]
@@ -244,17 +244,16 @@ component_declaration.setParseAction(handle_component_declaration)
 
 def handle_unary_op(s, l, t):
 	#print "EXPR", t
-	return " ".join(map(str, t[0]))
+	return lang.Operator(t[0])
 def handle_binary_op(s, l, t):
 	#print "EXPR", t
-	return " ".join(map(str, t[0]))
+	return lang.Operator(t[0])
 def handle_ternary_op(s, l, t):
 	#print "EXPR", t
-	return " ".join(map(str, t[0]))
+	return lang.Operator(t[0])
 
 def handle_percent_number(s, l, t):
-	value = t[0]
-	return "(this._get('parent')._get('<property-name>') * ((%s) / 100))" %lang.to_string(value)
+	return lang.Percent(t[0])
 
 percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)
@@ -285,7 +284,6 @@ expression_ops = infixNotation(expression_definition, [
 
 	(('?', ':'), 3, opAssoc.RIGHT, handle_ternary_op),
 ])
-expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 
 expression << expression_ops
 

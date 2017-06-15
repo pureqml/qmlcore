@@ -51,7 +51,8 @@ Item {
 	}
 
 	onRecursiveVisibleChanged: {
-		this._updateVisibilityForChild(this.item, value)
+		if (this.item)
+			this._updateVisibilityForChild(this.item, value)
 	}
 
 	///@internal

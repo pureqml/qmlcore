@@ -36,7 +36,7 @@ def eval(value, context):
 			r.append(token)
 		return ''.join(r)
 	if t is lang.Percent:
-		return '((%s) * (%s) / 100)' %(context.reference(['this', 'parent', context.percent_target()]), eval(value.value, context))
+		return '((%s) * (%s) / 100)' %(context.reference(['this', '_get(\'parent\')', context.percent_target()]), eval(value.value, context))
 	if t is lang.FunctionCall:
 		return '%s(%s)' %(value.name, ','.join([_breval(arg, context) for arg in value.args]))
 	elif t is str:

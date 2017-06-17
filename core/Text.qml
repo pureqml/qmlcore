@@ -24,7 +24,7 @@ Item {
 
 	///@private
 	function _setText(html) {
-		this.element.setHtml(html)
+		this._context.backend.setText(this, html)
 	}
 
 	///@private

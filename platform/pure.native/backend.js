@@ -104,6 +104,10 @@ exports.initText = function(text) {
 	element.update()
 }
 
+exports.setText = function(text, html) {
+	text.element.setHtml(html)
+}
+
 exports.layoutText = function(text) {
 	text.element.layoutText()
 }

@@ -478,7 +478,7 @@ exports.loadImage = function(image) {
 }
 
 exports.initText = function(text) {
-	text.element.addClass(text._context.getClass('text'))
+	text.element.addClass(text._context.getClass('core-text'))
 }
 
 var layoutTextSetStyle = function(text, style) {

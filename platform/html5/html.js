@@ -500,9 +500,10 @@ exports.layoutText = function(text) {
 	var ctx = text._context
 	var textCanvasContext = ctx._textCanvasContext
 	var wrap = text.wrapMode !== _globals.core.Text.NoWrap
+	var element = text.element
 
 	if (!wrap && textCanvasContext !== null) {
-		var styles = getComputedStyle(text.element.dom)
+		var styles = getComputedStyle(element.dom)
 		var fontSize = styles.getPropertyValue('line-height')
 		var units = fontSize.slice(-2)
 		if (units === 'px') {
@@ -522,11 +523,11 @@ exports.layoutText = function(text) {
 		text.style({ 'height': 'auto', 'padding-top': 0})
 
 	//this is the source of rounding error. For instance you have 186.3px wide text, this sets width to 186px and causes wrapping
-	text.paintedWidth = text.element.fullWidth()
-	text.paintedHeight = text.element.fullHeight()
+	text.paintedWidth = element.fullWidth()
+	text.paintedHeight = element.fullHeight()
 
 	//this makes style to adjust width (by adding this value), and return back _widthAdjust less
-	text.element._widthAdjust = 1
+	element._widthAdjust = 1
 
 	var style
 	if (!wrap)

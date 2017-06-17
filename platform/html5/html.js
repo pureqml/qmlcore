@@ -492,6 +492,10 @@ var layoutTextSetStyle = function(text, style) {
 	text.style(style)
 }
 
+exports.setText = function(text, html) {
+	text.element.setHtml(html)
+}
+
 exports.layoutText = function(text) {
 	var ctx = text._context
 	var textCanvasContext = ctx._textCanvasContext

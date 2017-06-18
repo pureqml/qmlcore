@@ -25,7 +25,13 @@ Layout {
 
 	///@private
 	function _layout() {
+		if (!this.recursiveVisible)
+			return;
 		var children = this.children;
+
+		if (this.trace)
+			log('Grid.layout ' + children.length + ' items into ' + this.width + 'x' + this.height)
+
 		var crossPos = 0, directPos = 0, crossMax = 0, directMax = 0;
 		var dsp = this.verticalSpacing || this.spacing,
 			csp = this.horizontalSpacing || this.spacing // Cross Spacing

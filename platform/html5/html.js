@@ -481,7 +481,7 @@ exports.initText = function(text) {
 	text.element.addClass(text._context.getClass('core-text'))
 }
 
-var layoutTextSetStyle = function(text, style, children) {
+var layoutTextSetStyle = function(text, style) {
 	switch(text.verticalAlignment) {
 		case text.AlignTop:		text._topPadding = 0; break
 		case text.AlignBottom:	text._topPadding = text.height - text.paintedHeight; break
@@ -490,9 +490,6 @@ var layoutTextSetStyle = function(text, style, children) {
 	style['padding-top'] = text._topPadding
 	style['height'] = text.height - text._topPadding
 	text.style(style)
-	children.forEach(function(el) {
-		text.element.append(el)
-	})
 }
 
 exports.setText = function(text, html) {
@@ -517,7 +514,7 @@ exports.layoutText = function(text) {
 			var metrics = textCanvasContext.measureText(text.text)
 			text.paintedWidth = metrics.width
 			text.paintedHeight = parseInt(fontSize)
-			layoutTextSetStyle(text, {}, [])
+			layoutTextSetStyle(text, {})
 			return
 		}
 	}
@@ -550,7 +547,11 @@ exports.layoutText = function(text) {
 	else
 		style = {'height': text.height }
 
-	layoutTextSetStyle(text, style, children )
+	layoutTextSetStyle(text, style)
+
+	children.forEach(function(el) {
+		element.append(el)
+	})
 }
 
 exports.run = function(ctx, onloadCallback) {

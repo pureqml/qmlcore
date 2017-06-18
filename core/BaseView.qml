@@ -8,7 +8,6 @@ BaseLayout {
 	property int scrollingStep: 0;	///< scrolling step
 	property int animationDuration: 0;
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
-	property bool trace;			///< output debug info in logs: layouts, item positioning
 	property real prerender: 0.5;	///< allocate additional delegates by viewport (prerender * horizontal/vertical view size) px
 	property enum positionMode { Beginning, Center, End, Visible, Contain, Page }; ///< position mode for auto-scrolling/position methods
 	contentWidth: 1;				///< content width

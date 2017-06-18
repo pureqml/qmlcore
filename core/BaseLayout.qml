@@ -1,6 +1,8 @@
 /// base class for BaseView and Layout
 Item {
 	property int count; 					///< number of children elements
+	property bool trace;					///< output debug info in logs: layouts, item positioning
+
 	property int spacing;					///< spacing between adjanced items, pixels
 	property int currentIndex;				///< index of current focused item
 	property int contentWidth;				///< content width

@@ -22,5 +22,9 @@ Item {
 	///@private
 	function _processUpdates() { }
 
-	onSpacingChanged: { this._delayedLayout.schedule(); }
+	onSpacingChanged,
+	onRecursiveVisibleChanged: {
+		if (this.recursiveVisible)
+			this._delayedLayout.schedule();
+	}
 }

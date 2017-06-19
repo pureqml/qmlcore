@@ -204,6 +204,8 @@ BaseView {
 
 	///@private
 	function _updateOverflow() {
+		if (!this.nativeScrolling)
+			return
 		var horizontal = this.flow == this.FlowLeftToRight
 		var style = {}
 		if (horizontal) {

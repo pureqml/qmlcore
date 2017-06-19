@@ -258,6 +258,8 @@ BaseView {
 
 	///@private
 	function _updateOverflow() {
+		if (!this.nativeScrolling)
+			return
 		var horizontal = this.orientation == this.Horizontal
 		var style = {}
 		if (horizontal) {

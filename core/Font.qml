@@ -5,6 +5,7 @@ Object {
 	property bool bold;			///< applies bold style
 	property bool underline;	///< applies underline style
 	property bool strike;		///< line throw text flag
+	property real letterSpacing;	///< spacing between letters
 	property int pixelSize;		///< font size in pixels
 	property int pointSize;		///< font size in points
 	property int lineHeight;	///< font line height in pixels
@@ -19,4 +20,5 @@ Object {
 	onStrikeChanged:		{ this.parent.style('text-decoration', value? 'line-through': ''); this.parent._updateSize() }
 	onLineHeightChanged:	{ this.parent.style('line-height', value + "px"); this.parent._updateSize() }
 	onWeightChanged:		{ this.parent.style('font-weight', value); this.parent._updateSize() }
+	onLetterSpacingChanged:	{ this.parent.style('letter-spacing', value + "px"); this.parent._updateSize() }
 }

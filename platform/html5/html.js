@@ -358,7 +358,7 @@ exports.init = function(ctx) {
 	}
 
 	ctx._textCanvas = html.createElement(ctx, 'canvas')
-	body.append(ctx._textCanvas)
+	div.append(ctx._textCanvas)
 	ctx._textCanvasContext = ('getContext' in ctx._textCanvas.dom)? ctx._textCanvas.dom.getContext('2d'): null
 
 	ctx.element = div

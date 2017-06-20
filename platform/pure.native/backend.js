@@ -13,7 +13,7 @@ var Element = runtime.Element
 exports.init = function(ctx) {
 	log('backend initialization...')
 	ctx._updatedItems = []
-	renderer = new Renderer(480, 640) //fixme: pass in options?
+	renderer = ctx.renderer = new Renderer(480, 640) //fixme: pass in options?
 	rootItem = ctx.element = new Element(ctx, ctx.getTag())
 	ctx.width = renderer.width
 	ctx.height = renderer.height

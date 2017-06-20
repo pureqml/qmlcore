@@ -504,7 +504,7 @@ exports.layoutText = function(text) {
 
 	var dom = element.dom
 
-	if (!wrap && textCanvasContext !== null) {
+	if (!wrap && textCanvasContext !== null && text.text.indexOf('<') < 0) {
 		var styles = getComputedStyle(dom)
 		var fontSize = styles.getPropertyValue('line-height')
 		var units = fontSize.slice(-2)

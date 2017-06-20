@@ -252,6 +252,9 @@ Element.prototype.paint = function(renderer, x, y) {
 	if (this._image !== undefined) {
 		renderer.drawImage(rect, this._image, this)
 	}
+	if (this._text !== undefined) {
+		renderer.drawText(rect, this._text, this)
+	}
 
 	//render here
 	this.children.forEach(function(child) {

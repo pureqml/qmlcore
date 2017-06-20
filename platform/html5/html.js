@@ -520,15 +520,9 @@ exports.layoutText = function(text) {
 		}
 	}
 
-	var children = []
-	for(var i = 0; i < dom.children.length; )
-	{
-		var child = dom.children[i]
-		if (child.nodeType != Node.TEXT_NODE)
-			children.push(dom.removeChild(child))
-		else
-			++i;
-	}
+	text.children.forEach(function(child) {
+		dom.removeChild(child.element.dom)
+	})
 
 	if (!wrap)
 		text.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
@@ -550,8 +544,8 @@ exports.layoutText = function(text) {
 
 	layoutTextSetStyle(text, style)
 
-	children.forEach(function(el) {
-		element.append(el)
+	text.children.forEach(function(child) {
+		dom.appendChild(child.element.dom)
 	})
 }
 

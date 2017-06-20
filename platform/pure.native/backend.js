@@ -139,24 +139,28 @@ Renderer.prototype.getRect = function() {
 	return new Rect(0, 0, this.width, this.height)
 }
 
-Renderer.prototype.paintRectangle = function(rect, color) {
+Renderer.prototype.setClip = function(rect) {
+	log(this.prefix() + 'set clip to ' + rect)
+}
+
+Renderer.prototype.fillRect = function(rect, color) {
 	if (!rect.valid())
 		return
-	log(this.prefix() + 'paint rect ' + rect + ' with color ' + color)
+	log(this.prefix() + 'fill rect ' + rect + ' with color ' + color)
 	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
 }
 
 Renderer.prototype.drawText = function(rect, text) {
 	if (!rect.valid())
 		return
-	log(this.prefix() + 'paint text ' + rect + ' ' + text)
+	log(this.prefix() + 'draw text ' + rect + ' ' + text)
 	_renderText(rect.l, rect.t, rect.r, rect.b, text)
 }
 
 Renderer.prototype.drawImage = function(rect, image) {
 	if (!rect.valid())
 		return
-	log(this.prefix() + 'paint image ' + rect + ' ' + image)
+	log(this.prefix() + 'draw image ' + rect + ' ' + image)
 	_renderImage(rect.l, rect.t, rect.r, rect.b, image)
 }
 exports.Renderer = Renderer

@@ -147,7 +147,7 @@ Renderer.prototype.fillRect = function(rect, color) {
 	if (!rect.valid())
 		return
 	log(this.prefix() + 'fill rect ' + rect + ' with color ' + color)
-	_renderRect(rect.l, rect.t, rect.r, rect.b, r, g, b, a)
+	_renderRect(rect.l, rect.t, rect.r, rect.b, color.r, color.g, color.b, color.a)
 }
 
 Renderer.prototype.drawText = function(rect, text) {

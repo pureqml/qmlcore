@@ -89,10 +89,6 @@ Element.prototype.layoutText = function() {
 	this.update()
 }
 
-var _drawText = function(renderer, rect) {
-	renderer.drawText(rect.moved(this._offsetX, this._offsetY), this._text)
-}
-
 exports.initText = function(text) {
 	var element = text.element
 	element._offsetX = 0
@@ -100,7 +96,6 @@ exports.initText = function(text) {
 	element.ui = text
 	element._text = new Text()
 	element._text.text = text.text
-	element._paint = _drawText
 	element.update()
 }
 
@@ -153,7 +148,7 @@ Renderer.prototype.fillRect = function(rect, color) {
 Renderer.prototype.drawText = function(rect, text) {
 	if (!rect.valid())
 		return
-	log(this.prefix() + 'draw text ' + rect + ' ' + text)
+	log(this.prefix() + 'draw text ' + rect + ' ' + text.text)
 	_renderText(rect.l, rect.t, rect.r, rect.b, text)
 }
 

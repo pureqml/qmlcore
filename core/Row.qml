@@ -6,8 +6,8 @@ Layout {
 			return false;
 
 		switch(key) {
-			case 'Left':	this.focusPrevChild(); return true;
-			case 'Right':	this.focusNextChild(); return true;
+			case 'Left':	return this.focusPrevChild()
+			case 'Right':	return this.focusNextChild()
 		}
 	}
 

@@ -12,11 +12,12 @@ BaseLayout {
 			idx = this.children.indexOf(this.focusedChild)
 
 		if (!this.keyNavigationWraps && idx == this.children.length - 1)
-			return
+			return false
 
 		idx = (idx + 1) % this.children.length
 		this.currentIndex = idx
 		this.focusChild(this.children[idx])
+		return true
 	}
 
 	///move focus to the previous child
@@ -26,11 +27,12 @@ BaseLayout {
 			idx = this.children.indexOf(this.focusedChild)
 
 		if (!this.keyNavigationWraps && idx == 0)
-			return
+			return false
 
 		idx = (idx + this.children.length - 1) % this.children.length
 		this.currentIndex = idx
 		this.focusChild(this.children[idx])
+		return true
 	}
 
 	///@private

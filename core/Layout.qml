@@ -35,6 +35,8 @@ BaseLayout {
 		return true
 	}
 
+	onCurrentIndexChanged: { this.focusChild(this.children[value]) }
+
 	///@private
 	onCompleted: { this._delayedLayout.schedule() }
 }

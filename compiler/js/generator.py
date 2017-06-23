@@ -113,6 +113,14 @@ class generator(object):
 		for name, code in self.imports.iteritems():
 			self.scan_using(code)
 
+		context_type = self.find_component('core', 'Context')
+		context_gen = self.components[context_type]
+		for i, pi in enumerate(context_gen.properties):
+			for j, nv in enumerate(pi.properties):
+				if nv[0] == 'buildIdentifier':
+					pi.properties[j] = (nv[0], '"no-partnership edition"')
+					break
+
 		generated = set([root_type])
 		queue = ['core.Context']
 		code, base_class = {}, {}
@@ -255,9 +263,12 @@ class generator(object):
 	def generate_startup(self, ns, app, prefix):
 		r = ""
 		r += "try {\n"
+
+		context_type = self.find_component('core', 'Context')
+
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append("\tvar context = %s._context = new qml.core.Context(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, prefix))
+		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, context_type, prefix))
 		startup.append('\tvar closure = {}\n')
 		startup.append('\tcontext.__create(closure)')
 		startup.append('\tcontext.__setup(closure)')

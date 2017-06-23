@@ -221,7 +221,7 @@ BaseView {
 	///@private
 	onFlowChanged: {
 		this._updateOverflow()
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 
 	onCompleted: {

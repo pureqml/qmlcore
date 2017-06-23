@@ -69,7 +69,7 @@ BaseLayout {
 			log("reset", this._items.length, model.count)
 
 		this._modelUpdate.reset(model)
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 
 	/// @private
@@ -78,7 +78,7 @@ BaseLayout {
 			log("rows inserted", begin, end)
 
 		this._modelUpdate.insert(this.model, begin, end)
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 
 	/// @private
@@ -87,7 +87,7 @@ BaseLayout {
 			log("rows changed", begin, end)
 
 		this._modelUpdate.update(this.model, begin, end)
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 
 	/// @private
@@ -96,7 +96,7 @@ BaseLayout {
 			log("rows removed", begin, end)
 
 		this._modelUpdate.remove(this.model, begin, end)
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 
 	/// @private
@@ -209,7 +209,7 @@ BaseLayout {
 
 	onRecursiveVisibleChanged: {
 		if (value)
-			this._delayedLayout.schedule();
+			this._scheduleLayout();
 
 		this._items.forEach(function(child) {
 			if (child !== null)
@@ -217,8 +217,8 @@ BaseLayout {
 		})
 	}
 
-	onWidthChanged:				{ this._delayedLayout.schedule() }
-	onHeightChanged:			{ this._delayedLayout.schedule() }
+	onWidthChanged:				{ this._scheduleLayout() }
+	onHeightChanged:			{ this._scheduleLayout() }
 
 	///@private silently updates scroll positions, because browser animates scroll
 	function _updateScrollPositions(x, y) {
@@ -227,15 +227,14 @@ BaseLayout {
 		this.content._updateScrollPositions(x, y)
 	}
 
-	onCompleted:				{
-		this._attach();
-		var delayedLayout = this._delayedLayout
+	onCompleted: {
+		this._attach()
 
 		var self = this
 		this.element.on('scroll', function(event) {
 			self._updateScrollPositions(self.element.dom.scrollLeft, self.element.dom.scrollTop)
 		}.bind(this))
 
-		delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 }

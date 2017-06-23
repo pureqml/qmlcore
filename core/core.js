@@ -140,22 +140,6 @@ exports.core.mixColor = function(specA, specB, r) {
 	return [mix(a.r, b.r, r), mix(a.g, b.g, r), mix(a.b, b.b, r), mix(a.a, b.a, r)]
 }
 
-/** @constructor */
-exports.core.DelayedAction = function(context, action) {
-	this.context = context
-	this.action = function() {
-		this._scheduled = false
-		action()
-	}.bind(this)
-}
-
-exports.core.DelayedAction.prototype.schedule = function() {
-	if (!this._scheduled) {
-		this._scheduled = true
-		this.context.scheduleAction(this.action)
-	}
-}
-
 exports.addLazyProperty = function(proto, name, creator) {
 	var storageName = '__lazy_property_' + name
 	var forwardName = '__forward_' + name

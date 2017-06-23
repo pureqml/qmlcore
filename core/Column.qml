@@ -48,9 +48,8 @@ Layout {
 		if (!('height' in child))
 			return
 
-		var delayedLayout = this._delayedLayout
-		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
-		child.anchors.on('marginsUpdated', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('height', this._scheduleLayout.bind(this))
+		child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
+		child.anchors.on('marginsUpdated', this._scheduleLayout.bind(this))
 	}
 }

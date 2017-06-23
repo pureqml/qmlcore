@@ -40,9 +40,8 @@ Layout {
 	///@private
 	function addChild(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		var delayedLayout = this._delayedLayout
-		child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
-		child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+		child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
+		child.onChanged('width', this._scheduleLayout.bind(this))
+		child.onChanged('height', this._scheduleLayout.bind(this))
 	}
 }

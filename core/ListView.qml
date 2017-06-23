@@ -248,11 +248,10 @@ BaseView {
 	/// @private creates delegate in given item slot
 	function _createDelegate(idx) {
 		var item = _globals.core.BaseView.prototype._createDelegate.apply(this, arguments)
-		var delayedLayout = this._delayedLayout
 		if (this.orientation === this.Horizontal)
-			item.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
+			item.onChanged('width', this._scheduleLayout.bind(this))
 		else
-			item.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
+			item.onChanged('height', this._scheduleLayout.bind(this))
 		return item
 	}
 
@@ -275,7 +274,7 @@ BaseView {
 	///@private
 	onOrientationChanged: {
 		this._updateOverflow()
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 
 	onCompleted: {

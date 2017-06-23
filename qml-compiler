@@ -16,6 +16,10 @@ import inspect
 import json
 import sys
 
+root = os.path.dirname(sys.argv[0])
+with open(os.path.join(root, 'partners.json')) as f:
+	partners = json.load(f)
+
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", nargs='+')
 parser.add_argument("-a", dest="app")
@@ -58,12 +62,12 @@ except:
 
 project_dirs = args.directory
 output_dir = args.output
-root_manifest = None
-root_manifest_props = {}
 
-if args.manifest:
-	with open(args.manifest) as f:
-		root_manifest = compiler.manifest.load(f)
+if not args.manifest:
+	parser.error("-m is required")
+with open(args.manifest) as f:
+	root_manifest = compiler.manifest.load(f)
+root_manifest_props = {}
 
 
 def check_file(filename):
@@ -178,7 +182,10 @@ def process_files(generator, app, dirs):
 
 def generate():
 	namespace = "qml"
-	generator = compiler.js.generator(namespace)
+	partner = root_manifest.partner
+	if partner not in partners:
+		raise parser.error('\n\nInvalid client id \'%s\'. Consider become our partner! You will be advertised on our site (and change splash screen lol).\n\n*** WARNING: Using counterfeit id is a hanging offense, you will be reported to KGB immediately. ***\n' %partner)
+	generator = compiler.js.generator(namespace, 'Powered by PureQML ' + partners.get(partner).get('engine') + ' Edition Engine')
 
 #reading .core.js files to bootstrap platform specific initialization
 	init_js = ''

@@ -6,8 +6,8 @@ from compiler.js.component import component_generator
 root_type = 'core.CoreObject'
 
 class generator(object):
-	def __init__(self, ns):
-		self.ns = ns
+	def __init__(self, ns, bid):
+		self.ns, self.bid = ns, bid
 		self.components = {}
 		self.used_packages = set()
 		self.used_components = set()
@@ -118,7 +118,8 @@ class generator(object):
 		for i, pi in enumerate(context_gen.properties):
 			for j, nv in enumerate(pi.properties):
 				if nv[0] == 'buildIdentifier':
-					pi.properties[j] = (nv[0], '"no-partnership edition"')
+					bid = '"' + self.bid + '"'
+					pi.properties[j] = (nv[0], bid.encode('utf-8'))
 					break
 
 		generated = set([root_type])

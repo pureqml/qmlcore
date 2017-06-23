@@ -23,6 +23,87 @@ Layout {
 		this._delayedLayout.schedule()
 	}
 
+	function getPosition(idx) {
+		for (var r = 0; r < this._rows.length; ++r) {
+			var row = this._rows[r]
+			for (var i = 0;  i < row.length; ++i) {
+				if (row[i].i === idx)
+					return { row: r, idx: row[i].i }
+			}
+		}
+	}
+
+	focusUp: {
+		var middle = 0, idx = 0;
+		var vsp = this.verticalSpacing || this.spacing
+
+		if (this.focusedChild) {
+			idx = this.children.indexOf(this.focusedChild)
+			middle = this.focusedChild.x + this.focusedChild.width / 2
+		}
+
+		var pos = this.getPosition(idx)
+
+		if (!this.keyNavigationWraps && pos.row === 0)
+			return false
+ 		var l = this._rows.length
+		var r = (pos.row + l - 1) % l
+		var row = this._rows[r]
+
+		for (var i = 0; i < row.length; ++i) {
+			if (middle <= (row[i].x + row[i].w + vsp)){
+				idx = row[i].i
+				break
+			}
+		}
+
+		this.currentIndex = idx
+		this.focusChild(this.children[idx])
+		return true
+	}
+
+	focusDown: {
+		var middle = 0, idx = 0;
+		var vsp = this.verticalSpacing || this.spacing
+
+		if (this.focusedChild) {
+			idx = this.children.indexOf(this.focusedChild)
+			middle = this.focusedChild.x + this.focusedChild.width / 2
+		}
+
+		var pos = this.getPosition(idx)
+
+		if (!this.keyNavigationWraps && pos.row === this._rows.length)
+			return false
+ 		var l = this._rows.length
+		var r = (pos.row + 1) % l
+		var row = this._rows[r]
+
+		for (var i = 0; i < row.length; ++i) {
+			if (middle <= (row[i].x + row[i].w + vsp)){
+				idx = row[i].i
+				break
+			}
+		}
+
+		this.currentIndex = idx
+		this.focusChild(this.children[idx])
+		return true
+	}
+
+	///@private
+	onKeyPressed: {
+		if (!this.handleNavigationKeys)
+			return false;
+
+		switch (key) {
+			case 'Up':		return this.focusUp()
+			case 'Down':	return this.focusDown()
+			case 'Left':	return this.focusPrevChild()
+			case 'Right':	return this.focusNextChild()
+		}
+	}
+
 	///@private
 	function _layout() {
 		if (!this.recursiveVisible)
@@ -37,6 +118,9 @@ Layout {
 			csp = this.horizontalSpacing || this.spacing // Cross Spacing
 		this.count = children.length
 		var rows = []
+		var tempRows = []
+		var itemsInRow = 0
+		this._rows = []
 		rows.push({idx: 0, size: 0}) //starting value
 		var horizontal = this.flow == this.FlowLeftToRight
 		var size = horizontal ? this.height : this.width
@@ -74,6 +158,9 @@ Layout {
 						c.x = cbm;
 						c.y = directPos + dbm;
 					}
+					this._rows.push(tempRows)
+					tempRows = []
+					tempRows.push({i: i, x: c.x, w: directSize})
 				} else {
 					if (horizontal) {
 						c.y = crossPos + cbm;
@@ -82,6 +169,7 @@ Layout {
 						c.x = crossPos + cbm;
 						c.y = directPos + dbm;
 					}
+					tempRows.push({i: i, x: c.x, w: directSize})
 				}
 				if (directMax < directPos + directSize)
 					directMax = directPos + directSize;
@@ -95,6 +183,8 @@ Layout {
 					crossMax = crossPos - csp;
 			}
 		}
+
+		this._rows.push(tempRows)
 
 		this.rowsCount = rows.length;
 		rows.push({idx: children.length, size: crossPos - csp}) // add last point

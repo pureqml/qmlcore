@@ -2,5 +2,9 @@
 	"pureqml-team": {
 		"name": "PureQML Team",
 		"status": "paper"
+	},
+
+	"free": {
+		"name": "No-Partnership Edition"
 	}
 }

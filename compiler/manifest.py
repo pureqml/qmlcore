@@ -58,6 +58,10 @@ class Manifest(object):
 	def properties(self):
 		return self.data.get('properties', {})
 
+	@property
+	def partner(self):
+		return self.data.get('partner', 'free')
+
 
 def load(f):
 	return Manifest(json.load(f))

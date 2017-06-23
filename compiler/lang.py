@@ -4,6 +4,7 @@ def value_is_trivial(value):
 	if isinstance(value, bool):
 		return True
 
+	assert not isinstance(value, unicode)
 	if value is None or not isinstance(value, str):
 		return False
 

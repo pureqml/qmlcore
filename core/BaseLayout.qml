@@ -13,10 +13,17 @@ Item {
 	///@private
 	constructor: {
 		this.count = 0
-		this._delayedLayout = new _globals.core.DelayedAction(this._context, function() {
-			this._processUpdates()
-			this._layout()
-		}.bind(this))
+	}
+
+	///@private
+	function _scheduleLayout() {
+		this._context.delayedAction('layout', this, this._doLayout)
+	}
+
+	///@private
+	function _doLayout() {
+		this._processUpdates()
+		this._layout()
 	}
 
 	///@private
@@ -25,6 +32,6 @@ Item {
 	onSpacingChanged,
 	onRecursiveVisibleChanged: {
 		if (this.recursiveVisible)
-			this._delayedLayout.schedule();
+			this._scheduleLayout()
 	}
 }

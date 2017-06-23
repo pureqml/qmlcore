@@ -10,13 +10,13 @@ Item {
 
 	///@private
 	constructor: {
-		var self = this
-		this._delayedLoad = new _globals.core.DelayedAction(this._context, function() {
-			self._load()
-		})
-
 		this._context.backend.initImage(this)
 		this.load()
+	}
+
+	///@private
+	function _scheduleLoad() {
+		this._context.delayedAction('image.load', this, this._load)
 	}
 
 	///@private
@@ -32,7 +32,7 @@ Item {
 	///@private
 	function load() {
 		this.status = (this.source.length === 0) ? Image.Null: Image.Loading
-		this._delayedLoad.schedule()
+		this._scheduleLoad()
 	}
 
 	onWidthChanged,

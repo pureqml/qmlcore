@@ -16,10 +16,11 @@ Item {
 	constructor: {
 		this._context.backend.initText(this)
 		this._setText(this.text)
-		var self = this
-		this._delayedUpdateSize = new _globals.core.DelayedAction(this._context, function() {
-			self._updateSizeImpl()
-		})
+	}
+
+	///@private
+	function _scheduleUpdateSize() {
+		this._context.delayedAction('text:update-size', this, this._updateSizeImpl)
 	}
 
 	///@private
@@ -75,7 +76,7 @@ Item {
 	///@private
 	function _updateSize() {
 		if (this.recursiveVisible && (this._updateSizeNeeded || this.clip))
-			this._delayedUpdateSize.schedule()
+			this._scheduleUpdateSize()
 	}
 
 	///@private

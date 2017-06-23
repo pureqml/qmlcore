@@ -110,6 +110,19 @@ Item {
 			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
 	}
 
+	///@private
+	function delayedAction(prefix, self, method) {
+		var name = '__delayed_' + prefix
+		if (self[name] === true)
+			return
+
+		self[name] = true
+		this.scheduleAction(function() {
+			method.call(self)
+			self[name] = false
+		})
+	}
+
 	/**@param text:string text that must be translated
 	Returns input text translation*/
 	function qsTr(text) {

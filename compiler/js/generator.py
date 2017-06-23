@@ -268,7 +268,7 @@ class generator(object):
 
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, app, context_type, prefix))
+		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, context_type, app, prefix))
 		startup.append('\tvar closure = {}\n')
 		startup.append('\tcontext.__create(closure)')
 		startup.append('\tcontext.__setup(closure)')

@@ -9,18 +9,18 @@ Layout {
 	///@private
 	onWidthChanged: {
 		if (this.flow == this.FlowTopToBottom)
-			this._delayedLayout.schedule()
+			this._scheduleLayout()
 	}
 
 	///@private
 	onHeightChanged: {
 		if (this.flow == this.FlowLeftToRight)
-			this._delayedLayout.schedule()
+			this._scheduleLayout()
 	}
 
 	///@private
 	onFlowChanged: {
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 
 	function getPosition(idx) {
@@ -236,18 +236,17 @@ Layout {
 	///@private
 	function addChild(child) {
 		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		var delayedLayout = this._delayedLayout
 		if (child instanceof _globals.core.Item) {
-			child.onChanged('height', delayedLayout.schedule.bind(delayedLayout))
-			child.onChanged('width', delayedLayout.schedule.bind(delayedLayout))
-			child.onChanged('recursiveVisible', delayedLayout.schedule.bind(delayedLayout))
-			child.anchors.on('marginsUpdated', delayedLayout.schedule.bind(delayedLayout))
+			child.onChanged('height', this._scheduleLayout.bind(this))
+			child.onChanged('width', this._scheduleLayout.bind(this))
+			child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
+			child.anchors.on('marginsUpdated', this._scheduleLayout.bind(this))
 		}
 	}
 
 	onHorizontalSpacingChanged,
 	onVerticalSpacingChanged,
 	onHorizontalAlignmentChanged: {
-		this._delayedLayout.schedule()
+		this._scheduleLayout()
 	}
 }

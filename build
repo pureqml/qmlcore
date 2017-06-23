@@ -311,6 +311,10 @@ def build(root, platform, apps, app, manifest):
 	if path.isdir(app_dist):
 		template_path.append(app_dist)
 
+	platform_dist = path.join(os.getcwd(), 'dist.platform.' + platform)
+	if path.isdir(platform_dist):
+		template_path.append(platform_dist)
+
 	project_dist = path.join(os.getcwd(), 'dist')
 	if path.isdir(project_dist):
 		template_path.append(project_dist)

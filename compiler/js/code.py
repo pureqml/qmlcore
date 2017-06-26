@@ -1,62 +1,5 @@
 import re
 
-def scan(text):
-	str_context = False
-	escape = False
-	c_comment = False
-	cpp_comment = False
-	begin = 0
-	invalid = []
-	for i in xrange(0, len(text)):
-		c = text[i]
-		if escape:
-			escape = False
-			continue
-
-		if cpp_comment:
-			if c == "\n":
-				cpp_comment = False
-				end = i
-				invalid.append((begin, end))
-				#print "cpp-comment", (begin, end), text[begin:end]
-			continue
-
-		if c_comment:
-			if text[i: i + 2] == "*/":
-				end = i + 2
-				c_comment = False
-				invalid.append((begin, end))
-				#print "c-comment", begin, end, text[begin:end]
-			continue
-
-		if str_context and c == "\\":
-			escape = True
-			continue
-
-		if c == "\"" or c == "'":
-			str_context = not str_context
-			if str_context:
-				begin = i
-			else:
-				end = i + 1
-				invalid.append((begin, end))
-				#print "string at %d:%d -> %s" %(begin, end, text[begin:end])
-			continue
-
-		if str_context:
-			continue
-
-		if text[i: i + 2] == "//":
-			begin = i
-			cpp_comment = True
-
-		if text[i: i + 2] == "/*":
-			c_comment = True
-			begin = i
-
-
-	return text, invalid
-
 enum_re = re.compile(r'([A-Z]\w*)\.([A-Z]\w*)')
 def replace_enums(text, generator, registry):
 	def replace_enum(m):
@@ -74,24 +17,19 @@ def replace_enums(text, generator, registry):
 id_re = re.compile(r'([_a-z]\w*)\.')
 def process(text, generator, registry):
 	id_set = registry.id_set
-	text, invalid = scan(text)
-	def replace_id(m):
-		pos = m.start(0)
-		name = m.group(1)
-		first = text[pos - 1] != "."
-		if first == '_globals':
-			return m.group(0)
-		if name in id_set:
-			ok = True
-			for b, e in invalid:
-				if pos >= b and pos < e:
-					ok = False
-					break
-			if ok:
-				return ("this." if first else "") + "_get('%s')." %name
-		return m.group(0)
+	used_ids = set()
+	for m in id_re.finditer(text):
+		found = m.group(1)
+		if found in id_set:
+			used_ids.add(found)
 
-	text = id_re.sub(replace_id, text)
+	if used_ids:
+		scope_pos = text.index('{') #raise exception, should be 0 actually
+		scope_pos += 1
+		prologue = ["%s = this._get('%s')" %(x, x) for x in used_ids]
+		prologue = '\n\tvar ' + ', '.join(prologue) + '\n'
+		text = text[:scope_pos] + prologue + text[scope_pos:]
+
 	text = replace_enums(text, generator, registry)
 	#print text
 	return text

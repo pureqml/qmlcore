@@ -286,7 +286,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					}
 				}
 				p.value = newValue
-				if ((!animation || !animation.running) && newValue == defaultValue)
+				if ((!animation || !animation.running) && newValue === defaultValue)
 					delete this[storageName]
 				if (!animation)
 					this._update(name, newValue, oldValue)

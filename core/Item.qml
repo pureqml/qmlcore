@@ -145,10 +145,6 @@ Object {
 		child.recursiveVisible = value && child.visible && child.visibleInView
 	}
 
-	onVisibleInViewChanged: {
-		this._updateVisibility()
-	}
-
 	onRecursiveVisibleChanged: {
 		this.children.forEach(function(child) {
 			child.recursiveVisible = value && child.visible && child.visibleInView
@@ -158,7 +154,8 @@ Object {
 			this.parent._tryFocus()
 	}
 
-	onVisibleChanged:	{ this._updateVisibility() }
+	onVisibleChanged:		{ this._updateVisibility() }
+	onVisibleInViewChanged:	{ this._updateVisibility() }
 
 	onWidthChanged: 	{ this.style('width', value); this.boxChanged() }
 	onHeightChanged:	{ this.style('height', value - this._topPadding); this.boxChanged() }

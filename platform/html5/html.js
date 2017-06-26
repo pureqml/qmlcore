@@ -520,8 +520,14 @@ exports.layoutText = function(text) {
 		}
 	}
 
+	var removedChildren = []
+
 	text.children.forEach(function(child) {
-		dom.removeChild(child.element.dom)
+		var childNode = child.element.dom
+		if (childNode.parentNode === dom) {
+			dom.removeChild(childNode)
+			removedChildren.push(childNode)
+		}
 	})
 
 	if (!wrap)
@@ -544,8 +550,8 @@ exports.layoutText = function(text) {
 
 	layoutTextSetStyle(text, style)
 
-	text.children.forEach(function(child) {
-		dom.appendChild(child.element.dom)
+	removedChildren.forEach(function(child) {
+		dom.appendChild(child)
 	})
 }
 

@@ -119,7 +119,6 @@ Layout {
 		this.count = children.length
 		var rows = []
 		var tempRows = []
-		var itemsInRow = 0
 		this._rows = []
 		rows.push({idx: 0, size: 0}) //starting value
 		var horizontal = this.flow == this.FlowLeftToRight

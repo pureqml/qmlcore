@@ -229,6 +229,8 @@ BaseView {
 		if (itemsCount)
 			p *= items.length / itemsCount
 
+		if (this.trace)
+			log('result: ' + p + ', max: ' + maxW + 'x' + maxH)
 		if (horizontal) {
 			this.content.width = p
 			this.content.height = maxH

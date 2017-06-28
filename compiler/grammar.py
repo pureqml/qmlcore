@@ -69,13 +69,7 @@ def handle_method_declaration(s, l, t):
 	else:
 		names, args, code = t[1], t[2], t[3]
 
-	if 'constructor' in list(names): #pyparsing 'in' does not work here
-		if len(names) != 1:
-			raise Exception('you cannot enumerate methods with constructor keyword')
-		assert names[0] == 'constructor'
-		return lang.Constructor(args, code)
-	else:
-		return component(lang.Method(names, args, code, event_handler))
+	return component(lang.Method(names, args, code, event_handler))
 
 def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t

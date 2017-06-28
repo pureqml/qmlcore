@@ -127,12 +127,15 @@ class component_generator(object):
 				self.animations[target] = value
 		elif t is lang.Method:
 			for name in child.name:
-				fullname, args, code = split_name(name), child.args, child.code
-				if fullname in self.methods:
-					raise Exception("duplicate method " + name)
-				self.methods[fullname] = args, code, child.event #fixme: fix code duplication here
-		elif t is lang.Constructor:
-			self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
+				if name == 'constructor':
+					if self.ctor != '':
+						raise Exception("duplicate constructor")
+					self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
+				else:
+					fullname, args, code = split_name(name), child.args, child.code
+					if fullname in self.methods:
+						raise Exception("duplicate method " + name)
+					self.methods[fullname] = args, code, child.event #fixme: fix code duplication here
 		elif t is lang.Signal:
 			name = child.name
 			if name in self.signals:

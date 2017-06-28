@@ -83,13 +83,6 @@ class EnumProperty(Entity):
 		self.values = values
 		self.default = default
 
-class Constructor(Entity):
-	def __init__(self, args, code):
-		super(Constructor, self).__init__()
-		if len(args) != 0:
-			raise Exception("no arguments for constructor allowed")
-		self.code = code
-
 class Method(Entity):
 	def __init__(self, name, args, code, event):
 		super(Method, self).__init__()

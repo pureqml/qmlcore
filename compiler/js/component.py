@@ -553,6 +553,6 @@ class component_generator(object):
 			r.append("%s%s.addChild(%s)" %(ident, parent, var));
 
 		if self.elements:
-			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements)))
+			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements, sort_keys=True)))
 
 		return "\n".join(r)

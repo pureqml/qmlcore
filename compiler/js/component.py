@@ -28,6 +28,7 @@ class component_generator(object):
 		self.id = None
 		self.prototype = prototype
 		self.ctor = ''
+		self.prototype_ctor = ''
 
 		for child in component.children:
 			self.add_child(child)
@@ -131,6 +132,12 @@ class component_generator(object):
 					if self.ctor != '':
 						raise Exception("duplicate constructor")
 					self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
+				elif name == 'prototypeConstructor':
+					if not self.prototype:
+						raise Exception('prototypeConstructor can be used only in prototypes')
+					if self.prototype_ctor != '':
+						raise Exception("duplicate constructor")
+					self.prototype_ctor = child.code
 				else:
 					fullname, args, code = split_name(name), child.args, child.code
 					if fullname in self.methods:
@@ -280,6 +287,8 @@ class component_generator(object):
 		base_type = self.get_base_type(registry)
 
 		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
+		if self.prototype_ctor:
+			r.append("\t__prototype$ctors.push(function() {\n\tvar prototype = %s\n\t%s\n\t})\n" %(self.proto_name, self.prototype_ctor))
 		r.append("%s%s.constructor = %s\n" %(ident, self.proto_name, self.local_name))
 
 		r.append("%s%s.componentName = '%s'" %(ident, self.proto_name, self.name))

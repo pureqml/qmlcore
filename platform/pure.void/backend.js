@@ -129,6 +129,10 @@ exports.layoutText = function(text) {
 	text.element.layoutText()
 }
 
+exports.setText = function(text, html) {
+	text.element.setHtml(html)
+}
+
 exports.requestAnimationFrame = function(callback) {
 	return setTimeout(callback, 0)
 }

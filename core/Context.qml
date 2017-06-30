@@ -145,11 +145,11 @@ Item {
 
 	///@private
 	function _run() {
-		log('Context: calling completed()')
-		this._complete()
 		log('Context: signalling layout')
 		this.visibleInView = true
 		this.boxChanged()
+		log('Context: calling completed()')
+		this._complete()
 		this._completed = true
 		this._processActions()
 	}

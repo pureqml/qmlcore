@@ -53,10 +53,11 @@ Object {
 			return;
 
 		//log("starting timer", this.interval, this.repeat);
-		var self = this;
+		var self = this
+		var context = self._context
 		if (this.repeat)
-			this._interval = setInterval(function() { self.triggered(); }, this.interval);
+			this._interval = setInterval(function() { self.triggered(); context._processActions(); }, this.interval);
 		else
-			this._timeout = setTimeout(function() { self.triggered(); }, this.interval);
+			this._timeout = setTimeout(function() { self.triggered(); context._processActions(); }, this.interval);
 	}
 }

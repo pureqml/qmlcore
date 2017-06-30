@@ -69,7 +69,6 @@ Item {
 	///@private
 	function _complete() {
 		this._processActions()
-		this._completed = true
 	}
 
 	///@private
@@ -82,9 +81,6 @@ Item {
 		log('Context: created instance')
 		this._started = true
 		// log('Context: calling on completed')
-		log('Context: signalling layout')
-		this.boxChanged()
-		log('Context: done')
 		return instance;
 	}
 
@@ -109,8 +105,10 @@ Item {
 	///@private
 	function scheduleAction(action) {
 		this._delayedActions.push(action)
-		if (this._completed && this._delayedTimeout === undefined)
+		if (this._completed && this._delayedTimeout === undefined) {
+			//log('scheduling delayed actions timeout', new Error().stack)
 			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
+		}
 	}
 
 	///@private
@@ -149,6 +147,10 @@ Item {
 	function _run() {
 		log('Context: calling completed()')
 		this._complete()
+		log('Context: signalling layout')
 		this.visibleInView = true
+		this.boxChanged()
+		this._completed = true
+		this._processActions()
 	}
 }

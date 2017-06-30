@@ -254,7 +254,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				var nextFrame = function() {
 					var now = Date.now()
 					var t = 1.0 * (now - p.started) / duration
-					if (t >= 1) {
+					if (t >= 1 || !animation.active()) {
 						complete()
 					} else {
 						p.interpolatedValue = convert(animation.interpolate(dst, src, t))

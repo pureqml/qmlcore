@@ -24,10 +24,15 @@ Object {
 	onRunningChanged,
 	onEasingChanged: { this._updateAnimation() }
 
+	function active() {
+		return this.enabled() && this.duration > 0 && this.running
+	}
+
 	function _updateAnimation() {
 		var parent = this.parent
-		if (this._target && parent && parent._updateAnimation)
-			parent._updateAnimation(this._target, this.enabled() && this.duration > 0 ? this: null)
+		if (this._target && parent && parent._updateAnimation) {
+			parent._updateAnimation(this._target, this.active() ? this: null)
+		}
 	}
 
 	/// @private

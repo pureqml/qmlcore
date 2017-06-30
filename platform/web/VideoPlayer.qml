@@ -127,6 +127,9 @@ Item {
 		}
 	}
 
+	///stop video
+	stop: { this.pause() }
+
 	///pause video
 	pause: {
 		if (!this.flash) {

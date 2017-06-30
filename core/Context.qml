@@ -105,10 +105,6 @@ Item {
 	///@private
 	function scheduleAction(action) {
 		this._delayedActions.push(action)
-		if (this._completed && this._delayedTimeout === undefined) {
-			//log('scheduling delayed actions timeout', new Error().stack)
-			this._delayedTimeout = setTimeout(this._processActions.bind(this), 0)
-		}
 	}
 
 	///@private

@@ -94,10 +94,6 @@ Object {
 		var css = this._mapCSSAttribute(name)
 
 		if (css !== undefined) {
-			if (!animation)
-				throw new Error('resetting transition was not implemented')
-
-			animation._target = name
 			return this.setTransition(css, animation)
 		} else {
 			return false
@@ -106,6 +102,7 @@ Object {
 
 	///@private sets animation on given property
 	function setAnimation(name, animation) {
+		animation._target = name
 		if (!this._updateAnimation(name, animation))
 			_globals.core.Object.prototype.setAnimation.apply(this, arguments);
 	}
@@ -270,14 +267,23 @@ Object {
 
 		var idx = property.indexOf(name)
 		if (idx === -1) { //if property not set
-			property.push(name)
-			duration.push(animation.duration + 'ms')
-			timing.push(animation.easing)
-			delay.push(animation.delay + 'ms')
+			if (animation) {
+				property.push(name)
+				duration.push(animation.duration + 'ms')
+				timing.push(animation.easing)
+				delay.push(animation.delay + 'ms')
+			}
 		} else { //property already set, adjust the params
-			duration[idx] = animation.duration + 'ms'
-			timing[idx] = animation.easing
-			delay[idx] = animation.delay + 'ms'
+			if (animation) {
+				duration[idx] = animation.duration + 'ms'
+				timing[idx] = animation.easing
+				delay[idx] = animation.delay + 'ms'
+			} else {
+				property.splice(idx, 1)
+				duration.splice(idx, 1)
+				timing.splice(idx, 1)
+				delay.splice(idx, 1)
+			}
 		}
 
 		var style = {}

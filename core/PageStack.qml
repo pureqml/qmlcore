@@ -23,6 +23,9 @@ Layout {
 	/// @private
 	function _layout() {
 		this.count = this.children.length;
+		if (this.trace)
+			log('laying out ' + this.count + ' children in ' + this.width + 'x' + this.height)
+
 		for (var i = 0; i < this.count; ++i)
 			this.children[i].visibleInView = (i == this.currentIndex);
 

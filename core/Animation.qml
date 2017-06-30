@@ -27,7 +27,7 @@ Object {
 	function _updateAnimation() {
 		var parent = this.parent
 		if (this._target && parent && parent._updateAnimation)
-			parent._updateAnimation(this._target, this.enabled() ? this: null)
+			parent._updateAnimation(this._target, this.enabled() && this.duration > 0 ? this: null)
 	}
 
 	/// @private

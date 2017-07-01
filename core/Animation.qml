@@ -11,9 +11,9 @@ Object {
 
 	constructor:	{ this._disabled = 0 }
 	/// disable animation.
-	disable:		{ ++this._disabled }
+	disable:		{ ++this._disabled; this._updateAnimation() }
 	/// enable animation.
-	enable:			{ --this._disabled }
+	enable:			{ --this._disabled; this._updateAnimation() }
 	/// returns true if animation is enabled
 	enabled:		{ return this._disabled == 0 }
 

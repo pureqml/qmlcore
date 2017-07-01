@@ -476,6 +476,7 @@ exports.initImage = function(image) {
 		image.style(style)
 
 		image.status = image.Ready
+		image._context._processActions()
 	}
 }
 

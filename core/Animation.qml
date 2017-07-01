@@ -25,11 +25,12 @@ Object {
 	onEasingChanged: { this._updateAnimation() }
 
 	function active() {
-		return this.enabled() && this.duration > 0 && this.running
+		return this.enabled() && this.duration > 0
 	}
 
 	function _updateAnimation() {
 		var parent = this.parent
+		this.running = this.active()
 		if (this._target && parent && parent._updateAnimation) {
 			parent._updateAnimation(this._target, this.active() ? this: null)
 		}

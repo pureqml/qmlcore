@@ -228,7 +228,8 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 			var animation = this.getAnimation(name)
 			if (animation && p.value !== newValue) {
-				var backend = this._context.backend
+				var context = this._context
+				var backend = context.backend
 				if (p.frameRequest)
 					backend.cancelAnimationFrame(p.frameRequest)
 
@@ -261,6 +262,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 						self._update(name, p.interpolatedValue, src)
 						p.frameRequest = backend.requestAnimationFrame(nextFrame)
 					}
+					context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code
 				}
 
 				p.frameRequest = backend.requestAnimationFrame(nextFrame)

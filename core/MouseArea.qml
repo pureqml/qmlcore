@@ -139,9 +139,8 @@ Item {
 		if (!this.recursiveVisible)
 			return false
 
-		var box = this.toScreen()
-		var x = event.clientX - box[0]
-		var y = event.clientY - box[1]
+		var x = event.offsetX
+		var y = event.offsetY
 
 		if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
 			this.mouseX = x

@@ -14,10 +14,8 @@ Object {
 	/// @private
 	function _updatePosition(event) {
 		var parent = this.parent
-		var box = parent.toScreen()
-		var x = event.clientX - box[0]
-		var y = event.clientY - box[1]
-
+		var x = event.offsetX
+		var y = event.offsetY
 		if (x >= 0 && y >= 0 && x < parent.width && y < parent.height) {
 			this.mouseX = x
 			this.mouseY = y

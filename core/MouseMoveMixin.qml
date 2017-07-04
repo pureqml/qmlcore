@@ -28,15 +28,15 @@ Object {
 
 	/// @private
 	function _bindMove(value) {
-		if (value && !this._mmmPressBinder) {
-			this._mmmPressBinder = new _globals.core.EventBinder(this.element)
-			this._mmmPressBinder.on('mousemove', function(event) {
+		if (value && !this._mouseMoveBinder) {
+			this._mouseMoveBinder = new _globals.core.EventBinder(this.element)
+			this._mouseMoveBinder.on('mousemove', function(event) {
 				if (!this._updatePosition(event))
 					event.preventDefault()
 			}.bind(this))
 		}
-		if (this._mmmPressBinder)
-			this._mmmPressBinder.enable(value)
+		if (this._mouseMoveBinder)
+			this._mouseMoveBinder.enable(value)
 	}
 
 	onEnabledChanged: {

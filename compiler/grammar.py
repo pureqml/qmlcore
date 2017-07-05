@@ -295,8 +295,8 @@ ParserElement.enablePackrat()
 
 def parse(data):
 	global doc_root_component
-        doc_root_component = None
+	doc_root_component = None
 	tree = source.parseString(data, parseAll = True)
-        if len(tree) > 0:
-                tree[0].doc = doc_root_component
+	if len(tree) > 0:
+		tree[0].doc = doc_root_component
 	return tree

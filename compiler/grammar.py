@@ -157,14 +157,16 @@ def handle_string(s, l, t):
 
 quoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
-	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True)
+	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True) | \
+	QuotedString("`", escChar='\\', unquoteResults = False, multiline=True)
 quoted_string_value.setParseAction(handle_string)
 
 code = originalTextFor(nestedExpr("{", "}", ignoreExpr=(quoted_string_value | cStyleComment | cppStyleComment)))
 
 unquoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = True, multiline=True) | \
-	QuotedString("'", escChar='\\', unquoteResults = True, multiline=True)
+	QuotedString("'", escChar='\\', unquoteResults = True, multiline=True) | \
+	QuotedString("`", escChar='\\', unquoteResults = True, multiline=True)
 quoted_string_value.setParseAction(handle_string)
 
 enum_element = Word(srange("[A-Z_]"), alphanums)

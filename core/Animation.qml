@@ -25,7 +25,7 @@ Object {
 	onEasingChanged: { this._updateAnimation() }
 
 	function active() {
-		return this.enabled() && this.duration > 0 && this.running
+		return this.enabled() && this.duration > 0
 	}
 
 	function _updateAnimation() {

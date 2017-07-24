@@ -336,7 +336,14 @@ Object {
 	///@private
 	function _processKey(event) {
 		var key = _globals.core.keyCodes[event.which || event.keyCode];
-		if (key) {
+		if (key && !this._processing) {
+
+			if (this._context.keyProcessDelay) {
+				this._processing = true
+				var self = this
+				setTimeout(function() { self._processing = false }, 300)
+			}
+
 			//fixme: create invoker only if any of handlers exist
 			var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 			var proto_callback = this['__key__' + key]

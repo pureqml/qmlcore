@@ -341,7 +341,7 @@ Object {
 			if (this._context.keyProcessDelay) {
 				this._processing = true
 				var self = this
-				setTimeout(function() { self._processing = false }, 300)
+				setTimeout(function() { self._processing = false }, this._context.keyProcessDelay)
 			}
 
 			//fixme: create invoker only if any of handlers exist

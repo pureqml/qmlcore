@@ -360,8 +360,9 @@ Object {
 
 			if (proto_callback)
 				return this.invokeKeyHandlers(key, proto_callback, invoker)
-		}
-		else {
+		} else if (this._processing) {
+			return true;
+		} else {
 			log("unknown key", event.which);
 		}
 		return false;

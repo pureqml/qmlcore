@@ -8,31 +8,57 @@ BaseLayout {
 	///move focus to the next child
 	focusNextChild: {
 		var idx = 0;
+		var children = this.children
 		if (this.focusedChild)
-			idx = this.children.indexOf(this.focusedChild)
+			idx = children.indexOf(this.focusedChild)
 
-		if (!this.keyNavigationWraps && idx == this.children.length - 1)
+		for (var i = idx + 1; i < children.length; ++i) {
+			if (children[i]._tryFocus()) {
+				this.currentIndex = i
+				return true
+			}
+		}
+
+		if (!this.keyNavigationWraps)
 			return false
 
-		idx = (idx + 1) % this.children.length
-		this.currentIndex = idx
-		this.focusChild(this.children[idx])
-		return true
+		for (var i = 0; i <= idx; ++i) {
+			if (children[i]._tryFocus()) {
+				this.currentIndex = i
+				return true
+			}
+		}
+
+		return false
 	}
 
 	///move focus to the previous child
 	focusPrevChild: {
 		var idx = 0;
+		var children = this.children
 		if (this.focusedChild)
-			idx = this.children.indexOf(this.focusedChild)
+			idx = children.indexOf(this.focusedChild)
 
-		if (!this.keyNavigationWraps && idx == 0)
+		for (var i = idx - 1; i >= 0; --i) {
+			if (children[i]._tryFocus()) {
+				this.currentIndex = i
+				return true
+			}
+		}
+
+		if (!this.keyNavigationWraps)
 			return false
 
-		idx = (idx + this.children.length - 1) % this.children.length
-		this.currentIndex = idx
-		this.focusChild(this.children[idx])
-		return true
+		var last = children.length - 1
+		for (var i = last; i >= idx; --i) {
+			if (children[i]._tryFocus()) {
+				this.currentIndex = i
+				return true
+			}
+		}
+
+		return false
+
 	}
 
 	onCurrentIndexChanged: { this.focusChild(this.children[value]) }

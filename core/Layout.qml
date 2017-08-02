@@ -15,6 +15,7 @@ BaseLayout {
 		for (var i = idx + 1; i < children.length; ++i) {
 			if (children[i]._tryFocus()) {
 				this.currentIndex = i
+				this.focusChild(this.children[i])
 				return true
 			}
 		}
@@ -25,6 +26,7 @@ BaseLayout {
 		for (var i = 0; i <= idx; ++i) {
 			if (children[i]._tryFocus()) {
 				this.currentIndex = i
+				this.focusChild(this.children[i])
 				return true
 			}
 		}
@@ -42,6 +44,7 @@ BaseLayout {
 		for (var i = idx - 1; i >= 0; --i) {
 			if (children[i]._tryFocus()) {
 				this.currentIndex = i
+				this.focusChild(this.children[i])
 				return true
 			}
 		}
@@ -53,6 +56,7 @@ BaseLayout {
 		for (var i = last; i >= idx; --i) {
 			if (children[i]._tryFocus()) {
 				this.currentIndex = i
+				this.focusChild(this.children[i])
 				return true
 			}
 		}

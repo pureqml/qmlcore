@@ -116,8 +116,8 @@ Item {
 
 		self[name] = true
 		this.scheduleAction(function() {
-			method.call(self)
 			self[name] = false
+			method.call(self)
 		})
 	}
 

@@ -343,8 +343,9 @@ ElementPrototype.updateStyle = function() {
 		this._class = cls
 		if (cls !== '')
 			classList.add(cls)
+	} else {
+		this.dom.setAttribute('style', rules.join(';'))
 	}
-	this.dom.setAttribute('style', rules.join(';'))
 }
 
 ElementPrototype.append = function(el) {

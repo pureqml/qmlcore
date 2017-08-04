@@ -380,7 +380,8 @@ exports.init = function(ctx) {
 		var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 		ctx.fullscreen = state
 	}
-	'webkitfullscreenchange mozfullscreenchange fullscreenchange'.split(' ').forEach(function(name) {
+
+	['webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange'].forEach(function(name) {
 		div.on(name, onFullscreenChanged)
 	})
 

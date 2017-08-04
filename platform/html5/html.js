@@ -381,7 +381,7 @@ exports.init = function(ctx) {
 		ctx.fullscreen = state
 	}
 
-	['webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange'].forEach(function(name) {
+	new Array('webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange').forEach(function(name) {
 		div.on(name, onFullscreenChanged)
 	})
 

@@ -315,7 +315,7 @@ ElementPrototype.updateStyle = function(updated) {
 
 	var cache = this._context._styleClassifier
 	var rules = []
-	for(var name in this._styles) {
+	for(var name in updated) {
 		var value = this._styles[name]
 
 		var prefixedName = getPrefixedName(name)
@@ -332,14 +332,16 @@ ElementPrototype.updateStyle = function(updated) {
 		}
 		value += unit
 
-		//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
-		//var prefixedValue = value
-		var rule = ruleName + ':' + value //+ (prefixedValue !== false? prefixedValue: value)
-
-		if (cache)
+		if (cache) {
+			//fixme: revive classifier here
+			//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
+			//var prefixedValue = value
+			var rule = ruleName + ':' + value //+ (prefixedValue !== false? prefixedValue: value)
 			cache.add(rule)
-
-		rules.push(rule)
+			rules.push(rule)
+		} else {
+			element.style[ruleName] = value
+		}
 	}
 	var cls = cache? cache.classify(rules): ''
 	if (cls !== this._class) {
@@ -349,9 +351,10 @@ ElementPrototype.updateStyle = function(updated) {
 		this._class = cls
 		if (cls !== '')
 			classList.add(cls)
-	} else {
-		this.dom.setAttribute('style', rules.join(';'))
 	}
+
+	//set style attribute
+	//element.setAttribute('style', rules.join(';'))
 }
 
 ElementPrototype.append = function(el) {

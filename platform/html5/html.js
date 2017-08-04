@@ -11,6 +11,35 @@ exports.createAddRule = function(style) {
 	}
 }
 
+var StyleCache = function() {
+	this._cache = {}
+}
+
+var StyleCachePrototype = StyleCache.prototype
+StyleCachePrototype.constructor = StyleCache
+
+StyleCachePrototype.update = function(element, name) {
+	//log('update', element._uniqueId, name)
+	var cache = this._cache
+	var id = element._uniqueId
+	if (id in cache) {
+		cache[id].data[name] = true
+	} else {
+		var data = {}
+		data[name] = true
+		var entry = {data: data, element: element}
+		cache[id] = entry
+	}
+}
+
+StyleCachePrototype.apply = function(element) {
+
+}
+
+StyleCachePrototype.applyAll = function() {
+
+}
+
 var StyleClassifier = function (prefix) {
 	var style = document.createElement('style')
 	style.type = 'text/css'
@@ -24,8 +53,8 @@ var StyleClassifier = function (prefix) {
 	this.classes_total = 0
 	this._addRule = exports.createAddRule(style)
 }
-var StyleClassifierPrototype = StyleClassifier.prototype
 
+var StyleClassifierPrototype = StyleClassifier.prototype
 StyleClassifierPrototype.constructor = StyleClassifier
 
 StyleClassifierPrototype.add = function(rule) {
@@ -196,11 +225,13 @@ ElementPrototype.fullHeight = function() {
 }
 
 ElementPrototype.style = function(name, style) {
+	var cache = this._context._styleCache
 	if (style !== undefined) {
 		if (style !== '') //fixme: replace it with explicit 'undefined' syntax
 			this._styles[name] = style
 		else
 			delete this._styles[name]
+		cache.update(this, name)
 		this.updateStyle()
 	} else if (name instanceof Object) { //style({ }) assignment
 		for(var k in name) {
@@ -209,6 +240,7 @@ ElementPrototype.style = function(name, style) {
 				this._styles[k] = value
 			else
 				delete this._styles[k]
+			cache.update(this, k)
 		}
 		this.updateStyle()
 	}
@@ -332,6 +364,7 @@ exports.getElement = function(tag) {
 }
 
 exports.init = function(ctx) {
+	ctx._styleCache = new StyleCache()
 	var options = ctx.options
 	var prefix = ctx._prefix
 	var divId = options.id

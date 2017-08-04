@@ -34,12 +34,17 @@ StyleCachePrototype.update = function(element, name) {
 
 StyleCachePrototype._apply = function(entry) {
 	//fixme: make updateStyle incremental using entry.data object
-	entry.element.updateStyle()
+	entry.element.updateStyle(entry.data)
 }
 
-StyleCachePrototype.cancel = function(element) {
+StyleCachePrototype.pop = function(element) {
 	var id = element._uniqueId
+	var data = this._cache[id]
+	if (data === undefined)
+		return
+
 	delete this._cache[id]
+	return data.data
 }
 
 StyleCachePrototype.apply = function(element) {
@@ -278,12 +283,13 @@ ElementPrototype.setAttribute = function(name, value) {
 	this.dom.setAttribute(name, value)
 }
 
-ElementPrototype.updateStyle = function() {
+ElementPrototype.updateStyle = function(updated) {
 	var element = this.dom
 	if (!element)
 		return
 
-	this._context._styleCache.cancel(this)
+	if (updated === undefined)
+		updated = this._context._styleCache.pop(this)
 
 	/** @const */
 	var cssUnits = {

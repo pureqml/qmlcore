@@ -33,8 +33,13 @@ StyleCachePrototype.update = function(element, name) {
 }
 
 StyleCachePrototype._apply = function(entry) {
-	//fixme: make updateStyle incremental
+	//fixme: make updateStyle incremental using entry.data object
 	entry.element.updateStyle()
+}
+
+StyleCachePrototype.cancel = function(element) {
+	var id = element._uniqueId
+	delete this._cache[id]
 }
 
 StyleCachePrototype.apply = function(element) {
@@ -46,7 +51,6 @@ StyleCachePrototype.apply = function(element) {
 	if (entry === undefined)
 		return
 
-	delete cache[id]
 	this._apply(entry)
 }
 
@@ -229,18 +233,22 @@ ElementPrototype.setHtml = function(html) {
 }
 
 ElementPrototype.width = function() {
+	this.updateStyle()
 	return this.dom.clientWidth - this._widthAdjust
 }
 
 ElementPrototype.height = function() {
+	this.updateStyle()
 	return this.dom.clientHeight
 }
 
 ElementPrototype.fullWidth = function() {
+	this.updateStyle()
 	return this.dom.scrollWidth - this._widthAdjust
 }
 
 ElementPrototype.fullHeight = function() {
+	this.updateStyle()
 	return this.dom.scrollHeight
 }
 
@@ -252,7 +260,6 @@ ElementPrototype.style = function(name, style) {
 		else
 			delete this._styles[name]
 		cache.update(this, name)
-		this.updateStyle()
 	} else if (name instanceof Object) { //style({ }) assignment
 		for(var k in name) {
 			var value = name[k]
@@ -262,7 +269,6 @@ ElementPrototype.style = function(name, style) {
 				delete this._styles[k]
 			cache.update(this, k)
 		}
-		this.updateStyle()
 	}
 	else
 		return this._styles[name]
@@ -276,6 +282,8 @@ ElementPrototype.updateStyle = function() {
 	var element = this.dom
 	if (!element)
 		return
+
+	this._context._styleCache.cancel(this)
 
 	/** @const */
 	var cssUnits = {
@@ -627,7 +635,7 @@ exports.run = function(ctx, onloadCallback) {
 
 exports.tick = function(ctx) {
 	//log('tick')
-	//ctx._styleCache.applyAll()
+	ctx._styleCache.applyAll()
 }
 
 var Modernizr = window.Modernizr

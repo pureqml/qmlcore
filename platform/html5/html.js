@@ -11,7 +11,7 @@ exports.createAddRule = function(style) {
 	}
 }
 
-var StyleCache = function (prefix) {
+var StyleClassifier = function (prefix) {
 	var style = document.createElement('style')
 	style.type = 'text/css'
 	document.head.appendChild(style)
@@ -24,16 +24,16 @@ var StyleCache = function (prefix) {
 	this.classes_total = 0
 	this._addRule = exports.createAddRule(style)
 }
-var StyleCachePrototype = StyleCache.prototype
+var StyleClassifierPrototype = StyleClassifier.prototype
 
-StyleCachePrototype.constructor = StyleCache
+StyleClassifierPrototype.constructor = StyleClassifier
 
-StyleCachePrototype.add = function(rule) {
+StyleClassifierPrototype.add = function(rule) {
 	this.stats[rule] = (this.stats[rule] || 0) + 1
 	++this.total
 }
 
-StyleCachePrototype.register = function(rules) {
+StyleClassifierPrototype.register = function(rules) {
 	var rule = rules.join(';')
 	var classes = this.classes
 	var cls = classes[rule]
@@ -45,7 +45,7 @@ StyleCachePrototype.register = function(rules) {
 	return cls
 }
 
-StyleCachePrototype.classify = function(rules) {
+StyleClassifierPrototype.classify = function(rules) {
 	var total = this.total
 	if (total < 10) //fixme: initial population threshold
 		return ''
@@ -135,10 +135,10 @@ exports.Element = function(context, tag) {
 		this.dom = tag
 
 	if (exports.autoClassify) {
-		if (!context._styleCache)
-			context._styleCache = new StyleCache(context._prefix)
+		if (!context._styleClassifier)
+			context._styleClassifier = new StyleClassifier(context._prefix)
 	} else
-		context._styleCache = null
+		context._styleClassifier = null
 
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
@@ -247,7 +247,7 @@ ElementPrototype.updateStyle = function() {
 		'padding': 'px'
 	}
 
-	var cache = this._context._styleCache
+	var cache = this._context._styleClassifier
 	var rules = []
 	for(var name in this._styles) {
 		var value = this._styles[name]

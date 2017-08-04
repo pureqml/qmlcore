@@ -167,6 +167,8 @@ EventEmitter {
 
 	///@private gets animation on given property
 	function getAnimation (name, animation) {
+		if (!this._context._completed)
+			return null
 		var a = this._animations[name]
 		return (a !== undefined && a.enabled())? a:  null;
 	}

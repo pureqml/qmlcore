@@ -43,7 +43,7 @@ StyleCachePrototype.pop = function(element) {
 		return
 
 	delete this._cache[id]
-	return data.data
+	return data
 }
 
 StyleCachePrototype.apply = function() {
@@ -52,7 +52,7 @@ StyleCachePrototype.apply = function() {
 
 	for(var id in cache) {
 		var entry = cache[id]
-		entry.element.updateStyle(entry.data)
+		entry.element.updateStyle(entry)
 	}
 }
 
@@ -299,8 +299,15 @@ ElementPrototype.updateStyle = function(updated) {
 		this._populateStyle = false
 		updated = this._styles
 		populate = true
-	} else if (updated === undefined)
-		updated = this._context._styleCache.pop(this)
+	} else {
+		if (updated === undefined) {
+			updated = this._context._styleCache.pop(this)
+			if (updated === undefined) //no update at all
+				return
+		}
+		updated = updated.data
+	}
+
 
 	var cache = this._context._styleClassifier
 	var rules = []

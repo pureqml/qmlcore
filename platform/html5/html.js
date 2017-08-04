@@ -1,5 +1,7 @@
 /*** @using { core.RAIIEventEmitter } **/
 
+exports.autoClassify = false
+
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
@@ -164,8 +166,6 @@ exports.loadExternalStylesheet = function(url) {
 		_loadedStylesheets[url] = true
 	}
 }
-
-exports.autoClassify = false
 
 var lastId = 0
 

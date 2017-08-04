@@ -1,6 +1,7 @@
 /*** @using { core.RAIIEventEmitter } **/
 
 exports.autoClassify = false
+var populateStyleThreshold = 2
 
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
@@ -193,7 +194,6 @@ exports.Element = function(context, tag) {
 	this._widthAdjust = 0
 	this._uniqueId = String(++lastId)
 	this._firstChildIndex = 0
-	this._populateStyle = true
 
 	registerGenericListener(this)
 }
@@ -295,19 +295,20 @@ ElementPrototype.updateStyle = function(updated) {
 		return
 
 	var populate = false
-	if (this._populateStyle) {
-		this._populateStyle = false
+
+	if (updated === undefined) {
+		updated = this._context._styleCache.pop(this)
+		if (updated === undefined) //no update at all
+			return
+	}
+	//log('styles updated:', updated.size, ', threshold', populateStyleThreshold)
+	if (updated.size <= populateStyleThreshold) {
+		updated = updated.data
+	} else {
+		//fallback to old setAttribute('style') strategy
 		updated = this._styles
 		populate = true
-	} else {
-		if (updated === undefined) {
-			updated = this._context._styleCache.pop(this)
-			if (updated === undefined) //no update at all
-				return
-		}
-		updated = updated.data
 	}
-
 
 	var cache = this._context._styleClassifier
 	var rules = []

@@ -88,7 +88,7 @@ Object {
 
 	///@private tries to set animation on name using css transitions, returns true on success
 	function _updateAnimation(name, animation) {
-		if (!this._context.backend.capabilities.csstransitions || (animation && !animation.cssTransition))
+		if (!this._context.backend.capabilities.csstransitions || (animation && !animation.cssTransition) || !this._context._completed)
 			return false
 
 		var css = this._mapCSSAttribute(name)

@@ -206,6 +206,7 @@ exports.Element = function(context, tag) {
 	this._widthAdjust = 0
 	this._uniqueId = String(++lastId)
 	this._firstChildIndex = 0
+	this._populateStyle = true
 
 	registerGenericListener(this)
 }
@@ -306,7 +307,12 @@ ElementPrototype.updateStyle = function(updated) {
 	if (!element)
 		return
 
-	if (updated === undefined)
+	var populate = false
+	if (this._populateStyle) {
+		this._populateStyle = false
+		updated = this._styles
+		populate = true
+	} else if (updated === undefined)
 		updated = this._context._styleCache.pop(this)
 
 	var cache = this._context._styleClassifier
@@ -328,12 +334,13 @@ ElementPrototype.updateStyle = function(updated) {
 		}
 		value += unit
 
-		if (cache) {
+		if (populate) {
 			//fixme: revive classifier here
 			//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
 			//var prefixedValue = value
 			var rule = ruleName + ':' + value //+ (prefixedValue !== false? prefixedValue: value)
-			cache.add(rule)
+			if (cache)
+				cache.add(rule)
 			rules.push(rule)
 		} else {
 			element.style[ruleName] = value
@@ -350,7 +357,8 @@ ElementPrototype.updateStyle = function(updated) {
 	}
 
 	//set style attribute
-	//element.setAttribute('style', rules.join(';'))
+	if (populate)
+		element.setAttribute('style', rules.join(';'))
 }
 
 ElementPrototype.append = function(el) {

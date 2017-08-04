@@ -283,6 +283,28 @@ ElementPrototype.setAttribute = function(name, value) {
 	this.dom.setAttribute(name, value)
 }
 
+/** @const */
+var cssUnits = {
+	'left': 'px',
+	'top': 'px',
+	'width': 'px',
+	'height': 'px',
+
+	'border-radius': 'px',
+	'border-width': 'px',
+
+	'margin-left': 'px',
+	'margin-top': 'px',
+	'margin-right': 'px',
+	'margin-bottom': 'px',
+
+	'padding-left': 'px',
+	'padding-top': 'px',
+	'padding-right': 'px',
+	'padding-bottom': 'px',
+	'padding': 'px'
+}
+
 ElementPrototype.updateStyle = function(updated) {
 	var element = this.dom
 	if (!element)
@@ -290,28 +312,6 @@ ElementPrototype.updateStyle = function(updated) {
 
 	if (updated === undefined)
 		updated = this._context._styleCache.pop(this)
-
-	/** @const */
-	var cssUnits = {
-		'left': 'px',
-		'top': 'px',
-		'width': 'px',
-		'height': 'px',
-
-		'border-radius': 'px',
-		'border-width': 'px',
-
-		'margin-left': 'px',
-		'margin-top': 'px',
-		'margin-right': 'px',
-		'margin-bottom': 'px',
-
-		'padding-left': 'px',
-		'padding-top': 'px',
-		'padding-right': 'px',
-		'padding-bottom': 'px',
-		'padding': 'px'
-	}
 
 	var cache = this._context._styleClassifier
 	var rules = []

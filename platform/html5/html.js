@@ -32,12 +32,32 @@ StyleCachePrototype.update = function(element, name) {
 	}
 }
 
-StyleCachePrototype.apply = function(element) {
+StyleCachePrototype._apply = function(entry) {
+	//fixme: make updateStyle incremental
+	entry.element.updateStyle()
+}
 
+StyleCachePrototype.apply = function(element) {
+	var cache = this._cache
+	var id = element._uniqueId
+
+	var entry = cache[id]
+
+	if (entry === undefined)
+		return
+
+	delete cache[id]
+	this._apply(entry)
 }
 
 StyleCachePrototype.applyAll = function() {
+	var cache = this._cache
+	this._cache = {}
 
+	for(var id in cache) {
+		var entry = cache[id]
+		this._apply(entry)
+	}
 }
 
 var StyleClassifier = function (prefix) {
@@ -607,6 +627,7 @@ exports.run = function(ctx, onloadCallback) {
 
 exports.tick = function(ctx) {
 	//log('tick')
+	//ctx._styleCache.applyAll()
 }
 
 var Modernizr = window.Modernizr

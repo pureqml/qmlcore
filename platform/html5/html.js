@@ -205,6 +205,7 @@ exports.Element = function(context, tag) {
 	this._class = ''
 	this._widthAdjust = 0
 	this._uniqueId = String(++lastId)
+	this._firstChildIndex = 0
 
 	registerGenericListener(this)
 }
@@ -219,21 +220,16 @@ ElementPrototype.addClass = function(cls) {
 ElementPrototype.setHtml = function(html) {
 	this._widthAdjust = 0 //reset any text related rounding corrections
 	var dom = this.dom
-	this._fragment.forEach(function(node) { dom.removeChild(node) })
-	this._fragment = []
 
-	if (html === '')
-		return
+	//removing old nodes:
+	var n = this._firstChildIndex
+	while(n--)
+		dom.children[0].remove()
 
-	var fragment = document.createDocumentFragment()
-	var temp = document.createElement('div')
-
-	temp.innerHTML = html
-	while (temp.firstChild) {
-		this._fragment.push(temp.firstChild)
-		fragment.appendChild(temp.firstChild)
-	}
-	dom.appendChild(fragment)
+	var before = dom.children.length
+	dom.insertAdjacentHTML('afterbegin', html)
+	var after = dom.children.length
+	this._firstChildIndex = after - before //inserted nodes number
 	return dom.children
 }
 

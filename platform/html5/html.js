@@ -32,11 +32,6 @@ StyleCachePrototype.update = function(element, name) {
 	}
 }
 
-StyleCachePrototype._apply = function(entry) {
-	//fixme: make updateStyle incremental using entry.data object
-	entry.element.updateStyle(entry.data)
-}
-
 StyleCachePrototype.pop = function(element) {
 	var id = element._uniqueId
 	var data = this._cache[id]
@@ -47,25 +42,13 @@ StyleCachePrototype.pop = function(element) {
 	return data.data
 }
 
-StyleCachePrototype.apply = function(element) {
-	var cache = this._cache
-	var id = element._uniqueId
-
-	var entry = cache[id]
-
-	if (entry === undefined)
-		return
-
-	this._apply(entry)
-}
-
-StyleCachePrototype.applyAll = function() {
+StyleCachePrototype.apply = function() {
 	var cache = this._cache
 	this._cache = {}
 
 	for(var id in cache) {
 		var entry = cache[id]
-		this._apply(entry)
+		entry.element.updateStyle(entry.data)
 	}
 }
 
@@ -649,7 +632,7 @@ exports.run = function(ctx, onloadCallback) {
 
 exports.tick = function(ctx) {
 	//log('tick')
-	ctx._styleCache.applyAll()
+	ctx._styleCache.apply()
 }
 
 var Modernizr = window.Modernizr

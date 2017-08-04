@@ -122,6 +122,8 @@ exports.loadExternalStylesheet = function(url) {
 
 exports.autoClassify = false
 
+var lastId = 0
+
 /**
  * @constructor
  */
@@ -144,6 +146,7 @@ exports.Element = function(context, tag) {
 	this._styles = {}
 	this._class = ''
 	this._widthAdjust = 0
+	this._uniqueId = String(++lastId)
 
 	registerGenericListener(this)
 }

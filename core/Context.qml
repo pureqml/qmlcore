@@ -101,6 +101,7 @@ Item {
 
 		this._processingActions = false
 		this._delayedTimeout = undefined
+		this.backend.tick(this)
 	}
 
 	///@private

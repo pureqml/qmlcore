@@ -605,6 +605,10 @@ exports.run = function(ctx, onloadCallback) {
 	})
 }
 
+exports.tick = function(ctx) {
+	//log('tick')
+}
+
 var Modernizr = window.Modernizr
 
 exports.capabilities = {

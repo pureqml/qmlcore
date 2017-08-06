@@ -65,6 +65,7 @@ Object {
 	/// default implementation of element creation routine.
 	function createElement(tag) {
 		this.element = this._context.createElement(tag)
+		this.element._item = this
 		this._context.registerStyle(this, tag)
 		this.parent.element.append(this.element)
 	}

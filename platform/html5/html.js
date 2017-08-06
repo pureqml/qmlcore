@@ -205,6 +205,23 @@ ElementPrototype.addClass = function(cls) {
 	this.dom.classList.add(cls)
 }
 
+ElementPrototype.removeChildren = function(ui) {
+	var removedChildren = []
+
+	ui.children.forEach(function(child) {
+		var element = child.element
+		if (element !== undefined) {
+			var childNode = element.dom
+			if (childNode.parentNode === dom) {
+				dom.removeChild(childNode)
+				removedChildren.push(childNode)
+			}
+		}
+	})
+	return removedChildren
+}
+
+
 ElementPrototype.setHtml = function(html) {
 	this._widthAdjust = 0 //reset any text related rounding corrections
 	var dom = this.dom
@@ -601,18 +618,7 @@ exports.layoutText = function(text) {
 		}
 	}
 
-	var removedChildren = []
-
-	text.children.forEach(function(child) {
-		var element = child.element
-		if (element !== undefined) {
-			var childNode = element.dom
-			if (childNode.parentNode === dom) {
-				dom.removeChild(childNode)
-				removedChildren.push(childNode)
-			}
-		}
-	})
+	var removedChildren = element.removeChildren(text)
 
 	if (!wrap)
 		text.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there

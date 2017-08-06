@@ -604,10 +604,13 @@ exports.layoutText = function(text) {
 	var removedChildren = []
 
 	text.children.forEach(function(child) {
-		var childNode = child.element.dom
-		if (childNode.parentNode === dom) {
-			dom.removeChild(childNode)
-			removedChildren.push(childNode)
+		var element = child.element
+		if (element !== undefined) {
+			var childNode = element.dom
+			if (childNode.parentNode === dom) {
+				dom.removeChild(childNode)
+				removedChildren.push(childNode)
+			}
 		}
 	})
 

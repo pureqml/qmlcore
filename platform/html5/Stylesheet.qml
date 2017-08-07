@@ -14,11 +14,11 @@ Object {
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
 		style.setHtml(
-			"div#" + divId + " { position: absolute; visibility: inherit; left: 0px; top: 0px; }" +
-			"div." + this._context.getClass('core-text') + " { width: auto; height: auto; visibility: inherit; }" +
+			"div#" + divId + " { position: absolute; visibility: hidden; left: 0px; top: 0px; }" +
+			"div." + this._context.getClass('core-text') + " { width: auto; height: auto; }" +
 			(topLevel? "body { padding: 0; margin: 0; border: 0px; overflow: hidden; }": "") + //fixme: do we need style here in non-top-level mode?
-			this.mangleRule('video', "{ position: absolute; visibility: inherit; }") +
-			this.mangleRule('img', "{ position: absolute; visibility: inherit; -webkit-touch-callout: none; " + userSelect + " }")
+			this.mangleRule('video', "{ position: absolute; }") + //fixme: do we need position rule if it's item?
+			this.mangleRule('img', "{ position: absolute; -webkit-touch-callout: none; " + userSelect + " }")
 		)
 		_globals.html5.html.getElement('head').append(style)
 

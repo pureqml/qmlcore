@@ -158,16 +158,23 @@ EventEmitter {
 		this[storageName] = storage
 	}
 
+	///@private updates animation properties on given property
+	function updateAnimation (name, animation) {
+		this._context.backend.setAnimation(this, name, animation)
+	}
+
 	///@private sets animation on given property
 	function setAnimation (name, animation) {
 		var context = this._context
+		var backend = context.backend
 		if (name === 'contentX' || name === 'contentY')
 			log('WARNING: you\'re trying to animate contentX/contentY property, this will always use animation frames, ignoring CSS transitions, please use content.x/content.y instead')
 
-		animation._target = name
+		animation._target = component
+		animation._property = name
 		var component = this
 		context.scheduleAction(function() {
-			if (!context.backend.setAnimation(component, name, animation)) {
+			if (!backend.setAnimation(component, name, animation)) {
 				component._animations[name] = animation
 			}
 		})

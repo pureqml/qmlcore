@@ -29,10 +29,8 @@ Object {
 	}
 
 	function _updateAnimation() {
-		var parent = this.parent
-		if (this._target && parent && parent._updateAnimation) {
-			parent._updateAnimation(this._target, this.active() ? this: null)
-		}
+		if (this._target)
+			this._target.updateAnimation(this._property, this)
 	}
 
 	/// @private

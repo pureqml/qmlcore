@@ -9,7 +9,7 @@ Object {
 	property bool running: false;			///< currently running
 	property string easing: "ease";			///< easing function
 
-	constructor:	{ this._disabled = 0 }
+	constructor:	{ this._disabled = 0; this._native = false }
 	/// disable animation.
 	disable:		{ ++this._disabled; this._updateAnimation() }
 	/// enable animation.

@@ -15,7 +15,8 @@ Item {
 	///@private
 	constructor: {
 		this._context.backend.initText(this)
-		this._setText(this.text)
+		if (this.text.length > 0)
+			this._setText(this.text)
 	}
 
 	///@private

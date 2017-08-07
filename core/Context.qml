@@ -25,6 +25,7 @@ Item {
 		this._processingActions = false
 		this._delayedActions = []
 		this._stylesRegistered = {}
+		this._asyncInvoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
 
 		this.backend = _globals._backend()
 	}
@@ -92,7 +93,7 @@ Item {
 
 		this._processingActions = true
 
-		var invoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
+		var invoker = this._asyncInvoker
 		while (this._delayedActions.length) {
 			var actions = this._delayedActions
 			this._delayedActions = []

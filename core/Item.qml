@@ -87,27 +87,6 @@ Object {
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
-	///@private tries to set animation on name using css transitions, returns true on success
-	function _updateAnimation(name, animation) {
-		if (!this._context.backend.capabilities.csstransitions || (animation && !animation.cssTransition) || !this._context._completed)
-			return false
-
-		var css = this._mapCSSAttribute(name)
-
-		if (css !== undefined) {
-			return this.setTransition(css, animation)
-		} else {
-			return false
-		}
-	}
-
-	///@private sets animation on given property
-	function setAnimation(name, animation) {
-		animation._target = name
-		if (!this._updateAnimation(name, animation))
-			_globals.core.Object.prototype.setAnimation.apply(this, arguments);
-	}
-
 	///@private passes style (or styles { a:, b:, c: ... }) to underlying element
 	function style(name, style) {
 		var element = this.element
@@ -122,11 +101,6 @@ Object {
 		_globals.core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
-	}
-
-	///@private returns css rule by property name
-	function _mapCSSAttribute (name) {
-		return { width: 'width', height: 'height', x: 'left', y: 'top', viewX: 'left', viewY: 'top', opacity: 'opacity', border: 'border', radius: 'border-radius', rotate: 'transform', boxshadow: 'box-shadow', transform: 'transform', visible: 'visibility', visibleInView: 'visibility', background: 'background', color: 'color', font: 'font' }[name]
 	}
 
 	///@private
@@ -243,65 +217,6 @@ Object {
 	function focusChild (child) {
 		this._propagateFocusToParents()
 		this._focusChild(child)
-	}
-
-	///@private
-	function setTransition(name, animation) {
-		var backend = this._context.backend
-		if (!backend.capabilities.csstransitions)
-			return false
-
-		var html5 = backend //remove me
-		var transition = {
-			property: html5.getPrefixedName('transition-property'),
-			delay: html5.getPrefixedName('transition-delay'),
-			duration: html5.getPrefixedName('transition-duration'),
-			timing: html5.getPrefixedName('transition-timing-function')
-		}
-
-		name = html5.getPrefixedName(name) || name //replace transform: <prefix>rotate hack
-
-		var property = this.style(transition.property) || []
-		var duration = this.style(transition.duration) || []
-		var timing = this.style(transition.timing) || []
-		var delay = this.style(transition.delay) || []
-
-		var idx = property.indexOf(name)
-		if (idx === -1) { //if property not set
-			if (animation) {
-				property.push(name)
-				duration.push(animation.duration + 'ms')
-				timing.push(animation.easing)
-				delay.push(animation.delay + 'ms')
-			}
-		} else { //property already set, adjust the params
-			if (animation) {
-				duration[idx] = animation.duration + 'ms'
-				timing[idx] = animation.easing
-				delay[idx] = animation.delay + 'ms'
-			} else {
-				property.splice(idx, 1)
-				duration.splice(idx, 1)
-				timing.splice(idx, 1)
-				delay.splice(idx, 1)
-			}
-		}
-
-		var style = {}
-		style[transition.property] = property
-		style[transition.duration] = duration
-		style[transition.timing] = timing
-		style[transition.delay] = delay
-
-		//FIXME: smarttv 2003 animation is not working without this shit =(
-		if (this._context.system.os === 'smartTV' || this._context.system.os === 'netcast') {
-			style["transition-property"] = property
-			style["transition-duration"] = duration
-			style["transition-delay"] = delay
-			style["transition-timing-function"] = timing
-		}
-		this.style(style)
-		return true
 	}
 
 	///@private

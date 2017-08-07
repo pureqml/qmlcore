@@ -657,6 +657,84 @@ exports.tick = function(ctx) {
 	ctx._styleCache.apply()
 }
 
+///@private
+var setTransition = function(component, name, animation) {
+	var html5 = exports
+	var transition = {
+		property: html5.getPrefixedName('transition-property'),
+		delay: html5.getPrefixedName('transition-delay'),
+		duration: html5.getPrefixedName('transition-duration'),
+		timing: html5.getPrefixedName('transition-timing-function')
+	}
+
+	name = html5.getPrefixedName(name) || name //replace transform: <prefix>rotate hack
+
+	var property = component.style(transition.property) || []
+	var duration = component.style(transition.duration) || []
+	var timing = component.style(transition.timing) || []
+	var delay = component.style(transition.delay) || []
+
+	var idx = property.indexOf(name)
+	if (idx === -1) { //if property not set
+		if (animation) {
+			property.push(name)
+			duration.push(animation.duration + 'ms')
+			timing.push(animation.easing)
+			delay.push(animation.delay + 'ms')
+		}
+	} else { //property already set, adjust the params
+		if (animation) {
+			duration[idx] = animation.duration + 'ms'
+			timing[idx] = animation.easing
+			delay[idx] = animation.delay + 'ms'
+		} else {
+			property.splice(idx, 1)
+			duration.splice(idx, 1)
+			timing.splice(idx, 1)
+			delay.splice(idx, 1)
+		}
+	}
+
+	var style = {}
+	style[transition.property] = property
+	style[transition.duration] = duration
+	style[transition.timing] = timing
+	style[transition.delay] = delay
+
+	//FIXME: smarttv 2003 animation is not working without this shit =(
+	if (component._context.system.os === 'smartTV' || component._context.system.os === 'netcast') {
+		style["transition-property"] = property
+		style["transition-duration"] = duration
+		style["transition-delay"] = delay
+		style["transition-timing-function"] = timing
+	}
+	component.style(style)
+	return true
+}
+
+var cssMappings = {
+	width: 'width', height: 'height',
+	x: 'left', y: 'top', viewX: 'left', viewY: 'top',
+	opacity: 'opacity',
+	border: 'border',
+	radius: 'border-radius',
+	rotate: 'transform',
+	boxshadow: 'box-shadow',
+	transform: 'transform',
+	visible: 'visibility', visibleInView: 'visibility',
+	background: 'background', color: 'color',
+	font: 'font'
+}
+
+///@private tries to set animation on name using css transitions, returns true on success
+exports.setAnimation = function (component, name, animation) {
+	if (!exports.capabilities.csstransitions || (animation && !animation.cssTransition))
+		return false
+
+	var css = cssMappings[name]
+	return css !== undefined? setTransition(component, css, animation): false
+}
+
 var Modernizr = window.Modernizr
 
 exports.capabilities = {

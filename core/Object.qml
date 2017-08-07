@@ -162,7 +162,11 @@ EventEmitter {
 	function setAnimation (name, animation) {
 		if (name === 'contentX' || name === 'contentY')
 			log('WARNING: you\'re trying to animate contentX/contentY property, this will always use animation frames, ignoring CSS transitions, please use content.x/content.y instead')
-		this._animations[name] = animation
+
+		animation._target = name
+		if (!this._context.backend.setAnimation(this, name, animation)) {
+			this._animations[name] = animation
+		}
 	}
 
 	///@private gets animation on given property

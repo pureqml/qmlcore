@@ -205,6 +205,12 @@ ElementPrototype.addClass = function(cls) {
 	this.dom.classList.add(cls)
 }
 
+ElementPrototype.appendChildren = function(children) {
+	children.forEach(function(child) {
+		dom.appendChild(child)
+	})
+}
+
 ElementPrototype.removeChildren = function(ui) {
 	var removedChildren = []
 
@@ -222,20 +228,16 @@ ElementPrototype.removeChildren = function(ui) {
 }
 
 
-ElementPrototype.setHtml = function(html) {
+ElementPrototype.setHtml = function(html, component) {
 	this._widthAdjust = 0 //reset any text related rounding corrections
 	var dom = this.dom
-
-	//removing old nodes:
-	var n = this._firstChildIndex
-	while(n--)
-		dom.children[0].remove()
-
-	var before = dom.children.length
-	dom.insertAdjacentHTML('afterbegin', html)
-	var after = dom.children.length
-	this._firstChildIndex = after - before //inserted nodes number
-	return dom.children
+	var children
+	if (component !== undefined)
+		children = this.removeChildren(component)
+	else
+		children = []
+	dom.innerHTML = html
+	this.appendChildren(children)
 }
 
 ElementPrototype.width = function() {
@@ -591,7 +593,7 @@ var layoutTextSetStyle = function(text, style) {
 }
 
 exports.setText = function(text, html) {
-	text.element.setHtml(html)
+	text.element.setHtml(html, text)
 }
 
 exports.layoutText = function(text) {
@@ -639,10 +641,7 @@ exports.layoutText = function(text) {
 		style = {'height': text.height }
 
 	layoutTextSetStyle(text, style)
-
-	removedChildren.forEach(function(child) {
-		dom.appendChild(child)
-	})
+	element.appendChildren(removedChildren)
 }
 
 exports.run = function(ctx, onloadCallback) {

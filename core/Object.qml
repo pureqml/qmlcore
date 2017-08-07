@@ -174,9 +174,9 @@ EventEmitter {
 		animation._property = name
 		var component = this
 		context.scheduleAction(function() {
-			if (!backend.setAnimation(component, name, animation)) {
-				component._animations[name] = animation
-			}
+			component._animations[name] = animation
+			if (backend.setAnimation(component, name, animation))
+				animation._native = true
 		})
 	}
 
@@ -185,7 +185,7 @@ EventEmitter {
 		if (!this._context._completed)
 			return null
 		var a = this._animations[name]
-		return (a !== undefined && a.enabled())? a:  null;
+		return (a !== undefined && a.enabled() && !a._native)? a:  null;
 	}
 
 	///@private called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy

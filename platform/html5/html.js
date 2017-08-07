@@ -206,6 +206,7 @@ ElementPrototype.addClass = function(cls) {
 }
 
 ElementPrototype.appendChildren = function(children) {
+	var dom = this.dom
 	children.forEach(function(child) {
 		dom.appendChild(child)
 	})
@@ -214,6 +215,7 @@ ElementPrototype.appendChildren = function(children) {
 ElementPrototype.removeChildren = function(ui) {
 	var removedChildren = []
 
+	var dom = this.dom
 	ui.children.forEach(function(child) {
 		var element = child.element
 		if (element !== undefined) {

@@ -170,9 +170,9 @@ EventEmitter {
 		if (name === 'contentX' || name === 'contentY')
 			log('WARNING: you\'re trying to animate contentX/contentY property, this will always use animation frames, ignoring CSS transitions, please use content.x/content.y instead')
 
+		var component = this
 		animation._target = component
 		animation._property = name
-		var component = this
 		context.scheduleAction(function() {
 			component._animations[name] = animation
 			if (backend.setAnimation(component, name, animation))

@@ -557,8 +557,6 @@ class component_generator(object):
 			path = path_or_parent(path, parent)
 			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, path, name, code, path))
 
-		r.append(self.generate_animations(registry, parent))
-
 		for idx, value in enumerate(self.children):
 			var = '%s$child%d' %(escape(parent), idx)
 			r.append(self.call_setup(registry, ident_n, var, value, closure))
@@ -566,5 +564,7 @@ class component_generator(object):
 
 		if self.elements:
 			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements, sort_keys=True)))
+
+		r.append(self.generate_animations(registry, parent))
 
 		return "\n".join(r)

@@ -151,11 +151,19 @@ EventEmitter {
 
 	///@private patch property storage directly without signalling. You normally don't need it
 	function _setProperty(name, value) {
+		var animation = this._animations[name]
+		if (animation !== undefined)
+			animation.disable()
+
+		//cancel any running software animations
 		var storageName = '__property_' + name
 		var storage = this[storageName] || {}
 		delete storage.interpolatedValue
 		storage.value = value
 		this[storageName] = storage
+
+		if (animation !== undefined)
+			animation.enable()
 	}
 
 	///@private updates animation properties on given property

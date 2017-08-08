@@ -120,14 +120,15 @@ BaseLayout {
 	/// @private creates delegate in given item slot
 	function _createDelegate(idx) {
 		var items = this._items
-		if (items[idx] !== null)
-			return
+		var item = items[idx]
+		if (item !== null && item !== undefined)
+			return item
 
 		var row = this.model.get(idx)
 		row['index'] = idx
 		this._local['model'] = row
 
-		var item = this.delegate(this)
+		item = this.delegate(this)
 		items[idx] = item
 		item.view = this
 		item.element.remove()

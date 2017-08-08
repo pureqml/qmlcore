@@ -683,7 +683,7 @@ var setTransition = function(component, name, animation) {
 			delay.push(animation.delay + 'ms')
 		}
 	} else { //property already set, adjust the params
-		if (animation) {
+		if (animation && animation.active()) {
 			duration[idx] = animation.duration + 'ms'
 			timing[idx] = animation.easing
 			delay[idx] = animation.delay + 'ms'

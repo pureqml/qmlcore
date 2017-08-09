@@ -388,7 +388,8 @@ ElementPrototype.discard = function() {
 
 ElementPrototype.remove = function() {
 	var dom = this.dom
-	dom.parentNode.removeChild(dom)
+	if (dom.parentNode)
+		dom.parentNode.removeChild(dom)
 }
 
 exports.Window = function(context, dom) {

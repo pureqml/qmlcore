@@ -222,10 +222,10 @@ BaseLayout {
 	onHeightChanged:			{ this._scheduleLayout() }
 
 	///@private silently updates scroll positions, because browser animates scroll
-	function _updateScrollPositions(x, y) {
+	function _updateScrollPositions(x, y, layout) {
 		this._setProperty('contentX', x)
 		this._setProperty('contentY', y)
-		this.content._updateScrollPositions(x, y)
+		this.content._updateScrollPositions(x, y, layout)
 	}
 
 	onCompleted: {

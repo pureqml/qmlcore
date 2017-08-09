@@ -4,10 +4,10 @@ Item {
 	onYChanged:		{ this.parent._scheduleLayout() }
 
 	///@private silently updates scroll positions, because browser animates scroll
-	function _updateScrollPositions(x, y) {
+	function _updateScrollPositions(x, y, layout) {
 		this._setProperty('x', -x)
 		this._setProperty('y', -y)
-		this.parent._layout()
+		if (layout === undefined || layout) //default true
+			this.parent._layout()
 	}
-
 }

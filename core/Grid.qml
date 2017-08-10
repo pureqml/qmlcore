@@ -159,7 +159,7 @@ Layout {
 					}
 					this._rows.push(tempRows)
 					tempRows = []
-					tempRows.push({i: i, x: c.x, w: directSize})
+					tempRows.push({i: i, x: c.x, w: crossSize})
 				} else {
 					if (horizontal) {
 						c.y = crossPos + cbm;
@@ -168,7 +168,7 @@ Layout {
 						c.x = crossPos + cbm;
 						c.y = directPos + dbm;
 					}
-					tempRows.push({i: i, x: c.x, w: directSize})
+					tempRows.push({i: i, x: c.x, w: crossSize})
 				}
 				if (directMax < directPos + directSize)
 					directMax = directPos + directSize;

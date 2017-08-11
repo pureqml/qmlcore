@@ -154,8 +154,7 @@ Item {
 
 		startupTimer.restart()
 
-		//please remove these html5 guts from here, replace by backend call or window.on('...')
-		window.addEventListener('gamepadconnected', this.gamepadConnectedHandler.bind(this))
-		window.addEventListener('gamepaddisconnected', this.gamepadDisconnectedHandler.bind(this))
+		this.element.on('gamepadconnected', this.gamepadConnectedHandler.bind(this))
+		this.element.on('gamepaddisconnected', this.gamepadDisconnectedHandler.bind(this))
 	}
 }

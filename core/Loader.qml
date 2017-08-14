@@ -1,4 +1,4 @@
-/// component for loading custom component dinamycly via its URL
+/// object that helps loading components dynamically
 Item {
 	signal loaded;				///< when requested component it loaded event signal
 	property string source;		///< component's URL

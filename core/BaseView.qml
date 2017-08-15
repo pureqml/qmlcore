@@ -10,7 +10,7 @@ BaseLayout {
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
 	property bool nativeScrolling;	///< allows native scrolling on mobile targets and shows native scrollbars
 	property real prerender: 0.5;	///< allocate additional delegates by viewport (prerender * horizontal/vertical view size) px
-	property enum positionMode { Beginning, Center, End, Visible, Contain, Page }; ///< position mode for auto-scrolling/position methods
+	property enum positionMode		{ Contain, Beginning, Center, End, Visible, Page }; ///< position mode for auto-scrolling/position methods
 	contentWidth: 1;				///< content width
 	contentHeight: 1;				///< content height
 	keyNavigationWraps: true;		///< key navigation wraps from end to beginning and vise versa

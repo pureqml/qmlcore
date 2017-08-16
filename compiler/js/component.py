@@ -278,7 +278,7 @@ class component_generator(object):
 		assert self.prototype == True
 
 		#HACK HACK: make immutable
-		registry.id_set = set(['context'])
+		registry.id_set = set(['context', 'model'])
 		self.collect_id(registry.id_set)
 
 		r = []

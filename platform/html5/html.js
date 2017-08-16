@@ -710,6 +710,7 @@ var setTransition = function(component, name, animation) {
 		style["transition-timing-function"] = timing
 	}
 	component.style(style)
+	component._updateStyle()
 	return true
 }
 

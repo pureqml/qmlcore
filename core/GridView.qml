@@ -206,7 +206,8 @@ BaseView {
 	function _updateOverflow() {
 		if (!this.nativeScrolling)
 			return
-		var horizontal = this.flow == this.FlowLeftToRight
+
+		var horizontal = this.flow !== this.FlowLeftToRight
 		var style = {}
 		if (horizontal) {
 			style['overflow-x'] = 'auto'

@@ -310,6 +310,10 @@ var cssUnits = {
 	'padding': 'px'
 }
 
+ElementPrototype.forceLayout = function() {
+	return this.dom.offsetWidth | this.dom.offsetHeight
+}
+
 ElementPrototype.updateStyle = function(updated) {
 	var element = this.dom
 	if (!element)

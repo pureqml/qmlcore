@@ -131,10 +131,27 @@ Object {
 
 	onWidthChanged: 	{ this.style('width', value); this.boxChanged() }
 	onHeightChanged:	{ this.style('height', value - this._topPadding); this.boxChanged() }
+
 	onXChanged,
-	onViewXChanged:		{ var x = this.x + this.viewX; this.style('left', x); this.boxChanged() }
+	onViewXChanged: {
+		var x = this.x + this.viewX
+		if (this.cssTranslatePositioning === true)
+			this.style('transform', 'translateX(' + x + 'px)')
+		else
+			this.style('left', x)
+		this.boxChanged()
+	}
+
 	onYChanged,
-	onViewYChanged:		{ var y = this.y + this.viewY; this.style('top', y); this.boxChanged() }
+	onViewYChanged: {
+		var y = this.y + this.viewY
+		if (this.cssTranslatePositioning === true)
+			this.style('transform', 'translateY(' + y + 'px)')
+		else
+			this.style('top', y)
+		this.boxChanged()
+	}
+
 	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }
 	onZChanged:			{ this.style('z-index', value) }
 	onRadiusChanged:	{ this.style('border-radius', value) }

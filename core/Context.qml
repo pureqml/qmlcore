@@ -23,7 +23,7 @@ Item {
 		this._started = false
 		this._completed = false
 		this._processingActions = false
-		this._delayedActions = []
+		this._delayedActions = [[], []]
 		this._stylesRegistered = {}
 		this._asyncInvoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
 
@@ -81,7 +81,6 @@ Item {
 		instance.__setup(closure)
 		closure = undefined
 		log('Context: created instance')
-		this._started = true
 		// log('Context: calling on completed')
 		return instance;
 	}
@@ -94,20 +93,32 @@ Item {
 		this._processingActions = true
 
 		var invoker = this._asyncInvoker
-		while (this._delayedActions.length) {
-			var actions = this._delayedActions
-			this._delayedActions = []
-			actions.forEach(invoker)
+		var delayedAction = this._delayedActions
+		var empty = false
+
+		while(!empty) {
+			this._delayedActions.forEach(function(levelActions, level) {
+				while (levelActions.length) {
+					//log('actions', level, levelActions.length)
+					var actions = levelActions.splice(0, levelActions.length)
+					actions.forEach(invoker)
+				}
+			})
+
+			empty = true
+			this._delayedActions.forEach(function(levelActions) {
+				if (levelActions.length !== 0)
+					empty = false
+			})
 		}
 
 		this._processingActions = false
-		this._delayedTimeout = undefined
 		this.backend.tick(this)
 	}
 
 	///@private
-	function scheduleAction(action) {
-		this._delayedActions.push(action)
+	function scheduleAction(action, priority) {
+		this._delayedActions[priority !== undefined? priority: 0].push(action)
 	}
 
 	///@private
@@ -148,8 +159,8 @@ Item {
 		this.visibleInView = true
 		this.boxChanged()
 		log('Context: calling completed()')
+		this._started = true
 		this._complete()
 		this._completed = true
-		this._processActions()
 	}
 }

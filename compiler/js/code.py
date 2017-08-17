@@ -26,7 +26,7 @@ def process(text, generator, registry):
 	if used_ids:
 		scope_pos = text.index('{') #raise exception, should be 0 actually
 		scope_pos += 1
-		prologue = ["%s = this._get('%s')" %(x, x) for x in used_ids]
+		prologue = ["%s = this._get('%s', true)" %(x, x) for x in used_ids]
 		prologue = '\n\tvar ' + ', '.join(prologue) + '\n'
 		text = text[:scope_pos] + prologue + text[scope_pos:]
 

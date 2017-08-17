@@ -135,7 +135,7 @@ EventEmitter {
 	}
 
 	///@private gets object by id
-	function _get (name) {
+	function _get (name, unsafe) {
 		if (name in this)
 			return this[name]
 
@@ -146,7 +146,10 @@ EventEmitter {
 			object = object.parent
 		}
 
-		throw new Error("invalid property requested: '" + name + "'")
+		if (unsafe)
+			return null
+		else
+			throw new Error("invalid property requested: '" + name + "'")
 	}
 
 	///@private patch property storage directly without signalling. You normally don't need it

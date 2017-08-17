@@ -14,7 +14,7 @@ def replace_enums(text, generator, registry):
 	return text
 
 
-id_re = re.compile(r'(?<!\.)([_a-z]\w*)\.')
+id_re = re.compile(r'(\w+\s*)(\.\s*\w+\s*)*', re.I | re.M)
 def process(text, generator, registry):
 	id_set = registry.id_set
 	used_ids = set()

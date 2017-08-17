@@ -185,7 +185,7 @@ EventEmitter {
 			component._animations[name] = animation
 			if (backend.setAnimation(component, name, animation))
 				animation._native = true
-		})
+		}, 1)
 	}
 
 	///@private gets animation on given property

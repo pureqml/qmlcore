@@ -135,7 +135,7 @@ Object {
 	onXChanged,
 	onViewXChanged: {
 		var x = this.x + this.viewX
-		if (this.cssTranslatePositioning === true)
+		if (this.cssTranslatePositioning)
 			this.style('transform', 'translateX(' + x + 'px)')
 		else
 			this.style('left', x)

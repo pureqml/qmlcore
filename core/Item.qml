@@ -145,7 +145,7 @@ Object {
 	onYChanged,
 	onViewYChanged: {
 		var y = this.y + this.viewY
-		if (this.cssTranslatePositioning === true)
+		if (this.cssTranslatePositioning)
 			this.style('transform', 'translateY(' + y + 'px)')
 		else
 			this.style('top', y)

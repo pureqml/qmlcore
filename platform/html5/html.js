@@ -672,6 +672,7 @@ var setTransition = function(component, name, animation) {
 		duration: html5.getPrefixedName('transition-duration'),
 		timing: html5.getPrefixedName('transition-timing-function')
 	}
+	component.element.forceLayout() //flush styles before setting transition
 
 	name = html5.getPrefixedName(name) || name //replace transform: <prefix>rotate hack
 
@@ -715,7 +716,6 @@ var setTransition = function(component, name, animation) {
 		style["transition-timing-function"] = timing
 	}
 	component.style(style)
-	component._updateStyle()
 	return true
 }
 

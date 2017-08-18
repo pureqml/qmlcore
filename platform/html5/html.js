@@ -311,6 +311,7 @@ var cssUnits = {
 }
 
 ElementPrototype.forceLayout = function() {
+	this.updateStyle()
 	return this.dom.offsetWidth | this.dom.offsetHeight
 }
 

@@ -12,10 +12,10 @@ Object {
 	property Object state;			///< current history state
 
 	/// @private
-	constructor: {
-		var self = this
+	onCompleted: {
 		var location = window.location
 		this.updateActualValues()
+		var self = this
 		window.onhashchange = function() { self.hash = location.hash }
 		window.onpopstate = function() { self.updateActualValues() }
 	}

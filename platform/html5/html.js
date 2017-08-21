@@ -729,7 +729,9 @@ var cssMappings = {
 	boxshadow: 'box-shadow',
 	transform: 'transform',
 	visible: 'visibility', visibleInView: 'visibility',
-	background: 'background', color: 'color',
+	background: 'background',
+	color: 'color',
+	backgroundImage: 'background-image',
 	font: 'font'
 }
 

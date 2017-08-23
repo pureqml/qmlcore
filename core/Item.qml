@@ -269,13 +269,15 @@ Object {
 	///@private
 	function _processKey(event) {
 		var key = _globals.core.keyCodes[event.which || event.keyCode];
-		if (key && !this._processing) {
+		var ctx = this._context
+		var eventTime = event.timeStamp
 
-			if (this._context.keyProcessDelay) {
-				this._processing = true
-				var self = this
-				setTimeout(function() { self._processing = false }, this._context.keyProcessDelay)
-			}
+		if (key) {
+			if (eventTime !== ctx._lastEvent && eventTime - ctx.keyProcessDelay < ctx._lastEvent)
+				return true
+
+			if (ctx._lastEvent !== eventTime)
+				ctx._lastEvent = eventTime
 
 			//fixme: create invoker only if any of handlers exist
 			var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
@@ -293,8 +295,6 @@ Object {
 
 			if (proto_callback)
 				return this.invokeKeyHandlers(key, proto_callback, invoker)
-		} else if (this._processing) {
-			return true;
 		} else {
 			log("unknown key", event.which);
 		}

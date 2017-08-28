@@ -8,13 +8,13 @@ def build(app, title):
     os.system('rm -rf %s' %app)
     res = os.system('cordova create %s com.example.app %s' %(app,title))
     if res != 0:
-    	print "Failed to create android app"
+        print "Failed to create android app"
         return
+    os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
     os.chdir(app)
     os.system('cordova platform add android')
     os.system('cordova build android')
     os.chdir('..')
-    os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
 
 
 parser = argparse.ArgumentParser('qmlcore build tool')

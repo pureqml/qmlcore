@@ -15,6 +15,7 @@ class generator(object):
 		self.packages = {}
 		self.startup = []
 		self.l10n = {}
+		self.id_set = set(['context'])
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -87,8 +88,6 @@ class generator(object):
 	def generate_component(self, gen):
 		name = gen.name
 
-		self.id_set = set(['context'])
-		gen.collect_id(self.id_set)
 		self.used_packages.add(gen.package)
 
 		code = ''
@@ -127,6 +126,7 @@ class generator(object):
 		code, base_class = {}, {}
 
 		for gen in self.components.itervalues():
+			gen.collect_id(self.id_set)
 			gen.pregenerate(self)
 
 		while queue or self.used_components:

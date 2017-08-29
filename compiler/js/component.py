@@ -297,7 +297,7 @@ class component_generator(object):
 			if path:
 				raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
 			args, code = argscode
-			code = process(code, self, registry)
+			code = process(code, self, registry, args)
 			r.append("%s%s.%s = function(%s) %s" %(ident, self.proto_name, name, ",".join(args), code))
 
 		for prop in self.properties:
@@ -331,7 +331,7 @@ class component_generator(object):
 				continue
 
 			assert not path
-			code = process(code, self, registry)
+			code = process(code, self, registry, ['value'])
 			r.append("%s_globals.core._protoOnChanged(%s, '%s', (function(value) %s ))" %(ident, self.proto_name, name, code))
 
 		for _name, argscode in self.signal_handlers.iteritems():
@@ -339,14 +339,14 @@ class component_generator(object):
 			if path or not self.prototype or name == 'completed': #sync with condition below
 				continue
 			args, code = argscode
-			code = process(code, self, registry)
+			code = process(code, self, registry, args)
 			r.append("%s_globals.core._protoOn(%s, '%s', (function(%s) %s ))" %(ident, self.proto_name, name, ", ".join(args), code))
 
 		for _name, code in self.key_handlers.iteritems():
 			path, name = _name
 			if path or not self.prototype: #sync with condition below
 				continue
-			code = process(code, self, registry)
+			code = process(code, self, registry, args)
 			r.append("%s_globals.core._protoOnKey(%s, '%s', (function(key, event) %s ))" %(ident, self.proto_name, name, code))
 
 
@@ -522,7 +522,7 @@ class component_generator(object):
 				path, name = _name
 				args, code = argscode
 				path = path_or_parent(path, parent)
-				code = process(code, self, registry)
+				code = process(code, self, registry, args)
 				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
 
 		for _name, argscode in self.signal_handlers.iteritems():
@@ -530,7 +530,7 @@ class component_generator(object):
 			if not path and self.prototype and name != 'completed': #sync with condition above
 				continue
 			args, code = argscode
-			code = process(code, self, registry)
+			code = process(code, self, registry, args)
 			path = path_or_parent(path, parent)
 			if name != "completed":
 				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, path, name, ",".join(args), code, path))
@@ -541,7 +541,7 @@ class component_generator(object):
 			path, name = _name
 			if not path and self.prototype: #sync with condition above
 				continue
-			code = process(code, self, registry)
+			code = process(code, self, registry, ['value'])
 			path = path_or_parent(path, parent)
 			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, path, name, code, path))
 
@@ -549,7 +549,7 @@ class component_generator(object):
 			path, name = _name
 			if not path and self.prototype: #sync with condition above
 				continue
-			code = process(code, self, registry)
+			code = process(code, self, registry, ['key', 'event'])
 			path = path_or_parent(path, parent)
 			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, path, name, code, path))
 

@@ -2,10 +2,10 @@
 <widget id="com.{{ title }}.app" version="{{ version | default('1.0.0') }}" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>{{ title }}</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        {{ description | default('Override app description in manifest') }}
     </description>
-    <author email="{{ author.email | default('team@pureqml.com') }}" href="{{ author.site | default('http://pureqml.com') }}">
-        {{ author.name | default('PureQML Team') }}
+    <author email="{{ author.email | default('team@pureqml.com') if author is defined else 'team@pureqml.com' }}" href="{{ author.site | default('http://pureqml.com') if author is defined else 'http://pureqml.com' }}">
+        {{ author.name | default('John Doe') if author is defined else 'John Doe' }}
     </author>
     <content src="index.html" />
     <access origin="*" />

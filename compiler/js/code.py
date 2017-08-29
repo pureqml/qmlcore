@@ -15,12 +15,13 @@ def replace_enums(text, generator, registry):
 
 
 id_re = re.compile(r'(\w+\s*)(\.\s*\w+\s*)*', re.I | re.M)
-def process(text, generator, registry):
+def process(text, generator, registry, args):
+	args = set(args)
 	id_set = registry.id_set
 	used_ids = set()
 	for m in id_re.finditer(text):
 		found = m.group(1)
-		if found in id_set:
+		if found in id_set and found not in args:
 			used_ids.add(found)
 
 	if used_ids:

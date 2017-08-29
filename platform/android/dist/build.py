@@ -11,6 +11,8 @@ def build(app, title):
         print "Failed to create android app"
         return
     os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
+    os.system('cp androidIcon.png %s' %(app))
+    os.system('cp config.xml %s' %(app))
     os.chdir(app)
     os.system('cordova platform add android')
     os.system('cordova build android')

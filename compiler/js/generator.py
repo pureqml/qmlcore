@@ -15,6 +15,7 @@ class generator(object):
 		self.packages = {}
 		self.startup = []
 		self.l10n = {}
+		self.id_set = set(['context', 'model'])
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -87,7 +88,6 @@ class generator(object):
 	def generate_component(self, gen):
 		name = gen.name
 
-		self.id_set = set(['context'])
 		gen.collect_id(self.id_set)
 		self.used_packages.add(gen.package)
 

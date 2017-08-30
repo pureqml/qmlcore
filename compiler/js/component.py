@@ -57,13 +57,7 @@ class component_generator(object):
 	def collect_id(self, id_set):
 		if self.id is not None:
 			id_set.add(self.id)
-		for g in self.assignments.itervalues():
-			if type(g) is component_generator and g.id:
-				g.collect_id(id_set)
-		for g in self.animations.itervalues():
-			if type(g) is component_generator and g.id:
-				g.collect_id(id_set)
-		for g in self.children:
+		for g in self.generators:
 			g.collect_id(id_set)
 
 	def create_component_generator(self, component, suffix = '<anonymous>'):

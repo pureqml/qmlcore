@@ -17,10 +17,10 @@
     <allow-intent href="geo:*" />
     <platform name="android">
         <allow-intent href="market:*" />
-        <icon src="{{ androidIcon.ldpi | default('androidIcon.png') }}" density="ldpi" />
-        <icon src="{{ androidIcon.mdpi | default('androidIcon.png') }}" density="mdpi" />
-        <icon src="{{ androidIcon.hdpi | default('androidIcon.png') }}" density="hdpi" />
-        <icon src="{{ androidIcon.xhdpi | default('androidIcon.png') }}" density="xhdpi" />
+        <icon src="{{ androidIcon.ldpi | default('androidIcon.png') if androidIcon is defined else 'androidIcon.png' }}" density="ldpi" />
+        <icon src="{{ androidIcon.mdpi | default('androidIcon.png') if androidIcon is defined else 'androidIcon.png' }}" density="mdpi" />
+        <icon src="{{ androidIcon.hdpi | default('androidIcon.png') if androidIcon is defined else 'androidIcon.png' }}" density="hdpi" />
+        <icon src="{{ androidIcon.xhdpi | default('androidIcon.png') if androidIcon is defined else 'androidIcon.png' }}" density="xhdpi" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />

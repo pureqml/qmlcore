@@ -350,7 +350,7 @@ class component_generator(object):
 			path, name = _name
 			if path or not self.prototype: #sync with condition below
 				continue
-			code = process(code, self, registry, args)
+			code = process(code, self, registry, ['key', 'event'])
 			r.append("%s_globals.core._protoOnKey(%s, '%s', (function(key, event) %s ))" %(ident, self.proto_name, name, code))
 
 

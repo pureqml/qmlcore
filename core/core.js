@@ -46,13 +46,33 @@ exports.core.safeCall = function(self, args, onError) {
 /**
  * @constructor
  */
-var CoreObjectComponent = exports.core.CoreObject = function() { }
+var CoreObjectComponent = exports.core.CoreObject = function() {
+	this._local = {}
+}
+
 var CoreObjectComponentPrototype = CoreObjectComponent.prototype
 CoreObjectComponentPrototype.componentName = 'core.CoreObject'
 CoreObjectComponentPrototype.constructor = CoreObjectComponent
 CoreObjectComponentPrototype.__create = function() { }
 CoreObjectComponentPrototype.__setup = function() { }
 
+///@private gets object by id
+CoreObjectComponentPrototype._get = function(name, unsafe) {
+	if (name in this)
+		return this[name]
+
+	var object = this
+	while(object) {
+		if (name in object._local)
+			return object._local[name]
+		object = object.parent
+	}
+
+	if (unsafe)
+		return null
+	else
+		throw new Error("invalid property requested: '" + name + "'")
+}
 
 /** @constructor */
 var Color = exports.core.Color = function(value) {

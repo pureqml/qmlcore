@@ -6,7 +6,6 @@ EventEmitter {
 		this.children = []
 
 		this._context = parent? parent._context: null
-		this._local = {}
 		if (_delegate === true)
 			this._local['_delegate'] = this
 		this._changedHandlers = {}
@@ -132,24 +131,6 @@ EventEmitter {
 
 		if (hasHandlers)
 			handlers.forEach(invoker)
-	}
-
-	///@private gets object by id
-	function _get (name, unsafe) {
-		if (name in this)
-			return this[name]
-
-		var object = this
-		while(object) {
-			if (name in object._local)
-				return object._local[name]
-			object = object.parent
-		}
-
-		if (unsafe)
-			return null
-		else
-			throw new Error("invalid property requested: '" + name + "'")
 	}
 
 	///@private patch property storage directly without signalling. You normally don't need it

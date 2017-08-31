@@ -4,6 +4,7 @@ exports.core.device = 0
 exports.core.vendor = ""
 
 exports.core.trace = { key: false, focus: false, listeners: false }
+exports.core.__videoBackends = {}
 
 /* ${init.js} */
 

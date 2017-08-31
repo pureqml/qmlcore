@@ -248,10 +248,14 @@ def build(root, platform, apps, app, manifest):
 
 	subplatforms = [platform]
 	subplatforms_manifests = [manifest]
+	subplatform_visited = set()
 	while subplatforms:
 		subplatforms_next = []
 
 		for subplatform in subplatforms:
+			if subplatform in subplatform_visited:
+				continue
+			subplatform_visited.add(subplatform)
 			subplatform_path = find_platform_path(root, plugins_path, subplatform)
 			options.append(subplatform_path)
 

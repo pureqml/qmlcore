@@ -189,14 +189,14 @@ Item {
 
 	///@private
 	onCompleted: {
-		if (this.autoPlay && this.source)
-			this.play()
-
 		volumeStorage.read()
 		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0
 
 		var player = this._getPlayer()
 		if (player)
 			player.setBackgroundColor(this.backgroundColor)
+
+		if (this.autoPlay && this.source)
+			this.play()
 	}
 }

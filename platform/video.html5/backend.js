@@ -69,6 +69,10 @@ Player.prototype.setMute = function(muted) {
 	this.element.dom.muted = muted
 }
 
+Player.prototype.setRect = function(l, t, r, b) {
+	//not needed in this port
+}
+
 Player.prototype.setBackgroundColor = function(color) {
 	var Color = _globals.core.Color
 	this.element.dom.style.backgroundColor = new Color(color).rgba()

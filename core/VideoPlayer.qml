@@ -114,6 +114,18 @@ Item {
 			player.setVolume(this.volume)
 	}
 
+	///@private
+	function _scheduleLayout() {
+		this._context.delayedAction('layout', this, this._doLayout)
+	}
+
+	///@private
+	function _doLayout() {
+		var player = this._getPlayer()
+		if (player)
+			player.setRect.apply(player, this.toScreen())
+	}
+
 	///stop video
 	stop: { this.pause() }
 
@@ -179,12 +191,8 @@ Item {
 			this.play()
 	}
 
-	///@private
-	onWidthChanged: {
-	}
-
-	///@private
-	onHeightChanged: {
+	onBoxChanged: {
+		this._scheduleLayout()
 	}
 
 	///@private

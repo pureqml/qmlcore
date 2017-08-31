@@ -19,15 +19,8 @@ Item {
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
 
-	///@private
-	function _update(name, value) {
-		switch (name) {
-			case 'loop': this.element.dom.loop = value; break
-			case 'backgroundColor': if (!this.flash) this.element.dom.style.backgroundColor = value; break
-		}
-
-		qml.core.Item.prototype._update.apply(this, arguments);
-	}
+	onLoopChanged: { this.element.dom.loop = value }
+	onBackgroundColorChanged: { if (!this.flash) this.element.dom.style.backgroundColor = value }
 
 	///@private
 	getFlashMovieObject(movieName):

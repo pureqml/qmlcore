@@ -14,14 +14,58 @@ Item {
 	property bool	waiting;	///< wating flag while video is seeking and not ready to continue playing
 	property bool	seeking;	///< seeking flag
 	property bool	autoPlay;	///< play video immediately after source changed
-	property int	duration;	///< content duration in seconds (valid only for not live videos)
+	property int	duration;	///< content duration in seconds (only for non-live videos)
 	property int	progress;	///< current playback progress in seconds
-	property int	buffered;	///< buffered contetnt in seconds
+	property int	buffered;	///< how much content to buffer in seconds
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
 
-	onLoopChanged: { this.element.dom.loop = value }
-	onBackgroundColorChanged: { this.element.dom.style.backgroundColor = value }
+	///@private
+	constructor: {
+		this.impl = null
+	}
+
+	function _getPlayer() {
+		if (this.impl === null)
+			this._createPlayer(this)
+		return this.impl
+	}
+
+	function _createPlayer() {
+		if (this.impl)
+			return this.impl
+
+		var source = this.source
+		if (!source)
+			return
+
+		var preferred = this.backend
+		log('preferred backend: ' + preferred)
+		var backends = _globals.core.__videoBackends
+		var results = []
+		for(var i in backends) {
+			var backend = backends[i]()
+			var score = backend.probeUrl(source)
+			if (score > 0)
+				results.push({ backend: backend, score: score })
+		}
+		results.sort(function(a, b) { return b.score - a.score })
+		if (results.length === 0)
+			throw new Error('no backends for source ' + source)
+		return this.impl = results[0].backend.createPlayer(this)
+	}
+
+	onLoopChanged: {
+		var player = this._getPlayer()
+		if (player)
+			setLoop(value)
+	}
+
+	onBackgroundColorChanged: {
+		var player = this._getPlayer()
+		if (player)
+			setBackgroundColor(value)
+	}
 
 	///play video
 	play: {
@@ -29,25 +73,31 @@ Item {
 			return
 
 		log("play", this.source)
-		this.element.dom.play()
+		var player = this._getPlayer()
+		if (player)
+			player.play()
 		this.applyVolume();
 	}
 
 	/**@param value:int seek time in seconds
 	seek video on 'value' seconds respectivly current playback progress*/
 	seek(value): {
-		this.element.dom.currentTime += value
+		var player = this._getPlayer()
+		if (player)
+			player.seek(value)
 	}
 
 	/**@param value:int progress time in seconds
 	set video progres to fixed second*/
 	seekTo(value): {
-		this.element.dom.currentTime = value
+		var player = this._getPlayer()
+		if (player)
+			player.seekTo(value)
 	}
 
 	///@private
 	onAutoPlayChanged: {
-		if (value)
+		if (value) //fixme: and not currently playing
 			this.play()
 	}
 
@@ -59,7 +109,9 @@ Item {
 			this.volume = 0.0;
 
 		volumeStorage.value = this.volume
-		this.element.dom.volume = this.volume
+		var player = this._getPlayer()
+		if (player)
+			player.setVolume(this.volume)
 	}
 
 	///stop video
@@ -67,7 +119,9 @@ Item {
 
 	///pause video
 	pause: {
-		this.element.dom.pause()
+		var player = this._getPlayer()
+		if (player)
+			player.pause()
 	}
 
 	///increase current volume
@@ -77,7 +131,7 @@ Item {
 	volumeDown:			{ this.volume -= 0.1 }
 
 	///toggle volume mute on\off
-	toggleMute:			{ this.element.dom.muted = !this.element.dom.muted }
+	toggleMute:			{ var player = this._getPlayer(); if (player) player.setMute(!this.muted) }
 
 	///@private
 	onVolumeChanged:	{ this.applyVolume() }
@@ -89,7 +143,7 @@ Item {
 	onError: {
 		this.paused = false
 		this.waiting = false
-		var player = this.element.dom
+		var player = this._getPlayer()
 
 		if (!player || !player.error)
 			return
@@ -117,54 +171,10 @@ Item {
 	}
 
 	///@private
-	constructor: {
-		var player = context.createVideoPlayer()
-		var player
-
-			player = this._context.createElement('video')
-			player.dom.preload = "metadata"
-
-			var dom = player.dom
-			var self = this
-			player.on('play', function() { self.waiting = false; self.paused = dom.paused }.bind(this))
-			player.on('error', function() { log("Player error occured"); self.error() }.bind(this))
-			player.on('pause', function() { self.paused = dom.paused }.bind(this))
-			player.on('ended', function() { self.finished() }.bind(this))
-			player.on('seeked', function() { log("seeked"); self.seeking = false; self.waiting = false }.bind(this))
-			player.on('canplay', function() { log("canplay", dom.readyState); self.ready = dom.readyState }.bind(this))
-			player.on('seeking', function() { log("seeking"); self.seeking = true; self.waiting = true }.bind(this))
-			player.on('waiting', function() { log("waiting"); self.waiting = true }.bind(this))
-			player.on('stolled', function() { log("Was stolled", dom.networkState); }.bind(this))
-			player.on('emptied', function() { log("Was emptied", dom.networkState); }.bind(this))
-			player.on('volumechange', function() { self.muted = dom.muted }.bind(this))
-			player.on('canplaythrough', function() { log("Canplaythrough"); }.bind(this))
-
-			player.on('timeupdate', function() {
-				self.waiting = false
-				if (!self.seeking)
-					self.progress = dom.currentTime
-			}.bind(this))
-
-			player.on('durationchange', function() {
-				var d = dom.duration
-				self.duration = isFinite(d) ? d : 0
-			}.bind(this))
-
-			player.on('progress', function() {
-				var last = dom.buffered.length - 1
-				self.waiting = false
-				if (last >= 0)
-					self.buffered = dom.buffered.end(last) - dom.buffered.start(last)
-			}.bind(this))
-
-		this.element.remove()
-		this.element = player
-		this.parent.element.append(this.element)
-	}
-
-	///@private
 	onSourceChanged: {
-		this.element.dom.src = value
+		var player = this._getPlayer()
+		if (player)
+			player.setSource(value)
 		if (this.autoPlay)
 			this.play()
 	}
@@ -185,6 +195,8 @@ Item {
 		volumeStorage.read()
 		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0
 
-		this.element.dom.style.backgroundColor = this.backgroundColor;
+		var player = this._getPlayer()
+		if (player)
+			player.setBackgroundColor(this.backgroundColor)
 	}
 }

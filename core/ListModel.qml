@@ -6,6 +6,7 @@ Object {
 	signal rowsRemoved;		///< rows removed signal
 
 	property int count;		///< model rows count
+	property array data;	///< declarative way of assigning data
 
 	///@private
 	constructor: {
@@ -19,6 +20,7 @@ Object {
 		this.count = this._rows.length
 		this.reset()
 	}
+	onDataChanged: { this.assign(value) }
 
 	///clear whole model data
 	function clear() { this.assign([]) }

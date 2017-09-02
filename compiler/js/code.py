@@ -43,14 +43,15 @@ def parse_deps(parent, text):
 	for m in gets_re.finditer(text):
 		gets = (m.group(1) + m.group(2)).split('.')
 		gets = map(lambda x: parent if x == 'this' else x, gets)
+		#refactor this mess, remove _get from IL
 		target = gets[-1]
 		target = target[target.index('\'') + 1:target.rindex('\'')]
 		gets = gets[:-1]
-		path = ".".join(gets)
-		if target == 'model':
+		if target == 'model' and len(gets) == 1:
 			signal = '_row' if m.group(3) != 'index' else '_rowIndex'
 			deps.add(("%s._get('_delegate')" %parent, signal))
 		else:
+			path = ".".join(gets)
 			deps.add((path, target))
 
 	for m in tr_re.finditer(text):

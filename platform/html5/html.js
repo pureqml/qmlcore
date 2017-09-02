@@ -207,9 +207,11 @@ ElementPrototype.addClass = function(cls) {
 
 ElementPrototype.appendChildren = function(children) {
 	var dom = this.dom
+	var fragment = document.createDocumentFragment();
 	children.forEach(function(child) {
-		dom.appendChild(child)
-	})
+		fragment.appendChild(child)
+	});
+	dom.appendChild(fragment);
 }
 
 ElementPrototype.removeChildren = function(ui) {

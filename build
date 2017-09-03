@@ -19,12 +19,13 @@ parser = argparse.ArgumentParser('qmlcore build tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
 parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
-parser.add_argument('--web-prefix', '-p', action='store_true', default=False, help='web prefix for hybrid sites/apps')
+parser.add_argument('--web-prefix', '-W', action='store_true', default=False, help='web prefix for hybrid sites/apps')
 parser.add_argument('--update-translation', '-u', action='store_true', default=False, help='update translation only')
 parser.add_argument('--boilerplate', action='store_true', default = False, help = 'create simple skeleton project')
 parser.add_argument('--doc', '-D', help='generate documentation in given directory')
 parser.add_argument('--doc-format', '-Df', help='documentation format ("qml", "md" or "json")')
 parser.add_argument('--release', '-r', help='generate release code (no logs)', default = False, action = 'store_true')
+parser.add_argument('--platform', '-p', help='generate code for platform <platform>')
 parser.add_argument('--verbose', '-v', help='adds verbosity in some places', dest='verbose', default=False, action='store_true')
 parser.add_argument('targets', nargs='*', help='targets to build')
 args = parser.parse_args()
@@ -377,6 +378,9 @@ else:
 platforms = manifest.platforms
 if not platforms:
 	platforms = ['web']
+
+if args.platform:
+	platforms = [args.platform]
 
 targets = set(args.targets)
 

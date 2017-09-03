@@ -26,7 +26,8 @@ StyleCachePrototype.update = function(element, name) {
 	var cache = this._cache
 	var id = element._uniqueId
 	var entry = cache[id]
-	if (entry !== undefined) {
+	var undef
+	if (entry !== undef) {
 		if (!entry.data[name]) {
 			entry.data[name] = true
 			++entry.size
@@ -42,7 +43,8 @@ StyleCachePrototype.update = function(element, name) {
 StyleCachePrototype.pop = function(element) {
 	var id = element._uniqueId
 	var data = this._cache[id]
-	if (data === undefined)
+	var undef
+	if (data === undef)
 		return
 
 	delete this._cache[id]
@@ -85,7 +87,8 @@ StyleClassifierPrototype.register = function(rules) {
 	var rule = rules.join(';')
 	var classes = this.classes
 	var cls = classes[rule]
-	if (cls !== undefined)
+	var undef
+	if (cls !== undef)
 		return cls
 
 	var cls = classes[rule] = this.prefix + this.classes_total++
@@ -124,7 +127,8 @@ if (navigator.userAgent.toLowerCase().indexOf('webkit') >= 0)
 
 var getPrefixedName = function(name) {
 	var prefixedName = _modernizrCache[name]
-	if (prefixedName === undefined)
+	var undef
+	if (prefixedName === undef)
 		_modernizrCache[name] = prefixedName = window.Modernizr.prefixedCSS(name)
 	return prefixedName
 }
@@ -217,11 +221,11 @@ ElementPrototype.appendChildren = function(children) {
 
 ElementPrototype.removeChildren = function(ui) {
 	var removedChildren = []
-
+	var undef
 	var dom = this.dom
 	ui.children.forEach(function(child) {
 		var element = child.element
-		if (element !== undefined) {
+		if (element !== undef) {
 			var childNode = element.dom
 			if (childNode.parentNode === dom) {
 				dom.removeChild(childNode)
@@ -237,7 +241,8 @@ ElementPrototype.setHtml = function(html, component) {
 	this._widthAdjust = 0 //reset any text related rounding corrections
 	var dom = this.dom
 	var children
-	if (component !== undefined)
+	var undef
+	if (component !== undef)
 		children = this.removeChildren(component)
 	else
 		children = []
@@ -267,7 +272,8 @@ ElementPrototype.fullHeight = function() {
 
 ElementPrototype.style = function(name, style) {
 	var cache = this._context._styleCache
-	if (style !== undefined) {
+	var undef
+	if (style !== undef) {
 		if (style !== '') //fixme: replace it with explicit 'undefined' syntax
 			this._styles[name] = style
 		else
@@ -324,10 +330,11 @@ ElementPrototype.updateStyle = function(updated) {
 		return
 
 	var populate = false
+	var undef
 
-	if (updated === undefined) {
+	if (updated === undef) {
 		updated = this._context._styleCache.pop(this)
-		if (updated === undefined) //no update at all
+		if (updated === undef) //no update at all
 			return
 	}
 	//log('styles updated:', updated.size, ', threshold', populateStyleThreshold)
@@ -744,7 +751,8 @@ exports.setAnimation = function (component, name, animation) {
 		return false
 
 	var css = cssMappings[name]
-	return css !== undefined? setTransition(component, css, animation): false
+	var undef
+	return css !== undef ? setTransition(component, css, animation): false
 }
 
 var Modernizr = window.Modernizr

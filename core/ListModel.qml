@@ -110,4 +110,8 @@ Object {
 	function addChild(child) {
 		this.append(child)
 	}
+
+	function forEach(callback) {
+		return this._rows.forEach(callback)
+	}
 }

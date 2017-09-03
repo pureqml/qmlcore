@@ -53,12 +53,7 @@ class generator(object):
 			return root_type
 
 		original_name = name
-		dot = name.rfind('.')
-		if dot >= 0:
-			name_package = name[:dot]
-			name = name[dot + 1:]
-		else:
-			name_package = ''
+		name_package, name = split_name(name)
 
 		if register_used and package in self.packages and name in self.packages[package]:
 			self.used_components.add(package + '.' + name)

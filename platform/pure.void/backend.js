@@ -133,6 +133,10 @@ exports.setText = function(text, html) {
 	text.element.setHtml(html)
 }
 
+exports.setAnimation = function () {
+	return false
+}
+
 exports.requestAnimationFrame = function(callback) {
 	return setTimeout(callback, 0)
 }

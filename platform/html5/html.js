@@ -43,7 +43,8 @@ StyleCachePrototype.update = function(element, name) {
 StyleCachePrototype.pop = function(element) {
 	var id = element._uniqueId
 	var data = this._cache[id]
-	if (data === undefined)
+	var undef
+	if (data === undef)
 		return
 
 	delete this._cache[id]
@@ -126,7 +127,8 @@ if (navigator.userAgent.toLowerCase().indexOf('webkit') >= 0)
 
 var getPrefixedName = function(name) {
 	var prefixedName = _modernizrCache[name]
-	if (prefixedName === undefined)
+	var undef
+	if (prefixedName === undef)
 		_modernizrCache[name] = prefixedName = window.Modernizr.prefixedCSS(name)
 	return prefixedName
 }
@@ -326,10 +328,11 @@ ElementPrototype.updateStyle = function(updated) {
 		return
 
 	var populate = false
+	var undef
 
-	if (updated === undefined) {
+	if (updated === undef) {
 		updated = this._context._styleCache.pop(this)
-		if (updated === undefined) //no update at all
+		if (updated === undef) //no update at all
 			return
 	}
 	//log('styles updated:', updated.size, ', threshold', populateStyleThreshold)

@@ -53,8 +53,11 @@ StyleCachePrototype.apply = function() {
 	var cache = this._cache
 	this._cache = {}
 
-	for(var id in cache) {
-		var entry = cache[id]
+	var styles = Object.keys(cache);
+	var stylesLength = styles.length;
+	
+	for (var i = 0; i < stylesLength; i++) {
+		var entry = cache[styles[i]]
 		entry.element.updateStyle(entry)
 	}
 }
@@ -272,13 +275,15 @@ ElementPrototype.style = function(name, style) {
 			delete this._styles[name]
 		cache.update(this, name)
 	} else if (name instanceof Object) { //style({ }) assignment
-		for(var k in name) {
-			var value = name[k]
+		var styles = Object.keys(name);
+		var stylesLength = styles.length;
+		for (var i = 0; i < stylesLength; i++) {
+			var value = name[styles[i]]
 			if (value !== '') //fixme: replace it with explicit 'undefined' syntax
-				this._styles[k] = value
+				this._styles[styles[i]] = value
 			else
-				delete this._styles[k]
-			cache.update(this, k)
+				delete this._styles[styles[i]]
+			cache.update(this, styles[i])
 		}
 	}
 	else
@@ -339,7 +344,10 @@ ElementPrototype.updateStyle = function(updated) {
 
 	var cache = this._context._styleClassifier
 	var rules = []
-	for(var name in updated) {
+	var styles = Object.keys(updated);
+	var stylesLength = styles.length;
+	for (var i = 0; i < stylesLength; i++) {
+		var name = styles[i];
 		var value = this._styles[name]
 
 		var prefixedName = getPrefixedName(name)

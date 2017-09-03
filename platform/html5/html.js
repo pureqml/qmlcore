@@ -170,13 +170,20 @@ exports.loadExternalStylesheet = function(url) {
 
 var lastId = 0
 
+var nodesCache = {};
+
 /**
  * @constructor
  */
-
+ 
 exports.Element = function(context, tag) {
-	if (typeof tag === 'string')
-		this.dom = document.createElement(tag)
+	if (typeof tag === 'string') {
+		if (!nodesCache[tag]) {
+			nodesCache[tag] = document.createElement(tag);
+		}
+		this.dom = nodesCache[tag].cloneNode(false);
+	}
+		
 	else
 		this.dom = tag
 

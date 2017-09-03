@@ -15,14 +15,21 @@ EventEmitter {
 		this._updaters = {}
 	}
 
+	/// remove changed connection
+	function _removeChangedConnection(connection) {
+		connection[0].removeOnChanged(connection[1], connection[2])
+	}
+	
+	function _discardChild(child) {
+		child.discard()
+	}
+	
 	/// discard object
 	function discard() {
-		this._changedConnections.forEach(function(connection) {
-			connection[0].removeOnChanged(connection[1], connection[2])
-		})
+		this._forEach(this._changedConnections,this._removeChangedConnection)
 		this._changedConnections = []
 
-		this.children.forEach(function(child) { child.discard() })
+		this._forEach(this.children,this._discardChild)
 		this.children = []
 
 		this.parent = null
@@ -67,6 +74,14 @@ EventEmitter {
 		target.onChanged(name, callback)
 		this._changedConnections.push([target, name, callback])
 	}
+	
+	///@private _forEach
+	function _forEach(elements, modificator) {
+		var length = elements.length;
+		for (var i = 0; i < length; i++) {
+			modificator(elements[i]);
+		}
+	}
 
 	///@private removes 'on changed' callback
 	function removeOnChanged(name, callback) {
@@ -80,17 +95,21 @@ EventEmitter {
 		}
 	}
 
+	
+	/// @private removes dynamic value
+	function _removeOnChanged(data) {
+		var object = data[0]
+		var name = data[1]
+		var callback = data[2]
+		object.removeOnChanged(name, callback)
+	}
+	
 	/// @private removes dynamic value updater
 	function _replaceUpdater (name, newUpdaters) {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
 		if (oldUpdaters !== undefined) {
-			oldUpdaters.forEach(function(data) {
-				var object = data[0]
-				var name = data[1]
-				var callback = data[2]
-				object.removeOnChanged(name, callback)
-			})
+			this._forEach(oldUpdaters, this._removeOnChanged);
 		}
 
 		if (newUpdaters)
@@ -127,10 +146,10 @@ EventEmitter {
 		var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 
 		if (hasProtoCallbacks)
-			protoCallbacks.forEach(invoker)
+			this._forEach(protoCallbacks,invoker)
 
 		if (hasHandlers)
-			handlers.forEach(invoker)
+			this._forEach(handlers,invoker)
 	}
 
 	///@private patch property storage directly without signalling. You normally don't need it

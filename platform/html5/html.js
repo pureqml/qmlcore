@@ -170,19 +170,18 @@ exports.loadExternalStylesheet = function(url) {
 
 var lastId = 0
 
+var nodesCache = {};
+
 /**
  * @constructor
  */
-
+ 
 exports.Element = function(context, tag) {
-	if (!window.nodesToClone) {
-		window.nodesToClone = {};
-	}
 	if (typeof tag === 'string') {
-		if (!window.nodesToClone[tag]) {
-			window.nodesToClone[tag] = document.createElement(tag);
+		if (!nodesCache[tag]) {
+			nodesCache[tag] = document.createElement(tag);
 		}
-		this.dom = window.nodesToClone[tag].cloneNode(false);
+		this.dom = nodesCache[tag].cloneNode(false);
 	}
 		
 	else

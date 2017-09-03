@@ -145,6 +145,9 @@ exports.cancelAnimationFrame = function (timer) {
 	clearTimeout(timer)
 }
 
+exports.tick = function(ctx) {
+}
+
 var Renderer = function(w, h) {
 	this.width = w
 	this.height = h

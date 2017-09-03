@@ -175,8 +175,16 @@ var lastId = 0
  */
 
 exports.Element = function(context, tag) {
-	if (typeof tag === 'string')
-		this.dom = document.createElement(tag)
+	if (!window.nodesToClone) {
+		window.nodesToClone = {};
+	}
+	if (typeof tag === 'string') {
+		if (!window.nodesToClone[tag]) {
+			window.nodesToClone[tag] = document.createElement(tag);
+		}
+		this.dom = window.nodesToClone[tag].cloneNode(false);
+	}
+		
 	else
 		this.dom = tag
 

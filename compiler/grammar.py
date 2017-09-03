@@ -129,7 +129,7 @@ def handle_number(s, l, t):
 
 def handle_bool_value(s, l, t):
 	value = t[0]
-	return value == 'true'
+	return value
 
 expression = Forward()
 expression_list = delimitedList(expression, ",")

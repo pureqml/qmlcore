@@ -1,11 +1,14 @@
 import re
 
-def get_package(name):
-	return ".".join(name.split(".")[:-1])
-
 def split_name(name):
-	r = name.split(".")
-	return ".".join(r[:-1]), r[-1]
+	dot = name.rfind('.')
+	if dot >= 0:
+		return name[:dot], name[dot + 1:]
+	else:
+		return '', name
+
+def get_package(name):
+	return split_name(name)[0]
 
 _escape_re = re.compile('\W')
 def escape(name):

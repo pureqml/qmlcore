@@ -17,6 +17,7 @@ from distutils import dir_util
 
 parser = argparse.ArgumentParser('qmlcore build tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
+parser.add_argument('--no-minify', '-M', action='store_true', default=False, help='force non-minified code generation')
 parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
 parser.add_argument('--web-prefix', '-W', action='store_true', default=False, help='web prefix for hybrid sites/apps')
@@ -297,7 +298,7 @@ def build(root, platform, apps, app, manifest):
 		call([path.join(root, 'qml-compiler')] + options)
 	script = 'qml.%s.js' %app #fixme
 
-	if args.minify or manifest.minify:
+	if not args.no_minify and (args.minify or manifest.minify):
 		script = minify(root, target, app, platform, manifest)
 	templater = manifest.templater
 

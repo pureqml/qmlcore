@@ -280,7 +280,7 @@ ElementPrototype.style = function(name, style) {
 		else
 			delete this._styles[name]
 		cache.update(this, name)
-	} else if (name instanceof Object) { //style({ }) assignment
+	} else if (typeof name === 'object') { //style({ }) assignment
 		for(var k in name) {
 			var value = name[k]
 			if (value !== '') //fixme: replace it with explicit 'undefined' syntax

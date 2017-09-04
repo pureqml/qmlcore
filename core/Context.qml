@@ -36,18 +36,18 @@ Item {
 	}
 
 	///@private
-	function registerStyle(item, tag) {
-		if (!(tag in this._stylesRegistered)) {
-			item.registerStyle(this.stylesheet, tag)
-			this._stylesRegistered[tag] = true
+	function registerStyle(item, tag, cls) {
+		if (!(tag + cls in this._stylesRegistered)) {
+			item.registerStyle(this.stylesheet, tag, cls)
+			this._stylesRegistered[tag + cls] = true
 		}
 	}
 
 	///@private
-	function createElement(tag) {
-		var el = this.backend.createElement(this, tag)
-		if (this._prefix) {
-			el.addClass(this.getClass('core-item'))
+	function createElement(tag, cls) {
+		var el = this.backend.createElement(this, tag, cls)
+		if (cls) {
+			el.addClass(cls)
 		}
 		return el
 	}

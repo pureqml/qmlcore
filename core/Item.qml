@@ -42,7 +42,7 @@ Object {
 			if (this.element)
 				throw new Error('double ctor call')
 
-			this.createElement(this.getTag())
+			this.createElement(this.getTag(), this.getClass())
 		} //no parent == top level element, skip
 	}
 
@@ -57,16 +57,19 @@ Object {
 	/// returns tag for corresponding element
 	function getTag() { return 'div' }
 
+	/// returns tag for corresponding element
+	function getClass() { return '' }
+
 	///@private
-	function registerStyle(style, tag) {
-		style.addRule(tag, 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
+	function registerStyle(style, tag, cls) {
+		style.addRule(tag + (cls ? '.' + cls : ''), 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
 	}
 
 	/// default implementation of element creation routine.
-	function createElement(tag) {
-		this.element = this._context.createElement(tag)
+	function createElement(tag, cls) {
+		this.element = this._context.createElement(tag, cls)
 		this.element._item = this
-		this._context.registerStyle(this, tag)
+		this._context.registerStyle(this, tag, cls)
 		this.parent.element.append(this.element)
 	}
 

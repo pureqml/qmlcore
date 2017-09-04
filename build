@@ -28,6 +28,7 @@ parser.add_argument('--doc-format', '-Df', help='documentation format ("qml", "m
 parser.add_argument('--release', '-r', help='generate release code (no logs)', default = False, action = 'store_true')
 parser.add_argument('--platform', '-p', help='generate code for platform <platform>')
 parser.add_argument('--verbose', '-v', help='adds verbosity in some places', dest='verbose', default=False, action='store_true')
+parser.add_argument('--jobs', '-j', help='run N jobs in parallel', default=1, nargs='?')
 parser.add_argument('targets', nargs='*', help='targets to build')
 args = parser.parse_args()
 
@@ -288,6 +289,12 @@ def build(root, platform, apps, app, manifest):
 
 	if args.web_prefix or manifest.web_prefix:
 		options.insert(0, '-p')
+
+	if args.jobs != 1:
+		if args.jobs is None:
+			options.append('-j')
+		else:
+			options.extend(['-j', args.jobs])
 
 	if verbose:
 		options.insert(0, '-v')

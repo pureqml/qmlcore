@@ -183,7 +183,6 @@ exports.Element = function(context, tag) {
 		}
 		this.dom = nodesCache[tag].cloneNode(false);
 	}
-		
 	else
 		this.dom = tag
 

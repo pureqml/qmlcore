@@ -16,6 +16,8 @@ import inspect
 import json
 import sys
 
+from multiprocessing import Pool, cpu_count
+
 root = os.path.dirname(sys.argv[0])
 with open(os.path.join(root, 'partners.json')) as f:
 	partners = json.load(f)
@@ -70,6 +72,10 @@ with open(args.manifest) as f:
 	root_manifest = compiler.manifest.load(f)
 root_manifest_props = {}
 
+jobs = int(args.jobs) if args.jobs is not None else cpu_count()
+
+if args.verbose:
+	print 'running using %d jobs' %jobs
 
 def check_file(filename):
 	if filename[0] == '.':
@@ -101,7 +107,7 @@ def parse_qml_file(com, path):
 			raise
 
 
-def process_file(generator, app, package, dirpath, filename):
+def process_file(pool, generator, app, package, dirpath, filename):
 	name, ext = os.path.splitext(filename)
 	if name[0] == '.':
 		return
@@ -114,11 +120,7 @@ def process_file(generator, app, package, dirpath, filename):
 				#print "skipping", name
 				return
 
-		tree = parse_qml_file(com, path)
-		assert(len(tree) == 1)
-		if documentation and name[0].isupper():
-			documentation.add(com, tree[0])
-		generator.add_component(com, tree[0], name[0].isupper())
+		return (com, name[0].isupper(), pool.apply_async(parse_qml_file, (com, path)))
 	elif ext == ".js":
 		with open(path) as f:
 			data = f.read()
@@ -127,6 +129,12 @@ def process_file(generator, app, package, dirpath, filename):
 		generator.add_js(com, data)
 	elif ext == '.ts':
 		generator.add_ts(path)
+
+def finalize_qml_file(generator, name, is_component, tree):
+	assert len(tree) == 1
+	if documentation and is_component:
+		documentation.add(name, tree[0])
+	generator.add_component(name, tree[0], is_component)
 
 
 notifier = None
@@ -146,7 +154,8 @@ if args.wait:
 
 	notifier = pyinotify.Notifier(wm, process_event)
 
-def process_files(generator, app, dirs):
+def process_files(pool, generator, app, dirs):
+	promises = []
 	for project_dir in dirs:
 		path = project_dir.split(os.path.sep)
 		package_dir = project_dir
@@ -182,7 +191,12 @@ def process_files(generator, app, dirs):
 					relpath = relpath.split(os.path.sep)
 
 				package = ".".join([package_name] + relpath)
-				process_file(generator, app, package, dirpath, filename)
+				promise = process_file(pool, generator, app, package, dirpath, filename)
+				if promise is not None:
+					promises.append(promise)
+
+	for name, is_component, promise in promises:
+		finalize_qml_file(generator, name, is_component, promise.get())
 
 def generate():
 	namespace = "qml"
@@ -203,7 +217,21 @@ def generate():
 
 	init_js = generator.replace_args(init_js)
 
-	process_files(generator, args.app, project_dirs)
+	def init_worker():
+		import signal
+		signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+	try:
+		pool = Pool(jobs, init_worker)
+		process_files(pool, generator, args.app, project_dirs)
+	except KeyboardInterrupt:
+		pool.terminate()
+		pool.join()
+		sys.exit(1)
+	else:
+		pool.close()
+		pool.join()
+
 	if root_manifest:
 		root_manifest_props.update(root_manifest.properties)
 

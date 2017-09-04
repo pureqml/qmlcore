@@ -120,7 +120,11 @@ def process_file(pool, generator, app, package, dirpath, filename):
 				#print "skipping", name
 				return
 
-		return (com, name[0].isupper(), pool.apply_async(parse_qml_file, (com, path)))
+		if pool is not None:
+			return (com, name[0].isupper(), pool.apply_async(parse_qml_file, (com, path)))
+		else:
+			tree = parse_qml_file(com, path)
+			finalize_qml_file(generator, com, name[0].isupper(), tree)
 	elif ext == ".js":
 		with open(path) as f:
 			data = f.read()
@@ -221,16 +225,19 @@ def generate():
 		import signal
 		signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-	try:
-		pool = Pool(jobs, init_worker)
-		process_files(pool, generator, args.app, project_dirs)
-	except KeyboardInterrupt:
-		pool.terminate()
-		pool.join()
-		sys.exit(1)
+	if jobs != 1:
+		try:
+			pool = Pool(jobs, init_worker)
+			process_files(pool, generator, args.app, project_dirs)
+		except KeyboardInterrupt:
+			pool.terminate()
+			pool.join()
+			sys.exit(1)
+		else:
+			pool.close()
+			pool.join()
 	else:
-		pool.close()
-		pool.join()
+		process_files(None, generator, args.app, project_dirs)
 
 	if root_manifest:
 		root_manifest_props.update(root_manifest.properties)

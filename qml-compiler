@@ -77,6 +77,29 @@ def check_file(filename):
 	root, ext = os.path.splitext(filename)
 	return ext in set([".qml", ".js"])
 
+def parse_qml_file(com, path):
+	cached_path = os.path.join(".cache", com)
+	with open(path) as f:
+		data = f.read()
+		h = hashlib.sha1(grammar_digest + data).hexdigest()
+
+	try:
+		with open(cached_path) as f:
+			if f.readline().strip() != h:
+				raise Exception("invalid hash")
+			return cPickle.load(f)
+	except:
+		print "parsing", path, "...", com
+		try:
+			tree = compiler.grammar.parse(data)
+			with open(cached_path, "w") as f:
+				f.write(h + "\n")
+				cPickle.dump(tree, f)
+			return tree
+		except Exception as ex:
+			ex.filename = path
+			raise
+
 
 def process_file(generator, app, package, dirpath, filename):
 	name, ext = os.path.splitext(filename)
@@ -91,27 +114,7 @@ def process_file(generator, app, package, dirpath, filename):
 				#print "skipping", name
 				return
 
-		cached_path = os.path.join(".cache", com)
-		with open(path) as f:
-			data = f.read()
-			h = hashlib.sha1(grammar_digest + data).hexdigest()
-
-		try:
-			with open(cached_path) as f:
-				if f.readline().strip() != h:
-					raise Exception("invalid hash")
-				tree = cPickle.load(f)
-		except:
-			print "parsing", path, "...", com
-			try:
-				tree = compiler.grammar.parse(data)
-				with open(cached_path, "w") as f:
-					f.write(h + "\n")
-					cPickle.dump(tree, f)
-			except Exception as ex:
-				ex.filename = path
-				raise
-
+		tree = parse_qml_file(com, path)
 		assert(len(tree) == 1)
 		if documentation and name[0].isupper():
 			documentation.add(com, tree[0])

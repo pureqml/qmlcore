@@ -93,23 +93,27 @@ Item {
 		this._processingActions = true
 
 		var invoker = this._asyncInvoker
-		var delayedAction = this._delayedActions
+		var delayedActions = this._delayedActions
 		var empty = false
+		var maxLevels = delayedActions.length //must not have changed
 
 		while(!empty) {
-			this._delayedActions.forEach(function(levelActions, level) {
+			for(var level = 0; level < maxLevels; ++level) {
+				var levelActions = delayedActions[level]
 				while (levelActions.length) {
 					//log('actions', level, levelActions.length)
 					var actions = levelActions.splice(0, levelActions.length)
-					actions.forEach(invoker)
+					for(var i = 0, n = actions.length; i < n; ++i)
+						invoker(actions[i])
 				}
-			})
+			}
 
 			empty = true
-			this._delayedActions.forEach(function(levelActions) {
+			for(var level = 0; level < maxLevels; ++level) {
+				var levelActions = delayedActions[level]
 				if (levelActions.length !== 0)
 					empty = false
-			})
+			}
 		}
 
 		this._processingActions = false

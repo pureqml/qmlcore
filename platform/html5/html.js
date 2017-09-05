@@ -120,7 +120,7 @@ StyleClassifierPrototype.classify = function(rules) {
 }
 
 var _modernizrCache = {}
-if (navigator.userAgent.toLowerCase().indexOf('webkit') >= 0)
+if (_globals.core.userAgent.toLowerCase().indexOf('webkit') >= 0)
 	_modernizrCache['appearance'] = '-webkit-appearance'
 
 var getPrefixedName = function(name) {

@@ -51,12 +51,13 @@ Object {
 		var ctx = this._context
 		this.browser = _globals.core.browser
 		this.userAgent = _globals.core.userAgent
-		this.webkit = this.userAgent.toLowerCase().indexOf('webkit') >= 0
 		this.device = _globals.core.device
 		this.vendor = _globals.core.vendor
 		this.os = _globals.core.os
 		this.language = _globals.core.language
+
 		ctx.language = this.language.replace('-', '_')
+		this.webkit = this.userAgent.toLowerCase().indexOf('webkit') >= 0
 
 		this.support3dTransforms = ctx.backend.capabilities.csstransforms3d || false
 		this.supportTransforms = ctx.backend.capabilities.csstransforms || false

@@ -48,14 +48,15 @@ Object {
 
 	/// @private
 	constructor: {
-		var ctx = this._context
+		this.vendor = _globals.core.vendor
+		this.device = _globals.core.device
+		this.os = _globals.core.os
+
 		this.browser = _globals.core.browser
 		this.userAgent = _globals.core.userAgent
-		this.device = _globals.core.device
-		this.vendor = _globals.core.vendor
-		this.os = _globals.core.os
 		this.language = _globals.core.language
 
+		var ctx = this._context
 		ctx.language = this.language.replace('-', '_')
 		this.webkit = this.userAgent.toLowerCase().indexOf('webkit') >= 0
 

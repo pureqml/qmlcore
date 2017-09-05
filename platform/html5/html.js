@@ -22,6 +22,8 @@ var StyleCachePrototype = StyleCache.prototype
 StyleCachePrototype.constructor = StyleCache
 
 StyleCachePrototype.update = function(element, name) {
+	if (typeof name !== 'string')
+		throw new Error('invalid style updated ' + name)
 	//log('update', element._uniqueId, name)
 	var cache = this._cache
 	var id = element._uniqueId
@@ -395,7 +397,6 @@ ElementPrototype.updateStyle = function(updated) {
 }
 
 ElementPrototype.append = function(el) {
-	this._context._styleCache.update(this)
 	this._pendingChildren.push((el instanceof exports.Element)? el.dom: el)
 }
 

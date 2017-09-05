@@ -28,6 +28,8 @@ Item {
 		this._asyncInvoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
 
 		this.backend = _globals._backend()
+
+		this._init()
 	}
 
 	///@private
@@ -53,12 +55,17 @@ Item {
 	}
 
 	///@private
-	function init() {
+	function _init() {
 		log('Context: initializing...')
 		new this.backend.init(this)
 		var invoker = _globals.core.safeCall(null, [], function (ex) { log("prototype constructor failed:", ex, ex.stack) })
 		__prototype$ctors.forEach(invoker)
 		__prototype$ctors = undefined
+	}
+
+	///@private
+	function init() {
+		this.backend.initSystem(this.system)
 	}
 
 	///@private

@@ -1,6 +1,14 @@
-exports.core.os = navigator.platform
-exports.core.userAgent = navigator.userAgent
-exports.core.language = navigator.language
+if (typeof navigator !== 'undefined') {
+	exports.core.os = navigator.platform
+	exports.core.userAgent = navigator.userAgent
+	exports.core.language = navigator.language
+} else if ((typeof process !== 'undefined') && (process.release.name === 'node')) {
+	exports.core.os = process.platform
+	exports.core.userAgent = process.release.name
+} else {
+	exports.core.os = 'unknown'
+	exports.core.userAgent = 'Unknown'
+}
 
 exports.core.keyCodes = {
 	13: 'Select',
@@ -55,7 +63,7 @@ exports.core.keyCodes = {
 }
 
 var _checkDevice = function(target, info) {
-	if (navigator.userAgent.indexOf(target) < 0)
+	if (exports.core.userAgent.indexOf(target) < 0)
 		return
 
 	exports.core.vendor = info.vendor
@@ -71,19 +79,19 @@ if (!exports.core.vendor) {
 	_checkDevice('iPod', { 'vendor': 'apple', 'device': 2, 'os': 'iOS' })
 }
 
-if (navigator.userAgent.indexOf('Chromium') >= 0)
+if (exports.core.userAgent.indexOf('Chromium') >= 0)
 	exports.core.browser = "Chromium"
-else if (navigator.userAgent.indexOf('Chrome') >= 0)
+else if (exports.core.userAgent.indexOf('Chrome') >= 0)
 	exports.core.browser = "Chrome"
-else if (navigator.userAgent.indexOf('Opera') >= 0)
+else if (exports.core.userAgent.indexOf('Opera') >= 0)
 	exports.core.browser = "Opera"
-else if (navigator.userAgent.indexOf('Firefox') >= 0)
+else if (exports.core.userAgent.indexOf('Firefox') >= 0)
 	exports.core.browser = "Firefox"
-else if (navigator.userAgent.indexOf('Safari') >= 0)
+else if (exports.core.userAgent.indexOf('Safari') >= 0)
 	exports.core.browser = "Safari"
-else if (navigator.userAgent.indexOf('MSIE') >= 0)
+else if (exports.core.userAgent.indexOf('MSIE') >= 0)
 	exports.core.browser = "IE"
-else if (navigator.userAgent.indexOf('YaBrowser') >= 0)
+else if (exports.core.userAgent.indexOf('YaBrowser') >= 0)
 	exports.core.browser = "Yandex"
 else
 	exports.core.browser = ''

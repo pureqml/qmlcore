@@ -195,6 +195,7 @@ exports.Element = function(context, tag) {
 	this._context = context
 	this._styles = {}
 	this._class = ''
+	this._pendingChildren = []
 	this._widthAdjust = 0
 	this._uniqueId = String(++lastId)
 	this._firstChildIndex = 0
@@ -327,6 +328,10 @@ ElementPrototype.updateStyle = function(updated) {
 	if (!element)
 		return
 
+	var pendingChildren = this._pendingChildren
+	this._pendingChildren = []
+	this.appendChildren(pendingChildren)
+
 	var populate = false
 
 	if (updated === undefined) {
@@ -390,7 +395,8 @@ ElementPrototype.updateStyle = function(updated) {
 }
 
 ElementPrototype.append = function(el) {
-	this.dom.appendChild((el instanceof exports.Element)? el.dom: el)
+	this._context._styleCache.update(this)
+	this._pendingChildren.push((el instanceof exports.Element)? el.dom: el)
 }
 
 ElementPrototype.discard = function() {
@@ -400,6 +406,12 @@ ElementPrototype.discard = function() {
 
 ElementPrototype.remove = function() {
 	var dom = this.dom
+	var pendingChildren = this._pendingChildren
+
+	var idx = pendingChildren.indexOf(dom)
+	if (idx >= 0)
+		pendingChildren.splice(idx, 1)
+
 	if (dom.parentNode)
 		dom.parentNode.removeChild(dom)
 }

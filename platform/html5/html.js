@@ -22,21 +22,25 @@ var StyleCachePrototype = StyleCache.prototype
 StyleCachePrototype.constructor = StyleCache
 
 StyleCachePrototype.update = function(element, name) {
-	if (typeof name !== 'string')
-		throw new Error('invalid style updated ' + name)
 	//log('update', element._uniqueId, name)
 	var cache = this._cache
 	var id = element._uniqueId
 	var entry = cache[id]
 	if (entry !== undefined) {
-		if (!entry.data[name]) {
+		if (name === undefined) {
+			entry.all = true
+		} else if (!entry.data[name]) {
 			entry.data[name] = true
 			++entry.size
 		}
 	} else {
 		var data = {}
-		data[name] = true
-		cache[id] = {data: data, element: element, size: 1}
+		entry = {data: data, element: element, size: 1}
+		if (name === undefined)
+			entry.all = true
+		else
+			data[name] = true
+		cache[id] = entry
 	}
 }
 
@@ -342,7 +346,7 @@ ElementPrototype.updateStyle = function(updated) {
 			return
 	}
 	//log('styles updated:', updated.size, ', threshold', populateStyleThreshold)
-	if (updated.size <= populateStyleThreshold) {
+	if (!updated.all && updated.size <= populateStyleThreshold) {
 		updated = updated.data
 	} else {
 		//fallback to old setAttribute('style') strategy
@@ -397,6 +401,7 @@ ElementPrototype.updateStyle = function(updated) {
 }
 
 ElementPrototype.append = function(el) {
+	this._context._styleCache.update(this)
 	this._pendingChildren.push((el instanceof exports.Element)? el.dom: el)
 }
 

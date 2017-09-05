@@ -325,7 +325,7 @@ var cssUnits = {
 }
 
 ElementPrototype.forceLayout = function() {
-	this.updateStyle()
+	this._context._styleCache.apply()
 	return this.dom.offsetWidth | this.dom.offsetHeight
 }
 

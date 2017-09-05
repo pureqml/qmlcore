@@ -502,8 +502,12 @@ exports.init = function(ctx) {
 			}
 		}
 	}) //fixme: add html.Document instead
+}
 
-	var system = ctx.system
+
+//fixme: this is sorta hack, generalize that across other backends
+exports.initSystem = function(system) {
+	var win = system._context.window
 
 	win.on('focus', function() { system.pageActive = true })
 	win.on('blur', function() { system.pageActive = false })

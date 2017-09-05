@@ -194,7 +194,6 @@ exports.Element = function(context, tag) {
 
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
-	this._fragment = []
 	this._styles = {}
 	this._class = ''
 	this._widthAdjust = 0
@@ -429,11 +428,11 @@ WindowPrototype.scrollY = function() {
 	return this.dom.scrollY
 }
 
-exports.getElement = function(tag) {
+exports.getElement = function(ctx, tag) {
 	var tags = document.getElementsByTagName(tag)
 	if (tags.length != 1)
 		throw new Error('no tag ' + tag + '/multiple tags')
-	return new exports.Element(this, tags[0])
+	return new exports.Element(ctx, tags[0])
 }
 
 exports.init = function(ctx) {
@@ -468,7 +467,7 @@ exports.init = function(ctx) {
 		div = html.createElement(ctx, tag)
 		div.dom.id = divId
 		win.on('resize', function() { ctx.width = win.width(); ctx.height = win.height(); });
-		var body = html.getElement('body')
+		var body = html.getElement(ctx, 'body')
 		body.append(div);
 	}
 

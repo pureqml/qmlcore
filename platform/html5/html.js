@@ -27,16 +27,14 @@ StyleCachePrototype.update = function(element, name) {
 	var id = element._uniqueId
 	var entry = cache[id]
 	if (entry !== undefined) {
-		if (name !== undefined && !entry.data[name]) {
+		if (!entry.data[name]) {
 			entry.data[name] = true
 			++entry.size
 		}
 	} else {
 		var data = {}
-		if (name !== undefined)
-			data[name] = true
-		entry = {data: data, element: element, size: 1}
-		cache[id] = entry
+		data[name] = true
+		cache[id] = {data: data, element: element, size: 1}
 	}
 }
 

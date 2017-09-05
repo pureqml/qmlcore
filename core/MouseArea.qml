@@ -37,12 +37,9 @@ Item {
 			var touchEnd = function(event) { this.touchEnd(event) }.bind(this)
 			var touchMove = (function(event) { this.touchMove(event) }).bind(this)
 
-			if ('ontouchstart' in window)
-				this._touchBinder.on('touchstart', touchStart)
-			if ('ontouchend' in window)
-				this._touchBinder.on('touchend', touchEnd)
-			if ('ontouchmove' in window)
-				this._touchBinder.on('touchmove', touchMove)
+			this._touchBinder.on('touchstart', touchStart)
+			this._touchBinder.on('touchend', touchEnd)
+			this._touchBinder.on('touchmove', touchMove)
 		}
 		if (this._touchBinder)
 			this._touchBinder.enable(value)

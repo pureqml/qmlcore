@@ -504,9 +504,9 @@ exports.init = function(ctx) {
 	}) //fixme: add html.Document instead
 
 	var system = ctx.system
-	//fixme: port to event listener?
-	window.onfocus = function() { system.pageActive = true }
-	window.onblur = function() { system.pageActive = false }
+
+	win.on('focus', function() { system.pageActive = true })
+	win.on('blur', function() { system.pageActive = false })
 
 	system.screenWidth = window.screen.width
 	system.screenHeight = window.screen.height

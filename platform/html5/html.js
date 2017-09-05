@@ -402,7 +402,7 @@ ElementPrototype.updateStyle = function(updated) {
 
 ElementPrototype.append = function(el) {
 	this._context._styleCache.update(this)
-	this._pendingChildren.push((el instanceof exports.Element)? el.dom: el)
+	this._pendingChildren.push(el.dom)
 }
 
 ElementPrototype.discard = function() {

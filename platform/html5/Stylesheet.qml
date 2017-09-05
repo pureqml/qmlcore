@@ -9,7 +9,7 @@ Object {
 		this.prefix = options.prefix
 		var divId = options.id
 
-		var div = document.getElementById(divId)
+		var div = document.getElementById(context, divId)
 		var topLevel = div === null
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
@@ -20,7 +20,9 @@ Object {
 			this.mangleRule('video', "{ position: absolute; }") + //fixme: do we need position rule if it's item?
 			this.mangleRule('img', "{ position: absolute; -webkit-touch-callout: none; " + userSelect + " }")
 		)
-		_globals.html5.html.getElement('head').append(style)
+		var head = _globals.html5.html.getElement(context, 'head')
+		head.append(style)
+		head.updateStyle()
 
 		this._addRule = _globals.html5.html.createAddRule(style.dom).bind(this)
 		this._lastId = 0

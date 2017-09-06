@@ -36,6 +36,8 @@ StyleCachePrototype.update = function(element, name) {
 		data[name] = true
 		cache[id] = {data: data, element: element, size: 1}
 	}
+	if (name === 'display')
+		element.updateStyle()
 }
 
 StyleCachePrototype.pop = function(element) {

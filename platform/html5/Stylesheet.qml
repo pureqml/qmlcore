@@ -14,7 +14,7 @@ Object {
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
 		style.setHtml(
-			"div#" + divId + " { position: absolute; visibility: hidden; left: 0px; top: 0px; }" +
+			"div#" + divId + " { position: absolute; display: none; left: 0px; top: 0px; }" +
 			"div." + this._context.getClass('core-text') + " { width: auto; height: auto; }" +
 			(topLevel? "body { padding: 0; margin: 0; border: 0px; overflow: hidden; }": "") + //fixme: do we need style here in non-top-level mode?
 			this.mangleRule('video', "{ position: absolute; }") + //fixme: do we need position rule if it's item?

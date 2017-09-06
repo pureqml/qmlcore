@@ -21,8 +21,8 @@ Item {
 
 	function getClass() { return 'core-text' }
 
-	function registerStyle(style, tag, cls) {
-		style.addRule(tag, cls, '{ width: auto; height: auto; }')
+	function registerStyle(style, tag) {
+		style.addRule(tag, '{ width: auto; height: auto; }')
 	}
 
 	///@private

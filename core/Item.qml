@@ -43,7 +43,7 @@ Object {
 			if (this.element)
 				throw new Error('double ctor call')
 
-			this.createElement(this.getTag(), this.getClass())
+			this._createElement(this.getTag(), this.getClass())
 		} //no parent == top level element, skip
 	}
 
@@ -67,10 +67,14 @@ Object {
 	}
 
 	/// default implementation of element creation routine.
-	function createElement(tag, cls) {
-		this.element = this._context.createElement(tag, cls)
+	function _createElement(tag, cls) {
+		var context = this._context
+		if (context === null)
+			context = this
+
+		this.element = context.createElement(tag, cls)
 		this.element._item = this
-		this._context.registerStyle(this, tag, cls)
+		context.registerStyle(this, tag, cls)
 		this.parent.element.append(this.element)
 	}
 

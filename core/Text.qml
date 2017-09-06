@@ -22,7 +22,7 @@ Item {
 	function getClass() { return 'core-text' }
 
 	function registerStyle(style, tag, cls) {
-		style.addRule(tag + (cls ? '.' + cls : ''), '{ width: auto; height: auto; }')
+		style.addRule(tag, cls, '{ width: auto; height: auto; }')
 	}
 
 	///@private

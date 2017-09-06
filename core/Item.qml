@@ -21,6 +21,7 @@ Object {
 	property lazy anchors: Anchors { }
 	property lazy effects: Effects { }
 	property lazy transform: Transform { }
+	property bool cssTranslatePositioning;
 
 	property lazy left:		AnchorLine	{ boxIndex: 0; }
 	property lazy top:		AnchorLine	{ boxIndex: 1; }

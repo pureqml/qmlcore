@@ -49,6 +49,8 @@ Item {
 
 	///@private
 	function createElement(tag, cls) {
+		if (cls === undefined)
+			cls = ''
 		var el = this.backend.createElement(this, tag, cls)
 		if (cls || this._prefix) {
 			el.addClass(this.mangleClass(cls))

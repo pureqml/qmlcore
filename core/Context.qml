@@ -33,7 +33,7 @@ Item {
 	}
 
 	///@private
-	function getClass(name) {
+	function mangleClass(name) {
 		return this._prefix + name
 	}
 

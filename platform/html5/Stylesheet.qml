@@ -44,9 +44,15 @@ Object {
 		return this.mangleSelector(selector) + ' ' + rule + ' '
 	}
 
-	function addRule(selector, rule) {
-		var mangledSelector = this.mangleSelector(selector)
-		this._addRule(mangledSelector, rule)
+	function addRule(tag, cls, rule) {
+		var selector
+		if (rule === undefined) {  //cls == rule, 2 arguments
+			selector = this.mangleSelector(tag)
+			this._addRule(selector, cls)
+		} else {
+			selector = tag + '.' + cls
+			this._addRule(selector, rule)
+		}
 	}
 
 }

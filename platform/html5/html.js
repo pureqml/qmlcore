@@ -739,7 +739,7 @@ var cssMappings = {
 	rotate: 'transform',
 	boxshadow: 'box-shadow',
 	transform: 'transform',
-	visible: 'visibility', visibleInView: 'visibility',
+	visible: 'display', visibleInView: 'display',
 	background: 'background',
 	color: 'color',
 	backgroundImage: 'background-image',

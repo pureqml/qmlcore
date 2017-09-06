@@ -63,7 +63,7 @@ Object {
 
 	///@private
 	function registerStyle(style, tag, cls) {
-		style.addRule(tag + (cls ? '.' + cls : ''), 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
+		style.addRule(tag + (cls ? '.' + cls : ''), 'position: absolute; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
 	}
 
 	/// default implementation of element creation routine.
@@ -111,8 +111,9 @@ Object {
 	function _updateVisibility() {
 		var visible = this.visible && this.visibleInView
 
-		if (this.element)
-			this.style('visibility', visible? 'inherit': 'hidden')
+		if (this.element) {
+			this.style('display', visible? '': 'none')
+		}
 
 		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)
 	}

@@ -73,6 +73,17 @@ Item {
 		this.scheduleAction(callback)
 	}
 
+		///@private
+	function _updateVisibility() {
+		var visible = this.visible && this.visibleInView
+
+		if (this.element) {
+			this.style('display', visible? 'block': 'none')
+		}
+
+		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)
+	}
+
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }
 
 	///@private

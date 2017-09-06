@@ -7,6 +7,7 @@ BaseLayout {
 	property int contentY;			///< y offset to visible part of the content surface
 	property int scrollingStep: 0;	///< scrolling step
 	property int animationDuration: 0;
+	property string animationEasing: "ease";
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
 	property bool nativeScrolling;	///< allows native scrolling on mobile targets and shows native scrollbars
 	property real prerender: 0.5;	///< allocate additional delegates by viewport (prerender * horizontal/vertical view size) px
@@ -202,7 +203,7 @@ BaseLayout {
 
 	/// @internal
 	property BaseViewContent content: BaseViewContent {
-		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; } }
+		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
 	}
 
 	onContentXChanged: { this.content.x = -value; }

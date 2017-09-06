@@ -39,9 +39,10 @@ Item {
 
 	///@private
 	function registerStyle(item, tag, cls) {
-		if (!(tag + cls in this._stylesRegistered)) {
-			item.registerStyle(this.stylesheet, tag, cls)
-			this._stylesRegistered[tag + cls] = true
+		var selector = tag + '.' + cls
+		if (!(selector in this._stylesRegistered)) {
+			item.registerStyle(this.stylesheet, tag, this.mangleClass(cls))
+			this._stylesRegistered[selector] = true
 		}
 	}
 
@@ -49,7 +50,7 @@ Item {
 	function createElement(tag, cls) {
 		var el = this.backend.createElement(this, tag, cls)
 		if (cls) {
-			el.addClass(cls)
+			el.addClass(this.mangleClass(cls))
 		}
 		return el
 	}

@@ -137,7 +137,7 @@ BaseLayout {
 
 		item._local['model'] = row
 		delete this._local['model']
-		item.recursiveVisible = this.recursiveVisible && item.visible && item.visibleInView
+		this._updateVisibilityForChild(item, this.recursiveVisible)
 
 		return item
 	}
@@ -213,10 +213,12 @@ BaseLayout {
 		if (value)
 			this._scheduleLayout();
 
-		this._items.forEach(function(child) {
-			if (child !== null)
-				child.recursiveVisible = value && child.visible && child.visibleInView
-		})
+		var items = this._items
+		for(var i = 0, n = items.length; i < n; ++i) {
+			var item = items[i]
+			if (item !== null)
+				this._updateVisibilityForChild(item, value)
+		}
 	}
 
 	onWidthChanged:				{ this._scheduleLayout() }

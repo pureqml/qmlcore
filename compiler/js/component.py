@@ -485,10 +485,10 @@ class component_generator(object):
 			target_lvalue = self.get_lvalue(parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
+				r.append('//assigning %s to %s' %(target, value))
 				deps = parse_deps(parent, value)
 				if deps:
 					var = "update$%s$%s" %(escape(parent), escape(target))
-					r.append('//assigning %s to %s' %(target, value))
 					r.append("%svar %s = (function() { %s = (%s); }).bind(%s)" %(ident, var, target_lvalue, value, parent))
 					undep = []
 					for idx, _dep in enumerate(deps):
@@ -498,9 +498,8 @@ class component_generator(object):
 						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))
 						undep.append("[%s, '%s']" %(depvar, dep))
 					r.append("%s%s._replaceUpdater('%s', %s, [%s])" %(ident, parent, target, var, ",".join(undep)))
-					r.append("%s%s();" %(ident, var))
+					r.append("%s%s()" %(ident, var))
 				else:
-					r.append('//assigning %s to %s' %(target, value))
 					r.append("%s%s._replaceUpdater('%s'); %s = (%s);" %(ident, parent, target, target_lvalue, value))
 
 			elif t is component_generator:

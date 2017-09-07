@@ -252,22 +252,41 @@ def build(root, platform, apps, app, manifest):
 	subplatforms = [platform]
 	subplatforms_manifests = [manifest]
 	subplatform_visited = set()
+
+	subplatform_paths = {}
+	subplatform_deps = {}
+
 	while subplatforms:
 		subplatforms_next = []
 
 		for subplatform in subplatforms:
 			if subplatform in subplatform_visited:
 				continue
+
 			subplatform_visited.add(subplatform)
 			subplatform_path = find_platform_path(root, plugins_path, subplatform)
-			options.append(subplatform_path)
+			subplatform_paths[subplatform] = subplatform_path
 
 			with open(path.join(subplatform_path, '.manifest')) as f:
 				subplatform_manifest = mf.load(f)
 				subplatforms_manifests.insert(0, subplatform_manifest)
-			subplatforms_next = subplatform_manifest.requires + subplatforms_next
+
+			deps = subplatform_deps.setdefault(subplatform, set())
+			deps.update(subplatform_manifest.requires)
+
+			subplatforms_next += subplatform_manifest.requires
 
 		subplatforms = subplatforms_next
+
+	#unrolling deps
+	while subplatform_deps:
+		#print subplatform_deps
+		for subplatform, deps in subplatform_deps.items():
+			if not deps: #leaf subplatform
+				options.append(subplatform_paths[subplatform])
+				del subplatform_deps[subplatform]
+				for deps in subplatform_deps.values():
+					deps.discard(subplatform)
 
 	options.extend(source_dir if isinstance(source_dir, list) else [source_dir])
 	options.extend(pureqml_packages + ['-a', app])

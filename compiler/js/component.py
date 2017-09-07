@@ -347,14 +347,14 @@ class component_generator(object):
 		if code:
 			generate = True
 		b = '\t%s%s.__create.call(this, __closure.__base = { })' %(ident, self.base_proto_name)
-		code = '%s%s.__create = function(__closure) {\nvar $this = this;\n%s\n%s\n%s}' \
+		code = '%s%s.__create = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n%s}' \
 			%(ident, self.proto_name, b, code, ident)
 
 		setup_code = self.generate_setup_code(registry, '$this', '__closure', ident_n + 2).strip()
 		b = '%s%s.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
-		setup_code = '%s%s.__setup = function(__closure) {\n\tvar $this = this;\n%s\n%s\n}' \
+		setup_code = '%s%s.__setup = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n}' \
 			%(ident, self.proto_name, b, setup_code)
 
 		if generate:

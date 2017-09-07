@@ -114,11 +114,6 @@ Object {
 	///@private
 	function _updateVisibility() {
 		var visible = this.visible && this.visibleInView
-
-		if (this.element) {
-			this.style('visibility', visible? 'inherit': 'hidden')
-		}
-
 		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)
 	}
 

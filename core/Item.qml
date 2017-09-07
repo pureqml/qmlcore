@@ -49,6 +49,7 @@ Object {
 
 	///@private
 	function discard() {
+		this.recursiveVisible = false
 		_globals.core.Object.prototype.discard.apply(this)
 		this.focusedChild = null
 		if (this.element)
@@ -75,7 +76,6 @@ Object {
 		this.element = context.createElement(tag, cls)
 		this.element._item = this
 		context.registerStyle(this, tag, cls)
-		this.parent.element.append(this.element)
 	}
 
 	/// map relative component coordinates to absolute screen ones

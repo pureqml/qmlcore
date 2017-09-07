@@ -210,7 +210,10 @@ ElementPrototype.addClass = function(cls) {
 }
 
 ElementPrototype.notifyChildVisibility = function(child, visible, hint) {
-	log(child, visible, hint)
+	if (visible)
+		this.append(child)
+	else
+		child.remove()
 }
 
 ElementPrototype.appendChildren = function(children) {

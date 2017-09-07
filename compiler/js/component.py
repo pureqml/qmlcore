@@ -1,10 +1,7 @@
 from compiler.js import get_package, split_name, escape
-from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, mangle_path
+from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, mangle_path, path_or_parent
 from compiler import lang
 import json
-
-def path_or_parent(path, parent):
-	return '.'.join(mangle_path(path.split('.'))) if path else parent
 
 class component_generator(object):
 	def __init__(self, ns, name, component, prototype = False):
@@ -456,7 +453,7 @@ class component_generator(object):
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
 		for name, target in self.aliases.iteritems():
-			get, pname = generate_accessors(target)
+			get, pname = generate_accessors('this', target)
 			r.append("%score.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')" \
 				%(ident, parent, name, get, parent, pname))
 
@@ -486,7 +483,7 @@ class component_generator(object):
 			if t is str:
 				value = replace_enums(value, self, registry)
 				r.append('//assigning %s to %s' %(target, value))
-				deps = parse_deps(parent, value)
+				value, deps = parse_deps(parent, value)
 				if deps:
 					var = "update$%s$%s" %(escape(parent), escape(target))
 					r.append("%svar %s = (function() { %s = (%s) }).bind(%s)" %(ident, var, target_lvalue, value, parent))

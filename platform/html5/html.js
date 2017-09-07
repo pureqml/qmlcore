@@ -209,6 +209,10 @@ ElementPrototype.addClass = function(cls) {
 	this.dom.classList.add(cls)
 }
 
+ElementPrototype.notifyChildVisibility = function(child, visible, hint) {
+	log(child, visible, hint)
+}
+
 ElementPrototype.appendChildren = function(children) {
 	if (children.length > 0) {
 		var fragment = document.createDocumentFragment()

@@ -122,6 +122,13 @@ Object {
 	}
 
 	onRecursiveVisibleChanged: {
+		var parent = this.parent
+
+		if (parent) {
+			var idx = parent.children.indexOf(this)
+			parent.element.notifyChildVisibility(this.element, value, idx)
+		}
+
 		var children = this.children
 		for(var i = 0, n = children.length; i < n; ++i) {
 			var child = children[i]
@@ -129,7 +136,7 @@ Object {
 		}
 
 		if (!value)
-			this.parent._tryFocus()
+			parent._tryFocus()
 	}
 
 	onVisibleChanged:		{ this._updateVisibility() }

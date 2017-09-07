@@ -35,33 +35,42 @@ def process(text, generator, registry, args):
 	#print text
 	return text
 
-gets_re = re.compile(r'(this)((?:\._get\(\'.*?\'\))+)(?:\.([a-zA-Z0-9\.]+))?')
+def mangle_path(path):
+	if path[0] == 'model':
+		path = ["_get('model')"] + path[1:]
+	else:
+		path = ["_get('%s')" % name for name in path ]
+	return '.'.join(path)
+
+def path_or_parent(path, parent):
+	return mangle_path(path.split('.')) if path else parent
+
+gets_re = re.compile(r'\${(.*?)}')
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
 
 def parse_deps(parent, text):
 	deps = set()
-	for m in gets_re.finditer(text):
-		gets = (m.group(1) + m.group(2)).split('.')
-		gets = map(lambda x: parent if x == 'this' else x, gets)
-		#refactor this mess, remove _get from IL
-		target = gets[-1]
-		target = target[target.index('\'') + 1:target.rindex('\'')]
-		gets = gets[:-1]
-		if target == 'model' and len(gets) == 1:
-			signal = '_row' if m.group(3) != 'index' else '_rowIndex'
-			deps.add(("%s._get('_delegate')" %parent, signal))
-		else:
-			path = ".".join(gets)
-			deps.add((path, target))
 
 	for m in tr_re.finditer(text):
 		deps.add((parent + '._context', 'language'))
-	return deps
 
-def mangle_path(path):
-	return ["this"] + ["_get('%s')"%name for name in path ]
+	def sub(m):
+		path = m.group(1).split('.')
+		target = path[-1]
+		gets = path[:-1]
+		if len(path) > 1 and path[0] == 'model':
+			signal = '_row' if path[1] != 'index' else '_rowIndex'
+			deps.add(("%s._get('_delegate')" %parent, signal))
+		else:
+			dep_parent = parent + '.' + mangle_path(gets) if gets else parent
+			deps.add((dep_parent, target))
 
-def generate_accessors(target):
+		return parent + '.' + mangle_path(path)
+
+	text = gets_re.sub(sub, text)
+	return text, deps
+
+def generate_accessors(parent, target):
 	path = target.split('.')
-	get = ".".join(mangle_path(path[:-1]))
+	get = parent + '.' + mangle_path(path[:-1])
 	return get, path[-1]

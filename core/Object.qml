@@ -81,14 +81,13 @@ EventEmitter {
 	}
 
 	/// @private removes dynamic value updater
-	function _replaceUpdater (name, newUpdaters) {
+	function _replaceUpdater (name, callback, newUpdaters) {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
-		if (oldUpdaters !== undefined) {
+		if (callback !== undefined && oldUpdaters !== undefined) {
 			oldUpdaters.forEach(function(data) {
 				var object = data[0]
 				var name = data[1]
-				var callback = data[2]
 				object.removeOnChanged(name, callback)
 			})
 		}

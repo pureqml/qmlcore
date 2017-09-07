@@ -124,10 +124,8 @@ Object {
 	onRecursiveVisibleChanged: {
 		var parent = this.parent
 
-		if (parent) {
-			var idx = parent.children.indexOf(this)
-			parent.element.notifyChildVisibility(this.element, value, idx)
-		}
+		if (parent)
+			parent.element.notifyChildVisibility(this.element, value)
 
 		var children = this.children
 		for(var i = 0, n = children.length; i < n; ++i) {

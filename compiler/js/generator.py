@@ -2,6 +2,7 @@ import json
 import re
 from compiler.js import split_name, escape_package, get_package
 from compiler.js.component import component_generator
+from collections import OrderedDict
 
 root_type = 'core.CoreObject'
 
@@ -11,7 +12,7 @@ class generator(object):
 		self.components = {}
 		self.used_packages = set()
 		self.used_components = set()
-		self.imports = {}
+		self.imports = OrderedDict()
 		self.packages = {}
 		self.startup = []
 		self.l10n = {}

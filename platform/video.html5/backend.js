@@ -91,3 +91,5 @@ exports.createPlayer = function(ui) {
 exports.probeUrl = function(url) {
 	return 50
 }
+
+exports.Player = Player

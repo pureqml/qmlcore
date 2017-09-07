@@ -211,7 +211,9 @@ BaseLayout {
 
 	onRecursiveVisibleChanged: {
 		if (value)
-			this._scheduleLayout();
+			this._scheduleLayout()
+
+		this._updateVisibilityForChild(this.content, value)
 
 		var items = this._items
 		for(var i = 0, n = items.length; i < n; ++i) {

@@ -195,6 +195,12 @@ Item {
 		this._scheduleLayout()
 	}
 
+	onRecursiveVisibleChanged: {
+		var player = this._getPlayer()
+		if (player)
+			player.setVisibility(value)
+	}
+
 	///@private
 	onCompleted: {
 		volumeStorage.read()

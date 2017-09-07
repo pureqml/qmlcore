@@ -73,6 +73,11 @@ Player.prototype.setRect = function(l, t, r, b) {
 	//not needed in this port
 }
 
+Player.prototype.setVisibility = function(visible) {
+	log('VISIBILITY LOGIC MISSING HERE, visible:', visible)
+}
+
+
 Player.prototype.setBackgroundColor = function(color) {
 	var Color = _globals.core.Color
 	this.element.dom.style.backgroundColor = new Color(color).rgba()

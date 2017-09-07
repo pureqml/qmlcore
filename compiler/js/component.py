@@ -343,18 +343,18 @@ class component_generator(object):
 
 		generate = False
 
-		code = self.generate_creators(registry, 'this', '__closure', ident_n + 1).strip()
+		code = self.generate_creators(registry, '$this', '__closure', ident_n + 1).strip()
 		if code:
 			generate = True
 		b = '\t%s%s.__create.call(this, __closure.__base = { })' %(ident, self.base_proto_name)
-		code = '%s%s.__create = function(__closure) {\n%s\n%s\n%s}' \
+		code = '%s%s.__create = function(__closure) {\nvar $this = this;\n%s\n%s\n%s}' \
 			%(ident, self.proto_name, b, code, ident)
 
-		setup_code = self.generate_setup_code(registry, 'this', '__closure', ident_n + 2).strip()
+		setup_code = self.generate_setup_code(registry, '$this', '__closure', ident_n + 2).strip()
 		b = '%s%s.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
-		setup_code = '%s%s.__setup = function(__closure) {\n%s\n%s\n}' \
+		setup_code = '%s%s.__setup = function(__closure) {\n\tvar $this = this;\n%s\n%s\n}' \
 			%(ident, self.proto_name, b, setup_code)
 
 		if generate:
@@ -453,7 +453,7 @@ class component_generator(object):
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
 		for name, target in self.aliases.iteritems():
-			get, pname = generate_accessors('this', target)
+			get, pname = generate_accessors('$this', target)
 			r.append("%score.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')" \
 				%(ident, parent, name, get, parent, pname))
 
@@ -486,7 +486,7 @@ class component_generator(object):
 				value, deps = parse_deps(parent, value)
 				if deps:
 					var = "update$%s$%s" %(escape(parent), escape(target))
-					r.append("%svar %s = (function() { %s = (%s) }).bind(%s)" %(ident, var, target_lvalue, value, parent))
+					r.append("%svar %s = function() { %s = (%s) }" %(ident, var, target_lvalue, value))
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep

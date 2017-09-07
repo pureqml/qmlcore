@@ -453,7 +453,7 @@ class component_generator(object):
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
 		for name, target in self.aliases.iteritems():
-			get, pname = generate_accessors('$this', target)
+			get, pname = generate_accessors(parent, target)
 			r.append("%score.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')" \
 				%(ident, parent, name, get, parent, pname))
 

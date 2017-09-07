@@ -72,5 +72,5 @@ def parse_deps(parent, text):
 
 def generate_accessors(parent, target):
 	path = target.split('.')
-	get = parent + '.' + mangle_path(path[:-1])
+	get = parent + '.' + mangle_path(path[:-1]) if path[:-1] else parent
 	return get, path[-1]

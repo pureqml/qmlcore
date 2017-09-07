@@ -116,7 +116,7 @@ Object {
 		var visible = this.visible && this.visibleInView
 
 		if (this.element) {
-			this.style('display', visible? '': 'none')
+			this.style('display', visible? 'initial': 'none')
 		}
 
 		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)

@@ -121,7 +121,7 @@ var Color = exports.core.Color = function(value) {
 	{
 		this.r = this.b = this.a = 255
 		this.g = 0
-		log("invalid color specification: " + value)
+		log("invalid color specification: " + value, new Error().stack)
 		return
 	}
 	var triplet

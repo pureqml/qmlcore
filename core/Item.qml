@@ -123,8 +123,11 @@ Object {
 
 	onRecursiveVisibleChanged: {
 		var parent = this.parent
+		var view = this.view
 
-		if (parent)
+		if (view)
+			view.content.element.notifyChildVisibility(this.element, value)
+		else if (parent)
 			parent.element.notifyChildVisibility(this.element, value)
 
 		var children = this.children

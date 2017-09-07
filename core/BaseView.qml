@@ -132,8 +132,6 @@ BaseLayout {
 		item = this.delegate(this)
 		items[idx] = item
 		item.view = this
-		item.element.remove()
-		this.content.element.append(item.element)
 
 		item._local['model'] = row
 		delete this._local['model']

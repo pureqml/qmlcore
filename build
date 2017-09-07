@@ -265,7 +265,7 @@ def build(root, platform, apps, app, manifest):
 			with open(path.join(subplatform_path, '.manifest')) as f:
 				subplatform_manifest = mf.load(f)
 				subplatforms_manifests.insert(0, subplatform_manifest)
-			subplatforms_next += subplatform_manifest.requires
+			subplatforms_next = subplatform_manifest.requires + subplatforms_next
 
 		subplatforms = subplatforms_next
 

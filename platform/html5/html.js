@@ -209,11 +209,14 @@ ElementPrototype.addClass = function(cls) {
 	this.dom.classList.add(cls)
 }
 
-ElementPrototype.notifyChildVisibility = function(child, visible, hint) {
+ElementPrototype.notifyChildrenVisibility = function(name, children) {
+	log(name, children)
+/*
 	if (visible)
 		this.append(child)
 	else
 		child.remove()
+*/
 }
 
 ElementPrototype.appendChildren = function(children) {

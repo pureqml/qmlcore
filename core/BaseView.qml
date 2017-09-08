@@ -211,14 +211,15 @@ BaseLayout {
 		if (value)
 			this._scheduleLayout()
 
-		this._updateVisibilityForChild(this.content, value)
-
 		var items = this._items
 		for(var i = 0, n = items.length; i < n; ++i) {
 			var item = items[i]
 			if (item !== null)
 				this._updateVisibilityForChild(item, value)
 		}
+
+		this._updateVisibilityForChild(this.content, value)
+		this._notifyChildrenVisibility('items', items)
 	}
 
 	onWidthChanged:				{ this._scheduleLayout() }

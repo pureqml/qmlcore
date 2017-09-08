@@ -42,8 +42,6 @@ StyleCachePrototype.update = function(element, name) {
 			data[name] = true
 		cache[id] = entry
 	}
-	if (name === 'display')
-		element.updateStyle()
 }
 
 StyleCachePrototype.pop = function(element) {
@@ -758,7 +756,7 @@ var cssMappings = {
 	rotate: 'transform',
 	boxshadow: 'box-shadow',
 	transform: 'transform',
-	visible: 'display', visibleInView: 'display',
+	visible: 'visibility', visibleInView: 'visibility',
 	background: 'background',
 	color: 'color',
 	backgroundImage: 'background-image',

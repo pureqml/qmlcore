@@ -58,13 +58,13 @@ Item {
 	onLoopChanged: {
 		var player = this._getPlayer()
 		if (player)
-			setLoop(value)
+			player.setLoop(value)
 	}
 
 	onBackgroundColorChanged: {
 		var player = this._getPlayer()
 		if (player)
-			setBackgroundColor(value)
+			player.setBackgroundColor(value)
 	}
 
 	///play video

@@ -69,6 +69,10 @@ Player.prototype.setMute = function(muted) {
 	this.element.dom.muted = muted
 }
 
+Player.prototype.setLoop = function(loop) {
+	this.element.dom.loop = loop
+}
+
 Player.prototype.setRect = function(l, t, r, b) {
 	//not needed in this port
 }
@@ -76,7 +80,6 @@ Player.prototype.setRect = function(l, t, r, b) {
 Player.prototype.setVisibility = function(visible) {
 	log('VISIBILITY LOGIC MISSING HERE, visible:', visible)
 }
-
 
 Player.prototype.setBackgroundColor = function(color) {
 	var Color = _globals.core.Color

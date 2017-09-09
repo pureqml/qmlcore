@@ -219,6 +219,8 @@ BaseLayout {
 		}
 
 		this._updateVisibilityForChild(this.content, value)
+
+		this._notifyChildrenVisibility('content', [this.content])
 		this.content._notifyChildrenVisibility('items', items)
 	}
 

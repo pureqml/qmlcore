@@ -1,7 +1,10 @@
 var Player = function(ui) {
-	//TODO: it's just a copy of
 	var player = ui._context.createElement('video')
 	player.dom.preload = "metadata"
+
+	player.setAttribute('preload', 'auto')
+	player.setAttribute('data-setup', '{}')
+	player.setAttribute('class', 'video-js')
 
 	var dom = player.dom
 	player.on('play', function() { ui.waiting = false; ui.paused = dom.paused }.bind(ui))
@@ -36,13 +39,27 @@ var Player = function(ui) {
 	}.bind(ui))
 
 	this.element = player
+	var uniqueId = 'videojs' + this.element._uniqueId
+	player.setAttribute('id', uniqueId)
 
 	ui.element.remove()
 	ui.element = player
 	ui.parent.element.append(ui.element)
+
+	this.videojs = window.videojs(uniqueId)
 }
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
+
+Player.prototype.setSource = function(url) {
+	var media = { 'src': url }
+	if (url) {
+		var urlLower = url.toLowerCase()
+		if (urlLower.endsWith('.m3u8') || urlLower.endsWith('.m3u'))
+			media.type = 'application/x-mpegURL'
+	}
+	this.videojs.src(media)
+}
 
 exports.createPlayer = function(ui) {
 	return new Player(ui)
@@ -51,5 +68,3 @@ exports.createPlayer = function(ui) {
 exports.probeUrl = function(url) {
 	return 60
 }
-
-log("Back Player", Player, "proto", _globals.video.html5.backend.Player.prototype, "glo", _globals.video.videojs.backend)

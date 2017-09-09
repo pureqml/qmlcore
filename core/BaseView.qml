@@ -219,7 +219,7 @@ BaseLayout {
 		}
 
 		this._updateVisibilityForChild(this.content, value)
-		this._notifyChildrenVisibility('items', items)
+		this.content._notifyChildrenVisibility('items', items)
 	}
 
 	onWidthChanged:				{ this._scheduleLayout() }

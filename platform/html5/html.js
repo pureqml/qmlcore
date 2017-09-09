@@ -198,6 +198,7 @@ exports.Element = function(context, tag) {
 	this._widthAdjust = 0
 	this._uniqueId = String(++lastId)
 	this._firstChildIndex = 0
+	this._children = {}
 
 	registerGenericListener(this)
 }
@@ -209,14 +210,14 @@ ElementPrototype.addClass = function(cls) {
 	this.dom.classList.add(cls)
 }
 
-ElementPrototype.notifyChildrenVisibility = function(name, children) {
-	log(name, children)
-/*
-	if (visible)
-		this.append(child)
-	else
-		child.remove()
-*/
+ElementPrototype.notifyChildrenVisibility = function(name, newChildren) {
+	var children = this._children[name] || []
+	children.forEach(function(dom) {
+		dom.parentNode.removeChild(dom)
+	})
+	children = newChildren.map(function(el) { return el.dom })
+	this._children[name] = children
+	this.appendChildren(children)
 }
 
 ElementPrototype.appendChildren = function(children) {

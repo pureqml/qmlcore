@@ -129,19 +129,19 @@ Object {
 	}
 
 	onRecursiveVisibleChanged: {
-		var parent = this.parent
-		var view = this.view
-
 		var children = this.children
 		for(var i = 0, n = children.length; i < n; ++i) {
 			var child = children[i]
 			this._updateVisibilityForChild(child, value)
 		}
 
+		var parent = this.parent
+		var view = this.view
+
 		if (view)
-			view.content._notifyChildrenVisibility('children', this.children)
+			view.content._notifyChildrenVisibility('items', view._items)
 		else if (parent)
-			parent._notifyChildrenVisibility('children', this.children)
+			parent._notifyChildrenVisibility('children', parent.children)
 
 		if (!value)
 			parent._tryFocus()

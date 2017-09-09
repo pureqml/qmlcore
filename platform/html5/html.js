@@ -454,7 +454,7 @@ exports.init = function(ctx) {
 	var div = document.getElementById(divId)
 	var topLevel = div === null
 	if (!topLevel) {
-		div = new html.Element(ctx, div)
+		div = new html.Element(ctx, 'div')
 		w = div.width()
 		h = div.height()
 		log('Context: found element by id, size: ' + w + 'x' + h)
@@ -466,10 +466,9 @@ exports.init = function(ctx) {
 		div = html.createElement(ctx, tag)
 		div.dom.id = divId
 		win.on('resize', function() { ctx.width = win.width(); ctx.height = win.height(); });
-		var body = html.getElement(ctx, 'body')
-		body.append(div);
 	}
-
+	var body = html.getElement(ctx, 'body')
+	body.append(div);
 	ctx._textCanvas = html.createElement(ctx, 'canvas')
 	div.append(ctx._textCanvas)
 	ctx._textCanvasContext = ('getContext' in ctx._textCanvas.dom)? ctx._textCanvas.dom.getContext('2d'): null

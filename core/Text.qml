@@ -102,8 +102,11 @@ Item {
 	onWidthChanged:				{ this._updateSize() }
 
 	onVerticalAlignmentChanged: {
-		this.verticalAlignment = value;
-		this._enableSizeUpdate()
+		switch(value) {
+		case this.AlignTop:	this.style('display', ''); break
+		case this.AlignBottom:	this.style('display', 'table-cell'); this.style('vertical-align', 'bottom'); break
+		case this.AlignVCenter:	this.style('display', 'table-cell'); this.style('vertical-align', 'middle'); break
+		}
 	}
 
 	onHorizontalAlignmentChanged: {

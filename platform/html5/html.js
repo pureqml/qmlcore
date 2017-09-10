@@ -599,17 +599,6 @@ exports.loadImage = function(image) {
 exports.initText = function(text) {
 }
 
-var layoutTextSetStyle = function(text, style) {
-	switch(text.verticalAlignment) {
-		case text.AlignTop:		text._topPadding = 0; break
-		case text.AlignBottom:	text._topPadding = text.height - text.paintedHeight; break
-		case text.AlignVCenter:	text._topPadding = (text.height - text.paintedHeight) / 2; break
-	}
-	style['padding-top'] = text._topPadding
-	style['height'] = text.height - text._topPadding
-	text.style(style)
-}
-
 exports.setText = function(text, html) {
 	text.element.setHtml(html, text)
 }
@@ -633,7 +622,6 @@ exports.layoutText = function(text) {
 			var metrics = textCanvasContext.measureText(text.text)
 			text.paintedWidth = metrics.width
 			text.paintedHeight = parseInt(fontSize)
-			layoutTextSetStyle(text, {})
 			return
 		}
 	}
@@ -658,7 +646,6 @@ exports.layoutText = function(text) {
 	else
 		style = {'height': text.height }
 
-	layoutTextSetStyle(text, style)
 	element.appendChildren(removedChildren)
 }
 

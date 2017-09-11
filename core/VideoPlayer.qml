@@ -14,9 +14,9 @@ Item {
 	property bool	waiting;	///< wating flag while video is seeking and not ready to continue playing
 	property bool	seeking;	///< seeking flag
 	property bool	autoPlay;	///< play video immediately after source changed
-	property int	duration;	///< content duration in seconds (only for non-live videos)
-	property int	progress;	///< current playback progress in seconds
-	property int	buffered;	///< how much content to buffer in seconds
+	property real	duration;	///< content duration in seconds (only for non-live videos)
+	property real	progress;	///< current playback progress in seconds
+	property real	buffered;	///< how much content to buffer in seconds
 
 	LocalStorage { id: volumeStorage; name: "volume"; }
 

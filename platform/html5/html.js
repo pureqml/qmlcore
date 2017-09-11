@@ -16,6 +16,7 @@ exports.createAddRule = function(style) {
 
 var StyleCache = function() {
 	this._cache = {}
+	this._childrenCache = {}
 }
 
 var StyleCachePrototype = StyleCache.prototype
@@ -38,6 +39,17 @@ StyleCachePrototype.update = function(element, name) {
 	}
 }
 
+StyleCachePrototype.updateChildren = function(element, name, children) {
+	//log('children cache update', element._uniqueId, name, children)
+	var id = element._uniqueId
+	var cache = this._childrenCache[id]
+	if (!cache)
+		this._childrenCache[id] = cache = { element: element, data: {} }
+
+	cache.data[name] = children
+}
+
+
 StyleCachePrototype.pop = function(element) {
 	var id = element._uniqueId
 	var data = this._cache[id]
@@ -55,6 +67,18 @@ StyleCachePrototype.apply = function() {
 	for(var id in cache) {
 		var entry = cache[id]
 		entry.element.updateStyle(entry)
+	}
+
+	var cache = this._childrenCache
+	this._childrenCache = {}
+
+	for(var id in cache) {
+		var entry = cache[id]
+		var element = entry.element
+		var data = entry.data
+
+		for(var name in data)
+			element.updateChildren(name, data[name])
 	}
 }
 
@@ -211,6 +235,10 @@ ElementPrototype.addClass = function(cls) {
 }
 
 ElementPrototype.notifyChildrenVisibility = function(name, newChildren) {
+	this._context._styleCache.updateChildren(this, name, newChildren)
+}
+
+ElementPrototype.updateChildren = function(name, newChildren) {
 	var children = this._children[name] || []
 	children.forEach(function(dom) {
 		dom.parentNode.removeChild(dom)

@@ -85,10 +85,10 @@ EventEmitter {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
 		if (oldUpdaters !== undefined) {
-			oldUpdaters.forEach(function(data) {
+			var callback = oldUpdaters[0]
+			oldUpdaters[1].forEach(function(data) {
 				var object = data[0]
 				var name = data[1]
-				var callback = data[2]
 				object.removeOnChanged(name, callback)
 			})
 		}

@@ -65,7 +65,10 @@ BaseLayout {
 
 	}
 
-	onCurrentIndexChanged: { this.focusChild(this.children[value]) }
+	onCurrentIndexChanged: {
+		if (value >= 0 && value < this.children.length)
+			this.focusChild(this.children[value])
+	}
 
 	///@private
 	onCompleted: { this._scheduleLayout() }

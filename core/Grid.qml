@@ -73,7 +73,7 @@ Layout {
 
 		var pos = this.getPosition(idx)
 
-		if (!this.keyNavigationWraps && pos.row === this._rows.length)
+		if (!this.keyNavigationWraps && pos.row === this._rows.length - 1)
 			return false
  		var l = this._rows.length
 		var r = (pos.row + 1) % l

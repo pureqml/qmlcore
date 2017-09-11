@@ -84,7 +84,7 @@ EventEmitter {
 	function _replaceUpdater (name, callback, newUpdaters) {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
-		if (oldUpdaters !== undefined) {
+		if (callback !== undefined && oldUpdaters !== undefined) {
 			oldUpdaters.forEach(function(data) {
 				var object = data[0]
 				var name = data[1]
@@ -92,7 +92,7 @@ EventEmitter {
 			})
 		}
 
-		if (callback && newUpdaters)
+		if (newUpdaters)
 			updaters[name] = newUpdaters
 		else
 			delete updaters[name]

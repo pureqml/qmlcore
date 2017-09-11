@@ -87,7 +87,11 @@ var CoreObjectComponent = exports.core.CoreObject = function() {
 var CoreObjectComponentPrototype = CoreObjectComponent.prototype
 CoreObjectComponentPrototype.componentName = 'core.CoreObject'
 CoreObjectComponentPrototype.constructor = CoreObjectComponent
+
+/** @private **/
 CoreObjectComponentPrototype.__create = function() { }
+
+/** @private **/
 CoreObjectComponentPrototype.__setup = function() { }
 
 ///@private gets object by id

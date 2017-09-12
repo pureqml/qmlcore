@@ -83,7 +83,8 @@ Layout {
 			if (middle <= (row[i].x + row[i].w + vsp)){
 				idx = row[i].i
 				break
-			}
+			} else
+				idx = row[i].i
 		}
 
 		this.currentIndex = idx
@@ -210,22 +211,26 @@ Layout {
 				shift = (size - row.size)
 
 			if (shift !== 0) {
-				var cindex = rows[i].idx, lindex = row.idx
+				var cindex = rows[i].idx, lindex = row.idx, baseIndex = cindex
 				if (right || center) {
 		 			for (; cindex < lindex; ++cindex) {
-		 				if (!horizontal)
+		 				if (!horizontal) {
 							children[cindex].x += shift
-						else
+							this._rows[i][cindex - baseIndex].x += shift
+		 				} else {
 							children[cindex].y += shift
+						}
 		 			}
 		 		} else if (justify) {
 		 			var c = lindex - cindex + 1
 		 			var sp = shift / c
 		 			for (; cindex < lindex; ++cindex) {
-		 				if (!horizontal)
+		 				if (!horizontal) {
 							children[cindex].x += sp * (cindex + c - lindex)
-						else
+							this._rows[cindex].x += sp * (cindex + c - lindex)
+		 				} else {
 							children[cindex].y += sp * (cindex + c - lindex)
+		 				}
 		 			}
 		 		}
 		 	}

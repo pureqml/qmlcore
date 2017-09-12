@@ -219,6 +219,7 @@ Layout {
 							this._rows[i][cindex - baseIndex].x += shift
 		 				} else {
 							children[cindex].y += shift
+							this._rows[i][cindex - baseIndex].y += shift
 						}
 		 			}
 		 		} else if (justify) {
@@ -227,9 +228,10 @@ Layout {
 		 			for (; cindex < lindex; ++cindex) {
 		 				if (!horizontal) {
 							children[cindex].x += sp * (cindex + c - lindex)
-							this._rows[cindex].x += sp * (cindex + c - lindex)
+							this._rows[i][cindex - baseIndex].x += sp * (cindex + c - lindex)
 		 				} else {
 							children[cindex].y += sp * (cindex + c - lindex)
+							this._rows[i][cindex - baseIndex].y += sp * (cindex + c - lindex)
 		 				}
 		 			}
 		 		}

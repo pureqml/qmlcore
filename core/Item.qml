@@ -47,7 +47,8 @@ Object {
 	}
 
 	prototypeConstructor: {
-		ItemPrototype._propertyToStyle = {
+		prototype._propertyToStyle = Object.create(ItemBasePrototype._propertyToStyle)
+		Object.assign(prototype._propertyToStyle, {
 			width: 'width', height: 'height',
 			x: 'left', y: 'top', viewX: 'left', viewY: 'top',
 			opacity: 'opacity',
@@ -61,7 +62,7 @@ Object {
 			color: 'color',
 			backgroundImage: 'background-image',
 			font: 'font'
-		}
+		})
 	}
 
 	///@private

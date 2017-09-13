@@ -373,7 +373,7 @@ class component_generator(object):
 		if property in self.aliases:
 			return self.aliases[property]
 
-		base = registry.find_component(self.package, self.component.name)
+		base = self.get_base_type(registry)
 		if base != 'core.CoreObject':
 			return registry.components[base].find_property(registry, property)
 

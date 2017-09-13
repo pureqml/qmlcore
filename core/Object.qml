@@ -1,5 +1,9 @@
 ///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
+	prototypeConstructor: {
+		prototype._propertyToStyle = {}
+	}
+
 	///@private
 	constructor: {
 		this.parent = parent

@@ -13,6 +13,5 @@ Item {
 		Object.assign(prototype._propertyToStyle, {
 			'color': 'background-color'
 		})
-		console.log(prototype._propertyToStyle, prototype._propertyToStyle['x'])
 	}
 }

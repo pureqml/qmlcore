@@ -56,10 +56,6 @@ class generator(object):
 		original_name = name
 		name_package, name = split_name(name)
 
-		if register_used and package in self.packages and name in self.packages[package]:
-			self.used_components.add(package + '.' + name)
-			return "%s.%s" %(package, name)
-
 		candidates = []
 		for package_name, components in self.packages.iteritems():
 			if name in components:
@@ -73,10 +69,18 @@ class generator(object):
 			raise Exception("component %s was not found" %(original_name))
 
 		if len(candidates) > 1:
-			raise Exception("ambiguous component %s, you have to specify one of the packages explicitly: %s" \
-				%(name, " ".join(map(lambda p: "%s.%s" %(p, name), candidates))))
+			if name_package in candidates: #specified in name, e.g. core.Text
+				package_name = name_package
+			if package in candidates: #local to current package
+				package_name = package
+			elif 'core' in candidates: #implicit core lookup
+				package_name = 'core'
+			else:
+				raise Exception("ambiguous component %s, you have to specify one of the packages explicitly: %s" \
+					%(name, " ".join(map(lambda p: "%s.%s" %(p, name), candidates))))
+		else:
+			package_name = candidates[0]
 
-		package_name = candidates[0]
 		if register_used:
 			self.used_components.add(package_name + '.' + name)
 		return "%s.%s" %(package_name, name)

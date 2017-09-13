@@ -9,9 +9,7 @@ Item {
 	}
 
 	prototypeConstructor: {
-		RectanglePrototype._propertyToStyle = Object.create(RectangleBasePrototype._propertyToStyle)
-		Object.assign(RectanglePrototype._propertyToStyle, {
-			'color': 'background-color'
-		})
+		var styleMap = RectanglePrototype._propertyToStyle = Object.create(RectangleBasePrototype._propertyToStyle)
+		styleMap['color'] = 'background-color'
 	}
 }

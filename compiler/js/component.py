@@ -466,9 +466,9 @@ class component_generator(object):
 
 	def get_lvalue(self, parent, target):
 		path = target.split(".")
-		path = ["_get('%s')" %x for x in path[:-1]] + [path[-1]]
-		return "%s.%s" % (parent, ".".join(path))
-
+		target_owner = [parent] + ["_get('%s')" %x for x in path[:-1]]
+		path = target_owner + [path[-1]]
+		return ("%s" %".".join(target_owner), "%s" %".".join(path), path[-1])
 
 	def generate_setup_code(self, registry, parent, closure, ident_n = 1):
 		r = []
@@ -479,7 +479,7 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_lvalue = self.get_lvalue(parent, target)
+			target_owner, target_lvalue, target_prop = self.get_lvalue(parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
 				r.append('//assigning %s to %s' %(target, value))
@@ -494,10 +494,10 @@ class component_generator(object):
 						r.append('%svar %s = %s' %(ident, depvar, path))
 						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))
 						undep.append("[%s, '%s']" %(depvar, dep))
-					r.append("%s%s._replaceUpdater('%s', [%s, [%s]])" %(ident, parent, target, var, ",".join(undep)))
+					r.append("%s%s._replaceUpdater('%s', [%s, [%s]])" %(ident, target_owner, target_prop, var, ",".join(undep)))
 					r.append("%s%s()" %(ident, var))
 				else:
-					r.append("%s%s._replaceUpdater('%s'); %s = (%s);" %(ident, parent, target, target_lvalue, value))
+					r.append("%s%s._replaceUpdater('%s'); %s = (%s);" %(ident, target_owner, target_prop, target_lvalue, value))
 
 			elif t is component_generator:
 				if target == "delegate":

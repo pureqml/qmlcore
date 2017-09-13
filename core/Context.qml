@@ -62,9 +62,6 @@ Item {
 	function _init() {
 		log('Context: initializing...')
 		new this.backend.init(this)
-		var invoker = _globals.core.safeCall(null, [], function (ex) { log("prototype constructor failed:", ex, ex.stack) })
-		__prototype$ctors.forEach(invoker)
-		__prototype$ctors = undefined
 	}
 
 	///@private

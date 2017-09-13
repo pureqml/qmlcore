@@ -1,7 +1,7 @@
 ///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
 	prototypeConstructor: {
-		prototype._propertyToStyle = {}
+		ObjectPrototype._propertyToStyle = {}
 	}
 
 	///@private

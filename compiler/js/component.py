@@ -275,7 +275,7 @@ class component_generator(object):
 
 		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
 		if self.prototype_ctor:
-			r.append("\t__prototype$ctors.push(function() {\n\tvar prototype = %s\n\t%s\n\t})\n" %(self.proto_name, self.prototype_ctor))
+			r.append("\t%s\n" %(self.prototype_ctor))
 		r.append("%s%s.constructor = %s\n" %(ident, self.proto_name, self.local_name))
 
 		r.append("%s%s.componentName = '%s'" %(ident, self.proto_name, self.name))

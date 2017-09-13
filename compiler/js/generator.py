@@ -215,7 +215,6 @@ class generator(object):
 		text = ""
 		text += "/** @const */\n"
 		text += "var _globals = exports\n"
-		text += "var __prototype$ctors = []\n"
 		text += "%s\n" %self.generate_prologue()
 		text += "//========================================\n\n"
 		text += "/** @const @type {!CoreObject} */\n"

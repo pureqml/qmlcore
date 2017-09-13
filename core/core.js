@@ -101,8 +101,9 @@ CoreObjectComponentPrototype._get = function(name, unsafe) {
 
 	var object = this
 	while(object) {
-		if (name in object._local)
-			return object._local[name]
+		var result = object._local[name]
+		if (result !== undefined)
+			return result
 		object = object.parent
 	}
 

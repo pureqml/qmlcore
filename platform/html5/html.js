@@ -174,7 +174,7 @@ var nodesCache = {};
 /**
  * @constructor
  */
- 
+
 exports.Element = function(context, tag) {
 	if (typeof tag === 'string') {
 		if (!nodesCache[tag]) {
@@ -729,28 +729,12 @@ var setTransition = function(component, name, animation) {
 	return true
 }
 
-var cssMappings = {
-	width: 'width', height: 'height',
-	x: 'left', y: 'top', viewX: 'left', viewY: 'top',
-	opacity: 'opacity',
-	border: 'border',
-	radius: 'border-radius',
-	rotate: 'transform',
-	boxshadow: 'box-shadow',
-	transform: 'transform',
-	visible: 'visibility', visibleInView: 'visibility',
-	background: 'background',
-	color: 'color',
-	backgroundImage: 'background-image',
-	font: 'font'
-}
-
 ///@private tries to set animation on name using css transitions, returns true on success
 exports.setAnimation = function (component, name, animation) {
 	if (!exports.capabilities.csstransitions || (animation && !animation.cssTransition))
 		return false
 
-	var css = cssMappings[name]
+	var css = component._propertyToStyle[name]
 	return css !== undefined? setTransition(component, css, animation): false
 }
 

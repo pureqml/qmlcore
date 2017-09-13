@@ -36,7 +36,6 @@ Object {
 	property int viewX;						///< x position in view (if any)
 	property int viewY;						///< y position in view (if any)
 
-	///@private
 	constructor: {
 		this._topPadding = 0
 		if (parent) {
@@ -45,6 +44,24 @@ Object {
 
 			this._createElement(this.getTag(), this.getClass())
 		} //no parent == top level element, skip
+	}
+
+	prototypeConstructor: {
+		ItemPrototype._propertyToStyle = {
+			width: 'width', height: 'height',
+			x: 'left', y: 'top', viewX: 'left', viewY: 'top',
+			opacity: 'opacity',
+			border: 'border',
+			radius: 'border-radius',
+			rotate: 'transform',
+			boxshadow: 'box-shadow',
+			transform: 'transform',
+			visible: 'visibility', visibleInView: 'visibility',
+			background: 'background',
+			color: 'color',
+			backgroundImage: 'background-image',
+			font: 'font'
+		}
 	}
 
 	///@private

@@ -1,9 +1,5 @@
 ///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
-	prototypeConstructor: {
-		ObjectPrototype._propertyToStyle = {}
-	}
-
 	///@private
 	constructor: {
 		this.parent = parent
@@ -17,6 +13,25 @@ EventEmitter {
 		this._pressedHandlers = {}
 		this._animations = {}
 		this._updaters = {}
+	}
+
+	prototypeConstructor: {
+		ObjectPrototype._propertyToStyle = Object.create(null)
+		Object.assign(ObjectPrototype._propertyToStyle, {
+			width: 'width', height: 'height',
+			x: 'left', y: 'top', viewX: 'left', viewY: 'top',
+			opacity: 'opacity',
+			border: 'border',
+			radius: 'border-radius',
+			rotate: 'transform',
+			boxshadow: 'box-shadow',
+			transform: 'transform',
+			visible: 'visibility', visibleInView: 'visibility',
+			background: 'background',
+			color: 'color',
+			backgroundImage: 'background-image',
+			font: 'font'
+		})
 	}
 
 	/// discard object

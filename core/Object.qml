@@ -16,8 +16,7 @@ EventEmitter {
 	}
 
 	prototypeConstructor: {
-		ObjectPrototype._propertyToStyle = Object.create(null)
-		Object.assign(ObjectPrototype._propertyToStyle, {
+		ObjectPrototype._propertyToStyle = {
 			width: 'width', height: 'height',
 			x: 'left', y: 'top', viewX: 'left', viewY: 'top',
 			opacity: 'opacity',
@@ -31,7 +30,7 @@ EventEmitter {
 			color: 'color',
 			backgroundImage: 'background-image',
 			font: 'font'
-		})
+		}
 	}
 
 	/// discard object

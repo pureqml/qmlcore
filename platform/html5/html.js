@@ -6,11 +6,23 @@ var populateStyleThreshold = 2
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
-		return function(name, rules) { sheet.addRule(name, rules) }
+		return function(name, rules) {
+			try {
+				sheet.addRule(name, rules)
+			} catch(e) {
+				log("InsertRule failed:", e)
+			}
+		}
 	}
 	else {
 		var sheet = style.sheet
-		return function(name, rules) { sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length) }
+		return function(name, rules) {
+			try {
+				sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length)
+			} catch(e) {
+				log("InsertRule failed:", e)
+			}
+		}
 	}
 }
 

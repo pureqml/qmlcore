@@ -2,6 +2,8 @@ var Player = function(ui) {
 	var player = ui._context.createElement('video')
 	player.dom.preload = "metadata"
 
+	if (ui.autoplay)
+		player.setAttribute('autoplay')
 	player.setAttribute('preload', 'auto')
 	player.setAttribute('data-setup', '{}')
 	player.setAttribute('class', 'video-js')
@@ -59,6 +61,11 @@ Player.prototype.setSource = function(url) {
 			media.type = 'application/x-mpegURL'
 	}
 	this.videojs.src(media)
+}
+
+Player.prototype.setRect = function(l, t, r, b) {
+	this.videojs.width = (r - l) + "px"
+	this.videojs.height = (b - t) + "px"
 }
 
 exports.createPlayer = function(ui) {

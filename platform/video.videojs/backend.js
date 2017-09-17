@@ -66,5 +66,5 @@ exports.createPlayer = function(ui) {
 }
 
 exports.probeUrl = function(url) {
-	return 60
+	return window.videojs ? 60 : 0
 }

@@ -264,12 +264,12 @@ Object {
 	}
 
 	///@private
-	function invokeKeyHandlers(key, handlers, invoker) {
+	function invokeKeyHandlers(key, event, handlers, invoker) {
 		for(var i = handlers.length - 1; i >= 0; --i) {
 			var callback = handlers[i]
 			if (invoker(callback)) {
 				if (_globals.core.trace.key)
-					log("key", key, "handled by", this, new Error().stack)
+					log("key " + key + " handled in " + (performance.now() - event.timeStamp).toFixed(3) + " ms by", this, new Error().stack)
 				return true;
 			}
 		}
@@ -294,21 +294,21 @@ Object {
 			var proto_callback = this['__key__' + key]
 
 			if (key in this._pressedHandlers)
-				return this.invokeKeyHandlers(key, this._pressedHandlers[key], invoker)
+				return this.invokeKeyHandlers(key, event, this._pressedHandlers[key], invoker)
 
 			if (proto_callback)
-				return this.invokeKeyHandlers(key, proto_callback, invoker)
+				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
 
 			var proto_callback = this['__key__Key']
 			if ('Key' in this._pressedHandlers)
-				return this.invokeKeyHandlers(key, this._pressedHandlers['Key'], invoker)
+				return this.invokeKeyHandlers(key, event, this._pressedHandlers['Key'], invoker)
 
 			if (proto_callback)
-				return this.invokeKeyHandlers(key, proto_callback, invoker)
+				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
 		} else {
-			log("unknown key", event.which);
+			log("unknown key", event.which)
 		}
-		return false;
+		return false
 	}
 
 	/// focus this item

@@ -35,17 +35,49 @@ BaseView {
 		var horizontal = this.flow == this.FlowLeftToRight
 		if (horizontal) {
 			switch(key) {
-				case 'Left':	--this.currentIndex; return true
-				case 'Right':	++this.currentIndex; return true
-				case 'Up':		this.currentIndex -= this.columns; return true
-				case 'Down':	this.currentIndex += this.columns; return true
+				case 'Left':
+					if (!this.keyNavigationWraps && this.currentIndex == 0)
+						return false
+					--this.currentIndex
+					return true
+				case 'Right':
+					if (!this.keyNavigationWraps && this.currentIndex == this.columns - 1)
+						return false
+					++this.currentIndex
+					return true
+				case 'Up':
+					if (!this.keyNavigationWraps && this.currentIndex < this.columns)
+						return false
+					this.currentIndex -= this.columns
+					return true
+				case 'Down':
+					if (!this.keyNavigationWraps && this.currentIndex > this.count - this.columns + 1)
+						return false
+					this.currentIndex += this.columns
+					return true
 			}
 		} else {
 			switch(key) {
-				case 'Up':		--this.currentIndex; return true;
-				case 'Down':	++this.currentIndex; return true
-				case 'Left':	this.currentIndex -= this.rows; return true
-				case 'Right':	this.currentIndex += this.rows; return true
+				case 'Up':
+					if (!this.keyNavigationWraps && this.currentIndex == 0)
+						return false
+					--this.currentIndex
+					return true
+				case 'Down':
+					if (!this.keyNavigationWraps && this.currentIndex == this.columns - 1)
+						return false
+					++this.currentIndex
+					return true
+				case 'Left':
+					if (!this.keyNavigationWraps && this.currentIndex < this.rows)
+						return false
+					this.currentIndex -= this.rows
+					return true
+				case 'Right':
+					if (!this.keyNavigationWraps && this.currentIndex > this.count - this.rows + 1)
+						return false
+					this.currentIndex += this.rows
+					return true
 			}
 		}
 	}

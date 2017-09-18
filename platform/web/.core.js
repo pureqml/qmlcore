@@ -1,5 +1,8 @@
 exports.core.keyCodes = {
 	13: 'Select',
+	16: 'Shift',
+	17: 'Ctrl',
+	18: 'LeftAlt',
 	27: 'Back',
 	37: 'Left',
 	32: 'Space',
@@ -47,5 +50,6 @@ exports.core.keyCodes = {
 	112: 'Red',
 	113: 'Green',
 	114: 'Yellow',
-	115: 'Blue'
+	115: 'Blue',
+	230: 'RightAlt'
 }

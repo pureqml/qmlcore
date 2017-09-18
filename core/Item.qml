@@ -36,6 +36,8 @@ Object {
 	property int viewX;						///< x position in view (if any)
 	property int viewY;						///< y position in view (if any)
 
+	property int keyProcessDelay;			///< delay time between key pressed events
+
 	constructor: {
 		this._topPadding = 0
 		if (parent) {
@@ -279,15 +281,16 @@ Object {
 	///@private
 	function _processKey(event) {
 		var key = _globals.core.keyCodes[event.which || event.keyCode];
-		var ctx = this._context
 		var eventTime = event.timeStamp
 
 		if (key) {
-			if (eventTime !== ctx._lastEvent && eventTime - ctx.keyProcessDelay < ctx._lastEvent)
-				return true
+			if (this.keyProcessDelay) {
+				if (eventTime !== this._lastEvent && eventTime - this.keyProcessDelay < this._lastEvent)
+					return true
 
-			if (ctx._lastEvent !== eventTime)
-				ctx._lastEvent = eventTime
+				if (this._lastEvent !== eventTime)
+					this._lastEvent = eventTime
+			}
 
 			//fixme: create invoker only if any of handlers exist
 			var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })

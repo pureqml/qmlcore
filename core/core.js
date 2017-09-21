@@ -80,8 +80,8 @@ exports.core.safeCall = function(self, args, onError) {
 /**
  * @constructor
  */
-var CoreObjectComponent = exports.core.CoreObject = function() {
-	this._local = {}
+var CoreObjectComponent = exports.core.CoreObject = function(parent) {
+	this._local = Object.create(parent? parent._local: null)
 }
 
 var CoreObjectComponentPrototype = CoreObjectComponent.prototype
@@ -99,13 +99,9 @@ CoreObjectComponentPrototype._get = function(name, unsafe) {
 	if (name in this)
 		return this[name]
 
-	var object = this
-	while(object) {
-		var result = object._local[name]
-		if (result !== undefined)
-			return result
-		object = object.parent
-	}
+	var result = this._local[name]
+	if (result !== undefined)
+		return result
 
 	if (unsafe)
 		return null

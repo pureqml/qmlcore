@@ -18,9 +18,9 @@ var Player = function(ui) {
 	player.on('seeking', function() { log("seeking"); ui.seeking = true; ui.waiting = true }.bind(ui))
 	player.on('waiting', function() { log("waiting"); ui.waiting = true }.bind(ui))
 	player.on('stalled', function() { log("Was stalled", dom.networkState); }.bind(ui))
-	player.on('emptied', function() { log("Was emptied", dom.networkState); }.bind(ui))
+	player.on('emptied', function() { log("Was emptied", dom.networkState); dom.play() }.bind(ui))
 	player.on('volumechange', function() { ui.muted = dom.muted }.bind(ui))
-	player.on('canplaythrough', function() { log("ready to play"); }.bind(ui))
+	player.on('canplaythrough', function() { log("ready to play"); dom.play() }.bind(ui))
 
 	player.on('timeupdate', function() {
 		ui.waiting = false
@@ -30,6 +30,7 @@ var Player = function(ui) {
 
 	player.on('durationchange', function() {
 		var d = dom.duration
+		ui.ready = false
 		ui.duration = isFinite(d) ? d : 0
 	}.bind(ui))
 
@@ -49,12 +50,25 @@ var Player = function(ui) {
 	ui.parent.element.append(ui.element)
 
 	this.videojs = window.videojs(uniqueId)
+	this.videojs.width = 'auto'
+	this.videojs.height = 'auto'
+
+	var errorDisplay = document.getElementsByClassName("vjs-error-display")
+	if (errorDisplay && errorDisplay.length)
+		errorDisplay[0].style.display = 'none'
+
+	var videojsSpinner = document.getElementsByClassName("vjs-loading-spinner")
+	if (videojsSpinner && videojsSpinner.length)
+		videojsSpinner[0].style.display = 'none'
+
+	this.videojsContaner = document.getElementById(uniqueId)
+	this.videojsContaner.style.zindex = -1
 }
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
 Player.prototype.setSource = function(url) {
-	var media = { 'src': url }
+	var media = { 'src': url, 'withCredentials': true }
 	if (url) {
 		var urlLower = url.toLowerCase()
 		if (urlLower.endsWith('.m3u8') || urlLower.endsWith('.m3u'))
@@ -64,8 +78,8 @@ Player.prototype.setSource = function(url) {
 }
 
 Player.prototype.setRect = function(l, t, r, b) {
-	this.videojs.width = (r - l) + "px"
-	this.videojs.height = (b - t) + "px"
+	this.videojsContaner.style.width = (r - l) + "px"
+	this.videojsContaner.style.height = (b - t) + "px"
 }
 
 exports.createPlayer = function(ui) {

@@ -74,8 +74,10 @@ Item {
 
 		log("play", this.source)
 		var player = this._getPlayer()
-		if (player)
+		if (player) {
+			this._scheduleLayout()
 			player.play()
+		}
 		this.applyVolume();
 	}
 

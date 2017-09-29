@@ -39,14 +39,20 @@ StyleCachePrototype.update = function(element, name) {
 	var id = element._uniqueId
 	var entry = cache[id]
 	if (entry !== undefined) {
-		if (!entry.data[name]) {
+		if (name === undefined) {
+			entry.all = true
+		} else if (!entry.data[name]) {
 			entry.data[name] = true
 			++entry.size
 		}
 	} else {
 		var data = {}
-		data[name] = true
-		cache[id] = {data: data, element: element, size: 1}
+		entry = {data: data, element: element, size: 1}
+		if (name === undefined)
+			entry.all = true
+		else
+			data[name] = true
+		cache[id] = entry
 	}
 }
 
@@ -331,7 +337,7 @@ var cssUnits = {
 }
 
 ElementPrototype.forceLayout = function() {
-	this.updateStyle()
+	this._context._styleCache.apply()
 	return this.dom.offsetWidth | this.dom.offsetHeight
 }
 
@@ -352,7 +358,7 @@ ElementPrototype.updateStyle = function(updated) {
 			return
 	}
 	//log('styles updated:', updated.size, ', threshold', populateStyleThreshold)
-	if (updated.size <= populateStyleThreshold) {
+	if (!updated.all && updated.size <= populateStyleThreshold) {
 		updated = updated.data
 	} else {
 		//fallback to old setAttribute('style') strategy

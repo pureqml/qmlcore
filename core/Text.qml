@@ -19,6 +19,12 @@ Item {
 			this._setText(this.text)
 	}
 
+	function getClass() { return 'core-text' }
+
+	function registerStyle(style, tag) {
+		style.addRule(tag, 'width: auto; height: auto;')
+	}
+
 	///@private
 	function _scheduleUpdateSize() {
 		this._context.delayedAction('text:update-size', this, this._updateSizeImpl)

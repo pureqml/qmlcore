@@ -73,7 +73,7 @@ Layout {
 
 		var pos = this.getPosition(idx)
 
-		if (!this.keyNavigationWraps && pos.row === this._rows.length)
+		if (!this.keyNavigationWraps && pos.row === this._rows.length - 1)
 			return false
  		var l = this._rows.length
 		var r = (pos.row + 1) % l
@@ -83,7 +83,8 @@ Layout {
 			if (middle <= (row[i].x + row[i].w + vsp)){
 				idx = row[i].i
 				break
-			}
+			} else
+				idx = row[i].i
 		}
 
 		this.currentIndex = idx
@@ -210,22 +211,28 @@ Layout {
 				shift = (size - row.size)
 
 			if (shift !== 0) {
-				var cindex = rows[i].idx, lindex = row.idx
+				var cindex = rows[i].idx, lindex = row.idx, baseIndex = cindex
 				if (right || center) {
 		 			for (; cindex < lindex; ++cindex) {
-		 				if (!horizontal)
+		 				if (!horizontal) {
 							children[cindex].x += shift
-						else
+							this._rows[i][cindex - baseIndex].x += shift
+		 				} else {
 							children[cindex].y += shift
+							this._rows[i][cindex - baseIndex].y += shift
+						}
 		 			}
 		 		} else if (justify) {
 		 			var c = lindex - cindex + 1
 		 			var sp = shift / c
 		 			for (; cindex < lindex; ++cindex) {
-		 				if (!horizontal)
+		 				if (!horizontal) {
 							children[cindex].x += sp * (cindex + c - lindex)
-						else
+							this._rows[i][cindex - baseIndex].x += sp * (cindex + c - lindex)
+		 				} else {
 							children[cindex].y += sp * (cindex + c - lindex)
+							this._rows[i][cindex - baseIndex].y += sp * (cindex + c - lindex)
+		 				}
 		 			}
 		 		}
 		 	}

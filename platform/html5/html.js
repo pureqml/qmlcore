@@ -6,11 +6,23 @@ var populateStyleThreshold = 2
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
-		return function(name, rules) { sheet.addRule(name, rules) }
+		return function(name, rules) {
+			try {
+				sheet.addRule(name, rules)
+			} catch(e) {
+				log("InsertRule failed:", e)
+			}
+		}
 	}
 	else {
 		var sheet = style.sheet
-		return function(name, rules) { sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length) }
+		return function(name, rules) {
+			try {
+				sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length)
+			} catch(e) {
+				log("InsertRule failed:", e)
+			}
+		}
 	}
 }
 
@@ -27,16 +39,14 @@ StyleCachePrototype.update = function(element, name) {
 	var id = element._uniqueId
 	var entry = cache[id]
 	if (entry !== undefined) {
-		if (name !== undefined && !entry.data[name]) {
+		if (!entry.data[name]) {
 			entry.data[name] = true
 			++entry.size
 		}
 	} else {
 		var data = {}
-		if (name !== undefined)
-			data[name] = true
-		entry = {data: data, element: element, size: 1}
-		cache[id] = entry
+		data[name] = true
+		cache[id] = {data: data, element: element, size: 1}
 	}
 }
 
@@ -176,7 +186,7 @@ var nodesCache = {};
 /**
  * @constructor
  */
- 
+
 exports.Element = function(context, tag) {
 	if (typeof tag === 'string') {
 		if (!nodesCache[tag]) {
@@ -611,7 +621,6 @@ exports.loadImage = function(image) {
 }
 
 exports.initText = function(text) {
-	text.element.addClass(text._context.getClass('core-text'))
 }
 
 var layoutTextSetStyle = function(text, style) {

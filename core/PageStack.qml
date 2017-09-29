@@ -8,7 +8,7 @@ Layout {
 	onCurrentIndexChanged: {
 		if (this.currentIndex < 0)
 			this.currentIndex = 0;
-		else if (this.currentIndex >= this.children.length)
+		else if (this.children.length > 0 && this.currentIndex >= this.children.length)
 			this.currentIndex = this.children.length - 1;
 
 		this._scheduleLayout()
@@ -39,7 +39,7 @@ Layout {
 
 	/// @private
 	function addChild(child) {
-		_globals.core.Item.prototype.addChild.apply(this, arguments)
+		_globals.core.Layout.prototype.addChild.apply(this, arguments)
 		child.onChanged('height', this._scheduleLayout.bind(this))
 		child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
 	}

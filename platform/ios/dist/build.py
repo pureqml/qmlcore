@@ -8,15 +8,14 @@ def build(app, title):
     os.system('rm -rf %s' %app)
     res = os.system('cordova create %s com.example.app %s' %(app,title))
     if res != 0:
-        print "Failed to create android app"
+        print "Failed to create ios app"
         return
     os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
     os.system('cp androidIcon.png %s' %(app))
     os.system('cp config.xml %s' %(app))
     os.chdir(app)
-    os.system('cordova platform add android')
-    os.system('cordova plugin add cordova-plugin-streaming-media')
-    os.system('cordova build android')
+    os.system('cordova platform add ios')
+    os.system('cordova build ios')
     os.chdir('..')
 
 

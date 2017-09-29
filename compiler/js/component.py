@@ -1,10 +1,7 @@
 from compiler.js import get_package, split_name, escape
-from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, mangle_path
+from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, mangle_path, path_or_parent
 from compiler import lang
 import json
-
-def path_or_parent(path, parent):
-	return '.'.join(mangle_path(path.split('.'))) if path else parent
 
 class component_generator(object):
 	def __init__(self, ns, name, component, prototype = False):
@@ -278,7 +275,7 @@ class component_generator(object):
 
 		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
 		if self.prototype_ctor:
-			r.append("\t__prototype$ctors.push(function() {\n\tvar prototype = %s\n\t%s\n\t})\n" %(self.proto_name, self.prototype_ctor))
+			r.append("\t%s\n" %(self.prototype_ctor))
 		r.append("%s%s.constructor = %s\n" %(ident, self.proto_name, self.local_name))
 
 		r.append("%s%s.componentName = '%s'" %(ident, self.proto_name, self.name))
@@ -346,18 +343,18 @@ class component_generator(object):
 
 		generate = False
 
-		code = self.generate_creators(registry, 'this', '__closure', ident_n + 1).strip()
+		code = self.generate_creators(registry, '$this', '__closure', ident_n + 1).strip()
 		if code:
 			generate = True
 		b = '\t%s%s.__create.call(this, __closure.__base = { })' %(ident, self.base_proto_name)
-		code = '%s%s.__create = function(__closure) {\n%s\n%s\n%s}' \
+		code = '%s%s.__create = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n%s}' \
 			%(ident, self.proto_name, b, code, ident)
 
-		setup_code = self.generate_setup_code(registry, 'this', '__closure', ident_n + 2).strip()
+		setup_code = self.generate_setup_code(registry, '$this', '__closure', ident_n + 2).strip()
 		b = '%s%s.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
-		setup_code = '%s%s.__setup = function(__closure) {\n%s\n%s\n}' \
+		setup_code = '%s%s.__setup = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n}' \
 			%(ident, self.proto_name, b, setup_code)
 
 		if generate:
@@ -376,7 +373,7 @@ class component_generator(object):
 		if property in self.aliases:
 			return self.aliases[property]
 
-		base = registry.find_component(self.package, self.component.name)
+		base = self.get_base_type(registry)
 		if base != 'core.CoreObject':
 			return registry.components[base].find_property(registry, property)
 
@@ -456,9 +453,9 @@ class component_generator(object):
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
 		for name, target in self.aliases.iteritems():
-			get, pname = generate_accessors(target)
-			r.append("%score.addAliasProperty(%s, '%s', (function() { return %s; }).bind(%s), '%s')" \
-				%(ident, parent, name, get, parent, pname))
+			get, pname = generate_accessors(parent, target)
+			r.append("%score.addAliasProperty(%s, '%s', function() { return %s }, '%s')" \
+				%(ident, parent, name, get, pname))
 
 		return "\n".join(r)
 
@@ -469,9 +466,9 @@ class component_generator(object):
 
 	def get_lvalue(self, parent, target):
 		path = target.split(".")
-		path = ["_get('%s')" %x for x in path[:-1]] + [path[-1]]
-		return "%s.%s" % (parent, ".".join(path))
-
+		target_owner = [parent] + ["_get('%s')" %x for x in path[:-1]]
+		path = target_owner + [path[-1]]
+		return ("%s" %".".join(target_owner), "%s" %".".join(path), path[-1])
 
 	def generate_setup_code(self, registry, parent, closure, ident_n = 1):
 		r = []
@@ -482,26 +479,25 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_lvalue = self.get_lvalue(parent, target)
+			target_owner, target_lvalue, target_prop = self.get_lvalue(parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
-				deps = parse_deps(parent, value)
+				r.append('//assigning %s to %s' %(target, value))
+				value, deps = parse_deps(parent, value)
 				if deps:
 					var = "update$%s$%s" %(escape(parent), escape(target))
-					r.append('//assigning %s to %s' %(target, value))
-					r.append("%svar %s = (function() { %s = (%s); }).bind(%s)" %(ident, var, target_lvalue, value, parent))
+					r.append("%svar %s = function() { %s = (%s) }" %(ident, var, target_lvalue, value))
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep
 						depvar = "dep$%s$%s$%d" %(escape(parent), escape(target), idx)
 						r.append('%svar %s = %s' %(ident, depvar, path))
 						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))
-						undep.append("[%s, '%s', %s]" %(depvar, dep, var))
-					r.append("%s%s._replaceUpdater('%s', [%s])" %(ident, parent, target, ",".join(undep)))
-					r.append("%s%s();" %(ident, var))
+						undep.append("[%s, '%s']" %(depvar, dep))
+					r.append("%s%s._replaceUpdater('%s', [%s, [%s]])" %(ident, target_owner, target_prop, var, ",".join(undep)))
+					r.append("%s%s()" %(ident, var))
 				else:
-					r.append('//assigning %s to %s' %(target, value))
-					r.append("%s%s._replaceUpdater('%s'); %s = (%s);" %(ident, parent, target, target_lvalue, value))
+					r.append("%s%s._replaceUpdater('%s'); %s = (%s);" %(ident, target_owner, target_prop, target_lvalue, value))
 
 			elif t is component_generator:
 				if target == "delegate":

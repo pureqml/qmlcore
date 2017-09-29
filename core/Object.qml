@@ -15,6 +15,24 @@ EventEmitter {
 		this._updaters = {}
 	}
 
+	prototypeConstructor: {
+		ObjectPrototype._propertyToStyle = {
+			width: 'width', height: 'height',
+			x: 'left', y: 'top', viewX: 'left', viewY: 'top',
+			opacity: 'opacity',
+			border: 'border',
+			radius: 'border-radius',
+			rotate: 'transform',
+			boxshadow: 'box-shadow',
+			transform: 'transform',
+			visible: 'visibility', visibleInView: 'visibility',
+			background: 'background',
+			color: 'color',
+			backgroundImage: 'background-image',
+			font: 'font'
+		}
+	}
+
 	/// discard object
 	function discard() {
 		this._changedConnections.forEach(function(connection) {
@@ -85,10 +103,10 @@ EventEmitter {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
 		if (oldUpdaters !== undefined) {
-			oldUpdaters.forEach(function(data) {
+			var callback = oldUpdaters[0]
+			oldUpdaters[1].forEach(function(data) {
 				var object = data[0]
 				var name = data[1]
-				var callback = data[2]
 				object.removeOnChanged(name, callback)
 			})
 		}

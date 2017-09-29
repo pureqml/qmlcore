@@ -33,23 +33,27 @@ Item {
 	}
 
 	///@private
-	function getClass(name) {
+	function mangleClass(name) {
 		return this._prefix + name
 	}
 
 	///@private
 	function registerStyle(item, tag, cls) {
-		if (!(tag + cls in this._stylesRegistered)) {
-			item.registerStyle(this.stylesheet, tag, cls)
-			this._stylesRegistered[tag + cls] = true
+		cls = this.mangleClass(cls)
+		var selector = cls? tag + '.' + cls: tag
+		if (!(selector in this._stylesRegistered)) {
+			item.registerStyle(this.stylesheet, selector)
+			this._stylesRegistered[selector] = true
 		}
 	}
 
 	///@private
 	function createElement(tag, cls) {
+		if (cls === undefined)
+			cls = ''
 		var el = this.backend.createElement(this, tag, cls)
-		if (cls) {
-			el.addClass(cls)
+		if (cls || this._prefix) {
+			el.addClass(this.mangleClass(cls))
 		}
 		return el
 	}
@@ -58,9 +62,6 @@ Item {
 	function _init() {
 		log('Context: initializing...')
 		new this.backend.init(this)
-		var invoker = _globals.core.safeCall(null, [], function (ex) { log("prototype constructor failed:", ex, ex.stack) })
-		__prototype$ctors.forEach(invoker)
-		__prototype$ctors = undefined
 	}
 
 	///@private

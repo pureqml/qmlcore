@@ -80,14 +80,18 @@ exports.core.safeCall = function(self, args, onError) {
 /**
  * @constructor
  */
-var CoreObjectComponent = exports.core.CoreObject = function() {
-	this._local = {}
+var CoreObjectComponent = exports.core.CoreObject = function(parent) {
+	this._local = Object.create(parent? parent._local: null)
 }
 
 var CoreObjectComponentPrototype = CoreObjectComponent.prototype
 CoreObjectComponentPrototype.componentName = 'core.CoreObject'
 CoreObjectComponentPrototype.constructor = CoreObjectComponent
+
+/** @private **/
 CoreObjectComponentPrototype.__create = function() { }
+
+/** @private **/
 CoreObjectComponentPrototype.__setup = function() { }
 
 ///@private gets object by id
@@ -95,12 +99,9 @@ CoreObjectComponentPrototype._get = function(name, unsafe) {
 	if (name in this)
 		return this[name]
 
-	var object = this
-	while(object) {
-		if (name in object._local)
-			return object._local[name]
-		object = object.parent
-	}
+	var result = this._local[name]
+	if (result !== undefined)
+		return result
 
 	if (unsafe)
 		return null
@@ -121,7 +122,7 @@ var Color = exports.core.Color = function(value) {
 	{
 		this.r = this.b = this.a = 255
 		this.g = 0
-		log("invalid color specification: " + value)
+		log("invalid color specification: " + value, new Error().stack)
 		return
 	}
 	var triplet

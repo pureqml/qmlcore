@@ -21,6 +21,7 @@ Object {
 	property lazy anchors: Anchors { }
 	property lazy effects: Effects { }
 	property lazy transform: Transform { }
+	property bool cssTranslatePositioning;
 
 	property lazy left:		AnchorLine	{ boxIndex: 0; }
 	property lazy top:		AnchorLine	{ boxIndex: 1; }
@@ -35,14 +36,15 @@ Object {
 	property int viewX;						///< x position in view (if any)
 	property int viewY;						///< y position in view (if any)
 
-	///@private
+	property int keyProcessDelay;			///< delay time between key pressed events
+
 	constructor: {
 		this._topPadding = 0
 		if (parent) {
 			if (this.element)
 				throw new Error('double ctor call')
 
-			this.createElement(this.getTag(), this.getClass())
+			this._createElement(this.getTag(), this.getClass())
 		} //no parent == top level element, skip
 	}
 
@@ -61,15 +63,19 @@ Object {
 	function getClass() { return '' }
 
 	///@private
-	function registerStyle(style, tag, cls) {
-		style.addRule(tag + (cls ? '.' + cls : ''), 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
+	function registerStyle(style, tag) {
+		style.addRule(tag, 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
 	}
 
 	/// default implementation of element creation routine.
-	function createElement(tag, cls) {
-		this.element = this._context.createElement(tag, cls)
+	function _createElement(tag, cls) {
+		var context = this._context
+		if (context === null)
+			context = this
+
+		this.element = context.createElement(tag, cls)
 		this.element._item = this
-		this._context.registerStyle(this, tag, cls)
+		context.registerStyle(this, tag, cls)
 		this.parent.element.append(this.element)
 	}
 
@@ -110,8 +116,9 @@ Object {
 	function _updateVisibility() {
 		var visible = this.visible && this.visibleInView
 
-		if (this.element)
+		if (this.element) {
 			this.style('visibility', visible? 'inherit': 'hidden')
+		}
 
 		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)
 	}
@@ -121,9 +128,11 @@ Object {
 	}
 
 	onRecursiveVisibleChanged: {
-		this.children.forEach(function(child) {
-			child.recursiveVisible = value && child.visible && child.visibleInView
-		})
+		var children = this.children
+		for(var i = 0, n = children.length; i < n; ++i) {
+			var child = children[i]
+			this._updateVisibilityForChild(child, value)
+		}
 
 		if (!value)
 			this.parent._tryFocus()
@@ -257,12 +266,12 @@ Object {
 	}
 
 	///@private
-	function invokeKeyHandlers(key, handlers, invoker) {
+	function invokeKeyHandlers(key, event, handlers, invoker) {
 		for(var i = handlers.length - 1; i >= 0; --i) {
 			var callback = handlers[i]
 			if (invoker(callback)) {
 				if (_globals.core.trace.key)
-					log("key", key, "handled by", this, new Error().stack)
+					log("key " + key + " handled in " + (performance.now() - event.timeStamp).toFixed(3) + " ms by", this, new Error().stack)
 				return true;
 			}
 		}
@@ -272,36 +281,37 @@ Object {
 	///@private
 	function _processKey(event) {
 		var key = _globals.core.keyCodes[event.which || event.keyCode];
-		var ctx = this._context
 		var eventTime = event.timeStamp
 
 		if (key) {
-			if (eventTime !== ctx._lastEvent && eventTime - ctx.keyProcessDelay < ctx._lastEvent)
-				return true
+			if (this.keyProcessDelay) {
+				if (eventTime !== this._lastEvent && eventTime - this.keyProcessDelay < this._lastEvent)
+					return true
 
-			if (ctx._lastEvent !== eventTime)
-				ctx._lastEvent = eventTime
+				if (this._lastEvent !== eventTime)
+					this._lastEvent = eventTime
+			}
 
 			//fixme: create invoker only if any of handlers exist
 			var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 			var proto_callback = this['__key__' + key]
 
 			if (key in this._pressedHandlers)
-				return this.invokeKeyHandlers(key, this._pressedHandlers[key], invoker)
+				return this.invokeKeyHandlers(key, event, this._pressedHandlers[key], invoker)
 
 			if (proto_callback)
-				return this.invokeKeyHandlers(key, proto_callback, invoker)
+				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
 
 			var proto_callback = this['__key__Key']
 			if ('Key' in this._pressedHandlers)
-				return this.invokeKeyHandlers(key, this._pressedHandlers['Key'], invoker)
+				return this.invokeKeyHandlers(key, event, this._pressedHandlers['Key'], invoker)
 
 			if (proto_callback)
-				return this.invokeKeyHandlers(key, proto_callback, invoker)
+				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
 		} else {
-			log("unknown key", event.which);
+			log("unknown key", event.which)
 		}
-		return false;
+		return false
 	}
 
 	/// focus this item

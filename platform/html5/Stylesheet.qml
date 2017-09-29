@@ -16,6 +16,7 @@ Object {
 		style.setHtml(
 			"div#" + divId + " { position: absolute; visibility: hidden; left: 0px; top: 0px; }" +
 			(_globals.core.os == "webOS" ? this.mangleRule('div', "{ " + userSelect + " }") : "") +
+			(_globals.core.os == "android" ? this.mangleRule('div', "{ -webkit-tap-highlight-color: rgba(255, 255, 255, 0); -webkit-focus-ring-color: rgba(255, 255, 255, 0); outline: none; }") : "") +
 			(topLevel? "body { padding: 0; margin: 0; border: 0px; overflow: hidden; }": "") + //fixme: do we need style here in non-top-level mode?
 			this.mangleRule('video', "{ position: absolute; }") + //fixme: do we need position rule if it's item?
 			this.mangleRule('img', "{ position: absolute; -webkit-touch-callout: none; " + userSelect + " }")

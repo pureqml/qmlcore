@@ -256,6 +256,7 @@ def generate():
 	def write_properties(prefix, props):
 		r = ''
 		for k, v in props.iteritems():
+			k = compiler.js.escape_id(k)
 			if isinstance(v, dict):
 				r += write_properties(prefix + '$' + k, v)
 			else:

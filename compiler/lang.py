@@ -14,7 +14,7 @@ def value_is_trivial(value):
 	if value == 'true' or value == 'false' or value == 'null':
 		return True
 
-	if value.startswith('$manifest$'):
+	if value.startswith('${manifest.'):
 		return True
 
 	try:

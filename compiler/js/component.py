@@ -299,6 +299,9 @@ class component_generator(object):
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
+						default_value, deps = parse_deps('@error', default_value)
+						if deps:
+							raise Exception('trivial value emits dependencies')
 						args.append(default_value)
 					r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
@@ -415,6 +418,9 @@ class component_generator(object):
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):
+							default_value, deps = parse_deps('@error', default_value)
+							if deps:
+								raise Exception('trivial value emits dependencies')
 							args.append(default_value)
 						r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 

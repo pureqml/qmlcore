@@ -637,7 +637,7 @@ exports.layoutText = function(text) {
 	var dom = element.dom
 
 	var isHtml = text.text.search(/[\<\&]/) >= 0 //dubious check
-	if (!wrap && textCanvasContext !== null && !isHtml) {
+	if (false && !wrap && textCanvasContext !== null && !isHtml) {
 		var styles = getComputedStyle(dom)
 		var fontSize = styles.getPropertyValue('line-height')
 		if (fontSize === 'normal')

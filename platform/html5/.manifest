@@ -2,6 +2,7 @@
 	"standalone": false,
 	"properties.style.font" : {
 		"family": "Arial",
-		"pixelSize": 16
+		"pixelSize": 16,
+		"lineHeight": 1.2
 	}
 }

@@ -8,7 +8,7 @@ Object {
 	property real letterSpacing;	///< spacing between letters
 	property int pixelSize: manifest.style.font.pixelSize;		///< font size in pixels
 	property int pointSize;		///< font size in points
-	property int lineHeight;	///< font line height in pixels
+	property real lineHeight: manifest.style.font.lineHeight;	///< font line height in font heights
 	property int weight;		///< font weight value
 
 	onFamilyChanged:		{ this.parent.style('font-family', value); this.parent._updateSize() }
@@ -18,7 +18,7 @@ Object {
 	onBoldChanged: 			{ this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize() }
 	onUnderlineChanged:		{ this.parent.style('text-decoration', value? 'underline': ''); this.parent._updateSize() }
 	onStrikeChanged:		{ this.parent.style('text-decoration', value? 'line-through': ''); this.parent._updateSize() }
-	onLineHeightChanged:	{ this.parent.style('line-height', value + "px"); this.parent._updateSize() }
+	onLineHeightChanged:	{ this.parent.style('line-height', value); this.parent._updateSize() }
 	onWeightChanged:		{ this.parent.style('font-weight', value); this.parent._updateSize() }
 	onLetterSpacingChanged:	{ this.parent.style('letter-spacing', value + "px"); this.parent._updateSize() }
 }

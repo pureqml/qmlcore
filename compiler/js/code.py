@@ -58,6 +58,8 @@ def parse_deps(parent, text):
 		path = m.group(1).split('.')
 		target = path[-1]
 		gets = path[:-1]
+		if len(path) > 1 and path[0] == 'manifest':
+			return '$' + '$'.join(path)
 		if len(path) > 1 and path[0] == 'model':
 			signal = '_row' if path[1] != 'index' else '_rowIndex'
 			deps.add(("%s._get('_delegate')" %parent, signal))

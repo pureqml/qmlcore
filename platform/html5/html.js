@@ -640,6 +640,8 @@ exports.layoutText = function(text) {
 	if (!wrap && textCanvasContext !== null && !isHtml) {
 		var styles = getComputedStyle(dom)
 		var fontSize = styles.getPropertyValue('line-height')
+		if (fontSize === 'normal')
+			fontSize = '16px' //16px is widely used default, https://www.w3schools.com/css/css_font.asp, https://developer.mozilla.org/ru/docs/Web/CSS/font-size
 		var units = fontSize.slice(-2)
 		if (units === 'px') {
 			var font = styles.getPropertyValue('font')
@@ -647,6 +649,7 @@ exports.layoutText = function(text) {
 			var metrics = textCanvasContext.measureText(text.text)
 			text.paintedWidth = metrics.width
 			text.paintedHeight = parseInt(fontSize)
+			//log('layoutText', text.text, text.paintedWidth, text.paintedHeight)
 			layoutTextSetStyle(text, {})
 			return
 		}

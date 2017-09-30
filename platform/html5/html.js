@@ -637,18 +637,28 @@ exports.layoutText = function(text) {
 	var dom = element.dom
 
 	var isHtml = text.text.search(/[\<\&]/) >= 0 //dubious check
-	if (false && !wrap && textCanvasContext !== null && !isHtml) {
+/*
+	uncomment me
+	if (!wrap && textCanvasContext !== null && !isHtml) {
 		var font = text.font
-		textCanvasContext.font = font.pixelSize + 'px ' + font.family
-		log('SET', textCanvasContext.font, font.family, font.pixelSize)
+		var fontSize
+		if (font.pointSize)
+			fontSize = font.pointSize * 96 / 72
+		else
+			fontSize = font.pixelSize
+		//log('fontSize = ', fontSize)
+
+		textCanvasContext.font = fontSize + 'px ' + font.family
+
+		//log('font from canvas:', textCanvasContext.font, font.family, font.pixelSize, font.pointSize)
 		var metrics = textCanvasContext.measureText(text.text)
 		text.paintedWidth = metrics.width
-		text.paintedHeight = font.pixelSize
-		log('layoutText', text.text, text.paintedWidth, text.paintedHeight)
+		text.paintedHeight = fontSize * 1.2 //'normal line-height'
+		//log('layoutText', text.text, text.paintedWidth, text.paintedHeight)
 		layoutTextSetStyle(text, {})
 		return
 	}
-
+*/
 	var removedChildren = element.removeChildren(text)
 
 	if (!wrap)

@@ -1,1 +1,7 @@
-{ "standalone": false }
+{
+	"standalone": false,
+	"properties.style.font" : {
+		"family": "Arial",
+		"pixelSize": 16
+	}
+}

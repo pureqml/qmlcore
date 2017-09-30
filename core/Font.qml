@@ -12,8 +12,8 @@ Object {
 	property int weight;		///< font weight value
 
 	onFamilyChanged:		{ this.parent.style('font-family', value); this.parent._updateSize() }
-	onPointSizeChanged:		{ this.parent.style('font-size', value + "pt"); this.parent._updateSize() }
-	onPixelSizeChanged:		{ this.parent.style('font-size', value + "px"); this.parent._updateSize() }
+	onPointSizeChanged:		{ this.parent.style('font-size', value? value + 'pt': ''); this.parent._updateSize() }
+	onPixelSizeChanged:		{ this.parent.style('font-size', value? value + 'px': ''); this.parent._updateSize() }
 	onItalicChanged: 		{ this.parent.style('font-style', value? 'italic': 'normal'); this.parent._updateSize() }
 	onBoldChanged: 			{ this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize() }
 	onUnderlineChanged:		{ this.parent.style('text-decoration', value? 'underline': ''); this.parent._updateSize() }

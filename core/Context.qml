@@ -55,6 +55,8 @@ Item {
 		if (cls || this._prefix) {
 			el.addClass(this.mangleClass(cls))
 		}
+		if (cls && this._prefix)
+			el.addClass(this.mangleClass('')) //base item style, fixme: pass array here?
 		return el
 	}
 

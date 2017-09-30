@@ -12,8 +12,8 @@ Object {
 	property int weight;		///< font weight value
 
 	onFamilyChanged:		{ this.parent.style('font-family', value); this.parent._updateSize() }
-	onPointSizeChanged:		{ this.parent.style('font-size', value > 0? value + 'pt': ''); if (value > 0) this.pixelSize = 0; this.parent._updateSize() }
-	onPixelSizeChanged:		{ this.parent.style('font-size', value > 0? value + 'px': ''); if (value > 0) this.pointSize = 0; this.parent._updateSize() }
+	onPointSizeChanged:		{ if (value > 0) this.pixelSize = 0; this.parent.style('font-size', value > 0? value + 'pt': ''); this.parent._updateSize() }
+	onPixelSizeChanged:		{ if (value > 0) this.pointSize = 0; this.parent.style('font-size', value > 0? value + 'px': ''); this.parent._updateSize() }
 	onItalicChanged: 		{ this.parent.style('font-style', value? 'italic': 'normal'); this.parent._updateSize() }
 	onBoldChanged: 			{ this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize() }
 	onUnderlineChanged:		{ this.parent.style('text-decoration', value? 'underline': ''); this.parent._updateSize() }

@@ -643,7 +643,7 @@ exports.layoutText = function(text) {
 		var font = text.font
 		var fontSize
 		if (font.pointSize)
-			fontSize = font.pointSize * 96 / 72
+			fontSize = Math.round(font.pointSize * 96 / 72)
 		else
 			fontSize = font.pixelSize
 		//log('fontSize = ', fontSize)

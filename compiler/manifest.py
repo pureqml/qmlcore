@@ -62,9 +62,20 @@ class Manifest(object):
 	def partner(self):
 		return self.data.get('partner', 'free')
 
+def __pair_hook(pairs):
+	obj = {}
+	for k, v in pairs:
+		if '.' in k:
+			path = k.split('.')
+			current = obj
+			for p in path[:-1]:
+				current = current.setdefault(p, {})
+			current[path[-1]] = v
+		obj[k] = v
+	return obj
 
 def load(f):
-	return Manifest(json.load(f))
+	return Manifest(json.load(f, object_pairs_hook = __pair_hook))
 
 def loads(s):
-	return Manifest(json.loads(s))
+	return Manifest(json.loads(s, object_pairs_hook = __pair_hook))

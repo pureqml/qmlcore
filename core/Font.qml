@@ -1,12 +1,12 @@
 /// adjusts text font properties
 Object {
-	property string family;		///< font family
+	property string family: manifest.style.font.family;		///< font family
 	property bool italic;		///< applies italic style
 	property bool bold;			///< applies bold style
 	property bool underline;	///< applies underline style
 	property bool strike;		///< line throw text flag
 	property real letterSpacing;	///< spacing between letters
-	property int pixelSize;		///< font size in pixels
+	property int pixelSize: manifest.style.font.pixelSize;		///< font size in pixels
 	property int pointSize;		///< font size in points
 	property int lineHeight;	///< font line height in pixels
 	property int weight;		///< font weight value

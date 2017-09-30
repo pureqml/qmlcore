@@ -64,7 +64,13 @@ Object {
 
 	///@private
 	function registerStyle(style, tag) {
-		style.addRule(tag, 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px;')
+		var rules = 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; '
+		rules += 'font-family: ' + $manifest$style$font$family
+		if ($manifest$style$font$pixelSize)
+			rules += 'font-size: ' + $manifest$style$font$pixelSize + 'px; '
+		else if ($manifest$style$font$pointSize)
+			rules += 'font-size: ' + $manifest$style$font$pointSize + 'pt; '
+		style.addRule(tag, rules)
 	}
 
 	/// default implementation of element creation routine.

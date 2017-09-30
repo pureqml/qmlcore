@@ -639,23 +639,17 @@ exports.layoutText = function(text) {
 	var isHtml = text.text.search(/[\<\&]/) >= 0 //dubious check
 	if (false && !wrap && textCanvasContext !== null && !isHtml) {
 		var styles = getComputedStyle(dom)
-		var fontSize = styles.getPropertyValue('font-size')
-		if (fontSize === 'normal') {
-			fontSize = '16px' //16px is widely used default, https://www.w3schools.com/css/css_font.asp, https://developer.mozilla.org/ru/docs/Web/CSS/font-size
-			element.style('font-size', fontSize)
-		}
-		var lineHeight = styles.getPropertyValue('line-height')
-		if (lineHeight === 'normal') {
-			lineHeight = '1.2px';
-			element.style('line-height', lineHeight)
-		}
+		var font = styles.getPropertyValue('font')
+		var fontMetrics = font.split(' ')
+		var fontSize = fontMetrics[4]
+		log('metrics', fontMetrics, 'size: ', fontSize)
 		var units = fontSize.slice(-2)
 		if (units === 'px') {
-			var font = styles.getPropertyValue('font')
-			textCanvasContext.font = fontSize + ' ' + font
+			textCanvasContext.font = font
+			log('SET', textCanvasContext.font)
 			var metrics = textCanvasContext.measureText(text.text)
 			text.paintedWidth = metrics.width
-			text.paintedHeight = Number(fontSize.slice(0, -2)) + Number(lineHeight.slice(0, -2))
+			text.paintedHeight = fontSize.slice(0, -2)
 			log('layoutText', text.text, text.paintedWidth, text.paintedHeight)
 			layoutTextSetStyle(text, {})
 			return

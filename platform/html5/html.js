@@ -650,10 +650,10 @@ exports.layoutText = function(text) {
 
 		textCanvasContext.font = fontSize + 'px ' + font.family
 
-		//log('font from canvas:', textCanvasContext.font, font.family, font.pixelSize, font.pointSize)
+		//log('font from canvas:', textCanvasContext.font, font.family, font.pixelSize, font.pointSize, fontSize)
 		var metrics = textCanvasContext.measureText(text.text)
 		text.paintedWidth = metrics.width
-		text.paintedHeight = fontSize * 1.2 //'normal line-height'
+		text.paintedHeight = fontSize * font.lineHeight
 		//log('layoutText', text.text, text.paintedWidth, text.paintedHeight)
 		layoutTextSetStyle(text, {})
 		return

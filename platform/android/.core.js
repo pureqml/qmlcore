@@ -25,6 +25,7 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 		55: '7',
 		56: '8',
 		57: '9',
+		179: 'Pause',
 		112: 'Red',
 		113: 'Green',
 		114: 'Yellow',

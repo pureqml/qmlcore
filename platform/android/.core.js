@@ -9,7 +9,6 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 	exports.core.keyCodes = {
 		4: 'Back',
 		13: 'Select',
-		27: 'Back',
 		37: 'Left',
 		32: 'Space',
 		38: 'Up',
@@ -35,7 +34,7 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 	if (window.cordova) {
 		document.addEventListener("backbutton", function(e) {
 			var event = new KeyboardEvent("keydown", { bubbles : true });
-			Object.defineProperty(event, 'keyCode', { get : function() { return 27; } })
+			Object.defineProperty(event, 'keyCode', { get : function() { return 4; } })
 			document.dispatchEvent(event);
 		}, false);
 	} else {

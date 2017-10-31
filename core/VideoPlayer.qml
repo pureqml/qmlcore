@@ -23,11 +23,12 @@ Item {
 	///@private
 	constructor: {
 		this.impl = null
+		this._createPlayer(true)
 	}
 
 	function _getPlayer() {
 		if (this.impl === null)
-			this._createPlayer(this)
+			this._createPlayer()
 		return this.impl
 	}
 
@@ -36,9 +37,6 @@ Item {
 			return this.impl
 
 		var source = this.source
-		if (!source)
-			return
-
 		var preferred = this.backend
 		log('preferred backend: ' + preferred)
 		var backends = _globals.core.__videoBackends

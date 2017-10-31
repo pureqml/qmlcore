@@ -24,6 +24,7 @@ var Player = function(ui) {
 
 	player.on('durationchange', function() {
 		var d = dom.duration
+		log("Duration", d)
 		ui.duration = isFinite(d) ? d : 0
 	}.bind(ui))
 
@@ -35,6 +36,7 @@ var Player = function(ui) {
 	}.bind(ui))
 
 	this.element = player
+	this.ui = ui
 
 	ui.element.remove()
 	ui.element = player
@@ -42,6 +44,7 @@ var Player = function(ui) {
 }
 
 Player.prototype.setSource = function(url) {
+	this.ui.ready = false
 	this.element.dom.src = url
 }
 

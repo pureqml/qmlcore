@@ -95,13 +95,15 @@ var Player = function(ui) {
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
 Player.prototype.setSource = function(url) {
-	var media = { 'src': url, 'withCredentials': true }
+	var media = { 'src': url }
 	if (url) {
 		var urlLower = url.toLowerCase()
-		if (urlLower.endsWith('.m3u8') || urlLower.endsWith('.m3u'))
+		var extIndex = urlLower.lastIndexOf(".");
+		var extension = urlLower.substring(extIndex, urlLower.length - 1)
+		if (extension == ".m3u8" || extension == ".m3u")
 			media.type = 'application/x-mpegURL'
 	}
-	this.videojs.src(media)
+	this.videojs.src(media, { html5: { hls: { withCredentials: true } }, fluid: true, preload: 'none', techOrder: ["html5"] })
 }
 
 Player.prototype.setRect = function(l, t, r, b) {

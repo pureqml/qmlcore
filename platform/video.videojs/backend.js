@@ -10,7 +10,6 @@ var Player = function(ui) {
 
 	var dom = player.dom
 	player.on('play', function() { ui.waiting = false; ui.paused = dom.paused }.bind(ui))
-	player.on('error', function() { log("Player error occured"); ui.error() }.bind(ui))
 	player.on('pause', function() { ui.paused = dom.paused }.bind(ui))
 	player.on('ended', function() { ui.finished() }.bind(ui))
 	player.on('seeked', function() { log("seeked"); ui.seeking = false; ui.waiting = false }.bind(ui))
@@ -21,6 +20,34 @@ var Player = function(ui) {
 	player.on('emptied', function() { log("Was emptied", dom.networkState); dom.play() }.bind(ui))
 	player.on('volumechange', function() { ui.muted = dom.muted }.bind(ui))
 	player.on('canplaythrough', function() { log("ready to play"); dom.play() }.bind(ui))
+
+	player.on('error', function() {
+		log("Player error occured")
+		ui.error(dom.error)
+
+		if (!dom.error)
+			return
+
+		log("player.error", dom.error)
+		switch (dom.error.code) {
+		case 1:
+			log("MEDIA_ERR_ABORTED error occured")
+			break;
+		case 2:
+			log("MEDIA_ERR_NETWORK error occured")
+			break;
+		case 3:
+			log("MEDIA_ERR_DECODE error occured")
+			break;
+		case 4:
+			log("MEDIA_ERR_SRC_NOT_SUPPORTED error occured")
+			break;
+		default:
+			log("UNDEFINED error occured")
+			break;
+		}
+	}.bind(ui))
+
 
 	player.on('timeupdate', function() {
 		ui.waiting = false

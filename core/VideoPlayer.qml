@@ -152,34 +152,9 @@ Item {
 	onReadyChanged:		{ log("ReadyState: " + this.ready) }
 
 	///@private
-	onError: {
+	onError(error): {
 		this.paused = false
 		this.waiting = false
-		var player = this._getPlayer()
-
-		if (!player || !player.error)
-			return
-
-		log("player.error", player.error)
-		if (player.error.code) {
-			switch (player.error.code) {
-			case 1:
-				log("MEDIA_ERR_ABORTED error occured")
-				break;
-			case 2:
-				log("MEDIA_ERR_NETWORK error occured")
-				break;
-			case 3:
-				log("MEDIA_ERR_DECODE error occured")
-				break;
-			case 4:
-				log("MEDIA_ERR_SRC_NOT_SUPPORTED error occured")
-				break;
-			default:
-				log("UNDEFINED error occured")
-				break;
-			}
-		}
 	}
 
 	///@private

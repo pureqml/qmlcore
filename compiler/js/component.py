@@ -496,12 +496,8 @@ class component_generator(object):
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep
-						depvar = "dep$%s$%s$%d" %(escape(parent), escape(target), idx)
-						r.append('%svar %s = %s' %(ident, depvar, path))
-						r.append("%s%s.connectOnChanged(%s, '%s', %s)" %(ident, parent, depvar, dep, var))
-						undep.append("[%s, '%s']" %(depvar, dep))
+						undep.append("[%s, '%s']" %(path, dep))
 					r.append("%s%s._replaceUpdater('%s', [%s, [%s]])" %(ident, target_owner, target_prop, var, ",".join(undep)))
-					r.append("%s%s()" %(ident, var))
 				else:
 					r.append("%s%s._replaceUpdater('%s'); %s = (%s);" %(ident, target_owner, target_prop, target_lvalue, value))
 

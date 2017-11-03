@@ -111,9 +111,16 @@ EventEmitter {
 			})
 		}
 
-		if (newUpdaters)
+		if (newUpdaters) {
 			updaters[name] = newUpdaters
-		else
+			var callback = newUpdaters[0]
+			newUpdaters[1].forEach(function(data) {
+				var object = data[0]
+				var name = data[1]
+				object.connectOnChanged(object, name, callback)
+			})
+			callback()
+		} else
 			delete updaters[name]
 	}
 

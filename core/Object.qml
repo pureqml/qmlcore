@@ -114,10 +114,11 @@ EventEmitter {
 		if (newUpdaters) {
 			updaters[name] = newUpdaters
 			var callback = newUpdaters[0]
+			var parent = this
 			newUpdaters[1].forEach(function(data) {
 				var object = data[0]
 				var name = data[1]
-				object.connectOnChanged(object, name, callback)
+				parent.connectOnChanged(object, name, callback)
 			})
 			callback()
 		} else

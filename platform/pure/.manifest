@@ -1,1 +1,4 @@
-{ "standalone": false }
+{
+	"standalone": false,
+	"requires": ["core"]
+}

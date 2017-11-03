@@ -97,10 +97,11 @@ CoreObjectComponentPrototype.__setup = function() { }
 
 ///@private gets object by id
 CoreObjectComponentPrototype._get = function(name, unsafe) {
-	if (name in this)
-		return this[name]
+	var result = this[name]
+	if (result !== undefined)
+		return result
 
-	var result = this._local[name]
+	result = this._local[name]
 	if (result !== undefined)
 		return result
 

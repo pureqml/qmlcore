@@ -492,7 +492,7 @@ class component_generator(object):
 				value, deps = parse_deps(parent, value)
 				if deps:
 					var = "update$%s$%s" %(escape(parent), escape(target))
-					r.append("%svar %s = function() { %s = (%s) }" %(ident, var, target_lvalue, value))
+					r.append("%svar %s = function() { %s = %s; }" %(ident, var, target_lvalue, value))
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep

@@ -499,7 +499,7 @@ class component_generator(object):
 						undep.append("[%s, '%s']" %(path, dep))
 					r.append("%s%s._replaceUpdater('%s', [%s, [%s]])" %(ident, target_owner, target_prop, var, ",".join(undep)))
 				else:
-					r.append("%s%s._replaceUpdater('%s'); %s = (%s);" %(ident, target_owner, target_prop, target_lvalue, value))
+					r.append("%s%s._replaceUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
 
 			elif t is component_generator:
 				if target == "delegate":

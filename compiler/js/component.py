@@ -434,6 +434,7 @@ class component_generator(object):
 			r.append("%s%s.%s = %s" %(ident, closure, var, var))
 			code = self.call_create(registry, ident_n, var, gen, closure)
 			r.append(code)
+			r.append("%s%s.addChild(%s)" %(ident, parent, var));
 
 		for target, value in self.assignments.iteritems():
 			if target == "id":
@@ -548,7 +549,6 @@ class component_generator(object):
 		for idx, value in enumerate(self.children):
 			var = '%s$child%d' %(escape(parent), idx)
 			r.append(self.call_setup(registry, ident_n, var, value, closure))
-			r.append("%s%s.addChild(%s)" %(ident, parent, var));
 
 		if self.elements:
 			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements, sort_keys=True)))

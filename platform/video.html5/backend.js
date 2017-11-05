@@ -16,11 +16,12 @@ var Player = function(ui) {
 	player.on('canplaythrough', function() { log("ready to play"); }.bind(ui))
 
 	player.on('error', function() {
-		log("Player error occured")
-		ui.error(dom.error)
+		log("Player error occured", dom.error, "src", ui.source)
 
-		if (!dom.error)
+		if (!dom.error || !ui.source)
 			return
+
+		ui.error(dom.error)
 
 		log("player.error", dom.error)
 		switch (dom.error.code) {

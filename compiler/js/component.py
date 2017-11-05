@@ -443,6 +443,8 @@ class component_generator(object):
 				r.append("%s%s._setId('%s')" %(ident, parent, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
+			elif lang.value_is_trivial(value):
+				r.append("%s%s.%s = %s" %(ident, parent, target, value))
 			else:
 				self.check_target_property(registry, target)
 
@@ -458,8 +460,6 @@ class component_generator(object):
 				else:
 					code = self.generate_creator_function(registry, 'delegate', value, ident_n)
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
-			elif lang.value_is_trivial(value):
-				r.append("%s%s.%s = %s" %(ident, parent, target, value))
 
 		for name, target in self.aliases.iteritems():
 			get, pname = generate_accessors(parent, target)

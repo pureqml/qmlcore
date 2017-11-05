@@ -443,8 +443,6 @@ class component_generator(object):
 				r.append("%s%s._setId('%s')" %(ident, parent, value))
 			elif target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
-			elif lang.value_is_trivial(value):
-				r.append("%s%s.%s = %s" %(ident, parent, target, value))
 			else:
 				self.check_target_property(registry, target)
 
@@ -484,7 +482,7 @@ class component_generator(object):
 		ident = "\t" * ident_n
 
 		for target, value in self.assignments.iteritems():
-			if target == "id" or lang.value_is_trivial(value):
+			if target == "id":
 				continue
 			t = type(value)
 			#print self.name, target, value

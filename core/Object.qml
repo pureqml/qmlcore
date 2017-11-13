@@ -183,6 +183,9 @@ EventEmitter {
 
 	///@private sets animation on given property
 	function setAnimation (name, animation) {
+		if (typeof $manifest$animationDisabled !== 'undefined' && $manifest$animationDisabled)
+			return
+
 		var context = this._context
 		var backend = context.backend
 		if (name === 'contentX' || name === 'contentY')

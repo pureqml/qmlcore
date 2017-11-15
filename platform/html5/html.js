@@ -636,7 +636,7 @@ exports.layoutText = function(text) {
 
 	var dom = element.dom
 
-	var isHtml = text.text.search(/[\<\&]/) >= 0 //dubious check
+	var isHtml = text.textFormat === text.Html || text.text.search(/[\<\&]/) >= 0 //dubious check
 
 	if (!wrap && textCanvasContext !== null && !isHtml) {
 		var font = text.font

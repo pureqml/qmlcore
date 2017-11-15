@@ -118,7 +118,6 @@ Item {
 
 	function _updateWSHandling() {
 		var text = this.textFormat === this.Text
-		console.log(text)
 		switch(this.wrapMode) {
 		case this.NoWrap:
 			this.style({'white-space': text? 'pre': 'nowrap', 'word-break': '' })

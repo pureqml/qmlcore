@@ -637,8 +637,7 @@ exports.layoutText = function(text) {
 	var dom = element.dom
 
 	var isHtml = text.text.search(/[\<\&]/) >= 0 //dubious check
-/*
-	uncomment me
+
 	if (!wrap && textCanvasContext !== null && !isHtml) {
 		var font = text.font
 		var fontSize
@@ -658,7 +657,6 @@ exports.layoutText = function(text) {
 		layoutTextSetStyle(text, {})
 		return
 	}
-*/
 	var removedChildren = element.removeChildren(text)
 
 	if (!wrap)

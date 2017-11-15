@@ -7,6 +7,7 @@ Item {
 	property enum horizontalAlignment { AlignLeft, AlignRight, AlignHCenter, AlignJustify };	///< text horizontal alignment
 	property enum verticalAlignment { AlignTop, AlignBottom, AlignVCenter };	///< text vertical alignment
 	property enum wrapMode { NoWrap, WordWrap, WrapAnywhere, Wrap };	///< multiline text wrap mode
+	property enum textFormat { Html, Text }; ///< only html or text for now
 	property int paintedWidth;		///< real width of the text without any layout applied
 	property int paintedHeight;		///< real height of this text without any layout applied
 	width: paintedWidth;	///< @private
@@ -115,19 +116,29 @@ Item {
 		}
 	}
 
-	onWrapModeChanged: {
-		switch(value) {
+	function _updateWSHandling() {
+		var text = this.textFormat === this.Text
+		console.log(text)
+		switch(this.wrapMode) {
 		case this.NoWrap:
-			this.style({'white-space': 'nowrap', 'word-break': '' })
+			this.style({'white-space': text? 'pre': 'nowrap', 'word-break': '' })
 			break
 		case this.Wrap:
 		case this.WordWrap:
-			this.style({'white-space': 'normal', 'word-break': '' })
+			this.style({'white-space': text? 'pre-wrap': 'normal', 'word-break': '' })
 			break
 		case this.WrapAnywhere:
-			this.style({ 'white-space': 'normal', 'word-break': 'break-all' })
+			this.style({ 'white-space': text? 'pre-wrap': 'normal', 'word-break': 'break-all' })
 			break
 		}
 		this._updateSize();
+	}
+
+	onTextFormatChanged: {
+		this._updateWSHandling()
+	}
+
+	onWrapModeChanged: {
+		this._updateWSHandling()
 	}
 }

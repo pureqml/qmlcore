@@ -6,15 +6,15 @@ Object {
 	property bool absolute;	///< Indicates whether or not the device is providing orientation data absolutely (that is, in reference to the Earth's coordinate frame) or using some arbitrary frame determined by the device.
 
 	/// @private
-	function onChanged (name, callback) {
+	function onChanged(name, callback) {
 		if (!this._orientationEnabled) {
 			var self = this
-			window.ondeviceorientation = function(e) {
+			this._context.window.on("deviceorientation", function(e) {
 				self.absolute = e.absolute
 				self.alpha = e.alpha
 				self.beta = e.beta
 				self.gamma = e.gamma
-			}
+			}.bind(this))
 			this._orientationEnabled = true;
 		}
 

@@ -16,8 +16,9 @@ Object {
 		var location = window.location
 		this.updateActualValues()
 		var self = this
-		window.onhashchange = function() { self.hash = location.hash; self._context._processActions() }
-		window.onpopstate = function() { self.updateActualValues(); self._context._processActions() }
+		var context = this._context
+		context.on("hashchange", function() { self.hash = location.hash }.bind(this))
+		context.on("popstate", function() { self.updateActualValues() }.bind(this))
 	}
 
 	/// @private

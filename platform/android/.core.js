@@ -42,4 +42,8 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 	}
 
 	log("Android initialized")
+
+	exports.closeApp = function() {
+		navigator.app.exitApp();
+	}
 }

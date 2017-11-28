@@ -53,3 +53,7 @@ exports.core.keyCodes = {
 	115: 'Blue',
 	230: 'RightAlt'
 }
+
+exports.closeApp = function() {
+	close()
+}

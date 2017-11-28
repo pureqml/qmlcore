@@ -416,6 +416,17 @@ ElementPrototype.remove = function() {
 		dom.parentNode.removeChild(dom)
 }
 
+exports.Document = function(context, dom) {
+	_globals.core.RAIIEventEmitter.apply(this)
+	this._context = context
+	this.dom = dom
+
+	registerGenericListener(this)
+}
+
+var DocumentPrototype = exports.Document.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
+DocumentPrototype.constructor = exports.Document
+
 exports.Window = function(context, dom) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
@@ -457,6 +468,9 @@ exports.init = function(ctx) {
 		prefix += '-'
 		log('Context: using prefix', prefix)
 	}
+
+	var doc = new _globals.html5.html.Document(ctx, document)
+	ctx.document = doc
 
 	var win = new _globals.html5.html.Window(ctx, window)
 	ctx.window = win

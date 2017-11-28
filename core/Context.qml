@@ -7,7 +7,6 @@ Item {
 	property System system: System { }					///< system info object
 	property Location location: Location { }			///< web-page location object
 	property Stylesheet stylesheet: Stylesheet { }		///< @private
-	property Orientation orientation: Orientation { }	///< screen orientation object
 	property string buildIdentifier; ///< @private
 
 	visibleInView: false; //startup

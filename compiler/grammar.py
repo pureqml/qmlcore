@@ -1,6 +1,9 @@
 from pyparsing import *
 import lang
 
+#source.setDefaultWhitespaceChars(" \t\r\f")
+ParserElement.enablePackrat()
+
 doc_next = None
 doc_prev_component = None
 doc_root_component = None
@@ -290,8 +293,6 @@ cStyleComment.setParseAction(handle_documentation_string)
 source = source.ignore(cStyleComment)
 dblSlashComment.setParseAction(handle_documentation_string)
 source = source.ignore(dblSlashComment)
-#source.setDefaultWhitespaceChars(" \t\r\f")
-ParserElement.enablePackrat()
 
 def parse(data):
 	global doc_root_component

@@ -164,8 +164,8 @@ enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
 enum_value.setParseAction(handle_enum_value)
 
-function_call = Word(alphanums + '._') + Literal("(").suppress() + Optional(expression_list) + Literal(")").suppress() + \
-	ZeroOrMore(Literal(".").suppress() + Literal("arg").suppress() + Literal("(").suppress() + expression + Literal(")").suppress())
+function_call = Word(alphanums + '._') + Suppress("(") + Optional(expression_list) + Suppress(")") + \
+	ZeroOrMore(Suppress(".") + Suppress("arg") + Suppress("(") + expression + Suppress(")"))
 function_call.setParseAction(handle_function_call)
 
 nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
@@ -173,45 +173,45 @@ nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
-expression_end = Literal(";").suppress()
+expression_end = Suppress(";")
 
 signal_declaration = Keyword("signal").suppress() + identifier + expression_end
 signal_declaration.setParseAction(handle_signal_declaration)
 
-id_declaration = Keyword("id").suppress() + Literal(":").suppress() + identifier + expression_end
+id_declaration = Keyword("id").suppress() + Suppress(":") + identifier + expression_end
 id_declaration.setParseAction(handle_id_declaration)
 
 
-assign_declaration = nested_identifier_lvalue + Literal(":").suppress() + expression + expression_end
+assign_declaration = nested_identifier_lvalue + Suppress(":") + expression + expression_end
 assign_declaration.setParseAction(handle_assignment)
 
-assign_component_declaration = nested_identifier_lvalue + Literal(":").suppress() + component_declaration
+assign_component_declaration = nested_identifier_lvalue + Suppress(":") + component_declaration
 assign_component_declaration.setParseAction(handle_assignment)
 
-property_name_initializer_declaration = Group(identifier + Optional(Literal(":").suppress() + expression))
+property_name_initializer_declaration = Group(identifier + Optional(Suppress(":") + expression))
 property_declaration = ((Keyword("property").suppress() + type + Group(delimitedList(property_name_initializer_declaration, ',')) + expression_end) | \
-	(Keyword("property").suppress() + type + Group(Group(identifier + Literal(":").suppress() + component_declaration))))
+	(Keyword("property").suppress() + type + Group(Group(identifier + Suppress(":") + component_declaration))))
 property_declaration.setParseAction(handle_property_declaration)
 
-alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() + identifier + Literal(":").suppress() + nested_identifier_lvalue + expression_end
+alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() + identifier + Suppress(":") + nested_identifier_lvalue + expression_end
 alias_property_declaration.setParseAction(handle_alias_property_declaration)
 
 enum_property_declaration = Keyword("property").suppress() + Keyword("enum").suppress() + identifier + \
-	Literal("{").suppress() + Group(delimitedList(enum_element, ',')) + Literal("}").suppress() + Optional(Literal(':').suppress() + enum_element) + expression_end
+	Suppress("{") + Group(delimitedList(enum_element, ',')) + Suppress("}") + Optional(Literal(':').suppress() + enum_element) + expression_end
 enum_property_declaration.setParseAction(handle_enum_property_declaration)
 
-assign_scope_declaration = identifier + Literal(":").suppress() + expression + expression_end
+assign_scope_declaration = identifier + Suppress(":") + expression + expression_end
 assign_scope_declaration.setParseAction(handle_assignment)
-assign_scope = nested_identifier_lvalue + Literal("{").suppress() + Group(OneOrMore(assign_scope_declaration)) + Literal("}").suppress()
+assign_scope = nested_identifier_lvalue + Suppress("{") + Group(OneOrMore(assign_scope_declaration)) + Suppress("}")
 assign_scope.setParseAction(handle_assignment_scope)
 
-method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Literal("(").suppress() + delimitedList(identifier, ",") + Literal(")").suppress() )) + Literal(":").suppress() + code
+method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Suppress("(") + delimitedList(identifier, ",") + Suppress(")") )) + Suppress(":") + code
 method_declaration.setParseAction(handle_method_declaration)
 
-method_declaration_qml = Keyword("function") - Group(nested_identifier_lvalue) + Group(Literal("(").suppress() + Optional(delimitedList(identifier, ",")) + Literal(")").suppress() ) + code
+method_declaration_qml = Keyword("function") - Group(nested_identifier_lvalue) + Group(Suppress("(") + Optional(delimitedList(identifier, ",")) + Suppress(")") ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
-behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + Group(delimitedList(nested_identifier_lvalue, ',')) + Literal("{").suppress() + component_declaration + Literal("}").suppress()
+behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + Group(delimitedList(nested_identifier_lvalue, ',')) + Suppress("{") + component_declaration + Suppress("}")
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
 json_value = Forward()
@@ -224,7 +224,7 @@ list_element_declaration = Keyword("ListElement").suppress() - json_object
 list_element_declaration.setParseAction(handle_list_element)
 
 scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
-component_scope = (Literal("{").suppress() + Group(ZeroOrMore(scope_declaration)) + Literal("}").suppress())
+component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
 
 component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)

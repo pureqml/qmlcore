@@ -1,7 +1,7 @@
 from pyparsing import *
 import lang
 
-#source.setDefaultWhitespaceChars(" \t\r\f")
+ParserElement.setDefaultWhitespaceChars(" \t\r\f")
 ParserElement.enablePackrat()
 
 doc_next = None
@@ -185,7 +185,8 @@ nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
-expression_end = Suppress(";")
+newline = Suppress("\n")
+expression_end = Suppress(";") | newline
 
 signal_declaration = Keyword("signal").suppress() + identifier + expression_end
 signal_declaration.setParseAction(handle_signal_declaration)
@@ -241,7 +242,7 @@ list_element_declaration.setParseAction(handle_list_element)
 import_statement = Keyword("import") + restOfLine
 
 scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
-component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
+component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration | expression_end)) + Suppress("}"))
 
 component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
@@ -294,7 +295,7 @@ expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 
 expression << expression_ops
 
-source = component_declaration
+source = ZeroOrMore(newline).suppress() + component_declaration + ZeroOrMore(newline).suppress()
 cStyleComment.setParseAction(handle_documentation_string)
 source = source.ignore(cStyleComment)
 dblSlashComment.setParseAction(handle_documentation_string)

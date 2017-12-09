@@ -1,5 +1,15 @@
 import json
 
+def merge_properties(dst, src):
+    for key, value in src.items():
+        if isinstance(value, dict):
+            node = dst.setdefault(key, {})
+            merge_properties(node, value)
+        else:
+            dst[key] = value
+
+    return dst
+
 class Manifest(object):
 	def __init__(self, data = None):
 		if data is None:

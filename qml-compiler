@@ -6,6 +6,7 @@ import compiler.doc.json
 import compiler.pyparsing
 import compiler.grammar
 import compiler.manifest
+from compiler.manifest import merge_properties
 import compiler.js
 import compiler.lang
 import argparse
@@ -179,7 +180,7 @@ def process_files(pool, generator, app, dirs):
 					if manifest.package:
 						package_name = manifest.package.encode('utf-8')
 						package_dir = dirpath
-					root_manifest_props.update(manifest.properties)
+					merge_properties(root_manifest_props, manifest.properties)
 
 			for filename in filenames:
 				relpath = os.path.relpath(dirpath, package_dir)
@@ -240,7 +241,7 @@ def generate():
 		process_files(None, generator, args.app, project_dirs)
 
 	if root_manifest:
-		root_manifest_props.update(root_manifest.properties)
+		merge_properties(root_manifest_props, root_manifest.properties)
 
 	if args.verbose:
 		print "generating sources..."

@@ -205,6 +205,8 @@ class component_generator(object):
 
 	#no cross-component access here
 	def pregenerate(self, registry):
+		self.collect_id(registry.id_set)
+
 		for gen in self.generators:
 			gen.pregenerate(registry)
 

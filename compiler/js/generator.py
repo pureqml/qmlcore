@@ -88,7 +88,6 @@ class generator(object):
 	def generate_component(self, gen):
 		name = gen.name
 
-		gen.collect_id(self.id_set)
 		self.used_packages.add(gen.package)
 
 		code = ''

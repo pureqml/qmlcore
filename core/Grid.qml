@@ -211,7 +211,11 @@ Layout {
 				shift = (size - row.size)
 
 			if (shift !== 0) {
-				var cindex = rows[i].idx, lindex = row.idx, baseIndex = cindex
+				var cindex = rows[i].idx
+				var baseIndex = cindex
+				var maxIdx = baseIndex + this._rows[i].length
+				var lindex = row.idx > maxIdx ? maxIdx : row.idx
+
 				if (right || center) {
 		 			for (; cindex < lindex; ++cindex) {
 		 				if (!horizontal) {

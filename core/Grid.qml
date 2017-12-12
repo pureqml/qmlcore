@@ -46,7 +46,7 @@ Layout {
 
 		if (!this.keyNavigationWraps && pos.row === 0)
 			return false
- 		var l = this._rows.length
+		var l = this._rows.length
 		var r = (pos.row + l - 1) % l
 		var row = this._rows[r]
 
@@ -75,7 +75,7 @@ Layout {
 
 		if (!this.keyNavigationWraps && pos.row === this._rows.length - 1)
 			return false
- 		var l = this._rows.length
+		var l = this._rows.length
 		var r = (pos.row + 1) % l
 		var row = this._rows[r]
 
@@ -217,30 +217,30 @@ Layout {
 				var lindex = row.idx > maxIdx ? maxIdx : row.idx
 
 				if (right || center) {
-		 			for (; cindex < lindex; ++cindex) {
-		 				if (!horizontal) {
+					for (; cindex < lindex; ++cindex) {
+						if (!horizontal) {
 							children[cindex].x += shift
 							this._rows[i][cindex - baseIndex].x += shift
-		 				} else {
+						} else {
 							children[cindex].y += shift
 							this._rows[i][cindex - baseIndex].y += shift
 						}
-		 			}
-		 		} else if (justify) {
-		 			var c = lindex - cindex + 1
-		 			var sp = shift / c
-		 			for (; cindex < lindex; ++cindex) {
-		 				if (!horizontal) {
+					}
+				} else if (justify) {
+					var c = lindex - cindex + 1
+					var sp = shift / c
+					for (; cindex < lindex; ++cindex) {
+						if (!horizontal) {
 							children[cindex].x += sp * (cindex + c - lindex)
 							this._rows[i][cindex - baseIndex].x += sp * (cindex + c - lindex)
-		 				} else {
+						} else {
 							children[cindex].y += sp * (cindex + c - lindex)
 							this._rows[i][cindex - baseIndex].y += sp * (cindex + c - lindex)
-		 				}
-		 			}
-		 		}
-		 	}
- 		}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	///@private

@@ -751,8 +751,8 @@ var setTransition = function(component, name, animation) {
 	style[transition.timing] = timing
 	style[transition.delay] = delay
 
-	//FIXME: smarttv 2003 animation is not working without this shit =(
-	if (component._context.system.os === 'smartTV' || component._context.system.os === 'netcast') {
+	//FIXME: orsay animation is not working without this shit =(
+	if (component._context.system.os === 'orsay' || component._context.system.os === 'netcast') {
 		style["transition-property"] = property
 		style["transition-duration"] = duration
 		style["transition-delay"] = delay

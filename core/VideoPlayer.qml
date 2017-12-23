@@ -23,15 +23,17 @@ Item {
 	///@private
 	constructor: {
 		this.impl = null
-		this._createPlayer(true)
+		this._createPlayer()
 	}
 
+	///@private
 	function _getPlayer() {
 		if (this.impl === null)
 			this._createPlayer()
 		return this.impl
 	}
 
+	///@private
 	function _createPlayer() {
 		if (this.impl)
 			return this.impl

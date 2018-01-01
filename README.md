@@ -70,3 +70,7 @@ https://modernizr.com/
 ### SDL Game Controller Database
 A community sourced database of game controller mappings
 https://github.com/gabomdq/SDL_GameControllerDB
+
+### Apache Cordova project
+Apache Cordova is an open-source mobile development framework. It allows you to use standard web technologies - HTML5, CSS3, and JavaScript for cross-platform development.
+https://cordova.apache.org

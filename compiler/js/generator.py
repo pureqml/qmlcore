@@ -157,7 +157,7 @@ class generator(object):
 			visit(type)
 
 		for type in order:
-			r += code[type]
+			r += code[type].decode('utf-8')
 
 		return r
 

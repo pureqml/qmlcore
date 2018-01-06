@@ -195,13 +195,13 @@ class Compiler(object):
 		if self.verbose:
 			print "generating sources..."
 
-		app = ""
+		appcode = ""
 		if self.strict:
-			app += "'use strict'\n"
+			appcode += "'use strict'\n"
 		if self.release:
-			app += "var log = function() { }\n"
+			appcode += "var log = function() { }\n"
 		else:
-			app += "var log = null\n"
+			appcode += "var log = null\n"
 
 		def write_properties(prefix, props):
 			r = ''
@@ -212,15 +212,15 @@ class Compiler(object):
 				else:
 					r += "var %s$%s = %s\n" %(prefix, k, json.dumps(v))
 			return r
-		app += write_properties('$manifest', self.root_manifest_props).encode('utf-8')
+		appcode += write_properties('$manifest', self.root_manifest_props).encode('utf-8')
 
-		app += "/** @const @type {!CoreObject} */\n"
-		app += "var " + generator.generate()
-		app += generator.generate_startup(namespace, app, namespace if self.use_prefix else '')
-		app = app.replace('/* ${init.js} */', init_js)
+		appcode += "/** @const @type {!CoreObject} */\n"
+		appcode += "var " + generator.generate()
+		appcode += generator.generate_startup(namespace, self.app, namespace if self.use_prefix else '')
+		appcode = appcode.replace('/* ${init.js} */', init_js)
 
 		with open(os.path.join(self.output_dir, namespace + "." + self.app + ".js"), "wt") as f:
-			f.write(app.encode('utf-8'))
+			f.write(appcode.encode('utf-8'))
 
 		if self.documentation:
 			self.documentation.generate()

@@ -15,6 +15,7 @@ import os
 from os import path
 from StringIO import StringIO
 from distutils import dir_util
+from compiler.ts import Ts
 
 parser = argparse.ArgumentParser('qmlcore build tool')
 parser.add_argument('--minify', '-m', action='store_true', default=False, help='force minify step')
@@ -381,7 +382,9 @@ def proc_source_dir(source_dir):
 		languages = manifest.languages
 		for language in languages:
 			print 'updating translation for language', language
-			call([os.path.join(root, 'update-ts'), '--ts', os.path.join(source_dir, language + '.ts'), source_dir])
+			ts = Ts(os.path.join(source_dir, language + '.ts'))
+			ts.scan(source_dir)
+			ts.save()
 		sys.exit(0)
 
 

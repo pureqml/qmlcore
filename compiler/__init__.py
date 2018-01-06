@@ -67,12 +67,6 @@ def parse_qml_file(cache, com, path):
 			raise
 
 class Compiler(object):
-	def check_file(filename):
-		if filename[0] == '.':
-			return False
-		root, ext = os.path.splitext(filename)
-		return ext in set([".qml", ".js"])
-
 	def process_file(self, pool, generator, package, dirpath, filename):
 		name, ext = os.path.splitext(filename)
 		if name[0] == '.':
@@ -266,6 +260,12 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 
 	notifier = None
 	modified = False
+
+	def check_file(filename):
+		if filename[0] == '.':
+			return False
+		root, ext = os.path.splitext(filename)
+		return ext in set([".qml", ".js"])
 
 	if wait:
 		from pyinotify import WatchManager

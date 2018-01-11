@@ -8,6 +8,7 @@ root_type = 'core.CoreObject'
 
 class generator(object):
 	def __init__(self, ns, bid):
+		self.module = False
 		self.ns, self.bid = ns, bid
 		self.components = {}
 		self.used_packages = set()
@@ -262,6 +263,9 @@ class generator(object):
 
 	def generate_startup(self, ns, app, prefix):
 		r = ""
+		if self.module:
+			r += "module.exports = %s\n" %ns
+			r += "module.exports.run = function() { "
 		r += "try {\n"
 
 		context_type = self.find_component('core', 'Context')
@@ -277,6 +281,8 @@ class generator(object):
 		startup += self.startup
 		r += "\n".join(startup)
 		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns
+		if self.module:
+			r += "}"
 		return r
 
 	def add_ts(self, path):

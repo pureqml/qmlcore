@@ -265,14 +265,14 @@ class generator(object):
 		r = ""
 		if self.module:
 			r += "module.exports = %s\n" %ns
-			r += "module.exports.run = function() { "
+			r += "module.exports.run = function(nativeContext) { "
 		r += "try {\n"
 
 		context_type = self.find_component('core', 'Context')
 
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n})" %(ns, context_type, app, prefix))
+		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n, nativeContext: %s})" %(ns, context_type, app, prefix, 'nativeContext' if self.module else 'null'))
 		startup.append('\tvar closure = {}\n')
 		startup.append('\tcontext.__create(closure)')
 		startup.append('\tcontext.__setup(closure)')

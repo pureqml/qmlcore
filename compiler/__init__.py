@@ -123,6 +123,8 @@ class Compiler(object):
 						if manifest.package:
 							package_name = manifest.package.encode('utf-8')
 							package_dir = dirpath
+						if manifest.export_module:
+							generator.module |= manifest.export_module
 						merge_properties(self.root_manifest_props, manifest.properties)
 
 				for filename in filenames:

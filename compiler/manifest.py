@@ -72,6 +72,10 @@ class Manifest(object):
 	def partner(self):
 		return self.data.get('partner', 'free')
 
+	@property
+	def export_module(self):
+		return self.data.get('export_module', False)
+
 def __pair_hook(pairs):
 	obj = {}
 	for k, v in pairs:

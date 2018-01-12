@@ -97,6 +97,10 @@ exports.init = function(ctx) {
 
 	page = nativeContext
 	ctx.element = new Element(ctx, parentLayout)
+
+	log('page size: ', page.getMeasuredWidth(), 'x', page.getMeasuredHeight())
+	context.width = page.getMeasuredWidth()
+	context.height = page.getMeasuredHeight()
 }
 
 
@@ -105,9 +109,6 @@ exports.run = function(ctx, callback) {
 }
 
 exports.finalize = function() {
-	log('page size: ', page.getMeasuredWidth(), 'x', page.getMeasuredHeight())
-	context.width = page.getMeasuredWidth()
-	context.height = page.getMeasuredHeight()
 	finalization_callback()
 	finalization_callback = null
 }

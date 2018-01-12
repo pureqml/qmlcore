@@ -17,41 +17,37 @@ function dekebabize(name) {
 }
 
 const translate = {
-	left: (impl, name, value) => {
-		impl[name] = value
-		AbsoluteLayout.setLeft(impl, value)
+	left: (layout, name, value) => {
+		layout[name] = value
+		AbsoluteLayout.setLeft(layout, value)
 	},
 
-	top: (impl, name, value) => {
-		impl[name] = value
-		AbsoluteLayout.setTop(impl, value)
+	top: (layout, name, value) => {
+		layout[name] = value
+		AbsoluteLayout.setTop(layout, value)
 	},
 
-	visibility: (impl, name, value) => {
-		if (value !== 'inherit')
-			impl[name] = value
-		else
-			impl[name] = 'visible'
+	visibility: (layout, name, value) => {
 	}
 }
 
 
 class Element extends _globals.core.RAIIEventEmitter {
-	constructor(ctx, impl) {
+	constructor(layout, impl) {
 		super()
-		this.ctx = ctx
+		this.layout = layout
 		this.impl = impl
 	}
 
 	append(el) {
-		this.impl.addChild((el instanceof Element)? el.impl: el)
+		this.layout.addChild((el instanceof Element)? el.layout: el)
 	}
 
 	remove() {
-		let impl = this.impl
-		let parent = impl.parent
+		let layout = this.layout
+		let parent = layout.parent
 		if (parent)
-			parent.removeChild(impl)
+			parent.removeChild(layout)
 	}
 
 	addClass(name) {
@@ -64,18 +60,18 @@ class Element extends _globals.core.RAIIEventEmitter {
 				this.style(k, target[k])
 			}
 		} else {
-			let impl = this.impl
+			let layout = this.layout
 			let name = dekebabize(target)
 			if (value !== undefined) {
-				if (name in impl) {
+				if (name in layout) {
 					if (name in translate) {
-						translate[name](impl, name, value)
+						translate[name](layout, name, value)
 					} else
-						impl[name] = value
+						layout[name] = value
 				} else
 					log('skipping style', name)
 			} else {
-				return impl[name]
+				return layout[name]
 			}
 		}
 	}
@@ -96,7 +92,7 @@ exports.init = function(ctx) {
 		throw new Error('could not find view with id ' + options.id)
 
 	page = nativeContext
-	ctx.element = new Element(ctx, parentLayout)
+	ctx.element = new Element(parentLayout, null)
 
 	log('page size: ', page.getMeasuredWidth(), 'x', page.getMeasuredHeight())
 	context.width = page.getMeasuredWidth()
@@ -127,10 +123,9 @@ exports.createElement = function(ctx, tag, cls) {
 			impl = new Image()
 			break
 		default:
-			impl = new AbsoluteLayout()
-			break
+			impl = null
 	}
-	return new Element(ctx, impl)
+	return new Element(new AbsoluteLayout(), impl)
 }
 
 exports.initImage = function(image) {

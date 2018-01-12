@@ -1,7 +1,40 @@
 /*** @using { core.RAIIEventEmitter } **/
 
+const observable = require("data/observable")
+const Observable = observable.Observable
+
 const layout = require('ui/layouts/absolute-layout')
 const AbsoluteLayout = layout.AbsoluteLayout
+
+const label = require('ui/label')
+const Label = label.Label
+
+const image = require('ui/image')
+const Image = image.Image
+
+function dekebabize(name) {
+	return name.replace(/-([a-z])/g, (g) => { return g[1].toUpperCase() })
+}
+
+const translate = {
+	left: (impl, name, value) => {
+		impl[name] = value
+		AbsoluteLayout.setLeft(impl, value)
+	},
+
+	top: (impl, name, value) => {
+		impl[name] = value
+		AbsoluteLayout.setTop(impl, value)
+	},
+
+	visibility: (impl, name, value) => {
+		if (value !== 'inherit')
+			impl[name] = value
+		else
+			impl[name] = 'visible'
+	}
+}
+
 
 class Element extends _globals.core.RAIIEventEmitter {
 	constructor(ctx, impl) {
@@ -22,34 +55,81 @@ class Element extends _globals.core.RAIIEventEmitter {
 	}
 
 	addClass(name) {
-		log('Element.addClass', name)
+		//log('Element.addClass', name)
 	}
 
-	style(name, value) {
-		log('Element.style', name, value)
+	style(target, value) {
+		if (typeof target === 'object') {
+			for(let k in target) {
+				this.style(k, target[k])
+			}
+		} else {
+			let impl = this.impl
+			let name = dekebabize(target)
+			if (value !== undefined) {
+				if (name in impl) {
+					if (name in translate) {
+						translate[name](impl, name, value)
+					} else
+						impl[name] = value
+				} else
+					log('skipping style', name)
+			} else {
+				return impl[name]
+			}
+		}
 	}
 }
+
+let context = null
+let page = null
+let finalization_callback = null
 
 exports.capabilities = {}
 exports.init = function(ctx) {
 	log('backend initialization...')
+	context = ctx
 	const options = ctx.options
-	const parentLayout = options.nativeContext.getViewById(options.id)
+	const nativeContext = options.nativeContext
+	const parentLayout = nativeContext.getViewById(options.id)
 	if (!parentLayout)
 		throw new Error('could not find view with id ' + options.id)
+
+	page = nativeContext
 	ctx.element = new Element(ctx, parentLayout)
 }
 
+
 exports.run = function(ctx, callback) {
-	callback()
+	finalization_callback = callback
+}
+
+exports.finalize = function() {
+	log('page size: ', page.getMeasuredWidth(), 'x', page.getMeasuredHeight())
+	context.width = page.getMeasuredWidth()
+	context.height = page.getMeasuredHeight()
+	finalization_callback()
+	finalization_callback = null
 }
 
 exports.initSystem = function(system) {
 }
 
-exports.createElement = function(ctx, tag) {
-	log('creating element', tag)
-	return new Element(ctx, new AbsoluteLayout())
+exports.createElement = function(ctx, tag, cls) {
+	//log('creating element', tag, cls)
+	let impl
+	switch(cls) {
+		case 'core-text':
+			impl = new Label()
+			break
+		case 'core-image':
+			impl = new Image()
+			break
+		default:
+			impl = new AbsoluteLayout()
+			break
+	}
+	return new Element(ctx, impl)
 }
 
 exports.initImage = function(image) {
@@ -69,7 +149,8 @@ exports.initText = function(text) {
 }
 
 exports.setText = function(text, html) {
-	log('setText')
+	if (text.impl)
+		text.impl.text = html
 }
 
 exports.layoutText = function(text) {

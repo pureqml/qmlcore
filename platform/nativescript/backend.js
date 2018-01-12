@@ -146,16 +146,15 @@ exports.loadImage = function(image) {
 		source = '~/' + image.source
 	else
 		source = ''
-	if (image.impl)
-		image.impl.imageSource = source
+
+	image.element.impl.imageSource = source
 }
 
 exports.initText = function(text) {
 }
 
 exports.setText = function(text, html) {
-	if (text.impl)
-		text.impl.text = html
+	text.element.impl.text = html
 }
 
 exports.layoutText = function(text) {

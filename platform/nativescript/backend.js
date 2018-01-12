@@ -144,6 +144,15 @@ var ImageStatusError		= 3
 
 exports.loadImage = function(image) {
 	log('loading image ' + image.source)
+	let source
+	if (image.source.indexOf('://') >= 0)
+		source = image.source
+	else if (source)
+		source = '~/' + image.source
+	else
+		source = ''
+	if (image.impl)
+		image.impl.imageSource = source
 }
 
 exports.initText = function(text) {

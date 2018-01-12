@@ -37,6 +37,8 @@ class Element extends _globals.core.RAIIEventEmitter {
 		super()
 		this.layout = layout
 		this.impl = impl
+		if (impl)
+			layout.addChild(impl)
 	}
 
 	append(el) {

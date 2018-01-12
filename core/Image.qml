@@ -14,6 +14,8 @@ Item {
 		this.load()
 	}
 
+	function getClass() { return 'core-image' }
+
 	///@private
 	function _scheduleLoad() {
 		this._context.delayedAction('image.load', this, this._load)

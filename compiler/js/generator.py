@@ -282,6 +282,7 @@ class generator(object):
 		r += "\n".join(startup)
 		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns
 		if self.module:
+			r += "return context\n"
 			r += "}"
 		return r
 

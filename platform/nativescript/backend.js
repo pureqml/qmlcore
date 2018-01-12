@@ -38,7 +38,7 @@ const translate = {
 
 class Element extends _globals.core.RAIIEventEmitter {
 	constructor(ctx, impl) {
-		super(ctx)
+		super()
 		this.ctx = ctx
 		this.impl = impl
 	}

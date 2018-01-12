@@ -8,7 +8,7 @@ var Location = function(ui) {
 	context.window.on("popstate", function() { self.updateActualValues() }.bind(this))
 }
 
-Device.prototype.updateActualValues(): {
+Location.prototype.updateActualValues = function() {
 	var ui = this._ui
 	var windowContext = ui._context.window
 	ui.hash = windowContext.location.hash
@@ -23,12 +23,12 @@ Device.prototype.updateActualValues(): {
 	ui.state = windowContext.history.state
 }
 
-Device.prototype.changeHref(href): {
+Location.prototype.changeHref = function(href) {
 	this._ui._context.window.location.href = href
 	this.updateActualValues()
 }
 
-Device.prototype.pushState(state, title, url): {
+Location.prototype.pushState = function(state, title, url) {
 	var ui = this._ui
 	var windowContext = ui._context.window
 	if (windowContext.location.hostname) {
@@ -39,7 +39,6 @@ Device.prototype.pushState(state, title, url): {
 		this.state = state
 	}
 }
-
 
 exports.createDevice = function(ui) {
 	return new Location(ui)

@@ -10,7 +10,7 @@ var Location = function(ui) {
 
 Location.prototype.updateActualValues = function() {
 	var ui = this._ui
-	var windowContext = ui._context.window
+	var windowContext = ui._context.window.dom
 	ui.hash = windowContext.location.hash
 	ui.href = windowContext.location.href
 	ui.port = windowContext.location.port
@@ -24,13 +24,13 @@ Location.prototype.updateActualValues = function() {
 }
 
 Location.prototype.changeHref = function(href) {
-	this._ui._context.window.location.href = href
+	this._ui._context.window.dom.location.href = href
 	this.updateActualValues()
 }
 
 Location.prototype.pushState = function(state, title, url) {
 	var ui = this._ui
-	var windowContext = ui._context.window
+	var windowContext = ui._context.window.dom
 	if (windowContext.location.hostname) {
 		windowContext.history.pushState(state, title, url)
 		this.updateActualValues()
@@ -40,7 +40,7 @@ Location.prototype.pushState = function(state, title, url) {
 	}
 }
 
-exports.createDevice = function(ui) {
+exports.createLocation = function(ui) {
 	return new Location(ui)
 }
 

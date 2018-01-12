@@ -1,3 +1,4 @@
+_globals.core.__locationBackend = function() { return _globals.web.location }
 _globals.core.__deviceBackend = function() { return _globals.web.device }
 
 exports.core.keyCodes = {

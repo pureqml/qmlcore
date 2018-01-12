@@ -206,6 +206,7 @@ exports.Element = function(context, tag) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._styles = {}
+	this._transitions = {}
 	this._class = ''
 	this._widthAdjust = 0
 	this._uniqueId = String(++lastId)
@@ -300,7 +301,7 @@ ElementPrototype.style = function(name, style) {
 		}
 	}
 	else
-		return this._styles[name]
+		throw new Error('cache is write-only')
 }
 
 ElementPrototype.setAttribute = function(name, value) {
@@ -715,14 +716,16 @@ var setTransition = function(component, name, animation) {
 		duration: html5.getPrefixedName('transition-duration'),
 		timing: html5.getPrefixedName('transition-timing-function')
 	}
-	component.element.forceLayout() //flush styles before setting transition
+	var element = component.element
+	element.forceLayout() //flush styles before setting transition
 
 	name = html5.getPrefixedName(name) || name //replace transform: <prefix>rotate hack
 
-	var property = component.style(transition.property) || []
-	var duration = component.style(transition.duration) || []
-	var timing = component.style(transition.timing) || []
-	var delay = component.style(transition.delay) || []
+	var transitions = element._transitions
+	var property	= transitions[transition.property] || []
+	var duration	= transitions[transition.duration] || []
+	var timing		= transitions[transition.timing] || []
+	var delay		= transitions[transition.delay] || []
 
 	var idx = property.indexOf(name)
 	if (idx === -1) { //if property not set
@@ -745,20 +748,19 @@ var setTransition = function(component, name, animation) {
 		}
 	}
 
-	var style = {}
-	style[transition.property] = property
-	style[transition.duration] = duration
-	style[transition.timing] = timing
-	style[transition.delay] = delay
+	transitions[transition.property] = property
+	transitions[transition.duration] = duration
+	transitions[transition.timing] = timing
+	transitions[transition.delay] = delay
 
 	//FIXME: orsay animation is not working without this shit =(
 	if (component._context.system.os === 'orsay' || component._context.system.os === 'netcast') {
-		style["transition-property"] = property
-		style["transition-duration"] = duration
-		style["transition-delay"] = delay
-		style["transition-timing-function"] = timing
+		transitions["transition-property"] = property
+		transitions["transition-duration"] = duration
+		transitions["transition-delay"] = delay
+		transitions["transition-timing-function"] = timing
 	}
-	component.style(style)
+	component.style(transitions)
 	return true
 }
 

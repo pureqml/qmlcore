@@ -35,6 +35,7 @@ const specialHandlers = {
 	},
 
 	visibility: (object, name, value) => {
+		object[name] = value === 'inherit'? 'visible': value
 	},
 }
 
@@ -82,7 +83,6 @@ class Element extends _globals.core.RAIIEventEmitter {
 	}
 
 	_setStyle(name, value) {
-		log('setStyle', name, value)
 		let ok1 = this._setStyleInObject(this.layout, name, value)
 		let ok2 = this._setStyleInObject(this.impl, name, value)
 		if (!ok1 && !ok2)

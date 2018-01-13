@@ -1,5 +1,8 @@
 /*** @using { core.RAIIEventEmitter } **/
 
+const platform = require("tns-core-modules/platform")
+const utils = require("tns-core-modules/utils/utils")
+
 const observableModule = require("data/observable")
 const Observable = observableModule.Observable
 
@@ -118,9 +121,12 @@ exports.init = function(ctx) {
 	page = nativeContext
 	ctx.element = new Element(parentLayout, null)
 
-	log('page size: ', page.getMeasuredWidth(), 'x', page.getMeasuredHeight())
-	context.width = page.getMeasuredWidth()
-	context.height = page.getMeasuredHeight()
+	let mw = page.getMeasuredWidth(), mh = page.getMeasuredHeight()
+	let w = utils.layout.toDeviceIndependentPixels(mw)
+	let h = utils.layout.toDeviceIndependentPixels(mh)
+	log('page size: ', mw, 'x', mh, w, 'x', h)
+	context.width = w
+	context.height = h
 }
 
 
@@ -129,9 +135,6 @@ exports.run = function(ctx, callback) {
 }
 
 exports.finalize = function() {
-	log('page size: ', page.getMeasuredWidth(), 'x', page.getMeasuredHeight())
-	context.width = page.getMeasuredWidth()
-	context.height = page.getMeasuredHeight()
 	finalization_callback()
 	finalization_callback = null
 }

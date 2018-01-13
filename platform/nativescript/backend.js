@@ -1,16 +1,16 @@
 /*** @using { core.RAIIEventEmitter } **/
 
-const observable = require("data/observable")
-const Observable = observable.Observable
+const observableModule = require("data/observable")
+const Observable = observableModule.Observable
 
-const layout = require('ui/layouts/absolute-layout')
-const AbsoluteLayout = layout.AbsoluteLayout
+const layoutModule = require('ui/layouts/absolute-layout')
+const AbsoluteLayout = layoutModule.AbsoluteLayout
 
-const label = require('ui/label')
-const Label = label.Label
+const labelModule = require('ui/label')
+const Label = labelModule.Label
 
-const image = require('ui/image')
-const Image = image.Image
+const imageModule = require('ui/image')
+const Image = imageModule.Image
 
 function dekebabize(name) {
 	return name.replace(/-([a-z])/g, (g) => { return g[1].toUpperCase() })
@@ -61,9 +61,9 @@ class Element extends _globals.core.RAIIEventEmitter {
 			return true
 		if (name in object) {
 			if (name in translate) {
-				translate[name](layout, name, value)
+				translate[name](object, name, value)
 			} else {
-				layout[name] = value
+				object[name] = value
 			}
 			return true
 		} else

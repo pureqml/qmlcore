@@ -1,7 +1,6 @@
 /*** @using { core.RAIIEventEmitter } **/
 
 exports.autoClassify = false
-var populateStyleThreshold = 2
 
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
@@ -33,19 +32,17 @@ var StyleCache = function() {
 var StyleCachePrototype = StyleCache.prototype
 StyleCachePrototype.constructor = StyleCache
 
-StyleCachePrototype.update = function(element, name) {
-	//log('update', element._uniqueId, name)
+StyleCachePrototype.update = function(element, name, value) {
+	//log('update', element._uniqueId, name, value)
 	var cache = this._cache
 	var id = element._uniqueId
 	var entry = cache[id]
 	if (entry !== undefined) {
-		if (!entry.data[name]) {
-			entry.data[name] = true
-			++entry.size
-		}
+		entry.data[name] = value
+		++entry.size
 	} else {
 		var data = {}
-		data[name] = true
+		data[name] = value
 		cache[id] = {data: data, element: element, size: 1}
 	}
 }
@@ -205,7 +202,6 @@ exports.Element = function(context, tag) {
 
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
-	this._styles = {}
 	this._transitions = {}
 	this._class = ''
 	this._widthAdjust = 0
@@ -285,20 +281,10 @@ ElementPrototype.fullHeight = function() {
 ElementPrototype.style = function(name, style) {
 	var cache = this._context._styleCache
 	if (style !== undefined) {
-		if (style !== '') //fixme: replace it with explicit 'undefined' syntax
-			this._styles[name] = style
-		else
-			delete this._styles[name]
-		cache.update(this, name)
+		cache.update(this, name, style)
 	} else if (typeof name === 'object') { //style({ }) assignment
-		for(var k in name) {
-			var value = name[k]
-			if (value !== '') //fixme: replace it with explicit 'undefined' syntax
-				this._styles[k] = value
-			else
-				delete this._styles[k]
-			cache.update(this, k)
-		}
+		for(var k in name)
+			cache.update(this, k, name[k])
 	}
 	else
 		throw new Error('cache is write-only')
@@ -340,26 +326,19 @@ ElementPrototype.updateStyle = function(updated) {
 	if (!element)
 		return
 
-	var populate = false
-
 	if (updated === undefined) {
 		updated = this._context._styleCache.pop(this)
 		if (updated === undefined) //no update at all
 			return
 	}
-	//log('styles updated:', updated.size, ', threshold', populateStyleThreshold)
-	if (updated.size <= populateStyleThreshold) {
-		updated = updated.data
-	} else {
-		//fallback to old setAttribute('style') strategy
-		updated = this._styles
-		populate = true
-	}
+
+	var styles = updated.data
 
 	var cache = this._context._styleClassifier
 	var rules = []
-	for(var name in updated) {
-		var value = this._styles[name]
+	for(var name in styles) {
+		var value = styles[name]
+		//log('updateStyle', this._uniqueId, name, value)
 
 		var prefixedName = getPrefixedName(name)
 		var ruleName = prefixedName !== false? prefixedName: name
@@ -375,17 +354,7 @@ ElementPrototype.updateStyle = function(updated) {
 		}
 		value += unit
 
-		if (populate) {
-			//fixme: revive classifier here
-			//var prefixedValue = window.Modernizr.prefixedCSSValue(name, value)
-			//var prefixedValue = value
-			var rule = ruleName + ':' + value //+ (prefixedValue !== false? prefixedValue: value)
-			if (cache)
-				cache.add(rule)
-			rules.push(rule)
-		} else {
-			element.style[ruleName] = value
-		}
+		element.style[ruleName] = value
 	}
 	var cls = cache? cache.classify(rules): ''
 	if (cls !== this._class) {
@@ -396,10 +365,6 @@ ElementPrototype.updateStyle = function(updated) {
 		if (cls !== '')
 			classList.add(cls)
 	}
-
-	//set style attribute
-	if (populate)
-		element.setAttribute('style', rules.join(';'))
 }
 
 ElementPrototype.append = function(el) {

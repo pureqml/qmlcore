@@ -56,6 +56,28 @@ class Element extends _globals.core.RAIIEventEmitter {
 		//log('Element.addClass', name)
 	}
 
+	_setStyleInObject(object, name, value) {
+		if (!object)
+			return true
+		if (name in object) {
+			if (name in translate) {
+				translate[name](layout, name, value)
+			} else {
+				layout[name] = value
+			}
+			return true
+		} else
+			return false
+	}
+
+	_setStyle(name, value) {
+		log('setStyle', name, value)
+		let ok1 = this._setStyleInObject(this.layout, name, value)
+		let ok2 = this._setStyleInObject(this.impl, name, value)
+		if (!ok1 && !ok2)
+			log('skipping style', name)
+	}
+
 	style(target, value) {
 		if (typeof target === 'object') {
 			for(let k in target) {
@@ -64,17 +86,9 @@ class Element extends _globals.core.RAIIEventEmitter {
 		} else {
 			let layout = this.layout
 			let name = dekebabize(target)
-			if (value !== undefined) {
-				if (name in layout) {
-					if (name in translate) {
-						translate[name](layout, name, value)
-					} else
-						layout[name] = value
-				} else
-					log('skipping style', name)
-			} else {
-				return layout[name]
-			}
+			if (value === undefined)
+				throw new Error("style is write-only")
+			this._setStyle(name, value)
 		}
 	}
 }

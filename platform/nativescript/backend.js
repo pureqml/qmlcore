@@ -16,19 +16,23 @@ function dekebabize(name) {
 	return name.replace(/-([a-z])/g, (g) => { return g[1].toUpperCase() })
 }
 
-const translate = {
-	left: (layout, name, value) => {
-		layout[name] = value
-		AbsoluteLayout.setLeft(layout, value)
+const styleNames = {
+	textAlign: 'textAlignment'
+}
+
+const specialHandlers = {
+	left: (object, name, value) => {
+		object[name] = value
+		AbsoluteLayout.setLeft(object, value)
 	},
 
-	top: (layout, name, value) => {
-		layout[name] = value
-		AbsoluteLayout.setTop(layout, value)
+	top: (object, name, value) => {
+		object[name] = value
+		AbsoluteLayout.setTop(object, value)
 	},
 
-	visibility: (layout, name, value) => {
-	}
+	visibility: (object, name, value) => {
+	},
 }
 
 
@@ -59,9 +63,13 @@ class Element extends _globals.core.RAIIEventEmitter {
 	_setStyleInObject(object, name, value) {
 		if (!object)
 			return true
+
+		if (name in styleNames)
+			name = styleNames[name]
+
 		if (name in object) {
-			if (name in translate) {
-				translate[name](object, name, value)
+			if (name in specialHandlers) {
+				specialHandlers[name](object, name, value)
 			} else {
 				object[name] = value
 			}
@@ -121,6 +129,9 @@ exports.run = function(ctx, callback) {
 }
 
 exports.finalize = function() {
+	log('page size: ', page.getMeasuredWidth(), 'x', page.getMeasuredHeight())
+	context.width = page.getMeasuredWidth()
+	context.height = page.getMeasuredHeight()
 	finalization_callback()
 	finalization_callback = null
 }

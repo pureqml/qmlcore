@@ -125,6 +125,8 @@ class Compiler(object):
 							package_dir = dirpath
 						if manifest.export_module:
 							generator.module |= manifest.export_module
+						if not manifest.strict:
+							self.strict = False
 						merge_properties(self.root_manifest_props, manifest.properties)
 
 				for filename in filenames:
@@ -223,7 +225,7 @@ class Compiler(object):
 
 		print "done"
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, strict = True, use_prefix = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, use_prefix = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
 		self.cache = Cache()
 		self.root = root
 		self.output_dir = output_dir
@@ -231,7 +233,7 @@ class Compiler(object):
 		self.root_manifest = root_manifest
 		self.app = app
 		self.documentation = None
-		self.strict = strict
+		self.strict = root_manifest.strict
 		self.use_prefix = use_prefix
 		self.release = release
 		self.verbose = verbose
@@ -251,14 +253,14 @@ class Compiler(object):
 		    self.documentation = compiler.doc.md.Documentation(doc) if doc else None
 
 
-def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, strict = True, use_prefix = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
+def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, use_prefix = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
 	if wait:
 		try:
 			import pyinotify
 		except:
 			raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, strict=strict, use_prefix=use_prefix, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, use_prefix=use_prefix, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
 	modified = False

@@ -300,8 +300,7 @@ def build(root, platform, apps, app, manifest):
 	if args.doc_format:
 		kw['doc_format'] = args.doc_format
 
-	if not (platform_manifest.strict and manifest.strict):
-		kw['strict'] = True
+	kw['strict'] = platform_manifest.strict and manifest.strict
 
 	if args.web_prefix or manifest.web_prefix:
 		kw['use_prefix'] = True

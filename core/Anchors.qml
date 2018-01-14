@@ -31,6 +31,7 @@ Object {
 		var parent = item.parent
 
 		var parent_box = parent.toScreen()
+		var parentX = parent_box[0], parentY = parent_box[1]
 
 		var fill = anchors.fill
 		var leftAnchor = anchors.left || (fill? fill.left: null)
@@ -50,13 +51,13 @@ Object {
 		var left, top, right, bottom
 		if (leftAnchor) {
 			left = leftAnchor.toScreen()
-			item.x = left + lm - parent_box[0] - item.viewX
+			item.x = left + lm - parentX - item.viewX
 		}
 
 		if (rightAnchor) {
 			right = rightAnchor.toScreen()
 			if (!leftAnchor)
-				item.x = right - parent_box[0] - rm - item.width - item.viewX
+				item.x = right - parentX - rm - item.width - item.viewX
 		}
 
 		if (leftAnchor && rightAnchor) {
@@ -65,13 +66,13 @@ Object {
 
 		if (topAnchor) {
 			top = topAnchor.toScreen()
-			item.y = top + tm - parent_box[1] - item.viewY
+			item.y = top + tm - parentY - item.viewY
 		}
 
 		if (bottomAnchor) {
 			bottom = bottomAnchor.toScreen()
 			if (!topAnchor)
-				item.y = bottom - parent_box[1] - bm - item.height - item.viewY
+				item.y = bottom - parentY - bm - item.height - item.viewY
 		}
 
 		if (topAnchor && bottomAnchor) {

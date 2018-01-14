@@ -1,7 +1,5 @@
 /*** @using { core.RAIIEventEmitter } **/
 
-exports.autoClassify = false
-
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
@@ -194,12 +192,6 @@ exports.Element = function(context, tag) {
 	else
 		this.dom = tag
 
-	if (exports.autoClassify) {
-		if (!context._styleClassifier)
-			context._styleClassifier = new StyleClassifier(context._prefix)
-	} else
-		context._styleClassifier = null
-
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context
 	this._transitions = {}
@@ -334,7 +326,6 @@ ElementPrototype.updateStyle = function(updated) {
 
 	var styles = updated.data
 
-	var cache = this._context._styleClassifier
 	var rules = []
 	for(var name in styles) {
 		var value = styles[name]
@@ -356,6 +347,8 @@ ElementPrototype.updateStyle = function(updated) {
 
 		element.style[ruleName] = value
 	}
+
+	var cache = this._context._styleClassifier
 	var cls = cache? cache.classify(rules): ''
 	if (cls !== this._class) {
 		var classList = element.classList
@@ -494,6 +487,8 @@ exports.init = function(ctx) {
 			}
 		}
 	}) //fixme: add html.Document instead
+
+	ctx._styleClassifier = $manifest$cssAutoClassificator? new StyleClassifier(ctx._prefix): null; //broken beyond repair
 }
 
 

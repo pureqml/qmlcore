@@ -1,4 +1,4 @@
-# PureQML::QMLCore: QML to JS translator
+# PureQML::QMLCore: QML to Javascript translator
 QmlCore is a simple set of tools we (a small team of QML advocates) use since years to simplify the development of HTML5 UIs for both mobile and desktop devices.
 It was designed with the original QML in mind, while it's not 100% compatible and improved in some aspects. 
 The main concepts are the same though, so if you're familiar with original QML, you could start right away.

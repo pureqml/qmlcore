@@ -55,7 +55,8 @@ Object {
 
 		if (rightAnchor) {
 			right = rightAnchor.toScreen()
-			item.x = right - parent_box[0] - rm - item.width - item.viewX
+			if (!leftAnchor)
+				item.x = right - parent_box[0] - rm - item.width - item.viewX
 		}
 
 		if (leftAnchor && rightAnchor) {
@@ -69,7 +70,8 @@ Object {
 
 		if (bottomAnchor) {
 			bottom = bottomAnchor.toScreen()
-			item.y = bottom - parent_box[1] - bm - item.height - item.viewY
+			if (!topAnchor)
+				item.y = bottom - parent_box[1] - bm - item.height - item.viewY
 		}
 
 		if (topAnchor && bottomAnchor) {

@@ -10,19 +10,22 @@ import compiler.lang
 import os, os.path
 import hashlib
 import cPickle
-import inspect
 import json
 from multiprocessing import Pool, cpu_count
 import sys
 
 compiler.grammar.source.parseWithTabs()
 
-data = ""
-data += inspect.getsource(compiler.grammar)
-data += inspect.getsource(compiler.lang)
-data += inspect.getsource(compiler.pyparsing)
-grammar_digest = hashlib.sha1(data).hexdigest()
-del data
+try:
+	import inspect
+	data = ""
+	data += inspect.getsource(compiler.grammar)
+	data += inspect.getsource(compiler.lang)
+	data += inspect.getsource(compiler.pyparsing)
+	grammar_digest = hashlib.sha1(data).hexdigest()
+	del data
+except:
+	grammar_digest = '0000000000000000000000000000000000000000'
 
 class Cache(object):
 	def __init__(self, dir = '.cache'):

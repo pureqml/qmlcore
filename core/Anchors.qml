@@ -60,6 +60,11 @@ Object {
 				item.x = right - parentX - rm - item.width - item.viewX
 		}
 
+		if (hcenterAnchor) {
+			var hcenter = hcenterAnchor.toScreen();
+			item.x = hcenter - item.width / 2 - parent_box[0] + lm - rm - item.viewX;
+		}
+
 		if (leftAnchor && rightAnchor) {
 			item.width = right - left - rm - lm
 		}
@@ -75,18 +80,13 @@ Object {
 				item.y = bottom - parentY - bm - item.height - item.viewY
 		}
 
-		if (topAnchor && bottomAnchor) {
-			item.height = bottom - top - bm - tm
-		}
-
-		if (hcenterAnchor) {
-			var hcenter = hcenterAnchor.toScreen();
-			item.x = hcenter - item.width / 2 - parent_box[0] + lm - rm - item.viewX;
-		}
-
 		if (vcenterAnchor) {
 			var vcenter = vcenterAnchor.toScreen();
 			item.y = vcenter - item.height / 2 - parent_box[1] + tm - bm - item.viewY;
+		}
+
+		if (topAnchor && bottomAnchor) {
+			item.height = bottom - top - bm - tm
 		}
 	}
 

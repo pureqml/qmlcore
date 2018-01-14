@@ -117,6 +117,7 @@ Object {
 		if (anchors.left)
 			anchors._replaceUpdater('width')
 		this._subscribe(value.parent)
+		this._subscribe(item)
 	}
 
 	onTopChanged: {
@@ -135,6 +136,7 @@ Object {
 		if (anchors.top)
 			item._replaceUpdater('height')
 		this._subscribe(value.parent)
+		this._subscribe(item)
 	}
 
 	onHorizontalCenterChanged: {
@@ -142,6 +144,7 @@ Object {
 		var anchors = this
 		item._replaceUpdater('x')
 		this._subscribe(value.parent)
+		this._subscribe(item)
 	}
 
 	onVerticalCenterChanged: {
@@ -149,6 +152,7 @@ Object {
 		var anchors = this
 		item._replaceUpdater('y')
 		this._subscribe(value.parent)
+		this._subscribe(item)
 	}
 
 	onFillChanged: {
@@ -159,6 +163,7 @@ Object {
 		item._replaceUpdater('y')
 		item._replaceUpdater('height')
 		this._subscribe(value)
+		this._subscribe(item)
 	}
 
 	onCenterInChanged: {
@@ -167,6 +172,7 @@ Object {
 		item._replaceUpdater('x')
 		item._replaceUpdater('y')
 		this._subscribe(value)
+		this._subscribe(item)
 	}
 
 	onLeftMarginChanged,

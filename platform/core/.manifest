@@ -1,5 +1,6 @@
 {
 	"standalone": false,
+	"properties.disableAnimations": false,
 	"properties.style.font" : {
 		"family": "Arial",
 		"pixelSize": 16,

@@ -115,9 +115,9 @@ Object {
 	onLeftChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
+		item._removeUpdater('x')
 		if (anchors.right || anchors.horizontalCenter) {
-			item._replaceUpdater('width')
+			item._removeUpdater('width')
 			this._subscribe(item)
 		}
 		this._subscribe(value.parent)
@@ -127,9 +127,9 @@ Object {
 	onRightChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
+		item._removeUpdater('x')
 		if (anchors.left || anchors.horizontalCenter) {
-			anchors._replaceUpdater('width')
+			anchors._removeUpdater('width')
 		}
 		this._subscribe(item)
 		this._subscribe(value.parent)
@@ -139,9 +139,9 @@ Object {
 	onHorizontalCenterChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
+		item._removeUpdater('x')
 		if (anchors.left || anchors.right) {
-			anchors._replaceUpdater('width')
+			anchors._removeUpdater('width')
 		}
 		this._subscribe(item)
 		this._subscribe(value.parent)
@@ -151,9 +151,9 @@ Object {
 	onTopChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('y')
+		item._removeUpdater('y')
 		if (anchors.bottom || anchors.verticalCenter) {
-			item._replaceUpdater('height')
+			item._removeUpdater('height')
 			this._subscribe(item)
 		}
 		this._subscribe(value.parent)
@@ -163,9 +163,9 @@ Object {
 	onBottomChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('y')
+		item._removeUpdater('y')
 		if (anchors.top || anchors.verticalCenter) {
-			item._replaceUpdater('height')
+			item._removeUpdater('height')
 		}
 		this._subscribe(item)
 		this._subscribe(value.parent)
@@ -175,9 +175,9 @@ Object {
 	onVerticalCenterChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('y')
+		item._removeUpdater('y')
 		if (anchors.top || anchors.bottom) {
-			item._replaceUpdater('height')
+			item._removeUpdater('height')
 		}
 		this._subscribe(item)
 		this._subscribe(value.parent)
@@ -187,10 +187,10 @@ Object {
 	onFillChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
-		item._replaceUpdater('width')
-		item._replaceUpdater('y')
-		item._replaceUpdater('height')
+		item._removeUpdater('x')
+		item._removeUpdater('width')
+		item._removeUpdater('y')
+		item._removeUpdater('height')
 		this._subscribe(value)
 		this._updateAll()
 	}
@@ -198,8 +198,8 @@ Object {
 	onCenterInChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
-		item._replaceUpdater('y')
+		item._removeUpdater('x')
+		item._removeUpdater('y')
 		this._subscribe(value)
 		this._subscribe(item)
 		this._updateAll()

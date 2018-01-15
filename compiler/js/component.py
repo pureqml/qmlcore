@@ -1,5 +1,5 @@
 from compiler.js import get_package, split_name, escape
-from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, path_or_parent
+from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, path_or_parent, mangle_path
 from compiler import lang
 import json
 from functools import partial
@@ -200,7 +200,7 @@ class component_generator(object):
 			if not target_parent:
 				target_parent = parent
 			else:
-				target_parent = self.get_rvalue(parent, target_parent)
+				target_parent = self.get_rvalue(registry, parent, target_parent)
 			r.append("\t%s.setAnimation('%s', %s);\n" %(target_parent, target, var))
 		return "\n".join(r)
 
@@ -481,11 +481,11 @@ class component_generator(object):
 			else:
 				return "_get('%s')" %property
 
-	def get_rvalue(self, parent, target):
+	def get_rvalue(self, registry, parent, target):
 		path = target.split(".")
-		return "%s.%s" % (parent, ".".join(path))
+		return "%s.%s" % (parent, mangle_path(path, partial(self.transform_root, registry)))
 
-	def get_lvalue(self, parent, target):
+	def get_lvalue(self, registry, parent, target):
 		path = target.split(".")
 		target_owner = [parent] + path[:-1]
 		path = target_owner + [path[-1]]
@@ -500,7 +500,7 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_owner, target_lvalue, target_prop = self.get_lvalue(parent, target)
+			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
 				r.append('//assigning %s to %s' %(target, value))

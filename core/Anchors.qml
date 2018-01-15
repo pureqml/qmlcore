@@ -130,10 +130,9 @@ Object {
 		item._replaceUpdater('x')
 		if (anchors.left || anchors.horizontalCenter) {
 			anchors._replaceUpdater('width')
-			this._subscribe(item)
 		}
-		this._subscribe(value.parent)
 		this._subscribe(item)
+		this._subscribe(value.parent)
 		this._updateAll()
 	}
 
@@ -143,8 +142,8 @@ Object {
 		item._replaceUpdater('x')
 		if (anchors.left || anchors.right) {
 			anchors._replaceUpdater('width')
-			this._subscribe(item)
 		}
+		this._subscribe(item)
 		this._subscribe(value.parent)
 		this._updateAll()
 
@@ -167,8 +166,8 @@ Object {
 		item._replaceUpdater('y')
 		if (anchors.top || anchors.verticalCenter) {
 			item._replaceUpdater('height')
-			this._subscribe(item)
 		}
+		this._subscribe(item)
 		this._subscribe(value.parent)
 		this._updateAll()
 	}
@@ -179,8 +178,8 @@ Object {
 		item._replaceUpdater('y')
 		if (anchors.top || anchors.bottom) {
 			item._replaceUpdater('height')
-			this._subscribe(item)
 		}
+		this._subscribe(item)
 		this._subscribe(value.parent)
 		this._updateAll()
 	}

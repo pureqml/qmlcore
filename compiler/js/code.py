@@ -62,7 +62,8 @@ def parse_deps(parent, text, transform):
 			deps.add(("%s._get('_delegate')" %parent, signal))
 		else:
 			dep_parent = parent + '.' + mangle_path(gets, transform) if gets else parent
-			deps.add((dep_parent, target))
+			if target != 'parent': #parent property is special - it's not property per se, and is not allowed to change
+				deps.add((dep_parent, target))
 
 		return parent + '.' + mangle_path(path, transform)
 

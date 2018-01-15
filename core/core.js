@@ -234,11 +234,12 @@ exports.addLazyProperty = function(proto, name, creator) {
 
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
+	var animable = false
 	switch(type) {
 		case 'enum':
-		case 'int':		convert = function(value) { return ~~value }; break
+		case 'int':		convert = function(value) { return ~~value }; animable = true; break
 		case 'bool':	convert = function(value) { return value? true: false }; break
-		case 'real':	convert = function(value) { return +value }; break
+		case 'real':	convert = function(value) { return +value }; animable = true; break
 		case 'string':	convert = function(value) { return String(value) }; break
 		default:		convert = function(value) { return value }; break
 	}
@@ -262,92 +263,125 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	var storageName = '__property_' + name
 	var forwardName = '__forward_' + name
 
-	Object.defineProperty(proto, name, {
-		get: function() {
-			var p = this[storageName]
-			return p !== undefined?
-				p.interpolatedValue !== undefined? p.interpolatedValue: p.value:
-				defaultValue
-		},
+	if (!animable)
+		proto[storageName] = defaultValue
 
-		set: function(newValue) {
-			newValue = convert(newValue)
-			var p = this[storageName]
-			if (p === undefined) { //no storage
-				if (newValue === defaultValue) //value == defaultValue, no storage allocation
+	var simpleGet = function() {
+		return this[storageName]
+	}
+
+	var simpleSet = function(newValue) {
+		newValue = convert(newValue)
+		var oldValue = this[storageName]
+		if (oldValue !== newValue) {
+			var forwardTarget = this[forwardName]
+			if (forwardTarget !== undefined) {
+				if (oldValue !== null && (oldValue instanceof Object)) {
+					//forward property update for mixins
+					var forwardedOldValue = oldValue[forwardTarget]
+					if (newValue !== forwardedOldValue) {
+						oldValue[forwardTarget] = newValue
+						this._update(name, newValue, forwardedOldValue)
+					}
 					return
+				} else if (newValue instanceof Object) {
+					//first assignment of mixin
+					this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
+				}
+			}
+			this[storageName] = newValue
+			this._update(name, newValue, oldValue)
+		}
+	}
 
-				p = this[storageName] = { value : defaultValue }
+	var animatedGet = function() {
+		var p = this[storageName]
+		return p !== undefined?
+			p.interpolatedValue !== undefined? p.interpolatedValue: p.value:
+			defaultValue
+	}
+	var animatedSet = function(newValue) {
+		newValue = convert(newValue)
+		var p = this[storageName]
+		if (p === undefined) { //no storage
+			if (newValue === defaultValue) //value == defaultValue, no storage allocation
+				return
+
+			p = this[storageName] = { value : defaultValue }
+		}
+
+		var animation = this.getAnimation(name)
+		if (animation && p.value !== newValue) {
+			var context = this._context
+			var backend = context.backend
+			if (p.frameRequest)
+				backend.cancelAnimationFrame(p.frameRequest)
+
+			p.started = Date.now()
+
+			var src = p.interpolatedValue !== undefined? p.interpolatedValue: p.value
+			var dst = newValue
+
+			var self = this
+
+			var complete = function() {
+				backend.cancelAnimationFrame(p.frameRequest)
+				p.frameRequest = undefined
+				animation.complete = function() { }
+				animation.running = false
+				p.interpolatedValue = undefined
+				p.started = undefined
+				self._update(name, dst, src)
 			}
 
-			var animation = this.getAnimation(name)
-			if (animation && p.value !== newValue) {
-				var context = this._context
-				var backend = context.backend
-				if (p.frameRequest)
-					backend.cancelAnimationFrame(p.frameRequest)
+			var duration = animation.duration
 
-				p.started = Date.now()
-
-				var src = p.interpolatedValue !== undefined? p.interpolatedValue: p.value
-				var dst = newValue
-
-				var self = this
-
-				var complete = function() {
-					backend.cancelAnimationFrame(p.frameRequest)
-					p.frameRequest = undefined
-					animation.complete = function() { }
-					animation.running = false
-					p.interpolatedValue = undefined
-					p.started = undefined
-					self._update(name, dst, src)
+			var nextFrame = function() {
+				var now = Date.now()
+				var t = 1.0 * (now - p.started) / duration
+				if (t >= 1 || !animation.active()) {
+					complete()
+				} else {
+					p.interpolatedValue = convert(animation.interpolate(dst, src, t))
+					self._update(name, p.interpolatedValue, src)
+					p.frameRequest = backend.requestAnimationFrame(nextFrame)
 				}
+				context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code
+			}
 
-				var duration = animation.duration
+			p.frameRequest = backend.requestAnimationFrame(nextFrame)
 
-				var nextFrame = function() {
-					var now = Date.now()
-					var t = 1.0 * (now - p.started) / duration
-					if (t >= 1 || !animation.active()) {
-						complete()
-					} else {
-						p.interpolatedValue = convert(animation.interpolate(dst, src, t))
-						self._update(name, p.interpolatedValue, src)
-						p.frameRequest = backend.requestAnimationFrame(nextFrame)
+			animation.running = true
+			animation.complete = complete
+		}
+		var oldValue = p.value
+		if (oldValue !== newValue) {
+			var forwardTarget = this[forwardName]
+			if (forwardTarget !== undefined) {
+				if (oldValue !== null && (oldValue instanceof Object)) {
+					//forward property update for mixins
+					var forwardedOldValue = oldValue[forwardTarget]
+					if (newValue !== forwardedOldValue) {
+						oldValue[forwardTarget] = newValue
+						this._update(name, newValue, forwardedOldValue)
 					}
-					context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code
+					return
+				} else if (newValue instanceof Object) {
+					//first assignment of mixin
+					this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
 				}
-
-				p.frameRequest = backend.requestAnimationFrame(nextFrame)
-
-				animation.running = true
-				animation.complete = complete
 			}
-			var oldValue = p.value
-			if (oldValue !== newValue) {
-				var forwardTarget = this[forwardName]
-				if (forwardTarget !== undefined) {
-					if (oldValue !== null && (oldValue instanceof Object)) {
-						//forward property update for mixins
-						var forwardedOldValue = oldValue[forwardTarget]
-						if (newValue !== forwardedOldValue) {
-							oldValue[forwardTarget] = newValue
-							this._update(name, newValue, forwardedOldValue)
-						}
-						return
-					} else if (newValue instanceof Object) {
-						//first assignment of mixin
-						this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
-					}
-				}
-				p.value = newValue
-				if ((!animation || !animation.running) && newValue === defaultValue)
-					delete this[storageName]
-				if (!animation)
-					this._update(name, newValue, oldValue)
-			}
-		},
+			p.value = newValue
+			if ((!animation || !animation.running) && newValue === defaultValue)
+				this[storageName] = undefined
+			if (!animation)
+				this._update(name, newValue, oldValue)
+		}
+	}
+
+	Object.defineProperty(proto, name, {
+		get: animable? animatedGet: simpleGet,
+		set: animable? animatedSet: simpleSet,
 		enumerable: true
 	})
 }

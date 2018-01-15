@@ -13,37 +13,17 @@ Object {
 
 	///@private
 	constructor: {
-		this.impl = null
-		this._createLocation()
-	}
-
-	///@private
-	function _getLocation() {
-		if (this.impl === null)
-			this._createPlayer()
-		return this.impl
-	}
-
-	///@private
-	function _createLocation() {
-		if (this.impl)
-			return this.impl
-
 		var backend = _globals.core.__locationBackend
 		if (!backend)
 			throw new Error('no backend found')
-		return this.impl = backend().createLocation(this)
+		this.impl = backend().createLocation(this)
 	}
 
 	pushState(state, title, url): {
-		var location = this._getLocation()
-		if (location)
-			player.pushState(state, title, url)
+		this.impl.pushState(state, title, url)
 	}
 
 	changeHref(href): {
-		var location = this._getLocation()
-		if (location)
-			player.changeHref(href)
+		this.impl.changeHref(href)
 	}
 }

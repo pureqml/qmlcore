@@ -36,10 +36,7 @@ def process(text, generator, registry, args):
 	return text
 
 def mangle_path(path):
-	if path[0] == 'model':
-		path = ["_get('model')"] + path[1:]
-	else:
-		path = ["_get('%s')" % name for name in path ]
+	path = ["_get('%s')" %path[0]] + path[1:]
 	return '.'.join(path)
 
 def path_or_parent(path, parent):

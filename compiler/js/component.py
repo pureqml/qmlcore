@@ -470,12 +470,11 @@ class component_generator(object):
 
 	def get_rvalue(self, parent, target):
 		path = target.split(".")
-		path = ["_get('%s')" %x for x in path]
 		return "%s.%s" % (parent, ".".join(path))
 
 	def get_lvalue(self, parent, target):
 		path = target.split(".")
-		target_owner = [parent] + ["_get('%s')" %x for x in path[:-1]]
+		target_owner = [parent] + path[:-1]
 		path = target_owner + [path[-1]]
 		return ("%s" %".".join(target_owner), "%s" %".".join(path), path[-1])
 

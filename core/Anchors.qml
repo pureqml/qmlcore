@@ -110,61 +110,79 @@ Object {
 			items.push(src)
 			this.connectOn(src, 'boxChanged', this._boundUpdateAll)
 		}
-		this._updateAll()
 	}
 
 	onLeftChanged: {
 		var item = this.parent
 		var anchors = this
 		item._replaceUpdater('x')
-		if (anchors.right)
+		if (anchors.right || anchors.horizontalCenter) {
 			item._replaceUpdater('width')
+			this._subscribe(item)
+		}
 		this._subscribe(value.parent)
+		this._updateAll()
 	}
 
 	onRightChanged: {
 		var item = this.parent
 		var anchors = this
 		item._replaceUpdater('x')
-		if (anchors.left)
+		if (anchors.left || anchors.horizontalCenter) {
 			anchors._replaceUpdater('width')
+			this._subscribe(item)
+		}
 		this._subscribe(value.parent)
 		this._subscribe(item)
-	}
-
-	onTopChanged: {
-		var item = this.parent
-		var anchors = this
-		item._replaceUpdater('y')
-		if (anchors.bottom)
-			item._replaceUpdater('height')
-		this._subscribe(value.parent)
-	}
-
-	onBottomChanged: {
-		var item = this.parent
-		var anchors = this
-		item._replaceUpdater('y')
-		if (anchors.top)
-			item._replaceUpdater('height')
-		this._subscribe(value.parent)
-		this._subscribe(item)
+		this._updateAll()
 	}
 
 	onHorizontalCenterChanged: {
 		var item = this.parent
 		var anchors = this
 		item._replaceUpdater('x')
+		if (anchors.left || anchors.right) {
+			anchors._replaceUpdater('width')
+			this._subscribe(item)
+		}
 		this._subscribe(value.parent)
-		this._subscribe(item)
+		this._updateAll()
+
+	}
+	onTopChanged: {
+		var item = this.parent
+		var anchors = this
+		item._replaceUpdater('y')
+		if (anchors.bottom || anchors.verticalCenter) {
+			item._replaceUpdater('height')
+			this._subscribe(item)
+		}
+		this._subscribe(value.parent)
+		this._updateAll()
+
+	}
+	onBottomChanged: {
+		var item = this.parent
+		var anchors = this
+		item._replaceUpdater('y')
+		if (anchors.top || anchors.verticalCenter) {
+			item._replaceUpdater('height')
+			this._subscribe(item)
+		}
+		this._subscribe(value.parent)
+		this._updateAll()
 	}
 
 	onVerticalCenterChanged: {
 		var item = this.parent
 		var anchors = this
 		item._replaceUpdater('y')
+		if (anchors.top || anchors.bottom) {
+			item._replaceUpdater('height')
+			this._subscribe(item)
+		}
 		this._subscribe(value.parent)
-		this._subscribe(item)
+		this._updateAll()
 	}
 
 	onFillChanged: {
@@ -175,7 +193,7 @@ Object {
 		item._replaceUpdater('y')
 		item._replaceUpdater('height')
 		this._subscribe(value)
-		this._subscribe(item)
+		this._updateAll()
 	}
 
 	onCenterInChanged: {
@@ -185,6 +203,7 @@ Object {
 		item._replaceUpdater('y')
 		this._subscribe(value)
 		this._subscribe(item)
+		this._updateAll()
 	}
 
 	onLeftMarginChanged,

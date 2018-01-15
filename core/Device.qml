@@ -1,5 +1,5 @@
 Object {
-	signal propertyUpadted;
+	signal propertyUpdated;
 	property string macAddess;
 	property string modelName;
 	property string deviceId;
@@ -21,5 +21,5 @@ Object {
 	onMacAddessChanged,
 	onModelNameChanged,
 	onSupporting3dChanged,
-	onSupportingUhdChanged: { this.propertyUpadted() }
+	onSupportingUhdChanged: { this.propertyUpdated() }
 }

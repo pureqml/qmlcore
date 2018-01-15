@@ -1,3 +1,5 @@
+_globals.core.__deviceBackend = function() { return _globals.web.device }
+
 exports.core.keyCodes = {
 	13: 'Select',
 	16: 'Shift',

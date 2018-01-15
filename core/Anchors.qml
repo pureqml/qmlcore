@@ -48,45 +48,57 @@ Object {
 		var tm = anchors.topMargin || anchors.margins
 		var bm = anchors.bottomMargin || anchors.margins
 
-		var left, top, right, bottom
-		if (leftAnchor) {
+		var left, top, right, bottom, hcenter, vcenter
+		if (leftAnchor && rightAnchor) {
+			left = leftAnchor.toScreen()
+			right = rightAnchor.toScreen()
+			item.x = left + lm - parentX - item.viewX
+			item.width = right - left - rm - lm
+		} else if (leftAnchor && hcenterAnchor) {
+			left = leftAnchor.toScreen()
+			hcenter = hcenterAnchor.toScreen();
+			item.x = left + lm - parentX - item.viewX
+			item.width = (hcenter - left) * 2 - rm - lm
+		} else if (hcenterAnchor && rightAnchor) {
+			hcenter = hcenterAnchor.toScreen();
+			right = rightAnchor.toScreen()
+			item.width = (right - hcenter) * 2 - rm - lm
+			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
+		} else if (leftAnchor) {
 			left = leftAnchor.toScreen()
 			item.x = left + lm - parentX - item.viewX
-		}
-
-		if (rightAnchor) {
+		} else if (rightAnchor) {
 			right = rightAnchor.toScreen()
-			if (!leftAnchor)
-				item.x = right - parentX - rm - item.width - item.viewX
-		}
-
-		if (hcenterAnchor) {
-			var hcenter = hcenterAnchor.toScreen();
-			item.x = hcenter - item.width / 2 - parent_box[0] + lm - rm - item.viewX;
-		}
-
-		if (leftAnchor && rightAnchor) {
-			item.width = right - left - rm - lm
-		}
-
-		if (topAnchor) {
-			top = topAnchor.toScreen()
-			item.y = top + tm - parentY - item.viewY
-		}
-
-		if (bottomAnchor) {
-			bottom = bottomAnchor.toScreen()
-			if (!topAnchor)
-				item.y = bottom - parentY - bm - item.height - item.viewY
-		}
-
-		if (vcenterAnchor) {
-			var vcenter = vcenterAnchor.toScreen();
-			item.y = vcenter - item.height / 2 - parent_box[1] + tm - bm - item.viewY;
+			item.x = right - parentX - rm - item.width - item.viewX
+		} else if (hcenterAnchor) {
+			hcenter = hcenterAnchor.toScreen()
+			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
 		}
 
 		if (topAnchor && bottomAnchor) {
+			top = topAnchor.toScreen()
+			bottom = bottomAnchor.toScreen()
+			item.y = top + tm - parentY - item.viewY
 			item.height = bottom - top - bm - tm
+		} else if (topAnchor && vcenterAnchor) {
+			top = topAnchor.toScreen()
+			vcenter = vcenterAnchor.toScreen()
+			item.y = top + tm - parentY - item.viewY
+			item.height = (vcenter - top) * 2 - bm - tm
+		} else if (vcenterAnchor && bottomAnchor) {
+			vcenter = vcenterAnchor.toScreen()
+			bottom = bottomAnchor.toScreen()
+			item.height = (bottom - vcenter) * 2 - bm - tm
+			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
+		} else if (topAnchor) {
+			top = topAnchor.toScreen()
+			item.y = top + tm - parentY - item.viewY
+		} else if (bottomAnchor) {
+			bottom = bottomAnchor.toScreen()
+			item.y = bottom - parentY - bm - item.height - item.viewY
+		} else if (vcenterAnchor) {
+			vcenter = vcenterAnchor.toScreen()
+			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
 		}
 	}
 

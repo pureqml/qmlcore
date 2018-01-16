@@ -241,6 +241,8 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		case 'bool':	convert = function(value) { return value? true: false }; break
 		case 'real':	convert = function(value) { return +value }; animable = true; break
 		case 'string':	convert = function(value) { return String(value) }; break
+
+		case 'Color':	animable = true; //fallthrough
 		default:		convert = function(value) { return value }; break
 	}
 

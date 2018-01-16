@@ -35,20 +35,17 @@ def process(text, generator, registry, args):
 	#print text
 	return text
 
-def mangle_path(path):
-	if path[0] == 'model':
-		path = ["_get('model')"] + path[1:]
-	else:
-		path = ["_get('%s')" % name for name in path ]
+def mangle_path(path, transform):
+	path = [transform(path[0])] + path[1:]
 	return '.'.join(path)
 
-def path_or_parent(path, parent):
-	return mangle_path(path.split('.')) if path else parent
+def path_or_parent(path, parent, transform):
+	return mangle_path(path.split('.'), transform) if path else parent
 
 gets_re = re.compile(r'\${(.*?)}')
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
 
-def parse_deps(parent, text):
+def parse_deps(parent, text, transform):
 	deps = set()
 
 	for m in tr_re.finditer(text):
@@ -64,15 +61,16 @@ def parse_deps(parent, text):
 			signal = '_row' if path[1] != 'index' else '_rowIndex'
 			deps.add(("%s._get('_delegate')" %parent, signal))
 		else:
-			dep_parent = parent + '.' + mangle_path(gets) if gets else parent
-			deps.add((dep_parent, target))
+			dep_parent = parent + '.' + mangle_path(gets, transform) if gets else parent
+			if target != 'parent': #parent property is special - it's not property per se, and is not allowed to change
+				deps.add((dep_parent, target))
 
-		return parent + '.' + mangle_path(path)
+		return parent + '.' + mangle_path(path, transform)
 
 	text = gets_re.sub(sub, text)
 	return text, deps
 
-def generate_accessors(parent, target):
+def generate_accessors(parent, target, transform):
 	path = target.split('.')
-	get = parent + '.' + mangle_path(path[:-1]) if path[:-1] else parent
+	get = parent + '.' + mangle_path(path[:-1], transform) if path[:-1] else parent
 	return get, path[-1]

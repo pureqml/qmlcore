@@ -1,7 +1,8 @@
 from compiler.js import get_package, split_name, escape
-from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, mangle_path, path_or_parent
+from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, path_or_parent, mangle_path
 from compiler import lang
 import json
+from functools import partial
 
 class component_generator(object):
 	def __init__(self, ns, name, component, prototype = False):
@@ -199,7 +200,7 @@ class component_generator(object):
 			if not target_parent:
 				target_parent = parent
 			else:
-				target_parent = self.get_rvalue(parent, target_parent)
+				target_parent = self.get_rvalue(registry, parent, target_parent)
 			r.append("\t%s.setAnimation('%s', %s);\n" %(target_parent, target, var))
 		return "\n".join(r)
 
@@ -301,7 +302,7 @@ class component_generator(object):
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
-						default_value, deps = parse_deps('@error', default_value)
+						default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry))
 						if deps:
 							raise Exception('trivial value emits dependencies')
 						args.append(default_value)
@@ -420,7 +421,7 @@ class component_generator(object):
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):
-							default_value, deps = parse_deps('@error', default_value)
+							default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry))
 							if deps:
 								raise Exception('trivial value emits dependencies')
 							args.append(default_value)
@@ -462,20 +463,31 @@ class component_generator(object):
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
 		for name, target in self.aliases.iteritems():
-			get, pname = generate_accessors(parent, target)
+			get, pname = generate_accessors(parent, target, partial(self.transform_root, registry))
 			r.append("%score.addAliasProperty(%s, '%s', function() { return %s }, '%s')" \
 				%(ident, parent, name, get, pname))
 
 		return "\n".join(r)
 
-	def get_rvalue(self, parent, target):
-		path = target.split(".")
-		path = ["_get('%s')" %x for x in path]
-		return "%s.%s" % (parent, ".".join(path))
+	def transform_root(self, registry, property):
+		if property == 'context':
+			return '_context'
+		elif property == 'parent':
+			return 'parent'
+		else:
+			prop = self.find_property(registry, property)
+			if prop:
+				return property
+			else:
+				return "_get('%s')" %property
 
-	def get_lvalue(self, parent, target):
+	def get_rvalue(self, registry, parent, target):
 		path = target.split(".")
-		target_owner = [parent] + ["_get('%s')" %x for x in path[:-1]]
+		return "%s.%s" % (parent, mangle_path(path, partial(self.transform_root, registry)))
+
+	def get_lvalue(self, registry, parent, target):
+		path = target.split(".")
+		target_owner = [parent] + path[:-1]
 		path = target_owner + [path[-1]]
 		return ("%s" %".".join(target_owner), "%s" %".".join(path), path[-1])
 
@@ -488,11 +500,11 @@ class component_generator(object):
 				continue
 			t = type(value)
 			#print self.name, target, value
-			target_owner, target_lvalue, target_prop = self.get_lvalue(parent, target)
+			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
 			if t is str:
 				value = replace_enums(value, self, registry)
 				r.append('//assigning %s to %s' %(target, value))
-				value, deps = parse_deps(parent, value)
+				value, deps = parse_deps(parent, value, partial(self.transform_root, registry))
 				if deps:
 					var = "update$%s$%s" %(escape(parent), escape(target))
 					r.append("%svar %s = function() { %s = %s; }" %(ident, var, target_lvalue, value))
@@ -516,7 +528,7 @@ class component_generator(object):
 			for _name, argscode in self.methods.iteritems():
 				path, name = _name
 				args, code = argscode
-				path = path_or_parent(path, parent)
+				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				code = process(code, self, registry, args)
 				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
 
@@ -526,7 +538,7 @@ class component_generator(object):
 				continue
 			args, code = argscode
 			code = process(code, self, registry, args)
-			path = path_or_parent(path, parent)
+			path = path_or_parent(path, parent, partial(self.transform_root, registry))
 			if name != "completed":
 				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, path, name, ",".join(args), code, path))
 			else:
@@ -537,7 +549,7 @@ class component_generator(object):
 			if not path and self.prototype: #sync with condition above
 				continue
 			code = process(code, self, registry, ['value'])
-			path = path_or_parent(path, parent)
+			path = path_or_parent(path, parent, partial(self.transform_root, registry))
 			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, path, name, code, path))
 
 		for _name, code in self.key_handlers.iteritems():
@@ -545,7 +557,7 @@ class component_generator(object):
 			if not path and self.prototype: #sync with condition above
 				continue
 			code = process(code, self, registry, ['key', 'event'])
-			path = path_or_parent(path, parent)
+			path = path_or_parent(path, parent, partial(self.transform_root, registry))
 			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, path, name, code, path))
 
 		for idx, value in enumerate(self.children):

@@ -66,7 +66,7 @@ class Manifest(object):
 
 	@property
 	def properties(self):
-		return self.data.get('properties', {})
+		return self.data.setdefault('properties', {})
 
 	@property
 	def partner(self):

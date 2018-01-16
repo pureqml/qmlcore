@@ -17,7 +17,6 @@ Item {
 		this.l10n = this.options.l10n || {}
 
 		this._local['context'] = this
-		this._prefix = this.options.prefix
 		this._context = this
 		this._started = false
 		this._completed = false
@@ -33,7 +32,7 @@ Item {
 
 	///@private
 	function mangleClass(name) {
-		return this._prefix + name
+		return $manifest$html5$prefix + name
 	}
 
 	///@private
@@ -51,10 +50,10 @@ Item {
 		if (cls === undefined)
 			cls = ''
 		var el = this.backend.createElement(this, tag, cls)
-		if (cls || this._prefix) {
+		if (cls || $manifest$html5$prefix) {
 			el.addClass(this.mangleClass(cls))
 		}
-		if (cls && this._prefix)
+		if (cls && $manifest$html5$prefix)
 			el.addClass(this.mangleClass('')) //base item style, fixme: pass array here?
 		return el
 	}

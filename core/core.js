@@ -268,6 +268,25 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	if (!animable)
 		proto[storageName] = defaultValue
 
+	var forwardSet = function(newValue, oldValue) {
+		var forwardTarget = this[forwardName]
+		if (forwardTarget !== undefined) {
+			if (oldValue !== null && (oldValue instanceof Object)) {
+				//forward property update for mixins
+				var forwardedOldValue = oldValue[forwardTarget]
+				if (newValue !== forwardedOldValue) {
+					oldValue[forwardTarget] = newValue
+					this._update(name, newValue, forwardedOldValue)
+				}
+				return true
+			} else if (newValue instanceof Object) {
+				//first assignment of mixin
+				this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
+			}
+		}
+		return false
+	}
+
 	var simpleGet = function() {
 		return this[storageName]
 	}
@@ -276,21 +295,8 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		newValue = convert(newValue)
 		var oldValue = this[storageName]
 		if (oldValue !== newValue) {
-			var forwardTarget = this[forwardName]
-			if (forwardTarget !== undefined) {
-				if (oldValue !== null && (oldValue instanceof Object)) {
-					//forward property update for mixins
-					var forwardedOldValue = oldValue[forwardTarget]
-					if (newValue !== forwardedOldValue) {
-						oldValue[forwardTarget] = newValue
-						this._update(name, newValue, forwardedOldValue)
-					}
-					return
-				} else if (newValue instanceof Object) {
-					//first assignment of mixin
-					this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
-				}
-			}
+			if (forwardSet.call(this, newValue, oldValue))
+				return
 			this[storageName] = newValue
 			this._update(name, newValue, oldValue)
 		}
@@ -358,21 +364,8 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		}
 		var oldValue = p.value
 		if (oldValue !== newValue) {
-			var forwardTarget = this[forwardName]
-			if (forwardTarget !== undefined) {
-				if (oldValue !== null && (oldValue instanceof Object)) {
-					//forward property update for mixins
-					var forwardedOldValue = oldValue[forwardTarget]
-					if (newValue !== forwardedOldValue) {
-						oldValue[forwardTarget] = newValue
-						this._update(name, newValue, forwardedOldValue)
-					}
-					return
-				} else if (newValue instanceof Object) {
-					//first assignment of mixin
-					this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
-				}
-			}
+			if (forwardSet.call(this, newValue, oldValue))
+				return
 			p.value = newValue
 			if ((!animation || !animation.running) && newValue === defaultValue)
 				this[storageName] = undefined

@@ -126,8 +126,8 @@ BaseLayout {
 			return item
 
 		var row = this.model.get(idx)
-		row['index'] = idx
-		this._local['model'] = row
+		row.index = idx
+		this._local.model = row
 
 		item = this.delegate(this)
 		items[idx] = item
@@ -135,8 +135,8 @@ BaseLayout {
 		item.element.remove()
 		this.content.element.append(item.element)
 
-		item._local['model'] = row
-		delete this._local['model']
+		item._local.model = row
+		delete this._local.model
 		item.recursiveVisible = this.recursiveVisible && item.visible && item.visibleInView
 
 		return item

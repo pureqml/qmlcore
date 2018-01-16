@@ -181,7 +181,7 @@ class component_generator(object):
 		r.append("/**\n * @constructor")
 		r.append(" * @extends {_globals.%s}" %base_type)
 		r.append(" */")
-		r.append("\tvar %s = _globals.%s = function(parent, _delegate) {" %(self.local_name, self.name))
+		r.append("\tvar %s = _globals.%s = function(parent, row) {" %(self.local_name, self.name))
 		r.append("\t\t%s.apply(this, arguments)" % self.base_local_name)
 		r.append(self.ctor)
 		r.append("\t}")
@@ -398,11 +398,11 @@ class component_generator(object):
 
 	def generate_creator_function(self, registry, name, value, ident_n = 1):
 		ident = "\t" * ident_n
-		code = "%svar %s = new _globals.%s(__parent, true)\n" %(ident, name, registry.find_component(value.package, value.component.name))
+		code = "%svar %s = new _globals.%s(__parent, __row)\n" %(ident, name, registry.find_component(value.package, value.component.name))
 		code += "%svar __closure = { %s : %s }\n" %(ident, name, name)
 		code += self.call_create(registry, ident_n + 1, name, value, '__closure') + '\n'
 		code += self.call_setup(registry, ident_n + 1, name, value, '__closure') + '\n'
-		return "(function(__parent) {\n%s\n%sreturn %s\n})" %(code, ident, name)
+		return "(function(__parent, __row) {\n%s\n%sreturn %s\n})" %(code, ident, name)
 
 
 	def generate_creators(self, registry, parent, closure, ident_n = 1):

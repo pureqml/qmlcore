@@ -164,7 +164,7 @@ EventEmitter {
 			handlers.forEach(invoker)
 	}
 
-	///@private patch property storage directly without signalling. 
+	///@private patch property storage directly without signalling.
 	function _setProperty(name, value) {
 		var animation = this._animations[name]
 		if (animation !== undefined)

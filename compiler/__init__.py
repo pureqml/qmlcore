@@ -217,7 +217,7 @@ class Compiler(object):
 
 		appcode += "/** @const @type {!CoreObject} */\n"
 		appcode += "var " + generator.generate()
-		appcode += generator.generate_startup(namespace, self.app, namespace if self.use_prefix else '')
+		appcode += generator.generate_startup(namespace, self.app)
 		appcode = appcode.replace('/* ${init.js} */', init_js)
 
 		with open(os.path.join(self.output_dir, namespace + "." + self.app + ".js"), "wt") as f:
@@ -228,7 +228,7 @@ class Compiler(object):
 
 		print "done"
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, use_prefix = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
 		self.cache = Cache()
 		self.root = root
 		self.output_dir = output_dir
@@ -237,7 +237,6 @@ class Compiler(object):
 		self.app = app
 		self.documentation = None
 		self.strict = root_manifest.strict
-		self.use_prefix = use_prefix
 		self.release = release
 		self.verbose = verbose
 		self.jobs = int(jobs) if jobs is not None else cpu_count()
@@ -256,14 +255,14 @@ class Compiler(object):
 		    self.documentation = compiler.doc.md.Documentation(doc) if doc else None
 
 
-def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, use_prefix = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
+def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
 	if wait:
 		try:
 			import pyinotify
 		except:
 			raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, use_prefix=use_prefix, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
 	modified = False

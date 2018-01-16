@@ -22,7 +22,7 @@ parser.add_argument('--minify', '-m', action='store_true', default=False, help='
 parser.add_argument('--no-minify', '-M', action='store_true', default=False, help='force non-minified code generation')
 parser.add_argument('--devel', '-d', action='store_true', default=False, help='development mode, listen for changed files, rebuild if changed')
 parser.add_argument('--keep-temp', '-k', action='store_true', default=False, help='keep temp files (e.g qml.js)')
-parser.add_argument('--web-prefix', '-W', action='store_true', default=False, help='web prefix for hybrid sites/apps')
+parser.add_argument('--web-prefix', '-W', help='web prefix for hybrid sites/apps')
 parser.add_argument('--update-translation', '-u', action='store_true', default=False, help='update translation only')
 parser.add_argument('--boilerplate', action='store_true', default = False, help = 'create simple skeleton project')
 parser.add_argument('--doc', '-D', help='generate documentation in given directory')
@@ -301,7 +301,7 @@ def build(root, platform, apps, app, manifest):
 		kw['doc_format'] = args.doc_format
 
 	if args.web_prefix or manifest.web_prefix:
-		kw['use_prefix'] = True
+		manifest.properties.setdefault("html5", {})["prefix"] = args.web_prefix or manifest.web_prefix
 
 	if args.jobs != 1:
 		kw['jobs'] = args.jobs

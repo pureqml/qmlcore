@@ -261,7 +261,7 @@ class generator(object):
 		text = generator.re_copy_args.sub(copy_args, text)
 		return text
 
-	def generate_startup(self, ns, app, prefix):
+	def generate_startup(self, ns, app):
 		r = ""
 		if self.module:
 			r += "module.exports = %s\n" %ns
@@ -272,7 +272,7 @@ class generator(object):
 
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', prefix: '%s', l10n: l10n, nativeContext: %s})" %(ns, context_type, app, prefix, 'nativeContext' if self.module else 'null'))
+		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', l10n: l10n, nativeContext: %s})" %(ns, context_type, app, 'nativeContext' if self.module else 'null'))
 		startup.append('\tvar closure = {}\n')
 		startup.append('\tcontext.__create(closure)')
 		startup.append('\tcontext.__setup(closure)')

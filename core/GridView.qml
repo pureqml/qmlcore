@@ -174,6 +174,8 @@ BaseView {
 		var atEnd = horizontal? function() { return cy + y >= h }: function() { return cx + x >= w }
 
 		var itemsCount = 0
+		var cellWidth = this.cellWidth, cellHeight = this.cellHeight
+		var stepX = cellWidth + this.spacing, stepY = cellHeight + this.spacing
 		for(var i = 0; i < n && !atEnd(); ++i) {
 			var item = this._items[i]
 
@@ -190,16 +192,16 @@ BaseView {
 			item.viewY = y
 
 			if (horizontal) {
-				x += this.cellWidth + this.spacing
-				if (x > 0 && x + this.cellWidth > w) {
+				x += stepX
+				if (x > 0 && x + cellWidth > w) {
 					x = 0
-					y += this.cellHeight + this.spacing
+					y += stepY
 				}
 			} else {
-				y += this.cellHeight + this.spacing
-				if (y > 0 && y + this.cellHeight > h) {
+				y += stepY
+				if (y > 0 && y + cellHeight > h) {
 					y = 0
-					x += this.cellWidth + this.spacing
+					x += stepX
 				}
 			}
 

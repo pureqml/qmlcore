@@ -6,8 +6,11 @@ EventEmitter {
 		this.children = []
 
 		this._context = parent? parent._context: null
-		if (_delegate === true)
-			this._local['_delegate'] = this
+		if (row) {
+			var local = this._local
+			local.model = row
+			local._delegate = this
+		}
 		this._changedHandlers = {}
 		this._changedConnections = []
 		this._pressedHandlers = {}

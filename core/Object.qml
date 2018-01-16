@@ -99,7 +99,7 @@ EventEmitter {
 	}
 
 	/// @private removes dynamic value updater
-	function _replaceUpdater (name, newUpdaters) {
+	function _removeUpdater (name) {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
 		if (oldUpdaters !== undefined) {
@@ -110,19 +110,21 @@ EventEmitter {
 				object.removeOnChanged(name, callback)
 			})
 		}
+		delete updaters[name]
+	}
 
-		if (newUpdaters) {
-			updaters[name] = newUpdaters
-			var callback = newUpdaters[0]
-			var parent = this
-			newUpdaters[1].forEach(function(data) {
-				var object = data[0]
-				var name = data[1]
-				parent.connectOnChanged(object, name, callback)
-			})
-			callback()
-		} else
-			delete updaters[name]
+	/// @private replaces dynamic value updater
+	function _replaceUpdater (name, newUpdaters) {
+		this._removeUpdater(name)
+		this._updaters[name] = newUpdaters
+		var callback = newUpdaters[0]
+		var parent = this
+		newUpdaters[1].forEach(function(data) {
+			var object = data[0]
+			var name = data[1]
+			parent.connectOnChanged(object, name, callback)
+		})
+		callback()
 	}
 
 	///@private registers key handler

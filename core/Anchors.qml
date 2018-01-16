@@ -19,194 +19,195 @@ Object {
 
 	signal marginsUpdated;		///< @private
 
-	/** @private */
-	function _updateLeft() {
-		var anchors = this
-		var item = anchors.parent
-		var parent = item.parent
-
-		var parent_box = parent.toScreen()
-		var left = anchors.left.toScreen()
-
-		var lm = anchors.leftMargin || anchors.margins
-		item.x = left + lm - parent_box[0] - item.viewX
-		if (anchors.right) {
-			var right = anchors.right.toScreen()
-			var rm = anchors.rightMargin || anchors.margins
-			item.width = right - left - rm - lm
-		}
+	constructor : {
+		this._items = []
+		this._boundUpdateAll = this._updateAll.bind(this)
 	}
 
 	/** @private */
-	function _updateRight() {
+	function _updateAll() {
 		var anchors = this
 		var item = anchors.parent
 		var parent = item.parent
 
 		var parent_box = parent.toScreen()
-		var right = anchors.right.toScreen()
+		var parentX = parent_box[0], parentY = parent_box[1]
+
+		var fill = anchors.fill
+		var leftAnchor = anchors.left || (fill? fill.left: null)
+		var rightAnchor = anchors.right || (fill? fill.right: null)
+		var topAnchor = anchors.top || (fill? fill.top: null)
+		var bottomAnchor = anchors.bottom || (fill? fill.bottom: null)
+
+		var centerIn = anchors.centerIn
+		var hcenterAnchor = anchors.horizontalCenter || (centerIn? centerIn.horizontalCenter: null)
+		var vcenterAnchor = anchors.verticalCenter || (centerIn? centerIn.verticalCenter: null)
 
 		var lm = anchors.leftMargin || anchors.margins
 		var rm = anchors.rightMargin || anchors.margins
-		if (anchors.left) {
-			var left = anchors.left.toScreen()
+		var tm = anchors.topMargin || anchors.margins
+		var bm = anchors.bottomMargin || anchors.margins
+
+		var left, top, right, bottom, hcenter, vcenter
+		if (leftAnchor && rightAnchor) {
+			left = leftAnchor.toScreen()
+			right = rightAnchor.toScreen()
+			item.x = left + lm - parentX - item.viewX
 			item.width = right - left - rm - lm
+		} else if (leftAnchor && hcenterAnchor) {
+			left = leftAnchor.toScreen()
+			hcenter = hcenterAnchor.toScreen();
+			item.x = left + lm - parentX - item.viewX
+			item.width = (hcenter - left) * 2 - rm - lm
+		} else if (hcenterAnchor && rightAnchor) {
+			hcenter = hcenterAnchor.toScreen();
+			right = rightAnchor.toScreen()
+			item.width = (right - hcenter) * 2 - rm - lm
+			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
+		} else if (leftAnchor) {
+			left = leftAnchor.toScreen()
+			item.x = left + lm - parentX - item.viewX
+		} else if (rightAnchor) {
+			right = rightAnchor.toScreen()
+			item.x = right - parentX - rm - item.width - item.viewX
+		} else if (hcenterAnchor) {
+			hcenter = hcenterAnchor.toScreen()
+			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
 		}
-		item.x = right - parent_box[0] - rm - item.width - item.viewX
-	}
 
-	/** @private */
-	function _updateTop() {
-		var anchors = this
-		var item = anchors.parent
-		var parent = item.parent
-
-		var parent_box = parent.toScreen()
-		var top = anchors.top.toScreen()
-
-		var tm = anchors.topMargin || anchors.margins
-		var bm = anchors.bottomMargin || anchors.margins
-		item.y = top + tm - parent_box[1] - item.viewY
-		if (anchors.bottom) {
-			var bottom = anchors.bottom.toScreen()
+		if (topAnchor && bottomAnchor) {
+			top = topAnchor.toScreen()
+			bottom = bottomAnchor.toScreen()
+			item.y = top + tm - parentY - item.viewY
 			item.height = bottom - top - bm - tm
+		} else if (topAnchor && vcenterAnchor) {
+			top = topAnchor.toScreen()
+			vcenter = vcenterAnchor.toScreen()
+			item.y = top + tm - parentY - item.viewY
+			item.height = (vcenter - top) * 2 - bm - tm
+		} else if (vcenterAnchor && bottomAnchor) {
+			vcenter = vcenterAnchor.toScreen()
+			bottom = bottomAnchor.toScreen()
+			item.height = (bottom - vcenter) * 2 - bm - tm
+			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
+		} else if (topAnchor) {
+			top = topAnchor.toScreen()
+			item.y = top + tm - parentY - item.viewY
+		} else if (bottomAnchor) {
+			bottom = bottomAnchor.toScreen()
+			item.y = bottom - parentY - bm - item.height - item.viewY
+		} else if (vcenterAnchor) {
+			vcenter = vcenterAnchor.toScreen()
+			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
 		}
 	}
 
 	/** @private */
-	function _updateBottom() {
-		var anchors = this
-		var item = anchors.parent
-		var parent = item.parent
-
-		var parent_box = parent.toScreen()
-		var bottom = anchors.bottom.toScreen()
-
-		var tm = anchors.topMargin || anchors.margins
-		var bm = anchors.bottomMargin || anchors.margins
-		if (anchors.top) {
-			var top = anchors.top.toScreen()
-			item.height = bottom - top - bm - tm
+	function _subscribe(src) {
+		var items = this._items
+		//connect only once per item
+		if (items.indexOf(src) < 0) {
+			items.push(src)
+			this.connectOn(src, 'boxChanged', this._boundUpdateAll)
 		}
-		item.y = bottom - parent_box[1] - bm - item.height - item.viewY
-	}
-
-	/** @private */
-	function _updateHCenter() {
-		var anchors = this
-		var item = anchors.parent
-		var parent = item.parent
-
-		var parent_box = parent.toScreen();
-		var hcenter = anchors.horizontalCenter.toScreen();
-		var lm = anchors.leftMargin || anchors.margins;
-		var rm = anchors.rightMargin || anchors.margins;
-		item.x = hcenter - item.width / 2 - parent_box[0] + lm - rm - item.viewX;
-	}
-
-	/** @private */
-	function _updateVCenter() {
-		var anchors = this
-		var item = anchors.parent
-		var parent = item.parent
-
-		var parent_box = parent.toScreen();
-		var vcenter = anchors.verticalCenter.toScreen();
-		var tm = anchors.topMargin || anchors.margins;
-		var bm = anchors.bottomMargin || anchors.margins;
-		item.y = vcenter - item.height / 2 - parent_box[1] + tm - bm - item.viewY;
 	}
 
 	onLeftChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
-		if (anchors.right)
-			item._replaceUpdater('width')
-		var update_left = anchors._updateLeft.bind(this)
-		update_left()
-		item.connectOn(anchors.left.parent, 'boxChanged', update_left)
-		anchors.onChanged('leftMargin', update_left)
+		item._removeUpdater('x')
+		if (anchors.right || anchors.horizontalCenter) {
+			item._removeUpdater('width')
+			this._subscribe(item)
+		}
+		this._subscribe(value.parent)
+		this._updateAll()
 	}
 
 	onRightChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
-		if (anchors.left)
-			anchors._replaceUpdater('width')
-		var update_right = anchors._updateRight.bind(anchors)
-		update_right()
-		item.onChanged('width', update_right)
-		item.connectOn(anchors.right.parent, 'boxChanged', update_right)
-		anchors.onChanged('rightMargin', update_right)
-	}
-
-	onTopChanged: {
-		var item = this.parent
-		var anchors = this
-		item._replaceUpdater('y')
-		if (anchors.bottom)
-			item._replaceUpdater('height')
-		var update_top = anchors._updateTop.bind(this)
-		update_top()
-		item.connectOn(anchors.top.parent, 'boxChanged', update_top)
-		anchors.onChanged('topMargin', update_top)
-	}
-
-	onBottomChanged: {
-		var item = this.parent
-		var anchors = this
-		item._replaceUpdater('y')
-		if (anchors.top)
-			item._replaceUpdater('height')
-		var update_bottom = anchors._updateBottom.bind(this)
-		update_bottom()
-		item.onChanged('height', update_bottom)
-		item.connectOn(anchors.bottom.parent, 'boxChanged', update_bottom)
-		anchors.onChanged('bottomMargin', update_bottom)
+		item._removeUpdater('x')
+		if (anchors.left || anchors.horizontalCenter) {
+			anchors._removeUpdater('width')
+		}
+		this._subscribe(item)
+		this._subscribe(value.parent)
+		this._updateAll()
 	}
 
 	onHorizontalCenterChanged: {
 		var item = this.parent
 		var anchors = this
-		item._replaceUpdater('x')
-		var update_h_center = anchors._updateHCenter.bind(this)
-		update_h_center()
-		item.onChanged('width', update_h_center)
-		anchors.onChanged('leftMargin', update_h_center)
-		anchors.onChanged('rightMargin', update_h_center)
-		item.connectOn(anchors.horizontalCenter.parent, 'boxChanged', update_h_center)
+		item._removeUpdater('x')
+		if (anchors.left || anchors.right) {
+			anchors._removeUpdater('width')
+		}
+		this._subscribe(item)
+		this._subscribe(value.parent)
+		this._updateAll()
+
+	}
+	onTopChanged: {
+		var item = this.parent
+		var anchors = this
+		item._removeUpdater('y')
+		if (anchors.bottom || anchors.verticalCenter) {
+			item._removeUpdater('height')
+			this._subscribe(item)
+		}
+		this._subscribe(value.parent)
+		this._updateAll()
+
+	}
+	onBottomChanged: {
+		var item = this.parent
+		var anchors = this
+		item._removeUpdater('y')
+		if (anchors.top || anchors.verticalCenter) {
+			item._removeUpdater('height')
+		}
+		this._subscribe(item)
+		this._subscribe(value.parent)
+		this._updateAll()
 	}
 
 	onVerticalCenterChanged: {
 		var item = this.parent
 		var anchors = this
-		var update_v_center = anchors._updateVCenter.bind(this)
-		item._replaceUpdater('y')
-		update_v_center()
-		item.onChanged('height', update_v_center)
-		anchors.onChanged('topMargin', update_v_center)
-		anchors.onChanged('bottomMargin', update_v_center)
-		item.connectOn(anchors.verticalCenter.parent, 'boxChanged', update_v_center)
+		item._removeUpdater('y')
+		if (anchors.top || anchors.bottom) {
+			item._removeUpdater('height')
+		}
+		this._subscribe(item)
+		this._subscribe(value.parent)
+		this._updateAll()
 	}
 
 	onFillChanged: {
-		var fill = value
-		this.left = fill.left
-		this.right = fill.right
-		this.top = fill.top
-		this.bottom = fill.bottom
+		var item = this.parent
+		var anchors = this
+		item._removeUpdater('x')
+		item._removeUpdater('width')
+		item._removeUpdater('y')
+		item._removeUpdater('height')
+		this._subscribe(value)
+		this._updateAll()
 	}
 
 	onCenterInChanged: {
-		this.horizontalCenter = value.horizontalCenter
-		this.verticalCenter = value.verticalCenter
+		var item = this.parent
+		var anchors = this
+		item._removeUpdater('x')
+		item._removeUpdater('y')
+		this._subscribe(value)
+		this._subscribe(item)
+		this._updateAll()
 	}
 
 	onLeftMarginChanged,
 	onRightMarginChanged,
 	onTopMarginChanged,
 	onBottomMarginChanged,
-	onMarginChanged:		{ this.marginsUpdated(); }
+	onMarginChanged:		{ this.marginsUpdated(); this._updateAll(); }
 }

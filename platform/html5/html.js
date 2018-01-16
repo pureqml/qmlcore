@@ -182,12 +182,25 @@ var nodesCache = {};
  * @constructor
  */
 
-exports.Element = function(context, tag) {
+function mangleClass(name) {
+	return $manifest$html5$prefix + name
+}
+
+exports.Element = function(context, tag, cls) {
 	if (typeof tag === 'string') {
-		if (!nodesCache[tag]) {
-			nodesCache[tag] = document.createElement(tag);
+		if (cls === undefined)
+			cls = ''
+
+		var key = tag + '.' + cls
+		if (!nodesCache[key]) {
+			var el = document.createElement(tag)
+			if ($manifest$html5$prefix || cls)
+				el.classList.add(mangleClass(cls))
+			if ($manifest$html5$prefix && cls)
+				el.classList.add(mangleClass('')) //base item style, fixme: pass array here?
+			nodesCache[key] = el
 		}
-		this.dom = nodesCache[tag].cloneNode(false);
+		this.dom = nodesCache[key].cloneNode(false);
 	}
 	else
 		this.dom = tag
@@ -503,8 +516,8 @@ exports.initSystem = function(system) {
 	system.screenHeight = window.screen.height
 }
 
-exports.createElement = function(ctx, tag) {
-	return new exports.Element(ctx, tag)
+exports.createElement = function(ctx, tag, cls) {
+	return new exports.Element(ctx, tag, cls)
 }
 
 exports.initImage = function(image) {

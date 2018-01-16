@@ -47,15 +47,7 @@ Item {
 
 	///@private
 	function createElement(tag, cls) {
-		if (cls === undefined)
-			cls = ''
-		var el = this.backend.createElement(this, tag, cls)
-		if (cls || $manifest$html5$prefix) {
-			el.addClass(this.mangleClass(cls))
-		}
-		if (cls && $manifest$html5$prefix)
-			el.addClass(this.mangleClass('')) //base item style, fixme: pass array here?
-		return el
+		return this.backend.createElement(this, tag, cls)
 	}
 
 	///@private

@@ -99,7 +99,7 @@ EventEmitter {
 	}
 
 	/// @private removes dynamic value updater
-	function _removeUpdater (name, newUpdaters) {
+	function _removeUpdater (name) {
 		var updaters = this._updaters
 		var oldUpdaters = updaters[name]
 		if (oldUpdaters !== undefined) {

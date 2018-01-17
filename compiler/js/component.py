@@ -286,12 +286,10 @@ class component_generator(object):
 		for name in self.signals:
 			r.append("%s%s.%s = _globals.core.createSignal('%s')" %(ident, self.proto_name, name, name))
 
-		for _name, argscode in self.methods.iteritems():
-			path, name = _name
+		for (path, name), (args, code) in self.methods.iteritems():
+			code = process(code, self, registry, args)
 			if path:
 				raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
-			args, code = argscode
-			code = process(code, self, registry, args)
 			r.append("%s%s.%s = function(%s) %s" %(ident, self.proto_name, name, ",".join(args), code))
 
 		for prop in self.properties:
@@ -525,11 +523,9 @@ class component_generator(object):
 				raise Exception("skip assignment %s = %s" %(target, value))
 
 		if not self.prototype:
-			for _name, argscode in self.methods.iteritems():
-				path, name = _name
-				args, code = argscode
-				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+			for (path, name), (args, code) in self.methods.iteritems():
 				code = process(code, self, registry, args)
+				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
 
 		for _name, argscode in self.signal_handlers.iteritems():

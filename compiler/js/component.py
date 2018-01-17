@@ -376,12 +376,12 @@ class component_generator(object):
 		code = self.generate_creators(registry, '$this', '$c', ident_n + 1).strip()
 		if code:
 			generate = True
-		b = '\t%s%s.$c.call(this, $c.__base = { })' %(ident, self.base_proto_name)
+		b = '\t%s%s.$c.call(this, $c.$b = { })' %(ident, self.base_proto_name)
 		code = '%s%s.$c = function($c) {\n\t\tvar $this = this;\n%s\n%s\n%s}' \
 			%(ident, self.proto_name, b, code, ident)
 
 		setup_code = self.generate_setup_code(registry, '$this', '$c', ident_n + 2).strip()
-		b = '%s%s.$s.call(this, $c.__base); delete $c.__base' %(ident, self.base_proto_name)
+		b = '%s%s.$s.call(this, $c.$b); delete $c.$b' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
 		setup_code = '%s%s.$s = function($c) {\n\t\tvar $this = this;\n%s\n%s\n}' \

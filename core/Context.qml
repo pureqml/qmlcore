@@ -75,11 +75,11 @@ Item {
 
 	///@private
 	function start(instance) {
-		var closure = {}
+		var c = {}
 		this.children.push(instance)
-		instance.__create(closure)
-		instance.__setup(closure)
-		closure = undefined
+		instance.$c(c)
+		instance.$s(c)
+		c = undefined
 		log('Context: created instance')
 		// log('Context: calling on completed')
 		return instance;

@@ -152,7 +152,7 @@ class component_generator(object):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
 		code = '\n//creating component %s\n' %value.component.name
-		code += '%s%s.__create(%s.__closure_%s = { })\n' %(ident, target, closure, target)
+		code += '%s%s.$c(%s.$c$%s = { })\n' %(ident, target, closure, target)
 		if not value.prototype:
 			c = value.generate_creators(registry, target, closure, ident_n)
 			code += c
@@ -163,8 +163,8 @@ class component_generator(object):
 		ident = '\t' * ident_n
 		code = '\n//setting up component %s\n' %value.component.name
 		code += '%svar %s = %s.%s\n' %(ident, target, closure, target)
-		code += '%s%s.__setup(%s.__closure_%s)\n' %(ident, target, closure, target)
-		code += '%sdelete %s.__closure_%s\n' %(ident, closure, target)
+		code += '%s%s.$s(%s.$c$%s)\n' %(ident, target, closure, target)
+		code += '%sdelete %s.$c$%s\n' %(ident, closure, target)
 		if not value.prototype:
 			code += '\n' + value.generate_setup_code(registry, target, closure, ident_n)
 		return code
@@ -193,9 +193,9 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_%s_on_%s" %(escape(parent), escape(name))
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append("\tvar %s__closure = { %s: %s }" %(var, var, var))
-			r.append(self.call_create(registry, 1, var, animation, var + '__closure'))
-			r.append(self.call_setup(registry, 1, var, animation, var + '__closure'))
+			r.append("\tvar %s$c = { %s: %s }" %(var, var, var))
+			r.append(self.call_create(registry, 1, var, animation, var + '$c'))
+			r.append(self.call_setup(registry, 1, var, animation, var + '$c'))
 			target_parent, target = split_name(name)
 			if not target_parent:
 				target_parent = parent
@@ -373,18 +373,18 @@ class component_generator(object):
 
 		generate = False
 
-		code = self.generate_creators(registry, '$this', '__closure', ident_n + 1).strip()
+		code = self.generate_creators(registry, '$this', '$c', ident_n + 1).strip()
 		if code:
 			generate = True
-		b = '\t%s%s.__create.call(this, __closure.__base = { })' %(ident, self.base_proto_name)
-		code = '%s%s.__create = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n%s}' \
+		b = '\t%s%s.$c.call(this, $c.__base = { })' %(ident, self.base_proto_name)
+		code = '%s%s.$c = function($c) {\n\t\tvar $this = this;\n%s\n%s\n%s}' \
 			%(ident, self.proto_name, b, code, ident)
 
-		setup_code = self.generate_setup_code(registry, '$this', '__closure', ident_n + 2).strip()
-		b = '%s%s.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, self.base_proto_name)
+		setup_code = self.generate_setup_code(registry, '$this', '$c', ident_n + 2).strip()
+		b = '%s%s.$s.call(this, $c.__base); delete $c.__base' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
-		setup_code = '%s%s.__setup = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n}' \
+		setup_code = '%s%s.$s = function($c) {\n\t\tvar $this = this;\n%s\n%s\n}' \
 			%(ident, self.proto_name, b, setup_code)
 
 		if generate:
@@ -423,9 +423,9 @@ class component_generator(object):
 	def generate_creator_function(self, registry, name, value, ident_n = 1):
 		ident = "\t" * ident_n
 		code = "%svar %s = new _globals.%s(__parent, __row)\n" %(ident, name, registry.find_component(value.package, value.component.name))
-		code += "%svar __closure = { %s : %s }\n" %(ident, name, name)
-		code += self.call_create(registry, ident_n + 1, name, value, '__closure') + '\n'
-		code += self.call_setup(registry, ident_n + 1, name, value, '__closure') + '\n'
+		code += "%svar $c = { %s : %s }\n" %(ident, name, name)
+		code += self.call_create(registry, ident_n + 1, name, value, '$c') + '\n'
+		code += self.call_setup(registry, ident_n + 1, name, value, '$c') + '\n'
 		return "(function(__parent, __row) {\n%s\n%sreturn %s\n})" %(code, ident, name)
 
 

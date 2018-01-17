@@ -96,7 +96,7 @@ EventEmitter {
 			var idx = handlers.indexOf(callback)
 			if (idx >= 0)
 				handlers.splice(idx, 1)
-			else if (_globals.core.trace.listeners)
+			else if ($manifest$trace$listeners)
 				log('failed to remove changed listener for', name, 'from', this)
 		}
 	}

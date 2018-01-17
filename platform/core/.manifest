@@ -6,5 +6,11 @@
 		"family": "Arial",
 		"pixelSize": 16,
 		"lineHeight": 1.2
+	},
+
+	"properties.trace" : {
+		"keys" : false,
+		"focus": false,
+		"listeners": false
 	}
 }

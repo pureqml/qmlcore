@@ -14,7 +14,6 @@ EventEmitter {
 		this._changedConnections = []
 		this._pressedHandlers = {}
 		this._properties = {}
-		this._updaters = {}
 	}
 
 	prototypeConstructor: {
@@ -48,10 +47,11 @@ EventEmitter {
 		this.parent = null
 		this._local = {}
 		this._pressedHandlers = {}
+
+		var properties = this.__properties
+		for(var name in properties) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
+			properties[name].discard()
 		this._properties = {}
-		//for(var name in this._updaters) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
-		//	this._replaceUpdater(name)
-		this._updaters = {}
 
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}
@@ -98,31 +98,14 @@ EventEmitter {
 
 	/// @private removes dynamic value updater
 	function _removeUpdater (name) {
-		var updaters = this._updaters
-		var oldUpdaters = updaters[name]
-		if (oldUpdaters !== undefined) {
-			var callback = oldUpdaters[0]
-			oldUpdaters[1].forEach(function(data) {
-				var object = data[0]
-				var name = data[1]
-				object.removeOnChanged(name, callback)
-			})
-		}
-		delete updaters[name]
+		var storage = this.__properties[name]
+		if (storage !== undefined)
+			storage.removeUpdater()
 	}
 
 	/// @private replaces dynamic value updater
 	function _replaceUpdater (name, newUpdaters) {
-		this._removeUpdater(name)
-		this._updaters[name] = newUpdaters
-		var callback = newUpdaters[0]
-		var parent = this
-		newUpdaters[1].forEach(function(data) {
-			var object = data[0]
-			var name = data[1]
-			parent.connectOnChanged(object, name, callback)
-		})
-		callback()
+		this._createPropertyStorage(name).replaceUpdater(this, newUpdaters)
 	}
 
 	///@private registers key handler

@@ -164,6 +164,11 @@ EventEmitter {
 			handlers.forEach(invoker)
 	}
 
+	///mixin api: sets default property forwarding target
+	function setPropertyForwardingTarget(name, target) {
+		this['__forward_' + name] = target
+	}
+
 	///@private patch property storage directly without signalling. You normally don't need it
 	function _setProperty(name, value) {
 		var animation = this._animations[name]

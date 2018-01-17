@@ -268,6 +268,14 @@ class component_generator(object):
 		code = self.generate_creator_function(registry, var, value, ident_n + 1)
 		return "%score.addLazyProperty(%s, '%s', %s)" %(ident, proto, name, code)
 
+	def transform_methods(self, registry):
+		methods = {}
+		for (path, name), (args, code) in self.methods.iteritems():
+			code = process(code, self, registry, args)
+			code = "function(%s) %s" %(",".join(args), code)
+			methods.setdefault(code, []).append((path, name))
+		return sorted(methods.iteritems())
+
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
 
@@ -286,11 +294,11 @@ class component_generator(object):
 		for name in self.signals:
 			r.append("%s%s.%s = _globals.core.createSignal('%s')" %(ident, self.proto_name, name, name))
 
-		for (path, name), (args, code) in self.methods.iteritems():
-			code = process(code, self, registry, args)
-			if path:
-				raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
-			r.append("%s%s.%s = function(%s) %s" %(ident, self.proto_name, name, ",".join(args), code))
+		for code, method in self.transform_methods(registry):
+			for path, name in method:
+				if path:
+					raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
+				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
 
 		for prop in self.properties:
 			for name, default_value in prop.properties:
@@ -523,10 +531,10 @@ class component_generator(object):
 				raise Exception("skip assignment %s = %s" %(target, value))
 
 		if not self.prototype:
-			for (path, name), (args, code) in self.methods.iteritems():
-				code = process(code, self, registry, args)
-				path = path_or_parent(path, parent, partial(self.transform_root, registry))
-				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
+			for code, method in self.transform_methods(registry):
+				for path, name in sorted(method):
+					path = path_or_parent(path, parent, partial(self.transform_root, registry))
+					r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
 
 		for _name, argscode in self.signal_handlers.iteritems():
 			path, name = _name

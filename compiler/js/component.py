@@ -326,25 +326,44 @@ class component_generator(object):
 				args.append("%s.%s" %(self.local_name, prop.default))
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
+		def next_codevar(lines, code, index):
+			var = "$code$%d" %index
+			code = '%svar %s = %s' %(ident, var, code)
+			lines.append(code)
+			return var
+
+		code_index = 0
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
 			for (path, name) in handlers:
 				if path or not self.prototype: #sync with condition below
 					continue
 
 				assert not path
-				r.append("%s_globals.core._protoOnChanged(%s, '%s', (%s))" %(ident, self.proto_name, name, code))
+				r.append("%s_globals.core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
 			for (path, name) in handlers:
 				if path or not self.prototype or name == 'completed': #sync with condition below
 					continue
-				r.append("%s_globals.core._protoOn(%s, '%s', (%s))" %(ident, self.proto_name, name, code))
+				r.append("%s_globals.core._protoOn(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
 			for (path, name) in handlers:
 				if path or not self.prototype: #sync with condition below
 					continue
-				r.append("%s_globals.core._protoOnKey(%s, '%s', (%s))" %(ident, self.proto_name, name, code))
+				r.append("%s_globals.core._protoOnKey(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 
 		generate = False
@@ -524,13 +543,28 @@ class component_generator(object):
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
+		code_index = 0
+		def next_codevar(lines, code, index):
+			var = "$code$%d" %index
+			code = '%svar %s = %s' %(ident, var, code)
+			lines.append(code)
+			return var
+
 		if not self.prototype:
 			for code, method in self.transform_handlers(registry, self.methods):
+				if len(handlers) > 1:
+					code = next_codevar(r, code, code_index)
+					code_index += 1
+
 				for path, name in sorted(method):
 					path = path_or_parent(path, parent, partial(self.transform_root, registry))
-					r.append("%s%s.%s = (%s).bind(%s)" %(ident, path, name, code, path))
+					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, path))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
 			for path, name in sorted(handlers):
 				if not path and self.prototype and name != 'completed': #sync with condition above
 					continue
@@ -541,6 +575,10 @@ class component_generator(object):
 					r.append("%s%s._context._onCompleted(%s.bind(%s))" %(ident, path, code, path))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
 			for path, name in sorted(handlers):
 				if not path and self.prototype: #sync with condition above
 					continue
@@ -548,6 +586,10 @@ class component_generator(object):
 				r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, path))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
 			for path, name in sorted(handlers):
 				if not path and self.prototype: #sync with condition above
 					continue

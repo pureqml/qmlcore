@@ -253,14 +253,14 @@ PropertyStoragePrototype.removeUpdater = function() {
 	this.updater = undefined
 }
 
-PropertyStoragePrototype.replaceUpdater = function(object, updater) {
+PropertyStoragePrototype.replaceUpdater = function(parent, updater) {
 	this.removeUpdater()
 	this.updater = updater
 	var callback = updater[0]
 	updater[1].forEach(function(data) {
 		var object = data[0]
 		var name = data[1]
-		object.connectOnChanged(object, name, callback)
+		parent.connectOnChanged(object, name, callback)
 	})
 	callback()
 }

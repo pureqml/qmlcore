@@ -197,8 +197,11 @@ exports.core.mixColor = function(specA, specB, r) {
 exports.addLazyProperty = function(proto, name, creator) {
 	var get = function(object) {
 		var storage = object.__properties[name]
-		if (storage !== undefined)
+		if (storage !== undefined) {
+			if (storage.value === undefined)
+				storage.value = creator(object)
 			return storage
+		}
 
 		return object.__properties[name] = new PropertyStorage(creator(object))
 	}
@@ -210,7 +213,7 @@ exports.addLazyProperty = function(proto, name, creator) {
 
 		set: function(newValue) {
 			var storage = get(this)
-			if (storage.forwardSet(this, newValue, defaultValue))
+			if (storage.forwardSet(this, newValue, null))
 				return
 
 			throw new Error('could not set lazy property ' + name + ' in ' + proto.componentName)
@@ -221,6 +224,7 @@ exports.addLazyProperty = function(proto, name, creator) {
 
 var PropertyStorage = function(value) {
 	this.value = value
+	this.onChanged = []
 }
 exports.PropertyStorage = PropertyStorage
 
@@ -246,12 +250,16 @@ PropertyStoragePrototype.forwardSet = function(object, newValue, defaultValue) {
 		var forwardedOldValue = oldValue[forwardTarget]
 		if (newValue !== forwardedOldValue) {
 			oldValue[forwardTarget] = newValue
-			object._update(name, newValue, forwardedOldValue)
+			this.callOnChanged(object, name, newValue, forwardedOldValue)
 		}
 		return true
 	} else if (newValue instanceof Object) {
 		//first assignment of mixin
-		object.connectOnChanged(newValue, forwardTarget, function(v, ov) { object._update(name, v, ov) }.bind(object))
+		object.connectOnChanged(newValue, forwardTarget, function(v, ov) {
+			var storage = object.__properties[name]
+			if (storage !== undefined)
+				storage.callOnChanged(object, name, v, ov)
+		})
 		return false
 	}
 }
@@ -277,8 +285,28 @@ PropertyStoragePrototype.set = function(object, name, newValue, defaultValue, ca
 		return
 	this.value = newValue
 	if (callUpdate)
-		object._update(name, newValue, oldValue)
+		this.callOnChanged(object, name, newValue, oldValue)
 }
+
+PropertyStoragePrototype.callOnChanged = function(object, name, value) {
+	var protoCallbacks = object['__changed__' + name]
+	var handlers = this.onChanged
+
+	var hasProtoCallbacks = protoCallbacks !== undefined
+	var hasHandlers = handlers !== undefined
+
+	if (!hasProtoCallbacks && !hasHandlers)
+		return
+
+	var invoker = _globals.core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+
+	if (hasProtoCallbacks)
+		protoCallbacks.forEach(invoker)
+
+	if (hasHandlers)
+		handlers.forEach(invoker)
+}
+
 
 
 exports.addProperty = function(proto, type, name, defaultValue) {
@@ -370,7 +398,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				animation.running = false
 				storage.interpolatedValue = undefined
 				storage.started = undefined
-				self._update(name, dst, src)
+				storage.callOnChanged(self, name, dst, src)
 			}
 
 			var duration = animation.duration
@@ -382,7 +410,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					complete()
 				} else {
 					storage.interpolatedValue = convert(animation.interpolate(dst, src, t))
-					self._update(name, storage.interpolatedValue, src)
+					storage.callOnChanged(self, name, storage.getInterpolatedValue(defaultValue), src)
 					storage.frameRequest = backend.requestAnimationFrame(nextFrame)
 				}
 				context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code
@@ -405,11 +433,15 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	})
 }
 
-exports.addAliasProperty = function(self, name, getObject, srcProperty) {
+exports.addAliasProperty = function(object, name, getObject, srcProperty) {
 	var target = getObject()
-	self.connectOnChanged(target, srcProperty, function(value) { self._update(name, value) })
+	object.connectOnChanged(target, srcProperty, function(value) {
+		var storage = object.__properties[name]
+		if (storage !== undefined)
+			storage.callOnChanged(object, name, value)
+	})
 
-	Object.defineProperty(self, name, {
+	Object.defineProperty(object, name, {
 		get: function() { return target[srcProperty] },
 		set: function(value) { target[srcProperty] = value },
 		enumerable: true

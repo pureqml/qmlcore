@@ -146,7 +146,8 @@ BaseLayout {
 			var row = this.model.get(idx)
 			row.index = idx
 			item._local.model = row
-			_globals.core.Object.prototype._update.call(item, '_row')
+			var _row = item._createPropertyStorage('_row')
+			_row.callOnChanged(item, '_row')
 		}
 	}
 
@@ -155,7 +156,8 @@ BaseLayout {
 		var item = this._items[idx]
 		if (item) {
 			item._local.model.index = idx
-			_globals.core.Object.prototype._update.call(item, '_rowIndex')
+			var _rowIndex = item._createPropertyStorage('_rowIndex')
+			_rowIndex.callOnChanged(item, '_rowIndex')
 		}
 	}
 

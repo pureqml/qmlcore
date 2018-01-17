@@ -11,7 +11,6 @@ EventEmitter {
 			local.model = row
 			local._delegate = this
 		}
-		this._changedHandlers = {}
 		this._changedConnections = []
 		this._pressedHandlers = {}
 		this._properties = {}
@@ -48,7 +47,6 @@ EventEmitter {
 
 		this.parent = null
 		this._local = {}
-		this._changedHandlers = {}
 		this._pressedHandlers = {}
 		this._properties = {}
 		//for(var name in this._updaters) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
@@ -75,12 +73,8 @@ EventEmitter {
 
 	///@private register callback on property's value changed
 	function onChanged(name, callback) {
-		var storage = this._changedHandlers
-		var handlers = storage[name]
-		if (handlers !== undefined)
-			handlers.push(callback);
-		else
-			storage[name] = [callback];
+		var storage = this._createPropertyStorage(name)
+		storage.onChanged.push(callback)
 	}
 
 	///@private
@@ -91,8 +85,9 @@ EventEmitter {
 
 	///@private removes 'on changed' callback
 	function removeOnChanged(name, callback) {
-		if (name in this._changedHandlers) {
-			var handlers = this._changedHandlers[name];
+		var storage = this.__properties[name]
+		if (storage !== undefined) {
+			var handlers = storage.onChanged
 			var idx = handlers.indexOf(callback)
 			if (idx >= 0)
 				handlers.splice(idx, 1)
@@ -142,26 +137,6 @@ EventEmitter {
 			this._pressedHandlers[name].push(wrapper);
 		else
 			this._pressedHandlers[name] = [wrapper];
-	}
-
-	///@private
-	function _update (name, value) {
-		var protoCallbacks = this['__changed__' + name]
-		var handlers = this._changedHandlers[name]
-
-		var hasProtoCallbacks = protoCallbacks !== undefined
-		var hasHandlers = handlers !== undefined
-
-		if (!hasProtoCallbacks && !hasHandlers)
-			return
-
-		var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
-
-		if (hasProtoCallbacks)
-			protoCallbacks.forEach(invoker)
-
-		if (hasHandlers)
-			handlers.forEach(invoker)
 	}
 
 	///@private creates property storage

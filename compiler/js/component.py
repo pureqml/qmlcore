@@ -326,25 +326,25 @@ class component_generator(object):
 				args.append("%s.%s" %(self.local_name, prop.default))
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
-		for (path, name), (args, code) in self.changed_handlers.iteritems():
-			if path or not self.prototype: #sync with condition below
-				continue
+		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			for (path, name) in handlers:
+				if path or not self.prototype: #sync with condition below
+					continue
 
-			assert not path
-			code = process(code, self, registry, ['value'])
-			r.append("%s_globals.core._protoOnChanged(%s, '%s', (function(value) %s ))" %(ident, self.proto_name, name, code))
+				assert not path
+				r.append("%s_globals.core._protoOnChanged(%s, '%s', (%s))" %(ident, self.proto_name, name, code))
 
-		for (path, name), (args, code) in self.signal_handlers.iteritems():
-			if path or not self.prototype or name == 'completed': #sync with condition below
-				continue
-			code = process(code, self, registry, args)
-			r.append("%s_globals.core._protoOn(%s, '%s', (function(%s) %s ))" %(ident, self.proto_name, name, ", ".join(args), code))
+		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			for (path, name) in handlers:
+				if path or not self.prototype or name == 'completed': #sync with condition below
+					continue
+				r.append("%s_globals.core._protoOn(%s, '%s', (%s))" %(ident, self.proto_name, name, code))
 
-		for (path, name), (args, code) in self.key_handlers.iteritems():
-			if path or not self.prototype: #sync with condition below
-				continue
-			code = process(code, self, registry, args)
-			r.append("%s_globals.core._protoOnKey(%s, '%s', (function(key, event) %s ))" %(ident, self.proto_name, name, code))
+		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			for (path, name) in handlers:
+				if path or not self.prototype: #sync with condition below
+					continue
+				r.append("%s_globals.core._protoOnKey(%s, '%s', (%s))" %(ident, self.proto_name, name, code))
 
 
 		generate = False
@@ -530,30 +530,29 @@ class component_generator(object):
 					path = path_or_parent(path, parent, partial(self.transform_root, registry))
 					r.append("%s%s.%s = (%s).bind(%s)" %(ident, path, name, code, path))
 
-		for (path, name), argscode in self.signal_handlers.iteritems():
-			if not path and self.prototype and name != 'completed': #sync with condition above
-				continue
-			args, code = argscode
-			code = process(code, self, registry, args)
-			path = path_or_parent(path, parent, partial(self.transform_root, registry))
-			if name != "completed":
-				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, path, name, ",".join(args), code, path))
-			else:
-				r.append("%s%s._context._onCompleted((function() %s ).bind(%s))" %(ident, path, code, path))
+		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			for path, name in sorted(handlers):
+				if not path and self.prototype and name != 'completed': #sync with condition above
+					continue
+				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				if name != "completed":
+					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, path))
+				else:
+					r.append("%s%s._context._onCompleted(%s.bind(%s))" %(ident, path, code, path))
 
-		for (path, name), (args, code) in self.changed_handlers.iteritems():
-			if not path and self.prototype: #sync with condition above
-				continue
-			code = process(code, self, registry, ['value'])
-			path = path_or_parent(path, parent, partial(self.transform_root, registry))
-			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, path, name, code, path))
+		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			for path, name in sorted(handlers):
+				if not path and self.prototype: #sync with condition above
+					continue
+				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, path))
 
-		for (path, name), (args, code) in self.key_handlers.iteritems():
-			if not path and self.prototype: #sync with condition above
-				continue
-			code = process(code, self, registry, ['key', 'event'])
-			path = path_or_parent(path, parent, partial(self.transform_root, registry))
-			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, path, name, code, path))
+		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			for path, name in sorted(handlers):
+				if not path and self.prototype: #sync with condition above
+					continue
+				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, path))
 
 		for idx, value in enumerate(self.children):
 			var = '%s$child%d' %(escape(parent), idx)

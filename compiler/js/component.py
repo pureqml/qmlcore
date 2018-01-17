@@ -292,12 +292,6 @@ class component_generator(object):
 		for name in self.signals:
 			r.append("%s%s.%s = _globals.core.createSignal('%s')" %(ident, self.proto_name, name, name))
 
-		for code, method in self.transform_handlers(registry, self.methods):
-			for path, name in method:
-				if path:
-					raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
-				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
-
 		for prop in self.properties:
 			for name, default_value in prop.properties:
 				if prop.lazy:
@@ -333,6 +327,17 @@ class component_generator(object):
 			return var
 
 		code_index = 0
+
+		for code, methods in self.transform_handlers(registry, self.methods):
+			if len(methods) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
+			for path, name in methods:
+				if path:
+					raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
+				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
+
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
@@ -551,12 +556,12 @@ class component_generator(object):
 			return var
 
 		if not self.prototype:
-			for code, method in self.transform_handlers(registry, self.methods):
-				if len(handlers) > 1:
+			for code, methods in self.transform_handlers(registry, self.methods):
+				if len(methods) > 1:
 					code = next_codevar(r, code, code_index)
 					code_index += 1
 
-				for path, name in sorted(method):
+				for path, name in sorted(methods):
 					path = path_or_parent(path, parent, partial(self.transform_root, registry))
 					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, path))
 

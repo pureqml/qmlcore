@@ -36,6 +36,5 @@ Object {
 			str += "(" + this._transforms[i] + ") "
 		}
 		this.parent.style('transform', str)
-		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 }

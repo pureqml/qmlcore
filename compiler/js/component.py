@@ -534,7 +534,7 @@ class component_generator(object):
 			for code, method in self.transform_methods(registry):
 				for path, name in sorted(method):
 					path = path_or_parent(path, parent, partial(self.transform_root, registry))
-					r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
+					r.append("%s%s.%s = (%s).bind(%s)" %(ident, path, name, code, path))
 
 		for _name, argscode in self.signal_handlers.iteritems():
 			path, name = _name

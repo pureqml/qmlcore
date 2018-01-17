@@ -84,7 +84,7 @@ CoreObject {
 
 	function removeListener (name, callback) {
 		if (!(name in this._eventHandlers) || callback === undefined || callback === null || name === '') {
-			if (_globals.core.trace.listeners)
+			if ($manifest$trace$listeners)
 				log('invalid removeListener(' + name + ', ' + callback + ') invocation', new Error().stack)
 			return
 		}
@@ -93,7 +93,7 @@ CoreObject {
 		var idx = handlers.indexOf(callback)
 		if (idx >= 0)
 			handlers.splice(idx, 1)
-		else if (_globals.core.trace.listeners)
+		else if ($manifest$trace$listeners)
 			log('failed to remove listener for', name, 'from', this)
 
 		if (!handlers.length)

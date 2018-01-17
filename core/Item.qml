@@ -277,7 +277,7 @@ Object {
 		for(var i = handlers.length - 1; i >= 0; --i) {
 			var callback = handlers[i]
 			if (invoker(callback)) {
-				if (_globals.core.trace.key)
+				if ($manifest$trace$key)
 					log("key " + key + " handled in " + (performance.now() - event.timeStamp).toFixed(3) + " ms by", this, new Error().stack)
 				return true;
 			}

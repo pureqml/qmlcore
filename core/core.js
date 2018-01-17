@@ -239,6 +239,32 @@ PropertyStoragePrototype.getAnimation = function(name, animation) {
 	return a
 }
 
+PropertyStoragePrototype.removeUpdater = function() {
+	var updater = this.updater
+	if (updater === undefined)
+		return
+
+	var callback = updater[0]
+	updater[1].forEach(function(data) {
+		var object = data[0]
+		var name = data[1]
+		object.removeOnChanged(name, callback)
+	})
+	this.updater = undefined
+}
+
+PropertyStoragePrototype.replaceUpdater = function(object, updater) {
+	this.removeUpdater()
+	this.updater = updater
+	var callback = updater[0]
+	updater[1].forEach(function(data) {
+		var object = data[0]
+		var name = data[1]
+		object.connectOnChanged(object, name, callback)
+	})
+	callback()
+}
+
 PropertyStoragePrototype.forwardSet = function(object, newValue, defaultValue) {
 	var forwardTarget = this.forwardTarget
 	if (forwardTarget === undefined)
@@ -262,6 +288,10 @@ PropertyStoragePrototype.forwardSet = function(object, newValue, defaultValue) {
 		})
 		return false
 	}
+}
+
+PropertyStoragePrototype.discard = function() {
+
 }
 
 PropertyStoragePrototype.getSimpleValue = function(defaultValue) {

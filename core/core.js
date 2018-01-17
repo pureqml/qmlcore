@@ -88,10 +88,10 @@ CoreObjectComponentPrototype.componentName = 'core.CoreObject'
 CoreObjectComponentPrototype.constructor = CoreObjectComponent
 
 /** @private **/
-CoreObjectComponentPrototype.__create = function() { }
+CoreObjectComponentPrototype.$c = function() { }
 
 /** @private **/
-CoreObjectComponentPrototype.__setup = function() { }
+CoreObjectComponentPrototype.$s = function() { }
 
 ///@private gets object by id
 CoreObjectComponentPrototype._get = function(name, unsafe) {

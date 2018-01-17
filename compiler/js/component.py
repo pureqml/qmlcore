@@ -152,7 +152,7 @@ class component_generator(object):
 		assert isinstance(value, component_generator)
 		ident = '\t' * ident_n
 		code = '\n//creating component %s\n' %value.component.name
-		code += '%s%s.__create(%s.__closure_%s = { })\n' %(ident, target, closure, target)
+		code += '%s%s.$c(%s.$c$%s = { })\n' %(ident, target, closure, target)
 		if not value.prototype:
 			c = value.generate_creators(registry, target, closure, ident_n)
 			code += c
@@ -163,8 +163,8 @@ class component_generator(object):
 		ident = '\t' * ident_n
 		code = '\n//setting up component %s\n' %value.component.name
 		code += '%svar %s = %s.%s\n' %(ident, target, closure, target)
-		code += '%s%s.__setup(%s.__closure_%s)\n' %(ident, target, closure, target)
-		code += '%sdelete %s.__closure_%s\n' %(ident, closure, target)
+		code += '%s%s.$s(%s.$c$%s)\n' %(ident, target, closure, target)
+		code += '%sdelete %s.$c$%s\n' %(ident, closure, target)
 		if not value.prototype:
 			code += '\n' + value.generate_setup_code(registry, target, closure, ident_n)
 		return code
@@ -193,9 +193,9 @@ class component_generator(object):
 		for name, animation in self.animations.iteritems():
 			var = "behavior_%s_on_%s" %(escape(parent), escape(name))
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
-			r.append("\tvar %s__closure = { %s: %s }" %(var, var, var))
-			r.append(self.call_create(registry, 1, var, animation, var + '__closure'))
-			r.append(self.call_setup(registry, 1, var, animation, var + '__closure'))
+			r.append("\tvar %s$c = { %s: %s }" %(var, var, var))
+			r.append(self.call_create(registry, 1, var, animation, var + '$c'))
+			r.append(self.call_setup(registry, 1, var, animation, var + '$c'))
 			target_parent, target = split_name(name)
 			if not target_parent:
 				target_parent = parent
@@ -220,10 +220,8 @@ class component_generator(object):
 		base_type = self.get_base_type(registry, False)
 		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
 
-		for _name, _args in methods.iteritems():
-			path, name = _name
+		for (path, name), (args, code, event) in methods.iteritems():
 			oname = name
-			args, code, event = _args
 			fullname = path, name
 
 			is_on = event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper() #onXyzzy
@@ -246,13 +244,13 @@ class component_generator(object):
 					fullname = path, name
 					if fullname in self.key_handlers:
 						raise Exception("duplicate key handler " + oname)
-					self.key_handlers[fullname] = code
+					self.key_handlers[fullname] = (('key', 'event'), code)
 				elif is_changed:
 					name = name[:-7]
 					fullname = path, name
 					if fullname in self.changed_handlers:
 						raise Exception("duplicate signal handler " + oname)
-					self.changed_handlers[fullname] = code
+					self.changed_handlers[fullname] = (('value', ), code)
 				else:
 					if fullname in self.signal_handlers:
 						raise Exception("duplicate signal handler " + oname)
@@ -267,6 +265,14 @@ class component_generator(object):
 		var = 'lazy$' + name
 		code = self.generate_creator_function(registry, var, value, ident_n + 1)
 		return "%score.addLazyProperty(%s, '%s', %s)" %(ident, proto, name, code)
+
+	def transform_handlers(self, registry, blocks):
+		result = {}
+		for (path, name), (args, code) in blocks.iteritems():
+			code = process(code, self, registry, args)
+			code = "function(%s) %s" %(",".join(args), code)
+			result.setdefault(code, []).append((path, name))
+		return sorted(result.iteritems())
 
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
@@ -285,14 +291,6 @@ class component_generator(object):
 
 		for name in self.signals:
 			r.append("%s%s.%s = _globals.core.createSignal('%s')" %(ident, self.proto_name, name, name))
-
-		for _name, argscode in self.methods.iteritems():
-			path, name = _name
-			if path:
-				raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
-			args, code = argscode
-			code = process(code, self, registry, args)
-			r.append("%s%s.%s = function(%s) %s" %(ident, self.proto_name, name, ",".join(args), code))
 
 		for prop in self.properties:
 			for name, default_value in prop.properties:
@@ -322,45 +320,71 @@ class component_generator(object):
 				args.append("%s.%s" %(self.local_name, prop.default))
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
-		for _name, code in self.changed_handlers.iteritems():
-			path, name = _name
-			if path or not self.prototype: #sync with condition below
-				continue
+		def next_codevar(lines, code, index):
+			var = "$code$%d" %index
+			code = '%svar %s = %s' %(ident, var, code)
+			lines.append(code)
+			return var
 
-			assert not path
-			code = process(code, self, registry, ['value'])
-			r.append("%s_globals.core._protoOnChanged(%s, '%s', (function(value) %s ))" %(ident, self.proto_name, name, code))
+		code_index = 0
 
-		for _name, argscode in self.signal_handlers.iteritems():
-			path, name = _name
-			if path or not self.prototype or name == 'completed': #sync with condition below
-				continue
-			args, code = argscode
-			code = process(code, self, registry, args)
-			r.append("%s_globals.core._protoOn(%s, '%s', (function(%s) %s ))" %(ident, self.proto_name, name, ", ".join(args), code))
+		for code, methods in self.transform_handlers(registry, self.methods):
+			if len(methods) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
 
-		for _name, code in self.key_handlers.iteritems():
-			path, name = _name
-			if path or not self.prototype: #sync with condition below
-				continue
-			code = process(code, self, registry, ['key', 'event'])
-			r.append("%s_globals.core._protoOnKey(%s, '%s', (function(key, event) %s ))" %(ident, self.proto_name, name, code))
+			for path, name in methods:
+				if path:
+					raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
+				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
+
+		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
+			for (path, name) in handlers:
+				if path or not self.prototype: #sync with condition below
+					continue
+
+				assert not path
+				r.append("%s_globals.core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
+
+		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
+			for (path, name) in handlers:
+				if path or not self.prototype or name == 'completed': #sync with condition below
+					continue
+				r.append("%s_globals.core._protoOn(%s, '%s', %s)" %(ident, self.proto_name, name, code))
+
+		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
+			for (path, name) in handlers:
+				if path or not self.prototype: #sync with condition below
+					continue
+				r.append("%s_globals.core._protoOnKey(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 
 		generate = False
 
-		code = self.generate_creators(registry, '$this', '__closure', ident_n + 1).strip()
+		code = self.generate_creators(registry, '$this', '$c', ident_n + 1).strip()
 		if code:
 			generate = True
-		b = '\t%s%s.__create.call(this, __closure.__base = { })' %(ident, self.base_proto_name)
-		code = '%s%s.__create = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n%s}' \
+		b = '\t%s%s.$c.call(this, $c.$b = { })' %(ident, self.base_proto_name)
+		code = '%s%s.$c = function($c) {\n\t\tvar $this = this;\n%s\n%s\n%s}' \
 			%(ident, self.proto_name, b, code, ident)
 
-		setup_code = self.generate_setup_code(registry, '$this', '__closure', ident_n + 2).strip()
-		b = '%s%s.__setup.call(this, __closure.__base); delete __closure.__base' %(ident, self.base_proto_name)
+		setup_code = self.generate_setup_code(registry, '$this', '$c', ident_n + 2).strip()
+		b = '%s%s.$s.call(this, $c.$b); delete $c.$b' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
-		setup_code = '%s%s.__setup = function(__closure) {\n\t\tvar $this = this;\n%s\n%s\n}' \
+		setup_code = '%s%s.$s = function($c) {\n\t\tvar $this = this;\n%s\n%s\n}' \
 			%(ident, self.proto_name, b, setup_code)
 
 		if generate:
@@ -399,9 +423,9 @@ class component_generator(object):
 	def generate_creator_function(self, registry, name, value, ident_n = 1):
 		ident = "\t" * ident_n
 		code = "%svar %s = new _globals.%s(__parent, __row)\n" %(ident, name, registry.find_component(value.package, value.component.name))
-		code += "%svar __closure = { %s : %s }\n" %(ident, name, name)
-		code += self.call_create(registry, ident_n + 1, name, value, '__closure') + '\n'
-		code += self.call_setup(registry, ident_n + 1, name, value, '__closure') + '\n'
+		code += "%svar $c = { %s : %s }\n" %(ident, name, name)
+		code += self.call_create(registry, ident_n + 1, name, value, '$c') + '\n'
+		code += self.call_setup(registry, ident_n + 1, name, value, '$c') + '\n'
 		return "(function(__parent, __row) {\n%s\n%sreturn %s\n})" %(code, ident, name)
 
 
@@ -524,41 +548,58 @@ class component_generator(object):
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
+		code_index = 0
+		def next_codevar(lines, code, index):
+			var = "$code$%d" %index
+			code = '%svar %s = %s' %(ident, var, code)
+			lines.append(code)
+			return var
+
 		if not self.prototype:
-			for _name, argscode in self.methods.iteritems():
-				path, name = _name
-				args, code = argscode
+			for code, methods in self.transform_handlers(registry, self.methods):
+				if len(methods) > 1:
+					code = next_codevar(r, code, code_index)
+					code_index += 1
+
+				for path, name in sorted(methods):
+					path = path_or_parent(path, parent, partial(self.transform_root, registry))
+					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, path))
+
+		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
+			for path, name in sorted(handlers):
+				if not path and self.prototype and name != 'completed': #sync with condition above
+					continue
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
-				code = process(code, self, registry, args)
-				r.append("%s%s.%s = (function(%s) %s ).bind(%s)" %(ident, path, name, ",".join(args), code, path))
+				if name != "completed":
+					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, path))
+				else:
+					r.append("%s%s._context._onCompleted(%s.bind(%s))" %(ident, path, code, path))
 
-		for _name, argscode in self.signal_handlers.iteritems():
-			path, name = _name
-			if not path and self.prototype and name != 'completed': #sync with condition above
-				continue
-			args, code = argscode
-			code = process(code, self, registry, args)
-			path = path_or_parent(path, parent, partial(self.transform_root, registry))
-			if name != "completed":
-				r.append("%s%s.on('%s', (function(%s) %s ).bind(%s))" %(ident, path, name, ",".join(args), code, path))
-			else:
-				r.append("%s%s._context._onCompleted((function() %s ).bind(%s))" %(ident, path, code, path))
+		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
 
-		for _name, code in self.changed_handlers.iteritems():
-			path, name = _name
-			if not path and self.prototype: #sync with condition above
-				continue
-			code = process(code, self, registry, ['value'])
-			path = path_or_parent(path, parent, partial(self.transform_root, registry))
-			r.append("%s%s.onChanged('%s', (function(value) %s ).bind(%s))" %(ident, path, name, code, path))
+			for path, name in sorted(handlers):
+				if not path and self.prototype: #sync with condition above
+					continue
+				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, path))
 
-		for _name, code in self.key_handlers.iteritems():
-			path, name = _name
-			if not path and self.prototype: #sync with condition above
-				continue
-			code = process(code, self, registry, ['key', 'event'])
-			path = path_or_parent(path, parent, partial(self.transform_root, registry))
-			r.append("%s%s.onPressed('%s', (function(key, event) %s ).bind(%s))" %(ident, path, name, code, path))
+		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			if len(handlers) > 1:
+				code = next_codevar(r, code, code_index)
+				code_index += 1
+
+			for path, name in sorted(handlers):
+				if not path and self.prototype: #sync with condition above
+					continue
+				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, path))
 
 		for idx, value in enumerate(self.children):
 			var = '%s$child%d' %(escape(parent), idx)

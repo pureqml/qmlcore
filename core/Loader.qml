@@ -41,9 +41,9 @@ Item {
 				throw new Error('unknown component used: ' + source)
 		}
 		var item = new ctor(this)
-		var closure = {}
-		item.__create(closure)
-		item.__setup(closure)
+		var c = {}
+		item.$c(c)
+		item.$s(c)
 		this.item = item
 		this._context._complete()
 		this._updateVisibilityForChild(this.item, this.recursiveVisible)

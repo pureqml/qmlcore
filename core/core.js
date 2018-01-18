@@ -194,51 +194,161 @@ exports.core.mixColor = function(specA, specB, r) {
 }
 
 exports.addLazyProperty = function(proto, name, creator) {
-	var storageName = '__lazy_property_' + name
-	var forwardName = '__forward_' + name
-
 	var get = function(object) {
-		var value = object[storageName]
-		if (value !== undefined)
-			return value
-		else
-			return (object[storageName] = creator(object))
+		var storage = object.__properties[name]
+		if (storage !== undefined) {
+			if (storage.value === undefined)
+				storage.value = creator(object)
+			return storage
+		}
+
+		return object.__properties[name] = new PropertyStorage(creator(object))
 	}
 
 	Object.defineProperty(proto, name, {
 		get: function() {
-			return get(this)
+			return get(this).value
 		},
 
 		set: function(newValue) {
-			var forwardedTarget = this[forwardName]
-			if (forwardedTarget !== undefined) {
-				var target = get(this)
-				if (target !== null && (target instanceof Object)) {
-					//forward property update for mixins
-					var forwardedValue = target[forwardedTarget]
-					if (newValue !== forwardedValue) {
-						target[forwardedTarget] = newValue
-						this._update(name, newValue, forwardedValue)
-					}
-					return
-				}
-			}
+			var storage = get(this)
+			if (storage.forwardSet(this, newValue, null))
+				return
 
-			throw new Error('setting attempt on readonly lazy property ' + name + ' in ' + proto.componentName)
+			throw new Error('could not set lazy property ' + name + ' in ' + proto.componentName)
 		},
 		enumerable: true
 	})
 }
 
+var PropertyStorage = function(value) {
+	this.value = value
+	this.onChanged = []
+}
+exports.PropertyStorage = PropertyStorage
+
+var PropertyStoragePrototype = PropertyStorage.prototype
+
+PropertyStoragePrototype.getAnimation = function(name, animation) {
+	var a = this.animation
+	if (!a || !a.enabled() || a._native)
+		return null
+	if (!a._context._completed)
+		return null
+	return a
+}
+
+PropertyStoragePrototype.removeUpdater = function() {
+	var updater = this.updater
+	if (updater === undefined)
+		return
+
+	var callback = updater[0]
+	updater[1].forEach(function(data) {
+		var object = data[0]
+		var name = data[1]
+		object.removeOnChanged(name, callback)
+	})
+	this.updater = undefined
+}
+
+PropertyStoragePrototype.replaceUpdater = function(parent, updater) {
+	this.removeUpdater()
+	this.updater = updater
+	var callback = updater[0]
+	updater[1].forEach(function(data) {
+		var object = data[0]
+		var name = data[1]
+		parent.connectOnChanged(object, name, callback)
+	})
+	callback()
+}
+
+PropertyStoragePrototype.forwardSet = function(object, newValue, defaultValue) {
+	var forwardTarget = this.forwardTarget
+	if (forwardTarget === undefined)
+		return false
+
+	var oldValue = this.getCurrentValue(defaultValue)
+	if (oldValue !== null && (oldValue instanceof Object)) {
+		//forward property update for mixins
+		var forwardedOldValue = oldValue[forwardTarget]
+		if (newValue !== forwardedOldValue) {
+			oldValue[forwardTarget] = newValue
+			this.callOnChanged(object, name, newValue, forwardedOldValue)
+		}
+		return true
+	} else if (newValue instanceof Object) {
+		//first assignment of mixin
+		object.connectOnChanged(newValue, forwardTarget, function(v, ov) {
+			var storage = object.__properties[name]
+			if (storage !== undefined)
+				storage.callOnChanged(object, name, v, ov)
+		})
+		return false
+	}
+}
+
+PropertyStoragePrototype.discard = function() {
+
+}
+
+PropertyStoragePrototype.getSimpleValue = function(defaultValue) {
+	var value = this.value
+	return value !== undefined? value: defaultValue
+}
+
+PropertyStoragePrototype.getCurrentValue = function(defaultValue) {
+	var value = this.interpolatedValue
+	return value !== undefined? value: this.getSimpleValue(defaultValue)
+}
+
+PropertyStoragePrototype.set = function(object, name, newValue, defaultValue, callUpdate) {
+	var oldValue = this.value
+	if (oldValue === undefined)
+		oldValue = defaultValue
+
+	if (oldValue === newValue)
+		return
+	if (this.forwardSet(object, newValue, defaultValue))
+		return
+	this.value = newValue
+	if (callUpdate)
+		this.callOnChanged(object, name, newValue, oldValue)
+}
+
+PropertyStoragePrototype.callOnChanged = function(object, name, value) {
+	var protoCallbacks = object['__changed__' + name]
+	var handlers = this.onChanged
+
+	var hasProtoCallbacks = protoCallbacks !== undefined
+	var hasHandlers = handlers !== undefined
+
+	if (!hasProtoCallbacks && !hasHandlers)
+		return
+
+	var invoker = _globals.core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+
+	if (hasProtoCallbacks)
+		protoCallbacks.forEach(invoker)
+
+	if (hasHandlers)
+		handlers.forEach(invoker)
+}
+
+
+
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert
+	var animable = false
 	switch(type) {
 		case 'enum':
-		case 'int':		convert = function(value) { return ~~value }; break
+		case 'int':		convert = function(value) { return ~~value }; animable = true; break
 		case 'bool':	convert = function(value) { return value? true: false }; break
-		case 'real':	convert = function(value) { return +value }; break
+		case 'real':	convert = function(value) { return +value }; animable = true; break
 		case 'string':	convert = function(value) { return String(value) }; break
+
+		case 'Color':	animable = true; //fallthrough
 		default:		convert = function(value) { return value }; break
 	}
 
@@ -258,104 +368,109 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		}
 	}
 
-	var storageName = '__property_' + name
-	var forwardName = '__forward_' + name
+	var createStorage = function(newValue) {
+		var storage = this.__properties[name]
+		if (storage === undefined) { //no storage
+			if (newValue === defaultValue) //value == defaultValue, no storage allocation
+				return
+			storage = this.__properties[name] = new PropertyStorage(defaultValue)
+		}
+		return storage
+	}
+
+	var simpleGet = function() {
+		var storage = this.__properties[name]
+		return storage !== undefined? storage.getSimpleValue(defaultValue): defaultValue
+	}
+
+	var simpleSet = function(newValue) {
+		newValue = convert(newValue)
+		var storage = createStorage.call(this, newValue)
+		if (storage === undefined)
+			return
+
+		storage.set(this, name, newValue, defaultValue, true)
+	}
+
+	var animatedGet = function() {
+		var storage = this.__properties[name]
+		return storage !== undefined?
+			storage.getCurrentValue(defaultValue):
+			defaultValue
+	}
+
+	var animatedSet = function(newValue) {
+		newValue = convert(newValue)
+
+		var storage = createStorage.call(this, newValue)
+		if (storage === undefined)
+			return
+
+		var animation = storage.getAnimation()
+		if (animation && storage.value !== newValue) {
+			var context = this._context
+			var backend = context.backend
+			if (storage.frameRequest)
+				backend.cancelAnimationFrame(storage.frameRequest)
+
+			storage.started = Date.now()
+
+			var src = storage.getCurrentValue(defaultValue)
+			var dst = newValue
+
+			var self = this
+
+			var complete = function() {
+				backend.cancelAnimationFrame(p.frameRequest)
+				storage.frameRequest = undefined
+				animation.complete = function() { }
+				animation.running = false
+				storage.interpolatedValue = undefined
+				storage.started = undefined
+				storage.callOnChanged(self, name, dst, src)
+			}
+
+			var duration = animation.duration
+
+			var nextFrame = function() {
+				var now = Date.now()
+				var t = 1.0 * (now - storage.started) / duration
+				if (t >= 1 || !animation.active()) {
+					complete()
+				} else {
+					storage.interpolatedValue = convert(animation.interpolate(dst, src, t))
+					storage.callOnChanged(self, name, storage.getInterpolatedValue(defaultValue), src)
+					storage.frameRequest = backend.requestAnimationFrame(nextFrame)
+				}
+				context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code
+			}
+
+			storage.frameRequest = backend.requestAnimationFrame(nextFrame)
+
+			animation.running = true
+			animation.complete = complete
+		}
+		storage.set(this, name, newValue, defaultValue, !animation)
+		// if ((!animation || !animation.running) && newValue === defaultValue)
+		// 	this.__properties[name] = undefined
+	}
 
 	Object.defineProperty(proto, name, {
-		get: function() {
-			var p = this[storageName]
-			return p !== undefined?
-				p.interpolatedValue !== undefined? p.interpolatedValue: p.value:
-				defaultValue
-		},
-
-		set: function(newValue) {
-			newValue = convert(newValue)
-			var p = this[storageName]
-			if (p === undefined) { //no storage
-				if (newValue === defaultValue) //value == defaultValue, no storage allocation
-					return
-
-				p = this[storageName] = { value : defaultValue }
-			}
-
-			var animation = this.getAnimation(name)
-			if (animation && p.value !== newValue) {
-				var context = this._context
-				var backend = context.backend
-				if (p.frameRequest)
-					backend.cancelAnimationFrame(p.frameRequest)
-
-				p.started = Date.now()
-
-				var src = p.interpolatedValue !== undefined? p.interpolatedValue: p.value
-				var dst = newValue
-
-				var self = this
-
-				var complete = function() {
-					backend.cancelAnimationFrame(p.frameRequest)
-					p.frameRequest = undefined
-					animation.complete = function() { }
-					animation.running = false
-					p.interpolatedValue = undefined
-					p.started = undefined
-					self._update(name, dst, src)
-				}
-
-				var duration = animation.duration
-
-				var nextFrame = function() {
-					var now = Date.now()
-					var t = 1.0 * (now - p.started) / duration
-					if (t >= 1 || !animation.active()) {
-						complete()
-					} else {
-						p.interpolatedValue = convert(animation.interpolate(dst, src, t))
-						self._update(name, p.interpolatedValue, src)
-						p.frameRequest = backend.requestAnimationFrame(nextFrame)
-					}
-					context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code
-				}
-
-				p.frameRequest = backend.requestAnimationFrame(nextFrame)
-
-				animation.running = true
-				animation.complete = complete
-			}
-			var oldValue = p.value
-			if (oldValue !== newValue) {
-				var forwardTarget = this[forwardName]
-				if (forwardTarget !== undefined) {
-					if (oldValue !== null && (oldValue instanceof Object)) {
-						//forward property update for mixins
-						var forwardedOldValue = oldValue[forwardTarget]
-						if (newValue !== forwardedOldValue) {
-							oldValue[forwardTarget] = newValue
-							this._update(name, newValue, forwardedOldValue)
-						}
-						return
-					} else if (newValue instanceof Object) {
-						//first assignment of mixin
-						this.connectOnChanged(newValue, forwardTarget, function(v, ov) { this._update(name, v, ov) }.bind(this))
-					}
-				}
-				p.value = newValue
-				if ((!animation || !animation.running) && newValue === defaultValue)
-					delete this[storageName]
-				if (!animation)
-					this._update(name, newValue, oldValue)
-			}
-		},
+		get: animable? animatedGet: simpleGet,
+		set: animable? animatedSet: simpleSet,
 		enumerable: true
 	})
 }
 
-exports.addAliasProperty = function(self, name, getObject, srcProperty) {
+exports.addAliasProperty = function(object, name, getObject, srcProperty) {
 	var target = getObject()
-	self.connectOnChanged(target, srcProperty, function(value) { self._update(name, value) })
+	object.connectOnChanged(target, srcProperty, function(value) {
+		var storage = object.__properties[name]
+		if (storage !== undefined)
+			storage.callOnChanged(object, name, value)
+	})
 
-	Object.defineProperty(self, name, {
+	Object.defineProperty(object, name, {
 		get: function() { return target[srcProperty] },
 		set: function(value) { target[srcProperty] = value },
 		enumerable: true

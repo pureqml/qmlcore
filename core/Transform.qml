@@ -16,29 +16,25 @@ Object {
 	///@private
 	constructor: { this._transforms = {} }
 
-	///@private
-	function _update(name, value) {
-		switch(name) {
-			case 'perspective':	this._transforms['perspective'] = value + 'px'; break;
-			case 'translateX':	this._transforms['translateX'] = value + 'px'; break;
-			case 'translateY':	this._transforms['translateY'] = value + 'px'; break;
-			case 'translateZ':	this._transforms['translateZ'] = value + 'px'; break;
-			case 'rotateX':	this._transforms['rotateX'] = value + 'deg'; break
-			case 'rotateY':	this._transforms['rotateY'] = value + 'deg'; break
-			case 'rotateZ':	this._transforms['rotateZ'] = value + 'deg'; break
-			case 'rotate':	this._transforms['rotate'] = value + 'deg'; break
-			case 'scaleX':	this._transforms['scaleX'] = value; break
-			case 'scaleY':	this._transforms['scaleY'] = value; break
-			case 'skewX':	this._transforms['skewX'] = value + 'deg'; break
-			case 'skewY':	this._transforms['skewY'] = value + 'deg'; break
-		}
+	onPerspectiveChanged:	{ this._transforms['perspective'] = value + 'px'; this._updateTransform() }
+	onTranslateXChanged:	{ this._transforms['translateX'] = value + 'px'; this._updateTransform() }
+	onTranslateYChanged:	{ this._transforms['translateY'] = value + 'px'; this._updateTransform() }
+	onTranslateZChanged:	{ this._transforms['translateZ'] = value + 'px'; this._updateTransform() }
+	onRotateXChanged:		{ this._transforms['rotateX'] = value + 'deg'; this._updateTransform() }
+	onRotateYChanged:		{ this._transforms['rotateY'] = value + 'deg'; this._updateTransform() }
+	onRotateZChanged:		{ this._transforms['rotateZ'] = value + 'deg'; this._updateTransform() }
+	onRotateChanged:		{ this._transforms['rotate'] = value + 'deg'; this._updateTransform() }
+	onScaleXChanged:		{ this._transforms['scaleX'] = value; this._updateTransform() }
+	onScaleYChanged:		{ this._transforms['scaleY'] = value; this._updateTransform() }
+	onSkewXChanged:			{ this._transforms['skewX'] = value + 'deg'; this._updateTransform() }
+	onSkewYChanged:			{ this._transforms['skewY'] = value + 'deg'; this._updateTransform() }
 
+	function _updateTransform() {
 		var str = ""
 		for (var i in this._transforms) {
 			str += i
 			str += "(" + this._transforms[i] + ") "
 		}
 		this.parent.style('transform', str)
-		_globals.core.Object.prototype._update.apply(this, arguments)
 	}
 }

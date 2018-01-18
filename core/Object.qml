@@ -1,9 +1,9 @@
 ///the most basic QML Object, generic event emitter, properties and id links holder
 EventEmitter {
-	///@private
 	constructor: {
 		this.parent = parent
 		this.children = []
+		this.__properties = {}
 
 		this._context = parent? parent._context: null
 		if (row) {
@@ -11,11 +11,9 @@ EventEmitter {
 			local.model = row
 			local._delegate = this
 		}
-		this._changedHandlers = {}
 		this._changedConnections = []
 		this._pressedHandlers = {}
-		this._animations = {}
-		this._updaters = {}
+		this._properties = {}
 	}
 
 	prototypeConstructor: {
@@ -48,12 +46,12 @@ EventEmitter {
 
 		this.parent = null
 		this._local = {}
-		this._changedHandlers = {}
 		this._pressedHandlers = {}
-		this._animations = {}
-		//for(var name in this._updaters) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
-		//	this._replaceUpdater(name)
-		this._updaters = {}
+
+		var properties = this.__properties
+		for(var name in properties) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
+			properties[name].discard()
+		this._properties = {}
 
 		_globals.core.EventEmitter.prototype.discard.apply(this)
 	}
@@ -75,12 +73,8 @@ EventEmitter {
 
 	///@private register callback on property's value changed
 	function onChanged(name, callback) {
-		var storage = this._changedHandlers
-		var handlers = storage[name]
-		if (handlers !== undefined)
-			handlers.push(callback);
-		else
-			storage[name] = [callback];
+		var storage = this._createPropertyStorage(name)
+		storage.onChanged.push(callback)
 	}
 
 	///@private
@@ -91,8 +85,9 @@ EventEmitter {
 
 	///@private removes 'on changed' callback
 	function removeOnChanged(name, callback) {
-		if (name in this._changedHandlers) {
-			var handlers = this._changedHandlers[name];
+		var storage = this.__properties[name]
+		if (storage !== undefined) {
+			var handlers = storage.onChanged
 			var idx = handlers.indexOf(callback)
 			if (idx >= 0)
 				handlers.splice(idx, 1)
@@ -103,31 +98,14 @@ EventEmitter {
 
 	/// @private removes dynamic value updater
 	function _removeUpdater (name) {
-		var updaters = this._updaters
-		var oldUpdaters = updaters[name]
-		if (oldUpdaters !== undefined) {
-			var callback = oldUpdaters[0]
-			oldUpdaters[1].forEach(function(data) {
-				var object = data[0]
-				var name = data[1]
-				object.removeOnChanged(name, callback)
-			})
-		}
-		delete updaters[name]
+		var storage = this.__properties[name]
+		if (storage !== undefined)
+			storage.removeUpdater()
 	}
 
 	/// @private replaces dynamic value updater
 	function _replaceUpdater (name, newUpdaters) {
-		this._removeUpdater(name)
-		this._updaters[name] = newUpdaters
-		var callback = newUpdaters[0]
-		var parent = this
-		newUpdaters[1].forEach(function(data) {
-			var object = data[0]
-			var name = data[1]
-			parent.connectOnChanged(object, name, callback)
-		})
-		callback()
+		this._createPropertyStorage(name).replaceUpdater(this, newUpdaters)
 	}
 
 	///@private registers key handler
@@ -144,44 +122,28 @@ EventEmitter {
 			this._pressedHandlers[name] = [wrapper];
 	}
 
-	///@private
-	function _update (name, value) {
-		var protoCallbacks = this['__changed__' + name]
-		var handlers = this._changedHandlers[name]
+	///@private creates property storage
+	function _createPropertyStorage(name, value) {
+		var storage = this.__properties[name]
+		if (storage !== undefined)
+			return storage
 
-		var hasProtoCallbacks = protoCallbacks !== undefined
-		var hasHandlers = handlers !== undefined
-
-		if (!hasProtoCallbacks && !hasHandlers)
-			return
-
-		var invoker = _globals.core.safeCall(this, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
-
-		if (hasProtoCallbacks)
-			protoCallbacks.forEach(invoker)
-
-		if (hasHandlers)
-			handlers.forEach(invoker)
+		return this.__properties[name] = new _globals.core.core.PropertyStorage(value)
 	}
 
-	///mixin api: sets default property forwarding target
+	///mixin api: set default forwarding _target
 	function setPropertyForwardingTarget(name, target) {
-		this['__forward_' + name] = target
+		this._createPropertyStorage(name).forwardTarget = target
 	}
 
-	///@private patch property storage directly without signalling. You normally don't need it
+	///@private patch property storage directly without signalling.
 	function _setProperty(name, value) {
-		var animation = this._animations[name]
+		//cancel any running software animations
+		var storage = this._createPropertyStorage(name, value)
+		var animation = storage.animation
 		if (animation !== undefined)
 			animation.disable()
-
-		//cancel any running software animations
-		var storageName = '__property_' + name
-		var storage = this[storageName] || {}
-		delete storage.interpolatedValue
-		storage.value = value
-		this[storageName] = storage
-
+		storage.interpolatedValue = undefined
 		if (animation !== undefined)
 			animation.enable()
 	}
@@ -201,22 +163,12 @@ EventEmitter {
 		if (name === 'contentX' || name === 'contentY')
 			log('WARNING: you\'re trying to animate contentX/contentY property, this will always use animation frames, ignoring CSS transitions, please use content.x/content.y instead')
 
-		var component = this
-		animation._target = component
+		animation._target = this
 		animation._property = name
-		context.scheduleAction(function() {
-			component._animations[name] = animation
-			if (backend.setAnimation(component, name, animation))
-				animation._native = true
-		}, 1)
-	}
-
-	///@private gets animation on given property
-	function getAnimation (name, animation) {
-		if (!this._context._completed)
-			return null
-		var a = this._animations[name]
-		return (a !== undefined && a.enabled() && !a._native)? a:  null;
+		var storage = this._createPropertyStorage(name)
+		storage.animation = animation
+		if (backend.setAnimation(this, name, animation))
+			animation._native = true
 	}
 
 	///@private called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy

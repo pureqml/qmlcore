@@ -1,6 +1,6 @@
 {
 	"requires": ["core"],
-	"export_module": false,
+	"export_module": true,
 
 	"properties.style.font" : {
 		"family": "Roboto Medium",

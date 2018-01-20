@@ -175,11 +175,19 @@ ColorPrototype.rgba = function() {
 }
 
 var hexByte = function(v) {
-	return ('0' + (Number(v).toString(16))).slice(-2)
+	var h = (v >> 4) & 0x0f
+	var l = (v) & 0x0f
+	h += (h > 9)? 0x57: 0x30
+	l += (l > 9)? 0x57: 0x30
+	return String.fromCharCode(h, l)
 }
 
 ColorPrototype.hex = function() {
 	return '#' + hexByte(this.r) + hexByte(this.g) + hexByte(this.b) + hexByte(this.a)
+}
+
+ColorPrototype.ahex = function() {
+	return '#' + hexByte(this.a) + hexByte(this.r) + hexByte(this.g) + hexByte(this.b)
 }
 
 exports.core.normalizeColor = function(spec) {

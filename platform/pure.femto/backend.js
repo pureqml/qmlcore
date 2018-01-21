@@ -24,7 +24,7 @@ exports.createElement = function(ctx, tag, cls) {
 }
 
 exports.initRectangle = function(rect) {
-	rect.element = new fd.Rectangle()
+	rect._attachElement(new fd.Rectangle())
 }
 
 exports.initImage = function(image) {

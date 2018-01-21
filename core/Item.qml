@@ -73,16 +73,22 @@ Object {
 		style.addRule(tag, rules)
 	}
 
+	function _attachElement(element) {
+		if (this.element)
+			this.element.remove()
+		element._item = this
+		this.element = element
+		this.parent.element.append(element)
+	}
+
 	/// default implementation of element creation routine.
 	function _createElement(tag, cls) {
 		var context = this._context
 		if (context === null)
 			context = this
 
-		this.element = context.createElement(tag, cls)
-		this.element._item = this
 		context.registerStyle(this, tag, cls)
-		this.parent.element.append(this.element)
+		this._attachElement(context.createElement(tag, cls))
 	}
 
 	/// map relative component coordinates to absolute screen ones

@@ -3,7 +3,7 @@ exports.init = function(ctx) {
 	log('backend initialization...')
 	const options = ctx.options
 	const nativeContext = options.nativeContext
-	ctx.element = nativeContext
+	ctx._attachElement(nativeContext)
 	ctx.width = nativeContext.width
 	ctx.height = nativeContext.height
 	log('window size', ctx.width, ctx.height)

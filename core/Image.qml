@@ -28,12 +28,16 @@ Item {
 
 	///@private
 	function _load() {
+		if (!this.source) {
+			this.status = this.Null
+			return
+		}
+		this.status = this.Loading
 		this._context.backend.loadImage(this)
 	}
 
 	///@private
 	function load() {
-		this.status = (this.source.length === 0) ? Image.Null: Image.Loading
 		this._scheduleLoad()
 	}
 

@@ -78,7 +78,9 @@ Object {
 			this.element.remove()
 		element._item = this
 		this.element = element
-		this.parent.element.append(element)
+		var parent = this.parent
+		if (parent)
+			parent.element.append(element)
 	}
 
 	/// default implementation of element creation routine.

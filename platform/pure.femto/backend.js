@@ -63,7 +63,12 @@ exports.createElement = function(ctx, tag, cls) {
 	return new fd.Element()
 }
 
+exports.initRectangle = function(rect) {
+	rect.element = new fd.Rectangle()
+}
+
 exports.initImage = function(image) {
+	image.element = new fd.Image()
 }
 
 var ImageStatusNull			= 0
@@ -77,6 +82,7 @@ exports.loadImage = function(image) {
 }
 
 exports.initText = function(text) {
+	text.element = new fd.Text()
 }
 
 exports.setText = function(text, html) {

@@ -520,6 +520,9 @@ exports.createElement = function(ctx, tag, cls) {
 	return new exports.Element(ctx, tag, cls)
 }
 
+exports.initRectangle = function(rect) {
+}
+
 exports.initImage = function(image) {
 	var tmp = new Image()
 	image._image = tmp

@@ -40,13 +40,13 @@ class Element extends _globals.core.RAIIEventEmitter {
 exports.capabilities = {}
 exports.init = function(ctx) {
 	log('backend initialization...')
-	context = ctx
 	const options = ctx.options
 	const nativeContext = options.nativeContext
-	ctx.element = new Element(nativeContext, null)
+	log('native context', nativeContext)
+	ctx.element = nativeContext
 
-	context.width = 500
-	context.height = 500
+	//ctx.width = nativeContext.width
+	//ctx.height = nativeContext.height
 }
 
 
@@ -60,7 +60,7 @@ exports.initSystem = function(system) {
 
 exports.createElement = function(ctx, tag, cls) {
 	log('creating element', tag, cls)
-	return new Element()
+	return new fd.Element()
 }
 
 exports.initImage = function(image) {

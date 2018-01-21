@@ -42,11 +42,10 @@ exports.init = function(ctx) {
 	log('backend initialization...')
 	const options = ctx.options
 	const nativeContext = options.nativeContext
-	log('native context', nativeContext)
 	ctx.element = nativeContext
-
-	//ctx.width = nativeContext.width
-	//ctx.height = nativeContext.height
+	ctx.width = nativeContext.width
+	ctx.height = nativeContext.height
+	log('window size', ctx.width, ctx.height)
 }
 
 

@@ -329,6 +329,16 @@ Object {
 		return false
 	}
 
+	function getComponentPath() {
+		var path = []
+		var self = this
+		while(self) {
+			path.unshift(self.componentName)
+			self = self.parent
+		}
+		return path.join(" → ")
+	}
+
 	/// focus this item
 	setFocus:		{ this.forceActiveFocus() }
 }

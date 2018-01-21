@@ -28,7 +28,7 @@ exports.initRectangle = function(rect) {
 }
 
 exports.initImage = function(image) {
-	image.element = new fd.Image()
+	image._attachElement(new fd.Image())
 }
 
 var ImageStatusNull			= 0
@@ -38,11 +38,21 @@ var ImageStatusError		= 3
 
 
 exports.loadImage = function(image) {
-	log('loading image ' + image.source)
+	log('loading image ' + image.source + " " + image.element)
+	image.element.load(image.source, function(metrics) {
+		if (metrics) {
+			image.sourceWidth = metrics.width
+			image.sourceHeight = metrics.height
+			image.paintedWidth = metrics.width
+			image.paintedHeight = metrics.height
+		}
+		else
+			image._onError()
+	})
 }
 
 exports.initText = function(text) {
-	text.element = new fd.Text()
+	text._attachElement(new fd.Text())
 }
 
 exports.setText = function(text, html) {

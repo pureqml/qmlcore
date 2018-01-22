@@ -19,7 +19,6 @@ exports.initSystem = function(system) {
 }
 
 exports.createElement = function(ctx, tag, cls) {
-	log('creating element', tag, cls)
 	return new fd.Element()
 }
 
@@ -38,7 +37,6 @@ var ImageStatusError		= 3
 
 
 exports.loadImage = function(image) {
-	log('loading image ' + image.source + " " + image.element)
 	image.element.load(image.source, function(metrics) {
 		if (metrics) {
 			image.sourceWidth = metrics.width

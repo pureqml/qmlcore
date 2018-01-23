@@ -4,43 +4,19 @@ Object {
 	property string value;		///< stored property value
 
 	constructor: {
-		this.impl = null
-		this._createLocalStorage()
+		var backend = _globals.core.__localStorageBackend
+		this.impl = backend().createLocalStorage(this)
 	}
 
-	/// @private
-	function _getImpl() {
-		if (this.impl === null)
-			this._createLocalStorage()
-		return this.impl
-	}
+	///read 'name' property from storage and set its value to 'value' property
+	read: { this.impl.read() }
 
-	function _createLocalStorage() {
-		if (this.impl) {
-			return this.impl
-		} else {
-			var backend = _globals.core.__localStorageBackend
-			return this.impl = backend().createLocalStorage(this)
-		}
-	}
-
-	getItem(name): {
-		var impl = this._getImpl()
-		return impl ? impl.getItem(name) : null
-	}
-
-	read: {
-		var impl = this._getImpl()
-		if (impl)
-			impl.read()
-	}
+	/**@param name:string stored item name
+	return stored item by name if it exists*/
+	getItem(name): { return this.impl.getItem(name) }
 
 	///@private
-	onValueChanged: {
-		var impl = this._getImpl()
-		if (impl)
-			impl.saveItem()
-	}
+	onValueChanged: { this.impl.saveItem() }
 
 	///@private
 	onNameChanged: { this.read() }

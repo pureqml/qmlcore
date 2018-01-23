@@ -6,6 +6,10 @@ exports.init = function(ctx) {
 	ctx._attachElement(nativeContext)
 	ctx.width = nativeContext.width
 	ctx.height = nativeContext.height
+	nativeContext.on('resize', function(w, h) {
+		ctx.width = w
+		ctx.height = h
+	})
 	log('window size', ctx.width, ctx.height)
 }
 

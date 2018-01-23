@@ -47,3 +47,4 @@ else
 
 _globals._backend = function() { return _globals.html5.html }
 _globals.core.__locationBackend = function() { return _globals.html5.location }
+_globals.core.__localStorageBackend = function() { return _globals.html5.localstorage }

@@ -3,36 +3,24 @@ Object {
 	property string name;		///< stored property key name
 	property string value;		///< stored property value
 
-	///@internal
-	onNameChanged: {
-		this.read()
+	constructor: {
+		var backend = _globals.core.__localStorageBackend
+		this.impl = backend().createLocalStorage(this)
 	}
 
-	///@internal
-	onValueChanged: {
-		this.init()
-		this._storage.setItem(this.name, this.value)
-	}
+	///read 'name' property from storage and set its value to 'value' property
+	read: { this.impl.read() }
 
-	///@private
-	read: {
-		this.init()
-		var value = this.name? this._storage.getItem(this.name): "";
-		if (value !== null && value !== undefined)
-			this.value = value
-	}
+	/**@param name:string stored item name
+	return stored item by name if it exists*/
+	getItem(name): { return this.impl.getItem(name) }
 
 	///@private
-	init: {
-		if (!this._storage) {
-			this._storage = window.localStorage;
-			if (!this._storage)
-				throw new Error("no local storage support")
-		}
-	}
+	onValueChanged: { this.impl.saveItem() }
 
 	///@private
-	onCompleted: {
-		this.read()
-	}
+	onNameChanged: { this.read() }
+
+	///@private
+	onCompleted: { this.read() }
 }

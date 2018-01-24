@@ -58,11 +58,14 @@ exports.initText = function(text) {
 }
 
 exports.setText = function(text, html) {
-	log('setText', html)
+	text.element.setText(html)
 }
 
 exports.layoutText = function(text) {
-	log('layoutText')
+	text.element.layoutText(function(metrics) {
+		text.paintedWidth = metrics.width
+		text.paintedHeight = metrics.height
+	})
 }
 
 exports.setAnimation = function (component, name, animation) {

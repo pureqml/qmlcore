@@ -590,6 +590,7 @@ exports.initImage = function(image) {
 				}
 				break;
 		}
+		style['image-rendering'] = image.smooth? 'auto': 'pixelated'
 		image.style(style)
 
 		image.status = image.Ready

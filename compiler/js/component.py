@@ -27,6 +27,7 @@ class component_generator(object):
 		self.prototype = prototype
 		self.ctor = ''
 		self.prototype_ctor = ''
+		self.dynamic = False
 
 		for child in component.children:
 			self.add_child(child)
@@ -88,7 +89,9 @@ class component_generator(object):
 				if child.lazy and isinstance(default_value, lang.Component):
 					if len(child.properties) != 1:
 						raise Exception("property %s is lazy, hence should be declared alone" %name)
-					self.lazy_properties[name] = self.create_component_generator(default_value, '<lazy:%s>' %name)
+					comp = self.create_component_generator(default_value, '<lazy:%s>' %name)
+					comp.dynamic = True
+					self.lazy_properties[name] = comp
 
 				self.declared_properties[name] = child
 				if default_value is not None:
@@ -219,6 +222,7 @@ class component_generator(object):
 		#print 'pregenerate', self.name
 		base_type = self.get_base_type(registry, False)
 		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
+		self._base_gen = base_gen
 
 		for (path, name), (args, code, event) in methods.iteritems():
 			oname = name
@@ -611,3 +615,12 @@ class component_generator(object):
 		r.append(self.generate_animations(registry, parent))
 
 		return "\n".join(r)
+
+	def get_total_objects(self):
+		total = 1
+		if self._base_gen is not None:
+			total += self._base_gen.get_total_objects() - 1
+
+		for gen in self.generators:
+			total += gen.get_total_objects()
+		return total * (0.3 if self.dynamic else 1)

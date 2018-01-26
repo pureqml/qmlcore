@@ -4,6 +4,19 @@ exports.core.device = 0
 exports.core.vendor = ""
 exports.core.__videoBackends = {}
 
+var currentProgress = 0
+var currentTotalProgress = 0
+exports.onProgress = function(idx, total) 	{ } //dummy, register your function here
+exports.setTotalProgress = function(total) 	{ currentTotalProgress = total }
+
+var reportProgress = function(idx) {
+	if (idx !== undefined)
+		currentProgress = idx
+	else
+		++currentProgress
+	exports.onProgress(currentProgress, currentTotalProgress)
+}
+
 /* ${init.js} */
 
 if (!Function.prototype.bind) {
@@ -81,6 +94,7 @@ exports.core.safeCall = function(self, args, onError) {
  */
 var CoreObjectComponent = exports.core.CoreObject = function(parent) {
 	this._local = Object.create(parent? parent._local: null)
+	reportProgress()
 }
 
 var CoreObjectComponentPrototype = CoreObjectComponent.prototype

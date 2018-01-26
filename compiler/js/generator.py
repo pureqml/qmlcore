@@ -18,6 +18,7 @@ class generator(object):
 		self.startup = []
 		self.l10n = {}
 		self.id_set = set(['context', 'model'])
+		self.root_component = None
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -40,6 +41,8 @@ class generator(object):
 		self.packages[package].add(component_name)
 
 		gen = component_generator(self.ns, name, component, True)
+		if not declaration:
+			self.root_component = gen
 		self.components[name] = gen
 
 	def add_js(self, name, data):
@@ -272,6 +275,7 @@ class generator(object):
 
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
+		startup.append('\t%s.core.core.setTotalProgress(%d)' %(ns, self.root_component.get_total_objects()))
 		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', l10n: l10n, nativeContext: %s})" %(ns, context_type, app, 'nativeContext' if self.module else 'null'))
 		startup.append('\tvar c = {}\n')
 		startup.append('\tcontext.$c(c)')

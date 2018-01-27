@@ -617,10 +617,18 @@ class component_generator(object):
 		return "\n".join(r)
 
 	def get_total_objects(self):
-		total = 1
-		if self._base_gen is not None:
-			total += self._base_gen.get_total_objects() - 1
-
+		total, dynamic = 1, 0
 		for gen in self.generators:
-			total += gen.get_total_objects()
-		return total * (0.3 if self.dynamic else 1)
+			t, d = gen.get_total_objects()
+			total += t
+			dynamic += d
+
+		if self._base_gen is not None:
+			t, d = self._base_gen.get_total_objects()
+			total += t - 1 #minus base class
+			dynamic += d
+
+		if self.dynamic:
+			dynamic += total
+			total = 0
+		return (total, dynamic)

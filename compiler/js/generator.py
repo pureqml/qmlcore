@@ -273,9 +273,10 @@ class generator(object):
 
 		context_type = self.find_component('core', 'Context')
 
+		total_objects, total_dynamic_objects = self.root_component.get_total_objects()
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append('\t%s.core.core.setTotalProgress(%d)' %(ns, self.root_component.get_total_objects()))
+		startup.append('\t%s.core.core.setTotalProgress(%d + $manifest$progress$dynamicRatio * %d)' %(ns, total_objects, total_dynamic_objects))
 		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', l10n: l10n, nativeContext: %s})" %(ns, context_type, app, 'nativeContext' if self.module else 'null'))
 		startup.append('\tvar c = {}\n')
 		startup.append('\tcontext.$c(c)')

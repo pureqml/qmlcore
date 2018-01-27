@@ -6,16 +6,29 @@ exports.core.__videoBackends = {}
 
 var currentProgress = 0
 var currentTotalProgress = 0
-exports.onProgress = function(idx, total) 	{ } //dummy, register your function here
-exports.setTotalProgress = function(total) 	{ currentTotalProgress = total }
 
 var reportProgress = function(idx) {
+	if (currentTotalProgress <= 0)
+		return
+
 	if (idx !== undefined)
 		currentProgress = idx
 	else
 		++currentProgress
+
 	exports.onProgress(currentProgress, currentTotalProgress)
+
+	if (currentProgress >= currentTotalProgress)
+		exports.setTotalProgress(0)
 }
+
+exports.onProgress = function(idx, total) 	{ } //dummy, register your function here
+exports.setTotalProgress = function(total) 	{
+	currentTotalProgress = total
+	currentProgress = 0
+}
+
+exports.reportProgress = reportProgress
 
 /* ${init.js} */
 

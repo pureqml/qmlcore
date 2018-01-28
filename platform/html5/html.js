@@ -490,15 +490,8 @@ exports.init = function(ctx) {
 	})
 
 	win.on('keydown', function(event) {
-		var handlers = core.forEach(ctx, _globals.core.Item.prototype._enqueueNextChildInFocusChain, [])
-		var n = handlers.length
-		for(var i = 0; i < n; ++i) {
-			var handler = handlers[i]
-			if (handler._processKey(event)) {
-				event.preventDefault();
-				break
-			}
-		}
+		if (ctx.processKey(event))
+			event.preventDefault()
 	}) //fixme: add html.Document instead
 
 	ctx._styleClassifier = $manifest$cssAutoClassificator? new StyleClassifier(ctx._prefix): null; //broken beyond repair

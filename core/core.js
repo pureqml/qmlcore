@@ -76,6 +76,14 @@ exports.core.safeCall = function(self, args, onError) {
 	return function(callback) { return safeCallImpl(callback, self, args, onError) }
 }
 
+
+exports.core.getKeyCodeByName = function(key) {
+	var codes = _globals.core.keyCodes
+	for (var i in codes) {
+		if (codes[i] === key)
+			return ~~i
+	}
+}
 /**
  * @constructor
  */

@@ -437,7 +437,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			var self = this
 
 			var complete = function() {
-				backend.cancelAnimationFrame(p.frameRequest)
+				backend.cancelAnimationFrame(storage.frameRequest)
 				storage.frameRequest = undefined
 				animation.complete = function() { }
 				animation.running = false
@@ -455,7 +455,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					complete()
 				} else {
 					storage.interpolatedValue = convert(animation.interpolate(dst, src, t))
-					storage.callOnChanged(self, name, storage.getInterpolatedValue(defaultValue), src)
+					storage.callOnChanged(self, name, storage.getCurrentValue(defaultValue), src)
 					storage.frameRequest = backend.requestAnimationFrame(nextFrame)
 				}
 				context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code

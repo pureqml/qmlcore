@@ -152,6 +152,17 @@ Item {
 		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
 	}
 
+	function processKey(event) {
+		var handlers = core.forEach(this, _globals.core.Item.prototype._enqueueNextChildInFocusChain, [])
+		var n = handlers.length
+		for(var i = 0; i < n; ++i) {
+			var handler = handlers[i]
+			if (handler._processKey(event))
+				return true
+		}
+		return false
+	}
+
 	///@private
 	function run() {
 		this.backend.run(this, this._run.bind(this))

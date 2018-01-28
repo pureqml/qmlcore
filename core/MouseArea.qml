@@ -60,7 +60,7 @@ Item {
 	function _bindClick(value) {
 		if (value && !this._clickBinder) {
 			this._clickBinder = new _globals.core.EventBinder(this.element)
-			this._clickBinder.on('click', this.clicked.bind(this))
+			this._clickBinder.on('click', function(event) { this.updatePosition(event); this.clicked(event) }.bind(this))
 		}
 		if (this._clickBinder)
 			this._clickBinder.enable(value)

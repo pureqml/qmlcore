@@ -380,7 +380,7 @@ def proc_source_dir(source_dir):
 		for language in languages:
 			print 'updating translation for language', language
 			ts = Ts(os.path.join(source_dir, language + '.ts'))
-			ts.scan(source_dir)
+			ts.scan([source_dir])
 			ts.save()
 		sys.exit(0)
 

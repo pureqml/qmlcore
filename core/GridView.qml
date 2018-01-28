@@ -181,15 +181,16 @@ BaseView {
 
 			if (!item) {
 				item = this._createDelegate(i)
-				created = true
+				if (item)
+					created = true
 			}
 
 			++itemsCount
 
-			var visible = horizontal? (cy + y + item.height >= 0 && cy + y < h): (cx + x + item.width >= 0 && cx + x < w)
-
-			item.viewX = x
-			item.viewY = y
+			if (item) {
+				item.viewX = x
+				item.viewY = y
+			}
 
 			if (horizontal) {
 				x += stepX
@@ -205,15 +206,18 @@ BaseView {
 				}
 			}
 
-			if (this.currentIndex == i) {
-				this.focusChild(item)
-				if (this.contentFollowsCurrentItem)
-					this.positionViewAtIndex(i)
-			}
+			if (item) {
+				if (this.currentIndex === i) {
+					this.focusChild(item)
+					if (this.contentFollowsCurrentItem)
+						this.positionViewAtIndex(i)
+				}
 
-			item.visibleInView = visible
+				var visible = horizontal? (cy + y + item.height >= 0 && cy + y < h): (cx + x + item.width >= 0 && cx + x < w)
+				item.visibleInView = visible
+			}
 		}
-		for( ;i < n; ++i) {
+		for(; i < n; ++i) {
 			var item = items[i]
 			if (item)
 				item.visibleInView = false

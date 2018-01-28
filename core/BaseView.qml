@@ -12,6 +12,7 @@ BaseLayout {
 	property bool nativeScrolling;	///< allows native scrolling on mobile targets and shows native scrollbars
 	property real prerender: 0.5;	///< allocate additional delegates by viewport (prerender * horizontal/vertical view size) px
 	property enum positionMode		{ Contain, Beginning, Center, End, Visible, Page }; ///< position mode for auto-scrolling/position methods
+	property string visibilityProperty; ///< if this property is false, delegate is not created at all
 	contentWidth: 1;				///< content width
 	contentHeight: 1;				///< content height
 	keyNavigationWraps: true;		///< key navigation wraps from end to beginning and vise versa
@@ -125,7 +126,10 @@ BaseLayout {
 		if (item !== null && item !== undefined)
 			return item
 
+		var visibilityProperty = this.visibilityProperty
 		var row = this.model.get(idx)
+		if (visibilityProperty && !row[visibilityProperty])
+			return null;
 		row.index = idx
 
 		item = this.delegate(this, row)

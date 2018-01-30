@@ -36,7 +36,7 @@ Location.prototype.pushState = function(state, title, url) {
 		this.updateActualValues()
 	} else {
 		ui._context.document.title = title
-		this.state = state
+		this._ui.state = state
 	}
 }
 

@@ -14,10 +14,12 @@ Object {
 	property real lineHeight: manifest.style.font.lineHeight;	///< font line height in font heights
 	property int weight;		///< font weight value
 	property enum capitalization { MixedCase, AllUppercase, AllLowercase, SmallCaps, Capitalize };
-	
+
 	///@private
 	function _updateTextDecoration() {
-		var decoration = (this.underline ? ' underline' : '') + (this.overline ? ' overline' : '') + (this.strike || this.strikeout ? ' line-through' : '')
+		var decoration = (this.underline ? ' underline' : '')
+			+ (this.overline ? ' overline' : '')
+			+ (this.strike || this.strikeout ? ' line-through' : '')
 		this.parent.style('text-decoration', decoration)
 		this.parent._updateSize()
 	}

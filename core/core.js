@@ -320,6 +320,13 @@ PropertyStoragePrototype.getCurrentValue = function(defaultValue) {
 	return value !== undefined? value: this.getSimpleValue(defaultValue)
 }
 
+PropertyStoragePrototype.setCurrentValue = function(object, name, newValue, defaultValue, callUpdate) {
+	this.interpolatedValue = undefined
+	this.value = newValue
+	if (callUpdate)
+		this.callOnChanged(object, name, newValue, oldValue)
+}
+
 PropertyStoragePrototype.set = function(object, name, newValue, defaultValue, callUpdate) {
 	var oldValue = this.value
 	if (oldValue === undefined)

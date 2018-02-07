@@ -143,7 +143,7 @@ EventEmitter {
 		var animation = storage.animation
 		if (animation !== undefined)
 			animation.disable()
-		storage.interpolatedValue = undefined
+		storage.setCurrentValue(this, null, value)
 		if (animation !== undefined)
 			animation.enable()
 	}

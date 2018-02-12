@@ -326,7 +326,7 @@ Object {
 			if (proto_callback)
 				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
 		} else {
-			log("unknown key", keyCode)
+			log("unknown keycode " + keyCode)
 		}
 		return false
 	}

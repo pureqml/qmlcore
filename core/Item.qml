@@ -296,7 +296,8 @@ Object {
 
 	///@private
 	function _processKey(event) {
-		var key = _globals.core.keyCodes[event.which || event.keyCode];
+		var keyCode = event.which || event.keyCode
+		var key = _globals.core.keyCodes[keyCode]
 		var eventTime = event.timeStamp
 
 		if (key) {
@@ -325,7 +326,7 @@ Object {
 			if (proto_callback)
 				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
 		} else {
-			log("unknown key", event.which)
+			log("unknown key", keyCode)
 		}
 		return false
 	}

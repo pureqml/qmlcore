@@ -300,7 +300,7 @@ Object {
 		var key = _globals.core.keyCodes[keyCode]
 		var eventTime = event.timeStamp
 
-		if (key) {
+		if (key !== undefined) {
 			if (this.keyProcessDelay) {
 				if (eventTime !== this._lastEvent && eventTime - this.keyProcessDelay < this._lastEvent)
 					return true

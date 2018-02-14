@@ -21,7 +21,7 @@ Item {
 		this._started = false
 		this._completed = false
 		this._processingActions = false
-		this._delayedActions = [[], []]
+		this._delayedActions = []
 		this._stylesRegistered = {}
 		this._asyncInvoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
 
@@ -94,26 +94,11 @@ Item {
 
 		var invoker = this._asyncInvoker
 		var delayedActions = this._delayedActions
-		var empty = false
-		var maxLevels = delayedActions.length //must not have changed
 
-		while(!empty) {
-			for(var level = 0; level < maxLevels; ++level) {
-				var levelActions = delayedActions[level]
-				while (levelActions.length) {
-					//log('actions', level, levelActions.length)
-					var actions = levelActions.splice(0, levelActions.length)
-					for(var i = 0, n = actions.length; i < n; ++i)
-						invoker(actions[i])
-				}
-			}
-
-			empty = true
-			for(var level = 0; level < maxLevels; ++level) {
-				var levelActions = delayedActions[level]
-				if (levelActions.length !== 0)
-					empty = false
-			}
+		while (delayedActions.length) {
+			var actions = delayedActions.splice(0, delayedActions.length)
+			for(var i = 0, n = actions.length; i < n; ++i)
+				invoker(actions[i])
 		}
 
 		this._processingActions = false
@@ -121,19 +106,23 @@ Item {
 	}
 
 	///@private
-	function scheduleAction(action, priority) {
-		this._delayedActions[priority !== undefined? priority: 0].push(action)
+	function scheduleAction(action) {
+		this._delayedActions.push(action)
 	}
 
 	///@private
 	function delayedAction(prefix, self, method) {
-		var name = '__delayed_' + prefix
-		if (self[name] === true)
+		var registry = self._registeredDelayedActions
+
+		if (registry === undefined)
+			registry = self._registeredDelayedActions = {}
+
+		if (registry[name] === true)
 			return
 
-		self[name] = true
+		registry[name] = true
 		this.scheduleAction(function() {
-			self[name] = false
+			registry[name] = false
 			method.call(self)
 		})
 	}

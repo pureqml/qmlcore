@@ -128,6 +128,10 @@ BaseLayout {
 
 		var visibilityProperty = this.visibilityProperty
 		var row = this.model.get(idx)
+
+		if (this.trace)
+			log('createDelegate', idx, row)
+
 		if (visibilityProperty && !row[visibilityProperty])
 			return null;
 		row.index = idx

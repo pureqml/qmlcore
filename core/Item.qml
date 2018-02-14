@@ -22,6 +22,7 @@ Object {
 	property lazy effects: Effects { }
 	property lazy transform: Transform { }
 	property bool cssTranslatePositioning;
+	property bool cssNullTranslate3D;
 
 	property lazy left:		AnchorLine	{ boxIndex: 0; }
 	property lazy top:		AnchorLine	{ boxIndex: 1; }
@@ -178,6 +179,13 @@ Object {
 		else
 			this.style('top', y)
 		this.boxChanged()
+	}
+
+	onCssNullTranslate3DChanged: {
+		if (value)
+			this.style('transform', 'translate3d(0, 0, 0)')
+		else
+			this.style('transform', '')
 	}
 
 	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }

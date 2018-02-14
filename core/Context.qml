@@ -111,7 +111,7 @@ Item {
 	}
 
 	///@private
-	function delayedAction(prefix, self, method) {
+	function delayedAction(prefix, self, method, delay) {
 		var registry = self._registeredDelayedActions
 
 		if (registry === undefined)
@@ -121,10 +121,19 @@ Item {
 			return
 
 		registry[name] = true
-		this.scheduleAction(function() {
+
+		var callback = function() {
 			registry[name] = false
 			method.call(self)
-		})
+		}
+
+		if (delay > 0) {
+			setTimeout(callback, delay)
+		} else if (delay === 0) {
+			this.backend.requestAnimationFrame(callback)
+		} else {
+			this.scheduleAction(callback)
+		}
 	}
 
 	/**@param text:string text that must be translated

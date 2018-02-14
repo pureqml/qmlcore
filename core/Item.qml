@@ -165,7 +165,7 @@ Object {
 	onViewXChanged: {
 		var x = this.x + this.viewX
 		if (this.cssTranslatePositioning)
-			this.style('transform', 'translateX(' + x + 'px)')
+			this.transform.translateX = x
 		else
 			this.style('left', x)
 		this.boxChanged()
@@ -175,7 +175,7 @@ Object {
 	onViewYChanged: {
 		var y = this.y + this.viewY
 		if (this.cssTranslatePositioning)
-			this.style('transform', 'translateY(' + y + 'px)')
+			this.transform.translateY = y
 		else
 			this.style('top', y)
 		this.boxChanged()

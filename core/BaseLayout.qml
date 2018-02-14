@@ -9,6 +9,7 @@ Item {
 	property int contentHeight;				///< content height
 	property bool keyNavigationWraps;		///< key navigation wraps from first to last and vise versa
 	property bool handleNavigationKeys;		///< handle navigation keys, move focus
+	property int layoutDelay: -1;			///< <0 - end of the tick (default), 0 - request animation frame, >0 - delay in ms
 
 	///@private
 	constructor: {
@@ -17,7 +18,7 @@ Item {
 
 	///@private
 	function _scheduleLayout() {
-		this._context.delayedAction('layout', this, this._doLayout)
+		this._context.delayedAction('layout', this, this._doLayout, this.layoutDelay)
 	}
 
 	///@private

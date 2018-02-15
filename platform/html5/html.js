@@ -1,5 +1,7 @@
 /*** @using { core.RAIIEventEmitter } **/
 
+var imageCache = null
+
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
@@ -430,6 +432,8 @@ exports.getElement = function(ctx, tag) {
 }
 
 exports.init = function(ctx) {
+	imageCache = new _globals.html5.cache.Cache(loadImage)
+
 	ctx._styleCache = new StyleCache()
 	var options = ctx.options
 	var prefix = ctx._prefix
@@ -609,8 +613,6 @@ var loadImage = function(url, callback) {
 	}
 	tmp.src = url
 }
-
-var imageCache = new _globals.html5.cache.Cache(loadImage)
 
 exports.initImage = function(image) {
 }

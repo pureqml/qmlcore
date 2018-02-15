@@ -516,83 +516,101 @@ exports.createElement = function(ctx, tag, cls) {
 exports.initRectangle = function(rect) {
 }
 
-exports.initImage = function(image) {
-	var tmp = new Image()
-	image._image = tmp
-	image._image.onerror = image._onError.bind(image)
+var ImageComponent = _globals.core.Image
 
-	image._image.onload = function() {
-		image.sourceWidth = tmp.naturalWidth
-		image.sourceHeight = tmp.naturalHeight
-		var natW = tmp.naturalWidth, natH = tmp.naturalHeight
+var updateImage = function(image, tmp) {
+	image.sourceWidth = tmp.naturalWidth
+	image.sourceHeight = tmp.naturalHeight
+	var natW = tmp.naturalWidth, natH = tmp.naturalHeight
 
-		if (!image.width)
-			image.width = natW
-		if (!image.height)
-			image.height = natH
+	if (!image.width)
+		image.width = natW
+	if (!image.height)
+		image.height = natH
 
-		if (image.fillMode !== image.PreserveAspectFit) {
-			image.paintedWidth = image.width
-			image.paintedHeight = image.height
-		}
-
-		var style = {'background-image': 'url("' + image.source + '")'}
-		switch(image.fillMode) {
-			case image.Stretch:
-				style['background-repeat'] = 'no-repeat'
-				style['background-size'] = '100% 100%'
-				break;
-			case image.TileVertically:
-				style['background-repeat'] = 'repeat-y'
-				style['background-size'] = '100% ' + natH + 'px'
-				break;
-			case image.TileHorizontally:
-				style['background-repeat'] = 'repeat-x'
-				style['background-size'] = natW + 'px 100%'
-				break;
-			case image.Tile:
-				style['background-repeat'] = 'repeat-y repeat-x'
-				style['background-size'] = 'auto'
-				break;
-			case image.PreserveAspectCrop:
-				style['background-repeat'] = 'no-repeat'
-				style['background-position'] = 'center'
-				style['background-size'] = 'cover'
-				break;
-			case image.Pad:
-				style['background-repeat'] = 'no-repeat'
-				style['background-position'] = '0% 0%'
-				style['background-size'] = 'auto'
-				break;
-			case image.PreserveAspectFit:
-				style['background-repeat'] = 'no-repeat'
-				style['background-position'] = 'center'
-				style['background-size'] = 'contain'
-				var w = image.width, h = image.height
-				var targetRatio = 0, srcRatio = natW / natH
-
-				if (w && h)
-					targetRatio = w / h
-
-				if (srcRatio > targetRatio && w) { // img width aligned with target width
-					image.paintedWidth = w;
-					image.paintedHeight = w / srcRatio;
-				} else {
-					image.paintedHeight = h;
-					image.paintedWidth = h * srcRatio;
-				}
-				break;
-		}
-		style['image-rendering'] = image.smooth? 'auto': 'pixelated'
-		image.style(style)
-
-		image.status = image.Ready
-		image._context._processActions()
+	if (image.fillMode !== ImageComponent.PreserveAspectFit) {
+		image.paintedWidth = image.width
+		image.paintedHeight = image.height
 	}
+
+	var style = {'background-image': 'url("' + image.source + '")'}
+	switch(image.fillMode) {
+		case ImageComponent.Stretch:
+			style['background-repeat'] = 'no-repeat'
+			style['background-size'] = '100% 100%'
+			break;
+		case ImageComponent.TileVertically:
+			style['background-repeat'] = 'repeat-y'
+			style['background-size'] = '100% ' + natH + 'px'
+			break;
+		case ImageComponent.TileHorizontally:
+			style['background-repeat'] = 'repeat-x'
+			style['background-size'] = natW + 'px 100%'
+			break;
+		case ImageComponent.Tile:
+			style['background-repeat'] = 'repeat-y repeat-x'
+			style['background-size'] = 'auto'
+			break;
+		case ImageComponent.PreserveAspectCrop:
+			style['background-repeat'] = 'no-repeat'
+			style['background-position'] = 'center'
+			style['background-size'] = 'cover'
+			break;
+		case ImageComponent.Pad:
+			style['background-repeat'] = 'no-repeat'
+			style['background-position'] = '0% 0%'
+			style['background-size'] = 'auto'
+			break;
+		case ImageComponent.PreserveAspectFit:
+			style['background-repeat'] = 'no-repeat'
+			style['background-position'] = 'center'
+			style['background-size'] = 'contain'
+			var w = image.width, h = image.height
+			var targetRatio = 0, srcRatio = natW / natH
+
+			if (w && h)
+				targetRatio = w / h
+
+			if (srcRatio > targetRatio && w) { // img width aligned with target width
+				image.paintedWidth = w;
+				image.paintedHeight = w / srcRatio;
+			} else {
+				image.paintedHeight = h;
+				image.paintedWidth = h * srcRatio;
+			}
+			break;
+	}
+	style['image-rendering'] = image.smooth? 'auto': 'pixelated'
+	image.style(style)
+
+	tmp.onload = null
+	tmp.onerror = null
+
+	image.status = ImageComponent.Ready
+	image._context._processActions()
+}
+
+var failImage = function(image, tmp) {
+	tmp.onload = null
+	tmp.onerror = null
+	image._onError()
+	image._context._processActions()
+}
+
+exports.initImage = function(image) {
 }
 
 exports.loadImage = function(image) {
-	image._image.src = image.source
+	var tmp = new Image()
+
+	tmp.onerror = function() {
+		failImage(image, tmp)
+	}
+
+	tmp.onload = function() {
+		updateImage(image, tmp)
+	}
+	tmp.src = image.source
 }
 
 exports.initText = function(text) {

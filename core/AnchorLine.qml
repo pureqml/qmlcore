@@ -1,5 +1,5 @@
 /// @private Anchor's vertical or horizontal line (left, right, center)
-Object {
+DummyObject {
 	property int boxIndex;
 
 	function toScreen() {

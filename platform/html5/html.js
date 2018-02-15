@@ -518,10 +518,9 @@ exports.initRectangle = function(rect) {
 
 var ImageComponent = _globals.core.Image
 
-var updateImage = function(image, tmp) {
+var updateImage = function(image, natW, natH) {
 	var style = {'background-image': 'url("' + image.source + '")'}
 
-	var natW = tmp.naturalWidth, natH = tmp.naturalHeight
 	image.sourceWidth = natW
 	image.sourceHeight = natH
 
@@ -584,16 +583,11 @@ var updateImage = function(image, tmp) {
 	style['image-rendering'] = image.smooth? 'auto': 'pixelated'
 	image.style(style)
 
-	tmp.onload = null
-	tmp.onerror = null
-
 	image.status = ImageComponent.Ready
 	image._context._processActions()
 }
 
-var failImage = function(image, tmp) {
-	tmp.onload = null
-	tmp.onerror = null
+var failImage = function(image) {
 	image._onError()
 	image._context._processActions()
 }
@@ -605,11 +599,17 @@ exports.loadImage = function(image) {
 	var tmp = new Image()
 
 	tmp.onerror = function() {
-		failImage(image, tmp)
+		tmp.onload = null
+		tmp.onerror = null
+
+		failImage(image)
 	}
 
 	tmp.onload = function() {
-		updateImage(image, tmp)
+		tmp.onload = null
+		tmp.onerror = null
+
+		updateImage(image, tmp.naturalWidth, tmp.naturalHeight)
 	}
 	tmp.src = image.source
 }

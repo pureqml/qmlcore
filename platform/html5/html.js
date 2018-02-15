@@ -518,9 +518,10 @@ exports.initRectangle = function(rect) {
 
 var ImageComponent = _globals.core.Image
 
-var updateImage = function(image, natW, natH) {
+var updateImage = function(image, metrics) {
 	var style = {'background-image': 'url("' + image.source + '")'}
 
+	var natW = metrics.width, natH = metrics.height
 	image.sourceWidth = natW
 	image.sourceHeight = natH
 
@@ -592,26 +593,33 @@ var failImage = function(image) {
 	image._context._processActions()
 }
 
-exports.initImage = function(image) {
-}
-
-exports.loadImage = function(image) {
+var loadImage = function(url, callback) {
+	log('real loadImage', url)
 	var tmp = new Image()
 
 	tmp.onerror = function() {
 		tmp.onload = null
 		tmp.onerror = null
-
-		failImage(image)
+		callback(null)
 	}
 
 	tmp.onload = function() {
 		tmp.onload = null
 		tmp.onerror = null
-
-		updateImage(image, tmp.naturalWidth, tmp.naturalHeight)
+		callback({ width: tmp.naturalWidth, height: tmp.naturalHeight })
 	}
-	tmp.src = image.source
+	tmp.src = url
+}
+
+var imageCache = new _globals.html5.cache.Cache(loadImage)
+
+exports.initImage = function(image) {
+}
+
+exports.loadImage = function(image) {
+	imageCache.get(image.source, function(metrics) {
+		updateImage(image, metrics)
+	})
 }
 
 exports.initText = function(text) {

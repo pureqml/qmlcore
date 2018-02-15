@@ -594,7 +594,6 @@ var failImage = function(image) {
 }
 
 var loadImage = function(url, callback) {
-	log('real loadImage', url)
 	var tmp = new Image()
 
 	tmp.onerror = function() {

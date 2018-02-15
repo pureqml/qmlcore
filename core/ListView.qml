@@ -205,7 +205,7 @@ BaseView {
 			++itemsCount
 
 			var s = (horizontal? item.width: item.height)
-			var visible = (p + c + s >= leftMargin && p + c < rightMargin)
+			var visible = (p + c + s >= 0 && p + c < size) //checking real delegate visibility, without prerender margin
 
 			if (item.x + item.width > maxW)
 				maxW = item.width + item.x

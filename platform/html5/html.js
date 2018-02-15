@@ -519,9 +519,11 @@ exports.initRectangle = function(rect) {
 var ImageComponent = _globals.core.Image
 
 var updateImage = function(image, tmp) {
-	image.sourceWidth = tmp.naturalWidth
-	image.sourceHeight = tmp.naturalHeight
+	var style = {}
+
 	var natW = tmp.naturalWidth, natH = tmp.naturalHeight
+	image.sourceWidth = natW
+	image.sourceHeight = natH
 
 	if (!image.width)
 		image.width = natW
@@ -533,7 +535,6 @@ var updateImage = function(image, tmp) {
 		image.paintedHeight = image.height
 	}
 
-	var style = {'background-image': 'url("' + image.source + '")'}
 	switch(image.fillMode) {
 		case ImageComponent.Stretch:
 			style['background-repeat'] = 'no-repeat'
@@ -601,6 +602,7 @@ exports.initImage = function(image) {
 }
 
 exports.loadImage = function(image) {
+	image.style('background-image', 'url("' + image.source + '")')
 	var tmp = new Image()
 
 	tmp.onerror = function() {

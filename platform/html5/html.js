@@ -519,7 +519,7 @@ exports.initRectangle = function(rect) {
 var ImageComponent = _globals.core.Image
 
 var updateImage = function(image, tmp) {
-	var style = {}
+	var style = {'background-image': 'url("' + image.source + '")'}
 
 	var natW = tmp.naturalWidth, natH = tmp.naturalHeight
 	image.sourceWidth = natW
@@ -602,7 +602,6 @@ exports.initImage = function(image) {
 }
 
 exports.loadImage = function(image) {
-	image.style('background-image', 'url("' + image.source + '")')
 	var tmp = new Image()
 
 	tmp.onerror = function() {

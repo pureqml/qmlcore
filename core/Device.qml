@@ -4,6 +4,8 @@ Object {
 	property string modelName;
 	property string deviceId;
 	property string firmware;
+	property string language;
+	property string country;
 	property string sdk;
 	property bool supportingUhd;
 	property bool supporting3d;

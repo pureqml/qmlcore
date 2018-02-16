@@ -618,9 +618,15 @@ exports.initImage = function(image) {
 }
 
 exports.loadImage = function(image) {
-	imageCache.get(image.source, function(metrics) {
+	var callback = function(metrics) {
 		updateImage(image, metrics)
-	})
+	}
+
+	if (image.source.indexOf('?') < 0) {
+		imageCache.get(image.source, callback)
+	} else {
+		loadImage(image.source, callback)
+	}
 }
 
 exports.initText = function(text) {

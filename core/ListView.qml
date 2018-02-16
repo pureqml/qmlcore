@@ -159,7 +159,7 @@ BaseView {
 	}
 
 	///@private
-	function _layout() {
+	function _layout(noPrerender) {
 		var model = this.model;
 		if (!model) {
 			this.layoutFinished()
@@ -185,7 +185,7 @@ BaseView {
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		var prerender = this.prerender * size
+		var prerender = noPrerender? 0: this.prerender * size
 		var leftMargin = -prerender
 		var rightMargin = size + prerender
 

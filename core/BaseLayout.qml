@@ -10,6 +10,7 @@ Item {
 	property bool keyNavigationWraps;		///< key navigation wraps from first to last and vise versa
 	property bool handleNavigationKeys;		///< handle navigation keys, move focus
 	property int layoutDelay: -1;			///< <0 - end of the tick (default), 0 - request animation frame, >0 - delay in ms
+	property int prerenderDelay: -1;		///< <0 - end of the tick (default), 0 - request animation frame, >0 - delay in ms
 
 	///@private
 	constructor: {
@@ -18,13 +19,23 @@ Item {
 
 	///@private
 	function _scheduleLayout() {
-		this._context.delayedAction('layout', this, this._doLayout, this.layoutDelay)
+		if (this.prerenderDelay >= 0) {
+			this._context.delayedAction('layout', this, this._doLayoutNP, this.layoutDelay)
+			this._context.delayedAction('prerender', this, this._doLayout, this.prerenderDelay)
+		} else
+			this._context.delayedAction('layout', this, this._doLayout, this.layoutDelay)
 	}
 
 	///@private
 	function _doLayout() {
 		this._processUpdates()
 		this._layout()
+	}
+
+	///@private
+	function _doLayoutNP() {
+		this._processUpdates()
+		this._layout(true)
 	}
 
 	///@private

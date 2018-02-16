@@ -111,7 +111,7 @@ Item {
 	}
 
 	///@private
-	function delayedAction(prefix, self, method, delay) {
+	function delayedAction(name, self, method, delay) {
 		var registry = self._registeredDelayedActions
 
 		if (registry === undefined)

@@ -103,7 +103,7 @@ Object {
 		while(item) {
 			x += item.x
 			y += item.y
-			if ('view' in item) {
+			if (item.hasOwnProperty('view')) {
 				x += item.viewX + item.view.content.x
 				y += item.viewY + item.view.content.y
 			}

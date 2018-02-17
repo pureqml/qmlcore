@@ -132,9 +132,19 @@ Object {
 	function _updateVisibility() {
 		var visible = this.visible && this.visibleInView
 
-		if (this.element) {
-			this.style('visibility', visible? 'inherit': 'hidden')
+		var updateStyle = true
+		var view = this.view
+		if (view !== undefined) {
+			var content = view.content
+			//do not update real style for individual delegate in case of hardware accelerated surfaces
+			//it may trigger large invisible repaints
+			//consider this as default in the future.
+			if (content.cssTranslatePositioning || content.cssNullTranslate3D)
+				updateStyle = false
 		}
+
+		if (updateStyle)
+			this.style('visibility', visible? 'inherit': 'hidden')
 
 		this.recursiveVisible = visible && (this.parent !== null? this.parent.recursiveVisible: true)
 	}

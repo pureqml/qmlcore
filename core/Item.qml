@@ -23,6 +23,7 @@ Object {
 	property lazy transform: Transform { }
 	property bool cssTranslatePositioning;
 	property bool cssNullTranslate3D;
+	property bool cssDelegateAlwaysVisibleOnAcceleratedSurfaces: true;
 
 	property lazy left:		AnchorLine	{ boxIndex: 0; }
 	property lazy top:		AnchorLine	{ boxIndex: 1; }
@@ -139,7 +140,7 @@ Object {
 			//do not update real style for individual delegate in case of hardware accelerated surfaces
 			//it may trigger large invisible repaints
 			//consider this as default in the future.
-			if (content.cssTranslatePositioning || content.cssNullTranslate3D)
+			if (content.cssDelegateAlwaysVisibleOnAcceleratedSurfaces && (content.cssTranslatePositioning || content.cssNullTranslate3D))
 				updateStyle = false
 		}
 

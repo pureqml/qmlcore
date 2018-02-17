@@ -220,9 +220,10 @@ BaseLayout {
 		if (value)
 			this._scheduleLayout();
 
+		var view = this
 		this._items.forEach(function(child) {
 			if (child !== null)
-				this._updateVisibilityForChild(child, value)
+				view._updateVisibilityForChild(child, value)
 		})
 		this._updateVisibilityForChild(this.content, value)
 	}

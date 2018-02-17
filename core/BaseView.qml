@@ -18,6 +18,14 @@ BaseLayout {
 	keyNavigationWraps: true;		///< key navigation wraps from end to beginning and vise versa
 	handleNavigationKeys: true;		///< handle navigation keys
 
+	/// @internal
+	property BaseViewContent content: BaseViewContent {
+		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
+	}
+
+	onContentXChanged: { this.content.x = -value; }
+	onContentYChanged: { this.content.y = -value; }
+
 	/// returns index of item by x,y coordinates
 	function itemAt(x, y) {
 		var idx = this.indexAt(x, y)
@@ -207,14 +215,6 @@ BaseLayout {
 		this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._processUpdates.apply(this)
 	}
-
-	/// @internal
-	property BaseViewContent content: BaseViewContent {
-		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
-	}
-
-	onContentXChanged: { this.content.x = -value; }
-	onContentYChanged: { this.content.y = -value; }
 
 	onRecursiveVisibleChanged: {
 		if (value)

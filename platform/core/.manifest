@@ -1,16 +1,22 @@
 {
 	"standalone": false,
-	"properties.disableAnimations": false,
-	"properties.html5.prefix": "",
-	"properties.style.font" : {
-		"family": "Arial",
-		"pixelSize": 16,
-		"lineHeight": 1.2
-	},
+	"properties": {
+		"disableAnimations": false,
 
-	"properties.trace" : {
-		"keys" : false,
-		"focus": false,
-		"listeners": false
+		"html5.prefix": "",
+
+		"style.font" : {
+			"family": "Arial",
+			"pixelSize": 16,
+			"lineHeight": 1.2
+		},
+
+		"trace" : {
+			"keys" : false,
+			"focus": false,
+			"listeners": false
+		},
+
+		"log": { "disable": false }
 	}
 }

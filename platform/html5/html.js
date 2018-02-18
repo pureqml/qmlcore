@@ -472,11 +472,15 @@ exports.init = function(ctx) {
 		body.append(div);
 	}
 
-	ctx._textCanvas = html.createElement(ctx, 'canvas')
-	ctx._textCanvas.style('width', 0)
-	ctx._textCanvas.style('height', 0)
-	div.append(ctx._textCanvas)
-	ctx._textCanvasContext = ('getContext' in ctx._textCanvas.dom)? ctx._textCanvas.dom.getContext('2d'): null
+	if (Modernizr.canvastext) {
+		ctx._textCanvas = html.createElement(ctx, 'canvas')
+		ctx._textCanvas.style('width', 0)
+		ctx._textCanvas.style('height', 0)
+		div.append(ctx._textCanvas)
+		ctx._textCanvasContext = ('getContext' in ctx._textCanvas.dom)? ctx._textCanvas.dom.getContext('2d'): null
+	} else {
+		ctx._textCanvasContext = null
+	}
 
 	ctx.element = div
 	ctx.width = w

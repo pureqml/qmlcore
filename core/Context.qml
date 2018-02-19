@@ -62,8 +62,8 @@ Item {
 	}
 
 	///@private
-	function _onCompleted(callback) {
-		this.scheduleAction(callback)
+	function _onCompleted(object, callback) {
+		this.scheduleAction(function() { callback.call(object) })
 	}
 
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }

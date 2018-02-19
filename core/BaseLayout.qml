@@ -11,6 +11,7 @@ Item {
 	property bool handleNavigationKeys;		///< handle navigation keys, move focus
 	property int layoutDelay: -1;			///< <0 - end of the tick (default), 0 - request animation frame, >0 - delay in ms
 	property int prerenderDelay: -1;		///< <0 - end of the tick (default), 0 - request animation frame, >0 - delay in ms
+	property bool offlineLayout;			///< layout delegates even if view's invisible
 
 	///@private
 	constructor: {
@@ -19,6 +20,9 @@ Item {
 
 	///@private
 	function _scheduleLayout() {
+		if (!this.recursiveVisible && !this.offlineLayout)
+			return
+
 		if (this.prerenderDelay >= 0) {
 			this._context.delayedAction('layout', this, this._doLayoutNP, this.layoutDelay)
 			this._context.delayedAction('prerender', this, this._doLayout, this.prerenderDelay)
@@ -43,7 +47,6 @@ Item {
 
 	onSpacingChanged,
 	onRecursiveVisibleChanged: {
-		if (this.recursiveVisible)
-			this._scheduleLayout()
+		this._scheduleLayout()
 	}
 }

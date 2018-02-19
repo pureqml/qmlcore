@@ -3,7 +3,7 @@ BaseView {
 
 	///@private
 	function _layout() {
-		if (!this.recursiveVisible) {
+		if (!this.recursiveVisible && !this.offlineLayout) {
 			this.layoutFinished()
 			return
 		}

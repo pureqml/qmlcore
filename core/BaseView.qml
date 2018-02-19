@@ -114,10 +114,13 @@ BaseLayout {
 		if (this._attached || !this.model || !this.delegate)
 			return
 
-		this.connectOn(this.model, 'reset', this._onReset.bind(this))
-		this.connectOn(this.model, 'rowsInserted', this._onRowsInserted.bind(this))
-		this.connectOn(this.model, 'rowsChanged', this._onRowsChanged.bind(this))
-		this.connectOn(this.model, 'rowsRemoved', this._onRowsRemoved.bind(this))
+		var model = this.model
+
+		this.connectOn(model, 'reset', this._onReset.bind(this))
+		this.connectOn(model, 'rowsInserted', this._onRowsInserted.bind(this))
+		this.connectOn(model, 'rowsChanged', this._onRowsChanged.bind(this))
+		this.connectOn(model, 'rowsRemoved', this._onRowsRemoved.bind(this))
+
 		this._attached = true
 		this._onReset()
 	}

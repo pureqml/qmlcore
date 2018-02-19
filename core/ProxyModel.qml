@@ -120,10 +120,12 @@ Object {
 
 	/// @private
 	onCompleted: {
-		this.target.on('reset', this._buildIndexMap.bind(this))
-		this.target.on('rowsInserted', this._buildIndexMap.bind(this))
-		this.target.on('rowsChanged', this._buildIndexMap.bind(this))
-		this.target.on('rowsRemoved', this._buildIndexMap.bind(this))
+		var target = this.target
+
+		this.connectOn(target, 'reset', this._buildIndexMap.bind(this))
+		this.connectOn(target, 'rowsInserted', this._buildIndexMap.bind(this))
+		this.connectOn(target, 'rowsChanged', this._buildIndexMap.bind(this))
+		this.connectOn(target, 'rowsRemoved', this._buildIndexMap.bind(this))
 
 		this._buildIndexMap()
 	}

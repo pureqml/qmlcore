@@ -237,7 +237,7 @@ BaseView {
 		//log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		this.layoutFinished()
 		if (created)
-			this._context._complete()
+			this._context.scheduleComplete()
 	}
 
 	///@private

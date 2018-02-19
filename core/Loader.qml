@@ -45,7 +45,7 @@ Item {
 		item.$c(c)
 		item.$s(c)
 		this.item = item
-		this._context._complete()
+		this._context.scheduleComplete()
 		this._updateVisibilityForChild(this.item, this.recursiveVisible)
 		this.loaded()
 	}

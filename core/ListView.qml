@@ -168,7 +168,7 @@ BaseView {
 
 		this.count = model.count
 
-		if (!this.recursiveVisible) {
+		if (!this.recursiveVisible && !this.offlineLayout) {
 			this.layoutFinished()
 			return
 		}

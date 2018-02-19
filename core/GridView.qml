@@ -145,7 +145,7 @@ BaseView {
 
 	///@private
 	function _layout() {
-		if (!this.recursiveVisible)
+		if (!this.recursiveVisible && !this.offlineLayout)
 			return
 
 		var model = this.model;

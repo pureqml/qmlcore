@@ -359,7 +359,12 @@ PropertyStoragePrototype.callOnChanged = function(object, name, value) {
 		handlers.forEach(invoker)
 }
 
-
+PropertyStoragePrototype.removeOnChanged = function(callback) {
+	var handlers = this.onChanged
+	var idx = handlers.indexOf(callback)
+	if (idx >= 0)
+		return handlers.splice(idx, 1)
+}
 
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert

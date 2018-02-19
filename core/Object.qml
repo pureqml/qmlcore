@@ -84,14 +84,12 @@ EventEmitter {
 	///@private removes 'on changed' callback
 	function removeOnChanged(name, callback) {
 		var storage = this.__properties[name]
-		if (storage !== undefined) {
-			var handlers = storage.onChanged
-			var idx = handlers.indexOf(callback)
-			if (idx >= 0)
-				handlers.splice(idx, 1)
-			else if ($manifest$trace$listeners)
-				log('failed to remove changed listener for', name, 'from', this)
-		}
+		var removed
+		if (storage !== undefined)
+			removed = storage.removeOnChanged(callback)
+
+		if ($manifest$trace$listeners && !removed)
+			log('failed to remove changed listener for', name, 'from', this)
 	}
 
 	/// @private removes dynamic value updater

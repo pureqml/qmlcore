@@ -543,7 +543,7 @@ exports.core.EventBinder.prototype.enable = function(value) {
 }
 
 var protoEvent = function(prefix, proto, name, callback) {
-	var sname = '__' + prefix + '__' + name
+	var sname = prefix + '__' + name
 	//if property was in base prototype, create shallow copy and put our handler there or we would add to base prototype's array
 	var ownStorage = proto.hasOwnProperty(sname)
 	var storage = proto[sname]
@@ -560,13 +560,13 @@ var protoEvent = function(prefix, proto, name, callback) {
 }
 
 exports.core._protoOn = function(proto, name, callback)
-{ protoEvent('on', proto, name, callback) }
+{ protoEvent('__on', proto, name, callback) }
 
 exports.core._protoOnChanged = function(proto, name, callback)
-{ protoEvent('changed', proto, name, callback) }
+{ protoEvent('__changed', proto, name, callback) }
 
 exports.core._protoOnKey = function(proto, name, callback)
-{ protoEvent('key', proto, name, callback) }
+{ protoEvent('__key', proto, name, callback) }
 
 var ObjectEnumerator = function(callback) {
 	this._callback = callback

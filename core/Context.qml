@@ -85,7 +85,23 @@ Item {
 		return instance;
 	}
 
-	///@private
+	function wrapNativeCallback(callback) {
+		var ctx = this
+		return function() {
+			try {
+				var r = callback.apply(this, arguments)
+				ctx._processActions()
+				return r
+			} catch(ex) {
+				ctx._processActions()
+				throw ex
+			}
+		}
+	}
+
+	///@internal
+	///generally you don't need to call it yourself
+	///if you need to call it from native callback, use wrapNativeCallback method
 	function _processActions() {
 		if (!this._started || this._processingActions)
 			return

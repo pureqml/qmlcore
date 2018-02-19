@@ -461,7 +461,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 			var duration = animation.duration
 
-			var nextFrame = function() {
+			var nextFrame = context.wrapNativeCallback(function() {
 				var now = Date.now()
 				var t = 1.0 * (now - storage.started) / duration
 				if (t >= 1 || !animation.active()) {
@@ -471,8 +471,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					storage.callOnChanged(self, name, storage.getCurrentValue(defaultValue), src)
 					storage.frameRequest = backend.requestAnimationFrame(nextFrame)
 				}
-				context._processActions() //fixme: handle exception, create helper in core, e.g. wrapNativeCallback(), port existing html5 code
-			}
+			})
 
 			storage.frameRequest = backend.requestAnimationFrame(nextFrame)
 

@@ -18,6 +18,9 @@ Item {
 		this.count = 0
 	}
 
+	/// @private
+	function _attach() { }
+
 	///@private
 	function _scheduleLayout() {
 		if (!this.recursiveVisible && !this.offlineLayout)
@@ -32,12 +35,14 @@ Item {
 
 	///@private
 	function _doLayout() {
+		this._attach()
 		this._processUpdates()
 		this._layout()
 	}
 
 	///@private
 	function _doLayoutNP() {
+		this._attach()
 		this._processUpdates()
 		this._layout(true)
 	}

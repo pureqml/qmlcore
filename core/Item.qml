@@ -321,11 +321,10 @@ Object {
 
 		if (key !== undefined) {
 			if (this.keyProcessDelay) {
-				if (eventTime !== this._lastEvent && eventTime - this.keyProcessDelay < this._lastEvent)
+				if (this._lastEvent && eventTime - this._lastEvent < this.keyProcessDelay)
 					return true
 
-				if (this._lastEvent !== eventTime)
-					this._lastEvent = eventTime
+				this._lastEvent = eventTime
 			}
 
 			//fixme: create invoker only if any of handlers exist

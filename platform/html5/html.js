@@ -790,7 +790,7 @@ var cssMappings = {
 
 ///@private tries to set animation on name using css transitions, returns true on success
 exports.setAnimation = function (component, name, animation) {
-	if (!exports.capabilities.csstransitions || (animation && !animation.cssTransition))
+	if (!exports.capabilities.csstransitions || $manifest$cssDisableTransitions || (animation && !animation.cssTransition))
 		return false
 
 	var css = cssMappings[name]

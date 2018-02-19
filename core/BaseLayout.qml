@@ -54,4 +54,7 @@ Item {
 	onRecursiveVisibleChanged: {
 		this._scheduleLayout()
 	}
+
+	///@private
+	onCompleted: { this._scheduleLayout() }
 }

@@ -246,7 +246,5 @@ BaseLayout {
 		this.element.on('scroll', function(event) {
 			self._updateScrollPositions(self.element.dom.scrollLeft, self.element.dom.scrollTop)
 		}.bind(this))
-
-		this._scheduleLayout()
 	}
 }

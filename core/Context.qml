@@ -68,9 +68,9 @@ Item {
 
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }
 
-	///@private
-	function _complete() {
-		this._processActions()
+	///@internal
+	function scheduleComplete() {
+		this.delayedAction('completed', this, this._processActions)
 	}
 
 	///@private
@@ -173,7 +173,7 @@ Item {
 		this.boxChanged()
 		log('Context: calling completed()')
 		this._started = true
-		this._complete()
+		this._processActions()
 		this._completed = true
 	}
 }

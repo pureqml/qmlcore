@@ -26,6 +26,6 @@ BaseView {
 		}
 		this.layoutFinished()
 		if (created)
-			this._context._complete()
+			this._context.scheduleComplete()
 	}
 }

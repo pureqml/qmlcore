@@ -115,7 +115,6 @@ Item {
 				break
 			}
 		}
-		this._context._processActions()
 	}
 
 	/// @private
@@ -144,7 +143,6 @@ Item {
 				break
 			}
 		}
-		this._context._processActions()
 	}
 
 	/// @private
@@ -154,7 +152,8 @@ Item {
 
 		startupTimer.restart()
 
-		this.element.on('gamepadconnected', this.gamepadConnectedHandler.bind(this))
-		this.element.on('gamepaddisconnected', this.gamepadDisconnectedHandler.bind(this))
+		var ctx = this._context
+		this.element.on('gamepadconnected', ctx.wrapNativeCallback(this.gamepadConnectedHandler.bind(this)))
+		this.element.on('gamepaddisconnected', ctx.wrapNativeCallback(this.gamepadDisconnectedHandler.bind(this)))
 	}
 }

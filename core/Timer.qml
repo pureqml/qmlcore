@@ -6,6 +6,10 @@ Object {
 	property bool running;				///< current timer status, true - running, false - paused
 	property bool triggeredOnStart;		///< fire timer's signal on start or activation
 
+	constructor: {
+		this._trigger = this._context.wrapNativeCallback(this.triggered.bind(this))
+	}
+
 	/// restart timer, activate if stopped
 	restart: { this._restart(); this.running = true; }
 
@@ -56,8 +60,8 @@ Object {
 		var self = this
 		var context = self._context
 		if (this.repeat)
-			this._interval = setInterval(function() { self.triggered(); context._processActions(); }, this.interval);
+			this._interval = setInterval(this._trigger, this.interval);
 		else
-			this._timeout = setTimeout(function() { self.triggered(); context._processActions(); }, this.interval);
+			this._timeout = setTimeout(this._trigger, this.interval);
 	}
 }

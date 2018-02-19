@@ -41,6 +41,7 @@ Object {
 	property int keyProcessDelay;			///< delay time between key pressed events
 
 	constructor: {
+		this._pressedHandlers = {}
 		this._topPadding = 0
 		if (parent) {
 			if (this.element)
@@ -54,6 +55,7 @@ Object {
 	function discard() {
 		_globals.core.Object.prototype.discard.apply(this)
 		this.focusedChild = null
+		this._pressedHandlers = {}
 		if (this.element)
 			this.element.discard()
 	}
@@ -349,6 +351,21 @@ Object {
 		return false
 	}
 
+	///@private registers key handler
+	function onPressed (name, callback) {
+		var wrapper
+		if (name != 'Key')
+			wrapper = function(key, event) { event.accepted = true; callback(key, event); return event.accepted }
+		else
+			wrapper = callback;
+
+		if (name in this._pressedHandlers)
+			this._pressedHandlers[name].push(wrapper);
+		else
+			this._pressedHandlers[name] = [wrapper];
+	}
+
+	/// outputs component path in qml (e.g Rectangle → Item → ListItem → Rectangle)
 	function getComponentPath() {
 		var path = []
 		var self = this

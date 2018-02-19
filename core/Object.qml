@@ -12,7 +12,6 @@ EventEmitter {
 			local._delegate = this
 		}
 		this._changedConnections = []
-		this._pressedHandlers = {}
 		this._properties = {}
 	}
 
@@ -46,7 +45,6 @@ EventEmitter {
 
 		this.parent = null
 		this._local = {}
-		this._pressedHandlers = {}
 
 		var properties = this.__properties
 		for(var name in properties) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
@@ -106,20 +104,6 @@ EventEmitter {
 	/// @private replaces dynamic value updater
 	function _replaceUpdater (name, newUpdaters) {
 		this._createPropertyStorage(name).replaceUpdater(this, newUpdaters)
-	}
-
-	///@private registers key handler
-	function onPressed (name, callback) {
-		var wrapper
-		if (name != 'Key')
-			wrapper = function(key, event) { event.accepted = true; callback(key, event); return event.accepted }
-		else
-			wrapper = callback;
-
-		if (name in this._pressedHandlers)
-			this._pressedHandlers[name].push(wrapper);
-		else
-			this._pressedHandlers[name] = [wrapper];
 	}
 
 	///@private creates property storage

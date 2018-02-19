@@ -9,7 +9,7 @@ exports.createAddRule = function(style) {
 			try {
 				sheet.addRule(name, rules)
 			} catch(e) {
-				log("InsertRule failed:", e)
+				log("AddRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules)
 			}
 		}
 	}
@@ -19,7 +19,7 @@ exports.createAddRule = function(style) {
 			try {
 				sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length)
 			} catch(e) {
-				log("InsertRule failed:", e)
+				log("InsertRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules)
 			}
 		}
 	}
@@ -790,7 +790,7 @@ var cssMappings = {
 
 ///@private tries to set animation on name using css transitions, returns true on success
 exports.setAnimation = function (component, name, animation) {
-	if (!exports.capabilities.csstransitions || (animation && !animation.cssTransition))
+	if (!exports.capabilities.csstransitions || $manifest$cssDisableTransitions || (animation && !animation.cssTransition))
 		return false
 
 	var css = cssMappings[name]

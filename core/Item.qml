@@ -142,7 +142,7 @@ Object {
 			//do not update real style for individual delegate in case of hardware accelerated surfaces
 			//it may trigger large invisible repaints
 			//consider this as default in the future.
-			if (content.cssDelegateAlwaysVisibleOnAcceleratedSurfaces && (content.cssTranslatePositioning || content.cssNullTranslate3D))
+			if (content.cssDelegateAlwaysVisibleOnAcceleratedSurfaces && (content.cssTranslatePositioning || content.cssNullTranslate3D) && !$manifest$cssDisableTransformations)
 				updateStyle = false
 		}
 
@@ -177,7 +177,7 @@ Object {
 	onXChanged,
 	onViewXChanged: {
 		var x = this.x + this.viewX
-		if (this.cssTranslatePositioning)
+		if (this.cssTranslatePositioning && !$manifest$cssDisableTransformations)
 			this.transform.translateX = x
 		else
 			this.style('left', x)
@@ -187,7 +187,7 @@ Object {
 	onYChanged,
 	onViewYChanged: {
 		var y = this.y + this.viewY
-		if (this.cssTranslatePositioning)
+		if (this.cssTranslatePositioning && !$manifest$cssDisableTransformations)
 			this.transform.translateY = y
 		else
 			this.style('top', y)
@@ -195,10 +195,8 @@ Object {
 	}
 
 	onCssNullTranslate3DChanged: {
-		if (value)
-			this.style('transform', 'translate3d(0, 0, 0)')
-		else
-			this.style('transform', '')
+		if (!$manifest$cssDisableTransformations)
+			this.style('transform', value ? 'translateZ(0)' : '')
 	}
 
 	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }

@@ -3,6 +3,7 @@
 	"requires": ["core"],
 	"properties": {
 		"cssAutoClassificator": false,
-		"cssDisableTransitions": false
+		"cssDisableTransitions": false,
+		"cssDisableTransformations": false
 	}
 }

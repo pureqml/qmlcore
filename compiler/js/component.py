@@ -12,6 +12,7 @@ class component_generator(object):
 		self.aliases = {}
 		self.declared_properties = {}
 		self.lazy_properties = {}
+		self.const_properties = {}
 		self.properties = []
 		self.enums = {}
 		self.assignments = {}
@@ -85,13 +86,20 @@ class component_generator(object):
 					raise Exception("duplicate property " + name)
 
 				#print self.name, name, default_value, lang.value_is_trivial(default_value)
-				if child.lazy and isinstance(default_value, lang.Component):
+				if child.lazy:
+					if not isinstance(default_value, lang.Component):
+						raise Exception("lazy property must be declared with component as value")
 					if len(child.properties) != 1:
 						raise Exception("property %s is lazy, hence should be declared alone" %name)
 					self.lazy_properties[name] = self.create_component_generator(default_value, '<lazy:%s>' %name)
 
+				if child.const:
+					if len(child.properties) != 1:
+						raise Exception("property %s is const, hence should be declared alone" %name)
+					self.const_properties[name] = default_value #string code
+
 				self.declared_properties[name] = child
-				if default_value is not None:
+				if default_value is not None and not child.const:
 					if not child.lazy and not lang.value_is_trivial(default_value):
 						self.assign(name, default_value)
 		elif t is lang.AliasProperty:
@@ -266,6 +274,11 @@ class component_generator(object):
 		code = self.generate_creator_function(registry, var, value, ident_n + 1)
 		return "%score.addLazyProperty(%s, '%s', %s)" %(ident, proto, name, code)
 
+	def generate_const_property(self, registry, proto, name, code, ident_n = 1):
+		ident = "\t" * ident_n
+		var = 'const$' + name
+		return "%score.addConstProperty(%s, '%s', function() %s)" %(ident, proto, name, code)
+
 	def transform_handlers(self, registry, blocks):
 		result = {}
 		for (path, name), (args, code) in blocks.iteritems():
@@ -297,6 +310,8 @@ class component_generator(object):
 				if prop.lazy:
 					gen = self.lazy_properties[name]
 					r.append(self.generate_lazy_property(registry, self.proto_name, prop.type, name, gen, ident_n))
+				elif prop.const:
+					r.append(self.generate_const_property(registry, self.proto_name, name, self.const_properties[name]))
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
@@ -442,6 +457,8 @@ class component_generator(object):
 					if prop.lazy:
 						gen = self.lazy_properties[name]
 						r.append(self.generate_lazy_property(registry, parent, prop.type, name, gen, ident_n))
+					elif prop.const:
+						r.append(self.generate_const_property(registry, parent, name, self.const_properties[name]))
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):

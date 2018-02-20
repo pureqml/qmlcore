@@ -125,7 +125,7 @@ Object {
 			item._removeUpdater('width')
 			this._subscribe(item)
 		}
-		this._subscribe(value.parent)
+		this._subscribe(value[0])
 		this._updateAll()
 	}
 
@@ -137,7 +137,7 @@ Object {
 			anchors._removeUpdater('width')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
+		this._subscribe(value[0])
 		this._updateAll()
 	}
 
@@ -149,7 +149,7 @@ Object {
 			anchors._removeUpdater('width')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
+		this._subscribe(value[0])
 		this._updateAll()
 
 	}
@@ -161,7 +161,7 @@ Object {
 			item._removeUpdater('height')
 			this._subscribe(item)
 		}
-		this._subscribe(value.parent)
+		this._subscribe(value[0])
 		this._updateAll()
 
 	}
@@ -173,7 +173,7 @@ Object {
 			item._removeUpdater('height')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
+		this._subscribe(value[0])
 		this._updateAll()
 	}
 
@@ -185,7 +185,7 @@ Object {
 			item._removeUpdater('height')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
+		this._subscribe(value[0])
 		this._updateAll()
 	}
 

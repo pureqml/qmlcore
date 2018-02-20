@@ -237,6 +237,19 @@ exports.addLazyProperty = function(proto, name, creator) {
 	})
 }
 
+exports.addConstProperty = function(proto, name, getter) {
+	Object.defineProperty(proto, name, {
+		get: function() {
+			return getter.call(this)
+		},
+
+		set: function(newValue) {
+			throw new Error('could not set const property')
+		},
+		enumerable: true
+	})
+}
+
 var PropertyStorage = function(value) {
 	this.value = value
 	this.onChanged = []

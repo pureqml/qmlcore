@@ -21,7 +21,7 @@ Object {
 
 	constructor : {
 		this._items = []
-		this._boundUpdateAll = this._updateAll.bind(this)
+		this._scheduleUpdate = function() { this._context.delayedAction('update-anchors', this, this._updateAll) }.bind(this)
 	}
 
 	/** @private */
@@ -48,56 +48,61 @@ Object {
 		var tm = anchors.topMargin || anchors.margins
 		var bm = anchors.bottomMargin || anchors.margins
 
+		var toScreen = function(line) {
+			var object = line[0], index = line[1]
+			return object.toScreen()[index]
+		}
+
 		var left, top, right, bottom, hcenter, vcenter
 		if (leftAnchor && rightAnchor) {
-			left = leftAnchor.toScreen()
-			right = rightAnchor.toScreen()
+			left = toScreen(leftAnchor)
+			right = toScreen(rightAnchor)
 			item.x = left + lm - parentX - item.viewX
 			item.width = right - left - rm - lm
 		} else if (leftAnchor && hcenterAnchor) {
-			left = leftAnchor.toScreen()
-			hcenter = hcenterAnchor.toScreen();
+			left = toScreen(leftAnchor)
+			hcenter = toScreen(hcenterAnchor);
 			item.x = left + lm - parentX - item.viewX
 			item.width = (hcenter - left) * 2 - rm - lm
 		} else if (hcenterAnchor && rightAnchor) {
-			hcenter = hcenterAnchor.toScreen();
-			right = rightAnchor.toScreen()
+			hcenter = toScreen(hcenterAnchor);
+			right = toScreen(rightAnchor)
 			item.width = (right - hcenter) * 2 - rm - lm
 			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
 		} else if (leftAnchor) {
-			left = leftAnchor.toScreen()
+			left = toScreen(leftAnchor)
 			item.x = left + lm - parentX - item.viewX
 		} else if (rightAnchor) {
-			right = rightAnchor.toScreen()
+			right = toScreen(rightAnchor)
 			item.x = right - parentX - rm - item.width - item.viewX
 		} else if (hcenterAnchor) {
-			hcenter = hcenterAnchor.toScreen()
+			hcenter = toScreen(hcenterAnchor)
 			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
 		}
 
 		if (topAnchor && bottomAnchor) {
-			top = topAnchor.toScreen()
-			bottom = bottomAnchor.toScreen()
+			top = toScreen(topAnchor)
+			bottom = toScreen(bottomAnchor)
 			item.y = top + tm - parentY - item.viewY
 			item.height = bottom - top - bm - tm
 		} else if (topAnchor && vcenterAnchor) {
-			top = topAnchor.toScreen()
-			vcenter = vcenterAnchor.toScreen()
+			top = toScreen(topAnchor)
+			vcenter = toScreen(vcenterAnchor)
 			item.y = top + tm - parentY - item.viewY
 			item.height = (vcenter - top) * 2 - bm - tm
 		} else if (vcenterAnchor && bottomAnchor) {
-			vcenter = vcenterAnchor.toScreen()
-			bottom = bottomAnchor.toScreen()
+			vcenter = toScreen(vcenterAnchor)
+			bottom = toScreen(bottomAnchor)
 			item.height = (bottom - vcenter) * 2 - bm - tm
 			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
 		} else if (topAnchor) {
-			top = topAnchor.toScreen()
+			top = toScreen(topAnchor)
 			item.y = top + tm - parentY - item.viewY
 		} else if (bottomAnchor) {
-			bottom = bottomAnchor.toScreen()
+			bottom = toScreen(bottomAnchor)
 			item.y = bottom - parentY - bm - item.height - item.viewY
 		} else if (vcenterAnchor) {
-			vcenter = vcenterAnchor.toScreen()
+			vcenter = toScreen(vcenterAnchor)
 			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
 		}
 	}
@@ -108,7 +113,7 @@ Object {
 		//connect only once per item
 		if (items.indexOf(src) < 0) {
 			items.push(src)
-			this.connectOn(src, 'boxChanged', this._boundUpdateAll)
+			this.connectOn(src, 'boxChanged', this._scheduleUpdate)
 		}
 	}
 
@@ -120,8 +125,8 @@ Object {
 			item._removeUpdater('width')
 			this._subscribe(item)
 		}
-		this._subscribe(value.parent)
-		this._updateAll()
+		this._subscribe(value[0])
+		this._scheduleUpdate()
 	}
 
 	onRightChanged: {
@@ -132,8 +137,8 @@ Object {
 			anchors._removeUpdater('width')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
-		this._updateAll()
+		this._subscribe(value[0])
+		this._scheduleUpdate()
 	}
 
 	onHorizontalCenterChanged: {
@@ -144,8 +149,8 @@ Object {
 			anchors._removeUpdater('width')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
-		this._updateAll()
+		this._subscribe(value[0])
+		this._scheduleUpdate()
 
 	}
 	onTopChanged: {
@@ -156,8 +161,8 @@ Object {
 			item._removeUpdater('height')
 			this._subscribe(item)
 		}
-		this._subscribe(value.parent)
-		this._updateAll()
+		this._subscribe(value[0])
+		this._scheduleUpdate()
 
 	}
 	onBottomChanged: {
@@ -168,8 +173,8 @@ Object {
 			item._removeUpdater('height')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
-		this._updateAll()
+		this._subscribe(value[0])
+		this._scheduleUpdate()
 	}
 
 	onVerticalCenterChanged: {
@@ -180,8 +185,8 @@ Object {
 			item._removeUpdater('height')
 		}
 		this._subscribe(item)
-		this._subscribe(value.parent)
-		this._updateAll()
+		this._subscribe(value[0])
+		this._scheduleUpdate()
 	}
 
 	onFillChanged: {
@@ -192,7 +197,7 @@ Object {
 		item._removeUpdater('y')
 		item._removeUpdater('height')
 		this._subscribe(value)
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onCenterInChanged: {
@@ -202,12 +207,12 @@ Object {
 		item._removeUpdater('y')
 		this._subscribe(value)
 		this._subscribe(item)
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onLeftMarginChanged,
 	onRightMarginChanged,
 	onTopMarginChanged,
 	onBottomMarginChanged,
-	onMarginChanged:		{ this.marginsUpdated(); this._updateAll(); }
+	onMarginChanged:		{ this.marginsUpdated(); this._scheduleUpdate(); }
 }

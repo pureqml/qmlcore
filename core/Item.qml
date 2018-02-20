@@ -25,13 +25,13 @@ Object {
 	property bool cssNullTranslate3D;
 	property bool cssDelegateAlwaysVisibleOnAcceleratedSurfaces: true;
 
-	property lazy left:		AnchorLine	{ boxIndex: 0; }
-	property lazy top:		AnchorLine	{ boxIndex: 1; }
-	property lazy right:	AnchorLine	{ boxIndex: 2; }
-	property lazy bottom:	AnchorLine	{ boxIndex: 3; }
+	property const left: 	{ return [this, 0]; }
+	property const top: 	{ return [this, 1]; }
+	property const right:	{ return [this, 2]; }
+	property const bottom:	{ return [this, 3]; }
 
-	property lazy horizontalCenter:	AnchorLine	{ boxIndex: 4; }
-	property lazy verticalCenter:	AnchorLine	{ boxIndex: 5; }
+	property const horizontalCenter:	{ return [this, 4]; }
+	property const verticalCenter:		{ return [this, 5]; }
 
 	//do not use, view internal
 	signal boxChanged;						///< emitted when position or size changed

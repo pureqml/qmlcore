@@ -21,7 +21,7 @@ Object {
 
 	constructor : {
 		this._items = []
-		this._boundUpdateAll = this._updateAll.bind(this)
+		this._scheduleUpdate = function() { this._context.delayedAction('update-anchors', this, this._updateAll) }.bind(this)
 	}
 
 	/** @private */
@@ -113,7 +113,7 @@ Object {
 		//connect only once per item
 		if (items.indexOf(src) < 0) {
 			items.push(src)
-			this.connectOn(src, 'boxChanged', this._boundUpdateAll)
+			this.connectOn(src, 'boxChanged', this._scheduleUpdate)
 		}
 	}
 
@@ -126,7 +126,7 @@ Object {
 			this._subscribe(item)
 		}
 		this._subscribe(value[0])
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onRightChanged: {
@@ -138,7 +138,7 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onHorizontalCenterChanged: {
@@ -150,7 +150,7 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._updateAll()
+		this._scheduleUpdate()
 
 	}
 	onTopChanged: {
@@ -162,7 +162,7 @@ Object {
 			this._subscribe(item)
 		}
 		this._subscribe(value[0])
-		this._updateAll()
+		this._scheduleUpdate()
 
 	}
 	onBottomChanged: {
@@ -174,7 +174,7 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onVerticalCenterChanged: {
@@ -186,7 +186,7 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onFillChanged: {
@@ -197,7 +197,7 @@ Object {
 		item._removeUpdater('y')
 		item._removeUpdater('height')
 		this._subscribe(value)
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onCenterInChanged: {
@@ -207,12 +207,12 @@ Object {
 		item._removeUpdater('y')
 		this._subscribe(value)
 		this._subscribe(item)
-		this._updateAll()
+		this._scheduleUpdate()
 	}
 
 	onLeftMarginChanged,
 	onRightMarginChanged,
 	onTopMarginChanged,
 	onBottomMarginChanged,
-	onMarginChanged:		{ this.marginsUpdated(); this._updateAll(); }
+	onMarginChanged:		{ this.marginsUpdated(); this._scheduleUpdate(); }
 }

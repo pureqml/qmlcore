@@ -196,7 +196,7 @@ Object {
 
 	onCssNullTranslate3DChanged: {
 		if (!$manifest$cssDisableTransformations)
-			this.style('transform', value ? 'translate3d(0, 0, 0)' : '')
+			this.style('transform', value ? 'translateZ(0)' : '')
 	}
 
 	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }

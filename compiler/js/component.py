@@ -341,6 +341,10 @@ class component_generator(object):
 			lines.append(code)
 			return var
 
+		def put_in_prototype(handler):
+			path, name = handler
+			return not path and self.prototype
+
 		code_index = 0
 
 		for code, methods in self.transform_handlers(registry, self.methods):
@@ -354,35 +358,40 @@ class component_generator(object):
 				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			handlers = filter(put_in_prototype, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for (path, name) in handlers:
-				if path or not self.prototype: #sync with condition below
-					continue
-
 				assert not path
 				r.append("%s_globals.core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			handlers = filter(lambda h: put_in_prototype(h) and h[1] != 'completed', handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
-			for (path, name) in handlers:
-				if path or not self.prototype or name == 'completed': #sync with condition below
-					continue
+			for path, name in handlers:
 				r.append("%s_globals.core._protoOn(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			handlers = filter(put_in_prototype, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for (path, name) in handlers:
-				if path or not self.prototype: #sync with condition below
-					continue
 				r.append("%s_globals.core._protoOnKey(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 
@@ -565,6 +574,10 @@ class component_generator(object):
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
+		def put_in_instance(handler):
+			path, name = handler
+			return path or not self.prototype
+
 		code_index = 0
 		def next_codevar(lines, code, index):
 			var = "$code$%d" %index
@@ -583,13 +596,15 @@ class component_generator(object):
 					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, path))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			handlers = filter(lambda h: put_in_instance(h) or h[1] == 'completed', handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for path, name in sorted(handlers):
-				if not path and self.prototype and name != 'completed': #sync with condition above
-					continue
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				if name != "completed":
 					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, path))
@@ -597,24 +612,28 @@ class component_generator(object):
 					r.append("%s%s._context._onCompleted(%s, %s)" %(ident, path, path, code))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			handlers = filter(put_in_instance, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for path, name in sorted(handlers):
-				if not path and self.prototype: #sync with condition above
-					continue
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, path))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			handlers = filter(put_in_instance, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for path, name in sorted(handlers):
-				if not path and self.prototype: #sync with condition above
-					continue
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, path))
 

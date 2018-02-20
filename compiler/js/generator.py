@@ -122,16 +122,16 @@ class generator(object):
 					pi.properties[j] = (nv[0], bid.encode('utf-8'))
 					break
 
-		generated = set([root_type])
 		queue = ['core.Context']
 		code, base_class = {}, {}
+		code[root_type] = ''
 
 		for gen in self.components.itervalues():
 			gen.pregenerate(self)
 
 		while queue or self.used_components:
 			for component in self.used_components:
-				if component not in generated:
+				if component not in code:
 					queue.append(component)
 			self.used_components = set()
 
@@ -141,8 +141,8 @@ class generator(object):
 				base_type = self.find_component(component.package, component.component.name)
 				base_class[name] = base_type
 
-				code[name] = self.generate_component(component)
-				generated.add(name)
+				if name not in code:
+					code[name] = self.generate_component(component)
 
 		r = ''
 		order = []

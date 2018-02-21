@@ -257,9 +257,13 @@ BaseView {
 		this.style(style)
 	}
 
-	///@private
 	onFlowChanged: {
 		this._updateOverflow()
+		this._scheduleLayout()
+	}
+
+	onCellWidthChanged,
+	onCellHeightChanged: {
 		this._scheduleLayout()
 	}
 

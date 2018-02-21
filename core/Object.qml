@@ -4,6 +4,9 @@ EventEmitter {
 		this.parent = parent
 		this.children = []
 		this.__properties = {}
+		this.__attachedObjects = []
+		if (parent)
+			parent.__attachedObjects.push(this)
 
 		this._context = parent? parent._context: null
 		if (row) {
@@ -40,7 +43,17 @@ EventEmitter {
 		})
 		this._changedConnections = []
 
-		this.children.forEach(function(child) { child.discard() })
+		var attached = this.__attachedObjects
+		this.__attachedObjects = []
+		attached.forEach(function(child) { child.discard() })
+
+		var parent = this.parent
+		if (parent) {
+			var discardIdx = parent.__attachedObjects.indexOf(this)
+			if (discardIdx >= 0)
+				parent.__attachedObjects.splice(discardIdx, 1)
+		}
+
 		this.children = []
 
 		this.parent = null

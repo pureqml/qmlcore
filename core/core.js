@@ -65,6 +65,7 @@ var colorTable = {
 	'black':	'000000',
 	'silver':	'c0c0c0',
 	'gray':		'080808',
+	'grey':		'080808',
 	'transparent': '0000'
 }
 

@@ -12,6 +12,7 @@ class component_generator(object):
 		self.aliases = {}
 		self.declared_properties = {}
 		self.lazy_properties = {}
+		self.const_properties = {}
 		self.properties = []
 		self.enums = {}
 		self.assignments = {}
@@ -85,13 +86,20 @@ class component_generator(object):
 					raise Exception("duplicate property " + name)
 
 				#print self.name, name, default_value, lang.value_is_trivial(default_value)
-				if child.lazy and isinstance(default_value, lang.Component):
+				if child.lazy:
+					if not isinstance(default_value, lang.Component):
+						raise Exception("lazy property must be declared with component as value")
 					if len(child.properties) != 1:
 						raise Exception("property %s is lazy, hence should be declared alone" %name)
 					self.lazy_properties[name] = self.create_component_generator(default_value, '<lazy:%s>' %name)
 
+				if child.const:
+					if len(child.properties) != 1:
+						raise Exception("property %s is const, hence should be declared alone" %name)
+					self.const_properties[name] = default_value #string code
+
 				self.declared_properties[name] = child
-				if default_value is not None:
+				if default_value is not None and not child.const:
 					if not child.lazy and not lang.value_is_trivial(default_value):
 						self.assign(name, default_value)
 		elif t is lang.AliasProperty:
@@ -266,6 +274,11 @@ class component_generator(object):
 		code = self.generate_creator_function(registry, var, value, ident_n + 1)
 		return "%score.addLazyProperty(%s, '%s', %s)" %(ident, proto, name, code)
 
+	def generate_const_property(self, registry, proto, name, code, ident_n = 1):
+		ident = "\t" * ident_n
+		var = 'const$' + name
+		return "%score.addConstProperty(%s, '%s', function() %s)" %(ident, proto, name, code)
+
 	def transform_handlers(self, registry, blocks):
 		result = {}
 		for (path, name), (args, code) in blocks.iteritems():
@@ -297,6 +310,8 @@ class component_generator(object):
 				if prop.lazy:
 					gen = self.lazy_properties[name]
 					r.append(self.generate_lazy_property(registry, self.proto_name, prop.type, name, gen, ident_n))
+				elif prop.const:
+					r.append(self.generate_const_property(registry, self.proto_name, name, self.const_properties[name]))
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
@@ -326,6 +341,10 @@ class component_generator(object):
 			lines.append(code)
 			return var
 
+		def put_in_prototype(handler):
+			path, name = handler
+			return not path and self.prototype
+
 		code_index = 0
 
 		for code, methods in self.transform_handlers(registry, self.methods):
@@ -339,35 +358,40 @@ class component_generator(object):
 				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			handlers = filter(put_in_prototype, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for (path, name) in handlers:
-				if path or not self.prototype: #sync with condition below
-					continue
-
 				assert not path
 				r.append("%s_globals.core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			handlers = filter(lambda h: put_in_prototype(h) and h[1] != 'completed', handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
-			for (path, name) in handlers:
-				if path or not self.prototype or name == 'completed': #sync with condition below
-					continue
+			for path, name in handlers:
 				r.append("%s_globals.core._protoOn(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			handlers = filter(put_in_prototype, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for (path, name) in handlers:
-				if path or not self.prototype: #sync with condition below
-					continue
 				r.append("%s_globals.core._protoOnKey(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 
@@ -442,6 +466,8 @@ class component_generator(object):
 					if prop.lazy:
 						gen = self.lazy_properties[name]
 						r.append(self.generate_lazy_property(registry, parent, prop.type, name, gen, ident_n))
+					elif prop.const:
+						r.append(self.generate_const_property(registry, parent, name, self.const_properties[name]))
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):
@@ -548,6 +574,10 @@ class component_generator(object):
 			else:
 				raise Exception("skip assignment %s = %s" %(target, value))
 
+		def put_in_instance(handler):
+			path, name = handler
+			return path or not self.prototype
+
 		code_index = 0
 		def next_codevar(lines, code, index):
 			var = "$code$%d" %index
@@ -566,38 +596,44 @@ class component_generator(object):
 					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, path))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
+			handlers = filter(lambda h: put_in_instance(h) or h[1] == 'completed', handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for path, name in sorted(handlers):
-				if not path and self.prototype and name != 'completed': #sync with condition above
-					continue
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				if name != "completed":
 					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, path))
 				else:
-					r.append("%s%s._context._onCompleted(%s.bind(%s))" %(ident, path, code, path))
+					r.append("%s%s._context._onCompleted(%s, %s)" %(ident, path, path, code))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
+			handlers = filter(put_in_instance, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for path, name in sorted(handlers):
-				if not path and self.prototype: #sync with condition above
-					continue
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, path))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
+			handlers = filter(put_in_instance, handlers)
+			if not handlers:
+				continue
+
 			if len(handlers) > 1:
 				code = next_codevar(r, code, code_index)
 				code_index += 1
 
 			for path, name in sorted(handlers):
-				if not path and self.prototype: #sync with condition above
-					continue
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, path))
 

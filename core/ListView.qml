@@ -159,7 +159,7 @@ BaseView {
 	}
 
 	///@private
-	function _layout() {
+	function _layout(noPrerender) {
 		var model = this.model;
 		if (!model) {
 			this.layoutFinished()
@@ -168,7 +168,7 @@ BaseView {
 
 		this.count = model.count
 
-		if (!this.recursiveVisible) {
+		if (!this.recursiveVisible && !this.offlineLayout) {
 			this.layoutFinished()
 			return
 		}
@@ -185,7 +185,7 @@ BaseView {
 		var maxW = 0, maxH = 0
 
 		var itemsCount = 0
-		var prerender = this.prerender * size
+		var prerender = noPrerender? 0: this.prerender * size
 		var leftMargin = -prerender
 		var rightMargin = size + prerender
 
@@ -205,7 +205,7 @@ BaseView {
 			++itemsCount
 
 			var s = (horizontal? item.width: item.height)
-			var visible = (p + c + s >= leftMargin && p + c < rightMargin)
+			var visible = (p + c + s >= 0 && p + c < size) //checking real delegate visibility, without prerender margin
 
 			if (item.x + item.width > maxW)
 				maxW = item.width + item.x
@@ -217,7 +217,7 @@ BaseView {
 			else
 				item.viewY = p
 
-			if (this.currentIndex == i && !item.focused) {
+			if (this.currentIndex === i && !item.focused) {
 				this.focusChild(item)
 				if (this.contentFollowsCurrentItem)
 					this.positionViewAtIndex(i)
@@ -252,7 +252,7 @@ BaseView {
 		}
 		this.layoutFinished()
 		if (created)
-			this._context._complete()
+			this._context.scheduleComplete()
 	}
 
 	/// @private creates delegate in given item slot

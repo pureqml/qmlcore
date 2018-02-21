@@ -200,6 +200,9 @@ assign_declaration.setParseAction(handle_assignment)
 assign_component_declaration = nested_identifier_lvalue + Suppress(":") + component_declaration
 assign_component_declaration.setParseAction(handle_assignment)
 
+const_property_declaration = Keyword("property").suppress() + Keyword("const") - Group(Group(identifier + Suppress(":") + code))
+const_property_declaration.setParseAction(handle_property_declaration)
+
 property_name_initializer_declaration = Group(identifier + Optional(Suppress(":") + expression))
 property_declaration = ((Keyword("property").suppress() + type + Group(delimitedList(property_name_initializer_declaration, ',')) + expression_end) | \
 	(Keyword("property").suppress() + type + Group(Group(identifier + Suppress(":") + component_declaration))))
@@ -235,7 +238,7 @@ json_value << (null_value | bool_value | number | unquoted_string_value | json_a
 list_element_declaration = Keyword("ListElement").suppress() - json_object
 list_element_declaration.setParseAction(handle_list_element)
 
-scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
+scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
 component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
 
 component_declaration << (component_type + component_scope)
@@ -253,7 +256,8 @@ def handle_ternary_op(s, l, t):
 
 def handle_percent_number(s, l, t):
 	value = t[0]
-	return "(${parent.<property-name>} * ((%s) / 100))" %lang.to_string(value)
+	strvalue = lang.to_string(value)
+	return ("((%s) / 100 * ${parent.<property-name>})" %strvalue) if strvalue != 100 else "(${parent.<property-name>})"
 
 percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)

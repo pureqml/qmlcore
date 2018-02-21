@@ -2,6 +2,8 @@
 	"standalone": false,
 	"requires": ["core"],
 	"properties": {
-		"cssAutoClassificator": false
+		"cssAutoClassificator": false,
+		"cssDisableTransitions": false,
+		"cssDisableTransformations": false
 	}
 }

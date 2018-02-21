@@ -3,7 +3,7 @@ BaseView {
 
 	///@private
 	function _layout() {
-		if (!this.recursiveVisible) {
+		if (!this.recursiveVisible && !this.offlineLayout) {
 			this.layoutFinished()
 			return
 		}
@@ -26,6 +26,6 @@ BaseView {
 		}
 		this.layoutFinished()
 		if (created)
-			this._context._complete()
+			this._context.scheduleComplete()
 	}
 }

@@ -1,5 +1,7 @@
 /*** @using { core.RAIIEventEmitter } **/
 
+var imageCache = null
+
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
@@ -7,7 +9,7 @@ exports.createAddRule = function(style) {
 			try {
 				sheet.addRule(name, rules)
 			} catch(e) {
-				log("InsertRule failed:", e)
+				log("AddRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules)
 			}
 		}
 	}
@@ -17,7 +19,7 @@ exports.createAddRule = function(style) {
 			try {
 				sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length)
 			} catch(e) {
-				log("InsertRule failed:", e)
+				log("InsertRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules)
 			}
 		}
 	}
@@ -144,14 +146,9 @@ var registerGenericListener = function(target) {
 			var context = target._context
 			//log('registering generic event', name)
 			var pname = prefix + name
-			var callback = target[pname] = function() {
-				try { target.emitWithArgs(name, arguments) }
-				catch(ex) {
-					context._processActions()
-					throw ex
-				}
-				context._processActions()
-			}
+			var callback = target[pname] = context.wrapNativeCallback(function() {
+				target.emitWithArgs(name, arguments)
+			})
 			target.dom.addEventListener(name, callback)
 		},
 		function(name) {
@@ -430,6 +427,8 @@ exports.getElement = function(ctx, tag) {
 }
 
 exports.init = function(ctx) {
+	imageCache = new _globals.html5.cache.Cache(loadImage)
+
 	ctx._styleCache = new StyleCache()
 	var options = ctx.options
 	var prefix = ctx._prefix
@@ -468,11 +467,15 @@ exports.init = function(ctx) {
 		body.append(div);
 	}
 
-	ctx._textCanvas = html.createElement(ctx, 'canvas')
-	ctx._textCanvas.style('width', 0)
-	ctx._textCanvas.style('height', 0)
-	div.append(ctx._textCanvas)
-	ctx._textCanvasContext = ('getContext' in ctx._textCanvas.dom)? ctx._textCanvas.dom.getContext('2d'): null
+	if (Modernizr.canvastext) {
+		ctx._textCanvas = html.createElement(ctx, 'canvas')
+		ctx._textCanvas.style('width', 0)
+		ctx._textCanvas.style('height', 0)
+		div.append(ctx._textCanvas)
+		ctx._textCanvasContext = ('getContext' in ctx._textCanvas.dom)? ctx._textCanvas.dom.getContext('2d'): null
+	} else {
+		ctx._textCanvasContext = null
+	}
 
 	ctx.element = div
 	ctx.width = w
@@ -516,83 +519,113 @@ exports.createElement = function(ctx, tag, cls) {
 exports.initRectangle = function(rect) {
 }
 
-exports.initImage = function(image) {
-	var tmp = new Image()
-	image._image = tmp
-	image._image.onerror = image._onError.bind(image)
+var ImageComponent = _globals.core.Image
 
-	image._image.onload = function() {
-		image.sourceWidth = tmp.naturalWidth
-		image.sourceHeight = tmp.naturalHeight
-		var natW = tmp.naturalWidth, natH = tmp.naturalHeight
+var updateImage = function(image, metrics) {
+	var style = {'background-image': 'url("' + image.source + '")'}
 
-		if (!image.width)
-			image.width = natW
-		if (!image.height)
-			image.height = natH
+	var natW = metrics.width, natH = metrics.height
+	image.sourceWidth = natW
+	image.sourceHeight = natH
 
-		if (image.fillMode !== image.PreserveAspectFit) {
-			image.paintedWidth = image.width
-			image.paintedHeight = image.height
-		}
+	if (!image.width)
+		image.width = natW
+	if (!image.height)
+		image.height = natH
 
-		var style = {'background-image': 'url("' + image.source + '")'}
-		switch(image.fillMode) {
-			case image.Stretch:
-				style['background-repeat'] = 'no-repeat'
-				style['background-size'] = '100% 100%'
-				break;
-			case image.TileVertically:
-				style['background-repeat'] = 'repeat-y'
-				style['background-size'] = '100% ' + natH + 'px'
-				break;
-			case image.TileHorizontally:
-				style['background-repeat'] = 'repeat-x'
-				style['background-size'] = natW + 'px 100%'
-				break;
-			case image.Tile:
-				style['background-repeat'] = 'repeat-y repeat-x'
-				style['background-size'] = 'auto'
-				break;
-			case image.PreserveAspectCrop:
-				style['background-repeat'] = 'no-repeat'
-				style['background-position'] = 'center'
-				style['background-size'] = 'cover'
-				break;
-			case image.Pad:
-				style['background-repeat'] = 'no-repeat'
-				style['background-position'] = '0% 0%'
-				style['background-size'] = 'auto'
-				break;
-			case image.PreserveAspectFit:
-				style['background-repeat'] = 'no-repeat'
-				style['background-position'] = 'center'
-				style['background-size'] = 'contain'
-				var w = image.width, h = image.height
-				var targetRatio = 0, srcRatio = natW / natH
-
-				if (w && h)
-					targetRatio = w / h
-
-				if (srcRatio > targetRatio && w) { // img width aligned with target width
-					image.paintedWidth = w;
-					image.paintedHeight = w / srcRatio;
-				} else {
-					image.paintedHeight = h;
-					image.paintedWidth = h * srcRatio;
-				}
-				break;
-		}
-		style['image-rendering'] = image.smooth? 'auto': 'pixelated'
-		image.style(style)
-
-		image.status = image.Ready
-		image._context._processActions()
+	if (image.fillMode !== ImageComponent.PreserveAspectFit) {
+		image.paintedWidth = image.width
+		image.paintedHeight = image.height
 	}
+
+	switch(image.fillMode) {
+		case ImageComponent.Stretch:
+			style['background-repeat'] = 'no-repeat'
+			style['background-size'] = '100% 100%'
+			break;
+		case ImageComponent.TileVertically:
+			style['background-repeat'] = 'repeat-y'
+			style['background-size'] = '100% ' + natH + 'px'
+			break;
+		case ImageComponent.TileHorizontally:
+			style['background-repeat'] = 'repeat-x'
+			style['background-size'] = natW + 'px 100%'
+			break;
+		case ImageComponent.Tile:
+			style['background-repeat'] = 'repeat-y repeat-x'
+			style['background-size'] = 'auto'
+			break;
+		case ImageComponent.PreserveAspectCrop:
+			style['background-repeat'] = 'no-repeat'
+			style['background-position'] = 'center'
+			style['background-size'] = 'cover'
+			break;
+		case ImageComponent.Pad:
+			style['background-repeat'] = 'no-repeat'
+			style['background-position'] = '0% 0%'
+			style['background-size'] = 'auto'
+			break;
+		case ImageComponent.PreserveAspectFit:
+			style['background-repeat'] = 'no-repeat'
+			style['background-position'] = 'center'
+			style['background-size'] = 'contain'
+			var w = image.width, h = image.height
+			var targetRatio = 0, srcRatio = natW / natH
+
+			if (w && h)
+				targetRatio = w / h
+
+			if (srcRatio > targetRatio && w) { // img width aligned with target width
+				image.paintedWidth = w;
+				image.paintedHeight = w / srcRatio;
+			} else {
+				image.paintedHeight = h;
+				image.paintedWidth = h * srcRatio;
+			}
+			break;
+	}
+	style['image-rendering'] = image.smooth? 'auto': 'pixelated'
+	image.style(style)
+
+	image.status = ImageComponent.Ready
+	image._context._processActions()
+}
+
+var failImage = function(image) {
+	image._onError()
+	image._context._processActions()
+}
+
+var loadImage = function(url, callback) {
+	var tmp = new Image()
+
+	tmp.onerror = function() {
+		tmp.onload = null
+		tmp.onerror = null
+		callback(null)
+	}
+
+	tmp.onload = function() {
+		tmp.onload = null
+		tmp.onerror = null
+		callback({ width: tmp.naturalWidth, height: tmp.naturalHeight })
+	}
+	tmp.src = url
+}
+
+exports.initImage = function(image) {
 }
 
 exports.loadImage = function(image) {
-	image._image.src = image.source
+	var callback = function(metrics) {
+		updateImage(image, metrics)
+	}
+
+	if (image.source.indexOf('?') < 0) {
+		imageCache.get(image.source, callback)
+	} else {
+		loadImage(image.source, callback)
+	}
 }
 
 exports.initText = function(text) {
@@ -752,7 +785,7 @@ var cssMappings = {
 
 ///@private tries to set animation on name using css transitions, returns true on success
 exports.setAnimation = function (component, name, animation) {
-	if (!exports.capabilities.csstransitions || (animation && !animation.cssTransition))
+	if (!exports.capabilities.csstransitions || $manifest$cssDisableTransitions || (animation && !animation.cssTransition))
 		return false
 
 	var css = cssMappings[name]

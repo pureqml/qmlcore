@@ -58,13 +58,13 @@ def parse_qml_file(cache, com, path):
 
 	cached = cache.read(com, h)
 	if cached:
-		return cached
+		return cached, data
 	else:
 		print "parsing", path, "...", com
 		try:
 			tree = compiler.grammar.parse(data)
 			cache.write(com, h, tree)
-			return tree
+			return tree, data
 		except Exception as ex:
 			ex.filename = path
 			raise
@@ -86,8 +86,8 @@ class Compiler(object):
 			if pool is not None:
 				return (com, name[0].isupper(), pool.apply_async(parse_qml_file, (self.cache, com, path)))
 			else:
-				tree = parse_qml_file(self.cache, com, path)
-				self.finalize_qml_file(generator, com, name[0].isupper(), tree)
+				tree, data = parse_qml_file(self.cache, com, path)
+				self.finalize_qml_file(generator, com, name[0].isupper(), tree, data)
 		elif ext == ".js":
 			with open(path) as f:
 				data = f.read()
@@ -97,11 +97,12 @@ class Compiler(object):
 		elif ext == '.ts':
 			generator.add_ts(path)
 
-	def finalize_qml_file(self, generator, name, is_component, tree):
+	def finalize_qml_file(self, generator, name, is_component, tree, text):
 		assert len(tree) == 1
 		if self.documentation and is_component:
 			self.documentation.add(name, tree[0])
 		generator.add_component(name, tree[0], is_component)
+		generator.scan_using(text)
 
 	def process_files(self, pool, generator):
 		promises = []
@@ -151,7 +152,7 @@ class Compiler(object):
 						promises.append(promise)
 
 		for name, is_component, promise in promises:
-			self.finalize_qml_file(generator, name, is_component, promise.get())
+			self.finalize_qml_file(generator, name, is_component, *promise.get())
 
 	def generate(self):
 		namespace = "qml"
@@ -259,33 +260,48 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 	if wait:
 		try:
 			import pyinotify
+
+			class EventHandler(pyinotify.ProcessEvent):
+				def __init__(self):
+					self.modified = False
+
+				def check_file(self, filename):
+					if not filename or filename[0] == '.':
+						return False
+					root, ext = os.path.splitext(filename)
+					return ext in set([".qml", ".js"])
+
+				def check_event(self, event):
+					if self.check_file(event.name):
+						self.modified = True
+
+				def process_IN_MODIFY(self, event):
+					self.check_event(event)
+				def process_IN_CREATE(self, event):
+					self.check_event(event)
+				def process_IN_DELETE(self, event):
+					self.check_event(event)
+
+				def pop(self):
+					r = self.modified
+					self.modified = False
+					return r
 		except:
 			raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
 
 	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
-	modified = False
-
-	def check_file(filename):
-		if filename[0] == '.':
-			return False
-		root, ext = os.path.splitext(filename)
-		return ext in set([".qml", ".js"])
 
 	if wait:
 		from pyinotify import WatchManager
 		wm = WatchManager()
-		mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE
+		mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE | pyinotify.IN_DELETE
 		for dir in project_dirs:
 			wm.add_watch(dir, mask)
 
-		def process_event(event):
-			global modified
-			if check_file(event.name):
-				modified = True
-
-		notifier = pyinotify.Notifier(wm, process_event)
+		event_handler = EventHandler()
+		notifier = pyinotify.Notifier(wm, event_handler)
 
 	while True:
 		try:
@@ -319,8 +335,8 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 			if notifier.check_events():
 				notifier.read_events()
 				notifier.process_events()
+				modified = event_handler.pop()
 				if not modified:
 					continue
 				else:
-					modified = False
 					break

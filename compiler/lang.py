@@ -59,6 +59,7 @@ class Property(Entity):
 	def __init__(self, type, properties):
 		super(Property, self).__init__()
 		self.lazy = type == 'lazy'
+		self.const = type == 'const'
 		self.type = type
 		self.properties = properties
 

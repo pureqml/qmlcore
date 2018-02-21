@@ -4,6 +4,9 @@ EventEmitter {
 		this.parent = parent
 		this.children = []
 		this.__properties = {}
+		this.__attachedObjects = []
+		if (parent)
+			parent.__attachedObjects.push(this)
 
 		this._context = parent? parent._context: null
 		if (row) {
@@ -12,7 +15,6 @@ EventEmitter {
 			local._delegate = this
 		}
 		this._changedConnections = []
-		this._pressedHandlers = {}
 		this._properties = {}
 	}
 
@@ -41,12 +43,21 @@ EventEmitter {
 		})
 		this._changedConnections = []
 
-		this.children.forEach(function(child) { child.discard() })
+		var attached = this.__attachedObjects
+		this.__attachedObjects = []
+		attached.forEach(function(child) { child.discard() })
+
+		var parent = this.parent
+		if (parent) {
+			var discardIdx = parent.__attachedObjects.indexOf(this)
+			if (discardIdx >= 0)
+				parent.__attachedObjects.splice(discardIdx, 1)
+		}
+
 		this.children = []
 
 		this.parent = null
 		this._local = {}
-		this._pressedHandlers = {}
 
 		var properties = this.__properties
 		for(var name in properties) //fixme: it was added once, then removed, is it needed at all? it double-deletes callbacks
@@ -86,14 +97,12 @@ EventEmitter {
 	///@private removes 'on changed' callback
 	function removeOnChanged(name, callback) {
 		var storage = this.__properties[name]
-		if (storage !== undefined) {
-			var handlers = storage.onChanged
-			var idx = handlers.indexOf(callback)
-			if (idx >= 0)
-				handlers.splice(idx, 1)
-			else if ($manifest$trace$listeners)
-				log('failed to remove changed listener for', name, 'from', this)
-		}
+		var removed
+		if (storage !== undefined)
+			removed = storage.removeOnChanged(callback)
+
+		if ($manifest$trace$listeners && !removed)
+			log('failed to remove changed listener for', name, 'from', this)
 	}
 
 	/// @private removes dynamic value updater
@@ -106,20 +115,6 @@ EventEmitter {
 	/// @private replaces dynamic value updater
 	function _replaceUpdater (name, newUpdaters) {
 		this._createPropertyStorage(name).replaceUpdater(this, newUpdaters)
-	}
-
-	///@private registers key handler
-	function onPressed (name, callback) {
-		var wrapper
-		if (name != 'Key')
-			wrapper = function(key, event) { event.accepted = true; callback(key, event); return event.accepted }
-		else
-			wrapper = callback;
-
-		if (name in this._pressedHandlers)
-			this._pressedHandlers[name].push(wrapper);
-		else
-			this._pressedHandlers[name] = [wrapper];
 	}
 
 	///@private creates property storage
@@ -143,7 +138,7 @@ EventEmitter {
 		var animation = storage.animation
 		if (animation !== undefined)
 			animation.disable()
-		storage.interpolatedValue = undefined
+		storage.setCurrentValue(this, null, value)
 		if (animation !== undefined)
 			animation.enable()
 	}

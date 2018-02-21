@@ -18,6 +18,14 @@ BaseLayout {
 	keyNavigationWraps: true;		///< key navigation wraps from end to beginning and vise versa
 	handleNavigationKeys: true;		///< handle navigation keys
 
+	/// @internal
+	property BaseViewContent content: BaseViewContent {
+		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
+	}
+
+	onContentXChanged: { this.content.x = -value; }
+	onContentYChanged: { this.content.y = -value; }
+
 	/// returns index of item by x,y coordinates
 	function itemAt(x, y) {
 		var idx = this.indexAt(x, y)
@@ -106,10 +114,13 @@ BaseLayout {
 		if (this._attached || !this.model || !this.delegate)
 			return
 
-		this.model.on('reset', this._onReset.bind(this))
-		this.model.on('rowsInserted', this._onRowsInserted.bind(this))
-		this.model.on('rowsChanged', this._onRowsChanged.bind(this))
-		this.model.on('rowsRemoved', this._onRowsRemoved.bind(this))
+		var model = this.model
+
+		this.connectOn(model, 'reset', this._onReset.bind(this))
+		this.connectOn(model, 'rowsInserted', this._onRowsInserted.bind(this))
+		this.connectOn(model, 'rowsChanged', this._onRowsChanged.bind(this))
+		this.connectOn(model, 'rowsRemoved', this._onRowsRemoved.bind(this))
+
 		this._attached = true
 		this._onReset()
 	}
@@ -128,6 +139,10 @@ BaseLayout {
 
 		var visibilityProperty = this.visibilityProperty
 		var row = this.model.get(idx)
+
+		if (this.trace)
+			log('createDelegate', idx, row)
+
 		if (visibilityProperty && !row[visibilityProperty])
 			return null;
 		row.index = idx
@@ -204,22 +219,16 @@ BaseLayout {
 		qml.core.BaseLayout.prototype._processUpdates.apply(this)
 	}
 
-	/// @internal
-	property BaseViewContent content: BaseViewContent {
-		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
-	}
-
-	onContentXChanged: { this.content.x = -value; }
-	onContentYChanged: { this.content.y = -value; }
-
 	onRecursiveVisibleChanged: {
 		if (value)
 			this._scheduleLayout();
 
+		var view = this
 		this._items.forEach(function(child) {
 			if (child !== null)
-				child.recursiveVisible = value && child.visible && child.visibleInView
+				view._updateVisibilityForChild(child, value)
 		})
+		this._updateVisibilityForChild(this.content, value)
 	}
 
 	onWidthChanged:				{ this._scheduleLayout() }
@@ -233,13 +242,9 @@ BaseLayout {
 	}
 
 	onCompleted: {
-		this._attach()
-
 		var self = this
 		this.element.on('scroll', function(event) {
 			self._updateScrollPositions(self.element.dom.scrollLeft, self.element.dom.scrollTop)
 		}.bind(this))
-
-		this._scheduleLayout()
 	}
 }

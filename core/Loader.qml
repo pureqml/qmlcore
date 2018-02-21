@@ -31,7 +31,7 @@ Item {
 		if (!source)
 			return
 
-		log('loading ' + source + '...')
+		log('loading ' + source + '…')
 		var path = source.split('.')
 		var ctor = _globals
 		while(path.length) {
@@ -45,7 +45,7 @@ Item {
 		item.$c(c)
 		item.$s(c)
 		this.item = item
-		this._context._complete()
+		this._context.scheduleComplete()
 		this._updateVisibilityForChild(this.item, this.recursiveVisible)
 		this.loaded()
 	}
@@ -57,6 +57,7 @@ Item {
 
 	///@internal
 	onCompleted: {
-		this._load()
+		if (!this.item && this.source)
+			this._load()
 	}
 }

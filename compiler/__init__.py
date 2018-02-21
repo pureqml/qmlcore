@@ -260,33 +260,48 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 	if wait:
 		try:
 			import pyinotify
+
+			class EventHandler(pyinotify.ProcessEvent):
+				def __init__(self):
+					self.modified = False
+
+				def check_file(self, filename):
+					if not filename or filename[0] == '.':
+						return False
+					root, ext = os.path.splitext(filename)
+					return ext in set([".qml", ".js"])
+
+				def check_event(self, event):
+					if self.check_file(event.name):
+						self.modified = True
+
+				def process_IN_MODIFY(self, event):
+					self.check_event(event)
+				def process_IN_CREATE(self, event):
+					self.check_event(event)
+				def process_IN_DELETE(self, event):
+					self.check_event(event)
+
+				def pop(self):
+					r = self.modified
+					self.modified = False
+					return r
 		except:
 			raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
 
 	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
-	modified = False
-
-	def check_file(filename):
-		if filename[0] == '.':
-			return False
-		root, ext = os.path.splitext(filename)
-		return ext in set([".qml", ".js"])
 
 	if wait:
 		from pyinotify import WatchManager
 		wm = WatchManager()
-		mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE
+		mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE | pyinotify.IN_DELETE
 		for dir in project_dirs:
 			wm.add_watch(dir, mask)
 
-		def process_event(event):
-			global modified
-			if check_file(event.name):
-				modified = True
-
-		notifier = pyinotify.Notifier(wm, process_event)
+		event_handler = EventHandler()
+		notifier = pyinotify.Notifier(wm, event_handler)
 
 	while True:
 		try:
@@ -320,8 +335,8 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 			if notifier.check_events():
 				notifier.read_events()
 				notifier.process_events()
+				modified = event_handler.pop()
 				if not modified:
 					continue
 				else:
-					modified = False
 					break

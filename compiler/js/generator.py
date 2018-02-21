@@ -226,7 +226,6 @@ class generator(object):
 		return self.replace_args(text)
 
 	def replace_args(self, text):
-		self.scan_using(text)
 		#COPY_ARGS optimization
 		def copy_args(m):
 			def expr(var, op, idx):

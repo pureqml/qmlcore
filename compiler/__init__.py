@@ -266,42 +266,27 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
+	modified = False
 
-	class EventHandler(pyinotify.ProcessEvent):
-		def __init__(self):
-			self.modified = False
-
-		def check_file(self, filename):
-			if not filename or filename[0] == '.':
-				return False
-			root, ext = os.path.splitext(filename)
-			return ext in set([".qml", ".js"])
-
-		def check_event(self, event):
-			if self.check_file(event.name):
-				self.modified = True
-
-		def process_IN_MODIFY(self, event):
-			self.check_event(event)
-		def process_IN_CREATE(self, event):
-			self.check_event(event)
-		def process_IN_DELETE(self, event):
-			self.check_event(event)
-
-		def pop(self):
-			r = self.modified
-			self.modified = False
-			return r
+	def check_file(filename):
+		if filename[0] == '.':
+			return False
+		root, ext = os.path.splitext(filename)
+		return ext in set([".qml", ".js"])
 
 	if wait:
 		from pyinotify import WatchManager
 		wm = WatchManager()
-		mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE | pyinotify.IN_DELETE
+		mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE
 		for dir in project_dirs:
 			wm.add_watch(dir, mask)
 
-		event_handler = EventHandler()
-		notifier = pyinotify.Notifier(wm, event_handler)
+		def process_event(event):
+			global modified
+			if check_file(event.name):
+				modified = True
+
+		notifier = pyinotify.Notifier(wm, process_event)
 
 	while True:
 		try:
@@ -335,8 +320,8 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 			if notifier.check_events():
 				notifier.read_events()
 				notifier.process_events()
-				modified = event_handler.pop()
 				if not modified:
 					continue
 				else:
+					modified = False
 					break

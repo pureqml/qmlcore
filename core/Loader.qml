@@ -57,6 +57,7 @@ Item {
 
 	///@internal
 	onCompleted: {
-		this._load()
+		if (!this.item && this.source)
+			this._load()
 	}
 }

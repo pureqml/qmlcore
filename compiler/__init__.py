@@ -58,13 +58,13 @@ def parse_qml_file(cache, com, path):
 
 	cached = cache.read(com, h)
 	if cached:
-		return cached
+		return cached, data
 	else:
 		print "parsing", path, "...", com
 		try:
 			tree = compiler.grammar.parse(data)
 			cache.write(com, h, tree)
-			return tree
+			return tree, data
 		except Exception as ex:
 			ex.filename = path
 			raise
@@ -86,8 +86,8 @@ class Compiler(object):
 			if pool is not None:
 				return (com, name[0].isupper(), pool.apply_async(parse_qml_file, (self.cache, com, path)))
 			else:
-				tree = parse_qml_file(self.cache, com, path)
-				self.finalize_qml_file(generator, com, name[0].isupper(), tree)
+				tree, data = parse_qml_file(self.cache, com, path)
+				self.finalize_qml_file(generator, com, name[0].isupper(), tree, data)
 		elif ext == ".js":
 			with open(path) as f:
 				data = f.read()
@@ -97,11 +97,12 @@ class Compiler(object):
 		elif ext == '.ts':
 			generator.add_ts(path)
 
-	def finalize_qml_file(self, generator, name, is_component, tree):
+	def finalize_qml_file(self, generator, name, is_component, tree, text):
 		assert len(tree) == 1
 		if self.documentation and is_component:
 			self.documentation.add(name, tree[0])
 		generator.add_component(name, tree[0], is_component)
+		generator.scan_using(text)
 
 	def process_files(self, pool, generator):
 		promises = []
@@ -151,7 +152,7 @@ class Compiler(object):
 						promises.append(promise)
 
 		for name, is_component, promise in promises:
-			self.finalize_qml_file(generator, name, is_component, promise.get())
+			self.finalize_qml_file(generator, name, is_component, *promise.get())
 
 	def generate(self):
 		namespace = "qml"

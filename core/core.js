@@ -331,7 +331,10 @@ ColorPrototype.ahex = function() {
 }
 
 exports.core.normalizeColor = function(spec) {
-	return (new Color(spec)).rgba()
+	if (spec instanceof Color)
+		return spec.rgba()
+	else
+		return (new Color(spec)).rgba()
 }
 
 exports.core.mixColor = function(specA, specB, r) {

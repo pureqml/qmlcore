@@ -192,6 +192,17 @@ BaseView {
 				item.viewY = y
 			}
 
+			if (item) {
+				if (this.currentIndex === i && !item.focused) {
+					this.focusChild(item)
+					if (this.contentFollowsCurrentItem)
+						this.positionViewAtIndex(i)
+				}
+
+				var visible = horizontal? (cy + y + item.height >= 0 && cy + y < h): (cx + x + item.width >= 0 && cx + x < w)
+				item.visibleInView = visible
+			}
+
 			if (horizontal) {
 				x += stepX
 				if (x > 0 && x + cellWidth > w) {
@@ -204,17 +215,6 @@ BaseView {
 					y = 0
 					x += stepX
 				}
-			}
-
-			if (item) {
-				if (this.currentIndex === i && !item.focused) {
-					this.focusChild(item)
-					if (this.contentFollowsCurrentItem)
-						this.positionViewAtIndex(i)
-				}
-
-				var visible = horizontal? (cy + y + item.height >= 0 && cy + y < h): (cx + x + item.width >= 0 && cx + x < w)
-				item.visibleInView = visible
 			}
 		}
 		for(; i < n; ++i) {

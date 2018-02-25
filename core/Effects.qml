@@ -35,27 +35,17 @@ Object {
 	function _updateStyle(updateShadow) {
 		var filterStyle = this._getFilterStyle().join('')
 		var parent = this.parent
-
 		var style = {}
-		var updateStyle = false
 
-		if (filterStyle.length > 0) {
-			//chromium bug
-			//https://github.com/Modernizr/Modernizr/issues/981
-			style['-webkit-filter'] = filterStyle
-			style['filter'] = filterStyle
-			updateStyle = true
-		}
+		//chromium bug
+		//https://github.com/Modernizr/Modernizr/issues/981
+		style['-webkit-filter'] = filterStyle
+		style['filter'] = filterStyle
 
-		if (this.shadow && (!this.shadow._empty() || updateShadow)) {
+		if (this.shadow && (!this.shadow._empty() || updateShadow))
 			style['box-shadow'] = this.shadow._getFilterStyle()
-			updateStyle = true
-		}
 
-		if (updateStyle) {
-			//log(style)
-			parent.style(style)
-		}
+		parent.style(style)
 	}
 
 	onBlurChanged, onGrayscaleChanged,

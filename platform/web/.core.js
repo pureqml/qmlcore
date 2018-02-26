@@ -57,5 +57,5 @@ exports.core.keyCodes = {
 }
 
 exports.closeApp = function() {
-	close()
+	window.close()
 }

@@ -362,7 +362,7 @@ exports.addLazyProperty = function(proto, name, creator) {
 
 		set: function(newValue) {
 			var storage = get(this)
-			if (storage.forwardSet(this, newValue, null))
+			if (storage.forwardSet(this, name, newValue, null))
 				return
 
 			throw new Error('could not set lazy property ' + name + ' in ' + proto.componentName)
@@ -427,7 +427,7 @@ PropertyStoragePrototype.replaceUpdater = function(parent, updater) {
 	callback()
 }
 
-PropertyStoragePrototype.forwardSet = function(object, newValue, defaultValue) {
+PropertyStoragePrototype.forwardSet = function(object, name, newValue, defaultValue) {
 	var forwardTarget = this.forwardTarget
 	if (forwardTarget === undefined)
 		return false
@@ -480,7 +480,7 @@ PropertyStoragePrototype.set = function(object, name, newValue, defaultValue, ca
 
 	if (oldValue === newValue)
 		return
-	if (this.forwardSet(object, newValue, defaultValue))
+	if (this.forwardSet(object, name, newValue, defaultValue))
 		return
 	this.value = newValue
 	if (callUpdate)

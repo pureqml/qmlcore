@@ -467,6 +467,7 @@ PropertyStoragePrototype.getCurrentValue = function(defaultValue) {
 }
 
 PropertyStoragePrototype.setCurrentValue = function(object, name, newValue, defaultValue, callUpdate) {
+	var oldValue = this.value
 	this.interpolatedValue = undefined
 	this.value = newValue
 	if (callUpdate)

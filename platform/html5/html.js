@@ -1,5 +1,13 @@
 /*** @using { core.RAIIEventEmitter } **/
 
+var Modernizr = window.Modernizr
+
+exports.capabilities = {
+	csstransforms3d: Modernizr.csstransforms3d,
+	csstransforms: Modernizr.csstransforms,
+	csstransitions: Modernizr.csstransitions
+}
+
 var imageCache = null
 
 exports.createAddRule = function(style) {
@@ -139,6 +147,9 @@ var getPrefixedName = function(name) {
 
 exports.getPrefixedName = getPrefixedName
 
+var passiveListeners = ['touchstart', 'touchend', 'wheel', 'scroll']
+var passiveArg = Modernizr.passiveeventlisteners ? {passive: true} : false
+
 var registerGenericListener = function(target) {
 	var storage = target.__domEventListeners
 	if (storage === undefined)
@@ -150,7 +161,12 @@ var registerGenericListener = function(target) {
 			var callback = storage[name] = target._context.wrapNativeCallback(function() {
 				target.emitWithArgs(name, arguments)
 			})
-			target.dom.addEventListener(name, callback)
+
+			var args = [name, callback]
+			if (passiveListeners.indexOf(name) >= 0)
+				args.push(passiveArg)
+
+			target.dom.addEventListener.apply(target.dom, args)
 		},
 		function(name) {
 			//log('removing generic event', name)
@@ -790,14 +806,6 @@ exports.setAnimation = function (component, name, animation) {
 
 	var css = cssMappings[name]
 	return css !== undefined? setTransition(component, css, animation): false
-}
-
-var Modernizr = window.Modernizr
-
-exports.capabilities = {
-	csstransforms3d: Modernizr.csstransforms3d,
-	csstransforms: Modernizr.csstransforms,
-	csstransitions: Modernizr.csstransitions
 }
 
 exports.requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }

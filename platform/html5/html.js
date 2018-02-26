@@ -140,21 +140,21 @@ var getPrefixedName = function(name) {
 exports.getPrefixedName = getPrefixedName
 
 var registerGenericListener = function(target) {
-	var prefix = '_domEventHandler_'
+	var storage = target.__domEventListeners
+	if (storage === undefined)
+		storage = target.__domEventListeners = {}
+
 	target.onListener('',
 		function(name) {
-			var context = target._context
 			//log('registering generic event', name)
-			var pname = prefix + name
-			var callback = target[pname] = context.wrapNativeCallback(function() {
+			var callback = storage[name] = target._context.wrapNativeCallback(function() {
 				target.emitWithArgs(name, arguments)
 			})
 			target.dom.addEventListener(name, callback)
 		},
 		function(name) {
 			//log('removing generic event', name)
-			var pname = prefix + name
-			target.dom.removeEventListener(name, target[pname])
+			target.dom.removeEventListener(name, storage[name])
 		}
 	)
 }

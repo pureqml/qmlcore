@@ -2,9 +2,6 @@ if (typeof navigator !== 'undefined') {
 	exports.core.os = navigator.platform
 	exports.core.userAgent = navigator.userAgent
 	exports.core.language = navigator.language
-} else if ((typeof process !== 'undefined') && (process.release.name === 'node')) {
-	exports.core.os = process.platform
-	exports.core.userAgent = process.release.name
 } else {
 	exports.core.os = 'unknown'
 	exports.core.userAgent = 'Unknown'

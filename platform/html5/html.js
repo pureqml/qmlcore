@@ -104,7 +104,7 @@ StyleClassifierPrototype.register = function(rules) {
 	if (cls !== undefined)
 		return cls
 
-	var cls = classes[rule] = this.prefix + this.classes_total++
+	cls = classes[rule] = this.prefix + this.classes_total++
 	this._addRule('.' + cls, rule)
 	return cls
 }

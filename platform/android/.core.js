@@ -43,6 +43,10 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 		log("'cordova' not defined. 'Back' button will be unhandable. It looks like you forget to include 'cordova.js'")
 	}
 
+	document.addEventListener("deviceready", function() {
+		_globals._context.system.vendor = device.manufacturer
+	}, false);
+
 	log("Android initialized")
 
 	exports.closeApp = function() {

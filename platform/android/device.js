@@ -1,5 +1,10 @@
 var Device = function(ui) {
-	ui.deviceId = "android_" + Math.random().toString(36).substr(2, 9)
+	function onDeviceReady() {
+		ui.deviceId = device.uuid
+		ui.modelName = device.model
+		ui.firmware = device.version
+	}
+	ui._context.document.on('deviceready', onDeviceReady);
 }
 
 exports.createDevice = function(ui) {

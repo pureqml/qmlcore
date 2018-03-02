@@ -31,13 +31,12 @@ Item {
 
 	///@private
 	function _load() {
-		if (!this.preload && !this.recursiveVisible)
+		if (this.status === this.Ready || (!this.preload && !this.recursiveVisible))
 			return
 
-		if (!this.source) {
-			this.status = this.Null
+		if (!this.source)
 			return
-		}
+
 		this.status = this.Loading
 		this._context.backend.loadImage(this)
 	}
@@ -46,8 +45,12 @@ Item {
 	onRecursiveVisibleChanged,
 	onWidthChanged,
 	onHeightChanged,
-	onFillModeChanged,
+	onFillModeChanged: {
+		this._scheduleLoad()
+	}
+
 	onSourceChanged: {
+		this.status = this.Null
 		this._scheduleLoad()
 	}
 }

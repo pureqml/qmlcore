@@ -538,6 +538,11 @@ exports.initRectangle = function(rect) {
 var ImageComponent = _globals.core.Image
 
 var updateImage = function(image, metrics) {
+	if (!metrics) {
+		image.status = ImageComponent.Error
+		return
+	}
+
 	var style = {'background-image': 'url("' + image.source + '")'}
 
 	var natW = metrics.width, natH = metrics.height

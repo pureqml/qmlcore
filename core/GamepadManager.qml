@@ -153,7 +153,7 @@ Item {
 		startupTimer.restart()
 
 		var ctx = this._context
-		this.element.on('gamepadconnected', ctx.wrapNativeCallback(this.gamepadConnectedHandler.bind(this)))
-		this.element.on('gamepaddisconnected', ctx.wrapNativeCallback(this.gamepadDisconnectedHandler.bind(this)))
+		ctx.window.on('gamepadconnected', this.gamepadConnectedHandler.bind(this))
+		ctx.window.on('gamepaddisconnected', this.gamepadDisconnectedHandler.bind(this))
 	}
 }

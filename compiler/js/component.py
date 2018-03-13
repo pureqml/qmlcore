@@ -562,7 +562,7 @@ class component_generator(object):
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep
 						undep.append("[%s, '%s']" %(path, dep))
-					r.append("%s%s._replaceUpdater('%s', [%s, [%s]])" %(ident, target_owner, target_prop, var, ",".join(undep)))
+					r.append("%s%s._replaceUpdater('%s', %s, [%s])" %(ident, target_owner, target_prop, var, ",".join(undep)))
 				else:
 					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
 

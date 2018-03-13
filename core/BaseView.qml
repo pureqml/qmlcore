@@ -240,7 +240,7 @@ BaseLayout {
 			var $this = this
 			var $model = value
 			var updateCount = function() { $this.count = $model.count }
-			this._replaceUpdater('count', [updateCount, [[$model, 'count']]])
+			this._replaceUpdater('count', updateCount, [[$model, 'count']])
 		}
 		else
 			this._removeUpdater('count')

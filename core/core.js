@@ -403,24 +403,23 @@ PropertyStoragePrototype.getAnimation = function(name, animation) {
 }
 
 PropertyStoragePrototype.removeUpdater = function() {
-	var updater = this.updater
-	if (updater === undefined)
+	var callback = this.callback
+	if (callback === undefined)
 		return
 
-	var callback = updater[0]
-	updater[1].forEach(function(data) {
+	this.deps.forEach(function(data) {
 		var object = data[0]
 		var name = data[1]
 		object.removeOnChanged(name, callback)
 	})
-	this.updater = undefined
+	this.deps = this.callback = undefined
 }
 
-PropertyStoragePrototype.replaceUpdater = function(parent, updater) {
+PropertyStoragePrototype.replaceUpdater = function(parent, callback, deps) {
 	this.removeUpdater()
-	this.updater = updater
-	var callback = updater[0]
-	updater[1].forEach(function(data) {
+	this.callback = callback
+	this.deps = deps
+	deps.forEach(function(data) {
 		var object = data[0]
 		var name = data[1]
 		parent.connectOnChanged(object, name, callback)

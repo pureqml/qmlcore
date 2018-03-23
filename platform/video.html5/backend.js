@@ -13,7 +13,7 @@ var Player = function(ui) {
 	player.on('stalled', function() { log("Was stalled", dom.networkState); }.bind(ui))
 	player.on('emptied', function() { log("Was emptied", dom.networkState); }.bind(ui))
 	player.on('volumechange', function() { ui.muted = dom.muted }.bind(ui))
-	player.on('canplaythrough', function() { log("ready to play"); }.bind(ui))
+	player.on('canplaythrough', function() { log("ready to play"); ui.paused = dom.paused }.bind(ui))
 
 	player.on('error', function() {
 		log("Player error occured", dom.error, "src", ui.source)

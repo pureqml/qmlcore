@@ -321,7 +321,7 @@ Object {
 
 		if (key !== undefined) {
 			if (this.keyProcessDelay) {
-				if (this._lastEvent && eventTime - this._lastEvent < this.keyProcessDelay)
+				if (this._lastEvent && eventTime > this._lastEvent && eventTime - this._lastEvent < this.keyProcessDelay)
 					return true
 
 				this._lastEvent = eventTime

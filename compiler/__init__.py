@@ -207,7 +207,7 @@ class Compiler(object):
 
 		def write_properties(prefix, props):
 			r = ''
-			for k, v in props.iteritems():
+			for k, v in sorted(props.iteritems()):
 				k = compiler.js.escape_id(k)
 				if isinstance(v, dict):
 					r += write_properties(prefix + '$' + k, v)

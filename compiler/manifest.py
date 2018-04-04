@@ -1,14 +1,30 @@
 import json
 
-def merge_properties(dst, src):
-    for key, value in src.items():
-        if isinstance(value, dict):
-            node = dst.setdefault(key, {})
-            merge_properties(node, value)
-        else:
-            dst[key] = value
+def __pair_hook(pairs):
+	obj = {}
+	for k, v in pairs:
+		if '.' in k:
+			path = k.split('.')
+			current = obj
+			for p in path[:-1]:
+				current = current.setdefault(p, {})
+			current[path[-1]] = v
+		else:
+			obj[k] = v
+	return obj
 
-    return dst
+def merge_properties(dst, src):
+	src = __pair_hook(src.iteritems())
+	for key, value in src.iteritems():
+		if key.find('.') >= 0:
+			raise Exception('dot found in key')
+		if isinstance(value, dict):
+			node = dst.setdefault(key, {})
+			merge_properties(node, value)
+		else:
+			dst[key] = value
+
+	return dst
 
 class Manifest(object):
 	def __init__(self, data = None):
@@ -75,18 +91,6 @@ class Manifest(object):
 	@property
 	def export_module(self):
 		return self.data.get('export_module', False)
-
-def __pair_hook(pairs):
-	obj = {}
-	for k, v in pairs:
-		if '.' in k:
-			path = k.split('.')
-			current = obj
-			for p in path[:-1]:
-				current = current.setdefault(p, {})
-			current[path[-1]] = v
-		obj[k] = v
-	return obj
 
 def load(f):
 	return Manifest(json.load(f, object_pairs_hook = __pair_hook))

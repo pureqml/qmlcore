@@ -171,7 +171,9 @@ class Documentation(object):
 		with open(os.path.join(self.jsonroot, package, name + '.json'), 'wt') as f:
 			f.write(component.generate(self, package))
 
-	def generate(self):
+	def generate(self, component_path_map):
+		self.component_path_map = component_path_map
+
 		if not os.path.exists(self.jsonroot):
 			os.makedirs(self.jsonroot)
 

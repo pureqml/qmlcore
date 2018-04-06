@@ -2,6 +2,10 @@
 BaseView {
 
 	///@private
+	function positionViewAtIndex() { }
+
+
+	///@private
 	function _layout() {
 		if (!this.recursiveVisible && !this.offlineLayout) {
 			this.layoutFinished()

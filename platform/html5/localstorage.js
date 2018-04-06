@@ -11,9 +11,10 @@ LocalStorage.prototype.getItem = function(name) {
 
 LocalStorage.prototype.read = function() {
 	var control = this._control
-	var value = control.name ? this._storage.getItem(control.name) : ""
-	if (value !== null && value !== undefined)
-		control.value = value
+	if (control.name) {
+		var value = this._storage.getItem(control.name)
+		control.value = value !== null ? value : undefined
+	}
 }
 
 LocalStorage.prototype.saveItem = function() {

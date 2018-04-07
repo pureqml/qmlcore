@@ -35,7 +35,4 @@ LocalStorage {
 		this._setProperty('value', undefined)
 		this._read()
 	}
-
-	///@private
-	onCompleted: { this._read() }
 }

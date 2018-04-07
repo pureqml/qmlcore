@@ -18,7 +18,7 @@ Item {
 	property real	progress;	///< current playback progress in seconds
 	property real	buffered;	///< how much content to buffer in seconds
 
-	LocalStorage { id: volumeStorage; name: "volume"; }
+	PropertyStorage { id: volumeStorage; name: "volume"; defaultValue: 1.0; }
 
 	///@private
 	constructor: {
@@ -180,8 +180,7 @@ Item {
 
 	///@private
 	onCompleted: {
-		volumeStorage.read()
-		this.volume = volumeStorage.value ? +(volumeStorage.value) : 1.0
+		this.volume = +(volumeStorage.value)
 
 		var player = this._getPlayer()
 		if (player)

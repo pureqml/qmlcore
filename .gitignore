@@ -6,3 +6,4 @@ app/qml.js
 app/qml.min.js
 .cache/*
 node_modules
+.idea/

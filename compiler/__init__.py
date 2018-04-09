@@ -147,6 +147,7 @@ class Compiler(object):
 						relpath = relpath.split(os.path.sep)
 
 					package = ".".join([package_name] + relpath)
+					self.component_path_map[filename] = dirpath
 					promise = self.process_file(pool, generator, package, dirpath, filename)
 					if promise is not None:
 						promises.append(promise)
@@ -225,7 +226,7 @@ class Compiler(object):
 			f.write(appcode.encode('utf-8'))
 
 		if self.documentation:
-			self.documentation.generate()
+			self.documentation.generate(self.component_path_map)
 
 		print "done"
 
@@ -241,6 +242,7 @@ class Compiler(object):
 		self.release = release
 		self.verbose = verbose
 		self.jobs = int(jobs) if jobs is not None else cpu_count()
+		self.component_path_map = {}
 
 		if self.verbose:
 			print 'running using %d jobs' %self.jobs

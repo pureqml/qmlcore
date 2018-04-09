@@ -246,7 +246,7 @@ import_statement = Keyword("import") + restOfLine
 scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
 component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration | statement_end)) + Suppress("}"))
 
-component_declaration << (component_type + component_scope)
+component_declaration << ZeroOrMore(statement_end).suppress() + (component_type + component_scope) + ZeroOrMore(statement_end).suppress()
 component_declaration.setParseAction(handle_component_declaration)
 
 def handle_unary_op(s, l, t):
@@ -298,7 +298,7 @@ expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 expression << expression_ops
 expression.ignore(newline)
 
-source = ZeroOrMore(newline).suppress() + component_declaration + ZeroOrMore(newline).suppress()
+source = component_declaration
 cStyleComment.setParseAction(handle_documentation_string)
 source = source.ignore(cStyleComment)
 dblSlashComment.setParseAction(handle_documentation_string)

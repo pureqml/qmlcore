@@ -219,7 +219,7 @@ enum_property_declaration.setParseAction(handle_enum_property_declaration)
 
 assign_scope_declaration = identifier + Suppress(":") + expression + statement_end
 assign_scope_declaration.setParseAction(handle_assignment)
-assign_scope = nested_identifier_lvalue + Suppress("{") + Group(OneOrMore(assign_scope_declaration)) + Suppress("}")
+assign_scope = nested_identifier_lvalue + Suppress("{") + Group(OneOrMore(assign_scope_declaration | statement_end)) + Suppress("}")
 assign_scope.setParseAction(handle_assignment_scope)
 
 method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Suppress("(") + delimitedList(identifier, ",") + Suppress(")") )) + Suppress(":") + code

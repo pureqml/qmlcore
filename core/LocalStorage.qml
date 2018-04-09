@@ -5,6 +5,21 @@ Object {
 		this.impl = backend().createLocalStorage()
 	}
 
+	///@private
+	_checkNameValid(name): {
+		if (!name) throw new Error("empty name")
+	}
+
+	///@private
+	_ensureCallback(cb, name): {
+		return cb || function(val) { log("ignore value of", name, "gotten from storage:", val) }
+	}
+
+	///@private
+	_ensureErrCallback(cb): {
+		return cb || function(err) { log(err.message) }
+	}
+
 	/**
 	 * Return stored item by name
 	 * @param {string} name - stored item name
@@ -12,7 +27,8 @@ Object {
 	 * @param {function} error - callback to report non-existing value or some kind of error
 	 */
 	get(name, callback, error): {
-		this.impl.get(name, callback, error)
+		this._checkNameValid(name)
+		this.impl.get(name, this._ensureCallback(callback, name), this._ensureErrCallback(error))
 	}
 
 	/**
@@ -22,6 +38,8 @@ Object {
 	 * @param {Object} defaultValue - default value
 	 */
 	getOrDefault(name, callback, defaultValue): {
+		this._checkNameValid(name)
+		callback = this._ensureCallback(callback, name)
 		this.impl.get(name, callback, function() { callback(defaultValue) })
 	}
 
@@ -31,7 +49,8 @@ Object {
 	 * @param {string} value - item value
 	 */
 	set(name, value, error): {
-		this.impl.set(name, value, error)
+		this._checkNameValid(name)
+		this.impl.set(name, value, this._ensureErrCallback(error))
 	}
 
 	/**
@@ -40,6 +59,7 @@ Object {
 	 * @param {function} error - callback to report error
 	 */
 	erase(name, error): {
-		this.impl.erase(name, error)
+		this._checkNameValid(name)
+		this.impl.erase(name, this._ensureErrCallback(error))
 	}
 }

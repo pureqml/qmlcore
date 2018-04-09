@@ -47,6 +47,7 @@ Object {
 	 * Save named item
 	 * @param {string} name - item name
 	 * @param {string} value - item value
+	 * @param {function} error - callback to report error
 	 */
 	set(name, value, error): {
 		this._checkNameValid(name)

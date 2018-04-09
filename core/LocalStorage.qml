@@ -16,6 +16,16 @@ Object {
 	}
 
 	/**
+	 * Return stored item by name or default value if not exists
+	 * @param {string} name - stored item name
+	 * @param {function} callback - callback to return value
+	 * @param {Object} defaultValue - default value
+	 */
+	getOrDefault(name, callback, defaultValue): {
+		this.impl.get(name, callback, function() { callback(defaultValue) })
+	}
+
+	/**
 	 * Save named item
 	 * @param {string} name - item name
 	 * @param {string} value - item value

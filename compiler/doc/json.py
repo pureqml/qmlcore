@@ -29,7 +29,7 @@ class Component(object):
 			ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
 
 			if category == 'Method':
-				if re.match("^on.*Changed$", value.name[0]) or value.name[0] == "onCompleted":
+				if re.match("^on.*Changed$", value.name[0]) or value.name[0] == "onCompleted" or value.name[0] == "constructor":
 					internal = "true"
 
 			if category == 'Property':
@@ -123,9 +123,6 @@ class Component(object):
 
 		if 'Method' in children:
 			data.append(('Method', 'Methods'))
-
-		# if 'Constructor' in children:
-			# data.append(('Constructor', 'Constructors'))
 
 		if len(data) == 0:
 			return r

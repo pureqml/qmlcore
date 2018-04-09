@@ -15,7 +15,7 @@ Item {
 	property int	progress;
 	property int	buffered;
 
-	LocalStorage { id: volumeStorage; name: "volume"; }
+	PropertyStorage { id: volumeStorage; name: "volume"; }
 
 	play: { }
 	stop: { }

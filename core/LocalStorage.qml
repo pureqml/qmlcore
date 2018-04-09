@@ -1,26 +1,35 @@
-/// object for storing value by key name
+/// simple proxy to underlying storage
 Object {
-	property string name;		///< stored property key name
-	property string value;		///< stored property value
-
 	constructor: {
 		var backend = _globals.core.__localStorageBackend
-		this.impl = backend().createLocalStorage(this)
+		this.impl = backend().createLocalStorage()
 	}
 
-	///read 'name' property from storage and set its value to 'value' property
-	read: { this.impl.read() }
+	/**
+	 * Return stored item by name
+	 * @param {string} name - stored item name
+	 * @param {function} callback - callback to return value
+	 * @param {function} error - callback to report non-existing value or some kind of error
+	 */
+	get(name, callback, error): {
+		this.impl.get(name, callback, error)
+	}
 
-	/**@param name:string stored item name
-	return stored item by name if it exists*/
-	getItem(name): { return this.impl.getItem(name) }
+	/**
+	 * Save named item
+	 * @param {string} name - item name
+	 * @param {string} value - item value
+	 */
+	set(name, value, error): {
+		this.impl.set(name, value, error)
+	}
 
-	///@private
-	onValueChanged: { this.impl.saveItem() }
-
-	///@private
-	onNameChanged: { this.read() }
-
-	///@private
-	onCompleted: { this.read() }
+	/**
+	 * Remove item
+	 * @param {string} name - item name
+	 * @param {function} error - callback to report error
+	 */
+	erase(name, error): {
+		this.impl.erase(name, error)
+	}
 }

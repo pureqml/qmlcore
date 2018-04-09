@@ -1,28 +1,27 @@
-var LocalStorage = function(control) {
-	this._control = control
+var LocalStorage = function() {
 	this._storage = window.localStorage;
 	if (!this._storage)
 		throw new Error("no local storage support")
 }
 
-LocalStorage.prototype.getItem = function(name) {
-	return this._storage.getItem(name)
+LocalStorage.prototype.get = function(name, callback, error) {
+	var value = this._storage.getItem(name)
+	if (value !== null)
+		callback(value)
+	else
+		error(new Error('no item with name ' + name))
 }
 
-LocalStorage.prototype.read = function() {
-	var control = this._control
-	var value = control.name ? this._storage.getItem(control.name) : ""
-	if (value !== null && value !== undefined)
-		control.value = value
+LocalStorage.prototype.set = function(name, value) {
+	this._storage.setItem(name, value)
 }
 
-LocalStorage.prototype.saveItem = function() {
-	var control = this._control
-	this._storage.setItem(control.name, control.value)
+LocalStorage.prototype.erase = function(name, error) {
+	this._storage.removeItem(name)
 }
 
-exports.createLocalStorage = function(control) {
-	return new LocalStorage(control)
+exports.createLocalStorage = function() {
+	return new LocalStorage()
 }
 
 exports.LocalStorage = LocalStorage

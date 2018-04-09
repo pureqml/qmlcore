@@ -81,7 +81,7 @@ class Component(object):
 			r.append('\t\t}')
 
 
-	def process_children(self, r, package):
+	def process_children(self, r, component_path_map):
 		component = self.component
 
 		children = {}
@@ -95,7 +95,11 @@ class Component(object):
 			if (category == "Property"):
 				child.name = child.properties[0][0]
 				if hasattr(child.properties[0][1], "children"):
-					child.ref = package + "/" + child.type
+					component_file_name = child.type + ".qml"
+					if component_path_map.has_key(component_file_name):
+						component_dir = component_path_map[component_file_name][2:]
+						component_dir = component_dir.replace("/", ".")
+						child.ref = component_dir + "/" + component_file_name[:-4]
 					child.defaultValue = child.properties[0][1].name
 				else:
 					child.defaultValue = child.properties[0][1][1:-1] if child.properties[0][1] is not None else ""
@@ -137,7 +141,7 @@ class Component(object):
 		if component.doc:
 			r.append(component.doc)
 
-	def generate(self, documentation, package):
+	def generate(self, documentation, package, component_path_map):
 		r = []
 		package, name = self.package, self.name
 		r.append('{' )
@@ -146,7 +150,7 @@ class Component(object):
 		r.append('\t"text": "%s",' %(comp.doc.text.replace("\n", " ") if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""))
 		r.append('')
 		r.append('\t"content": {')
-		self.process_children(r, package)
+		self.process_children(r, component_path_map)
 		r.append('\t}')
 		r.append('}')
 		return '\n'.join(r)
@@ -169,9 +173,11 @@ class Documentation(object):
 	def generate_component(self, package, name, component):
 		#print package, name, component
 		with open(os.path.join(self.jsonroot, package, name + '.json'), 'wt') as f:
-			f.write(component.generate(self, package))
+			f.write(component.generate(self, package, self.component_path_map))
 
-	def generate(self):
+	def generate(self, component_path_map):
+		self.component_path_map = component_path_map
+
 		if not os.path.exists(self.jsonroot):
 			os.makedirs(self.jsonroot)
 

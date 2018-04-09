@@ -238,6 +238,8 @@ json_value << (null_value | bool_value | number | unquoted_string_value | json_a
 list_element_declaration = Keyword("ListElement").suppress() - json_object
 list_element_declaration.setParseAction(handle_list_element)
 
+import_statement = Keyword("import") + restOfLine
+
 scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
 component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
 
@@ -297,6 +299,7 @@ cStyleComment.setParseAction(handle_documentation_string)
 source = source.ignore(cStyleComment)
 dblSlashComment.setParseAction(handle_documentation_string)
 source = source.ignore(dblSlashComment)
+source = source.ignore(import_statement)
 
 def parse(data):
 	global doc_root_component

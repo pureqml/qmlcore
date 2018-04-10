@@ -29,7 +29,7 @@ class Component(object):
 													  value.name[0] == "onCompleted" or \
 													  value.name[0] == "constructor")
 
-			internal = forceInternal or ((value.doc is not None) and ("@private" in value.doc.text or "@internal" in value.doc.text))
+			internal = bool(forceInternal) or ((value.doc is not None) and ("@private" in value.doc.text or "@internal" in value.doc.text))
 			internal = str(internal).lower()
 
 			ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""

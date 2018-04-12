@@ -230,7 +230,7 @@ class Compiler(object):
 
 		print "done"
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, doc = None, release = False, verbose = False, jobs = 1):
 		self.cache = Cache()
 		self.root = root
 		self.output_dir = output_dir
@@ -250,15 +250,10 @@ class Compiler(object):
 		with open(os.path.join(root, 'partners.json')) as f:
 			self.partners = json.load(f)
 
-		if doc_format == "qml":
-		    self.documentation = compiler.doc.qml.Documentation(doc) if doc else None
-		elif doc_format == "json":
-		    self.documentation = compiler.doc.json.Documentation(doc) if doc else None
-		else:
-		    self.documentation = compiler.doc.md.Documentation(doc) if doc else None
+		self.documentation = compiler.doc.json.Documentation(doc) if doc else None
 
 
-def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, doc = None, doc_format = None, release = False, verbose = False, jobs = 1):
+def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, doc = None, release = False, verbose = False, jobs = 1):
 	if wait:
 		try:
 			import pyinotify
@@ -291,7 +286,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 		except:
 			raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, doc_format=doc_format, release=release, verbose=verbose, jobs=jobs)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
 

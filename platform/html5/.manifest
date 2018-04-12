@@ -4,6 +4,7 @@
 	"properties": {
 		"cssAutoClassificator": false,
 		"cssDisableTransitions": false,
-		"cssDisableTransformations": false
+		"cssDisableTransformations": false,
+		"expectRunContextEvent": false
 	}
 }

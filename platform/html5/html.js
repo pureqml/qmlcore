@@ -721,7 +721,7 @@ exports.layoutText = function(text) {
 }
 
 exports.run = function(ctx, onloadCallback) {
-	ctx.window.on('load', function() {
+	ctx.window.on($manifest$expectRunContextEvent ? 'runContext' : 'load', function() {
 		onloadCallback()
 	})
 }

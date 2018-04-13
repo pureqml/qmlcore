@@ -170,7 +170,7 @@ unquoted_string_value = \
 	QuotedString('"', escChar='\\', unquoteResults = True, multiline=True) | \
 	QuotedString("'", escChar='\\', unquoteResults = True, multiline=True) | \
 	QuotedString("`", escChar='\\', unquoteResults = True, multiline=True)
-quoted_string_value.setParseAction(handle_string)
+unquoted_string_value.setParseAction(handle_string)
 
 enum_element = Word(srange("[A-Z_]"), alphanums)
 enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element

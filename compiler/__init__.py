@@ -116,7 +116,7 @@ class Compiler(object):
 				package_name = str(root_manifest.package)
 
 			for dirpath, dirnames, filenames in os.walk(project_dir, topdown = True):
-				dirnames[:] = [name for name in dirnames if name[:6] != 'build.']
+				dirnames[:] = filter(lambda name: not name[:6].startswith("build.") and name != "dist", dirnames)
 				if '.nocompile' in filenames:
 					dirnames[:] = []
 					continue

@@ -131,7 +131,7 @@ def handle_number(s, l, t):
 		return float(value) if '.' in value else int(value)
 
 def handle_bool_value(s, l, t):
-	value = t[0]
+	value = t[0] == "true"
 	return value
 
 expression = Forward()

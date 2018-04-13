@@ -196,7 +196,7 @@ class generator(object):
 		if safe_name.endswith(".js"):
 			safe_name = safe_name[:-3]
 		safe_name = escape_package(safe_name.replace('/', '.'))
-		code = "//=====[import %s]=====================\n\n" %name + code
+		code = "//=====[import %s]=====================\n\n" %name + code.decode('utf-8')
 		r.append("_globals.%s = %s()" %(safe_name, self.wrap(code, name == "core.core"))) #hack: core.core use _globals as its exports
 		return "\n".join(r)
 

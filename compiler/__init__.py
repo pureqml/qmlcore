@@ -1,5 +1,3 @@
-import compiler.doc.md
-import compiler.doc.qml
 import compiler.doc.json
 import compiler.pyparsing
 import compiler.grammar

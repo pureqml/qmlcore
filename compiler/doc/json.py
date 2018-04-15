@@ -58,8 +58,7 @@ class Component(object):
 					argText = argText[0:-2]
 				argText += "], "
 
-				docText = (docLines[-1] if descriptionAtLastLine else docLines[0]).strip(' *')
-
+				docText = (docLines[-1] if descriptionAtLastLine else docLines[0]).strip(' *').lstrip()
 				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name[0], docText, argText, internal, localComma))
 			else:
 				itemName = value.name if isinstance(value.name, basestring) else value.name[0]

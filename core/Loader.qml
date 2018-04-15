@@ -47,6 +47,7 @@ Item {
 		this.item = item
 		this._context.scheduleComplete()
 		this._updateVisibilityForChild(this.item, this.recursiveVisible)
+		this._tryFocus()
 		this.loaded()
 	}
 

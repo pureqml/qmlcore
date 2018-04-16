@@ -12,7 +12,7 @@ def component(com):
 	global doc_next, doc_prev_component, doc_root_component
 
 	if not doc_root_component:
-                doc_root_component = doc_next
+		doc_root_component = doc_next
 
 	if doc_next:
 		com.doc = doc_next
@@ -30,14 +30,10 @@ def document(text, line, prev):
 	global doc_next, doc_prev_component
 	if prev:
 		if doc_prev_component:
-			#if doc_prev_component.doc is not None:
-			#	print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
 			doc_prev_component.doc = lang.DocumentationString(text)
 		else:
 			print 'WARNING: unused documentation string %s at line %d' %(text, line)
 	else:
-		#if doc_next is not None:
-		#	print 'WARNING: duplicate documentation string %s at line %d' %(text, line)
 		doc_next = lang.DocumentationString(text)
 
 def handle_component_declaration(s, l, t):
@@ -106,6 +102,10 @@ def handle_function_call(s, l, t):
 
 def handle_documentation_string(s, l, t):
 	text = t[0]
+	global doc_next, doc_root_component
+	if doc_next is not None and doc_root_component is None:
+		doc_root_component = doc_next
+
 	if text.startswith('///<'):
 		document(text[4:], l, True)
 	elif text.startswith('///'):

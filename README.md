@@ -1,6 +1,6 @@
 # PureQML::QMLCore: QML to Javascript translator
 QmlCore is a simple set of tools we (a small team of QML advocates) use since years to simplify the development of HTML5 UIs for both mobile and desktop devices.
-It was designed with the original QML in mind, while it's not 100% compatible and improved in some aspects. 
+It was designed with the original QML in mind, while it's not 100% compatible and improved in some aspects.
 The main concepts are the same though, so if you're familiar with original QML, you could start right away.
 
 ## Usage
@@ -35,6 +35,7 @@ Manifest is a collection of project-wide hacks we used to botch various projects
 * ```-d, --devel``` development mode, keep running and wait for changes, requires inotify module
 * ```-p, --web-prefix``` web prefix, removed default CSS rules, adds 'qml-' prefix for them, allowing you to interchange HTML/QML.
 * ```-u, --update-translation``` update translation files, specified in manifest.languages
+* ```-j, --jobs``` run N jobs in parallel
 * ```--boilerplate``` initialises bare minimum for quicker kick-off in current directory.
 
 # Localisation

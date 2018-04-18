@@ -30,6 +30,7 @@ parser.add_argument('--release', '-r', help='generate release code (no logs)', d
 parser.add_argument('--platform', '-p', help='generate code for platform <platform>')
 parser.add_argument('--verbose', '-v', help='adds verbosity in some places', dest='verbose', default=False, action='store_true')
 parser.add_argument('--jobs', '-j', help='run N jobs in parallel', default=1, nargs='?')
+parser.add_argument('--set-property', '-s', dest='properties', action='append', help = 'sets manifest property name value', nargs=2)
 parser.add_argument('targets', nargs='*', help='targets to build')
 args = parser.parse_args()
 
@@ -361,6 +362,8 @@ except IOError:
 	print 'warning: could not find .manifest, using empty fallback'
 	manifest = mf.Manifest()
 
+for name, value in args.properties:
+	manifest.set_property(name, value)
 
 apps = []
 def proc_source_dir(source_dir):

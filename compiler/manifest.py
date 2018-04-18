@@ -1,20 +1,23 @@
 import json
 
-def __pair_hook(pairs):
-	obj = {}
-	for k, v in pairs:
-		if '.' in k:
-			path = k.split('.')
+def _set_property(obj, name, value):
+		if '.' in name:
+			path = name.split('.')
 			current = obj
 			for p in path[:-1]:
 				current = current.setdefault(p, {})
-			current[path[-1]] = v
+			current[path[-1]] = value
 		else:
-			obj[k] = v
+			obj[name] = value
+
+def _pair_hook(pairs):
+	obj = {}
+	for k, v in pairs:
+		_set_property(obj, k, v)
 	return obj
 
 def merge_properties(dst, src):
-	src = __pair_hook(src.iteritems())
+	src = _pair_hook(src.iteritems())
 	for key, value in src.iteritems():
 		if key.find('.') >= 0:
 			raise Exception('dot found in key')
@@ -84,6 +87,9 @@ class Manifest(object):
 	def properties(self):
 		return self.data.setdefault('properties', {})
 
+	def set_property(self, name, value):
+		return _set_property(self.data, name, value)
+
 	@property
 	def partner(self):
 		return self.data.get('partner', 'free')
@@ -93,7 +99,7 @@ class Manifest(object):
 		return self.data.get('export_module', False)
 
 def load(f):
-	return Manifest(json.load(f, object_pairs_hook = __pair_hook))
+	return Manifest(json.load(f, object_pairs_hook = _pair_hook))
 
 def loads(s):
-	return Manifest(json.loads(s, object_pairs_hook = __pair_hook))
+	return Manifest(json.loads(s, object_pairs_hook = _pair_hook))

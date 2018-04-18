@@ -1,6 +1,6 @@
 {
   "name": "pureqml-core",
-  "version": "0.11.0",
+  "version": "1.0.1",
   "description": "QML to HTML5 translator, both for mobile and desktop targets.",
   "keywords": ["qml", "transpiler", "translator", "compiler", "application", "mobile", "templater", "ui", "ux", "cross-platform"],
 

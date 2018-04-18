@@ -13,9 +13,7 @@ LocalStorage {
 	///@private
 	_read: {
 		this._checkNameValid()
-		this.get(this.name,
-			function(value) { this._setProperty('value', value) }.bind(this),
-			function() { this._setProperty('value', this.defaultValue) }.bind(this))
+		this.getOrDefault(this.name, function(value) { this._setProperty('value', value) }.bind(this), this.defaultValue)
 	}
 
 	///@private

@@ -88,7 +88,7 @@ class Manifest(object):
 		return self.data.setdefault('properties', {})
 
 	def set_property(self, name, value):
-		return _set_property(self.data, name, value)
+		return _set_property(self.properties, name, value)
 
 	@property
 	def partner(self):

@@ -28,6 +28,7 @@ Image.prototype.load = function(source) {
 }
 
 var Text = function() { }
+var Rectangle = function() {}
 
 exports.init = function(ctx) {
 	log('backend initialization...')
@@ -53,6 +54,9 @@ exports.createElement = function(ctx, tag) {
 exports.initImage = function(image) {
 	var element = image.element
 	element._image = new Image(image)
+}
+
+exports.initRectangle = function(rect) {
 }
 
 var ImageStatusNull			= 0
@@ -191,3 +195,8 @@ Renderer.prototype.drawImage = function(rect, image) {
 	log(this.prefix() + 'paint image ' + rect + ' ' + image)
 }
 exports.Renderer = Renderer
+
+class Location {
+}
+
+exports.createLocation = function(ui) { return new Location }

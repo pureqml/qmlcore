@@ -6,7 +6,7 @@ import os
 
 def build(app, title):
     os.system('rm -rf %s' %app)
-    res = os.system('cordova create %s com.example.app %s' %(app,title))
+    res = os.system('cordova create %s com.%s.app %s' %(app, app, title))
     if res != 0:
         print "Failed to create android app"
         return
@@ -14,9 +14,15 @@ def build(app, title):
     os.system('cp androidIcon.png %s' %(app))
     os.system('cp config.xml %s' %(app))
     os.chdir(app)
+
+    {% block commands %}{% endblock %}
+
     os.system('cordova platform add android')
     os.system('cordova plugin add cordova-plugin-streaming-media')
     os.system('cordova plugin add cordova-plugin-device')
+
+    {% block plugins %}{% endblock %}
+
     os.system('cordova build android')
     os.chdir('..')
 

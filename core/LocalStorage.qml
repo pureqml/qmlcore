@@ -2,7 +2,7 @@
 Object {
 	constructor: {
 		var backend = _globals.core.__localStorageBackend
-		this.impl = backend().createLocalStorage()
+		this.impl = backend().createLocalStorage(this)
 	}
 
 	///@private

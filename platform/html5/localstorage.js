@@ -1,4 +1,7 @@
-var LocalStorage = function() {
+var LocalStorage = function(parent) {
+	if (parent && parent.name !== undefined) {
+		// TODO: implement properties sunchronization using parent._setProperty() and parent.ready()
+	}
 	this._storage = window.localStorage;
 	if (!this._storage)
 		throw new Error("no local storage support")
@@ -20,8 +23,8 @@ LocalStorage.prototype.erase = function(name, error) {
 	this._storage.removeItem(name)
 }
 
-exports.createLocalStorage = function() {
-	return new LocalStorage()
+exports.createLocalStorage = function(parent) {
+	return new LocalStorage(parent)
 }
 
 exports.LocalStorage = LocalStorage

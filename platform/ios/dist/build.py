@@ -6,15 +6,21 @@ import os
 
 def build(app, title):
     os.system('rm -rf %s' %app)
-    res = os.system('cordova create %s com.example.app %s' %(app,title))
+    res = os.system('cordova create %s com.%s.app %s' %(app, app, title))
     if res != 0:
         print "Failed to create ios app"
         return
     os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
-    os.system('cp androidIcon.png %s' %(app))
+    os.system('cp icon.png %s' %(app))
     os.system('cp config.xml %s' %(app))
     os.chdir(app)
+
+    {% block commands %}{% endblock %}
+
     os.system('cordova platform add ios')
+
+    {% block plugins %}{% endblock %}
+
     os.system('cordova build ios')
     os.chdir('..')
 

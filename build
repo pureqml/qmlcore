@@ -362,8 +362,9 @@ except IOError:
 	print 'warning: could not find .manifest, using empty fallback'
 	manifest = mf.Manifest()
 
-for name, value in args.properties:
-	manifest.set_property(name, value)
+if args.properties:
+	for name, value in args.properties:
+		manifest.set_property(name, value)
 
 apps = []
 def proc_source_dir(source_dir):

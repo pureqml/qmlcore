@@ -1,8 +1,22 @@
-{% extends "index.html" %}
-{% block head %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{{ title }}{% endblock %}</title>
+	<meta charset="utf-8">
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+	<meta name="viewport" content="width=1280, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densityDpi=medium-dpi" />
 	<meta name="format-detection" content="telephone=no">
 	<meta name="msapplication-tap-highlight" content="no">
-	<script type="text/javascript" src="cordova.js"></script>
-	<script type="text/javascript" src="modernizr-custom.js"></script>
-{% endblock %}
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&amp;subset=cyrillic" rel="stylesheet">
+	<script src="modernizr-custom.js"></script>
+	<script src="cordova.js"></script>
+	{% block head %}{% endblock %}
+</head>
+<body style="font-family: Roboto; font-weight: 400; background-color: #000000; background-repeat: no-repeat; background-size: cover; background-image: url(splash.jpg)">
+	{% block content %}{% endblock %}
+	{% block mainscript %}
+	<script src="{{ baseurl }}{{ app }}"></script>
+	{% endblock %}
+</body>
+</html>

@@ -8,6 +8,7 @@ Object {
 	property string country;
 	property string sdk;
 	property bool supportingUhd;
+	property bool supportingHdr;
 	property bool supporting3d;
 
 	constructor: {

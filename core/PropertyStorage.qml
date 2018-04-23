@@ -23,7 +23,7 @@ LocalStorage {
 	///@private
 	_write: {
 		this._checkNameValid()
-		if (this.value !== undefined && this.value !== null)
+		if (this.value)
 			this.set(this.name, this.value)
 		else
 			this.erase(this.name)
@@ -34,12 +34,14 @@ LocalStorage {
 
 	///@private
 	onNameChanged: {
-		this._setProperty('value', undefined)
+		this._setProperty('value', '')
 		this._read()
 	}
 
 	onCompleted: {
-		if (this.value !== undefined)
+		if (this.value) {
+			this._setProperty('value', this.value)
 			this.ready()
+		}
 	}
 }

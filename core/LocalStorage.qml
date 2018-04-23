@@ -28,7 +28,7 @@ Object {
 	 */
 	get(name, callback, error): {
 		this._checkNameValid(name)
-		this.impl.get(name, this._ensureCallback(callback, name), this._ensureErrCallback(error))
+		this.impl.get(name, this._ensureCallback(callback, name), this._ensureErrCallback(error), this)
 	}
 
 	/**
@@ -40,7 +40,7 @@ Object {
 	getOrDefault(name, callback, defaultValue): {
 		this._checkNameValid(name)
 		callback = this._ensureCallback(callback, name)
-		this.impl.get(name, callback, function() { callback(defaultValue) })
+		this.impl.get(name, callback, function() { callback(defaultValue) }, this)
 	}
 
 	/**
@@ -51,7 +51,7 @@ Object {
 	 */
 	set(name, value, error): {
 		this._checkNameValid(name)
-		this.impl.set(name, value, this._ensureErrCallback(error))
+		this.impl.set(name, value, this._ensureErrCallback(error), this)
 	}
 
 	/**
@@ -61,6 +61,6 @@ Object {
 	 */
 	erase(name, error): {
 		this._checkNameValid(name)
-		this.impl.erase(name, this._ensureErrCallback(error))
+		this.impl.erase(name, this._ensureErrCallback(error), this)
 	}
 }

@@ -15,7 +15,6 @@ def build(app, title, release):
 	os.system('cp config.xml %s' %(app))
 	os.chdir(app)
 
-
 	os.system('cordova platform add android')
 	{% block commands %}{% endblock %}
 	os.system('cordova plugin add cordova-plugin-streaming-media')
@@ -44,6 +43,6 @@ args = parser.parse_args()
 
 res = os.system('cordova --version')
 if res == 0:
-	build(args.app, args.title, release)
+	build(args.app, args.title, args.release)
 else:
 	print 'Install "cordova" first: https://cordova.apache.org/docs/en/latest/guide/cli/'

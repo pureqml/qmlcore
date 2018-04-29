@@ -101,7 +101,7 @@ def minify(root, target, app, platform, manifest):
 		os.remove(src)
 	return dstname
 
-var_re = re.compile(r'{{\s([\w\.]+)\s}}', re.MULTILINE)
+var_re = re.compile(r'{{\s*([\w\.]+)\s*}}', re.MULTILINE)
 block_re = re.compile(r'{%.*?%}', re.MULTILINE | re.IGNORECASE)
 
 def process_template_simple(destination, source, context):

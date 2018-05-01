@@ -196,7 +196,6 @@ Renderer.prototype.drawImage = function(rect, image) {
 }
 exports.Renderer = Renderer
 
-class Location {
-}
+var Location = function() { }
 
 exports.createLocation = function(ui) { return new Location }

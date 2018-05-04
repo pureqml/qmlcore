@@ -96,12 +96,15 @@ Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
 Player.prototype.setSource = function(url) {
 	var media = { 'src': url }
+	log("SetSource", url)
 	if (url) {
 		var urlLower = url.toLowerCase()
 		var extIndex = urlLower.lastIndexOf(".");
 		var extension = urlLower.substring(extIndex, urlLower.length - 1)
 		if (extension == ".m3u8" || extension == ".m3u")
 			media.type = 'application/x-mpegURL'
+		else if (extension == ".mpd")
+			media.type = 'application/dash+xml'
 	}
 	this.videojs.src(media, { html5: { hls: { withCredentials: true } }, fluid: true, preload: 'none', techOrder: ["html5"] })
 }

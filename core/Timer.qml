@@ -11,7 +11,7 @@ Object {
 	}
 
 	/// restart timer, activate if stopped
-	restart: { this._restart(); this.running = true; }
+	restart: { this.stop(); this.start(); }
 
 	/// stops timer
 	stop: { this.running = false }

@@ -11,7 +11,7 @@ Object {
 	}
 
 	/// restart timer, activate if stopped
-	restart: { this._restart(); this.running = true; }
+	restart: { this.stop(); this.start(); }
 
 	/// stops timer
 	stop: { this.running = false }
@@ -20,7 +20,11 @@ Object {
 	start: { this.running = true }
 
 	/// @private
-	onTriggered: { if (!this.repeat) this.running = false }
+	onTriggered: {
+		if (!this.repeat && (!this.triggeredOnStart || this._triggered))
+			this.running = false
+		this._triggered = true
+	}
 
 	/// @private
 	onCompleted: {
@@ -30,8 +34,10 @@ Object {
 
 	onRunningChanged: {
 		this._restart()
-		if (value && this.triggeredOnStart)
+		if (value && this.triggeredOnStart) {
+			this._triggered = false
 			this.triggered()
+		}
 	}
 
 	onIntervalChanged,

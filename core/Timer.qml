@@ -14,15 +14,10 @@ Object {
 	restart: { this._restart(); this.running = true; }
 
 	/// stops timer
-	stop: { this.running = false; }
+	stop: { this.running = false }
 
 	/// starts timer
-	start: {
-		var oldRunning = this.running;
-		this.running = true;
-		if (this.triggeredOnStart && !oldRunning)
-			this.triggered();
-	}
+	start: { this.running = true }
 
 	/// @private
 	onTriggered: { if (!this.repeat) this.running = false }
@@ -33,14 +28,14 @@ Object {
 			this.triggered()
 	}
 
-	onRunningChanged:	{
+	onRunningChanged: {
 		this._restart()
 		if (value && this.triggeredOnStart)
 			this.triggered()
 	}
 
-	onIntervalChanged:	{ this._restart() }
-	onRepeatChanged: 	{ this._restart() }
+	onIntervalChanged,
+	onRepeatChanged: { this._restart() }
 
 	/// @private
 	function _restart() {

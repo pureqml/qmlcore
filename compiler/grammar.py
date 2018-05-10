@@ -1,7 +1,7 @@
 from pyparsing import *
 import lang
 
-ParserElement.setDefaultWhitespaceChars(" \t\r\f")
+#source.setDefaultWhitespaceChars(" \t\r\f")
 ParserElement.enablePackrat()
 
 doc_next = None
@@ -185,18 +185,16 @@ nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue = Word(srange("[a-z_]"), alphanums + "._")
 nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
-newline = Suppress("\n")
 expression_end = Suppress(";")
-statement_end = expression_end | newline
 
-signal_declaration = Keyword("signal").suppress() + identifier + statement_end
+signal_declaration = Keyword("signal").suppress() + identifier + expression_end
 signal_declaration.setParseAction(handle_signal_declaration)
 
-id_declaration = Keyword("id").suppress() + Suppress(":") + identifier + statement_end
+id_declaration = Keyword("id").suppress() + Suppress(":") + identifier + expression_end
 id_declaration.setParseAction(handle_id_declaration)
 
 
-assign_declaration = nested_identifier_lvalue + Suppress(":") + expression + statement_end
+assign_declaration = nested_identifier_lvalue + Suppress(":") + expression + expression_end
 assign_declaration.setParseAction(handle_assignment)
 
 assign_component_declaration = nested_identifier_lvalue + Suppress(":") + component_declaration
@@ -206,25 +204,24 @@ const_property_declaration = Keyword("property").suppress() + Keyword("const") -
 const_property_declaration.setParseAction(handle_property_declaration)
 
 property_name_initializer_declaration = Group(identifier + Optional(Suppress(":") + expression))
-property_declaration = ((Keyword("property").suppress() + type + Group(delimitedList(property_name_initializer_declaration, ',')) + statement_end) | \
+property_declaration = ((Keyword("property").suppress() + type + Group(delimitedList(property_name_initializer_declaration, ',')) + expression_end) | \
 	(Keyword("property").suppress() + type + Group(Group(identifier + Suppress(":") + component_declaration))))
 property_declaration.setParseAction(handle_property_declaration)
 
-alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() + identifier + Suppress(":") + nested_identifier_lvalue + statement_end
+alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() + identifier + Suppress(":") + nested_identifier_lvalue + expression_end
 alias_property_declaration.setParseAction(handle_alias_property_declaration)
 
 enum_property_declaration = Keyword("property").suppress() + Keyword("enum").suppress() + identifier + \
-	Suppress("{") + Group(delimitedList(enum_element, ',')) + Suppress("}") + Optional(Literal(':').suppress() + enum_element) + statement_end
+	Suppress("{") + Group(delimitedList(enum_element, ',')) + Suppress("}") + Optional(Literal(':').suppress() + enum_element) + expression_end
 enum_property_declaration.setParseAction(handle_enum_property_declaration)
 
-assign_scope_declaration = identifier + Suppress(":") + expression + statement_end
+assign_scope_declaration = identifier + Suppress(":") + expression + expression_end
 assign_scope_declaration.setParseAction(handle_assignment)
-assign_scope = nested_identifier_lvalue + Suppress("{") + Group(OneOrMore(assign_scope_declaration | statement_end)) + Suppress("}")
+assign_scope = nested_identifier_lvalue + Suppress("{") + Group(OneOrMore(assign_scope_declaration)) + Suppress("}")
 assign_scope.setParseAction(handle_assignment_scope)
 
 method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Suppress("(") + delimitedList(identifier, ",") + Suppress(")") )) + Suppress(":") + code
 method_declaration.setParseAction(handle_method_declaration)
-method_declaration.ignore(newline)
 
 method_declaration_qml = Keyword("function") - Group(nested_identifier_lvalue) + Group(Suppress("(") + Optional(delimitedList(identifier, ",")) + Suppress(")") ) + code
 method_declaration_qml.setParseAction(handle_method_declaration)
@@ -244,9 +241,9 @@ list_element_declaration.setParseAction(handle_list_element)
 import_statement = Keyword("import") + restOfLine
 
 scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
-component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration | statement_end)) + Suppress("}"))
+component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
 
-component_declaration << ZeroOrMore(statement_end).suppress() + (component_type + component_scope) + ZeroOrMore(statement_end).suppress()
+component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
 
 def handle_unary_op(s, l, t):
@@ -296,7 +293,6 @@ expression_ops = infixNotation(expression_definition, [
 expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 
 expression << expression_ops
-expression.ignore(newline)
 
 source = component_declaration
 cStyleComment.setParseAction(handle_documentation_string)

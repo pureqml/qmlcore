@@ -17,9 +17,9 @@ var Player = function(ui) {
 	player.on('seeking', function() { log("seeking"); ui.seeking = true; ui.waiting = true }.bind(ui))
 	player.on('waiting', function() { log("waiting"); ui.waiting = true }.bind(ui))
 	player.on('stalled', function() { log("Was stalled", dom.networkState); }.bind(ui))
-	player.on('emptied', function() { log("Was emptied", dom.networkState); dom.play() }.bind(ui))
+	player.on('emptied', function() { log("Was emptied", dom.networkState); }.bind(ui))
 	player.on('volumechange', function() { ui.muted = dom.muted }.bind(ui))
-	player.on('canplaythrough', function() { log("ready to play"); dom.play() }.bind(ui))
+	player.on('canplaythrough', function() { log("ready to play"); ui.paused = dom.paused }.bind(ui))
 
 	player.on('error', function() {
 		log("Player error occured")
@@ -69,6 +69,8 @@ var Player = function(ui) {
 	}.bind(ui))
 
 	this.element = player
+	this.ui = ui
+
 	var uniqueId = 'videojs' + this.element._uniqueId
 	player.setAttribute('id', uniqueId)
 
@@ -99,7 +101,7 @@ Player.prototype.setSource = function(url) {
 	log("SetSource", url)
 	if (url) {
 		var urlLower = url.toLowerCase()
-		var extIndex = urlLower.lastIndexOf(".");
+		var extIndex = urlLower.lastIndexOf(".")
 		var extension = urlLower.substring(extIndex, urlLower.length - 1)
 		if (extension == ".m3u8" || extension == ".m3u")
 			media.type = 'application/x-mpegURL'
@@ -107,6 +109,17 @@ Player.prototype.setSource = function(url) {
 			media.type = 'application/dash+xml'
 	}
 	this.videojs.src(media, { html5: { hls: { withCredentials: true } }, fluid: true, preload: 'none', techOrder: ["html5"] })
+}
+
+Player.prototype.play = function() {
+	var playPromise = this.element.dom.play()
+	if (playPromise !== undefined) {
+		playPromise.catch(function(e) {
+			log('play error:', e)
+			if (this.ui.autoPlay && e.code == DOMException.ABORT_ERR)
+				this.element.dom.play()
+		}.bind(this))
+	}
 }
 
 Player.prototype.setRect = function(l, t, r, b) {

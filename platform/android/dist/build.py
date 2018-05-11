@@ -19,6 +19,7 @@ def build(app, title, release):
 	{% block commands %}{% endblock %}
 	os.system('cordova plugin add cordova-plugin-streaming-media')
 	os.system('cordova plugin add cordova-plugin-device')
+	os.system('cordova plugin add cordova-plugin-screen-orientation')
 	{% block plugins %}{% endblock %}
 
 	if release:

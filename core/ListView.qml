@@ -219,7 +219,7 @@ BaseView {
 
 			if (this.currentIndex === i && !item.focused) {
 				this.focusChild(item)
-				if (this.contentFollowsCurrentItem)
+				if (this.contentFollowsCurrentItem && this.size)
 					this.positionViewAtIndex(i)
 			}
 

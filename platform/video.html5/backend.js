@@ -85,7 +85,7 @@ Player.prototype.pause = function() {
 
 Player.prototype.stop = function() {
 	//where is no 'stop' method in html5 video player just pause instead
-	this.element.dom.pause()
+	this.pause()
 }
 
 Player.prototype.seek = function(delta) {

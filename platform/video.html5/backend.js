@@ -83,6 +83,11 @@ Player.prototype.pause = function() {
 	this.element.dom.pause()
 }
 
+Player.prototype.stop = function() {
+	//where is no 'stop' method in html5 video player just pause instead
+	this.element.dom.pause()
+}
+
 Player.prototype.seek = function(delta) {
 	this.element.dom.currentTime += delta
 }

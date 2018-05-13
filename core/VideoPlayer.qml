@@ -129,7 +129,11 @@ Item {
 	}
 
 	///stop video
-	stop: { this.pause() }
+	stop: {
+		var player = this._getPlayer()
+		if (player)
+			player.stop()
+	}
 
 	///pause video
 	pause: {

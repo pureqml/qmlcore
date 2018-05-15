@@ -270,7 +270,7 @@ def handle_expression_array(s, l, t):
 
 expression_array.setParseAction(handle_expression_array)
 
-expression_definition = bool_value | percent_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
+expression_definition = null_value | bool_value | percent_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
 
 expression_ops = infixNotation(expression_definition, [
 	(oneOf('! ~ + -'),	1, opAssoc.RIGHT, handle_unary_op),

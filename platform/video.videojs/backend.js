@@ -101,6 +101,9 @@ Player.prototype.setSource = function(url) {
 	log("SetSource", url)
 	if (url) {
 		var urlLower = url.toLowerCase()
+		var querryIndex = url.indexOf("?")
+		if (querryIndex >= 0)
+			urlLower = urlLower.substring(0, querryIndex)
 		var extIndex = urlLower.lastIndexOf(".")
 		var extension = urlLower.substring(extIndex, urlLower.length - 1)
 		if (extension == ".m3u8" || extension == ".m3u")

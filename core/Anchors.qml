@@ -118,6 +118,10 @@ Object {
 	}
 
 	onLeftChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('x')
@@ -126,10 +130,13 @@ Object {
 			this._subscribe(item)
 		}
 		this._subscribe(value[0])
-		this._scheduleUpdate()
 	}
 
 	onRightChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('x')
@@ -138,10 +145,13 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._scheduleUpdate()
 	}
 
 	onHorizontalCenterChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('x')
@@ -150,10 +160,13 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._scheduleUpdate()
-
 	}
+
 	onTopChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('y')
@@ -162,10 +175,13 @@ Object {
 			this._subscribe(item)
 		}
 		this._subscribe(value[0])
-		this._scheduleUpdate()
-
 	}
+
 	onBottomChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('y')
@@ -174,10 +190,13 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._scheduleUpdate()
 	}
 
 	onVerticalCenterChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('y')
@@ -186,10 +205,13 @@ Object {
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
-		this._scheduleUpdate()
 	}
 
 	onFillChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('x')
@@ -197,17 +219,19 @@ Object {
 		item._removeUpdater('y')
 		item._removeUpdater('height')
 		this._subscribe(value)
-		this._scheduleUpdate()
 	}
 
 	onCenterInChanged: {
+		this._scheduleUpdate()
+		if (value === null)
+			return
+
 		var item = this.parent
 		var anchors = this
 		item._removeUpdater('x')
 		item._removeUpdater('y')
 		this._subscribe(value)
 		this._subscribe(item)
-		this._scheduleUpdate()
 	}
 
 	onLeftMarginChanged,

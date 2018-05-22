@@ -141,7 +141,7 @@ Object {
 		var anchors = this
 		item._removeUpdater('x')
 		if (anchors.left || anchors.horizontalCenter) {
-			anchors._removeUpdater('width')
+			item._removeUpdater('width')
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
@@ -156,7 +156,7 @@ Object {
 		var anchors = this
 		item._removeUpdater('x')
 		if (anchors.left || anchors.right) {
-			anchors._removeUpdater('width')
+			item._removeUpdater('width')
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])

@@ -78,8 +78,7 @@ Object {
 		} else if (hcenterAnchor) {
 			hcenter = toScreen(hcenterAnchor)
 			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
-		} else
-			item.x = lm
+		}
 
 		if (topAnchor && bottomAnchor) {
 			top = toScreen(topAnchor)
@@ -105,8 +104,7 @@ Object {
 		} else if (vcenterAnchor) {
 			vcenter = toScreen(vcenterAnchor)
 			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
-		} else
-			item.y = tm
+		}
 	}
 
 	/** @private */

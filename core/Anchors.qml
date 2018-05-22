@@ -22,9 +22,15 @@ Object {
 	constructor : {
 		this._items = []
 		this._scheduleUpdate = function() { this._context.delayedAction('update-anchors', this, this._updateAll) }.bind(this)
+		this._grabX = false
+		this._grabY = false
 	}
 
 	function _grab(item, prop) {
+		if (prop === 'x')
+			this._grabX = true
+		if (prop === 'y')
+			this._grabY = true
 		item._removeUpdater(prop)
 	}
 
@@ -82,7 +88,8 @@ Object {
 		} else if (hcenterAnchor) {
 			hcenter = toScreen(hcenterAnchor)
 			item.x = hcenter - (item.width + lm - rm) / 2 - parentX - item.viewX
-		}
+		} else if (this._grabX)
+			item.x = lm
 
 		if (topAnchor && bottomAnchor) {
 			top = toScreen(topAnchor)
@@ -108,7 +115,8 @@ Object {
 		} else if (vcenterAnchor) {
 			vcenter = toScreen(vcenterAnchor)
 			item.y = vcenter - (item.height + tm - bm) / 2 - parentY - item.viewY
-		}
+		} else if (this._grabY)
+			item.y = tm
 	}
 
 	/** @private */

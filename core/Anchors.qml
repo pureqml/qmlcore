@@ -24,6 +24,10 @@ Object {
 		this._scheduleUpdate = function() { this._context.delayedAction('update-anchors', this, this._updateAll) }.bind(this)
 	}
 
+	function _grab(item, prop) {
+		item._removeUpdater(prop)
+	}
+
 	/** @private */
 	function _updateAll() {
 		var anchors = this
@@ -124,9 +128,9 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('x')
+		this._grab(item, 'x')
 		if (anchors.right || anchors.horizontalCenter) {
-			item._removeUpdater('width')
+			this._grab(item, 'width')
 			this._subscribe(item)
 		}
 		this._subscribe(value[0])
@@ -139,9 +143,9 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('x')
+		this._grab(item, 'x')
 		if (anchors.left || anchors.horizontalCenter) {
-			item._removeUpdater('width')
+			this._grab(item, 'width')
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
@@ -154,9 +158,9 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('x')
+		this._grab(item, 'x')
 		if (anchors.left || anchors.right) {
-			item._removeUpdater('width')
+			this._grab(item, 'width')
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
@@ -169,9 +173,9 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('y')
+		this._grab(item, 'y')
 		if (anchors.bottom || anchors.verticalCenter) {
-			item._removeUpdater('height')
+			this._grab(item, 'height')
 			this._subscribe(item)
 		}
 		this._subscribe(value[0])
@@ -184,9 +188,9 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('y')
+		this._grab(item, 'y')
 		if (anchors.top || anchors.verticalCenter) {
-			item._removeUpdater('height')
+			this._grab(item, 'height')
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
@@ -199,9 +203,9 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('y')
+		this._grab(item, 'y')
 		if (anchors.top || anchors.bottom) {
-			item._removeUpdater('height')
+			this._grab(item, 'height')
 		}
 		this._subscribe(item)
 		this._subscribe(value[0])
@@ -214,10 +218,10 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('x')
-		item._removeUpdater('width')
-		item._removeUpdater('y')
-		item._removeUpdater('height')
+		this._grab(item, 'x')
+		this._grab(item, 'width')
+		this._grab(item, 'y')
+		this._grab(item, 'height')
 		this._subscribe(value)
 	}
 
@@ -228,8 +232,8 @@ Object {
 
 		var item = this.parent
 		var anchors = this
-		item._removeUpdater('x')
-		item._removeUpdater('y')
+		this._grab(item, 'x')
+		this._grab(item, 'y')
 		this._subscribe(value)
 		this._subscribe(item)
 	}

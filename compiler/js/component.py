@@ -235,7 +235,7 @@ class component_generator(object):
 			is_on = event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper() #onXyzzy
 			if is_on:
 				signal_name = name[2].lower() + name[3:] #check that there's no signal with that name
-			is_pressed = is_on and name.endswith("Pressed")
+			is_pressed = is_on and name.endswith("Pressed") and len(name) > (2 + 7) #skipping onPressed
 			is_changed = is_on and name.endswith("Changed")
 			if is_changed:
 				if signal_name in base_gen.signals:

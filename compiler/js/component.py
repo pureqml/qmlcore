@@ -609,7 +609,7 @@ class component_generator(object):
 				if name != "completed":
 					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 				else:
-					r.append("%s%s._context._onCompleted(%s, %s)" %(ident, path, path, code))
+					r.append("%s%s._context._onCompleted(%s, %s)" %(ident, path, parent, code))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
 			handlers = filter(put_in_instance, handlers)

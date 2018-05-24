@@ -288,20 +288,20 @@ var Color = exports.core.Color = function(value) {
 	}
 
 	var len = triplet.length;
-	if (len == 3 || len == 4) {
+	if (len === 3 || len === 4) {
 		var r = parseInt(triplet[0], 16)
 		var g = parseInt(triplet[1], 16)
 		var b = parseInt(triplet[2], 16)
-		var a = (len == 4)? parseInt(triplet[3], 16): 15
+		var a = (len === 4)? parseInt(triplet[3], 16): 15
 		this.r = (r << 4) | r;
 		this.g = (g << 4) | g;
 		this.b = (b << 4) | b;
 		this.a = (a << 4) | a;
-	} else if (len == 6 || len == 8) {
+	} else if (len === 6 || len === 8) {
 		this.r = parseInt(triplet.substring(0, 2), 16)
 		this.g = parseInt(triplet.substring(2, 4), 16)
 		this.b = parseInt(triplet.substring(4, 6), 16)
-		this.a = (len == 8)? parseInt(triplet.substring(6, 8), 16): 255
+		this.a = (len === 8)? parseInt(triplet.substring(6, 8), 16): 255
 	} else
 		throw new Error("invalid color specification: " + value)
 }

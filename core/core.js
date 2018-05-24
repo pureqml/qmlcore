@@ -305,6 +305,25 @@ var Color = exports.core.Color = function(value) {
 	} else
 		throw new Error("invalid color specification: " + value)
 }
+
+Color.interpolate = function(dst, src, t) {
+	if (!(dst instanceof Color))
+		dst = new Color(dst)
+	if (!(src instanceof Color))
+		src = new Color(src)
+
+	var interpolate = function (dst, src, t) {
+		return t * (dst - src) + src
+	}
+
+	var r = Math.floor(interpolate(dst.r, src.r, t))
+	var g = Math.floor(interpolate(dst.g, src.g, t))
+	var b = Math.floor(interpolate(dst.b, src.b, t))
+	var a = Math.floor(interpolate(dst.a, src.a, t))
+
+	return new Color([r, g, b, a])
+}
+
 var ColorPrototype = Color.prototype
 ColorPrototype.constructor = exports.core.Color
 /** @const */

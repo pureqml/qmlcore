@@ -593,7 +593,7 @@ class component_generator(object):
 
 				for path, name in sorted(methods):
 					path = path_or_parent(path, parent, partial(self.transform_root, registry))
-					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, path))
+					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
 			handlers = filter(lambda h: put_in_instance(h) or h[1] == 'completed', handlers)
@@ -607,7 +607,7 @@ class component_generator(object):
 			for path, name in sorted(handlers):
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				if name != "completed":
-					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, path))
+					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 				else:
 					r.append("%s%s._context._onCompleted(%s, %s)" %(ident, path, path, code))
 
@@ -622,7 +622,7 @@ class component_generator(object):
 
 			for path, name in sorted(handlers):
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
-				r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, path))
+				r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
 			handlers = filter(put_in_instance, handlers)
@@ -635,7 +635,7 @@ class component_generator(object):
 
 			for path, name in sorted(handlers):
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
-				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, path))
+				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
 		for idx, value in enumerate(self.children):
 			var = '%s$child%d' %(escape(parent), idx)

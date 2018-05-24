@@ -40,6 +40,8 @@ def mangle_path(path, transform):
 	return '.'.join(path)
 
 def path_or_parent(path, parent, transform):
+	if path == 'parent':
+		return '%s.parent' %parent
 	return mangle_path(path.split('.'), transform) if path else parent
 
 gets_re = re.compile(r'\${(.*?)}')

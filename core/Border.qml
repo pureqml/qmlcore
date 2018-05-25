@@ -11,6 +11,6 @@ Object {
 
 	///@private
 	onWidthChanged: { this.parent.style({'border-width': value, 'margin-left': -value, 'margin-top': -value}) }
-	onColorChanged: { this.parent.style('border-color', _globals.core.normalizeColor(value)) }
+	onColorChanged: { this.parent.style('border-color', _globals.core.Color.normalize(value)) }
 	onStyleChanged: { this.parent.style('border-style', value) }
 }

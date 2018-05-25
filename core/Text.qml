@@ -99,7 +99,7 @@ Item {
 	}
 
 	onTextChanged:				{ this._setText(value); this._updateSize() }
-	onColorChanged: 			{ this.style('color', _globals.core.normalizeColor(value)) }
+	onColorChanged: 			{ this.style('color', _globals.core.Color.normalize(value)) }
 	onWidthChanged:				{ this._updateSize() }
 
 	onVerticalAlignmentChanged: {

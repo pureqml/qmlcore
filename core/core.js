@@ -309,13 +309,13 @@ Color.interpolate = function(dst, src, t) {
 		src = new Color(src)
 
 	var interpolate = function (dst, src, t) {
-		return t * (dst - src) + src
+		return Math.floor(t * (dst - src) + src)
 	}
 
-	var r = Math.floor(interpolate(dst.r, src.r, t))
-	var g = Math.floor(interpolate(dst.g, src.g, t))
-	var b = Math.floor(interpolate(dst.b, src.b, t))
-	var a = Math.floor(interpolate(dst.a, src.a, t))
+	var r = interpolate(dst.r, src.r, t)
+	var g = interpolate(dst.g, src.g, t)
+	var b = interpolate(dst.b, src.b, t)
+	var a = interpolate(dst.a, src.a, t)
 
 	return new Color([r, g, b, a])
 }
@@ -349,13 +349,6 @@ exports.core.normalizeColor = function(spec) {
 		return spec.rgba()
 	else
 		return (new Color(spec)).rgba()
-}
-
-exports.core.mixColor = function(specA, specB, r) {
-	var a = new Color(specA)
-	var b = new Color(specB)
-	var mix = function(a, b, r) { return Math.floor((b - a) * r + a) }
-	return [mix(a.r, b.r, r), mix(a.g, b.g, r), mix(a.b, b.b, r), mix(a.a, b.a, r)]
 }
 
 exports.addLazyProperty = function(proto, name, creator) {

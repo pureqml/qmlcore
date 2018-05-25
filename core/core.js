@@ -320,6 +320,13 @@ Color.interpolate = function(dst, src, t) {
 	return new Color([r, g, b, a])
 }
 
+Color.normalize = function(spec) {
+	if (spec instanceof Color)
+		return spec.rgba()
+	else
+		return (new Color(spec)).rgba()
+}
+
 var ColorPrototype = Color.prototype
 ColorPrototype.constructor = exports.core.Color
 /** @const */
@@ -342,13 +349,6 @@ ColorPrototype.hex = function() {
 
 ColorPrototype.ahex = function() {
 	return '#' + hexByte(this.a) + hexByte(this.r) + hexByte(this.g) + hexByte(this.b)
-}
-
-exports.core.normalizeColor = function(spec) {
-	if (spec instanceof Color)
-		return spec.rgba()
-	else
-		return (new Color(spec)).rgba()
 }
 
 exports.addLazyProperty = function(proto, name, creator) {

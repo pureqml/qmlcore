@@ -10,6 +10,6 @@ Object {
 
 	///@private
 	function _getDeclaration() {
-		return _globals.core.normalizeColor(this.color) + " " + Math.floor(100 * this.position) + "%"
+		return _globals.core.Color.normalize(this.color) + " " + Math.floor(100 * this.position) + "%"
 	}
 }

@@ -8,7 +8,7 @@ Item {
 	}
 
 	onColorChanged: {
-		this.style('background-color', _globals.core.normalizeColor(value))
+		this.style('background-color', _globals.core.Color.normalize(value))
 	}
 
 	prototypeConstructor: {

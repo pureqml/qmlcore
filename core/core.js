@@ -263,7 +263,9 @@ var Color = exports.core.Color = function(value) {
 		return
 	}
 	var triplet
-	if (value.substring(0, 4) == "rgba") {
+	if (value[0] === '#') {
+		triplet = value.substring(1)
+	} else if (value.substring(0, 4) === "rgba") {
 		var b = value.indexOf('('), e = value.lastIndexOf(')')
 		value = value.substring(b + 1, e).split(',')
 		this.r = parseInt(value[0], 10)
@@ -271,19 +273,13 @@ var Color = exports.core.Color = function(value) {
 		this.b = parseInt(value[2], 10)
 		this.a = Math.floor(parseFloat(value[3]) * 255)
 		return
-	}
-	else {
-		var h = value[0]
-		if (h != '#')
-			triplet = colorTable[value]
-		else
-			triplet = value.substring(1)
-	}
+	} else
+		triplet = colorTable[value]
+
 	if (!triplet) {
-		this.r = 255
+		this.r = this.b = this.a = 255
 		this.g = 0
-		this.b = 255
-		log("invalid color specification: " + value)
+		log("invalid color specification: " + value, new Error().stack)
 		return
 	}
 

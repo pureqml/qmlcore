@@ -26,6 +26,19 @@ BaseLayout {
 	onContentXChanged: { this.content.x = -value; }
 	onContentYChanged: { this.content.y = -value; }
 
+	/// @private
+	constructor: {
+		this._items = []
+		this._modelUpdate = new _globals.core.model.ModelUpdate()
+		this._attached = null
+
+		//callback instances for dynamic model subscriptions
+		this._modelReset = this._onReset.bind(this)
+		this._modelRowsInserted = this._onRowsInserted.bind(this)
+		this._modelRowsChanged = this._onRowsChanged.bind(this)
+		this._modelRowsRemoved =  this._onRowsRemoved.bind(this)
+	}
+
 	/// returns index of item by x,y coordinates
 	function itemAt(x, y) {
 		var idx = this.indexAt(x, y)
@@ -54,22 +67,25 @@ BaseLayout {
 			this.positionViewAtIndex(idx)
 	}
 
-	/// @private
-	constructor: {
-		this._items = []
-		this._modelUpdate = new _globals.core.model.ModelUpdate()
-	}
-
-	/// @private
 	onFocusedChildChanged: {
 		var idx = this._items.indexOf(this.focusedChild)
 		if (idx >= 0)
 			this.currentIndex = idx
 	}
 
-	/// @private
 	onCurrentIndexChanged: {
 		this.focusCurrent()
+	}
+
+	onModelChanged: {
+		if (this.trace)
+			log('model changed to ', value)
+
+		this._detach()
+		this._modelUpdate.clear()
+		this._removeItems(0, this.count)
+		this.count = 0
+		this._scheduleLayout()
 	}
 
 	/// @private
@@ -114,15 +130,35 @@ BaseLayout {
 		if (this._attached || !this.model || !this.delegate)
 			return
 
+		if (this.trace)
+			log('attaching model...')
+
 		var model = this.model
 
-		this.connectOn(model, 'reset', this._onReset.bind(this))
-		this.connectOn(model, 'rowsInserted', this._onRowsInserted.bind(this))
-		this.connectOn(model, 'rowsChanged', this._onRowsChanged.bind(this))
-		this.connectOn(model, 'rowsRemoved', this._onRowsRemoved.bind(this))
+		model.on('reset', this._modelReset)
+		model.on('rowsInserted', this._modelRowsInserted)
+		model.on('rowsChanged', this._modelRowsChanged)
+		model.on('rowsRemoved', this._modelRowsRemoved)
 
-		this._attached = true
+		this._attached = model
 		this._onReset()
+	}
+
+	/// @private
+	function _detach() {
+		var model = this._attached
+		if (!model)
+			return
+
+		if (this.trace)
+			log('detaching model...')
+
+		this._attached = null
+
+		model.removeListener('reset', this._modelReset)
+		model.removeListener('rowsInserted', this._modelRowsInserted)
+		model.removeListener('rowsChanged', this._modelRowsChanged)
+		model.removeListener('rowsRemoved', this._modelRowsRemoved)
 	}
 
 	onDelegateChanged: {
@@ -178,6 +214,11 @@ BaseLayout {
 			var _rowIndex = item._createPropertyStorage('_rowIndex')
 			_rowIndex.callOnChanged(item, '_rowIndex')
 		}
+	}
+
+	function discard() {
+		this._detach()
+		_globals.core.BaseLayout.prototype.discard.apply(this)
 	}
 
 	/// @private

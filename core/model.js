@@ -199,6 +199,11 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 	this._merge()
 }
 
+exports.ModelUpdate.prototype.clear = function() {
+	this.count = 0
+	this._reset()
+}
+
 exports.ModelUpdate.prototype.apply = function(view, skipCheck) {
 	var index = 0
 	this._ranges.forEach(

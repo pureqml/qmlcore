@@ -95,6 +95,22 @@ describe('ModelUpdate', function() {
 		})
 	})
 
+	describe('stray update', function() {
+		it('should call update', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(5)
+			model.apply(view)
+
+			sinon.spy(view, '_updateItems')
+			model.update(0, 1)
+			model.apply(view)
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 0, 1)
+		})
+	})
+
 	describe('sequental left update', function() {
 		it('should set three ranges, noop, update, noop', function() {
 			model = new Model()

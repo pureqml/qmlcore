@@ -5,7 +5,7 @@ Object {
 	signal rowsChanged;		///< rows changed signal
 	signal rowsRemoved;		///< rows removed signal
 
-	property int count;		///< model rows count
+	property int count;		///< model rows count. Please note that you can't directly/indirectly modify model from onChanged handler. Use view.onCountChanged instead
 	property array data;	///< declarative way of assigning data
 
 	///@private

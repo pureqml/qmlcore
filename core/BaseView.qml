@@ -217,6 +217,7 @@ BaseLayout {
 	function _processUpdates() {
 		this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._processUpdates.apply(this)
+		this.count = this._items.length
 	}
 
 	onRecursiveVisibleChanged: {
@@ -233,18 +234,6 @@ BaseLayout {
 
 	onWidthChanged:				{ this._scheduleLayout() }
 	onHeightChanged:			{ this._scheduleLayout() }
-
-	onModelChanged: {
-		if (value)
-		{
-			var $this = this
-			var $model = value
-			var updateCount = function() { $this.count = $model.count }
-			this._replaceUpdater('count', updateCount, [[$model, 'count']])
-		}
-		else
-			this._removeUpdater('count')
-	}
 
 	///@private silently updates scroll positions, because browser animates scroll
 	function _updateScrollPositions(x, y, layout) {

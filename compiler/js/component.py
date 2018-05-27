@@ -69,7 +69,7 @@ class component_generator(object):
 		if t is lang.Component:
 			value = self.create_component_generator(value)
 		if t is str: #and value[0] == '"' and value[-1] == '"':
-			value = value.replace("\\\n", "")
+			value = value.replace("\\\n", "") #multiline continuation \<NEWLINE>
 		if target in self.assignments:
 			raise Exception("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name))
 		self.assignments[target] = value

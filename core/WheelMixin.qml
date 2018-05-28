@@ -1,6 +1,5 @@
 /// mixin for wheel events
 Object {
-	signal wheel;	///< wheel move signal
 	property bool enabled: true;	///< enable mixin
 
 	///@private

@@ -301,7 +301,7 @@ percent_number.setParseAction(handle_percent_number)
 
 expression_array = Literal("[") + Optional(delimitedList(expression, ",")) + Literal("]")
 def handle_expression_array(s, l, t):
-	return "".join(t)
+	return ",".join(t)
 
 expression_array.setParseAction(handle_expression_array)
 

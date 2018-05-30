@@ -68,7 +68,10 @@ Object {
 
 	///@private
 	function registerStyle(style, tag) {
-		var rules = 'position: absolute; visibility: inherit; border-style: solid; border-width: 0px; white-space: nowrap; border-radius: 0px; opacity: 1.0; transform: none; left: 0px; top: 0px; width: 0px; height: 0px; '
+		var rules = 'position: absolute; visibility: inherit; opacity: 1.0;'
+		rules += 'border-style: solid; border-width: 0px; border-radius: 0px; box-sizing: border-box; border-color: rgba(0,0,0,1);'
+		rules += 'white-space: nowrap; transform: none;'
+		rules += 'left: 0px; top: 0px; width: 0px; height: 0px;'
 		rules += 'font-family: ' + $manifest$style$font$family + '; line-height: ' + $manifest$style$font$lineHeight + '; '
 		if ($manifest$style$font$pixelSize)
 			rules += 'font-size: ' + $manifest$style$font$pixelSize + 'px; '

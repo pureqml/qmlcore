@@ -12,7 +12,7 @@ BaseView {
 			return
 		}
 
-		var model = this.model;
+		var model = this._attached;
 		if (!model) {
 			this.layoutFinished()
 			return

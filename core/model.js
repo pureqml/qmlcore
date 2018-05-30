@@ -234,3 +234,6 @@ exports.ModelUpdate.prototype.apply = function(view, skipCheck) {
 		view._updateDelegateIndex(i)
 	this._reset()
 }
+
+var ArrayModelWrapper = exports.ArrayModelWrapper = function (data) { this.data = data; this.count = data.length }
+ArrayModelWrapper.prototype.get = function(idx)  { return { value: this.data[idx] } }

@@ -90,7 +90,7 @@ BaseLayout {
 
 	/// @private
 	function _onReset() {
-		var model = this.model
+		var model = this._attached
 		if (this.trace)
 			log("reset", this._items.length, model.count)
 
@@ -103,7 +103,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows inserted", begin, end)
 
-		this._modelUpdate.insert(this.model, begin, end)
+		this._modelUpdate.insert(this._attached, begin, end)
 		this._scheduleLayout()
 	}
 
@@ -112,7 +112,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows changed", begin, end)
 
-		this._modelUpdate.update(this.model, begin, end)
+		this._modelUpdate.update(this._attached, begin, end)
 		this._scheduleLayout()
 	}
 
@@ -121,7 +121,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows removed", begin, end)
 
-		this._modelUpdate.remove(this.model, begin, end)
+		this._modelUpdate.remove(this._attached, begin, end)
 		this._scheduleLayout()
 	}
 
@@ -134,11 +134,15 @@ BaseLayout {
 			log('attaching model...')
 
 		var model = this.model
-
-		model.on('reset', this._modelReset)
-		model.on('rowsInserted', this._modelRowsInserted)
-		model.on('rowsChanged', this._modelRowsChanged)
-		model.on('rowsRemoved', this._modelRowsRemoved)
+		if (model instanceof _globals.core.ListModel) {
+			model.on('reset', this._modelReset)
+			model.on('rowsInserted', this._modelRowsInserted)
+			model.on('rowsChanged', this._modelRowsChanged)
+			model.on('rowsRemoved', this._modelRowsRemoved)
+		} else if (Array.isArray(model)) {
+			model = new _globals.core.model.ArrayModelWrapper(model)
+		} else
+			throw new Error("unknown value attached to model property")
 
 		this._attached = model
 		this._onReset()
@@ -174,7 +178,7 @@ BaseLayout {
 			return item
 
 		var visibilityProperty = this.visibilityProperty
-		var row = this.model.get(idx)
+		var row = this._attached.get(idx)
 
 		if (this.trace)
 			log('createDelegate', idx, row)
@@ -198,7 +202,7 @@ BaseLayout {
 	function _updateDelegate(idx) {
 		var item = this._items[idx]
 		if (item) {
-			var row = this.model.get(idx)
+			var row = this._attached.get(idx)
 			row.index = idx
 			item._local.model = row
 			var _row = item._createPropertyStorage('_row')

@@ -34,6 +34,11 @@ Object {
 		item._removeUpdater(prop)
 	}
 
+	function _getAnchor(name) {
+		var value = this[name]
+		return value? Array.isArray(value)? value: value[name]: null
+	}
+
 	/** @private */
 	function _updateAll() {
 		var anchors = this
@@ -44,14 +49,14 @@ Object {
 		var parentX = parent_box[0], parentY = parent_box[1]
 
 		var fill = anchors.fill
-		var leftAnchor = anchors.left || (fill? fill.left: null)
-		var rightAnchor = anchors.right || (fill? fill.right: null)
-		var topAnchor = anchors.top || (fill? fill.top: null)
-		var bottomAnchor = anchors.bottom || (fill? fill.bottom: null)
+		var leftAnchor = anchors._getAnchor('left') || (fill? fill.left: null)
+		var rightAnchor = anchors._getAnchor('right') || (fill? fill.right: null)
+		var topAnchor = anchors._getAnchor('top') || (fill? fill.top: null)
+		var bottomAnchor = anchors._getAnchor('bottom') || (fill? fill.bottom: null)
 
 		var centerIn = anchors.centerIn
-		var hcenterAnchor = anchors.horizontalCenter || (centerIn? centerIn.horizontalCenter: null)
-		var vcenterAnchor = anchors.verticalCenter || (centerIn? centerIn.verticalCenter: null)
+		var hcenterAnchor = anchors._getAnchor('horizontalCenter') || (centerIn? centerIn.horizontalCenter: null)
+		var vcenterAnchor = anchors._getAnchor('verticalCenter') || (centerIn? centerIn.verticalCenter: null)
 
 		var lm = anchors.leftMargin || anchors.margins
 		var rm = anchors.rightMargin || anchors.margins
@@ -131,7 +136,8 @@ Object {
 
 	onLeftChanged: {
 		this._scheduleUpdate()
-		if (value === null)
+		var left = this._getAnchor('left')
+		if (left === null)
 			return
 
 		var item = this.parent
@@ -141,12 +147,13 @@ Object {
 			this._grab(item, 'width')
 			this._subscribe(item)
 		}
-		this._subscribe(value[0])
+		this._subscribe(left[0])
 	}
 
 	onRightChanged: {
 		this._scheduleUpdate()
-		if (value === null)
+		var right = this._getAnchor('right')
+		if (right === null)
 			return
 
 		var item = this.parent
@@ -156,12 +163,13 @@ Object {
 			this._grab(item, 'width')
 		}
 		this._subscribe(item)
-		this._subscribe(value[0])
+		this._subscribe(right[0])
 	}
 
 	onHorizontalCenterChanged: {
 		this._scheduleUpdate()
-		if (value === null)
+		var hc = this._getAnchor('horizontalCenter')
+		if (hc === null)
 			return
 
 		var item = this.parent
@@ -171,12 +179,13 @@ Object {
 			this._grab(item, 'width')
 		}
 		this._subscribe(item)
-		this._subscribe(value[0])
+		this._subscribe(hc[0])
 	}
 
 	onTopChanged: {
 		this._scheduleUpdate()
-		if (value === null)
+		var top = this._getAnchor('top')
+		if (top === null)
 			return
 
 		var item = this.parent
@@ -186,12 +195,13 @@ Object {
 			this._grab(item, 'height')
 			this._subscribe(item)
 		}
-		this._subscribe(value[0])
+		this._subscribe(top[0])
 	}
 
 	onBottomChanged: {
 		this._scheduleUpdate()
-		if (value === null)
+		var bottom = this._getAnchor('bottom')
+		if (bottom === null)
 			return
 
 		var item = this.parent
@@ -201,12 +211,13 @@ Object {
 			this._grab(item, 'height')
 		}
 		this._subscribe(item)
-		this._subscribe(value[0])
+		this._subscribe(bottom[0])
 	}
 
 	onVerticalCenterChanged: {
 		this._scheduleUpdate()
-		if (value === null)
+		var vc = this._getAnchor('verticalCenter')
+		if (vc === null)
 			return
 
 		var item = this.parent
@@ -216,7 +227,7 @@ Object {
 			this._grab(item, 'height')
 		}
 		this._subscribe(item)
-		this._subscribe(value[0])
+		this._subscribe(vc[0])
 	}
 
 	onFillChanged: {

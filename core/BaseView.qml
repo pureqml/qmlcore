@@ -136,14 +136,15 @@ BaseLayout {
 		var ListModel = _globals.core.ListModel
 		var model = this.model
 		if ((ListModel !== undefined) && (model instanceof ListModel)) {
-			model.on('reset', this._modelReset)
-			model.on('rowsInserted', this._modelRowsInserted)
-			model.on('rowsChanged', this._modelRowsChanged)
-			model.on('rowsRemoved', this._modelRowsRemoved)
 		} else if (Array.isArray(model)) {
 			model = new _globals.core.model.ArrayModelWrapper(model)
 		} else
 			throw new Error("unknown value attached to model property")
+
+		model.on('reset', this._modelReset)
+		model.on('rowsInserted', this._modelRowsInserted)
+		model.on('rowsChanged', this._modelRowsChanged)
+		model.on('rowsRemoved', this._modelRowsRemoved)
 
 		this._attached = model
 		this._onReset()

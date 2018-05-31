@@ -133,8 +133,9 @@ BaseLayout {
 		if (this.trace)
 			log('attaching model...')
 
+		var ListModel = _globals.core.ListModel
 		var model = this.model
-		if (model instanceof _globals.core.ListModel) {
+		if ((ListModel !== undefined) && (model instanceof ListModel)) {
 			model.on('reset', this._modelReset)
 			model.on('rowsInserted', this._modelRowsInserted)
 			model.on('rowsChanged', this._modelRowsChanged)

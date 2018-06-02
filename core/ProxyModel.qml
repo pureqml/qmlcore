@@ -1,10 +1,5 @@
 ///provides target model's filtering and sorting
-Object {
-	signal reset;				///< emitted when model is reset
-	signal rowsInserted;		///< emitted when row is inserted
-	signal rowsChanged;			///< emitted when row is changed
-	signal rowsRemoved;			///< emitted when row is removed
-	property int count;			///< rows count property
+Model {
     property Object target;		///< target model object
 
 	/// @private

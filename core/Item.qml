@@ -69,7 +69,7 @@ Object {
 	///@private
 	function registerStyle(style, tag) {
 		var rules = 'position: absolute; visibility: inherit; opacity: 1.0;'
-		rules += 'border-style: solid; border-width: 0px; border-radius: 0px; border-color: rgba(0,0,0,1);'
+		rules += 'border-style: solid; border-width: 0px; border-radius: 0px; box-sizing: border-box; border-color: rgba(0,0,0,1);'
 		rules += 'white-space: nowrap; transform: none;'
 		rules += 'left: 0px; top: 0px; width: 0px; height: 0px;'
 		rules += 'font-family: ' + $manifest$style$font$family + '; line-height: ' + $manifest$style$font$lineHeight + '; '

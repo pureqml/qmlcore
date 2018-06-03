@@ -55,7 +55,7 @@ Item {
 	///@private
 	function on(name, callback) {
 		if (!this._updateSizeNeeded) {
-			if (name == 'boxChanged')
+			if (name == 'newBoundingBox')
 				this._enableSizeUpdate()
 		}
 		_globals.core.Object.prototype.on.apply(this, arguments)

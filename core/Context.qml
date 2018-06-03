@@ -186,7 +186,7 @@ Item {
 	function _run() {
 		log('Context: signalling layout')
 		this.visibleInView = true
-		this.boxChanged()
+		this.newBoundingBox()
 		log('Context: calling completed()')
 		this._started = true
 		this._processActions()

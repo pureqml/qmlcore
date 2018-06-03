@@ -34,7 +34,7 @@ Object {
 	property const verticalCenter:		{ return [this, 5]; }
 
 	//do not use, view internal
-	signal boxChanged;						///< emitted when position or size changed
+	signal newBoundingBox;						///< emitted when position or size changed
 	property int viewX;						///< x position in view (if any)
 	property int viewY;						///< y position in view (if any)
 
@@ -174,8 +174,8 @@ Object {
 	onVisibleChanged:		{ this._updateVisibility() }
 	onVisibleInViewChanged:	{ this._updateVisibility() }
 
-	onWidthChanged: 	{ this.style('width', value); this.boxChanged() }
-	onHeightChanged:	{ this.style('height', value - this._topPadding); this.boxChanged() }
+	onWidthChanged: 	{ this.style('width', value); this.newBoundingBox() }
+	onHeightChanged:	{ this.style('height', value - this._topPadding); this.newBoundingBox() }
 
 	onXChanged,
 	onViewXChanged: {
@@ -184,7 +184,7 @@ Object {
 			this.transform.translateX = x
 		else
 			this.style('left', x)
-		this.boxChanged()
+		this.newBoundingBox()
 	}
 
 	onYChanged,
@@ -194,7 +194,7 @@ Object {
 			this.transform.translateY = y
 		else
 			this.style('top', y)
-		this.boxChanged()
+		this.newBoundingBox()
 	}
 
 	onCssNullTranslate3DChanged: {

@@ -130,7 +130,7 @@ Object {
 		//connect only once per item
 		if (items.indexOf(src) < 0) {
 			items.push(src)
-			this.connectOn(src, 'boxChanged', this._scheduleUpdate)
+			this.connectOn(src, 'newBoundingBox', this._scheduleUpdate)
 		}
 	}
 

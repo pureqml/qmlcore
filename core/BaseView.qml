@@ -135,11 +135,14 @@ BaseLayout {
 
 		var Model = _globals.core.Model
 		var model = this.model
+		var modelType = typeof model
 		if ((Model !== undefined) && (model instanceof Model)) {
 		} else if (Array.isArray(model)) {
 			model = new _globals.core.model.ArrayModelWrapper(model)
+		} else if (modelType === 'number') {
+			model = new _globals.core.model.ArrayModelWrapper([model])
 		} else
-			throw new Error("unknown value of type " + (typeof model) + ", attached to model property: " + model + ('componentName' in model? ', component name: ' + model.componentName: ''))
+			throw new Error("unknown value of type '" + (typeof model) + "', attached to model property: " + model + ((modelType === 'object') && ('componentName' in model)? ', component name: ' + model.componentName: ''))
 
 		model.on('reset', this._modelReset)
 		model.on('rowsInserted', this._modelRowsInserted)

@@ -172,7 +172,7 @@ Item {
 			this.play()
 	}
 
-	onBoxChanged: {
+	onNewBoundingBox: {
 		this._scheduleLayout()
 	}
 

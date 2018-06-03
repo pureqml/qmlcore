@@ -274,11 +274,14 @@ def build(root, platform, apps, app, manifest):
 		subplatforms = subplatforms_next
 
 	#unrolling deps
+	platform_dirs = []
 	while subplatform_deps:
 		#print subplatform_deps
 		for subplatform, deps in subplatform_deps.items():
 			if not deps: #leaf subplatform
-				project_dirs.append(subplatform_paths[subplatform])
+				subplatform_path = subplatform_paths[subplatform]
+				project_dirs.append(subplatform_path)
+				platform_dirs.append(subplatform_path)
 				del subplatform_deps[subplatform]
 				for deps in subplatform_deps.values():
 					deps.discard(subplatform)
@@ -336,12 +339,7 @@ def build(root, platform, apps, app, manifest):
 	if path.isdir(project_dist):
 		template_path.append(project_dist)
 
-	platform_dist = path.join(platform_path, 'dist')
-	if path.isdir(platform_dist):
-		template_path.append(platform_dist)
-
-	for subplatform in platform_manifest.requires:
-		subplatform_path = find_platform_path(root, plugins_path, subplatform)
+	for subplatform_path in reversed(platform_dirs):
 		platform_dist = path.join(subplatform_path, 'dist')
 		if path.isdir(platform_dist):
 			template_path.append(platform_dist)

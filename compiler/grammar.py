@@ -299,9 +299,9 @@ def handle_percent_number(s, l, t):
 percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)
 
-expression_array = Literal("[") + Optional(delimitedList(expression, ",")) + Literal("]")
+expression_array = Suppress("[") + Optional(delimitedList(expression, ",")) + Suppress("]")
 def handle_expression_array(s, l, t):
-	return ",".join(t)
+	return "[%s]" %", ".join(t)
 
 expression_array.setParseAction(handle_expression_array)
 

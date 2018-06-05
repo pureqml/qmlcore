@@ -10,7 +10,16 @@ Object {
 	property lazy top:		BorderSide	{ name: "top"; }		///< top border side
 	property lazy bottom:	BorderSide	{ name: "bottom"; }		///< bottom border side
 
-	onWidthChanged:	{ this.parent.style('border-width', value) }
+	onWidthChanged: {
+		var parent = this.parent
+		parent.style('border-width', value)
+		if (this.type == this.Outer) {
+			parent._borderXAdjust = -value
+			parent._borderYAdjust = -value
+			parent._setSizeAdjust()
+		}
+	}
+
 	onTypeChanged:	{
 		var style
 		switch(value) {

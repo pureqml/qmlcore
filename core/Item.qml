@@ -43,6 +43,8 @@ Object {
 	constructor: {
 		this._pressedHandlers = {}
 		this._topPadding = 0
+		this._borderXAdjust = 0
+		this._borderYAdjust = 0
 		if (parent) {
 			if (this.element)
 				throw new Error('double ctor call')
@@ -158,6 +160,14 @@ Object {
 	///@private
 	function _updateVisibilityForChild(child, value) {
 		child.recursiveVisible = value && child.visible && child.visibleInView
+	}
+
+	///@private
+	function _setSizeAdjust() {
+		var x = this.x + this.viewX + this._borderXAdjust
+		var y = this.y + this.viewY + this._borderYAdjust
+		this.style('left', x)
+		this.style('top', y)
 	}
 
 	onRecursiveVisibleChanged: {

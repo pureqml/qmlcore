@@ -140,7 +140,10 @@ BaseLayout {
 		} else if (Array.isArray(model)) {
 			model = new _globals.core.model.ArrayModelWrapper(model)
 		} else if (modelType === 'number') {
-			model = new _globals.core.model.ArrayModelWrapper([model])
+			var data = []
+			for(var i = 0; i < model; ++i)
+				data.push({})
+			model = new _globals.core.model.ArrayModelWrapper(data)
 		} else
 			throw new Error("unknown value of type '" + (typeof model) + "', attached to model property: " + model + ((modelType === 'object') && ('componentName' in model)? ', component name: ' + model.componentName: ''))
 

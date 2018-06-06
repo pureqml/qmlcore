@@ -3,7 +3,7 @@ Object {
 	property int width;		///< width of the border
 	property color color: "black";	///< color of the border
 	property enum style { None, Hidden, Dotted, Dashed, Solid, Double, Groove, Ridge, Inset, Outset }: Solid; ///< style of the border
-	property enum type { Inner, Outer }; ///< whether box is inside bounding rect or not
+	property enum type { Inner, Outer, Center }; ///< whether box is inside bounding rect or not
 
 	property lazy left:		BorderSide	{ name: "left"; }		///< left border side
 	property lazy right:	BorderSide	{ name: "right"; }		///< right border side
@@ -17,14 +17,23 @@ Object {
 			parent._borderXAdjust = -value
 			parent._borderYAdjust = -value
 			parent._setSizeAdjust()
+		} else if (this.type == this.Center) {
+			parent._borderXAdjust = -value / 2
+			parent._borderYAdjust = -value / 2
+			parent._borderWidthAdjust = -value
+			parent._borderHeightAdjust = -value
+			parent._setSizeAdjust()
 		}
 	}
 
-	onTypeChanged:	{
+	onTypeChanged: {
 		var style
 		switch(value) {
-			case this.Inner: style = 'border-box'; break;
-			case this.Outer: style = 'content-box'; break; //not working properly yet, fixme
+			case this.Inner:
+				style = 'border-box'; break;
+			case this.Outer:
+			case this.Center:
+				style = 'content-box'; break;
 		}
 		this.parent.style('box-sizing', style)
 	}
@@ -33,6 +42,7 @@ Object {
 		var newColor = _globals.core.Color.normalize(this.color)
 		this.parent.style('border-color', newColor)
 	}
+
 	onStyleChanged: {
 		var styleName
 		switch(value) {

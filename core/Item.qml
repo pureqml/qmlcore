@@ -45,6 +45,8 @@ Object {
 		this._topPadding = 0
 		this._borderXAdjust = 0
 		this._borderYAdjust = 0
+		this._borderWidthAdjust = 0
+		this._borderHeightAdjust = 0
 		if (parent) {
 			if (this.element)
 				throw new Error('double ctor call')
@@ -184,8 +186,8 @@ Object {
 	onVisibleChanged:		{ this._updateVisibility() }
 	onVisibleInViewChanged:	{ this._updateVisibility() }
 
-	onWidthChanged: 	{ this.style('width', value); this.newBoundingBox() }
-	onHeightChanged:	{ this.style('height', value - this._topPadding); this.newBoundingBox() }
+	onWidthChanged: 	{ this.style('width', value + this._borderWidthAdjust); this.newBoundingBox() }
+	onHeightChanged:	{ this.style('height', value - this._topPadding + this._borderHeightAdjust); this.newBoundingBox() }
 
 	onXChanged,
 	onViewXChanged: {

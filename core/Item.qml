@@ -168,8 +168,14 @@ Object {
 	function _setSizeAdjust() {
 		var x = this.x + this.viewX + this._borderXAdjust
 		var y = this.y + this.viewY + this._borderYAdjust
-		this.style('left', x)
-		this.style('top', y)
+
+		if (this.cssTranslatePositioning && !$manifest$cssDisableTransformations) {
+			this.transform.translateX = x
+			this.transform.translateY = y
+		} else {
+			this.style('left', x)
+			this.style('top', y)
+		}
 	}
 
 	onRecursiveVisibleChanged: {

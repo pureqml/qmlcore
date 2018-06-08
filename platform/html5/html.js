@@ -5,7 +5,8 @@ var Modernizr = window.Modernizr
 exports.capabilities = {
 	csstransforms3d: Modernizr.csstransforms3d,
 	csstransforms: Modernizr.csstransforms,
-	csstransitions: Modernizr.csstransitions
+	csstransitions: Modernizr.csstransitions,
+	mouseEnterLeaveSupported: _globals.core.os != "netcast"
 }
 
 var imageCache = null

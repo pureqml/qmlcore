@@ -20,8 +20,14 @@ Object {
 	function _bindHover(value) {
 		if (value && !this._hmHoverBinder) {
 			this._hmHoverBinder = new _globals.core.EventBinder(this.parent.element)
-			this._hmHoverBinder.on('mouseenter', function() { this.value = true }.bind(this))
-			this._hmHoverBinder.on('mouseleave', function() { this.value = false }.bind(this))
+
+			if (this._context.backend.capabilities.mouseEnterLeaveSupported) {
+				this._hmHoverBinder.on('mouseenter', function() { this.value = true }.bind(this))
+				this._hmHoverBinder.on('mouseleave', function() { this.value = false }.bind(this))
+			} else {
+				this._hmHoverBinder.on('mouseover', function() { this.value = true }.bind(this))
+				this._hmHoverBinder.on('mouseout', function() { this.value = false }.bind(this))
+			}
 		}
 		if (this._hmHoverBinder)
 			this._hmHoverBinder.enable(value)

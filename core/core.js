@@ -238,6 +238,9 @@ CoreObjectComponentPrototype.__init = function() {
 	this.$s(c)
 }
 
+/** @private **/
+CoreObjectComponentPrototype.__complete = function() { }
+
 ///@private gets object by id
 CoreObjectComponentPrototype._get = function(name, unsafe) {
 	if (name in this) //do not remove in here, properties may contain undefined!

@@ -22,12 +22,14 @@ Item {
 		this._completed = false
 		this._processingActions = false
 		this._delayedActions = []
+		this._completedObjects = []
 		this._stylesRegistered = {}
 		this._asyncInvoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
 
 		this.backend = _globals._backend()
 
 		this._init()
+		this._onCompleted(this) //my context was null at the moment of calling Object ctor
 	}
 
 	///@private
@@ -63,8 +65,8 @@ Item {
 	}
 
 	///@private
-	function _onCompleted(object, callback) {
-		this.scheduleAction(function() { callback.call(object) })
+	function _onCompleted(object) {
+		this._completedObjects.push(object)
 	}
 
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }
@@ -107,12 +109,20 @@ Item {
 		this._processingActions = true
 
 		var invoker = this._asyncInvoker
-		var delayedActions = this._delayedActions
 
-		while (delayedActions.length) {
-			var actions = delayedActions.splice(0, delayedActions.length)
+		while (this._delayedActions.length || this._completedObjects.length) {
+			var actions = this._delayedActions
+			this._delayedActions = []
 			for(var i = 0, n = actions.length; i < n; ++i)
 				invoker(actions[i])
+
+			var objects = this._completedObjects
+			this._completedObjects = []
+			for(var i = 0, n = objects.length; i < n; ++i) {
+				var object = objects[i]
+				try { object.__complete() }
+				catch(ex) { log('onCompleted failed', ex, ex.stack)}
+			}
 		}
 
 		this._processingActions = false

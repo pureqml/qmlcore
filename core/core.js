@@ -238,6 +238,9 @@ CoreObjectComponentPrototype.__init = function() {
 	this.$s(c)
 }
 
+/** @private **/
+CoreObjectComponentPrototype.__complete = function() { }
+
 ///@private gets object by id
 CoreObjectComponentPrototype._get = function(name, unsafe) {
 	if (name in this) //do not remove in here, properties may contain undefined!
@@ -420,11 +423,12 @@ PropertyStoragePrototype.removeUpdater = function() {
 	if (callback === undefined)
 		return
 
-	this.deps.forEach(function(data) {
-		var object = data[0]
-		var name = data[1]
+	var deps = this.deps
+	for(var i = 0, n = deps.length; i < n; i += 2) {
+		var object = deps[i]
+		var name = deps[i + 1]
 		object.removeOnChanged(name, callback)
-	})
+	}
 	this.deps = this.callback = undefined
 }
 
@@ -432,11 +436,11 @@ PropertyStoragePrototype.replaceUpdater = function(parent, callback, deps) {
 	this.removeUpdater()
 	this.callback = callback
 	this.deps = deps
-	deps.forEach(function(data) {
-		var object = data[0]
-		var name = data[1]
+	for(var i = 0, n = deps.length; i < n; i += 2) {
+		var object = deps[i]
+		var name = deps[i + 1]
 		parent.connectOnChanged(object, name, callback)
-	})
+	}
 	callback()
 }
 

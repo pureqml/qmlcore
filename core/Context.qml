@@ -58,6 +58,7 @@ Item {
 
 	///@private
 	function init() {
+		this.__init()
 		this.backend.initSystem(this.system)
 	}
 

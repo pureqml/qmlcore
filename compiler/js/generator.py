@@ -272,10 +272,6 @@ class generator(object):
 		startup = []
 		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
 		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', l10n: l10n, nativeContext: %s})" %(ns, context_type, app, 'nativeContext' if self.module else 'null'))
-		startup.append('\tvar c = {}\n')
-		startup.append('\tcontext.$c(c)')
-		startup.append('\tcontext.$s(c)')
-		startup.append('\tc = undefined')
 		startup.append('\tcontext.init()')
 		startup += self.startup
 		r += "\n".join(startup)

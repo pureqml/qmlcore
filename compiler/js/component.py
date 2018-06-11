@@ -232,7 +232,7 @@ class component_generator(object):
 			oname = name
 			fullname = path, name
 
-			is_on = event and len(name) > 2 and name != "onChanged" and name.startswith("on") and name[2].isupper() #onXyzzy
+			is_on = event and len(name) > 2 and name != 'onCompleted' and name != "onChanged" and name.startswith("on") and name[2].isupper() #onXyzzy
 			if is_on:
 				signal_name = name[2].lower() + name[3:] #check that there's no signal with that name
 			is_pressed = is_on and name.endswith("Pressed") and len(name) > (2 + 7) #skipping onPressed
@@ -266,6 +266,8 @@ class component_generator(object):
 			else:
 				if fullname in self.methods:
 					raise Exception("duplicate method " + oname)
+				if name == 'onCompleted':
+					fullname = path, '__complete'
 				self.methods[fullname] = args, code
 
 	def generate_lazy_property(self, registry, proto, type, name, value, ident_n = 1):
@@ -282,6 +284,10 @@ class component_generator(object):
 	def transform_handlers(self, registry, blocks):
 		result = {}
 		for (path, name), (args, code) in blocks.iteritems():
+			if name == '__complete':
+				code = code.strip()
+				if code[0] == '{' and code[-1] == '}':
+					code = '{ @super.__complete.call(this)\n' + code[1:-1].strip() + ' }'
 			code = process(code, self, registry, args)
 			code = "function(%s) %s" %(",".join(args), code)
 			result.setdefault(code, []).append((path, name))
@@ -355,6 +361,7 @@ class component_generator(object):
 			for path, name in methods:
 				if path:
 					raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
+				code = code.replace('@super.', self.base_proto_name + '.')
 				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
@@ -371,7 +378,7 @@ class component_generator(object):
 				r.append("%s_globals.core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
-			handlers = filter(lambda h: put_in_prototype(h) and h[1] != 'completed', handlers)
+			handlers = filter(put_in_prototype, handlers)
 			if not handlers:
 				continue
 
@@ -561,7 +568,8 @@ class component_generator(object):
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep
-						undep.append("[%s, '%s']" %(path, dep))
+						undep.append(path)
+						undep.append("'%s'" %dep)
 					r.append("%s%s._replaceUpdater('%s', %s, [%s])" %(ident, target_owner, target_prop, var, ",".join(undep)))
 				else:
 					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
@@ -585,6 +593,7 @@ class component_generator(object):
 			lines.append(code)
 			return var
 
+		base_type = self.get_base_type(registry)
 		if not self.prototype:
 			for code, methods in self.transform_handlers(registry, self.methods):
 				if len(methods) > 1:
@@ -593,10 +602,11 @@ class component_generator(object):
 
 				for path, name in sorted(methods):
 					path = path_or_parent(path, parent, partial(self.transform_root, registry))
+					code = code.replace('@super.', '_globals.' + base_type + '.prototype.')
 					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
-			handlers = filter(lambda h: put_in_instance(h) or h[1] == 'completed', handlers)
+			handlers = filter(put_in_instance, handlers)
 			if not handlers:
 				continue
 
@@ -606,10 +616,7 @@ class component_generator(object):
 
 			for path, name in sorted(handlers):
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
-				if name != "completed":
-					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
-				else:
-					r.append("%s%s._context._onCompleted(%s, %s)" %(ident, path, parent, code))
+				r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
 			handlers = filter(put_in_instance, handlers)

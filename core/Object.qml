@@ -8,7 +8,9 @@ EventEmitter {
 		if (parent)
 			parent.__attachedObjects.push(this)
 
-		this._context = parent? parent._context: null
+		var context = this._context = parent? parent._context: null
+		if (context)
+			context._onCompleted(this)
 		if (row) {
 			var local = this._local
 			local.model = row

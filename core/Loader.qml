@@ -41,9 +41,7 @@ Item {
 				throw new Error('unknown component used: ' + source)
 		}
 		var item = new ctor(this)
-		var c = {}
-		item.$c(c)
-		item.$s(c)
+		item.__init()
 		this.item = item
 		this._context.scheduleComplete()
 		this._updateVisibilityForChild(this.item, this.recursiveVisible)

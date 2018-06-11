@@ -40,9 +40,9 @@ EventEmitter {
 
 	/// discard object
 	function discard() {
-		this._changedConnections.forEach(function(connection) {
-			connection[0].removeOnChanged(connection[1], connection[2])
-		})
+		var connections = this._changedConnections
+		for(var i = 0, n = connections.length; i < n; i += 3)
+			connections[i].removeOnChanged(connections[i + 1], connections[i + 2])
 		this._changedConnections = []
 
 		var attached = this.__attachedObjects
@@ -93,7 +93,7 @@ EventEmitter {
 	///@private
 	function connectOnChanged(target, name, callback) {
 		target.onChanged(name, callback)
-		this._changedConnections.push([target, name, callback])
+		this._changedConnections.push(target, name, callback)
 	}
 
 	///@private removes 'on changed' callback

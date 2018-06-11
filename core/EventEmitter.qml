@@ -8,9 +8,10 @@ CoreObject {
 	function discard() {
 		for(var name in this._eventHandlers)
 			this.removeAllListeners(name)
-		this._onConnections.forEach(function(connection) {
-			connection[0].removeListener(connection[1], connection[2])
-		})
+
+		var connections = this._onConnections
+		for(var i = 0, n = connections.length; i < n; i += 3)
+			connections[i].removeListener(connections[i + 1], connections[i + 2])
 		this._onConnections = []
 	}
 
@@ -29,7 +30,7 @@ CoreObject {
 
 	function connectOn(target, name, callback) {
 		target.on(name, callback)
-		this._onConnections.push([target, name, callback])
+		this._onConnections.push(target, name, callback)
 	}
 
 	function emit (name) {

@@ -1,8 +1,8 @@
 exports.capabilities = {}
 exports.init = function(ctx) {
 	log('backend initialization...')
-	const options = ctx.options
-	const nativeContext = options.nativeContext
+	options = ctx.options
+	nativeContext = options.nativeContext
 	ctx._attachElement(nativeContext)
 	ctx.width = nativeContext.width
 	ctx.height = nativeContext.height

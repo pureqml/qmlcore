@@ -563,14 +563,12 @@ class component_generator(object):
 				r.append('//assigning %s to %s' %(target, value))
 				value, deps = parse_deps(parent, value, partial(self.transform_root, registry))
 				if deps:
-					var = "update$%s$%s" %(escape(parent), escape(target))
-					r.append("%svar %s = function() { %s = %s; }" %(ident, var, target_lvalue, value))
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep
 						undep.append(path)
 						undep.append("'%s'" %dep)
-					r.append("%s%s._replaceUpdater('%s', %s, [%s])" %(ident, target_owner, target_prop, var, ",".join(undep)))
+					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
 				else:
 					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
 

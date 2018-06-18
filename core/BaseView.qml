@@ -245,7 +245,7 @@ BaseLayout {
 	/// @private
 	function _insertItems(begin, end) {
 		var n = end - begin + 2
-		var args = Array(n)
+		var args = new Array(n)
 		args[0] = begin
 		args[1] = 0
 		for(var i = 2; i < n; ++i)

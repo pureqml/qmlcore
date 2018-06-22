@@ -27,7 +27,7 @@ parser.add_argument('--update-translation', '-u', action='store_true', default=F
 parser.add_argument('--boilerplate', action='store_true', default = False, help = 'create simple skeleton project')
 parser.add_argument('--doc', '-D', help='generate documentation in given directory')
 parser.add_argument('--release', '-r', help='generate release code (no logs)', default = False, action = 'store_true')
-parser.add_argument('--platform', '-p', help='generate code for platform <platform>')
+parser.add_argument('--platform', '-p', help='generate code for platform <platform>', action='append')
 parser.add_argument('--verbose', '-v', help='adds verbosity in some places', dest='verbose', default=False, action='store_true')
 parser.add_argument('--jobs', '-j', help='run N jobs in parallel', default=1, nargs='?')
 parser.add_argument('--set-property', '-s', dest='properties', action='append', help = 'sets manifest property name value', nargs=2)
@@ -395,7 +395,7 @@ if not platforms:
 	platforms = ['web']
 
 if args.platform:
-	platforms = [args.platform]
+	platforms = args.platform
 
 targets = set(args.targets)
 

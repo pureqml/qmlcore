@@ -550,11 +550,6 @@ var updateImage = function(image, metrics) {
 	image.sourceWidth = natW
 	image.sourceHeight = natH
 
-	if (!image.width)
-		image.width = natW
-	if (!image.height)
-		image.height = natH
-
 	if (image.fillMode !== ImageComponent.PreserveAspectFit) {
 		image.paintedWidth = image.width
 		image.paintedHeight = image.height

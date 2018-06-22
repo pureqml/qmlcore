@@ -10,6 +10,9 @@ Item {
 	property bool smooth: true;								///< if false, image will be pixelated
 	property bool preload: false;							///< image will be loaded even if it's not visible
 
+	width: sourceWidth;
+	height: sourceHeight;
+
 	///@private
 	constructor: {
 		this._context.backend.initImage(this)

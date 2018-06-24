@@ -1,15 +1,16 @@
+/// Object which contains device specific information like model name. MAC address etc.
 Object {
-	signal propertyUpdated;
-	property string macAddess;
-	property string modelName;
-	property string deviceId;
-	property string firmware;
-	property string language;
-	property string country;
-	property string sdk;
-	property bool supportingUhd;
-	property bool supportingHdr;
-	property bool supporting3d;
+	signal propertyUpdated;			///< this signal is emited every time when one of the property was changed
+	property string macAddess;		///< device MAC address if its available for current platform
+	property string modelName;		///< device model name
+	property string deviceId;		///< unique device id or random generated id if its not supported
+	property string firmware;		///< firmware version
+	property string language;		///< device langgcode
+	property string country;		///< device country code
+	property string sdk;			///< SDK version
+	property bool supportingUhd;	///< UHD (4K) supporting flag
+	property bool supportingHdr;	///< HDR supporting flag
+	property bool supporting3d;		///< 3D Video supporting flag
 
 	constructor: {
 		var backend = _globals.core.__deviceBackend

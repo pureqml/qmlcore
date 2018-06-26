@@ -105,9 +105,9 @@ Item {
 	onVerticalAlignmentChanged: {
 		this._enableSizeUpdate()
 		switch(value) {
-		case text.AlignTop:		this.style('-pure-text-vertical-align', 'top'); break
-		case text.AlignVCenter:	this.style('-pure-text-vertical-align', 'middle'); break
-		case text.AlignBottom:	this.style('-pure-text-vertical-align', 'bottom'); break
+		case this.AlignTop:		this.style('-pure-text-vertical-align', 'top'); break
+		case this.AlignVCenter:	this.style('-pure-text-vertical-align', 'middle'); break
+		case this.AlignBottom:	this.style('-pure-text-vertical-align', 'bottom'); break
 		}
 	}
 

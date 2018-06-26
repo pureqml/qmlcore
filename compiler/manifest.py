@@ -61,7 +61,7 @@ class Manifest(object):
 
 	@property
 	def templater(self):
-		return self.data.get('templater', 'jinja2')
+		return self.data.get('templater', 'simple')
 
 	@property
 	def languages(self):

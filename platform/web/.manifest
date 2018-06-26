@@ -1,1 +1,1 @@
-{ "requires": ["video.videojs"]  }
+{ "requires": ["video.html5"]  }

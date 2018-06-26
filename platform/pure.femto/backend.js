@@ -1,8 +1,15 @@
 exports.capabilities = {}
+
 exports.init = function(ctx) {
 	log('backend initialization...')
 	options = ctx.options
 	nativeContext = options.nativeContext
+
+	var oldOn = fd.Element.prototype.on
+	fd.Element.prototype.on = function(name, callback) {
+		oldOn.call(this, name, ctx.wrapNativeCallback(callback))
+	}
+
 	ctx._attachElement(nativeContext)
 	ctx.width = nativeContext.width
 	ctx.height = nativeContext.height

@@ -70,8 +70,11 @@ exports.setText = function(text, html) {
 
 exports.layoutText = function(text) {
 	text.element.layoutText(function(metrics) {
-		text.paintedWidth = metrics.width
-		text.paintedHeight = metrics.height
+		if (metrics !== null) {
+			text.paintedWidth = metrics.width
+			text.paintedHeight = metrics.height
+		} else
+			console.log('failed to layout text', text)
 	})
 }
 

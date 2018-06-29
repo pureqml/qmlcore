@@ -66,7 +66,7 @@ exports.ModelUpdate.prototype._merge = function() {
 				range.length += nextRange.length
 				ranges.splice(index, 1)
 			}
-		} else if (range.type == ModelUpdateInsert && range.length === 0) {
+		} else if (range.type === ModelUpdateInsert && range.length === 0) {
 			ranges.splice(index, 1)
 		} else
 			++index
@@ -75,7 +75,7 @@ exports.ModelUpdate.prototype._merge = function() {
 
 exports.ModelUpdate.prototype._split = function(index, offset, type, length) {
 	var ranges = this._ranges
-	if (offset == 0) {
+	if (offset === 0) {
 		ranges.splice(index, 0, new ModelUpdateRange(type, length))
 		return index + 1
 	} else {
@@ -108,7 +108,7 @@ exports.ModelUpdate.prototype.insert = function(model, begin, end) {
 
 	var res = this._find(begin)
 	var range = ranges[res.index]
-	if (range.length == 0) { //first insert
+	if (range.length === 0) { //first insert
 		range.type = ModelUpdateInsert
 		range.length += d
 	} else {
@@ -134,7 +134,7 @@ exports.ModelUpdate.prototype.remove = function(model, begin, end) {
 	var res = this._find(begin)
 	var range = ranges[res.index]
 
-	if (range.type == ModelUpdateInsert) {
+	if (range.type === ModelUpdateInsert) {
 		range.length -= d
 	} else {
 		var index = this._split(res.index, res.offset, ModelUpdateInsert, -d)
@@ -166,7 +166,7 @@ exports.ModelUpdate.prototype.update = function(model, begin, end) {
 		ranges.splice(index + 1, 0, new ModelUpdateRange(range.type, range.length - res.offset))
 		range.length = res.offset
 		++index
-		if (range.length == 0)
+		if (range.length === 0)
 			throw new Error('invalid offset')
 	}
 

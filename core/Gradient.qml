@@ -33,7 +33,7 @@ Object {
 			return
 
 		var decl = []
-		var orientation = this.orientation == this.Vertical? 'bottom': 'left'
+		var orientation = this.orientation === this.Vertical? 'bottom': 'left'
 
 		switch(this.orientation) {
 				case this.Vertical:	orientation = 'to bottom'; break

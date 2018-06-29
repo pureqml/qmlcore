@@ -51,7 +51,7 @@ Item {
 
 			for (var i = 0; i < this.children.length; ++i) {
 				var c = this.children[i]
-				if (c instanceof _globals.core.Gamepad && c.connected && c.index == gp.index) {
+				if (c instanceof _globals.core.Gamepad && c.connected && c.index === gp.index) {
 					gpItem = c
 					break
 				}
@@ -110,7 +110,7 @@ Item {
 					c.vendorId = vendorId
 				if (productId)
 					c.productId = productId
-				c.standartMapping = g.mapping == "standard"
+				c.standartMapping = g.mapping === "standard"
 				++this.gamepadChildrensCount
 				break
 			}
@@ -133,7 +133,7 @@ Item {
 
 		for (var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (c instanceof _globals.core.Gamepad && c.index == g.index) {
+			if (c instanceof _globals.core.Gamepad && c.index === g.index) {
 				c.index = -1
 				c.connected = false
 				c.deviceInfo = ""

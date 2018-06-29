@@ -21,9 +21,12 @@ Object {
 
 	constructor : {
 		this._items = []
-		this._scheduleUpdate = function() { this._context.delayedAction('update-anchors', this, this._updateAll) }.bind(this)
 		this._grabX = false
 		this._grabY = false
+	}
+
+	function _scheduleUpdate() {
+		this._context.delayedAction('update-anchors', this, this._updateAll)
 	}
 
 	function _grab(item, prop) {
@@ -130,7 +133,7 @@ Object {
 		//connect only once per item
 		if (items.indexOf(src) < 0) {
 			items.push(src)
-			this.connectOn(src, 'newBoundingBox', this._scheduleUpdate)
+			this.connectOn(src, 'newBoundingBox', this._scheduleUpdate.bind(this))
 		}
 	}
 

@@ -48,7 +48,7 @@ BaseLayout {
 	/// @private focuses current item
 	function focusCurrent() {
 		var n = this.count
-		if (n == 0)
+		if (n === 0)
 			return
 
 		var idx = this.currentIndex

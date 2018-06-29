@@ -186,7 +186,7 @@ Item {
 			return;
 		}
 
-		if (this._orientation == 'horizontal')
+		if (this._orientation === 'horizontal')
 			this.horizontalSwiped(event)
 		else
 			this.verticalSwiped(event)

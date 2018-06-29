@@ -4,7 +4,7 @@ BaseView {
 
 	///@private
 	function move(dx, dy) {
-		var horizontal = this.orientation == this.Horizontal
+		var horizontal = this.orientation === this.Horizontal
 		var x, y
 		if (horizontal && this.contentWidth > this.width) {
 			x = this.contentX + dx
@@ -32,7 +32,7 @@ BaseView {
 		var x = itemBox[0], y = itemBox[1]
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height
-		var horizontal = this.orientation == this.Horizontal
+		var horizontal = this.orientation === this.Horizontal
 		var center = this.positionMode === this.Center
 
 		if (horizontal) {
@@ -65,9 +65,9 @@ BaseView {
 			return false;
 		}
 
-		var horizontal = this.orientation == this.Horizontal
+		var horizontal = this.orientation === this.Horizontal
 		if (horizontal) {
-			if (key == 'Left') {
+			if (key === 'Left') {
 				if (!this.currentIndex && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
@@ -75,8 +75,8 @@ BaseView {
 				--this.currentIndex;
 				event.accepted = true;
 				return true;
-			} else if (key == 'Right') {
-				if (this.currentIndex == this.count - 1 && !this.keyNavigationWraps) {
+			} else if (key === 'Right') {
+				if (this.currentIndex === this.count - 1 && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
 				}
@@ -85,15 +85,15 @@ BaseView {
 				return true;
 			}
 		} else {
-			if (key == 'Up') {
+			if (key === 'Up') {
 				if (!this.currentIndex && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
 				}
 				--this.currentIndex;
 				return true;
-			} else if (key == 'Down') {
-				if (this.currentIndex == this.count - 1 && !this.keyNavigationWraps) {
+			} else if (key === 'Down') {
+				if (this.currentIndex === this.count - 1 && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
 				}
@@ -136,7 +136,7 @@ BaseView {
 		var items = this._items
 		x += this.contentX
 		y += this.contentY
-		if (this.orientation == ListView.Horizontal) {
+		if (this.orientation === ListView.Horizontal) {
 			for (var i = 0; i < items.length; ++i) {
 				var item = items[i]
 				if (!item)
@@ -192,7 +192,7 @@ BaseView {
 		if (this.trace)
 			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y + ", prerender: " + prerender + ", range: " + leftMargin + ":" + rightMargin)
 
-		for(var i = 0; i < n && (itemsCount == 0 || p + c < rightMargin); ++i) {
+		for(var i = 0; i < n && (itemsCount === 0 || p + c < rightMargin); ++i) {
 			var item = items[i]
 
 			if (!item) {
@@ -268,7 +268,7 @@ BaseView {
 	function _updateOverflow() {
 		if (!this.nativeScrolling)
 			return
-		var horizontal = this.orientation == this.Horizontal
+		var horizontal = this.orientation === this.Horizontal
 		var style = {}
 		if (horizontal) {
 			style['overflow-x'] = 'auto'

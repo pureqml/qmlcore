@@ -15,7 +15,7 @@ Object {
 	/// enable animation.
 	enable:			{ --this._disabled; this._updateAnimation() }
 	/// returns true if animation is enabled
-	enabled:		{ return this._disabled == 0 }
+	enabled:		{ return this._disabled === 0 }
 
 	/// @private
 	onDelayChanged,

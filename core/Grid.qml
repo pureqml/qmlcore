@@ -8,13 +8,13 @@ Layout {
 
 	///@private
 	onWidthChanged: {
-		if (this.flow == this.FlowTopToBottom)
+		if (this.flow === this.FlowTopToBottom)
 			this._scheduleLayout()
 	}
 
 	///@private
 	onHeightChanged: {
-		if (this.flow == this.FlowLeftToRight)
+		if (this.flow === this.FlowLeftToRight)
 			this._scheduleLayout()
 	}
 
@@ -122,7 +122,7 @@ Layout {
 		var tempRows = []
 		this._rows = []
 		rows.push({idx: 0, size: 0}) //starting value
-		var horizontal = this.flow == this.FlowLeftToRight
+		var horizontal = this.flow === this.FlowLeftToRight
 		var size = horizontal ? this.height : this.width
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]

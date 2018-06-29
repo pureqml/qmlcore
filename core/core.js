@@ -557,14 +557,14 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			case 'array':	defaultValue = []; break
 			case 'Color':	defaultValue = '#0000'; break
 			default:
-				defaultValue = (type[0].toUpperCase() == type[0])? null: undefined
+				defaultValue = (type[0].toUpperCase() === type[0])? null: undefined
 		}
 	}
 
 	var createStorage = function(newValue) {
 		var storage = this.__properties[name]
 		if (storage === undefined) { //no storage
-			if (newValue === defaultValue) //value == defaultValue, no storage allocation
+			if (newValue === defaultValue) //value === defaultValue, no storage allocation
 				return
 			storage = this.__properties[name] = new PropertyStorage(defaultValue)
 		}

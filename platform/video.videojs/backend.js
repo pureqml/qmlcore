@@ -106,9 +106,9 @@ Player.prototype.setSource = function(url) {
 			urlLower = urlLower.substring(0, querryIndex)
 		var extIndex = urlLower.lastIndexOf(".")
 		var extension = urlLower.substring(extIndex, urlLower.length - 1)
-		if (extension == ".m3u8" || extension == ".m3u")
+		if (extension === ".m3u8" || extension === ".m3u")
 			media.type = 'application/x-mpegURL'
-		else if (extension == ".mpd")
+		else if (extension === ".mpd")
 			media.type = 'application/dash+xml'
 	}
 	this.videojs.src(media, { html5: { hls: { withCredentials: true } }, fluid: true, preload: 'none', techOrder: ["html5"] })
@@ -119,7 +119,7 @@ Player.prototype.play = function() {
 	if (playPromise !== undefined) {
 		playPromise.catch(function(e) {
 			log('play error:', e)
-			if (this.ui.autoPlay && e.code == DOMException.ABORT_ERR)
+			if (this.ui.autoPlay && e.code === DOMException.ABORT_ERR)
 				this.element.dom.play()
 		}.bind(this))
 	}

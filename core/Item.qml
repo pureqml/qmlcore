@@ -114,8 +114,9 @@ Object {
 			x += item.x
 			y += item.y
 			if (item.hasOwnProperty('view')) {
-				x += item.viewX + item.view.content.x
-				y += item.viewY + item.view.content.y
+				var content = item.view.content
+				x += item.viewX + content.x
+				y += item.viewY + content.y
 			}
 			item = item.parent
 		}

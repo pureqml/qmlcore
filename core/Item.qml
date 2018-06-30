@@ -34,7 +34,7 @@ Object {
 	property const verticalCenter:		{ return [this, 5]; }
 
 	//do not use, view internal
-	signal newBoundingBox;						///< emitted when position or size changed
+	signal newBoundingBox;					///< emitted when position or size changed
 	property int viewX;						///< x position in view (if any)
 	property int viewY;						///< y position in view (if any)
 

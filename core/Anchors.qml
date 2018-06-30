@@ -66,9 +66,21 @@ Object {
 		var tm = anchors.topMargin || anchors.margins
 		var bm = anchors.bottomMargin || anchors.margins
 
+		var cacheObjects = []
+		var cachePositions = []
+
 		var toScreen = function(line) {
 			var object = line[0], index = line[1]
-			return object.toScreen()[index]
+			var objectIdx = cacheObjects.indexOf(object)
+			var screenPos
+			if (objectIdx < 0) {
+				screenPos = object.toScreen()
+				cacheObjects.push(object)
+				cachePositions.push(screenPos)
+			}
+			else
+				screenPos = cachePositions[objectIdx]
+			return screenPos[index]
 		}
 
 		var left, top, right, bottom, hcenter, vcenter

@@ -511,6 +511,7 @@ class component_generator(object):
 					var = "%s$%s" %(escape(parent), escape(target))
 					r.append("//creating component %s" %value.name)
 					r.append("%svar %s = new _globals.%s(%s)" %(ident, var, registry.find_component(value.package, value.component.name), parent))
+					r.append("%s%s.view = %s" %(ident, var, parent))
 					r.append("%s%s.%s = %s" %(ident, closure, var, var))
 					code = self.call_create(registry, ident_n, var, value, closure)
 					r.append(code)
@@ -566,6 +567,16 @@ class component_generator(object):
 					undep = []
 					for idx, _dep in enumerate(deps):
 						path, dep = _dep
+						spath = path.split('.')
+						if len(spath) > 2:
+							expr = ''
+							for i in xrange(2, len(spath)):
+								a = ".".join(spath[:i])
+								b = ".".join(spath[:i + 1])
+								expr += a + "?" + b
+							for i in xrange(2, len(spath)):
+								expr += ":null"
+							path = expr
 						undep.append(path)
 						undep.append("'%s'" %dep)
 					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))

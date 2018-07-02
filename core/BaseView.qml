@@ -197,7 +197,6 @@ BaseLayout {
 
 		item = this.delegate(this, row)
 		items[idx] = item
-		item.view = this
 		item.element.remove()
 		this.content.element.append(item.element)
 

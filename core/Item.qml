@@ -25,6 +25,12 @@ Object {
 	property bool cssNullTranslate3D;
 	property bool cssDelegateAlwaysVisibleOnAcceleratedSurfaces: true;
 
+	property Object view;
+	property int effectiveX: view? x - view.contentX: x;
+	property int effectiveY: view? y - view.contentY: y;
+	property int screenX: parent? parent.effectiveX + effectiveX: effectiveX;
+	property int screenY: parent? parent.effectiveY + effectiveY: effectiveY;
+
 	property const left: 	{ return [this, 0]; }
 	property const top: 	{ return [this, 1]; }
 	property const right:	{ return [this, 2]; }
@@ -107,19 +113,7 @@ Object {
 
 	/// map relative component coordinates to absolute screen ones
 	function toScreen() {
-		var item = this
-		var x = 0, y = 0
-		var w = this.width, h = this.height
-		while(item) {
-			x += item.x
-			y += item.y
-			if (item.hasOwnProperty('view')) {
-				var content = item.view.content
-				x += item.viewX + content.x
-				y += item.viewY + content.y
-			}
-			item = item.parent
-		}
+		var x = this.screenX, y = this.screenY, w = this.width, h = this.height
 		return [x, y, x + w, y + h, x + w / 2, y + h / 2];
 	}
 
@@ -145,7 +139,7 @@ Object {
 
 		var updateStyle = true
 		var view = this.view
-		if (view !== undefined) {
+		if (view !== null) {
 			var content = view.content
 			//do not update real style for individual delegate in case of hardware accelerated surfaces
 			//it may trigger large invisible repaints

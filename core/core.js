@@ -439,7 +439,8 @@ PropertyStoragePrototype.replaceUpdater = function(parent, callback, deps) {
 	for(var i = 0, n = deps.length; i < n; i += 2) {
 		var object = deps[i]
 		var name = deps[i + 1]
-		parent.connectOnChanged(object, name, callback)
+		if (object)
+			parent.connectOnChanged(object, name, callback)
 	}
 	callback()
 }

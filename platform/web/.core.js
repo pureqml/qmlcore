@@ -23,16 +23,6 @@ exports.core.keyCodes = {
 	55: '7',
 	56: '8',
 	57: '9',
-	96: '0',  // NumPad 0
-	97: '1',
-	98: '2',
-	99: '3',
-	100: '4',
-	101: '5',
-	102: '6',
-	103: '7',
-	104: '8',
-	105: '9',
 	65: 'A',
 	66: 'B',
 	67: 'C',
@@ -63,11 +53,28 @@ exports.core.keyCodes = {
 	113: 'Green',
 	114: 'Yellow',
 	115: 'Blue',
-	111: 'Red',     // NumPad /
-	106: 'Green',   // NumPad *
-	109: 'Yellow',  // NumPad -
-	107: 'Blue',    // NumPad +
-	230: 'RightAlt'
+	219: 'Red',     // [
+	221: 'Green',   // ]
+	186: 'Yellow',  // ;
+	222: 'Blue',    // '
+	230: 'RightAlt',
+	187: 'VolumeUp',
+	189: 'VolumeDown',
+	191: 'Mute',
+	// NumPad
+	96: '0',
+	97: '1',
+	98: '2',
+	99: '3',
+	100: '4',
+	101: '5',
+	102: '6',
+	103: '7',
+	104: '8',
+	105: '9',
+	107: 'VolumeUp',
+	109: 'VolumeDown',
+	111: 'Mute',
 }
 
 exports.closeApp = function() {

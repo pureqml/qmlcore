@@ -287,7 +287,7 @@ class component_generator(object):
 			if name == '__complete':
 				code = code.strip()
 				if code[0] == '{' and code[-1] == '}':
-					code = '{ @super.__complete.call(this)\n' + code[1:-1].strip() + ' }'
+					code = '{ @super.__complete.call(this)\n' + code[1:-1].strip() + '\n}'
 			code = process(code, self, registry, args)
 			code = "function(%s) %s" %(",".join(args), code)
 			result.setdefault(code, []).append((path, name))

@@ -239,7 +239,7 @@ CoreObjectComponentPrototype.__init = function() {
 }
 
 /** @private **/
-CoreObjectComponentPrototype.__complete = function() { }
+CoreObjectComponentPrototype.__complete = function() { /*do not add anything here, it must be empty (empty onCompleted optimisation)*/ }
 
 ///@private gets object by id
 CoreObjectComponentPrototype._get = function(name, unsafe) {

@@ -66,7 +66,8 @@ Item {
 
 	///@private
 	function _onCompleted(object) {
-		this._completedObjects.push(object)
+		if (object.__complete !== _globals.core.CoreObject.prototype.__complete)
+			this._completedObjects.push(object)
 	}
 
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }

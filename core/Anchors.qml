@@ -17,8 +17,6 @@ Object {
 	property int leftMargin;	///< left margin value
 	property int rightMargin;	///< right margin value
 
-	signal marginsUpdated;		///< @private
-
 	constructor : {
 		this._items = []
 		this._grabX = false
@@ -276,5 +274,5 @@ Object {
 	onRightMarginChanged,
 	onTopMarginChanged,
 	onBottomMarginChanged,
-	onMarginChanged:		{ this.marginsUpdated(); this._scheduleUpdate(); }
+	onMarginChanged:		{ this.parent.anchorsMarginsUpdated(); this._scheduleUpdate(); }
 }

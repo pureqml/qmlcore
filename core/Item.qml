@@ -35,6 +35,8 @@ Object {
 
 	//do not use, view internal
 	signal newBoundingBox;					///< emitted when position or size changed
+	signal anchorsMarginsUpdated;			///< emitted when anchors margins have been changed
+
 	property int viewX;						///< x position in view (if any)
 	property int viewY;						///< y position in view (if any)
 

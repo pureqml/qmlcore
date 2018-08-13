@@ -50,6 +50,6 @@ Layout {
 
 		child.onChanged('height', this._scheduleLayout.bind(this))
 		child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
-		child.anchors.on('marginsUpdated', this._scheduleLayout.bind(this))
+		child.on('anchorsMarginsUpdated', this._scheduleLayout.bind(this))
 	}
 }

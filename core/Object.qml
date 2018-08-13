@@ -168,6 +168,17 @@ EventEmitter {
 			animation._native = true
 	}
 
+	/// outputs component path in qml (e.g Rectangle → Item → ListItem → Rectangle)
+	function getComponentPath() {
+		var path = []
+		var self = this
+		while(self) {
+			path.unshift(self.componentName)
+			self = self.parent
+		}
+		return path.join(" → ")
+	}
+
 	///@private called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy
 	function _tryFocus () { return false }
 }

@@ -68,36 +68,48 @@ BaseView {
 		var horizontal = this.orientation === this.Horizontal
 		if (horizontal) {
 			if (key === 'Left') {
-				if (!this.currentIndex && !this.keyNavigationWraps) {
+				if (this.currentIndex === 0 && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
+				} else if (this.currentIndex === 0 && this.keyNavigationWraps) {
+					this.currentIndex = this.count - 1;
+				} else {
+					--this.currentIndex;
 				}
-				--this.currentIndex;
 				event.accepted = true;
 				return true;
 			} else if (key === 'Right') {
 				if (this.currentIndex === this.count - 1 && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
+				} else if (this.currentIndex === this.count - 1 && this.keyNavigationWraps) {
+					this.currentIndex = 0;
+				} else {
+					++this.currentIndex;
 				}
-				++this.currentIndex;
 				event.accepted = true;
 				return true;
 			}
 		} else {
 			if (key === 'Up') {
-				if (!this.currentIndex && !this.keyNavigationWraps) {
+				if (this.currentIndex === 0 && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
+				} else if (this.currentIndex === 0 && this.keyNavigationWraps) {
+					this.currentIndex = this.count - 1;
+				} else {
+					--this.currentIndex;
 				}
-				--this.currentIndex;
 				return true;
 			} else if (key === 'Down') {
 				if (this.currentIndex === this.count - 1 && !this.keyNavigationWraps) {
 					event.accepted = false;
 					return false;
+				} else if (this.currentIndex === this.count - 1 && this.keyNavigationWraps) {
+					this.currentIndex = 0;
+				} else {
+					++this.currentIndex;
 				}
-				++this.currentIndex;
 				event.accepted = true;
 				return true;
 			}

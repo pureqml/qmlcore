@@ -651,7 +651,7 @@ class component_generator(object):
 			r.append(self.call_setup(registry, ident_n, var, value, closure))
 
 		if self.elements:
-			r.append("\t%s.assign(%s)" %(parent, json.dumps(self.elements, sort_keys=True)))
+			r.append("%s%s.assign(%s)" %(ident, parent, json.dumps(self.elements, sort_keys=True)))
 
 		r.append(self.generate_animations(registry, parent))
 

@@ -137,18 +137,11 @@ Item {
 
 	///@private
 	function delayedAction(name, self, method, delay) {
-		var registry = self._registeredDelayedActions
-
-		if (registry === undefined)
-			registry = self._registeredDelayedActions = {}
-
-		if (registry[name] === true)
+		if (!self._registerDelayedAction(name))
 			return
 
-		registry[name] = true
-
 		var callback = function() {
-			registry[name] = false
+			self._cancelDelayedAction(name)
 			method.call(self)
 		}
 

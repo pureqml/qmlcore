@@ -29,7 +29,6 @@ Item {
 		this.backend = _globals._backend()
 
 		this._init()
-		this._onCompleted(this) //my context was null at the moment of calling Object ctor
 	}
 
 	///@private
@@ -65,9 +64,8 @@ Item {
 	}
 
 	///@private
-	function _onCompleted(object) {
-		if (object.__complete !== _globals.core.CoreObject.prototype.__complete)
-			this._completedObjects.push(object)
+	function __onCompleted(object) {
+		this._completedObjects.push(object)
 	}
 
 	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }

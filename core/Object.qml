@@ -9,8 +9,6 @@ EventEmitter {
 			parent.__attachedObjects.push(this)
 
 		var context = this._context = parent? parent._context: null
-		if (context)
-			context._onCompleted(this)
 		if (row) {
 			var local = this._local
 			local.model = row
@@ -18,6 +16,11 @@ EventEmitter {
 		}
 		this._changedConnections = []
 		this._properties = {}
+	}
+
+	function completed() {
+		if (this.__complete !== _globals.core.CoreObject.prototype.__complete && this._registerDelayedAction('complete'))
+			this._context.__onCompleted(this)
 	}
 
 	/// @private

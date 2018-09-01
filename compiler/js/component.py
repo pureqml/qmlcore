@@ -654,5 +654,6 @@ class component_generator(object):
 			r.append("%s%s.assign(%s)" %(ident, parent, json.dumps(self.elements, sort_keys=True)))
 
 		r.append(self.generate_animations(registry, parent))
+		r.append('%s%s.completed()' %(ident, parent))
 
 		return "\n".join(r)

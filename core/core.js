@@ -236,6 +236,7 @@ CoreObjectComponentPrototype.__init = function() {
 	var c = {}
 	this.$c(c)
 	this.$s(c)
+	this.completed()
 }
 
 /** @private **/

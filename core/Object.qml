@@ -20,6 +20,25 @@ EventEmitter {
 		this._properties = {}
 	}
 
+	/// @private
+	function _registerDelayedAction(name) {
+		var registry = this._registeredDelayedActions
+
+		if (registry === undefined)
+			registry = this._registeredDelayedActions = {}
+
+		if (registry[name] === true)
+			return false
+
+		registry[name] = true
+		return true
+	}
+
+	/// @private
+	function _cancelDelayedAction(name) {
+		this._registeredDelayedActions[name] = false
+	}
+
 	prototypeConstructor: {
 		ObjectPrototype._propertyToStyle = {
 			width: 'width', height: 'height',

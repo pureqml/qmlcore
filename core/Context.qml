@@ -74,7 +74,7 @@ Item {
 
 	///@internal
 	function scheduleComplete() {
-		this.delayedAction('completed', this, this._processActions)
+		this.delayedAction('context:completed', this, this._processActions)
 	}
 
 	///@private

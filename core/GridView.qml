@@ -32,54 +32,76 @@ BaseView {
 		if (!this.handleNavigationKeys)
 			return false;
 
-		var horizontal = this.flow === this.FlowLeftToRight
-		if (horizontal) {
-			switch(key) {
-				case 'Left':
-					if (!this.keyNavigationWraps && this.currentIndex === 0)
-						return false
-					--this.currentIndex
-					return true
-				case 'Right':
-					if (!this.keyNavigationWraps && this.currentIndex === this.columns - 1)
-						return false
-					++this.currentIndex
-					return true
-				case 'Up':
-					if (!this.keyNavigationWraps && this.currentIndex < this.columns)
-						return false
-					this.currentIndex -= this.columns
-					return true
-				case 'Down':
-					if (!this.keyNavigationWraps && this.currentIndex > this.count - this.columns + 1)
-						return false
-					this.currentIndex += this.columns
-					return true
-			}
-		} else {
-			switch(key) {
-				case 'Up':
-					if (!this.keyNavigationWraps && this.currentIndex === 0)
-						return false
-					--this.currentIndex
-					return true
-				case 'Down':
-					if (!this.keyNavigationWraps && this.currentIndex === this.columns - 1)
-						return false
-					++this.currentIndex
-					return true
-				case 'Left':
-					if (!this.keyNavigationWraps && this.currentIndex < this.rows)
-						return false
-					this.currentIndex -= this.rows
-					return true
-				case 'Right':
-					if (!this.keyNavigationWraps && this.currentIndex > this.count - this.rows + 1)
-						return false
-					this.currentIndex += this.rows
-					return true
-			}
+		switch (key) {
+			case 'Up': return this.moveUp()
+			case 'Down': return this.moveDown()
+			case 'Left': return this.moveLeft()
+			case 'Right': return this.moveRight()
 		}
+	}
+
+	moveUp: {
+		if (this.flow === this.FlowLeftToRight) {
+			if (!this.keyNavigationWraps && this.currentIndex < this.columns)
+				return false
+			if (this.currentIndex - this.columns < 0)
+				this.currentIndex = 0
+			else
+				this.currentIndex -= this.columns
+		} else {
+			if (!this.keyNavigationWraps && this.currentIndex === 0)
+				return false
+			--this.currentIndex
+		}
+		return true
+	}
+
+	moveDown: {
+		if (this.flow === this.FlowLeftToRight) {
+			if (!this.keyNavigationWraps && this.currentIndex > this.count - this.columns + 1)
+				return false
+			if (this.currentIndex + this.columns >= this.count)
+				this.currentIndex = this.count - 1
+			else
+				this.currentIndex += this.columns
+		} else {
+			if (!this.keyNavigationWraps && this.currentIndex === this.columns - 1)
+				return false
+			++this.currentIndex
+		}
+		return true
+	}
+
+	moveLeft: {
+		if (this.flow === this.FlowLeftToRight) {
+			if (!this.keyNavigationWraps && this.currentIndex === 0)
+				return false
+			--this.currentIndex
+		} else {
+			if (!this.keyNavigationWraps && this.currentIndex < this.rows)
+				return false
+			if (this.currentIndex - this.rows < 0)
+				this.currentIndex = 0
+			else
+				this.currentIndex -= this.rows
+		}
+		return true
+	}
+
+	moveRight: {
+		if (this.flow === this.FlowLeftToRight) {
+			if (!this.keyNavigationWraps && this.currentIndex === this.columns - 1)
+				return false
+			++this.currentIndex
+		} else {
+			if (!this.keyNavigationWraps && this.currentIndex > this.count - this.rows + 1)
+				return false
+			if (this.currentIndex + this.rows >= this.count)
+				this.currentIndex = this.count - 1
+			else
+				this.currentIndex += this.rows
+		}
+		return true
 	}
 
 	///@private

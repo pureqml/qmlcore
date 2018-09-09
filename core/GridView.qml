@@ -74,9 +74,12 @@ BaseView {
 
 	moveLeft: {
 		if (this.flow === this.FlowLeftToRight) {
-			if (!this.keyNavigationWraps && this.currentIndex === 0)
+			if (this.keyNavigationWraps && this.currentIndex === 0)
+				this.currentIndex = this.count - 1
+			else if (!this.keyNavigationWraps && this.currentIndex === 0)
 				return false
-			--this.currentIndex
+			else
+				--this.currentIndex
 		} else {
 			if (!this.keyNavigationWraps && this.currentIndex < this.rows)
 				return false
@@ -90,9 +93,12 @@ BaseView {
 
 	moveRight: {
 		if (this.flow === this.FlowLeftToRight) {
-			if (!this.keyNavigationWraps && this.currentIndex === this.columns - 1)
+			if (this.keyNavigationWraps && this.currentIndex === this.count - 1)
+				this.currentIndex = 0
+			else if (!this.keyNavigationWraps && this.currentIndex === this.count - 1)
 				return false
-			++this.currentIndex
+			else
+				++this.currentIndex
 		} else {
 			if (!this.keyNavigationWraps && this.currentIndex > this.count - this.rows + 1)
 				return false

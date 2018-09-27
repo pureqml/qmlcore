@@ -105,7 +105,7 @@ Player.prototype.setSource = function(url) {
 		if (querryIndex >= 0)
 			urlLower = urlLower.substring(0, querryIndex)
 		var extIndex = urlLower.lastIndexOf(".")
-		var extension = urlLower.substring(extIndex, urlLower.length - 1)
+		var extension = urlLower.substring(extIndex, urlLower.length)
 		if (extension === ".m3u8" || extension === ".m3u")
 			media.type = 'application/x-mpegURL'
 		else if (extension === ".mpd")

@@ -3,7 +3,7 @@ var Player = function(ui) {
 	player.dom.preload = "metadata"
 
 	if (ui.autoPlay)
-		player.setAttribute('autoplay')
+		player.setAttribute('autoplay', "")
 	player.setAttribute('preload', 'auto')
 	player.setAttribute('data-setup', '{}')
 	player.setAttribute('class', 'video-js')

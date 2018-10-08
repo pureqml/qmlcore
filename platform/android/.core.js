@@ -11,8 +11,10 @@ if (navigator.userAgent.indexOf('Android') >= 0) {
 	exports.core.keyCodes = {
 		4: 'Back',
 		13: 'Select',
-		37: 'Left',
 		32: 'Space',
+		33: 'PageUp',
+		34: 'PageDown',
+		37: 'Left',
 		38: 'Up',
 		39: 'Right',
 		40: 'Down',

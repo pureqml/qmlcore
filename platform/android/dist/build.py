@@ -10,7 +10,7 @@ def build(app, title, release):
 	if res != 0:
 		print "Failed to create android app"
 		return
-	os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
+	os.system('rsync -a ./ %s/www --exclude=%s ' %(app,app))
 	os.system('cp androidIcon.png %s' %(app))
 	os.system('cp config.xml %s' %(app))
 	os.chdir(app)

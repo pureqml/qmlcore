@@ -74,7 +74,7 @@ exports.layoutText = function(text) {
 			text.paintedWidth = metrics.width
 			text.paintedHeight = metrics.height
 		} else
-			console.log('failed to layout text', text)
+			console.log('failed to layout text', text.text)
 	})
 }
 

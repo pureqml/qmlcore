@@ -555,6 +555,30 @@ var updateImage = function(image, metrics) {
 		image.paintedHeight = image.height
 	}
 
+	switch(image.horizontalAlignment) {
+		case ImageComponent.AlignHCenter:
+			style['background-position-x'] = 'center'
+			break;
+		case ImageComponent.AlignLeft:
+			style['background-position-x'] = 'left'
+			break;
+		case ImageComponent.AlignRight:
+			style['background-position-x'] = 'right'
+			break;
+	}
+
+	switch(image.verticalAlignment) {
+		case ImageComponent.AlignVCenter:
+			style['background-position-y'] = 'center'
+			break;
+		case ImageComponent.AlignTop:
+			style['background-position-y'] = 'top'
+			break;
+		case ImageComponent.AlignBottom:
+			style['background-position-y'] = 'bottom'
+			break;
+	}
+
 	switch(image.fillMode) {
 		case ImageComponent.Stretch:
 			style['background-repeat'] = 'no-repeat'
@@ -574,7 +598,6 @@ var updateImage = function(image, metrics) {
 			break;
 		case ImageComponent.PreserveAspectCrop:
 			style['background-repeat'] = 'no-repeat'
-			style['background-position'] = 'center'
 			style['background-size'] = 'cover'
 			break;
 		case ImageComponent.Pad:
@@ -584,7 +607,6 @@ var updateImage = function(image, metrics) {
 			break;
 		case ImageComponent.PreserveAspectFit:
 			style['background-repeat'] = 'no-repeat'
-			style['background-position'] = 'center'
 			style['background-size'] = 'contain'
 			var w = image.width, h = image.height
 			var targetRatio = 0, srcRatio = natW / natH

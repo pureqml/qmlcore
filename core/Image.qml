@@ -7,6 +7,8 @@ Item {
 	property string source;									///< image URL
 	property enum status { Null, Ready, Loading, Error };	///< image status
 	property enum fillMode { Stretch, PreserveAspectFit, PreserveAspectCrop, Tile, TileVertically, TileHorizontally, Pad };	///< setup mode how image must fill it's content
+	property enum verticalAlignment { AlignVCenter, AlignTop, AlignBottom };
+	property enum horizontalAlignment { AlignHCenter, AlignLeft, AlignRight };
 	property bool smooth: true;								///< if false, image will be pixelated
 	property bool preload: false;							///< image will be loaded even if it's not visible
 

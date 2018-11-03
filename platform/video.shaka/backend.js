@@ -84,6 +84,18 @@ var Player = function(ui) {
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
+Player.prototype.configureDrm = function(config) {
+	var laServers = {}
+	if (config.widevine)
+		servers['com.widevine.alpha'] = config.widevine
+	if (config.playready)
+		servers['com.microsoft.playready'] = config.playready
+
+	this.shakaPlayer.configure({
+		drm: { servers: laServers }
+	});
+}
+
 Player.prototype.setSource = function(url) {
 	var ui = this.ui
 	this.shakaPlayer.load(url).then(function() {

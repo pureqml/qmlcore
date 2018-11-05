@@ -3,6 +3,7 @@ var Player = function(ui) {
 
 	if (ui.autoPlay)
 		player.setAttribute('autoplay', "")
+	ui.configureDrm = this.configureDrm.bind(this)
 
 	shaka.polyfill.installAll();
 	if (shaka.Player.isBrowserSupported()) {
@@ -87,9 +88,9 @@ Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 Player.prototype.configureDrm = function(config) {
 	var laServers = {}
 	if (config.widevine)
-		servers['com.widevine.alpha'] = config.widevine
+		laServers['com.widevine.alpha'] = config.widevine
 	if (config.playready)
-		servers['com.microsoft.playready'] = config.playready
+		laServers['com.microsoft.playready'] = config.playready
 
 	this.shakaPlayer.configure({
 		drm: { servers: laServers }

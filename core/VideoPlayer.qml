@@ -157,6 +157,12 @@ Item {
 	///@private
 	onReadyChanged:		{ log("ReadyState: " + this.ready) }
 
+	setupDrm(type, options): {
+		var player = this._getPlayer()
+		if (player)
+			player.setupDrm(type, options)
+	}
+
 	///@private
 	onError(error): {
 		this.paused = false

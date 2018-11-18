@@ -3,7 +3,6 @@ var Player = function(ui) {
 
 	if (ui.autoPlay)
 		player.setAttribute('autoplay', "")
-	ui.configureDrm = this.configureDrm.bind(this)
 
 	shaka.polyfill.installAll();
 	if (shaka.Player.isBrowserSupported()) {
@@ -85,15 +84,17 @@ var Player = function(ui) {
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
-Player.prototype.configureDrm = function(config) {
-	var laServers = {}
-	if (config.widevine)
-		laServers['com.widevine.alpha'] = config.widevine
-	if (config.playready)
-		laServers['com.microsoft.playready'] = config.playready
+Player.prototype.setupDrm = function(type, options) {
+	var laServer = {}
+	if (type === widevine)
+		laServer["com.widevine.alpha"] = options.laServer
+	else if (type === playready)
+		laServer["com.microsoft.playready"] = options.laServer
+	else
+		throw new Error("Unkbown or not supported DRM type " + type)
 
 	this.shakaPlayer.configure({
-		drm: { servers: laServers }
+		drm: { servers: laServer }
 	});
 }
 

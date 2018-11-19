@@ -84,18 +84,18 @@ var Player = function(ui) {
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
-Player.prototype.setupDrm = function(type, options) {
+Player.prototype.setupDrm = function(type, options, callback, error) {
 	var laServer = {}
 	if (type === "widevine")
 		laServer["com.widevine.alpha"] = options.laServer
 	else if (type === "playready")
 		laServer["com.microsoft.playready"] = options.laServer
 	else
-		throw new Error("Unkbown or not supported DRM type " + type)
+		error ? error(new Error("Unkbown or not supported DRM type " + type)) : log("Unkbown or not supported DRM type " + type)
 
-	this.shakaPlayer.configure({
-		drm: { servers: laServer }
-	});
+	this.shakaPlayer.configure({ drm: { servers: laServer } });
+	if (callback)
+		callback()
 }
 
 Player.prototype.setSource = function(url) {

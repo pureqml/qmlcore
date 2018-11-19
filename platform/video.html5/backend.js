@@ -116,7 +116,7 @@ Player.prototype.setVisibility = function(visible) {
 	log('VISIBILITY LOGIC MISSING HERE, visible:', visible)
 }
 
-Player.prototype.setupDrm = function(type, options) {
+Player.prototype.setupDrm = function(type, options, callback, error) {
 	log('Not implemented')
 }
 

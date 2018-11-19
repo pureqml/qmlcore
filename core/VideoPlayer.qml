@@ -157,10 +157,10 @@ Item {
 	///@private
 	onReadyChanged:		{ log("ReadyState: " + this.ready) }
 
-	setupDrm(type, options): {
+	setupDrm(type, options, callback, error): {
 		var player = this._getPlayer()
 		if (player)
-			player.setupDrm(type, options)
+			player.setupDrm(type, options, callback, error)
 	}
 
 	///@private

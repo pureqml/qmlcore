@@ -143,20 +143,27 @@ Item {
 	}
 
 	///increase current volume
-	volumeUp:			{ this.volume += 0.1 }
+	volumeUp: { this.volume += 0.1 }
 
 	///decrease current volume
-	volumeDown:			{ this.volume -= 0.1 }
+	volumeDown: { this.volume -= 0.1 }
 
 	///toggle volume mute on\off
-	toggleMute:			{ var player = this._getPlayer(); if (player) player.setMute(!this.muted) }
+	toggleMute: { var player = this._getPlayer(); if (player) player.setMute(!this.muted) }
 
 	///@private
-	onVolumeChanged:	{ this.applyVolume() }
+	onVolumeChanged: { this.applyVolume() }
 
 	///@private
-	onReadyChanged:		{ log("ReadyState: " + this.ready) }
+	onReadyChanged: { log("ReadyState: " + this.ready) }
 
+	/**
+	 * Setup DRM configuration
+	 * @param {string} type - DRM type "widevine" or "playready"
+	 * @param {Object} options - options for corresponded DRM type
+	 * @param {function} callback - callback for async based implementation
+	 * @param {function} error - callback to report fail during configuration
+	 */
 	setupDrm(type, options, callback, error): {
 		var player = this._getPlayer()
 		if (player)

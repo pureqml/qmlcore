@@ -182,8 +182,8 @@ EventEmitter {
 		if (name === 'contentX' || name === 'contentY')
 			log('WARNING: you\'re trying to animate contentX/contentY property, this will always use animation frames, ignoring CSS transitions, please use content.x/content.y instead')
 
-		animation._target = this
-		animation._property = name
+		animation.target = this
+		animation.property = name
 		var storage = this._createPropertyStorage(name)
 		storage.animation = animation
 		if (backend.setAnimation(this, name, animation))

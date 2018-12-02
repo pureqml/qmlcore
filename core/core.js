@@ -614,9 +614,9 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				backend.cancelAnimationFrame(storage.frameRequest)
 				storage.frameRequest = undefined
 				animation.complete = function() { }
-				animation.running = false
 				storage.interpolatedValue = undefined
 				storage.started = undefined
+				animation.running = false
 				storage.callOnChanged(self, name, dst, src)
 			}
 

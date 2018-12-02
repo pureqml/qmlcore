@@ -10,6 +10,8 @@ Object {
 	property string easing: "ease";			///< easing function
 	property Object target;					///< target object
 	property string property;				///< target object property
+	property variant from;					///< used in declarative animation inside SequentialAnimation, starting value
+	property variant to;					///< used in declarative animation inside SequentialAnimation, destination value
 
 	constructor:	{ this._disabled = 0; this._native = false }
 	/// disable animation.

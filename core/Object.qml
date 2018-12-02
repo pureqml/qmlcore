@@ -177,6 +177,9 @@ EventEmitter {
 		if ($manifest$disableAnimations)
 			return
 
+		if (animation === null)
+			return this.resetAnimation(name)
+
 		var context = this._context
 		var backend = context.backend
 		if (name === 'contentX' || name === 'contentY')
@@ -188,6 +191,19 @@ EventEmitter {
 		storage.animation = animation
 		if (backend.setAnimation(this, name, animation))
 			animation._native = true
+	}
+
+	function resetAnimation(name) {
+		var storage = this.__properties[name]
+		if (storage !== undefined && storage.animation) {
+			var animation = storage.animation
+			animation.disable()
+			var target = animation.target
+			animation.target = target
+			storage.animation = null
+			animation.enable() //fixme: enabling without target to avoid installing native animation
+			animation.target = target
+		}
 	}
 
 	/// outputs component path in qml (e.g Rectangle → Item → ListItem → Rectangle)

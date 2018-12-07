@@ -1,15 +1,19 @@
 from __future__ import print_function
 from builtins import object
-
-import json
-import re
-from compiler.js import split_name, escape_package, get_package, mangle_package, escape
+from compiler.js import split_name, escape_package, get_package, mangle_package, escape, escape_id
 from compiler.js.component import component_generator
 from collections import OrderedDict
+
+import os.path
+import json
+import re
+
+import jinja2 as j2
 
 root_type_package = 'core'
 root_type_name = 'CoreObject'
 root_type = root_type_package + '.' + root_type_name
+TEMPLATE_DIR = os.path.dirname(__file__)
 
 class generator(object):
 	def __init__(self, ns, bid):
@@ -23,6 +27,10 @@ class generator(object):
 		self.startup = []
 		self.l10n = {}
 		self.id_set = set(['context', 'model'])
+		with open(os.path.join(TEMPLATE_DIR, 'template.js')) as f:
+			self.template = j2.Template(f.read())
+		with open(os.path.join(TEMPLATE_DIR, 'copy_args.js')) as f:
+			self.copy_args = j2.Template(f.read())
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
@@ -103,16 +111,22 @@ class generator(object):
 		return "%s.%s" %(package_name, name)
 
 	def generate_component(self, gen):
-		name = gen.name
-
 		self.used_packages.add(gen.package)
 
-		code = ''
-		code += "\n\n//=====[component %s]=====================\n\n" %name
-		code += gen.generate(self)
+		context = {'type': gen.name}
+		context['name'] = gen.name
+		context['name_mangled'] = gen.mangled_name
+		context['ctor'] = gen.ctor
 
-		code += gen.generate_prototype(self)
-		return code
+		context['base_type'] = gen.get_base_type(self)
+		context['base_type_mangled'] = gen.get_base_type(self, mangle = True)
+		context['prototype'] = gen.generate_prototype(self)
+
+		context['local_name'] = gen.local_name
+		context['proto_name'] = gen.proto_name
+		context['base_proto_name'] = gen.base_proto_name
+		context['base_local_name'] = gen.base_local_name
+		return context
 
 	used_re = re.compile(r'@using\s*{(.*?)}')
 
@@ -125,10 +139,6 @@ class generator(object):
 			self.used_packages.add(package)
 
 	def generate_components(self):
-		#finding explicit @using declarations in code
-		for name, code in self.imports.items():
-			self.scan_using(code)
-
 		context_type = self.find_component('core', 'Context')
 		context_gen = self.components[context_type]
 		for i, pi in enumerate(context_gen.properties):
@@ -160,7 +170,7 @@ class generator(object):
 				if name not in code:
 					code[name] = self.generate_component(component)
 
-		r = ''
+		r = []
 		order = []
 		visited = set([root_type])
 		def visit(type):
@@ -174,7 +184,7 @@ class generator(object):
 			visit(type)
 
 		for type in order:
-			r += code[type]
+			r.append(code[type])
 
 		return r
 
@@ -227,76 +237,64 @@ class generator(object):
 
 	re_copy_args = re.compile(r'COPY_ARGS\w*\((.*?),(.*?)(?:,(.*?))?\)')
 
-	def generate(self):
-		code = self.generate_components() + '\n' #must be called first, generates used_packages/components sets
-		text = ""
-		text += "/** @const */\n"
-		text += "var _globals = exports\n"
-		text += "%s\n" %self.generate_prologue()
-		text += "//========================================\n\n"
-		text += "/** @const @type {!CoreObject} */\n"
-		text += "var core = _globals.core.core\n"
-		text += code
-		text += "%s\n" %self.generate_imports()
+	def generate(self, app, strict = True, release = False, verbose = False, manifest = {}, project_dirs = []):
+		init_js = ''
+		for project_dir in project_dirs:
+			init_path = os.path.join(project_dir, '.core.js')
+			if os.path.exists(init_path):
+				if verbose:
+					print('including platform initialisation file at %s' %init_path)
+				with open(init_path) as f:
+					init_js += f.read()
 
-		text = "%s = %s();\n" %(self.ns, self.wrap(text))
+		init_js = self.replace_args(init_js)
+
+		def write_properties(prefix, props):
+			r = ''
+			for k, v in sorted(props.iteritems()):
+				k = escape_id(k)
+				if isinstance(v, dict):
+					r += write_properties(prefix + '$' + k, v)
+				else:
+					r += "var %s$%s = %s\n" %(prefix, k, json.dumps(v))
+			return r
+
+		manifest_prologue = write_properties('$manifest', manifest)
+
+		#finding explicit @using declarations in code
+		for name, code in self.imports.iteritems():
+			self.scan_using(code)
+
+		components = self.generate_components() #must be called first, generates used_packages/components sets
+		prologue = self.generate_prologue()
+		imports = self.generate_imports()
+
+		text = self.template.render({
+			'components': components,
+			'prologue': prologue,
+			'imports': imports,
+			'strict': strict,
+			'release': release,
+			'manifest': manifest_prologue,
+			'startup': "\n".join(self.startup),
+			'ns': self.ns,
+			'app': app,
+			'l10n': json.dumps(self.l10n),
+			'context_type': self.find_component('core', 'Context')
+		})
+
+		text = text.replace('/* ${init.js} */', init_js)
 		return self.replace_args(text)
 
 	def replace_args(self, text):
 		#COPY_ARGS optimization
 		def copy_args(m):
-			def expr(var, op, idx):
-				if idx != 0:
-					return "%s %s %d" %(var, op, idx)
-				else:
-					return var
-
 			name, idx, prefix = m.group(1).strip(), int(m.group(2).strip()), m.group(3)
-			if prefix is not None:
-				prefix = prefix.strip()
-				return """
-		/* %s */
-		var $n = arguments.length
-		var %s = new Array(%s)
-		%s[0] = %s
-		for(var $i = %d; $i < $n; ++$i) {
-			%s[%s] = arguments[$i]
-		}
-""" %(m.group(0), name, expr('$n', '+', 1 - idx), name, prefix, idx, name, expr('$i', '+', 1 - idx)) #format does not work well here, because of { }
-			else:
-				return """
-		/* %s */
-		var $n = arguments.length
-		var %s = new Array(%s)
-		var $d = 0, $s = %d;
-		while($s < $n) {
-			%s[$d++] = arguments[$s++]
-		}
-""" %(m.group(0), name, expr('$n', '-', idx), idx, name)
+			context = { 'name': name, 'index': idx, 'prefix': prefix, 'extra': 1 - idx, 'source': m.group(0) }
+			return self.copy_args.render(context)
 
 		text = generator.re_copy_args.sub(copy_args, text)
 		return text
-
-	def generate_startup(self, ns, app):
-		r = ""
-		if self.module:
-			r += "module.exports = %s\n" %ns
-			r += "module.exports.run = function(nativeContext) { "
-		r += "try {\n"
-
-		context_type = self.find_component('core', 'Context')
-
-		startup = []
-		startup.append('\tvar l10n = %s\n' %json.dumps(self.l10n))
-		startup.append("\tvar context = %s._context = new qml.%s(null, false, {id: 'qml-context-%s', l10n: l10n, nativeContext: %s})" %(ns, context_type, app, 'nativeContext' if self.module else 'null'))
-		startup.append('\tcontext.init()')
-		startup += self.startup
-		r += "\n".join(startup)
-		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns
-		if self.module:
-			r += "return context\n"
-			r += "}"
-		return r
 
 	def add_ts(self, path):
 		from compiler.ts import Ts

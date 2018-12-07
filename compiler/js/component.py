@@ -187,22 +187,6 @@ class component_generator(object):
 	def get_base_type(self, registry, *args, **kw):
 		return registry.find_component(self.package, self.component.name, *args, **kw)
 
-	def generate(self, registry):
-		base_type = self.get_base_type(registry, mangle = True)
-		r = []
-		r.append("\tvar %s = %s" %(self.base_local_name, base_type))
-		r.append("\tvar %s = %s.prototype" %(self.base_proto_name, self.base_local_name))
-		r.append("")
-		r.append("/**\n * @constructor")
-		r.append(" * @extends {%s}" %base_type)
-		r.append(" */")
-		r.append("\tvar %s = %s.%s = function(parent, row) {" %(self.local_name, mangle_package(self.package), self.class_name))
-		r.append("\t\t%s.apply(this, arguments)" % self.base_local_name)
-		r.append(self.ctor)
-		r.append("\t}")
-		r.append("")
-		return "\n".join(r)
-
 	def generate_animations(self, registry, parent):
 		r = []
 		for name, animation in self.animations.items():
@@ -308,7 +292,7 @@ class component_generator(object):
 
 		base_type = self.get_base_type(registry)
 
-		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
+		r.append("var %s = %s.prototype = Object.create(%s)\n" %(self.proto_name, self.local_name, self.base_proto_name))
 		if self.prototype_ctor:
 			r.append("\t%s\n" %(self.prototype_ctor))
 		r.append("%s%s.constructor = %s\n" %(ident, self.proto_name, self.local_name))

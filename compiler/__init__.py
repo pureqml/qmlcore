@@ -167,17 +167,6 @@ class Compiler(object):
 
 		self.root_manifest_props = {}
 	#reading .core.js files to bootstrap platform specific initialization
-		init_js = ''
-		for project_dir in self.project_dirs:
-			init_path = os.path.join(project_dir, '.core.js')
-			if os.path.exists(init_path):
-				if self.verbose:
-					print('including platform initialisation file at %s' %init_path)
-				with open(init_path) as f:
-					init_js += f.read()
-
-		init_js = generator.replace_args(init_js)
-
 		def init_worker():
 			import signal
 			signal.signal(signal.SIGINT, signal.SIG_IGN)
@@ -201,28 +190,7 @@ class Compiler(object):
 		if self.verbose:
 			print("generating sources...")
 
-		appcode = ""
-		if self.strict:
-			appcode += "'use strict'\n"
-		if self.release:
-			appcode += "var log = function() { }\n"
-		else:
-			appcode += "var log = null\n"
-
-		def write_properties(prefix, props):
-			r = ''
-			for k, v in sorted(props.items()):
-				k = compiler.js.escape_id(k)
-				if isinstance(v, dict):
-					r += write_properties(prefix + '$' + k, v)
-				else:
-					r += "var %s$%s = %s\n" %(prefix, k, json.dumps(v))
-			return r
-		appcode += write_properties('$manifest', self.root_manifest_props)
-
-		appcode += "var " + generator.generate()
-		appcode += generator.generate_startup(namespace, self.app)
-		appcode = appcode.replace('/* ${init.js} */', init_js)
+		appcode = generator.generate(self.app, strict = self.strict, release = self.release, manifest = self.root_manifest_props, project_dirs = self.project_dirs, verbose = self.verbose)
 
 		with open(os.path.join(self.output_dir, namespace + "." + self.app + ".js"), "wt") as f:
 			f.write(appcode)

@@ -66,9 +66,9 @@ def handle_enum_property_declaration(s, l, t):
 def handle_method_declaration(s, l, t):
 	event_handler = t[0] != 'function'
 	if event_handler:
-		names, args, code = t[0], t[1], t[2]
+		names, args, code = t[0], t[1], t[2] if len(t) > 2 else None
 	else:
-		names, args, code = t[1], t[2], t[3]
+		names, args, code = t[1], t[2], t[3] if len(t) > 3 else None
 
 	return component(lang.Method(names, args, code, event_handler))
 
@@ -259,10 +259,10 @@ assign_scope_declaration.setParseAction(handle_assignment)
 assign_scope = nested_identifier_lvalue + Suppress("{") + Group(OneOrMore(assign_scope_declaration)) + Suppress("}")
 assign_scope.setParseAction(handle_assignment_scope)
 
-method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Suppress("(") + delimitedList(identifier, ",") + Suppress(")") )) + Suppress(":") + code
+method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Suppress("(") + Optional(delimitedList(identifier, ",")) + Suppress(")") )) + ((Suppress(":") + code) | expression_end)
 method_declaration.setParseAction(handle_method_declaration)
 
-method_declaration_qml = Keyword("function") - Group(nested_identifier_lvalue) + Group(Suppress("(") + Optional(delimitedList(identifier, ",")) + Suppress(")") ) + code
+method_declaration_qml = Keyword("function") - Group(nested_identifier_lvalue) + Group(Suppress("(") + Optional(delimitedList(identifier, ",")) + Suppress(")") ) + (code | expression_end)
 method_declaration_qml.setParseAction(handle_method_declaration)
 
 behavior_declaration = Keyword("Behavior").suppress() + Keyword("on").suppress() + Group(delimitedList(nested_identifier_lvalue, ',')) + Suppress("{") + component_declaration + Suppress("}")

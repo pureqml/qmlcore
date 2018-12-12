@@ -4,6 +4,9 @@ from compiler import lang
 import json
 from functools import partial
 
+class forward_declaration(object):
+	pass
+
 class component_generator(object):
 	def __init__(self, ns, name, component, prototype = False):
 		self.ns = ns
@@ -63,6 +66,10 @@ class component_generator(object):
 		value = component_generator(self.ns, self.package + "." + suffix, component)
 		self.generators.append(value)
 		return value
+
+	def check_code(self, name, code):
+		if code is forward_declaration:
+			raise Exception("missing method implementation: %s.%s" %(self.name, name))
 
 	def assign(self, target, value):
 		t = type(value)
@@ -131,15 +138,17 @@ class component_generator(object):
 				if name == 'constructor':
 					if self.ctor != '':
 						raise Exception("duplicate constructor")
-					self.ctor = "\t//custom constructor:\n\t" + child.code + "\n"
+					self.ctor = child.code if child.code is not None else forward_declaration
 				elif name == 'prototypeConstructor':
 					if not self.prototype:
 						raise Exception('prototypeConstructor can be used only in prototypes')
-					if self.prototype_ctor != '':
+					if self.prototype_ctor:
 						raise Exception("duplicate constructor")
-					self.prototype_ctor = child.code
+					self.prototype_ctor = child.code if child.code is not None else forward_declaration
 				else:
 					fullname, args, code = split_name(name), child.args, child.code
+					if code is None:
+						code = forward_declaration
 					if fullname in self.methods:
 						raise Exception("duplicate method " + name)
 					self.methods[fullname] = args, code, child.event #fixme: fix code duplication here
@@ -183,6 +192,7 @@ class component_generator(object):
 	def generate(self, registry):
 		base_type = self.get_base_type(registry)
 		r = []
+		self.check_code('constructor', self.ctor)
 		r.append("\tvar %s = _globals.%s" %(self.base_local_name, base_type))
 		r.append("\tvar %s = %s.prototype" %(self.base_proto_name, self.base_local_name))
 		r.append("")
@@ -284,6 +294,7 @@ class component_generator(object):
 	def transform_handlers(self, registry, blocks):
 		result = {}
 		for (path, name), (args, code) in blocks.iteritems():
+			self.check_code(name, code)
 			if name == '__complete':
 				code = code.strip()
 				if code[0] == '{' and code[-1] == '}':
@@ -302,6 +313,7 @@ class component_generator(object):
 		base_type = self.get_base_type(registry)
 
 		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
+		self.check_code('prototypeConstructor', self.prototype_ctor)
 		if self.prototype_ctor:
 			r.append("\t%s\n" %(self.prototype_ctor))
 		r.append("%s%s.constructor = %s\n" %(ident, self.proto_name, self.local_name))

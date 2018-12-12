@@ -57,7 +57,7 @@ Object {
 		} //no parent == top level element, skip
 	}
 
-	///@private
+	///@private release any held resources, including connections, delegates, etc
 	function discard() {
 		_globals.core.Object.prototype.discard.apply(this)
 		this.focusedChild = null

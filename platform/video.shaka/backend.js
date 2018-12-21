@@ -4,6 +4,8 @@ var Player = function(ui) {
 	if (ui.autoPlay)
 		player.setAttribute('autoplay', "")
 
+	this._player = player
+
 	shaka.polyfill.installAll();
 	if (shaka.Player.isBrowserSupported()) {
 		var shakaPlayer = new shaka.Player(player.dom);
@@ -91,7 +93,7 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 	else if (type === "playready")
 		laServer["com.microsoft.playready"] = options.laServer
 	else
-		error ? error(new Error("Unkbown or not supported DRM type " + type)) : log("Unkbown or not supported DRM type " + type)
+		error ? error(new Error("Unknown or not supported DRM type " + type)) : log("Unknown or not supported DRM type " + type)
 
 	this.shakaPlayer.configure({ drm: { servers: laServer } });
 	if (callback)
@@ -100,9 +102,21 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 
 Player.prototype.setSource = function(url) {
 	var ui = this.ui
-	this.shakaPlayer.load(url).then(function() {
-		console.log('The video has now been loaded!');
-	}).catch(function(err) { log("Failed to load manifest") });
+
+	if (url) {
+		var urlLower = url.toLowerCase()
+		var querryIndex = url.indexOf("?")
+		if (querryIndex >= 0)
+			urlLower = urlLower.substring(0, querryIndex)
+		var extIndex = urlLower.lastIndexOf(".")
+		var extension = urlLower.substring(extIndex, urlLower.length)
+		if (extension === ".mp4")
+			this._player.dom.src = url
+		else
+			this.shakaPlayer.load(url).then(function() {
+				console.log('The video has now been loaded!');
+			}).catch(function(err) { log("Failed to load manifest") });
+	}
 }
 
 

@@ -68,6 +68,8 @@ var Player = function(ui) {
 	ui.element.remove()
 	ui.element = player
 	ui.parent.element.append(ui.element)
+
+	this.setAutoPlay(ui.autoPlay)
 }
 
 Player.prototype.setSource = function(url) {
@@ -106,6 +108,13 @@ Player.prototype.setMute = function(muted) {
 
 Player.prototype.setLoop = function(loop) {
 	this.element.dom.loop = loop
+}
+
+Player.prototype.setAutoPlay = function(autoPlay) {
+	if (autoPlay)
+		this.element.dom.setAttribute("autoplay", "")
+	else
+		this.element.dom.removeAttribute("autoplay");
 }
 
 Player.prototype.setRect = function(l, t, r, b) {

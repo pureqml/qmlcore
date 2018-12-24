@@ -78,6 +78,7 @@ var Player = function(ui) {
 
 	this.element = player
 	this.ui = ui
+	this.setAutoPlay(ui.autoPlay)
 
 	ui.element.remove()
 	ui.element = player
@@ -118,7 +119,6 @@ Player.prototype.setSource = function(url) {
 			}).catch(function(err) { log("Failed to load manifest") });
 	}
 }
-
 
 exports.createPlayer = function(ui) {
 	return new Player(ui)

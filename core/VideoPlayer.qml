@@ -99,6 +99,10 @@ Item {
 
 	///@private
 	onAutoPlayChanged: {
+		var player = this._getPlayer()
+		if (player)
+			player.setAutoPlay(value)
+
 		if (value) //fixme: and not currently playing
 			this.play()
 	}

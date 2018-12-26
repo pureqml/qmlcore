@@ -101,6 +101,14 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 		callback()
 }
 
+Player.prototype.stop = function() {
+	log("stop player")
+	var self = this
+	this.shakaPlayer.unload()
+		.then(function(e) { log("Unloaded"); self.shakaPlayer.destroy(); self.shakaPlayer = new shaka.Player(self._player.dom); })
+		.catch(function(e) { log("Unload failed", e); self.shakaPlayer.destroy(); self.shakaPlayer = new shaka.Player(self._player.dom); })
+}
+
 Player.prototype.setSource = function(url) {
 	var ui = this.ui
 
@@ -111,12 +119,13 @@ Player.prototype.setSource = function(url) {
 			urlLower = urlLower.substring(0, querryIndex)
 		var extIndex = urlLower.lastIndexOf(".")
 		var extension = urlLower.substring(extIndex, urlLower.length)
+		var player = this._player
 		if (extension === ".mp4")
 			this._player.dom.src = url
 		else
-			this.shakaPlayer.load(url).then(function() {
-				console.log('The video has now been loaded!');
-			}).catch(function(err) { log("Failed to load manifest") });
+			this.shakaPlayer.load(url)
+				.then(function() { console.log('The video has now been loaded!'); })
+				.catch(function(err) { log("Failed to load manifest") });
 	}
 }
 

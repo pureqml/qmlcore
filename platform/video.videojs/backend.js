@@ -2,8 +2,6 @@ var Player = function(ui) {
 	var player = ui._context.createElement('video')
 	player.dom.preload = "metadata"
 
-	if (ui.autoPlay)
-		player.setAttribute('autoplay', "")
 	player.setAttribute('preload', 'auto')
 	player.setAttribute('data-setup', '{}')
 	player.setAttribute('class', 'video-js')
@@ -92,6 +90,7 @@ var Player = function(ui) {
 
 	this.videojsContaner = document.getElementById(uniqueId)
 	this.videojsContaner.style.zindex = -1
+	this.setAutoPlay(ui.autoPlay)
 }
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)

@@ -1,9 +1,6 @@
 var Player = function(ui) {
 	var player = ui._context.createElement('video')
 
-	if (ui.autoPlay)
-		player.setAttribute('autoplay', "")
-
 	this._player = player
 
 	shaka.polyfill.installAll();

@@ -352,8 +352,10 @@ ElementPrototype.updateStyle = function(updated) {
 	}
 
 	var styles = updated.data
+	var elementStyle = element.style
 
-	var rules = []
+	//fixme: classifier is currently broken, restore rules processor
+	//var rules = []
 	for(var name in styles) {
 		var value = styles[name]
 		//log('updateStyle', this._uniqueId, name, value)
@@ -363,18 +365,18 @@ ElementPrototype.updateStyle = function(updated) {
 		if (Array.isArray(value))
 			value = value.join(',')
 
-		var unit = ''
 		if (typeof value === 'number') {
-			if (name in cssUnits)
-				unit = cssUnits[name]
 			if (name === 'width')
 				value += this._widthAdjust
+			var unit = cssUnits[name]
+			if (unit !== undefined) {
+				value += unit
+			}
 		}
-		value += unit
 
-		element.style[ruleName] = value
+		elementStyle[ruleName] = value
 	}
-
+/*
 	var cache = this._context._styleClassifier
 	var cls = cache? cache.classify(rules): ''
 	if (cls !== this._class) {
@@ -385,6 +387,7 @@ ElementPrototype.updateStyle = function(updated) {
 		if (cls !== '')
 			classList.add(cls)
 	}
+*/
 }
 
 ElementPrototype.append = function(el) {

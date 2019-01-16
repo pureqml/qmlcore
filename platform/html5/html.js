@@ -224,7 +224,7 @@ exports.Element = function(context, tag, cls) {
 	this._transitions = {}
 	this._class = ''
 	this._widthAdjust = 0
-	this._uniqueId = String(++lastId)
+	this._uniqueId = (++lastId).toString(36)
 	this._firstChildIndex = 0
 
 	registerGenericListener(this)

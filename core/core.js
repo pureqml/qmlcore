@@ -415,28 +415,35 @@ PropertyStoragePrototype.getAnimation = function(name, animation) {
 	return a && a.enabled() && !a._native && a._context._completed? a: null
 }
 
-PropertyStoragePrototype.removeUpdater = function() {
-	var callback = this.callback
-	if (callback === undefined)
-		return
-
+PropertyStoragePrototype.__removeUpdater = function(callback) {
 	var deps = this.deps
 	for(var i = 0, n = deps.length; i < n; i += 2) {
 		var object = deps[i]
 		var name = deps[i + 1]
 		object.removeOnChanged(name, callback)
 	}
-	this.deps = this.callback = undefined
+}
+
+PropertyStoragePrototype.removeUpdater = function() {
+	var oldCallback = this.callback
+	if (oldCallback !== undefined) {
+		this.__removeUpdater(oldCallback)
+		this.deps = this.callback = undefined
+	}
 }
 
 PropertyStoragePrototype.replaceUpdater = function(parent, callback, deps) {
-	this.removeUpdater()
+	var oldCallback = this.callback
+	if (oldCallback !== undefined)
+		this.__removeUpdater(oldCallback)
+
 	this.callback = callback
 	this.deps = deps
+	var connectOnChanged = parent.connectOnChanged
 	for(var i = 0, n = deps.length; i < n; i += 2) {
 		var object = deps[i]
 		var name = deps[i + 1]
-		parent.connectOnChanged(object, name, callback)
+		connectOnChanged.call(parent, object, name, callback)
 	}
 	callback()
 }

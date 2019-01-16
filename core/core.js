@@ -442,13 +442,13 @@ PropertyStoragePrototype.replaceUpdater = function(parent, callback, deps) {
 }
 
 PropertyStoragePrototype.forwardSet = function(object, name, newValue, defaultValue) {
-	var forwardTarget = this.forwardTarget
-	if (forwardTarget === undefined)
-		return false
-
 	var oldValue = this.getCurrentValue(defaultValue)
 	if (oldValue !== null && (oldValue instanceof Object)) {
 		//forward property update for mixins
+		var forwardTarget = oldValue.defaultProperty
+		if (forwardTarget === undefined)
+			return false
+
 		var forwardedOldValue = oldValue[forwardTarget]
 		if (newValue !== forwardedOldValue) {
 			oldValue[forwardTarget] = newValue
@@ -457,6 +457,10 @@ PropertyStoragePrototype.forwardSet = function(object, name, newValue, defaultVa
 		return true
 	} else if (newValue instanceof Object) {
 		//first assignment of mixin
+		var forwardTarget = newValue.defaultProperty
+		if (forwardTarget === undefined)
+			return false
+
 		object.connectOnChanged(newValue, forwardTarget, function(v, ov) {
 			var storage = object.__properties[name]
 			if (storage !== undefined)

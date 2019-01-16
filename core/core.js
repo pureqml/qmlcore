@@ -363,14 +363,15 @@ ColorPrototype.ahex = function() {
 
 exports.addLazyProperty = function(proto, name, creator) {
 	var get = function(object) {
-		var storage = object.__properties[name]
+		var properties = object.__properties
+		var storage = properties[name]
 		if (storage !== undefined) {
 			if (storage.value === undefined)
 				storage.value = creator(object)
 			return storage
 		}
 
-		return object.__properties[name] = new PropertyStorage(creator(object))
+		return properties[name] = new PropertyStorage(creator(object))
 	}
 
 	Object.defineProperty(proto, name, {
@@ -570,11 +571,12 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	}
 
 	var createStorage = function(newValue) {
-		var storage = this.__properties[name]
+		var properties = this.__properties
+		var storage = properties[name]
 		if (storage === undefined) { //no storage
 			if (newValue === defaultValue) //value === defaultValue, no storage allocation
 				return
-			storage = this.__properties[name] = new PropertyStorage(defaultValue)
+			storage = properties[name] = new PropertyStorage(defaultValue)
 		}
 		return storage
 	}

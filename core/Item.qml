@@ -6,7 +6,7 @@ Object {
 	property int width;						///< width of visible area
 	property int height;					///< height of visible area
 	property bool clip;						///< clip all children outside rectangular area defined by x, y, width, height
-	property real radius;					///< round corner radius
+	property lazy radius: Radius { }		///< round corner radius(es), allow forwarding, e.g. item.radius: 5;
 
 	property bool focus;					///< this item can be focused
 	property bool focused; ///< this item is focused among its siblings
@@ -225,7 +225,6 @@ Object {
 
 	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }
 	onZChanged:			{ this.style('z-index', value) }
-	onRadiusChanged:	{ this.style('border-radius', value) }
 	onClipChanged:		{ this.style('overflow', value? 'hidden': 'visible') }
 
 	///@private sets current global focus to component

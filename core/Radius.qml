@@ -1,9 +1,9 @@
 Object {
-	property real radius;
-	property real topLeft;
-	property real topRight;
-	property real bottomLeft;
-	property real bottomRight;
+	property real radius;			///< radius for all corners
+	property real topLeft;			///< top left corner radius
+	property real topRight;			///< top right corner radius
+	property real bottomLeft;		///< bottom left corner radius
+	property real bottomRight;		///< bottom right corner radius
 
 	prototypeConstructor: {
 		RadiusPrototype.defaultProperty = 'radius';

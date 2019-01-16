@@ -150,11 +150,6 @@ EventEmitter {
 		return this.__properties[name] = new _globals.core.core.PropertyStorage(value)
 	}
 
-	///mixin api: set default forwarding _target
-	function setPropertyForwardingTarget(name, target) {
-		this._createPropertyStorage(name).forwardTarget = target
-	}
-
 	///@private patch property storage directly without signalling.
 	function _setProperty(name, value) {
 		//cancel any running software animations

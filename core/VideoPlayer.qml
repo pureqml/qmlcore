@@ -174,6 +174,20 @@ Item {
 			player.setupDrm(type, options, callback, error)
 	}
 
+	setVideoTrack(idx): {
+		var player = this._getPlayer()
+		if (player)
+			player.setVariantTrack(idx)
+	}
+
+	getVideoTracks: {
+		var player = this._getPlayer()
+		if (player)
+			return player.getVideoTracks()
+		else
+			return []
+	}
+
 	///@private
 	onError(error): {
 		this.paused = false

@@ -132,6 +132,29 @@ Player.prototype.setSource = function(url) {
 	}
 }
 
+Player.prototype.getVideoTracks = function() {
+	var video = []
+	var tracks = this.shakaPlayer.getVariantTracks()
+
+	for (var i = 0; i < tracks.length; ++i) {
+		var track = tracks[i]
+		video.push({
+			id: track.id,
+			width: track.width,
+			framerate: track.frameRate,
+			bandwidth: track.videoBandwidth,
+			height: track.height
+		})
+	}
+	return video
+}
+
+Player.prototype.setVideoTrack = function(idx) {
+	var track = this.shakaPlayer.getVariantTracks(idx)
+	log("SETVAR", track, "IDX", idx)
+	this.shakaPlayer.selectVariantTrack(track)
+}
+
 exports.createPlayer = function(ui) {
 	return new Player(ui)
 }

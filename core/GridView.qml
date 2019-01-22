@@ -40,6 +40,13 @@ BaseView {
 		}
 	}
 
+	onCountChanged: {
+		if (value == 0) {
+			this.rows = 0
+			this.columns = 0
+		}
+	}
+
 	moveUp: {
 		if (this.flow === this.FlowLeftToRight) {
 			if (!this.keyNavigationWraps && this.currentIndex < this.columns)

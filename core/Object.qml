@@ -206,7 +206,13 @@ EventEmitter {
 		var path = []
 		var self = this
 		while(self) {
-			path.unshift(self.componentName)
+			var name = self.componentName
+			if (self.parent) {
+				var idx = self.parent.children.indexOf(self)
+				if (idx >= 0)
+					name += '@' + idx
+			}
+			path.unshift(name)
 			self = self.parent
 		}
 		return path.join(" → ")

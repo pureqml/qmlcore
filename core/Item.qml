@@ -229,6 +229,7 @@ Object {
 
 	///@private sets current global focus to component
 	function forceActiveFocus() {
+		this._tryFocus()
 		var item = this;
 		while(item.parent) {
 			item.parent._focusChild(item);

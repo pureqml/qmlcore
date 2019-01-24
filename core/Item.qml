@@ -192,6 +192,11 @@ Object {
 			this.parent._tryFocus()
 	}
 
+	onFocusChanged: {
+		if (this.parent)
+			this.parent._tryFocus()
+	}
+
 	onVisibleChanged:		{ this._updateVisibility() }
 	onVisibleInViewChanged:	{ this._updateVisibility() }
 
@@ -229,7 +234,6 @@ Object {
 
 	///@private sets current global focus to component
 	function forceActiveFocus() {
-		this._tryFocus()
 		var item = this;
 		while(item.parent) {
 			item.parent._focusChild(item);

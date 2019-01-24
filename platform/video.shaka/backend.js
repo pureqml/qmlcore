@@ -149,10 +149,16 @@ Player.prototype.getVideoTracks = function() {
 	return video
 }
 
-Player.prototype.setVideoTrack = function(idx) {
-	var track = this.shakaPlayer.getVariantTracks(idx)
-	log("SETVAR", track, "IDX", idx)
-	this.shakaPlayer.selectVariantTrack(track)
+Player.prototype.setVideoTrack = function(trackId) {
+	var tracks = this.shakaPlayer.getVariantTracks()
+
+	var found = tracks.filter(function(element) {
+		return element.id === trackId
+	})
+
+	log("Try to set video track", found)
+	if (found && found.length)
+		this.shakaPlayer.selectVariantTrack(found[0])
 }
 
 exports.createPlayer = function(ui) {

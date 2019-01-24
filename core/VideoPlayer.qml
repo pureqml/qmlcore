@@ -174,10 +174,10 @@ Item {
 			player.setupDrm(type, options, callback, error)
 	}
 
-	setVideoTrack(idx): {
+	setVideoTrack(trackId): {
 		var player = this._getPlayer()
 		if (player)
-			player.setVariantTrack(idx)
+			player.setVideoTrack(trackId)
 	}
 
 	getVideoTracks: {

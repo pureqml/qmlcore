@@ -188,6 +188,14 @@ Item {
 			return []
 	}
 
+	getAudioTracks: {
+		var player = this._getPlayer()
+		if (player)
+			return player.getAudioTracks()
+		else
+			return []
+	}
+
 	///@private
 	onError(error): {
 		this.paused = false

@@ -129,6 +129,14 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 	log('Not implemented')
 }
 
+Player.prototype.getAudioTracks = function() {
+	log('Not implemented')
+}
+
+Player.prototype.getVideoTracks = function() {
+	log('Not implemented')
+}
+
 Player.prototype.setBackgroundColor = function(color) {
 	var Color = _globals.core.Color
 	this.element.dom.style.backgroundColor = new Color(color).rgba()

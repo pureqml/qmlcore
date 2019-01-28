@@ -180,6 +180,12 @@ Item {
 			player.setVideoTrack(trackId)
 	}
 
+	setAudioTrack(trackId): {
+		var player = this._getPlayer()
+		if (player)
+			player.setAudioTrack(trackId)
+	}
+
 	getVideoTracks: {
 		var player = this._getPlayer()
 		if (player)

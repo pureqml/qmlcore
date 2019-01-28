@@ -137,6 +137,14 @@ Player.prototype.getVideoTracks = function() {
 	log('Not implemented')
 }
 
+Player.prototype.setAudioTracks = function() {
+	log('Not implemented')
+}
+
+Player.prototype.setVideoTracks = function() {
+	log('Not implemented')
+}
+
 Player.prototype.setBackgroundColor = function(color) {
 	var Color = _globals.core.Color
 	this.element.dom.style.backgroundColor = new Color(color).rgba()

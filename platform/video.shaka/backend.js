@@ -122,14 +122,14 @@ Player.prototype.setSource = function(url) {
 		var extIndex = urlLower.lastIndexOf(".")
 		var extension = urlLower.substring(extIndex, urlLower.length)
 		var player = this._player
-		if (extension === ".mp4") {
-			this._loaded = false
-			this._player.dom.src = url
-		} else {
+		if (extension === ".mpd") {
 			this._loaded = true
 			this.shakaPlayer.load(url)
 				.then(function() { console.log('The video has now been loaded!'); })
 				.catch(function(err) { log("Failed to load manifest") });
+		} else {
+			this._loaded = false
+			this._player.dom.src = url
 		}
 	}
 }

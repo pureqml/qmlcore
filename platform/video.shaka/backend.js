@@ -93,7 +93,9 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 	else
 		error ? error(new Error("Unknown or not supported DRM type " + type)) : log("Unknown or not supported DRM type " + type)
 
-	this.shakaPlayer.configure({ drm: { servers: laServer } });
+	var config = { drm: { servers: laServer }, manifest: { dash: { defaultPresentationDelay: 30 } } }
+	log("SetupDRM", config)
+	this.shakaPlayer.configure(config);
 	if (callback)
 		callback()
 }

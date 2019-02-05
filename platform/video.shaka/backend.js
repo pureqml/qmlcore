@@ -151,6 +151,22 @@ Player.prototype.getVideoTracks = function() {
 	return video
 }
 
+Player.prototype.getAudioTracks = function() {
+	var tracks = this.shakaPlayer.getVariantTracks()
+	var audio = {}
+	for (var i = 0; i < tracks.length; ++i) {
+		var track = tracks[i].audioId
+		audio[track.audioId] = {
+			id: track.audioId,
+			language: track.language,
+			bitRate: track.audioBandwidth,
+			label: track.label,
+			codec: track.audioCodec
+		}
+	}
+	return audio
+}
+
 Player.prototype.setVideoTrack = function(trackId) {
 	var tracks = this.shakaPlayer.getVariantTracks()
 

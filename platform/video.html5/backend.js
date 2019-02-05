@@ -131,10 +131,12 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 
 Player.prototype.getAudioTracks = function() {
 	log('Not implemented')
+	return []
 }
 
 Player.prototype.getVideoTracks = function() {
 	log('Not implemented')
+	return []
 }
 
 Player.prototype.setAudioTracks = function() {

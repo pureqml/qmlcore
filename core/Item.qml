@@ -392,5 +392,7 @@ Object {
 	}
 
 	/// focus this item
-	setFocus:		{ this.forceActiveFocus() }
+	function setFocus() {
+		this.forceActiveFocus()
+	}
 }

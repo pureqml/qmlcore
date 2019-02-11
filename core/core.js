@@ -43,10 +43,6 @@ if (!Function.prototype.bind) {
 if (log === null)
 	log = console.log.bind(console)
 
-/** @const */
-/** @param {string} text @param {...} args */
-_globals.qsTr = function(text, args) { return _globals._context.qsTr.apply(qml._context, arguments) }
-
 var colorTable = {
 	'aliceblue':			'f0f8ff',
 	'antiquewhite':			'faebd7',

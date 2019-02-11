@@ -166,6 +166,9 @@ Item {
 		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
 	}
 
+	function tr()
+	{ return this.qsTr.apply(this, arguments) }
+
 	function processKey(event) {
 		var handlers = core.forEach(this, _globals.core.Item.prototype._enqueueNextChildInFocusChain, [])
 		var n = handlers.length

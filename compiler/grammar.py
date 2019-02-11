@@ -99,7 +99,10 @@ def handle_function_call(s, l, t):
 	#print "func> ", t
 	name = t[0]
 	if name[0].islower():
-		name = '${%s}' %name
+		if '.' in name:
+			name = '${%s}' %name
+		else:
+			name = '$this._context.%s' %name
 	return "%s(%s)" % (name, ",".join(t[1:]))
 
 def handle_documentation_string(s, l, t):

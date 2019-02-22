@@ -70,10 +70,101 @@ var Player = function(ui) {
 	ui.parent.element.append(ui.element)
 
 	this.setAutoPlay(ui.autoPlay)
+
+	this._xhr = new XMLHttpRequest()
+	this._xhr.addEventListener('load', this.parseManifest.bind(this))
+}
+
+Player.prototype.parseManifest = function(data) {
+	var lines = data.target.responseText.split('\n');
+	var url = this.ui.source
+	var path = url.substring(0, url.lastIndexOf('/') + 1)
+	var idx = 0
+	this._videoTracks = [ { "name": "auto", "url": this.ui.source, "id": idx } ]
+	this._totalTracks = {}
+	this._audioTracksInfo = []
+	for (var i = 0; i < lines.length - 1; ++i) {
+		var line = lines[i]
+		var nextLine = lines[i + 1]
+		if (line.indexOf('#EXT-X-STREAM-INF') == 0) {
+			var attributes = line.split(',');
+			var track = {
+				url: nextLine.indexOf("http") === 0 ? nextLine : (path + nextLine)
+			}
+			for (var j = 0; j < attributes.length; ++j) {
+				var param = attributes[j].split('=');
+				if (param.length > 1) {
+					switch (param[0].trim().toLowerCase()) {
+						case "bandwidth":
+							track.bandwidth = param[1].trim()
+							break
+						case "audio":
+							track.audio = param[1].trim().replace(/"/g, "")
+							break
+						case "resolution":
+							var size = param[1].split("x")
+							track.width = size[0]
+							track.height = size[1]
+							break
+					}
+				}
+			}
+			var key = track.width + "x" + track.height
+			if (!this._totalTracks[key]) {
+				this._totalTracks[key] = []
+			}
+			this._totalTracks[key].push(track)
+		} else if (line.indexOf('#EXT-X-MEDIA:TYPE=AUDIO') == 0) {
+			var attributes = line.split(',');
+			var audioTrack = {}
+			for (var j = 0; j < attributes.length; ++j) {
+				var param = attributes[j].split('=');
+				if (param.length > 1) {
+					switch (param[0].trim().toLowerCase()) {
+						case "group-id":
+							audioTrack.id = param[1].trim().replace(/"/g, "")
+							break
+						case "name":
+							audioTrack.label = param[1].trim().replace(/"/g, "")
+							break
+						case "language":
+							audioTrack.language = param[1].trim().replace(/"/g, "")
+							break
+						case "uri":
+							audioTrack.url = param[1].trim()
+							break
+					}
+				}
+			}
+			this._audioTracksInfo.push(audioTrack)
+		}
+	}
+
+	for (var i in this._totalTracks) {
+		var tmpTrack = this._totalTracks[i][0]
+		tmpTrack.id = ++idx
+		this._videoTracks.push(tmpTrack)
+	}
+}
+
+Player.prototype.getFileExtension = function(filePath) {
+	if (!filePath)
+		return ""
+	var urlLower = filePath.toLowerCase()
+	var querryIndex = filePath.indexOf("?")
+	if (querryIndex >= 0)
+		urlLower = urlLower.substring(0, querryIndex)
+	var extIndex = urlLower.lastIndexOf(".")
+	return urlLower.substring(extIndex, urlLower.length)
 }
 
 Player.prototype.setSource = function(url) {
 	this.ui.ready = false
+	this._extension = this.getFileExtension(url)
+	if (url && (this._extension === ".m3u8" || this._extension === ".m3u")) {
+		this._xhr.open('GET', url);
+		this._xhr.send()
+	}
 	this.element.dom.src = url
 }
 
@@ -135,16 +226,68 @@ Player.prototype.getAudioTracks = function() {
 }
 
 Player.prototype.getVideoTracks = function() {
-	log('Not implemented')
-	return []
+	return this._videoTracks || []
 }
 
-Player.prototype.setAudioTracks = function() {
-	log('Not implemented')
+Player.prototype.getAudioTracks = function() {
+	var audioTracks = this.element.dom.audioTracks
+	var result = []
+	for (var i = 0; i < audioTracks.length; ++i) {
+		var track = audioTracks[i]
+		var info = this._audioTracksInfo[i]
+		result.push({
+			"id": i,
+			"name": track.label ? track.label : info.name,
+			"language": track.language ? track.language : info.language
+		})
+	}
+	log("getAudioTracks", result)
+	return result
 }
 
-Player.prototype.setVideoTracks = function() {
-	log('Not implemented')
+Player.prototype.setAudioTrack = function(trackId) {
+	var audioTracks = this.element.dom.audioTracks
+	if (trackId < 0 || trackId >= audioTracks.length) {
+		log("Where is no track", trackId)
+		return
+	}
+	log("Set audio track", audioTracks[trackId])
+
+	var result = []
+	for (var i = 0; i < audioTracks.length; ++i)
+		audioTracks[i].enabled = i === trackId
+}
+
+Player.prototype.setVideoTrack = function(trackId) {
+	if (!this._videoTracks || this._videoTracks.length <= 0) {
+		log("There is no available video track", this._videoTracks)
+		return
+	}
+	if (trackId < 0 || trackId >= this._videoTracks.length) {
+		log("Track with id", trackId, "not found")
+		return
+	}
+	this.ui.waiting = true
+	var progress = this.ui.progress
+	log("Set video", this._videoTracks[trackId])
+	this.element.dom.src = this._videoTracks[trackId].url
+	this.seekTo(progress)
+}
+
+Player.prototype.setVideoTrack = function(trackId) {
+	if (!this._videoTracks || this._videoTracks.length <= 0) {
+		log("There is no available video track", this._videoTracks)
+		return
+	}
+	if (trackId < 0 || trackId >= this._videoTracks.length) {
+		log("Track with id", trackId, "not found")
+		return
+	}
+	this.ui.waiting = true
+	var progress = this.ui.progress
+	log("Set video", this._videoTracks[trackId])
+	this.element.dom.src = this._videoTracks[trackId].url
+	this.seekTo(progress)
 }
 
 Player.prototype.setBackgroundColor = function(color) {

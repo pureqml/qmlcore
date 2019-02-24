@@ -158,28 +158,12 @@ Player.prototype.getFileExtension = function(filePath) {
 	return urlLower.substring(extIndex, urlLower.length)
 }
 
-Player.prototype.playDashUrl = function(source) {
-	var ui = this.ui
-	var sourceElement = this._sourceElement ? this._sourceElement : ui._context.createElement('source')
-	sourceElement.setAttribute('src', source);
-	sourceElement.setAttribute('type', "application/dash+xml");
-
-	if (!this._sourceElement)
-		ui.element.append(sourceElement);
-
-	this._sourceElement = sourceElement
-	this.element.dom.load()
-	this.element.dom.play()
-}
-
 Player.prototype.setSource = function(url) {
 	this.ui.ready = false
 	this._extension = this.getFileExtension(url)
 	if (url && (this._extension === ".m3u8" || this._extension === ".m3u")) {
 		this._xhr.open('GET', url);
 		this._xhr.send()
-	} else if (this._extension === ".mpd") {
-		this.playDashUrl(url)
 	}
 	this.element.dom.src = url
 }

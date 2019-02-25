@@ -174,18 +174,29 @@ Item {
 			player.setupDrm(type, options, callback, error)
 	}
 
+	/**
+	 * Select video track with 'trackId' id if it exists
+	 * @param {string} trackId - video track ID
+	 */
 	setVideoTrack(trackId): {
 		var player = this._getPlayer()
 		if (player)
 			player.setVideoTrack(trackId)
 	}
 
+	/**
+	 * Select audio track with 'trackId' id if it exists
+	 * @param {string} trackId - audio track ID
+	 */
 	setAudioTrack(trackId): {
 		var player = this._getPlayer()
 		if (player)
 			player.setAudioTrack(trackId)
 	}
 
+	/**
+	 * Return array of available video tracks
+	 */
 	getVideoTracks: {
 		var player = this._getPlayer()
 		if (player)
@@ -194,6 +205,9 @@ Item {
 			return []
 	}
 
+	/**
+	 * Return array of available audio tracks
+	 */
 	getAudioTracks: {
 		var player = this._getPlayer()
 		if (player)

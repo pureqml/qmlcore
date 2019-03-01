@@ -284,6 +284,7 @@ class component_generator(object):
 	def transform_handlers(self, registry, blocks):
 		result = {}
 		for (path, name), (args, code) in blocks.iteritems():
+			code = code.decode('utf-8')
 			if name == '__complete':
 				code = code.strip()
 				if code[0] == '{' and code[-1] == '}':

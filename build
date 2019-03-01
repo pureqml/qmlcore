@@ -31,6 +31,7 @@ parser.add_argument('--platform', '-p', help='generate code for platform <platfo
 parser.add_argument('--verbose', '-v', help='adds verbosity in some places', dest='verbose', default=False, action='store_true')
 parser.add_argument('--jobs', '-j', help='run N jobs in parallel', default=1, nargs='?')
 parser.add_argument('--set-property', '-s', dest='properties', action='append', help = 'sets manifest property name value', nargs=2)
+parser.add_argument('--manifest', default = '.manifest', help = 'app manifest path')
 parser.add_argument('targets', nargs='*', help='targets to build')
 args = parser.parse_args()
 
@@ -353,7 +354,7 @@ def build(root, platform, apps, app, manifest):
 
 
 try:
-	with open('.manifest') as f:
+	with open(args.manifest) as f:
 		manifest = mf.load(f)
 		manifest_path = '.manifest'
 except IOError:

@@ -2,6 +2,8 @@ from pyparsing import *
 import lang
 import re
 import json
+import sys
+sys.setrecursionlimit(15000)
 
 #source.setDefaultWhitespaceChars(" \t\r\f")
 ParserElement.enablePackrat()
@@ -316,12 +318,12 @@ expression_array.setParseAction(handle_expression_array)
 expression_definition = null_value | bool_value | percent_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
 
 expression_ops = infixNotation(expression_definition, [
-	(oneOf('! ~ + -'),	1, opAssoc.RIGHT, handle_unary_op),
+	(oneOf('! ~ + - typeof'),	1, opAssoc.RIGHT, handle_unary_op),
 	(oneOf('* / %'),	2, opAssoc.LEFT, handle_binary_op),
 	(oneOf('+ -'),		2, opAssoc.LEFT, handle_binary_op),
 	(oneOf('<< >>'),	2, opAssoc.LEFT, handle_binary_op),
 
-	(oneOf('< <= > >= instanceof'),	2, opAssoc.LEFT, handle_binary_op),
+	(oneOf('< <= > >= instanceof in'),	2, opAssoc.LEFT, handle_binary_op),
 	(oneOf('== != === !=='),		2, opAssoc.LEFT, handle_binary_op),
 
 	('&', 2, opAssoc.LEFT, handle_binary_op),

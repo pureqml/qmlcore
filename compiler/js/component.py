@@ -560,7 +560,7 @@ class component_generator(object):
 			#print self.name, target, value
 			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
 			if t is str:
-				value = replace_enums(value, self, registry)
+				value = replace_enums(value, self, registry).decode('utf-8')
 				r.append('//assigning %s to %s' %(target, value))
 				value, deps = parse_deps(parent, value, partial(self.transform_root, registry))
 				if deps:

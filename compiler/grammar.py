@@ -321,8 +321,8 @@ expression_ops = infixNotation(expression_definition, [
 	(oneOf('+ -'),		2, opAssoc.LEFT, handle_binary_op),
 	(oneOf('<< >>'),	2, opAssoc.LEFT, handle_binary_op),
 
-	(oneOf('< <= > >= =='),	2, opAssoc.LEFT, handle_binary_op),
-	(oneOf('== != === !=='),	2, opAssoc.LEFT, handle_binary_op),
+	(oneOf('< <= > >= instanceof'),	2, opAssoc.LEFT, handle_binary_op),
+	(oneOf('== != === !=='),		2, opAssoc.LEFT, handle_binary_op),
 
 	('&', 2, opAssoc.LEFT, handle_binary_op),
 	('^', 2, opAssoc.LEFT, handle_binary_op),

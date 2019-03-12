@@ -43,16 +43,21 @@ Item {
 		log('preferred backend: ' + preferred)
 		var backends = _globals.core.__videoBackends
 		var results = []
-		for(var i in backends) {
-			var backend = backends[i]()
-			var score = backend.probeUrl(source)
-			if (score > 0)
-				results.push({ backend: backend, score: score })
+		if (preferred && backends[preferred]) {
+			var backend = backends[preferred]()
+			return this.impl = backend.createPlayer(this)
+		} else {
+			for (var i in backends) {
+				var backend = backends[i]()
+				var score = backend.probeUrl(source)
+				if (score > 0)
+					results.push({ backend: backend, score: score })
+			}
+			results.sort(function(a, b) { return b.score - a.score })
+			if (results.length === 0)
+				throw new Error('no backends for source ' + source)
+			return this.impl = results[0].backend.createPlayer(this)
 		}
-		results.sort(function(a, b) { return b.score - a.score })
-		if (results.length === 0)
-			throw new Error('no backends for source ' + source)
-		return this.impl = results[0].backend.createPlayer(this)
 	}
 
 	onLoopChanged: {
@@ -229,6 +234,11 @@ Item {
 			player.setSource(value)
 		if (this.autoPlay)
 			this.play()
+	}
+
+	onBackendChanged: {
+		this.impl = null
+		this._createPlayer()
 	}
 
 	onNewBoundingBox: {

@@ -9,8 +9,11 @@ import argparse
 import shutil
 import fnmatch
 import re
-import sys
 import os
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 from os import path
 from StringIO import StringIO

@@ -509,8 +509,8 @@ exports.init = function(ctx) {
 		ctx.fullscreen = state
 	}
 
-	new Array('webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange').forEach(function(name) {
-		div.on(name, onFullscreenChanged)
+	new Array('webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange', 'MSFullscreenChange').forEach(function(name) {
+		div.on(name, onFullscreenChanged, true)
 	})
 
 	win.on('keydown', function(event) {

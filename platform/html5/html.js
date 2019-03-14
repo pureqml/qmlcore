@@ -517,6 +517,11 @@ exports.init = function(ctx) {
 		if (ctx.processKey(event))
 			event.preventDefault()
 	}) //fixme: add html.Document instead
+	win.on('orientationchange', function(event) {
+		log('orientation changed event')
+		ctx.system.screenWidth = window.screen.width
+		ctx.system.screenHeight = window.screen.height
+	})
 
 	ctx._styleClassifier = $manifest$cssAutoClassificator? new StyleClassifier(ctx._prefix): null; //broken beyond repair
 }

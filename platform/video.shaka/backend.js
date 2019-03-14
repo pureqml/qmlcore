@@ -153,18 +153,40 @@ Player.prototype.getVideoTracks = function() {
 
 Player.prototype.getAudioTracks = function() {
 	var tracks = this.shakaPlayer.getVariantTracks()
-	var audio = {}
+	var audioTracks = {}
 	for (var i = 0; i < tracks.length; ++i) {
-		var track = tracks[i].audioId
-		audio[track.audioId] = {
+		var track = tracks[i]
+		if (audioTracks[track.audioId])
+			continue
+
+		audioTracks[track.audioId] = {
 			id: track.audioId,
 			language: track.language,
-			bitRate: track.audioBandwidth,
-			label: track.label,
 			codec: track.audioCodec
 		}
 	}
+
+	var audio = []
+	for (var i in audioTracks) {
+		audio.push(audioTracks[i])
+	}
+	log("Available audio tracks", audio)
+
 	return audio
+}
+
+Player.prototype.setAudioTrack = function(trackId) {
+	var tracks = this.shakaPlayer.getVariantTracks()
+
+	var found = tracks.filter(function(element) {
+		return element.audioId === trackId
+	})
+
+	log("Try to set audio track", found)
+	if (found && found.length) {
+		this.shakaPlayer.configure({abr: {enabled: false}});
+		this.shakaPlayer.selectVariantTrack(found[0])
+	}
 }
 
 Player.prototype.setVideoTrack = function(trackId) {

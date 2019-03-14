@@ -505,6 +505,7 @@ exports.init = function(ctx) {
 
 	var onFullscreenChanged = function(e) {
 		var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+		log('fullscreen change event:', e, document.fullScreen, document.mozFullScreen, document.webkitIsFullScreen)
 		ctx.fullscreen = state
 	}
 

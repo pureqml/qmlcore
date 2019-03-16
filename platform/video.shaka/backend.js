@@ -184,7 +184,12 @@ Player.prototype.setAudioTrack = function(trackId) {
 
 	log("Try to set audio track", found)
 	if (found && found.length) {
-		this.shakaPlayer.configure({abr: {enabled: false}});
+		this.shakaPlayer.configure({
+			abr: {
+				enabled: false,
+				switchInterval: 0
+			}
+		});
 		this.shakaPlayer.selectVariantTrack(found[0])
 	}
 }
@@ -197,8 +202,15 @@ Player.prototype.setVideoTrack = function(trackId) {
 	})
 
 	log("Try to set video track", found)
-	if (found && found.length)
+	if (found && found.length) {
+		this.shakaPlayer.configure({
+			abr: {
+				enabled: false,
+				switchInterval: 0
+			}
+		});
 		this.shakaPlayer.selectVariantTrack(found[0])
+	}
 }
 
 exports.createPlayer = function(ui) {

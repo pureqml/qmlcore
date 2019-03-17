@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{% block title %}{{ title }}{% endblock %}</title>
-	<meta charset="utf-8">
+{% extends "index.html" %}
+{% block head %}
 	<meta name="format-detection" content="telephone=no">
-	<meta name="msapplication-tap-highlight" content="no">
-	<script src="modernizr-custom.js"></script>
 	<script src="cordova.js"></script>
-	{% block head %}{% endblock %}
-</head>
-<body>
-	{% block content %}{% endblock %}
-	{% block mainscript %}
-	<script src="{{ baseurl }}{{ app }}"></script>
-	{% endblock %}
-</body>
-</html>
+	<meta name="msapplication-tap-highlight" content="no">
+	{{ super() }}
+{% endblock %}

@@ -16,7 +16,7 @@ var Player = function(ui) {
 	player.on('canplaythrough', function() { log("ready to play"); ui.paused = dom.paused }.bind(ui))
 
 	player.on('error', function() {
-		log("Player error occured", dom.error, "src", ui.source)
+		log("Player error occurred", dom.error, "src", ui.source)
 
 		if (!dom.error || !ui.source)
 			return
@@ -26,19 +26,19 @@ var Player = function(ui) {
 		log("player.error", dom.error)
 		switch (dom.error.code) {
 		case 1:
-			log("MEDIA_ERR_ABORTED error occured")
+			log("MEDIA_ERR_ABORTED error occurred")
 			break;
 		case 2:
-			log("MEDIA_ERR_NETWORK error occured")
+			log("MEDIA_ERR_NETWORK error occurred")
 			break;
 		case 3:
-			log("MEDIA_ERR_DECODE error occured")
+			log("MEDIA_ERR_DECODE error occurred")
 			break;
 		case 4:
-			log("MEDIA_ERR_SRC_NOT_SUPPORTED error occured")
+			log("MEDIA_ERR_SRC_NOT_SUPPORTED error occurred")
 			break;
 		default:
-			log("UNDEFINED error occured")
+			log("UNDEFINED error occurred")
 			break;
 		}
 	}.bind(ui))

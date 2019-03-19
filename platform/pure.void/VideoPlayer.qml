@@ -1,6 +1,6 @@
 ///container item for videos
 Item {
-	signal error;		///< error occured signal
+	signal error;		///< error occurred signal
 	signal finished;	///< video finished signal
 	property string	source;	///< video source URL
 	property Color	backgroundColor: "#000";	///< default background color

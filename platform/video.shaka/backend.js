@@ -127,7 +127,7 @@ Player.prototype.setSource = function(url) {
 			this._loaded = true
 			this.shakaPlayer.load(url)
 				.then(function() { console.log('The video has now been loaded!'); })
-				.catch(function(err) { log("Failed to load manifest") });
+				.catch(function(err) { log("Failed to load manifest", err) });
 		} else {
 			this._loaded = false
 			this._player.dom.src = url

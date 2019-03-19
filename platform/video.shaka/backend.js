@@ -3,14 +3,12 @@ var Player = function(ui) {
 
 	this._player = player
 
-	shaka.polyfill.installAll();
-	if (shaka.Player.isBrowserSupported()) {
-		var shakaPlayer = new shaka.Player(player.dom);
-		this.shakaPlayer = shakaPlayer;
-	} else {
-		console.error('Browser not supported!');
-		return
+	if (!shaka.Player.isBrowserSupported()) {
+		throw new Error("browser is not supported, backend should not have been registered")
 	}
+
+	var shakaPlayer = new shaka.Player(player.dom);
+	this.shakaPlayer = shakaPlayer;
 
 	var dom = player.dom
 	player.on('play', function() { ui.waiting = false; ui.paused = dom.paused }.bind(ui))

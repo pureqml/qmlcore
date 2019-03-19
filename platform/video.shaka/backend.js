@@ -1,3 +1,16 @@
+var shakaGetMessage = function(code) {
+	for (var k in shaka.util.Error.Code) {
+		if (shaka.util.Error.Code[k] == code)
+			return k
+	}
+}
+
+var shakaSignalError = function(ui, err) {
+	if (!err.message)
+		err.message = shakaGetMessage(err.code)
+	ui.error(err)
+}
+
 var Player = function(ui) {
 	var player = ui._context.createElement('video')
 
@@ -127,7 +140,7 @@ Player.prototype.setSource = function(url) {
 			this._loaded = true
 			this.shakaPlayer.load(url)
 				.then(function() { console.log('The video has now been loaded!'); })
-				.catch(function(err) { log("Failed to load manifest", err) });
+				.catch(ui._context.wrapNativeCallback(function(err) { log("Failed to load manifest", err); shakaSignalError(ui, err) }));
 		} else {
 			this._loaded = false
 			this._player.dom.src = url

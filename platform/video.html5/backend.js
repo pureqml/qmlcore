@@ -2,7 +2,24 @@ var Player = function(ui) {
 	var player = ui._context.createElement('video')
 	player.dom.preload = "metadata"
 
+	this.element = player
+	this.ui = ui
+	this.setEventListeners()
+
+	ui.element.remove()
+	ui.element = player
+	ui.parent.element.append(ui.element)
+
+	this.setAutoPlay(ui.autoPlay)
+
+	this._xhr = new XMLHttpRequest()
+	this._xhr.addEventListener('load', this.parseManifest.bind(this))
+}
+
+Player.prototype.setEventListeners = function() {
+	var player = this.element
 	var dom = player.dom
+	var ui = this.ui
 	player.on('play', function() { ui.waiting = false; ui.paused = dom.paused }.bind(ui))
 	player.on('pause', function() { ui.paused = dom.paused }.bind(ui))
 	player.on('ended', function() { ui.finished() }.bind(ui))
@@ -62,18 +79,6 @@ var Player = function(ui) {
 		if (last >= 0)
 			ui.buffered = dom.buffered.end(last) - dom.buffered.start(last)
 	}.bind(ui))
-
-	this.element = player
-	this.ui = ui
-
-	ui.element.remove()
-	ui.element = player
-	ui.parent.element.append(ui.element)
-
-	this.setAutoPlay(ui.autoPlay)
-
-	this._xhr = new XMLHttpRequest()
-	this._xhr.addEventListener('load', this.parseManifest.bind(this))
 }
 
 Player.prototype.parseManifest = function(data) {

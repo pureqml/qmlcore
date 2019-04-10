@@ -75,8 +75,13 @@ Player.prototype.setSource = function(url) {
 		var player = this._player
 		if (extension === ".mpd") {
 			this._loaded = true
+			var self = this
 			this.shakaPlayer.load(url)
-				.then(function() { console.log('The video has now been loaded!'); })
+				.then(function() {
+					console.log('The video has now been loaded!');
+					if (ui.autoPlay)
+						self.play()
+				})
 				.catch(ui._context.wrapNativeCallback(function(err) { log("Failed to load manifest", err); shakaSignalError(ui, err) }));
 		} else {
 			this._loaded = false

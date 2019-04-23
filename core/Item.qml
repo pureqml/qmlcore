@@ -113,12 +113,12 @@ Object {
 		var x = 0, y = 0
 		var w = this.width, h = this.height
 		while(item) {
-			x += item.x
-			y += item.y
+			x += item.x + item.viewX
+			y += item.y + item.viewY
 			if (item.hasOwnProperty('view')) {
 				var content = item.view.content
-				x += item.viewX + content.x
-				y += item.viewY + content.y
+				x += content.x
+				y += content.y
 			}
 			item = item.parent
 		}

@@ -10,8 +10,8 @@ Item {
 	property enum textFormat { Html, Text }; ///< only html or text for now
 	property int paintedWidth;		///< real width of the text without any layout applied
 	property int paintedHeight;		///< real height of this text without any layout applied
-	width: paintedWidth;	///< @private
-	height: paintedHeight;	///< @private
+	width: paintedWidth;
+	height: paintedHeight;
 
 	///@private
 	constructor: {

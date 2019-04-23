@@ -49,7 +49,7 @@ Item {
 					this._enableSizeUpdate()
 			}
 		}
-		_globals.core.Object.prototype.onChanged.apply(this, arguments);
+		_globals.core.Item.prototype.onChanged.apply(this, arguments);
 	}
 
 	///@private
@@ -58,7 +58,7 @@ Item {
 			if (name === 'newBoundingBox')
 				this._enableSizeUpdate()
 		}
-		_globals.core.Object.prototype.on.apply(this, arguments)
+		_globals.core.Item.prototype.on.apply(this, arguments)
 	}
 
 	///@private

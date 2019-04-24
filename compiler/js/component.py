@@ -142,7 +142,7 @@ class component_generator(object):
 					fullname, args, code = split_name(name), child.args, child.code
 					if fullname in self.methods:
 						raise Exception("duplicate method " + name)
-					self.methods[fullname] = args, code, child.event #fixme: fix code duplication here
+					self.methods[fullname] = args, code, child.event, child.async #fixme: fix code duplication here
 		elif t is lang.Signal:
 			name = child.name
 			if name in self.signals:
@@ -228,7 +228,7 @@ class component_generator(object):
 		base_type = self.get_base_type(registry, False)
 		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
 
-		for (path, name), (args, code, event) in methods.iteritems():
+		for (path, name), (args, code, event, async) in methods.iteritems():
 			oname = name
 			fullname = path, name
 
@@ -252,23 +252,23 @@ class component_generator(object):
 					fullname = path, name
 					if fullname in self.key_handlers:
 						raise Exception("duplicate key handler " + oname)
-					self.key_handlers[fullname] = (('key', 'event'), code)
+					self.key_handlers[fullname] = ('key', 'event'), code, False
 				elif is_changed:
 					name = name[:-7]
 					fullname = path, name
 					if fullname in self.changed_handlers:
 						raise Exception("duplicate signal handler " + oname)
-					self.changed_handlers[fullname] = (('value', ), code)
+					self.changed_handlers[fullname] = ('value', ), code, False
 				else:
 					if fullname in self.signal_handlers:
 						raise Exception("duplicate signal handler " + oname)
-					self.signal_handlers[fullname] = args, code
+					self.signal_handlers[fullname] = args, code, False
 			else:
 				if fullname in self.methods:
 					raise Exception("duplicate method " + oname)
 				if name == 'onCompleted':
 					fullname = path, '__complete'
-				self.methods[fullname] = args, code
+				self.methods[fullname] = args, code, async
 
 	def generate_lazy_property(self, registry, proto, type, name, value, ident_n = 1):
 		ident = "\t" * ident_n
@@ -283,13 +283,13 @@ class component_generator(object):
 
 	def transform_handlers(self, registry, blocks):
 		result = {}
-		for (path, name), (args, code) in blocks.iteritems():
+		for (path, name), (args, code, async) in blocks.iteritems():
 			if name == '__complete':
 				code = code.strip()
 				if code[0] == '{' and code[-1] == '}':
 					code = '{ @super.__complete.call(this)\n' + code[1:-1].strip() + '\n}'
 			code = process(code, self, registry, args)
-			code = "function(%s) %s" %(",".join(args), code)
+			code = "%sfunction(%s) %s" %("async " if async else "",  ",".join(args), code)
 			result.setdefault(code, []).append((path, name))
 		return sorted(result.iteritems())
 

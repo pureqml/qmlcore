@@ -66,13 +66,16 @@ def handle_enum_property_declaration(s, l, t):
 	return component(lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None))
 
 def handle_method_declaration(s, l, t):
+	async_method = t[0] == 'async'
+	if async_method:
+		t.pop(0)
 	event_handler = t[0] != 'function'
 	if event_handler:
 		names, args, code = t[0], t[1], t[2]
 	else:
 		names, args, code = t[1], t[2], t[3]
 
-	return component(lang.Method(names, args, code, event_handler))
+	return component(lang.Method(names, args, code, event_handler, async_method))
 
 def handle_assignment_scope(s, l, t):
 	#print "assignment-scope>", t
@@ -267,7 +270,7 @@ assign_scope.setParseAction(handle_assignment_scope)
 method_declaration = Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Suppress("(") + delimitedList(identifier, ",") + Suppress(")") )) + Suppress(":") + code
 method_declaration.setParseAction(handle_method_declaration)
 
-method_declaration_qml = Keyword("function") - Group(nested_identifier_lvalue) - Group(Suppress("(") - Optional(delimitedList(identifier, ",")) - Suppress(")") ) - code
+method_declaration_qml = Optional(Keyword("async")) + Keyword("function") - Group(nested_identifier_lvalue) - Group(Suppress("(") - Optional(delimitedList(identifier, ",")) - Suppress(")") ) - code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
 behavior_declaration = Keyword("Behavior").suppress() - Keyword("on").suppress() - Group(delimitedList(nested_identifier_lvalue, ',')) - Suppress("{") - component_declaration - Suppress("}")

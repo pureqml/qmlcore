@@ -77,12 +77,13 @@ class EnumProperty(Entity):
 		self.default = default
 
 class Method(Entity):
-	def __init__(self, name, args, code, event):
+	def __init__(self, name, args, code, event, async):
 		super(Method, self).__init__()
 		self.name = name
 		self.args = args
 		self.code = code
 		self.event = event
+		self.async = async
 
 class IdAssignment(Entity):
 	def __init__(self, name):

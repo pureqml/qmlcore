@@ -280,7 +280,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 					self.modified = False
 					return r
 		except:
-			raise Exception("seems that you don't have pyinotify module installed, you can't use -w without it")
+			raise Exception("it seems you don't have pyinotify module installed, please install it to run build with -d option")
 
 	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, release=release, verbose=verbose, jobs=jobs)
 

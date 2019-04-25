@@ -12,8 +12,6 @@ import json
 from multiprocessing import Pool, cpu_count
 import sys
 
-compiler.grammar.source.parseWithTabs()
-
 try:
 	import inspect
 	data = ""

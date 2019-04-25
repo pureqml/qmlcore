@@ -229,8 +229,8 @@ def build(root, platform, apps, app, manifest):
 		package = os.path.normpath(dname)
 		try:
 			with open(os.path.join(package, '.manifest')) as f:
-				manifest = mf.load(f)
-			return manifest.public
+				package_manifest = mf.load(f)
+			return package_manifest.public
 		except:
 			return False
 

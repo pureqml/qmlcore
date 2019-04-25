@@ -348,6 +348,7 @@ source = source.ignore(cStyleComment)
 dblSlashComment.setParseAction(handle_documentation_string)
 source = source.ignore(dblSlashComment)
 source = source.ignore(import_statement)
+source.parseWithTabs()
 
 def parse(data):
 	global doc_root_component

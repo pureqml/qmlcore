@@ -326,6 +326,7 @@ def build(root, platform, apps, app, manifest):
 	context = { 'id': app, 'app': script, 'templater': templater }
 	for sm in subplatforms_manifests:
 		context.update(sm.properties)
+	context.update(manifest.properties)
 
 	copy(path.join(root, 'dist'), target, context, templates)
 

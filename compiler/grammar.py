@@ -1,7 +1,7 @@
 from __future__ import absolute_import, print_function
 from builtins import chr, map, str
 
-from .pyparsing import *
+from pyparsing import *
 from . import lang
 import re
 import json

@@ -5,7 +5,6 @@ standard_library.install_aliases()
 from builtins import object, str
 
 import compiler.doc.json
-import compiler.pyparsing
 import compiler.grammar
 import compiler.manifest
 from compiler.manifest import merge_properties
@@ -23,7 +22,6 @@ try:
 	data = ""
 	data += inspect.getsource(compiler.grammar)
 	data += inspect.getsource(compiler.lang)
-	data += inspect.getsource(compiler.pyparsing)
 	grammar_digest = hashlib.sha1(data).hexdigest()
 	del data
 except:

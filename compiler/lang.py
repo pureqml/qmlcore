@@ -1,10 +1,11 @@
+from builtins import object, str
+
 import re
 
 def value_is_trivial(value):
 	if isinstance(value, bool):
 		return True
 
-	assert not isinstance(value, unicode)
 	if value is None or not isinstance(value, str):
 		return False
 
@@ -77,13 +78,13 @@ class EnumProperty(Entity):
 		self.default = default
 
 class Method(Entity):
-	def __init__(self, name, args, code, event, async):
+	def __init__(self, name, args, code, event, async_):
 		super(Method, self).__init__()
 		self.name = name
 		self.args = args
 		self.code = code
 		self.event = event
-		self.async = async
+		self.async_ = async_
 
 class IdAssignment(Entity):
 	def __init__(self, name):

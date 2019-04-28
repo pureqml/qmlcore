@@ -1,4 +1,10 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
+
+from __future__ import print_function
+from future import standard_library
+from future.utils import PY2
+standard_library.install_aliases()
+from builtins import filter, range
 
 from compiler import manifest as mf
 from compiler import compile_qml
@@ -12,11 +18,12 @@ import re
 import os
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+if PY2:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 
 from os import path
-from StringIO import StringIO
+from io import StringIO
 from distutils import dir_util
 from compiler.ts import Ts
 
@@ -44,7 +51,7 @@ verbose = args.verbose
 
 if args.boilerplate:
 	if path.exists('.manifest') or path.exists('src/app.qml'):
-		print 'error: will not overwrite any file, you already have your project set up, run %s' %sys.argv[0]
+		print('error: will not overwrite any file, you already have your project set up, run %s' %sys.argv[0])
 		sys.exit(1)
 	with open('.manifest', 'w') as f:
 		f.write("{ }\n")
@@ -56,12 +63,12 @@ if args.boilerplate:
 	with open('src/app.qml', 'w') as app:
 		with open(path.join(root, 'app.qml')) as template:
 			app.write(template.read())
-	print 'finished, run %s now' %sys.argv[0]
+	print('finished, run %s now' %sys.argv[0])
 	sys.exit(0)
 
 def call(*args, **kw):
 	if verbose:
-		print 'calling', args, kw
+		print('calling', args, kw)
 	if os.name == 'nt':
 		cmd = ['cmd', '/c'] +  list(args)[0]
 		code = subprocess.call(cmd)
@@ -95,7 +102,7 @@ def minify(root, target, app, platform, manifest):
 			try:
 				minify_uglify(out, src, root, app, platform, manifest)
 			except:
-				print "WARNING: you don't seem to have uglifyjs installed. please run `sudo npm install -g uglify-js`, falling back to gcc"
+				print("WARNING: you don't seem to have uglifyjs installed. please run `sudo npm install -g uglify-js`, falling back to gcc")
 				tool = 'gcc'
 
 		if tool == 'gcc':
@@ -130,12 +137,12 @@ def process_template_jinja2(destination, source, context):
 		def get_source(self, env, template, updateIndex = False):
 			#print 'get', template, self.paths
 			paths = self.paths
-			for i in xrange(self.next_index.get(template, 0), len(paths)):
+			for i in range(self.next_index.get(template, 0), len(paths)):
 				path = paths[i]
 				src = os.path.join(path, template)
 				if os.path.isfile(src):
-					with open(src) as f:
-						text = f.read().decode('utf-8')
+					with open(src, 'r') as f:
+						text = f.read()
 						if updateIndex:
 							#print 'updated index for', template, 'to', i + 1
 							self.next_index[template] = i + 1
@@ -152,7 +159,7 @@ def process_template_jinja2(destination, source, context):
 
 	template = env.get_template(name)
 	destination = os.path.join(destination, name)
-	with open(destination, 'w') as fd:
+	with open(destination, 'wb') as fd:
 		fd.write(template.render(**context).encode('utf-8'))
 
 def process_template(destination, source, context):
@@ -175,12 +182,12 @@ def copy(source, destination, context, templates):
 		return
 
 	if verbose:
-		print 'copying from', source, 'to', destination
+		print('copying from', source, 'to', destination)
 	files = [path.join(source, file_) for file_ in os.listdir(source)]
 	copytree(source, destination)
 	for src in files:
 		if verbose:
-			print '+', src
+			print('+', src)
 		_path, name = path.split(src)
 		name, ext = path.splitext(name)
 		apply_templates(src, destination, context, templates)
@@ -208,10 +215,10 @@ def copytree(src, dst, symlinks=False, ignore=None):
 			shutil.copy2(s, d)
 
 def listdirs(path):
-	return filter(os.path.isdir, map(lambda x: os.path.join(path, x), os.listdir(path)))
+	return list(filter(os.path.isdir, [os.path.join(path, x) for x in os.listdir(path)]))
 
 def build(root, platform, apps, app, manifest):
-	print "building %s for %s..." %(app, platform)
+	print("building %s for %s..." %(app, platform))
 	if len(apps) > 1:
 		target = path.join('build.' + platform, app)
 	else:
@@ -234,7 +241,7 @@ def build(root, platform, apps, app, manifest):
 		except:
 			return False
 
-	pureqml_packages = filter(discover_package, plugins_path)
+	pureqml_packages = list(filter(discover_package, plugins_path))
 
 	platform_path = find_platform_path(root, plugins_path, platform)
 	templates = manifest.templates
@@ -281,7 +288,7 @@ def build(root, platform, apps, app, manifest):
 	platform_dirs = []
 	while subplatform_deps:
 		#print subplatform_deps
-		for subplatform, deps in subplatform_deps.items():
+		for subplatform, deps in list(subplatform_deps.items()):
 			if not deps: #leaf subplatform
 				subplatform_path = subplatform_paths[subplatform]
 				project_dirs.append(subplatform_path)
@@ -321,7 +328,7 @@ def build(root, platform, apps, app, manifest):
 	templater = manifest.templater
 
 	if verbose:
-		print "copying resources..."
+		print("copying resources...")
 
 	context = { 'id': app, 'app': script, 'templater': templater }
 	for sm in subplatforms_manifests:
@@ -350,7 +357,7 @@ def build(root, platform, apps, app, manifest):
 			template_path.append(platform_dist)
 
 	n = len(template_path)
-	for i in xrange(n):
+	for i in range(n):
 		idx = n - 1 - i
 		dist = template_path[idx]
 		context['template_path'] = template_path[idx:]
@@ -362,7 +369,7 @@ try:
 		manifest = mf.load(f)
 		manifest_path = '.manifest'
 except IOError:
-	print 'warning: could not find .manifest, using empty fallback'
+	print('warning: could not find .manifest, using empty fallback')
 	manifest = mf.Manifest()
 
 if args.properties:
@@ -380,7 +387,7 @@ def proc_source_dir(source_dir):
 	if args.update_translation:
 		languages = manifest.languages
 		for language in languages:
-			print 'updating translation for language', language
+			print('updating translation for language', language)
 			ts = Ts(os.path.join(source_dir, language + '.ts'))
 			ts.scan([source_dir])
 			ts.save()
@@ -411,7 +418,7 @@ try:
 				continue
 			build(root, platform, apps, app, manifest)
 except Exception as ex:
-	print "error:", ex
+	print("error:", ex)
 	if verbose:
 		raise
 	else:

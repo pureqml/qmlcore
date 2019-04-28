@@ -1,5 +1,6 @@
 #!/usr/bin/env python2.7
 
+from __future__ import print_function
 import argparse
 import os
 
@@ -8,7 +9,7 @@ def build(app, title):
     os.system('rm -rf %s' %app)
     res = os.system('cordova create %s com.%s.app %s' %(app, app, title))
     if res != 0:
-        print "Failed to create ios app"
+        print("Failed to create ios app")
         return
     os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
     os.system('cp icon.png %s' %(app))
@@ -35,4 +36,4 @@ res = os.system('cordova --version')
 if res == 0:
     build(args.app, args.title)
 else:
-    print 'Install "cordova" first: https://cordova.apache.org/docs/en/latest/guide/cli/'
+    print('Install "cordova" first: https://cordova.apache.org/docs/en/latest/guide/cli/')

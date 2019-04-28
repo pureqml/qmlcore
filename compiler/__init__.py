@@ -1,3 +1,4 @@
+from __future__ import print_function
 import compiler.doc.json
 import compiler.pyparsing
 import compiler.grammar
@@ -56,7 +57,7 @@ def parse_qml_file(cache, com, path):
 	if cached:
 		return cached, data
 	else:
-		print "parsing", path, "...", com
+		print("parsing", path, "...", com)
 		try:
 			tree = compiler.grammar.parse(data)
 			cache.write(com, h, tree)
@@ -88,7 +89,7 @@ class Compiler(object):
 			with open(path) as f:
 				data = f.read()
 			if self.verbose:
-				print "including js file...", path
+				print("including js file...", path)
 			generator.add_js(com, data)
 		elif ext == '.ts':
 			generator.add_ts(path)
@@ -165,7 +166,7 @@ class Compiler(object):
 			init_path = os.path.join(project_dir, '.core.js')
 			if os.path.exists(init_path):
 				if self.verbose:
-					print 'including platform initialisation file at %s' %init_path
+					print('including platform initialisation file at %s' %init_path)
 				with open(init_path) as f:
 					init_js += f.read()
 
@@ -192,7 +193,7 @@ class Compiler(object):
 		merge_properties(self.root_manifest_props, self.root_manifest.properties)
 
 		if self.verbose:
-			print "generating sources..."
+			print("generating sources...")
 
 		appcode = ""
 		if self.strict:
@@ -224,7 +225,7 @@ class Compiler(object):
 		if self.documentation:
 			self.documentation.generate(self.component_path_map)
 
-		print "done"
+		print("done")
 
 	def __init__(self, output_dir, root, project_dirs, root_manifest, app, doc = None, release = False, verbose = False, jobs = 1):
 		self.cache = Cache()
@@ -241,7 +242,7 @@ class Compiler(object):
 		self.component_path_map = {}
 
 		if self.verbose:
-			print 'running using %d jobs' %self.jobs
+			print('running using %d jobs' %self.jobs)
 
 		with open(os.path.join(root, 'partners.json')) as f:
 			self.partners = json.load(f)
@@ -311,7 +312,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 				msg = '%serror: %s' %(loc, ex)
 				if hasattr(ex, 'line'):
 					msg += '\n' + ex.line
-				print msg
+				print(msg)
 				if verbose:
 					raise
 				sys.exit(1)

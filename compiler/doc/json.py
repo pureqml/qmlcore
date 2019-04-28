@@ -1,3 +1,4 @@
+from __future__ import print_function
 import re
 import os
 import os.path
@@ -86,7 +87,7 @@ class Component(object):
 				child.name = child.properties[0][0]
 				if hasattr(child.properties[0][1], "children"):
 					component_file_name = child.type + ".qml"
-					if component_path_map.has_key(component_file_name):
+					if component_file_name in component_path_map:
 						component_dir = component_path_map[component_file_name][2:]
 						component_dir = component_dir.replace("/", ".")
 						child.ref = component_dir + "/" + component_file_name[:-4]
@@ -124,7 +125,7 @@ class Component(object):
 		return r
 
 	def document(self, r, component):
-		print component.name, component.doc
+		print(component.name, component.doc)
 		if component.doc:
 			r.append(component.doc)
 

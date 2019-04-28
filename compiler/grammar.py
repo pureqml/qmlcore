@@ -1,5 +1,7 @@
-from pyparsing import *
-import lang
+from __future__ import print_function
+from __future__ import absolute_import
+from .pyparsing import *
+from . import lang
 import re
 import json
 import sys
@@ -28,7 +30,7 @@ def component(com):
 def document(text, line, prev):
 	text = text.strip()
 	if not text:
-		print 'WARNING: empty documentation string at line %d' %line
+		print('WARNING: empty documentation string at line %d' %line)
 		return
 
 	global doc_next, doc_prev_component
@@ -36,7 +38,7 @@ def document(text, line, prev):
 		if doc_prev_component:
 			doc_prev_component.doc = lang.DocumentationString(text)
 		else:
-			print 'WARNING: unused documentation string %s at line %d' %(text, line)
+			print('WARNING: unused documentation string %s at line %d' %(text, line))
 	else:
 		doc_next = lang.DocumentationString(text)
 

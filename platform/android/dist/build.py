@@ -1,4 +1,6 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
+
+from __future__ import print_function
 
 import argparse
 import os
@@ -8,7 +10,7 @@ def build(app, title, release):
 	os.system('rm -rf %s' %app)
 	res = os.system('cordova create %s com.%s.app %s' %(app, app, title))
 	if res != 0:
-		print "Failed to create android app"
+		print("Failed to create android app")
 		return
 	os.system('rsync -a ./ %s/www --exclude=%s ' %(app,app))
 	os.system('cp androidIcon.png %s' %(app))
@@ -27,7 +29,7 @@ def build(app, title, release):
 		build = 'cordova build android --release -- '
 		os.system(build + '--keystore={{androidBuild.keystore}} --storePassword={{androidBuild.storePassword}} --alias={{androidBuild.alias}} --password={{androidBuild.password}}')
 		{% else %}
-		print "Failed to build release apk androidBuild property is undefined"
+		print("Failed to build release apk androidBuild property is undefined")
 		{% endif %}
 	else:
 		os.system('cordova build android')
@@ -46,4 +48,4 @@ res = os.system('cordova --version')
 if res == 0:
 	build(args.app, args.title, args.release)
 else:
-	print 'Install "cordova" first: https://cordova.apache.org/docs/en/latest/guide/cli/'
+	print('Install "cordova" first: https://cordova.apache.org/docs/en/latest/guide/cli/')

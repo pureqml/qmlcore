@@ -8,7 +8,12 @@ QmlCore provides a set of tools written in Python2 (sorry about that, lol)
 Usually you don't need to use them directly. ```build``` provides a convenient wrapper around them all.
 
 ### Prerequisites
-Any modern Python 2.x will go well. Jinja2 is a different option for templating in case you want more than QML loader in your HTML file, while it's not required for small apps.
+Any modern Python (2 or 3) will go well. Jinja2 is a different option for templating in case you want more than QML loader in your HTML file, while it's not required for small apps.
+
+To install the requirements run:
+```python
+$ pip install -r requirements.txt
+```
 
 ## Simple how-to
 * Create project directory, ```cd <project-dir>```

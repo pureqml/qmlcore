@@ -1,5 +1,8 @@
-from pyparsing import *
-import lang
+from __future__ import absolute_import, print_function
+from builtins import chr, map, str
+
+from .pyparsing import *
+from . import lang
 import re
 import json
 import sys
@@ -28,7 +31,7 @@ def component(com):
 def document(text, line, prev):
 	text = text.strip()
 	if not text:
-		print 'WARNING: empty documentation string at line %d' %line
+		print('WARNING: empty documentation string at line %d' %line)
 		return
 
 	global doc_next, doc_prev_component
@@ -36,7 +39,7 @@ def document(text, line, prev):
 		if doc_prev_component:
 			doc_prev_component.doc = lang.DocumentationString(text)
 		else:
-			print 'WARNING: unused documentation string %s at line %d' %(text, line)
+			print('WARNING: unused documentation string %s at line %d' %(text, line))
 	else:
 		doc_next = lang.DocumentationString(text)
 
@@ -56,7 +59,7 @@ def handle_assignment(s, l, t):
 
 def handle_property_declaration(s, l, t):
 	#print "property>", t
-	properties = map(lambda x: (x[0], None) if len(x) < 2 else (x[0], x[1]), t[1])
+	properties = [(x[0], None) if len(x) < 2 else (x[0], x[1]) for x in t[1]]
 	return component(lang.Property(t[0], properties))
 
 def handle_alias_property_declaration(s, l, t):
@@ -186,9 +189,9 @@ re_esc = re.compile(r'\\(.)')
 
 def unquote(value):
 	value = re_x.sub(lambda m: chr(int(m.group(1), 16)), value)
-	value = re_u.sub(lambda m: unichr(int(m.group(1), 16)), value)
+	value = re_u.sub(lambda m: chr(int(m.group(1), 16)), value)
 	value = re_o.sub(lambda m: chr(int(m.group(1), 8)), value)
-	value = re_u2.sub(lambda m: unichr(int(m.group(1), 16)), value)
+	value = re_u2.sub(lambda m: chr(int(m.group(1), 16)), value)
 
 	def unescape(m):
 		c = m.group(1)

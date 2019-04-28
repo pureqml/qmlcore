@@ -1,3 +1,6 @@
+from builtins import filter, object, range, str
+from past.builtins import basestring
+
 from compiler.js import get_package, split_name, escape
 from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, path_or_parent, mangle_path
 from compiler import lang
@@ -68,8 +71,8 @@ class component_generator(object):
 		t = type(value)
 		if t is lang.Component:
 			value = self.create_component_generator(value)
-		if t is str: #and value[0] == '"' and value[-1] == '"':
-			value = value.replace("\\\n", "") #multiline continuation \<NEWLINE>
+		if isinstance(value, (str, basestring)): #and value[0] == '"' and value[-1] == '"':
+			value = str(value.replace("\\\n", "")) #multiline continuation \<NEWLINE>
 		if target in self.assignments:
 			raise Exception("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name))
 		self.assignments[target] = value
@@ -142,7 +145,7 @@ class component_generator(object):
 					fullname, args, code = split_name(name), child.args, child.code
 					if fullname in self.methods:
 						raise Exception("duplicate method " + name)
-					self.methods[fullname] = args, code, child.event, child.async #fixme: fix code duplication here
+					self.methods[fullname] = args, code, child.event, child.async_ #fixme: fix code duplication here
 		elif t is lang.Signal:
 			name = child.name
 			if name in self.signals:
@@ -198,7 +201,7 @@ class component_generator(object):
 
 	def generate_animations(self, registry, parent):
 		r = []
-		for name, animation in self.animations.iteritems():
+		for name, animation in self.animations.items():
 			var = "behavior_%s_on_%s" %(escape(parent), escape(name))
 			r.append("\tvar %s = new _globals.%s(%s)" %(var, registry.find_component(self.package, animation.component.name), parent))
 			r.append("\tvar %s$c = { %s: %s }" %(var, var, var))
@@ -228,7 +231,7 @@ class component_generator(object):
 		base_type = self.get_base_type(registry, False)
 		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
 
-		for (path, name), (args, code, event, async) in methods.iteritems():
+		for (path, name), (args, code, event, async_) in methods.items():
 			oname = name
 			fullname = path, name
 
@@ -268,7 +271,7 @@ class component_generator(object):
 					raise Exception("duplicate method " + oname)
 				if name == 'onCompleted':
 					fullname = path, '__complete'
-				self.methods[fullname] = args, code, async
+				self.methods[fullname] = args, code, async_
 
 	def generate_lazy_property(self, registry, proto, type, name, value, ident_n = 1):
 		ident = "\t" * ident_n
@@ -283,15 +286,15 @@ class component_generator(object):
 
 	def transform_handlers(self, registry, blocks):
 		result = {}
-		for (path, name), (args, code, async) in blocks.iteritems():
+		for (path, name), (args, code, async_) in blocks.items():
 			if name == '__complete':
 				code = code.strip()
 				if code[0] == '{' and code[-1] == '}':
 					code = '{ @super.__complete.call(this)\n' + code[1:-1].strip() + '\n}'
 			code = process(code, self, registry, args)
-			code = "%sfunction(%s) %s" %("async " if async else "",  ",".join(args), code)
+			code = "%sfunction(%s) %s" %("async " if async_ else "",  ",".join(args), code)
 			result.setdefault(code, []).append((path, name))
-		return sorted(result.iteritems())
+		return sorted(result.items())
 
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
@@ -327,10 +330,10 @@ class component_generator(object):
 						args.append(default_value)
 					r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
-		for name, prop in self.enums.iteritems():
+		for name, prop in self.enums.items():
 			values = prop.values
 
-			for i in xrange(0, len(values)):
+			for i in range(0, len(values)):
 				r.append("/** @const @type {number} */")
 				r.append("%s%s.%s = %d" %(ident, self.proto_name, values[i], i))
 				r.append("/** @const @type {number} */")
@@ -365,7 +368,7 @@ class component_generator(object):
 				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
-			handlers = filter(put_in_prototype, handlers)
+			handlers = list(filter(put_in_prototype, handlers))
 			if not handlers:
 				continue
 
@@ -378,7 +381,7 @@ class component_generator(object):
 				r.append("%s_globals.core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
-			handlers = filter(put_in_prototype, handlers)
+			handlers = list(filter(put_in_prototype, handlers))
 			if not handlers:
 				continue
 
@@ -390,7 +393,7 @@ class component_generator(object):
 				r.append("%s_globals.core._protoOn(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
-			handlers = filter(put_in_prototype, handlers)
+			handlers = list(filter(put_in_prototype, handlers))
 			if not handlers:
 				continue
 
@@ -484,7 +487,7 @@ class component_generator(object):
 							args.append(default_value)
 						r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
-			for name, prop in self.enums.iteritems():
+			for name, prop in self.enums.items():
 				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)
 
 		for idx, gen in enumerate(self.children):
@@ -496,7 +499,7 @@ class component_generator(object):
 			r.append(code)
 			r.append("%s%s.addChild(%s)" %(ident, parent, var));
 
-		for target, value in self.assignments.iteritems():
+		for target, value in self.assignments.items():
 			if target == "id":
 				if "." in value:
 					raise Exception("expected identifier, not expression")
@@ -519,7 +522,7 @@ class component_generator(object):
 					code = self.generate_creator_function(registry, 'delegate', value, ident_n)
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
-		for name, target in self.aliases.iteritems():
+		for name, target in self.aliases.items():
 			get, pname = generate_accessors(parent, target, partial(self.transform_root, registry))
 			r.append("%score.addAliasProperty(%s, '%s', function() { return %s }, '%s')" \
 				%(ident, parent, name, get, pname))
@@ -552,13 +555,13 @@ class component_generator(object):
 		r = []
 		ident = "\t" * ident_n
 
-		for target, value in self.assignments.iteritems():
+		for target, value in self.assignments.items():
 			if target == "id":
 				continue
 			t = type(value)
 			#print self.name, target, value
 			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
-			if t is str:
+			if isinstance(value, str):
 				value = replace_enums(value, self, registry)
 				r.append('//assigning %s to %s' %(target, value))
 				value, deps = parse_deps(parent, value, partial(self.transform_root, registry))
@@ -604,7 +607,7 @@ class component_generator(object):
 					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
-			handlers = filter(put_in_instance, handlers)
+			handlers = list(filter(put_in_instance, handlers))
 			if not handlers:
 				continue
 
@@ -617,7 +620,7 @@ class component_generator(object):
 				r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
-			handlers = filter(put_in_instance, handlers)
+			handlers = list(filter(put_in_instance, handlers))
 			if not handlers:
 				continue
 
@@ -634,7 +637,7 @@ class component_generator(object):
 					r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
-			handlers = filter(put_in_instance, handlers)
+			handlers = list(filter(put_in_instance, handlers))
 			if not handlers:
 				continue
 

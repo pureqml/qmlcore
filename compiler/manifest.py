@@ -1,3 +1,5 @@
+from builtins import object
+
 import json
 
 def _set_property(obj, name, value):
@@ -17,8 +19,8 @@ def _pair_hook(pairs):
 	return obj
 
 def merge_properties(dst, src):
-	src = _pair_hook(src.iteritems())
-	for key, value in src.iteritems():
+	src = _pair_hook(list(src.items()))
+	for key, value in src.items():
 		if key.find('.') >= 0:
 			raise Exception('dot found in key')
 		if isinstance(value, dict):

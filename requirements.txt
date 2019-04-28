@@ -1,1 +1,2 @@
 future>=0.17.1
+pyparsing>=2.2.0

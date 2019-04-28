@@ -1,4 +1,7 @@
 from __future__ import print_function
+from builtins import object, str
+from past.builtins import basestring
+
 import re
 import os
 import os.path
@@ -182,7 +185,7 @@ class Documentation(object):
 		toc.append('\t"repo_url": "https://github.com/pureqml/qmlcore/",')
 		toc.append('\t"pages": {')
 
-		pack = sorted(self.packages.iteritems())
+		pack = sorted(self.packages.items())
 		lastPack = pack[-1][0]
 		for package, components in pack:
 			toc.append('\t\t"%s": {' %package)
@@ -195,8 +198,8 @@ class Documentation(object):
 			if not os.path.exists(path):
 				os.mkdir(path)
 
-			lastComp = components.keys()[-1]
-			for name, component in components.iteritems():
+			lastComp = list(components.keys())[-1]
+			for name, component in components.items():
 				comma = "" if lastComp == name else ","
 				package_toc.append('\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
 				toc.append('\t\t\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))

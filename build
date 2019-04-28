@@ -1,6 +1,11 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 
 from __future__ import print_function
+from future import standard_library
+from future.utils import PY2
+standard_library.install_aliases()
+from builtins import filter, range
+
 from compiler import manifest as mf
 from compiler import compile_qml
 
@@ -13,11 +18,12 @@ import re
 import os
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+if PY2:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 
 from os import path
-from StringIO import StringIO
+from io import StringIO
 from distutils import dir_util
 from compiler.ts import Ts
 
@@ -131,12 +137,12 @@ def process_template_jinja2(destination, source, context):
 		def get_source(self, env, template, updateIndex = False):
 			#print 'get', template, self.paths
 			paths = self.paths
-			for i in xrange(self.next_index.get(template, 0), len(paths)):
+			for i in range(self.next_index.get(template, 0), len(paths)):
 				path = paths[i]
 				src = os.path.join(path, template)
 				if os.path.isfile(src):
-					with open(src) as f:
-						text = f.read().decode('utf-8')
+					with open(src, 'r') as f:
+						text = f.read()
 						if updateIndex:
 							#print 'updated index for', template, 'to', i + 1
 							self.next_index[template] = i + 1
@@ -153,7 +159,7 @@ def process_template_jinja2(destination, source, context):
 
 	template = env.get_template(name)
 	destination = os.path.join(destination, name)
-	with open(destination, 'w') as fd:
+	with open(destination, 'wb') as fd:
 		fd.write(template.render(**context).encode('utf-8'))
 
 def process_template(destination, source, context):
@@ -209,7 +215,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 			shutil.copy2(s, d)
 
 def listdirs(path):
-	return filter(os.path.isdir, map(lambda x: os.path.join(path, x), os.listdir(path)))
+	return list(filter(os.path.isdir, [os.path.join(path, x) for x in os.listdir(path)]))
 
 def build(root, platform, apps, app, manifest):
 	print("building %s for %s..." %(app, platform))
@@ -235,7 +241,7 @@ def build(root, platform, apps, app, manifest):
 		except:
 			return False
 
-	pureqml_packages = filter(discover_package, plugins_path)
+	pureqml_packages = list(filter(discover_package, plugins_path))
 
 	platform_path = find_platform_path(root, plugins_path, platform)
 	templates = manifest.templates
@@ -282,7 +288,7 @@ def build(root, platform, apps, app, manifest):
 	platform_dirs = []
 	while subplatform_deps:
 		#print subplatform_deps
-		for subplatform, deps in subplatform_deps.items():
+		for subplatform, deps in list(subplatform_deps.items()):
 			if not deps: #leaf subplatform
 				subplatform_path = subplatform_paths[subplatform]
 				project_dirs.append(subplatform_path)
@@ -351,7 +357,7 @@ def build(root, platform, apps, app, manifest):
 			template_path.append(platform_dist)
 
 	n = len(template_path)
-	for i in xrange(n):
+	for i in range(n):
 		idx = n - 1 - i
 		dist = template_path[idx]
 		context['template_path'] = template_path[idx:]

@@ -1,3 +1,5 @@
+from builtins import map
+
 import re
 
 def split_name(name):
@@ -21,7 +23,7 @@ def escape_id(name):
 
 def escape_package(name):
 	package = name.split('.')
-	package = map(escape_id, package)
+	package = list(map(escape_id, package))
 	return ".".join(package)
 
 from compiler.js.component import component_generator

@@ -1,4 +1,9 @@
 from __future__ import print_function
+from future import standard_library
+from future.utils import PY2
+standard_library.install_aliases()
+from builtins import object, str
+
 import compiler.doc.json
 import compiler.pyparsing
 import compiler.grammar
@@ -8,7 +13,7 @@ import compiler.js
 import compiler.lang
 import os, os.path
 import hashlib
-import cPickle
+import pickle
 import json
 from multiprocessing import Pool, cpu_count
 import sys
@@ -35,23 +40,24 @@ class Cache(object):
 	def read(self, name, hashkey):
 		cached_path = os.path.join(self.dir, name)
 		try:
-			with open(cached_path) as f:
-				if f.readline().strip() != hashkey:
+			with open(cached_path, 'rb') as f:
+				cached_hashkey = f.readline().strip().decode('utf-8')
+				if cached_hashkey != hashkey:
 					raise Exception("invalid hash")
-				return cPickle.load(f)
+				return pickle.load(f)
 		except:
 			return
 
 	def write(self, name, hashkey, data):
 		cached_path = os.path.join(self.dir, name)
-		with open(cached_path, "w") as f:
-			f.write(hashkey + "\n")
-			cPickle.dump(data, f)
+		with open(cached_path, "wb") as f:
+			f.write((hashkey + "\n").encode('utf-8'))
+			pickle.dump(data, f)
 
 def parse_qml_file(cache, com, path):
 	with open(path) as f:
 		data = f.read()
-		h = hashlib.sha1(grammar_digest + data).hexdigest()
+		h = hashlib.sha1((grammar_digest + data).encode('utf-8')).hexdigest()
 
 	cached = cache.read(com, h)
 	if cached:
@@ -113,7 +119,7 @@ class Compiler(object):
 				package_name = str(root_manifest.package)
 
 			for dirpath, dirnames, filenames in os.walk(project_dir, topdown = True):
-				dirnames[:] = filter(lambda name: not name[:6].startswith("build.") and name != "dist", dirnames)
+				dirnames[:] = [name for name in dirnames if not name[:6].startswith("build.") and name != "dist"]
 				if '.nocompile' in filenames:
 					dirnames[:] = []
 					continue
@@ -122,7 +128,9 @@ class Compiler(object):
 					with open(os.path.join(dirpath, '.manifest')) as f:
 						manifest = compiler.manifest.load(f)
 						if manifest.package:
-							package_name = manifest.package.encode('utf-8')
+							package_name = manifest.package
+							if PY2:
+								package_name = package_name.encode('utf-8')
 							package_dir = dirpath
 						if manifest.export_module:
 							generator.module |= manifest.export_module
@@ -205,14 +213,14 @@ class Compiler(object):
 
 		def write_properties(prefix, props):
 			r = ''
-			for k, v in sorted(props.iteritems()):
+			for k, v in sorted(props.items()):
 				k = compiler.js.escape_id(k)
 				if isinstance(v, dict):
 					r += write_properties(prefix + '$' + k, v)
 				else:
 					r += "var %s$%s = %s\n" %(prefix, k, json.dumps(v))
 			return r
-		appcode += write_properties('$manifest', self.root_manifest_props).encode('utf-8')
+		appcode += write_properties('$manifest', self.root_manifest_props)
 
 		appcode += "/** @const @type {!CoreObject} */\n"
 		appcode += "var " + generator.generate()
@@ -220,7 +228,7 @@ class Compiler(object):
 		appcode = appcode.replace('/* ${init.js} */', init_js)
 
 		with open(os.path.join(self.output_dir, namespace + "." + self.app + ".js"), "wt") as f:
-			f.write(appcode.encode('utf-8'))
+			f.write(appcode)
 
 		if self.documentation:
 			self.documentation.generate(self.component_path_map)

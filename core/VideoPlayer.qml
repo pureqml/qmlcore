@@ -5,6 +5,7 @@ Item {
 	signal error;		///< error occured signal
 	signal finished;	///< video finished signal
 	property string	source;	///< video source URL
+	property string backgroundImage; ///< background image (poster) source URL
 	property Color	backgroundColor: "#000";	///< default background color
 	property float	volume: 1.0;		///< video volume value [0:1]
 	property bool	loop;		///< video loop flag
@@ -235,6 +236,12 @@ Item {
 			player.setSource(value)
 		if (this.autoPlay)
 			this.play()
+	}
+
+	onBackgroundImageChanged: {
+		var player = this._getPlayer()
+		if (player)
+			player.element.setAttribute('poster', value)
 	}
 
 	onBackendChanged: {

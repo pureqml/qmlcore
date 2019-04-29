@@ -4,7 +4,7 @@ It was designed with the original QML in mind, while it's not 100% compatible an
 The main concepts are the same though, so if you're familiar with original QML, you could start right away.
 
 ## Usage
-QmlCore provides a set of tools written in Python2 (sorry about that, lol)
+QmlCore provides a toolchain written in Python using python-future, allowing it to be run on top of both python versions.
 Usually you don't need to use them directly. ```build``` provides a convenient wrapper around them all.
 
 ### Prerequisites

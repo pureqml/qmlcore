@@ -205,7 +205,7 @@ exports.core.safeCall = function(self, args, onError) {
 
 
 exports.core.getKeyCodeByName = function(key) {
-	var codes = _globals.core.keyCodes
+	var codes = $ns$core.keyCodes
 	for (var i in codes) {
 		if (codes[i] === key)
 			return ~~i
@@ -520,7 +520,7 @@ PropertyStoragePrototype.callOnChanged = function(object, name, value) {
 	if (!hasProtoCallbacks && !hasHandlers)
 		return
 
-	var invoker = _globals.core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+	var invoker = $ns$core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 
 	if (hasProtoCallbacks)
 		protoCallbacks.forEach(invoker)

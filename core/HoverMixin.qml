@@ -19,7 +19,7 @@ Object {
 	///@private
 	function _bindHover(value) {
 		if (value && !this._hmHoverBinder) {
-			this._hmHoverBinder = new _globals.core.EventBinder(this.parent.element)
+			this._hmHoverBinder = new $ns$core.EventBinder(this.parent.element)
 
 			if (this._context.backend.capabilities.mouseEnterLeaveSupported) {
 				this._hmHoverBinder.on('mouseenter', function() { this.value = true }.bind(this))

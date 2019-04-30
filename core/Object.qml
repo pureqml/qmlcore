@@ -19,7 +19,7 @@ EventEmitter {
 	}
 
 	function completed() {
-		if (this.__complete !== _globals.core.CoreObject.prototype.__complete && this._registerDelayedAction('complete'))
+		if (this.__complete !== $ns$core.CoreObject.prototype.__complete && this._registerDelayedAction('complete'))
 			this._context.__onCompleted(this)
 	}
 
@@ -88,7 +88,7 @@ EventEmitter {
 			properties[name].discard()
 		this._properties = {}
 
-		_globals.core.EventEmitter.prototype.discard.apply(this)
+		$ns$core.EventEmitter.prototype.discard.apply(this)
 	}
 
 	/**@param child:Object object to add
@@ -147,7 +147,7 @@ EventEmitter {
 		if (storage !== undefined)
 			return storage
 
-		return this.__properties[name] = new _globals.core.core.PropertyStorage(value)
+		return this.__properties[name] = new $ns$core.core.PropertyStorage(value)
 	}
 
 	///@private patch property storage directly without signalling.

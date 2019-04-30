@@ -24,7 +24,7 @@ Item {
 		this._delayedActions = []
 		this._completedObjects = []
 		this._stylesRegistered = {}
-		this._asyncInvoker = _globals.core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
+		this._asyncInvoker = $ns$core.safeCall(this, [], function (ex) { log("async action failed:", ex, ex.stack) })
 
 		this.backend = _globals._backend()
 
@@ -170,7 +170,7 @@ Item {
 	{ return this.qsTr.apply(this, arguments) }
 
 	function processKey(event) {
-		var handlers = core.forEach(this, _globals.core.Item.prototype._enqueueNextChildInFocusChain, [])
+		var handlers = core.forEach(this, $ns$core.Item.prototype._enqueueNextChildInFocusChain, [])
 		var n = handlers.length
 		for(var i = 0; i < n; ++i) {
 			var handler = handlers[i]

@@ -29,7 +29,7 @@ BaseLayout {
 	/// @private
 	constructor: {
 		this._items = []
-		this._modelUpdate = new _globals.core.model.ModelUpdate()
+		this._modelUpdate = new $ns$core.model.ModelUpdate()
 		this._attached = null
 
 		//callback instances for dynamic model subscriptions
@@ -133,17 +133,17 @@ BaseLayout {
 		if (this.trace)
 			log('attaching model...')
 
-		var Model = _globals.core.Model
+		var Model = $ns$core.Model
 		var model = this.model
 		var modelType = typeof model
 		if ((Model !== undefined) && (model instanceof Model)) {
 		} else if (Array.isArray(model)) {
-			model = new _globals.core.model.ArrayModelWrapper(model)
+			model = new $ns$core.model.ArrayModelWrapper(model)
 		} else if (modelType === 'number') {
 			var data = []
 			for(var i = 0; i < model; ++i)
 				data.push({})
-			model = new _globals.core.model.ArrayModelWrapper(data)
+			model = new $ns$core.model.ArrayModelWrapper(data)
 		} else
 			throw new Error("unknown value of type '" + (typeof model) + "', attached to model property: " + model + ((modelType === 'object') && ('componentName' in model)? ', component name: ' + model.componentName: ''))
 
@@ -230,7 +230,7 @@ BaseLayout {
 
 	function discard() {
 		this._detach()
-		_globals.core.BaseLayout.prototype.discard.apply(this)
+		$ns$core.BaseLayout.prototype.discard.apply(this)
 	}
 
 	/// @private

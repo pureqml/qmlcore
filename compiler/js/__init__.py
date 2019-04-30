@@ -23,8 +23,15 @@ def escape_id(name):
 
 def escape_package(name):
 	package = name.split('.')
+	return ".".join(map(escape_id, package))
+
+def mangle_package(name):
+	package = name.split('.')
 	package = list(map(escape_id, package))
-	return ".".join(package)
+	if package[0] == '_globals':
+		package.pop(0)
+	package = ['', 'ns'] + package
+	return "$".join(package)
 
 from compiler.js.component import component_generator
 from compiler.js.generator import generator

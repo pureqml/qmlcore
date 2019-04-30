@@ -3,11 +3,13 @@ from builtins import object
 
 import json
 import re
-from compiler.js import split_name, escape_package, get_package
+from compiler.js import split_name, escape_package, get_package, mangle_package
 from compiler.js.component import component_generator
 from collections import OrderedDict
 
-root_type = 'core.CoreObject'
+root_type_package = 'core'
+root_type_name = 'CoreObject'
+root_type = root_type_package + '.' + root_type_name
 
 class generator(object):
 	def __init__(self, ns, bid):
@@ -53,9 +55,15 @@ class generator(object):
 	def wrap(self, code, use_globals = False):
 		return "(function() {/** @const */\nvar exports = %s;\n%s\nreturn exports;\n} )" %("_globals" if use_globals else "{}", code)
 
-	def find_component(self, package, name, register_used = True):
-		if name == "CoreObject":
-			return root_type
+	def find_component(self, package, name, register_used = True, mangle = False, use_globals = False):
+		if name == root_type_name:
+			package = root_type_package
+			#fixme: copypasted
+			if mangle:
+				package = mangle_package(root_type_package)
+			if use_globals:
+				package = "_globals." + package
+			return package + "." + root_type_name
 
 		original_name = name
 		name_package, name = split_name(name)
@@ -87,6 +95,11 @@ class generator(object):
 
 		if register_used:
 			self.used_components.add(package_name + '.' + name)
+
+		if mangle:
+			package_name = mangle_package(package_name)
+		if use_globals:
+			package_name = "_globals." + package_name
 		return "%s.%s" %(package_name, name)
 
 	def generate_component(self, gen):
@@ -186,6 +199,7 @@ class generator(object):
 					raise Exception('internal bug, empty name in packages')
 				package = escape_package(path + "." + ns)
 				r.append("if (!%s) /** @const */ %s = {}" %(package, package))
+				r.append("var %s = %s" %(mangle_package(package), package))
 				check(package, packages[ns])
 		check(path, packages)
 

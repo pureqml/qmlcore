@@ -188,7 +188,7 @@ Object {
 			this._updateVisibilityForChild(child, value)
 		}
 
-		if (!value)
+		if (!value && this.parent)
 			this.parent._tryFocus()
 	}
 

@@ -122,7 +122,7 @@ def process_template_simple(destination, source, context):
 		data = fs.read()
 		data = var_re.sub(lambda x: context.get(x.group(1), ''), data)
 		data = block_re.sub('', data)
-		fd.write(data)
+		fd.write(data.encode('utf-8'))
 
 def process_template_jinja2(destination, source, context):
 	from jinja2 import Environment, FileSystemLoader, BaseLoader, TemplateNotFound

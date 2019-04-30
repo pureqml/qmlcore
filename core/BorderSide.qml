@@ -14,7 +14,7 @@ Object {
 		if (!this.parent || !this.parent.parent || !this.name)
 			return
 
-		var Border = _globals.core.Border
+		var Border = $ns$core.Border
 		var styleName
 		switch(this.style) {
 		case Border.None: styleName = 'none'; break
@@ -29,7 +29,7 @@ Object {
 		case Border.Outset: styleName = 'outset'; break
 		}
 
-		var borderCss = this.width + "px " + styleName + " " + _globals.core.Color.normalize(this.color)
+		var borderCss = this.width + "px " + styleName + " " + $ns$core.Color.normalize(this.color)
 		this.parent.parent.style('border-' + this.name, borderCss)
 	}
 

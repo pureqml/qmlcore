@@ -59,7 +59,7 @@ Object {
 
 	///@private release any held resources, including connections, delegates, etc
 	function discard() {
-		_globals.core.Object.prototype.discard.apply(this)
+		$ns$core.Object.prototype.discard.apply(this)
 		this.focusedChild = null
 		this._pressedHandlers = {}
 		if (this.element)
@@ -136,7 +136,7 @@ Object {
 
 	///@private adds child, focus it if child accepts focus
 	function addChild (child) {
-		_globals.core.Object.prototype.addChild.apply(this, arguments)
+		$ns$core.Object.prototype.addChild.apply(this, arguments)
 		if (child._tryFocus())
 			child._propagateFocusToParents()
 	}
@@ -346,7 +346,7 @@ Object {
 	///@private
 	function _processKey(event) {
 		var keyCode = event.which || event.keyCode
-		var key = _globals.core.keyCodes[keyCode]
+		var key = $ns$core.keyCodes[keyCode]
 		var eventTime = event.timeStamp
 
 		if (key !== undefined) {
@@ -358,7 +358,7 @@ Object {
 			}
 
 			//fixme: create invoker only if any of handlers exist
-			var invoker = _globals.core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
+			var invoker = $ns$core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 			var proto_callback = this['__key__' + key]
 
 			if (key in this._pressedHandlers)

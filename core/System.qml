@@ -48,13 +48,13 @@ Object {
 
 	/// @private
 	constructor: {
-		this.vendor = _globals.core.vendor
-		this.device = _globals.core.device
-		this.os = _globals.core.os
+		this.vendor = $ns$core.vendor
+		this.device = $ns$core.device
+		this.os = $ns$core.os
 
-		this.browser = _globals.core.browser
-		this.userAgent = _globals.core.userAgent
-		this.language = _globals.core.language
+		this.browser = $ns$core.browser
+		this.userAgent = $ns$core.userAgent
+		this.language = $ns$core.language
 
 		var ctx = this._context
 		ctx.language = this.language.replace('-', '_')

@@ -2,8 +2,8 @@
 Animation {
 	///@private
 	function interpolate(dst, src, t) {
-		var blend = _globals.core.Animation.prototype.interpolate
-		var dst_c = new _globals.core.Color(dst), src_c = new _globals.core.Color(src);
+		var blend = $ns$core.Animation.prototype.interpolate
+		var dst_c = new $ns$core.Color(dst), src_c = new $ns$core.Color(src);
 		var r = Math.floor(blend(dst_c.r, src_c.r, t))
 		var g = Math.floor(blend(dst_c.g, src_c.g, t))
 		var b = Math.floor(blend(dst_c.b, src_c.b, t))

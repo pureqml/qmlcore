@@ -31,7 +31,7 @@ Item {
 	/// @private
 	function _bindTouch(value) {
 		if (value && !this._touchBinder) {
-			this._touchBinder = new _globals.core.EventBinder(this.element)
+			this._touchBinder = new $ns$core.EventBinder(this.element)
 
 			var touchStart = function(event) { this.touchStart(event) }.bind(this)
 			var touchEnd = function(event) { this.touchEnd(event) }.bind(this)
@@ -59,7 +59,7 @@ Item {
 	/// @private
 	function _bindClick(value) {
 		if (value && !this._clickBinder) {
-			this._clickBinder = new _globals.core.EventBinder(this.element)
+			this._clickBinder = new $ns$core.EventBinder(this.element)
 			this._clickBinder.on('click', function(event) { this.updatePosition(event); this.clicked(event) }.bind(this))
 		}
 		if (this._clickBinder)
@@ -74,7 +74,7 @@ Item {
 	/// @private
 	function _bindWheel(value) {
 		if (value && !this._wheelBinder) {
-			this._clickBinder = new _globals.core.EventBinder(this.element)
+			this._clickBinder = new $ns$core.EventBinder(this.element)
 			this._clickBinder.on('mousewheel', function(event) { this.wheelEvent(event.wheelDelta / 120) }.bind(this))
 		}
 		if (this._clickBinder)
@@ -89,7 +89,7 @@ Item {
 	/// @private
 	function _bindPressable(value) {
 		if (value && !this._pressableBinder) {
-			this._pressableBinder = new _globals.core.EventBinder(this.element)
+			this._pressableBinder = new $ns$core.EventBinder(this.element)
 			this._pressableBinder.on('mousedown', function()	{ this.pressed = true }.bind(this))
 			this._pressableBinder.on('mouseup', function()		{ this.pressed = false }.bind(this))
 		}
@@ -105,7 +105,7 @@ Item {
 	/// @private
 	function _bindHover(value) {
 		if (value && !this._hoverBinder) {
-			this._hoverBinder = new _globals.core.EventBinder(this.element)
+			this._hoverBinder = new $ns$core.EventBinder(this.element)
 			this._hoverBinder.on('mouseenter', function() { this.hover = true }.bind(this))
 			this._hoverBinder.on('mouseleave', function() { this.hover = false }.bind(this))
 			this._hoverBinder.on('mousemove', function(event) { if (this.updatePosition(event)) event.preventDefault() }.bind(this))

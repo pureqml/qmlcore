@@ -12,7 +12,7 @@ Object {
 	/// @private
 	function _bindPress(value) {
 		if (value && !this._mpmPressBinder) {
-			this._mpmPressBinder = new _globals.core.EventBinder(this.element)
+			this._mpmPressBinder = new $ns$core.EventBinder(this.element)
 			this._mpmPressBinder.on('mousedown',	function() { this.pressed = true }.bind(this))
 			this._mpmPressBinder.on('mouseup',		function() { this.pressed = false }.bind(this))
 		}

@@ -1,7 +1,7 @@
 /// simple proxy to underlying storage
 Object {
 	constructor: {
-		var backend = _globals.core.__localStorageBackend
+		var backend = $ns$core.__localStorageBackend
 		this.impl = backend().createLocalStorage(this)
 	}
 

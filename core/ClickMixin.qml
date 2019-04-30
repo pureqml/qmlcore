@@ -11,8 +11,8 @@ Object {
 	///@private
 	function _bindClick(value) {
 		if (value && !this._cmClickBinder) {
-			this._cmClickBinder = new _globals.core.EventBinder(this.element)
-			this._cmClickBinder.on('click', _globals.core.createSignalForwarder(this.parent, 'clicked').bind(this))
+			this._cmClickBinder = new $ns$core.EventBinder(this.element)
+			this._cmClickBinder.on('click', $ns$core.createSignalForwarder(this.parent, 'clicked').bind(this))
 		}
 		if (this._cmClickBinder)
 			this._cmClickBinder.enable(value)

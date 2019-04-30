@@ -10,8 +10,8 @@ Object {
 
 	///@private
 	function addChild(child) {
-		_globals.core.Object.prototype.addChild.apply(this, arguments)
-		if (child instanceof _globals.core.GradientStop) {
+		$ns$core.Object.prototype.addChild.apply(this, arguments)
+		if (child instanceof $ns$core.GradientStop) {
 			this.stops.push(child)
 			this.stops.sort(function(a, b) { return a.position > b.position; })
 			this._updateStyle()

@@ -39,7 +39,7 @@ Layout {
 
 	/// @private
 	function addChild(child) {
-		_globals.core.Layout.prototype.addChild.apply(this, arguments)
+		$ns$core.Layout.prototype.addChild.apply(this, arguments)
 		child.onChanged('height', this._scheduleLayout.bind(this))
 		child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
 	}

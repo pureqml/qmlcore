@@ -245,8 +245,8 @@ Layout {
 
 	///@private
 	function addChild(child) {
-		_globals.core.Item.prototype.addChild.apply(this, arguments)
-		if (child instanceof _globals.core.Item) {
+		$ns$core.Item.prototype.addChild.apply(this, arguments)
+		if (child instanceof $ns$core.Item) {
 			child.onChanged('height', this._scheduleLayout.bind(this))
 			child.onChanged('width', this._scheduleLayout.bind(this))
 			child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))

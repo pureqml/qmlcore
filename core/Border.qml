@@ -39,7 +39,7 @@ Object {
 	}
 
 	onColorChanged: {
-		var newColor = _globals.core.Color.normalize(this.color)
+		var newColor = $ns$core.Color.normalize(this.color)
 		this.parent.style('border-color', newColor)
 	}
 

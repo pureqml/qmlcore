@@ -30,7 +30,7 @@ def mangle_package(name):
 	package = list(map(escape_id, package))
 	if package[0] == '_globals':
 		package.pop(0)
-	package = ['', 'ns'] + package
+	package = [''] + package
 	return "$".join(package)
 
 from compiler.js.component import component_generator

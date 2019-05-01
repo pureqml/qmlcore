@@ -18,7 +18,7 @@ EventEmitter {
 			if (this._eventHandlers[name])
 				throw new Error('listener callback added event handler')
 		}
-		$ns$core.EventEmitter.prototype.on.call(this, name, callback)
+		$core.EventEmitter.prototype.on.call(this, name, callback)
 	}
 
 	///@private
@@ -28,7 +28,7 @@ EventEmitter {
 
 	///@private
 	function removeAllListeners(name) {
-		$ns$core.EventEmitter.prototype.removeAllListeners.call(this, name)
+		$core.EventEmitter.prototype.removeAllListeners.call(this, name)
 		if (name in this._onListener)
 			this._onListener[name][1](name)
 		else if ('' in this._onListener) {

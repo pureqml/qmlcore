@@ -13,7 +13,7 @@ Object {
 
 	///@private
 	constructor: {
-		var backend = $ns$core.__locationBackend
+		var backend = $core.__locationBackend
 		if (!backend)
 			throw new Error('no backend found')
 		this.impl = backend().createLocation(this)

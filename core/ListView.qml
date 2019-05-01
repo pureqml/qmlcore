@@ -269,7 +269,7 @@ BaseView {
 
 	/// @private creates delegate in given item slot
 	function _createDelegate(idx) {
-		var item = $ns$core.BaseView.prototype._createDelegate.apply(this, arguments)
+		var item = $core.BaseView.prototype._createDelegate.apply(this, arguments)
 		//connect both dimensions, because we calculate maxWidth/maxHeight in contentWidth/contentHeight
 		item.onChanged('width', this._scheduleLayout.bind(this))
 		item.onChanged('height', this._scheduleLayout.bind(this))

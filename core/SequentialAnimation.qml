@@ -67,7 +67,7 @@ Object {
 	}
 
 	function addChild (animation) {
-		if (animation instanceof $ns$core.Animation)
+		if (animation instanceof $core.Animation)
 		{
 			animation.cssTransition = false //we will add keyframe mode here later
 			this._sequence.push(animation)
@@ -76,6 +76,6 @@ Object {
 			}.bind(this))
 		}
 		else
-			$ns$core.Object.prototype.addChild.call(this, animation)
+			$core.Object.prototype.addChild.call(this, animation)
 	}
 }

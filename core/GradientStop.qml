@@ -10,6 +10,6 @@ Object {
 
 	///@private
 	function _getDeclaration() {
-		return $ns$core.Color.normalize(this.color) + " " + Math.floor(100 * this.position) + "%"
+		return $core.Color.normalize(this.color) + " " + Math.floor(100 * this.position) + "%"
 	}
 }

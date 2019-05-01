@@ -43,7 +43,7 @@ Item {
 		var source = this.source
 		var preferred = this.backend
 		log('preferred backend: ' + preferred)
-		var backends = $ns$core.__videoBackends
+		var backends = $core.__videoBackends
 		var results = []
 		if (preferred && backends[preferred]) {
 			var backend = backends[preferred]()

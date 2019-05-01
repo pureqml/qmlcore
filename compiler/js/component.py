@@ -41,6 +41,10 @@ class component_generator(object):
 		return self.name[idx + 1:] if idx >= 0 else self.name
 
 	@property
+	def mangled_name(self):
+		return mangle_package(get_package(self.name)) + '.' + self.class_name
+
+	@property
 	def local_name(self):
 		return self.class_name + 'Component'
 

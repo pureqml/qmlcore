@@ -1,8 +1,8 @@
 //WARNING: no log() function usage before init.js
 
-exports.core.device = 0
-exports.core.vendor = ""
-exports.core.__videoBackends = {}
+$core.device = 0
+$core.vendor = ""
+$core.__videoBackends = {}
 
 /* ${init.js} */
 
@@ -204,17 +204,21 @@ exports.core.safeCall = function(self, args, onError) {
 }
 
 
-exports.core.getKeyCodeByName = function(key) {
-	var codes = $ns$core.keyCodes
+$core.getKeyCodeByName = function(key) {
+	var codes = $core.keyCodes
 	for (var i in codes) {
 		if (codes[i] === key)
 			return ~~i
 	}
 }
+
+/* @const @type {!$core.CoreObject} */
+
 /**
  * @constructor
  */
-var CoreObjectComponent = exports.core.CoreObject = function(parent) {
+
+var CoreObjectComponent = $core.CoreObject = function(parent) {
 	this._local = Object.create(parent? parent._local: null)
 }
 
@@ -253,7 +257,7 @@ CoreObjectComponentPrototype._get = function(name, unsafe) {
 }
 
 /** @constructor */
-var Color = exports.core.Color = function(value) {
+var Color = $core.Color = function(value) {
 	if (Array.isArray(value)) {
 		this.r = value[0]
 		this.g = value[1]
@@ -334,7 +338,7 @@ Color.normalize = function(spec) {
 }
 
 var ColorPrototype = Color.prototype
-ColorPrototype.constructor = exports.core.Color
+ColorPrototype.constructor = $core.Color
 /** @const */
 
 ColorPrototype.rgba = function() {
@@ -520,7 +524,7 @@ PropertyStoragePrototype.callOnChanged = function(object, name, value) {
 	if (!hasProtoCallbacks && !hasHandlers)
 		return
 
-	var invoker = $ns$core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+	var invoker = $core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 
 	if (hasProtoCallbacks)
 		protoCallbacks.forEach(invoker)
@@ -675,25 +679,25 @@ exports.addAliasProperty = function(object, name, getObject, srcProperty) {
 	})
 }
 
-exports.core.createSignal = function(name) {
+$core.createSignal = function(name) {
 	return function() {
 		this.emitWithArgs(name, arguments)
 	}
 }
-exports.core.createSignalForwarder = function(object, name) {
+$core.createSignalForwarder = function(object, name) {
 	return (function() {
 		object.emitWithArgs(name, arguments)
 	})
 }
 
 /** @constructor */
-exports.core.EventBinder = function(target) {
+$core.EventBinder = function(target) {
 	this.target = target
 	this.callbacks = {}
 	this.enabled = false
 }
 
-exports.core.EventBinder.prototype.on = function(event, callback) {
+$core.EventBinder.prototype.on = function(event, callback) {
 	if (event in this.callbacks)
 		throw new Error('double adding of event (' + event + ')')
 	this.callbacks[event] = callback
@@ -701,9 +705,9 @@ exports.core.EventBinder.prototype.on = function(event, callback) {
 		this.target.on(event, callback)
 }
 
-exports.core.EventBinder.prototype.constructor = exports.core.EventBinder
+$core.EventBinder.prototype.constructor = $core.EventBinder
 
-exports.core.EventBinder.prototype.enable = function(value) {
+$core.EventBinder.prototype.enable = function(value) {
 	if (value != this.enabled) {
 		var target = this.target
 		this.enabled = value
@@ -734,13 +738,13 @@ var protoEvent = function(prefix, proto, name, callback) {
 		proto[sname] = [callback]
 }
 
-exports.core._protoOn = function(proto, name, callback)
+$core._protoOn = function(proto, name, callback)
 { protoEvent('__on', proto, name, callback) }
 
-exports.core._protoOnChanged = function(proto, name, callback)
+$core._protoOnChanged = function(proto, name, callback)
 { protoEvent('__changed', proto, name, callback) }
 
-exports.core._protoOnKey = function(proto, name, callback)
+$core._protoOnKey = function(proto, name, callback)
 { protoEvent('__key', proto, name, callback) }
 
 var ObjectEnumerator = function(callback) {

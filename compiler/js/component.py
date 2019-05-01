@@ -312,7 +312,7 @@ class component_generator(object):
 		r.append("%s%s.componentName = '%s'" %(ident, self.proto_name, self.name))
 
 		for name in self.signals:
-			r.append("%s%s.%s = $ns$core.createSignal('%s')" %(ident, self.proto_name, name, name))
+			r.append("%s%s.%s = $core.createSignal('%s')" %(ident, self.proto_name, name, name))
 
 		for prop in self.properties:
 			for name, default_value in prop.properties:
@@ -378,7 +378,7 @@ class component_generator(object):
 
 			for (path, name) in handlers:
 				assert not path
-				r.append("%s$ns$core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
+				r.append("%s$core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
 			handlers = list(filter(put_in_prototype, handlers))
@@ -390,7 +390,7 @@ class component_generator(object):
 				code_index += 1
 
 			for path, name in handlers:
-				r.append("%s$ns$core._protoOn(%s, '%s', %s)" %(ident, self.proto_name, name, code))
+				r.append("%s$core._protoOn(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 		for code, handlers in self.transform_handlers(registry, self.key_handlers):
 			handlers = list(filter(put_in_prototype, handlers))
@@ -402,7 +402,7 @@ class component_generator(object):
 				code_index += 1
 
 			for (path, name) in handlers:
-				r.append("%s$ns$core._protoOnKey(%s, '%s', %s)" %(ident, self.proto_name, name, code))
+				r.append("%s$core._protoOnKey(%s, '%s', %s)" %(ident, self.proto_name, name, code))
 
 
 		generate = False
@@ -469,7 +469,7 @@ class component_generator(object):
 
 		if not self.prototype:
 			for name in self.signals:
-				r.append("%s%s.%s = $ns$core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
+				r.append("%s%s.%s = $core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
 
 			for prop in self.properties:
 				for name, default_value in prop.properties:

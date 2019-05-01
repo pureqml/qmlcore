@@ -220,7 +220,6 @@ class Compiler(object):
 			return r
 		appcode += write_properties('$manifest', self.root_manifest_props)
 
-		appcode += "/** @const @type {!CoreObject} */\n"
 		appcode += "var " + generator.generate()
 		appcode += generator.generate_startup(namespace, self.app)
 		appcode = appcode.replace('/* ${init.js} */', init_js)

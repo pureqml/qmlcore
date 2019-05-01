@@ -45,7 +45,7 @@ CoreObject {
 
 		COPY_ARGS(args, 1)
 
-		var invoker = $ns$core.safeCall(
+		var invoker = $core.safeCall(
 			this, args,
 			function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) }
 		)
@@ -67,7 +67,7 @@ CoreObject {
 		if (proto_callback === undefined && handlers === undefined)
 			return
 
-		var invoker = $ns$core.safeCall(
+		var invoker = $core.safeCall(
 			this, args,
 			function(ex) { log("event/signal " + name + " handler failed:", ex, ex.stack) }
 		)

@@ -43,7 +43,7 @@ Layout {
 
 	///@private
 	function addChild(child) {
-		$ns$core.Item.prototype.addChild.apply(this, arguments)
+		$core.Item.prototype.addChild.apply(this, arguments)
 
 		if (!('height' in child))
 			return

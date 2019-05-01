@@ -16,7 +16,7 @@ Item {
 	///@private
 	function discard() {
 		this.discardItem()
-		$ns$core.Item.prototype.discard.call(this)
+		$core.Item.prototype.discard.call(this)
 	}
 
 	///@internal

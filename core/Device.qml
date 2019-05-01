@@ -13,7 +13,7 @@ Object {
 	property bool supporting3d;		///< 3D Video supporting flag
 
 	constructor: {
-		var backend = $ns$core.__deviceBackend
+		var backend = $core.__deviceBackend
 		if (!backend)
 			throw new Error('no backend found')
 		backend().createDevice(this)

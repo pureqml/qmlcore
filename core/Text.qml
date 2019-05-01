@@ -49,7 +49,7 @@ Item {
 					this._enableSizeUpdate()
 			}
 		}
-		$ns$core.Item.prototype.onChanged.apply(this, arguments);
+		$core.Item.prototype.onChanged.apply(this, arguments);
 	}
 
 	///@private
@@ -58,7 +58,7 @@ Item {
 			if (name === 'newBoundingBox')
 				this._enableSizeUpdate()
 		}
-		$ns$core.Item.prototype.on.apply(this, arguments)
+		$core.Item.prototype.on.apply(this, arguments)
 	}
 
 	///@private
@@ -67,7 +67,7 @@ Item {
 			this.style('text-shadow', this.shadow._getFilterStyle())
 		else
 			this.style('text-shadow', '')
-		$ns$core.Item.prototype._updateStyle.apply(this, arguments)
+		$core.Item.prototype._updateStyle.apply(this, arguments)
 	}
 
 	///@private
@@ -99,7 +99,7 @@ Item {
 	}
 
 	onTextChanged:				{ this._setText(value); this._updateSize() }
-	onColorChanged: 			{ this.style('color', $ns$core.Color.normalize(value)) }
+	onColorChanged: 			{ this.style('color', $core.Color.normalize(value)) }
 	onWidthChanged:				{ this._updateSize() }
 
 	onVerticalAlignmentChanged: {

@@ -51,7 +51,7 @@ Item {
 
 			for (var i = 0; i < this.children.length; ++i) {
 				var c = this.children[i]
-				if (c instanceof $ns$core.Gamepad && c.connected && c.index === gp.index) {
+				if (c instanceof $core.Gamepad && c.connected && c.index === gp.index) {
 					gpItem = c
 					break
 				}
@@ -74,7 +74,7 @@ Item {
 		this._gamepads[event.gamepad.index] = event.gamepad
 		++this.count
 
-		if (!$ns$core.Gamepad) {
+		if (!$core.Gamepad) {
 			log("No 'Gamepad' instance found, add at least one 'Gamepad' item inside 'GamepadManager' scope.")
 			return
 		}
@@ -100,7 +100,7 @@ Item {
 		var g = event.gamepad
 		for (var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (c instanceof $ns$core.Gamepad && !c.connected) {
+			if (c instanceof $core.Gamepad && !c.connected) {
 				c.index = g.index
 				c.connected = true
 				c.deviceInfo = g.id
@@ -123,7 +123,7 @@ Item {
 		delete this._gamepads[event.gamepad.index]
 		--this.count
 
-		if (!$ns$core.Gamepad) {
+		if (!$core.Gamepad) {
 			log("No 'Gamepad' instance found, add at least one 'Gamepad' item inside 'GamepadManager' scope.")
 			return
 		}
@@ -133,7 +133,7 @@ Item {
 
 		for (var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (c instanceof $ns$core.Gamepad && c.index === g.index) {
+			if (c instanceof $core.Gamepad && c.index === g.index) {
 				c.index = -1
 				c.connected = false
 				c.deviceInfo = ""

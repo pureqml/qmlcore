@@ -10,8 +10,6 @@ var Player = function(ui) {
 	ui.element = player
 	ui.parent.element.append(ui.element)
 
-	this.setAutoPlay(ui.autoPlay)
-
 	this._xhr = new XMLHttpRequest()
 	this._xhr.addEventListener('load', this.parseManifest.bind(this))
 }
@@ -79,6 +77,8 @@ Player.prototype.setEventListeners = function() {
 		if (last >= 0)
 			ui.buffered = dom.buffered.end(last) - dom.buffered.start(last)
 	}.bind(ui))
+
+	this.setOption("autoplay", ui.autoPlay)
 }
 
 Player.prototype.parseManifest = function(data) {
@@ -207,11 +207,15 @@ Player.prototype.setLoop = function(loop) {
 	this.element.dom.loop = loop
 }
 
-Player.prototype.setAutoPlay = function(autoPlay) {
-	if (autoPlay)
-		this.element.dom.setAttribute("autoplay", "")
-	else
-		this.element.dom.removeAttribute("autoplay");
+Player.prototype.setOption = function(name, value) {
+	if (name === "autoplay") {
+		if (value)
+			this.element.dom.setAttribute("autoplay", "")
+		else
+			this.element.dom.removeAttribute("autoplay");
+	} else {
+		this.element.dom.setAttribute(name, value)
+	}
 }
 
 Player.prototype.setRect = function(l, t, r, b) {

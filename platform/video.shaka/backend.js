@@ -26,7 +26,6 @@ var Player = function(ui) {
 	this.element = player
 	this.ui = ui
 	this.setEventListeners()
-	this.setAutoPlay(ui.autoPlay)
 
 	ui.element.remove()
 	ui.element = player

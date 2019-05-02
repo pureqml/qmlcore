@@ -104,14 +104,15 @@ Item {
 			player.seekTo(value)
 	}
 
-	///@private
-	onAutoPlayChanged: {
+	/**
+	 * Set custom option in video player
+	 * @param {string} name - option name
+	 * @param {any} value - option value
+	 */
+	setOption(name, value): {
 		var player = this._getPlayer()
 		if (player)
-			player.setAutoPlay(value)
-
-		if (value) //fixme: and not currently playing
-			this.play()
+			player.setOption(name, value)
 	}
 
 	///@private
@@ -164,6 +165,8 @@ Item {
 
 	///@private
 	onVolumeChanged: { this.applyVolume() }
+
+	onAutoPlayChanged: { this.setOption('autoplay', value) }
 
 	///@private
 	onReadyChanged: { log("ReadyState: " + this.ready) }
@@ -234,15 +237,9 @@ Item {
 		var player = this._getPlayer()
 		if (player)
 			player.setSource(value)
-		if (this.autoPlay)
-			this.play()
 	}
 
-	onBackgroundImageChanged: {
-		var player = this._getPlayer()
-		if (player)
-			player.element.setAttribute('poster', value)
-	}
+	onBackgroundImageChanged: { this.setOption.setAttribute('poster', value) }
 
 	onBackendChanged: {
 		this.impl = null

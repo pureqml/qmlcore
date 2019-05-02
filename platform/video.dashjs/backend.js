@@ -10,8 +10,6 @@ var Player = function(ui) {
 	ui.element.remove()
 	ui.element = player
 	ui.parent.element.append(ui.element)
-
-	this.setAutoPlay(ui.autoPlay)
 }
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)

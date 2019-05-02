@@ -237,8 +237,6 @@ Item {
 		var player = this._getPlayer()
 		if (player)
 			player.setSource(value)
-		if (this.autoPlay)
-			this.play()
 	}
 
 	onBackgroundImageChanged: { this.setOption.setAttribute('poster', value) }

@@ -205,6 +205,16 @@ Item {
 	}
 
 	/**
+	 * Select subtitles with 'trackId' id if it exists
+	 * @param {string} trackId - subtitles track ID
+	 */
+	setSubtitles(trackId): {
+		var player = this._getPlayer()
+		if (player)
+			player.setSubtitles(trackId)
+	}
+
+	/**
 	 * Return array of available video tracks
 	 */
 	getVideoTracks: {
@@ -222,6 +232,17 @@ Item {
 		var player = this._getPlayer()
 		if (player)
 			return player.getAudioTracks()
+		else
+			return []
+	}
+
+	/**
+	 * Return array of available subtitles
+	 */
+	getSubtitles: {
+		var player = this._getPlayer()
+		if (player)
+			return player.getSubtitles()
 		else
 			return []
 	}

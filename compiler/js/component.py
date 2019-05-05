@@ -38,7 +38,7 @@ class component_generator(object):
 	@property
 	def class_name(self):
 		idx = self.name.rindex('.')
-		return self.name[idx + 1:] if idx >= 0 else self.name
+		return escape(self.name[idx + 1:] if idx >= 0 else self.name)
 
 	@property
 	def mangled_name(self):

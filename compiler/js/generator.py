@@ -3,7 +3,7 @@ from builtins import object
 
 import json
 import re
-from compiler.js import split_name, escape_package, get_package, mangle_package
+from compiler.js import split_name, escape_package, get_package, mangle_package, escape
 from compiler.js.component import component_generator
 from collections import OrderedDict
 
@@ -32,7 +32,7 @@ class generator(object):
 		package = escape_package(package)
 
 		if not declaration:
-			name = "%s.Ui%s" %(package, component_name[0].upper() + component_name[1:])
+			name = "%s.Ui%s" %(package, component_name[0].upper() + escape(component_name[1:]))
 			self.used_components.add(name)
 			self.used_packages.add(package)
 			self.startup.append("\tcontext.start(new qml.%s(context))" %name)

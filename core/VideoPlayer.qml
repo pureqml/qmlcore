@@ -2,6 +2,7 @@
 Item {
 	property string backend; ///< backend to use
 
+	signal text;		///< subtitle text appears (works now only for tizen avplay)
 	signal error;		///< error occured signal
 	signal finished;	///< video finished signal
 	property string	source;	///< video source URL

@@ -123,7 +123,6 @@ class component_generator(object):
 			self.assign(child.target, child.value)
 		elif t is lang.IdAssignment:
 			self.id = child.name
-			self.assign("id", child.name)
 		elif t is lang.Component:
 			value = self.create_component_generator(child)
 			self.children.append(value)
@@ -198,6 +197,8 @@ class component_generator(object):
 		r.append(" */")
 		r.append("\tvar %s = %s.%s = function(parent, row) {" %(self.local_name, mangle_package(self.package), self.class_name))
 		r.append("\t\t%s.apply(this, arguments)" % self.base_local_name)
+		if self.id:
+			r.append("\t\tthis._setId('%s');" %(self.id))
 		r.append(self.ctor)
 		r.append("\t}")
 		r.append("")
@@ -498,17 +499,17 @@ class component_generator(object):
 			var = "%s$child%d" %(escape(parent), idx)
 			component = registry.find_component(self.package, gen.component.name, mangle = True)
 			r.append("%svar %s = new %s(%s)" %(ident, var, component, parent))
+			if gen.id:
+				if "." in gen.id:
+					raise Exception("expected identifier, not expression")
+				r.append("%s%s._setId('%s')" %(ident, var, gen.id))
 			r.append("%s%s.%s = %s" %(ident, closure, var, var))
 			code = self.call_create(registry, ident_n, var, gen, closure)
 			r.append(code)
 			r.append("%s%s.addChild(%s)" %(ident, parent, var));
 
 		for target, value in self.assignments.items():
-			if target == "id":
-				if "." in value:
-					raise Exception("expected identifier, not expression")
-				r.append("%s%s._setId('%s')" %(ident, parent, value))
-			elif target.endswith(".id"):
+			if target.endswith(".id"):
 				raise Exception("setting id of the remote object is prohibited")
 			else:
 				self.check_target_property(registry, target)
@@ -560,8 +561,8 @@ class component_generator(object):
 		ident = "\t" * ident_n
 
 		for target, value in self.assignments.items():
-			if target == "id":
-				continue
+			assert(target != "id")
+
 			t = type(value)
 			#print self.name, target, value
 			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)

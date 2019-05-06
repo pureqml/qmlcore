@@ -5,7 +5,7 @@ The main concepts are the same though, so if you're familiar with original QML, 
 
 ## Usage
 QmlCore provides a toolchain written in Python using python-future, allowing it to be run on top of both python versions.
-Usually you don't need to use them directly. ```build``` provides a convenient wrapper around them all.
+Normally you don't need to use them directly. ```build``` provides a convenient wrapper around them all.
 
 ### Prerequisites
 Any modern Python (2 or 3) will go well. Jinja2 is a different option for templating in case you want more than QML loader in your HTML file, while it's not required for small apps.

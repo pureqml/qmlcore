@@ -310,7 +310,7 @@ def handle_ternary_op(s, l, t):
 def handle_percent_number(s, l, t):
 	value = t[0]
 	strvalue = lang.to_string(value)
-	return ("((%s) / 100 * ${parent.<property-name>})" %strvalue) if strvalue != 100 else "(${parent.<property-name>})"
+	return ("((%s) / 100 * ${parent.<property-name>})" %strvalue) if value != 100 else "(${parent.<property-name>})"
 
 percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)

@@ -261,7 +261,7 @@ Item {
 			player.setSource(value)
 	}
 
-	onBackgroundImageChanged: { this.setOption.setAttribute('poster', value) }
+	onBackgroundImageChanged: { this.setOption('poster', value) }
 
 	onBackendChanged: {
 		this.impl = null

@@ -1,4 +1,6 @@
+from __future__ import unicode_literals
 from builtins import object, str
+from past.builtins import basestring
 
 import re
 
@@ -6,8 +8,10 @@ def value_is_trivial(value):
 	if isinstance(value, bool):
 		return True
 
-	if value is None or not isinstance(value, str):
+	if value is None or not isinstance(value, (str, basestring)):
 		return False
+
+	value = str(value)
 
 	if value[0] == '(' and value[-1] == ')':
 		value = value[1:-1]
@@ -30,7 +34,7 @@ def value_is_trivial(value):
 	return False
 
 def to_string(value):
-	if isinstance(value, str):
+	if isinstance(value, (str, basestring)):
 		return value
 	elif isinstance(value, bool):
 		return 'true' if value else 'false'
@@ -105,7 +109,7 @@ class Assignment(Entity):
 		elif property_name == 'y':
 			property_name = 'height'
 
-		if isinstance(value, str):
+		if isinstance(value, (str, basestring)):
 			self.value = Assignment.re_name.sub(property_name, value)
 		else:
 			self.value = to_string(value)

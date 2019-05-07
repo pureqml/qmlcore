@@ -64,6 +64,8 @@ Player.prototype.stop = function() {
 
 Player.prototype.setSource = function(url) {
 	var ui = this.ui
+	this._language = null
+	this._videoTrackHeight = null
 	if (url) {
 		var urlLower = url.toLowerCase()
 		var querryIndex = url.indexOf("?")
@@ -139,13 +141,23 @@ Player.prototype.setAudioTrack = function(trackId) {
 
 	log("Try to set audio track", found)
 	if (found && found.length) {
+		var video = found[0]
+		var height = this._videoTrackHeight
+		if (height && height != video.height) {
+			var foundHeight = tracks.filter(function(element) {
+				return element.language === video.language && element.height === height
+			})
+			if (foundHeight && foundHeight.length)
+				video = foundHeight[0]
+		}
 		this.shakaPlayer.configure({
 			abr: {
 				enabled: false,
 				switchInterval: 0
 			}
 		});
-		this.shakaPlayer.selectVariantTrack(found[0])
+		this._language = found[0].language
+		this.shakaPlayer.selectVariantTrack(video)
 	}
 }
 
@@ -158,13 +170,23 @@ Player.prototype.setVideoTrack = function(trackId) {
 
 	log("Try to set video track", found)
 	if (found && found.length) {
+		var video = found[0]
+		var lang = this._language
+		if (lang && lang != video.language) {
+			var foundLang = tracks.filter(function(element) {
+				return element.height === video.height && element.language === lang
+			})
+			if (foundLang && foundLang.length)
+				video = foundLang[0]
+		}
 		this.shakaPlayer.configure({
 			abr: {
 				enabled: false,
 				switchInterval: 0
 			}
 		});
-		this.shakaPlayer.selectVariantTrack(found[0])
+		this._videoTrackHeight = video.height
+		this.shakaPlayer.selectVariantTrack(video)
 	}
 }
 

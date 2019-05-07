@@ -95,15 +95,18 @@ Player.prototype.getVideoTracks = function() {
 	var video = []
 	var tracks = this.shakaPlayer.getVariantTracks()
 
+	var lang = tracks && tracks.length ? tracks[0].language : ""
 	for (var i = 0; i < tracks.length; ++i) {
 		var track = tracks[i]
-		video.push({
-			id: track.id,
-			width: track.width,
-			framerate: track.frameRate,
-			bandwidth: track.videoBandwidth,
-			height: track.height
-		})
+		if (track.language == lang) {
+			video.push({
+				id: track.id,
+				width: track.width,
+				framerate: track.frameRate,
+				bandwidth: track.videoBandwidth,
+				height: track.height
+			})
+		}
 	}
 	return video
 }

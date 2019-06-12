@@ -1,5 +1,5 @@
 {
-	"requires": ["core"],
+	"requires": ["pure"],
 	"export_module": true,
 
 	"properties.style.font" : {

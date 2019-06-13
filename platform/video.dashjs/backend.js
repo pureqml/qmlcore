@@ -10,9 +10,18 @@ var Player = function(ui) {
 	ui.element.remove()
 	ui.element = player
 	ui.parent.element.append(ui.element)
+
+	ui.dash = dashjs.MediaPlayer().create();
+	ui.dash.initialize(player.dom)
 }
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
+
+Player.prototype.setSource = function(url) {
+	this.ui.ready = false
+	this.ui.dash.attachSource(url)
+}
+
 
 exports.createPlayer = function(ui) {
 	return new Player(ui)

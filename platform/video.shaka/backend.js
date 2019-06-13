@@ -89,6 +89,8 @@ Player.prototype.setSource = function(url) {
 			this._player.dom.src = url
 		}
 	}
+	if (ui.autoPlay)
+		this.play()
 }
 
 Player.prototype.getVideoTracks = function() {

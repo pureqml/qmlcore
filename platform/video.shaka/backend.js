@@ -55,8 +55,6 @@ Player.prototype.stop = function() {
 	var self = this
 	if (this._loaded) {
 		this.shakaPlayer.unload()
-			.then(function(e) { log("Unloaded"); self.shakaPlayer.destroy(); self.shakaPlayer = new shaka.Player(self._player.dom); })
-			.catch(function(e) { log("Unload failed", e); self.shakaPlayer.destroy(); self.shakaPlayer = new shaka.Player(self._player.dom); })
 	} else {
 		this.pause()
 	}

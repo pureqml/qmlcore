@@ -72,7 +72,8 @@ Player.prototype.setSource = function(url) {
 		var extIndex = urlLower.lastIndexOf(".")
 		var extension = urlLower.substring(extIndex, urlLower.length)
 		var player = this._player
-		if (extension === ".mpd") {
+		//fixme: shall we check content type here?
+		if (extension === ".mpd" || extension == ".m3u8" || extension == '.m3u') {
 			this._loaded = true
 			var self = this
 			this.shakaPlayer.load(url)

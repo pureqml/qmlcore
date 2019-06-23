@@ -344,38 +344,30 @@ Object {
 	}
 
 	///@private
-	function _processKey(event) {
-		var keyCode = event.which || event.keyCode
-		var key = $core.keyCodes[keyCode]
-		var eventTime = event.timeStamp
+	function _processKey(key, event) {
+		if (this.keyProcessDelay) {
+			if (this._lastEvent && eventTime > this._lastEvent && eventTime - this._lastEvent < this.keyProcessDelay)
+				return true
 
-		if (key !== undefined) {
-			if (this.keyProcessDelay) {
-				if (this._lastEvent && eventTime > this._lastEvent && eventTime - this._lastEvent < this.keyProcessDelay)
-					return true
-
-				this._lastEvent = eventTime
-			}
-
-			//fixme: create invoker only if any of handlers exist
-			var invoker = $core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
-			var proto_callback = this['__key__' + key]
-
-			if (key in this._pressedHandlers)
-				return this.invokeKeyHandlers(key, event, this._pressedHandlers[key], invoker)
-
-			if (proto_callback)
-				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
-
-			var proto_callback = this['__key__Key']
-			if ('Key' in this._pressedHandlers)
-				return this.invokeKeyHandlers(key, event, this._pressedHandlers['Key'], invoker)
-
-			if (proto_callback)
-				return this.invokeKeyHandlers(key, event, proto_callback, invoker)
-		} else {
-			log("unknown keycode " + keyCode + ": [" + event.charCode + " " + event.keyCode + " " + event.which + " " + event.key + " " + event.code + " " + event.location + "]")
+			this._lastEvent = eventTime
 		}
+
+		//fixme: create invoker only if any of handlers exist
+		var invoker = $core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
+		var proto_callback = this['__key__' + key]
+
+		if (key in this._pressedHandlers)
+			return this.invokeKeyHandlers(key, event, this._pressedHandlers[key], invoker)
+
+		if (proto_callback)
+			return this.invokeKeyHandlers(key, event, proto_callback, invoker)
+
+		var proto_callback = this['__key__Key']
+		if ('Key' in this._pressedHandlers)
+			return this.invokeKeyHandlers(key, event, this._pressedHandlers['Key'], invoker)
+
+		if (proto_callback)
+			return this.invokeKeyHandlers(key, event, proto_callback, invoker)
 		return false
 	}
 

@@ -169,12 +169,12 @@ Item {
 	function tr()
 	{ return this.qsTr.apply(this, arguments) }
 
-	function processKey(event) {
+	function processKey(key, event) {
 		var handlers = core.forEach(this, $core.Item.prototype._enqueueNextChildInFocusChain, [])
 		var n = handlers.length
 		for(var i = 0; i < n; ++i) {
 			var handler = handlers[i]
-			if (handler._processKey(event))
+			if (handler._processKey(key, event))
 				return true
 		}
 		return false

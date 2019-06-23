@@ -513,7 +513,7 @@ exports.init = function(ctx) {
 		div.on(name, onFullscreenChanged, true)
 	})
 
-	win.on('keydown', function(event) {
+	win.on('keydown', ctx.wrapNativeCallback(function(event) {
 		var keyCode = event.which || event.keyCode
 		var key = $core.keyCodes[keyCode]
 
@@ -524,7 +524,7 @@ exports.init = function(ctx) {
 			log("unknown keycode " + keyCode + ": [" + event.charCode + " " + event.keyCode + " " + event.which + " " + event.key + " " + event.code + " " + event.location + "]")
 		}
 
-	}) //fixme: add html.Document instead
+	})) //fixme: add html.Document instead
 	win.on('orientationchange', function(event) {
 		log('orientation changed event')
 		ctx.system.screenWidth = window.screen.width

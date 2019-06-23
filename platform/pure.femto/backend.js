@@ -17,6 +17,12 @@ exports.init = function(ctx) {
 		ctx.width = w
 		ctx.height = h
 	})
+	nativeContext.on('keydown', ctx.wrapNativeCallback(function(key) {
+		var event = {
+			timestamp: new Date().getTime()
+		}
+		ctx.processKey(key, event)
+	}))
 	log('window size', ctx.width, ctx.height)
 }
 

@@ -514,8 +514,16 @@ exports.init = function(ctx) {
 	})
 
 	win.on('keydown', function(event) {
-		if (ctx.processKey(event))
-			event.preventDefault()
+		var keyCode = event.which || event.keyCode
+		var key = $core.keyCodes[keyCode]
+
+		if (key !== undefined) {
+			if (ctx.processKey(key, event))
+				event.preventDefault()
+		} else {
+			log("unknown keycode " + keyCode + ": [" + event.charCode + " " + event.keyCode + " " + event.which + " " + event.key + " " + event.code + " " + event.location + "]")
+		}
+
 	}) //fixme: add html.Document instead
 	win.on('orientationchange', function(event) {
 		log('orientation changed event')

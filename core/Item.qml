@@ -345,6 +345,8 @@ Object {
 
 	///@private
 	function _processKey(key, event) {
+		var eventTime = event.timeStamp
+
 		if (this.keyProcessDelay) {
 			if (this._lastEvent && eventTime > this._lastEvent && eventTime - this._lastEvent < this.keyProcessDelay)
 				return true

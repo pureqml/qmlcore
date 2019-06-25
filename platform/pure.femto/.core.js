@@ -1,5 +1,6 @@
 _globals._backend = function() { return _globals.pure.femto.backend }
 _globals.core.__locationBackend = function() { return _globals.pure.femto.location }
+_globals.core.__videoBackends.femto = function() { return _globals.pure.femto.video }
 
 //android NDK keycodes
 exports.core.keyCodes = {

@@ -20,6 +20,7 @@ Item {
 	property real	duration;	///< content duration in seconds (only for non-live videos)
 	property real	progress;	///< current playback progress in seconds
 	property real	buffered;	///< how much content to buffer in seconds
+	property real	startPosition;	///< second at which the video should start playback
 
 	PropertyStorage { id: volumeStorage; name: "volume"; defaultValue: 1.0; }
 

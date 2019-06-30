@@ -171,7 +171,11 @@ Player.prototype.setSource = function(url) {
 		this._xhr.open('GET', url);
 		this._xhr.send()
 	}
-	this.element.dom.src = url
+
+	var source = url
+	if (this.ui.startPosition)
+		source += "#t=" + this.ui.startPosition
+	this.element.dom.src = source
 }
 
 Player.prototype.play = function() {

@@ -1,7 +1,7 @@
+log = console.log.bind(console)
+
 if (navigator.userAgent.indexOf('Android') >= 0) {
 	_globals.core.__deviceBackend = function() { return _globals.android.device }
-
-	log = console.log.bind(console)
 
 	log("Android detected")
 	exports.core.vendor = "google"

@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+{% block head %}
+	<style>
+		body {
+			min-width: {{ resolutionWidth | default(250) }}px;
+			min-height: {{ resolutionHeight | default(250) }}px;
+		}
+	</style>
+	{{ super() }}
+{% endblock %}

@@ -122,11 +122,11 @@ class Context(object):
 			msg.save(ctx)
 
 class Ts(object):
-	def __init__(self, path = ''):
+	def __init__(self, path = '', lang = None):
 		self.__file = path
 		self.__contexts = {}
 		self.version = None
-		self.language = None
+		self.language = lang
 		if os.path.exists(path):
 			self._load(path)
 

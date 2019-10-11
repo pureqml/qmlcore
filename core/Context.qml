@@ -169,6 +169,12 @@ Item {
 	function tr()
 	{ return this.qsTr.apply(this, arguments) }
 
+	function updateL10n(lang, data) {
+		this.l10n[lang] = data
+		var storage = this.__properties.language
+		storage.callOnChanged(this, 'language', this.language, this.language)
+	}
+
 	function processKey(key, event) {
 		var handlers = core.forEach(this, $core.Item.prototype._enqueueNextChildInFocusChain, [])
 		var n = handlers.length

@@ -521,7 +521,7 @@ exports.init = function(ctx) {
 			if (ctx.processKey(key, event))
 				event.preventDefault()
 		} else {
-			log("unknown keycode " + keyCode + ": [" + event.charCode + " " + event.keyCode + " " + event.which + " " + event.key + " " + event.code + " " + event.location + "]")
+			log("unhandled keycode " + keyCode + ": [" + event.charCode + " " + event.keyCode + " " + event.which + " " + event.key + " " + event.code + " " + event.location + "]")
 		}
 
 	})) //fixme: add html.Document instead

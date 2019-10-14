@@ -9,8 +9,10 @@ Item {
 	property Stylesheet stylesheet: Stylesheet { }		///< @private
 	property string buildIdentifier; ///< @private
 
-	property int virtualWidth: manifest.virtual.width;		///< virtual viewport width
-	property int virtualHeight: manifest.virtual.height;	///< virtual viewport height
+	property int virtualWidth: manifest.virtual.width;	///< virtual viewport width
+	property int virtualHeight: manifest.virtual.height;///< virtual viewport height
+	property real virtualScaleX: width / virtualWidth;	///< @private
+	property real virtualScaleY: height / virtualHeight;///< @private
 
 	visibleInView: false; //startup
 

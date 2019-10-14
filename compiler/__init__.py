@@ -22,7 +22,7 @@ try:
 	data = ""
 	data += inspect.getsource(compiler.grammar)
 	data += inspect.getsource(compiler.lang)
-	grammar_digest = hashlib.sha1(data).hexdigest()
+	grammar_digest = hashlib.sha1(data.encode('utf-8')).hexdigest()
 	del data
 except:
 	grammar_digest = '0000000000000000000000000000000000000000'

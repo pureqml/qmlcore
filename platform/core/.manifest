@@ -1,6 +1,11 @@
 {
 	"standalone": false,
 	"properties": {
+		"virtual": {
+			"width": 1920,
+			"height": 1080
+		},
+
 		"disableAnimations": false,
 
 		"html5.prefix": "",

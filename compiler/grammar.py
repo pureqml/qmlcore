@@ -315,7 +315,7 @@ def handle_percent_number(s, l, t):
 def handle_scale_number(s, l, t):
 	value = t[0]
 	strvalue = lang.to_string(value)
-	return ("((%s) * context.<property-name> / ${context.<scale-property-name>})" %strvalue)
+	return ("((%s) * ${context.<scale-property-name>})" %strvalue)
 
 percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)

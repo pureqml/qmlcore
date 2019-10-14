@@ -312,8 +312,15 @@ def handle_percent_number(s, l, t):
 	strvalue = lang.to_string(value)
 	return ("((%s) / 100 * ${parent.<property-name>})" %strvalue) if value != 100 else "(${parent.<property-name>})"
 
+def handle_scale_number(s, l, t):
+	value = t[0]
+	strvalue = lang.to_string(value)
+	return ("((%s) * context.<property-name> / ${context.<scale-property-name>})" %strvalue)
+
 percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)
+scale_number = number + 's'
+scale_number.setParseAction(handle_scale_number)
 
 expression_array = Suppress("[") + Optional(delimitedList(json_value, ",")) + Suppress("]")
 def handle_expression_array(s, l, t):
@@ -321,7 +328,7 @@ def handle_expression_array(s, l, t):
 
 expression_array.setParseAction(handle_expression_array)
 
-expression_definition = null_value | bool_value | percent_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
+expression_definition = null_value | bool_value | percent_number | scale_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
 
 expression_ops = infixNotation(expression_definition, [
 	(oneOf('! ~ + - typeof'),	1, opAssoc.RIGHT, handle_unary_op),

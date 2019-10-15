@@ -111,15 +111,7 @@ class Assignment(Entity):
 			property_name = 'height'
 
 		value = self.replace(Assignment.re_name, property_name, value)
-
-		property_name = target[dot + 1:] if dot >= 0 else target
-		if property_name.lower().find('width') >= 0 or property_name == 'x':
-			property_name = 'virtualScaleX'
-		elif property_name.lower().find('height') >= 0 or property_name == 'y' or property_name == 'pixelSize':
-			property_name = 'virtualScaleY'
-		else:
-			property_name = '~invalid property %s~' %property_name
-
+		property_name = 'virtualScale'
 		self.value = self.replace(Assignment.re_scale_name, property_name, value)
 
 	def replace(self, rex, property_name, value):

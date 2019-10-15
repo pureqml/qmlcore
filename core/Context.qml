@@ -11,8 +11,8 @@ Item {
 
 	property int virtualWidth: manifest.virtual.width;	///< virtual viewport width
 	property int virtualHeight: manifest.virtual.height;///< virtual viewport height
-	property real virtualScaleX: width / virtualWidth;	///< @private
-	property real virtualScaleY: height / virtualHeight;///< @private
+	property real virtualScaleX: (system.resolutionWidth || width) / virtualWidth;	///< @private
+	property real virtualScaleY: (system.resolutionHeight || height) / virtualHeight;///< @private
 
 	visibleInView: false; //startup
 

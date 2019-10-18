@@ -8,6 +8,7 @@ Object {
 	property string language;		///< device langgcode
 	property string country;		///< device country code
 	property string sdk;			///< SDK version
+	property string ip;				///< device IP address if its available
 	property bool supportingUhd;	///< UHD (4K) supporting flag
 	property bool supportingHdr;	///< HDR supporting flag
 	property bool supporting3d;		///< 3D Video supporting flag

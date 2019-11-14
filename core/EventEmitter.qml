@@ -5,14 +5,18 @@ CoreObject {
 		this._onConnections = []
 	}
 
-	function discard() {
-		for(var name in this._eventHandlers)
-			this.removeAllListeners(name)
-
+	/// @private removes all on(signal) connections
+	function removeAllOn() {
 		var connections = this._onConnections
 		for(var i = 0, n = connections.length; i < n; i += 3)
 			connections[i].removeListener(connections[i + 1], connections[i + 2])
 		this._onConnections = []
+	}
+
+	function discard() {
+		this.removeAllOn()
+		for(var name in this._eventHandlers)
+			this.removeAllListeners(name)
 	}
 
 	function on (name, callback) {

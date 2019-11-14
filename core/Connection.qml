@@ -5,8 +5,6 @@ Object {
 	constructor: {
 		this._declaredOnConnections = []
 		this._declaredOnChangedConnections = []
-		this._targetOnConnections = []
-		this._targetOnChangedConnections = []
 	}
 
 	/// @private

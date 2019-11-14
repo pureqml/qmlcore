@@ -60,12 +60,17 @@ EventEmitter {
 		}
 	}
 
-	/// discard object
-	function discard() {
+	/// @private removes all on changes connections
+	function removeAllOnChanged() {
 		var connections = this._changedConnections
 		for(var i = 0, n = connections.length; i < n; i += 3)
 			connections[i].removeOnChanged(connections[i + 1], connections[i + 2])
 		this._changedConnections = []
+	}
+
+	/// discard object
+	function discard() {
+		this.removeAllOnChanged()
 
 		var attached = this.__attachedObjects
 		this.__attachedObjects = []

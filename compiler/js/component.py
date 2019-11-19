@@ -619,8 +619,12 @@ class component_generator(object):
 				code_index += 1
 
 			for path, name in sorted(handlers):
+				has_path = bool(path)
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
-				r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
+				if has_path:
+					r.append("%sif (%s) %s.on('%s', %s.bind(%s))" %(ident, path, path, name, code, parent)) #fixme: remove me?
+				else:
+					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
 		for code, handlers in self.transform_handlers(registry, self.changed_handlers):
 			handlers = list(filter(put_in_instance, handlers))
@@ -635,7 +639,7 @@ class component_generator(object):
 				has_path = bool(path)
 				path = path_or_parent(path, parent, partial(self.transform_root, registry))
 				if has_path:
-					r.append("%sif (%s) %s.onChanged('%s', %s.bind(%s))" %(ident, path, path, name, code, parent))
+					r.append("%sif (%s) %s.onChanged('%s', %s.bind(%s))" %(ident, path, path, name, code, parent)) #fixme: remove me?
 				else:
 					r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 

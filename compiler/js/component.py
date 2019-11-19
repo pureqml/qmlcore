@@ -328,7 +328,7 @@ class component_generator(object):
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
-						default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry))
+						default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry, None))
 						if deps:
 							raise Exception('trivial value emits dependencies')
 						args.append(default_value)
@@ -485,7 +485,7 @@ class component_generator(object):
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):
-							default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry))
+							default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry, None))
 							if deps:
 								raise Exception('trivial value emits dependencies')
 							args.append(default_value)
@@ -527,13 +527,13 @@ class component_generator(object):
 					r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
 		for name, target in self.aliases.items():
-			get, pname = generate_accessors(parent, target, partial(self.transform_root, registry))
+			get, pname = generate_accessors(parent, target, partial(self.transform_root, registry, None))
 			r.append("%score.addAliasProperty(%s, '%s', function() { return %s }, '%s')" \
 				%(ident, parent, name, get, pname))
 
 		return "\n".join(r)
 
-	def transform_root(self, registry, property):
+	def transform_root(self, registry, parent, property):
 		if property == 'context':
 			return '_context'
 		elif property == 'parent':
@@ -543,11 +543,12 @@ class component_generator(object):
 			if prop:
 				return property
 			else:
-				return "_get('%s')" %property
+				#replace first id (not a property with parent object reference)
+				return ("%s._get('%s')" %(parent, property)) if parent else ("_get('%s')" %property)
 
 	def get_rvalue(self, registry, parent, target):
 		path = target.split(".")
-		return "%s.%s" % (parent, mangle_path(path, partial(self.transform_root, registry)))
+		return "%s.%s" % (parent, mangle_path(path, partial(self.transform_root, registry, None)))
 
 	def get_lvalue(self, registry, parent, target):
 		path = target.split(".")
@@ -568,7 +569,7 @@ class component_generator(object):
 			if isinstance(value, (str, basestring)):
 				value = replace_enums(value, self, registry)
 				r.append('//assigning %s to %s' %(target, value))
-				value, deps = parse_deps(parent, value, partial(self.transform_root, registry))
+				value, deps = parse_deps(parent, value, partial(self.transform_root, registry, None))
 				if deps:
 					undep = []
 					for idx, _dep in enumerate(deps):
@@ -605,7 +606,7 @@ class component_generator(object):
 					code_index += 1
 
 				for path, name in sorted(methods):
-					path = path_or_parent(path, parent, partial(self.transform_root, registry))
+					path = path_or_parent(path, parent, partial(self.transform_root, registry, None))
 					code = code.replace('@super.', self.get_base_type(registry, mangle = True) + '.prototype.')
 					r.append("%s%s.%s = %s.bind(%s)" %(ident, path, name, code, parent))
 
@@ -620,7 +621,7 @@ class component_generator(object):
 
 			for path, name in sorted(handlers):
 				has_path = bool(path)
-				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				path = path_or_parent(path, parent, partial(self.transform_root, registry, parent))
 				if has_path:
 					r.append("%sif (%s) %s.on('%s', %s.bind(%s))" %(ident, path, path, name, code, parent)) #fixme: remove me?
 				else:
@@ -637,7 +638,7 @@ class component_generator(object):
 
 			for path, name in sorted(handlers):
 				has_path = bool(path)
-				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				path = path_or_parent(path, parent, partial(self.transform_root, registry, parent))
 				if has_path:
 					r.append("%sif (%s) %s.onChanged('%s', %s.bind(%s))" %(ident, path, path, name, code, parent)) #fixme: remove me?
 				else:
@@ -653,7 +654,7 @@ class component_generator(object):
 				code_index += 1
 
 			for path, name in sorted(handlers):
-				path = path_or_parent(path, parent, partial(self.transform_root, registry))
+				path = path_or_parent(path, parent, partial(self.transform_root, registry, parent))
 				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
 		for idx, value in enumerate(self.children):

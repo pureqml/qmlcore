@@ -360,18 +360,19 @@ Object {
 		var invoker = $core.safeCall(this, [key, event], function (ex) { log("on " + key + " handler failed:", ex, ex.stack) })
 		var proto_callback = this['__key__' + key]
 
-		if (key in this._pressedHandlers)
-			return this.invokeKeyHandlers(key, event, this._pressedHandlers[key], invoker)
+		if (key in this._pressedHandlers && this.invokeKeyHandlers(key, event, this._pressedHandlers[key], invoker))
+			return true
 
-		if (proto_callback)
-			return this.invokeKeyHandlers(key, event, proto_callback, invoker)
+		if (proto_callback && this.invokeKeyHandlers(key, event, proto_callback, invoker))
+			return true
 
 		var proto_callback = this['__key__Key']
-		if ('Key' in this._pressedHandlers)
-			return this.invokeKeyHandlers(key, event, this._pressedHandlers['Key'], invoker)
+		if ('Key' in this._pressedHandlers  && this.invokeKeyHandlers(key, event, this._pressedHandlers['Key'], invoker))
+			return true
 
-		if (proto_callback)
-			return this.invokeKeyHandlers(key, event, proto_callback, invoker)
+		if (proto_callback && this.invokeKeyHandlers(key, event, proto_callback, invoker))
+			return true
+
 		return false
 	}
 

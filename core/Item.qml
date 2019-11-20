@@ -345,6 +345,8 @@ Object {
 
 	///@private
 	function _processKey(key, event) {
+		if ($manifest$trace$keys)
+			log(this.getComponentPath(), '_processKey', key, event)
 		var eventTime = event.timeStamp
 
 		if (this.keyProcessDelay) {

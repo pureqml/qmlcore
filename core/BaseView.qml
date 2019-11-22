@@ -295,9 +295,8 @@ BaseLayout {
 		this.content._updateScrollPositions(x, y, layout)
 	}
 
-	function positionViewAtIndexHorizontally(idx, itemBox, center) {
+	function positionViewAtItemHorizontally(itemBox, center) {
 		var cx = this.contentX, cy = this.contentY
-		var itemBox = this.getItemPosition(idx)
 		var x = itemBox[0], y = itemBox[1]
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height
@@ -313,9 +312,8 @@ BaseLayout {
 			this.contentX = x + iw - w
 	}
 
-	function positionViewAtIndexVertically(idx, itemBox, center) {
+	function positionViewAtItemVertically(itemBox, center) {
 		var cx = this.contentX, cy = this.contentY
-		var itemBox = this.getItemPosition(idx)
 		var x = itemBox[0], y = itemBox[1]
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height

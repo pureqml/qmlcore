@@ -295,6 +295,43 @@ BaseLayout {
 		this.content._updateScrollPositions(x, y, layout)
 	}
 
+	function positionViewAtIndexHorizontally(idx, itemBox, center) {
+		var cx = this.contentX, cy = this.contentY
+		var itemBox = this.getItemPosition(idx)
+		var x = itemBox[0], y = itemBox[1]
+		var iw = itemBox[2], ih = itemBox[3]
+		var w = this.width, h = this.height
+
+		var atCenter = x - w / 2 + iw / 2
+		if (center && this.contentWidth > w)
+			this.contentX = atCenter < 0 ? 0 : x > this.contentWidth - w / 2 - iw / 2 ? this.contentWidth - w : atCenter
+		else if (iw > w)
+			this.contentX = atCenter
+		else if (x - cx < 0)
+			this.contentX = x
+		else if (x - cx + iw > w)
+			this.contentX = x + iw - w
+	}
+
+	function positionViewAtIndexVertically(idx, itemBox, center) {
+		var cx = this.contentX, cy = this.contentY
+		var itemBox = this.getItemPosition(idx)
+		var x = itemBox[0], y = itemBox[1]
+		var iw = itemBox[2], ih = itemBox[3]
+		var w = this.width, h = this.height
+
+		var atCenter = y - h / 2 + ih / 2
+		if (center && this.contentHeight > h)
+			this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 - ih / 2 ? this.contentHeight - h : atCenter
+		else if (ih > h)
+			this.contentY = atCenter
+		else if (y - cy < 0)
+			this.contentY = y
+		else if (y - cy + ih > h)
+			this.contentY = y + ih - h
+	}
+
+
 	onCompleted: {
 		var self = this
 		this.element.on('scroll', function(event) {

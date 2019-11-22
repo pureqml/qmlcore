@@ -20,6 +20,8 @@ BaseLayout {
 
 	/// @internal
 	property BaseViewContent content: BaseViewContent {
+		cssTranslatePositioning: parent.cssTranslatePositioning;
+
 		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
 	}
 

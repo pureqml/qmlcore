@@ -32,9 +32,9 @@ BaseView {
 		var center = this.positionMode === this.Center
 
 		if (horizontal) {
-			this.positionViewAtItemHorizontally(itemBox, center)
+			this.positionViewAtItemHorizontally(itemBox, center, true)
 		} else {
-			this.positionViewAtItemVertically(itemBox, center)
+			this.positionViewAtItemVertically(itemBox, center, true)
 		}
 	}
 

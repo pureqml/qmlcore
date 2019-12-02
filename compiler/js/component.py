@@ -535,7 +535,7 @@ class component_generator(object):
 
 	def transform_root(self, registry, parent, property):
 		if property == 'context':
-			return '_context'
+			return ("%s._get('%s')" %(parent, property)) if parent else '_context'
 		elif property == 'parent':
 			return 'parent'
 		else:

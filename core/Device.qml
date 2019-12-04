@@ -1,7 +1,7 @@
 /// Object which contains device specific information like model name. MAC address etc.
 Object {
 	signal propertyUpdated;			///< this signal is emited every time when one of the property was changed
-	property string macAddess;		///< device MAC address if its available for current platform
+	property string macAddress;		///< device MAC address if its available for current platform
 	property string modelName;		///< device model name
 	property string deviceId;		///< unique device id or random generated id if its not supported
 	property string firmware;		///< firmware version

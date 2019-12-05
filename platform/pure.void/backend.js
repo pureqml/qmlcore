@@ -199,3 +199,5 @@ exports.Renderer = Renderer
 var Location = function() { }
 
 exports.createLocation = function(ui) { return new Location }
+
+exports.fingeprint = function(fp) { }

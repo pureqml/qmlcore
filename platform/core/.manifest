@@ -23,6 +23,8 @@
 			"listeners": false
 		},
 
-		"log": { "disable": false }
+		"log": { "disable": false },
+
+		"system.fingerprint": false
 	}
 }

@@ -854,3 +854,41 @@ exports.cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window
 exports.enterFullscreenMode = function(el) { return Modernizr.prefixed('requestFullscreen', el.dom)() }
 exports.exitFullscreenMode = function() { return window.Modernizr.prefixed('exitFullscreen', document)() }
 exports.inFullscreenMode = function () { return !!window.Modernizr.prefixed('fullscreenElement', document) }
+
+exports.fingerprint = function(ctx, fingerprint) {
+	var html = exports
+	try {
+		var fcanvas = html.createElement(ctx, 'canvas')
+		var w = 2000, h = 32
+		fcanvas.dom.width = w
+		fcanvas.dom.height = h
+		var txt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ /0123456789 abcdefghijklmnopqrstuvwxyz £©µÀÆÖÞßéöÿ –—‘“”„†•…‰™œŠŸž€ ΑΒΓΔΩαβγδω АБВГДабвгд ∀∂∈ℝ∧∪≡∞ ↑↗↨↻⇣ ┐┼╔╘░►☺♀ ﬁ�⑀₂ἠḂӥẄɐː⍎אԱა"
+		var fctx = fcanvas.dom.getContext('2d')
+		fctx.textBaseline = "top";
+		fctx.font = "20px 'Arial'";
+		fctx.textBaseline = "alphabetic";
+		fctx.fillStyle = "#fedcba";
+		fctx.fillRect(0, 0, w, h);
+		fctx.fillStyle = "#12345678";
+		fctx.fillText(txt, 1.5, 23.5, w);
+		fctx.font = "19.5px 'Arial'";
+		fctx.fillStyle = "#789abcde";
+		fctx.fillText(txt, 1, 22, w);
+		fingerprint.update(fcanvas.dom.toDataURL())
+	} catch(ex) {
+		log('canvas test failed: ' + ex)
+	}
+	try { fingerprint.update(window.navigator.userAgent) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.plugins) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.mimeTypes) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.language) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.platform) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.product) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.productSub) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.vendorSub) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.navigator.hardwareConcurrency) } catch (ex) { log(ex) }
+
+	try { fingerprint.update(window.screen.availWidth) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.screen.availHeight) } catch (ex) { log(ex) }
+	try { fingerprint.update(window.screen.colorDepth) } catch (ex) { log(ex) }
+}

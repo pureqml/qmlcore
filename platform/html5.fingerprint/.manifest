@@ -1,0 +1,5 @@
+{
+	"standalone": false,
+	"requires": ["html5"],
+	"properties": { "system.fingerprint": true }
+}

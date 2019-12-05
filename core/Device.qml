@@ -17,6 +17,7 @@ Object {
 		var backend = $core.__deviceBackend
 		if (!backend)
 			throw new Error('no backend found')
+
 		backend().createDevice(this)
 	}
 

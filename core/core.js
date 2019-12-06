@@ -203,6 +203,14 @@ exports.core.safeCall = function(self, args, onError) {
 	return function(callback) { return safeCallImpl(callback, self, args, onError) }
 }
 
+exports.core.assign = function(target, path, value) {
+	var path = path.split('.')
+	var n = path.length - 1
+	for(var i = 0; i < n; ++i) {
+		target = target[path[i]]
+	}
+	target[path[n]] = value
+}
 
 $core.getKeyCodeByName = function(key) {
 	var codes = $core.keyCodes

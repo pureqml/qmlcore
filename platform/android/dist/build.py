@@ -22,8 +22,7 @@ def build(app, title, release):
 	os.system('cordova plugin add cordova-plugin-streaming-media')
 	os.system('cordova plugin add cordova-plugin-device')
 	os.system('cordova plugin add cordova-plugin-screen-orientation')
-	os.system('cordova plugin add https://github.com/comrat/cordova-plugin-ip-mac-address.git')
-
+	os.system('cordova plugin add cordova-plugin-ip-mac-address')
 	{% block plugins %}{% endblock %}
 
 	if release:

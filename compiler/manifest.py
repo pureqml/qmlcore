@@ -2,6 +2,15 @@ from builtins import object
 
 import json
 
+def _get_property(obj, name, default = None):
+	if '.' in name:
+		path = name.split('.')
+		for k in path[:-1]:
+			obj = obj.get(k, {})
+		return obj.get(path[-1], default)
+	else:
+		return obj.get(name, default)
+
 def _set_property(obj, name, value):
 		if '.' in name:
 			path = name.split('.')
@@ -56,6 +65,9 @@ class Manifest(object):
 	@property
 	def requires(self):
 		return self.data.get('requires', [])
+
+	def platform_requires(self, platform):
+		return _get_property(self.data, 'platform.%s.requires' %platform, [])
 
 	@property
 	def minify(self):

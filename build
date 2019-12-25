@@ -255,7 +255,7 @@ def build(root, platform, apps, app, manifest):
 
 	project_dirs = [path.join(root, 'core')]
 
-	subplatforms = [platform] + manifest.requires
+	subplatforms = [platform] + manifest.requires + manifest.platform_requires(platform)
 	subplatforms_manifests = [manifest]
 	subplatform_visited = set()
 
@@ -279,8 +279,10 @@ def build(root, platform, apps, app, manifest):
 
 			deps = subplatform_deps.setdefault(subplatform, set())
 			deps.update(subplatform_manifest.requires)
+			deps.update(subplatform_manifest.platform_requires(platform))
 
 			subplatforms_next += subplatform_manifest.requires
+			subplatforms_next += subplatform_manifest.platform_requires(platform)
 
 		subplatforms = subplatforms_next
 

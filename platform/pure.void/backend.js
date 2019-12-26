@@ -201,3 +201,25 @@ var Location = function() { }
 exports.createLocation = function(ui) { return new Location }
 
 exports.fingeprint = function(fp) { }
+
+exports.createDevice = function(ui) {
+	console.log('createDevice: stub')
+}
+
+var LocalStorage = function() {}
+
+exports.createLocalStorage = function() {
+	return new LocalStorage
+}
+
+var Player = function() { }
+
+exports.probeUrl = function(url) {
+	console.log('video: probing url: ' + url)
+	return 1
+}
+
+exports.createPlayer = function() {
+	console.log('video: create player')
+	return new Player()
+}

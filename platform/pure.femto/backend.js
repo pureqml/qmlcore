@@ -5,7 +5,7 @@ exports.init = function(ctx) {
 	var options = ctx.options
 	var nativeContext = options.nativeContext
 
-	var oldOn = fd.Element.prototype.on
+	var oldOn = fd.Object.prototype.on
 	fd.Element.prototype.on = function(name, callback) {
 		oldOn.call(this, name, ctx.wrapNativeCallback(callback))
 	}

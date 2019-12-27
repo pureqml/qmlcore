@@ -288,9 +288,12 @@ def build(root, platform, apps, app, manifest):
 
 	#unrolling deps
 	platform_dirs = []
+	platforms = []
 	while subplatform_deps:
 		#print subplatform_deps
 		for subplatform, deps in list(subplatform_deps.items()):
+			if subplatform not in platforms:
+				platforms.append(subplatform)
 			if not deps: #leaf subplatform
 				subplatform_path = subplatform_paths[subplatform]
 				project_dirs.append(subplatform_path)
@@ -345,9 +348,10 @@ def build(root, platform, apps, app, manifest):
 	if path.isdir(app_dist):
 		template_path.append(app_dist)
 
-	platform_dist = path.join(os.getcwd(), 'dist.platform.' + platform)
-	if path.isdir(platform_dist):
-		template_path.append(platform_dist)
+	for subplatform in platforms:
+		platform_dist = path.join(os.getcwd(), 'dist.platform.' + subplatform)
+		if path.isdir(platform_dist):
+			template_path.append(platform_dist)
 
 	project_dist = path.join(os.getcwd(), 'dist')
 	if path.isdir(project_dist):

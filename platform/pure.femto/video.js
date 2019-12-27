@@ -52,6 +52,26 @@ Player.prototype.setAudioTrack = function(trackId) {
 Player.prototype.setVideoTrack = function(trackId) {
 }
 
+Player.prototype.setVolume = function(volume) {
+	log("Player.setVolume", volume)
+}
+
+Player.prototype.setMute = function(muted) {
+	log("Player.setMute", muted)
+}
+
+Player.prototype.setRect = function(l, t, r, b) {
+	log("Player.setRect", l, t, r, b)
+}
+
+Player.prototype.setBackgroundColor = function(color) {
+	log("Player.setBackgroundColor", color)
+}
+
+Player.prototype.setVisibility = function(visible) {
+	log("Player.setVisibility", visible)
+}
+
 exports.createPlayer = function(ui) {
 	log('video.createPlayer')
 	return new Player(ui)

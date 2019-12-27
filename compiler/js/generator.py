@@ -281,8 +281,7 @@ class generator(object):
 		r = ""
 		if self.module:
 			r += "module.exports = %s\n" %ns
-			r += "module.exports.run = function(nativeContext) { "
-		r += "try {\n"
+			r += "module.exports.run = function(nativeContext) {\n"
 
 		context_type = self.find_component('core', 'Context')
 
@@ -292,9 +291,9 @@ class generator(object):
 		startup.append('\tcontext.init()')
 		startup += self.startup
 		r += "\n".join(startup)
-		r += "\n} catch(ex) { log(\"%s initialization failed: \", ex, ex.stack) }\n" %ns
+		r += "\n"
 		if self.module:
-			r += "return context\n"
+			r += "\treturn context\n"
 			r += "}"
 		return r
 

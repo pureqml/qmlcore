@@ -1,5 +1,5 @@
 Object {
-	property bool macAccessable: false;
+	property bool macAccessible: false;
 	property bool supportingUhd;
 	property bool supporting3d;
 	property string modelName;

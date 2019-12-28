@@ -1,3 +1,4 @@
 exports.createDevice = function(ui) {
-	console.log('creating platform device: stub')
+	var info = fd.getDeviceInfo()
+	Object.assign(ui, info)
 }

@@ -36,7 +36,12 @@ exports.initSystem = function(system) {
 }
 
 exports.createElement = function(ctx, tag, cls) {
-	return new fd.Element()
+	switch(tag) {
+		case 'input':
+			return new fd.Input()
+		default:
+			return new fd.Element()
+	}
 }
 
 exports.initRectangle = function(rect) {

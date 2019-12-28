@@ -1,5 +1,5 @@
 Object {
-	property bool macAccessable: false;
+	property bool macAccessible: false;
 
 	getDeviceId(callback): {
 		callback("")

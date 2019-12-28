@@ -125,16 +125,16 @@ class Compiler(object):
 				if '.manifest' in filenames:
 					with open(os.path.join(dirpath, '.manifest')) as f:
 						manifest = compiler.manifest.load(f)
-						if manifest.package:
-							package_name = manifest.package
-							if PY2:
-								package_name = package_name.encode('utf-8')
-							package_dir = dirpath
-						if manifest.export_module:
-							generator.module |= manifest.export_module
-						if not manifest.strict:
-							self.strict = False
-						merge_properties(self.root_manifest_props, manifest.properties)
+					if manifest.package:
+						package_name = manifest.package
+						if PY2:
+							package_name = package_name.encode('utf-8')
+						package_dir = dirpath
+					if manifest.export_module:
+						generator.module |= manifest.export_module
+					if not manifest.strict:
+						self.strict = False
+					merge_properties(self.root_manifest_props, manifest.properties)
 
 				for filename in filenames:
 					relpath = os.path.relpath(dirpath, package_dir)

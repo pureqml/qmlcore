@@ -66,6 +66,10 @@ class Manifest(object):
 	def requires(self):
 		return self.data.get('requires', [])
 
+	@property
+	def use_only_for(self):
+		return self.data.get('use-only-for', [])
+
 	def platform_requires(self, platform):
 		return _get_property(self.data, 'platform.%s.requires' %platform, [])
 

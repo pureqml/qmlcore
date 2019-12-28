@@ -136,6 +136,10 @@ class Compiler(object):
 						self.strict = False
 					merge_properties(self.root_manifest_props, manifest.properties)
 
+					if manifest.use_only_for:
+						if not (set(manifest.use_only_for) & self.platforms):
+							continue
+
 				for filename in filenames:
 					relpath = os.path.relpath(dirpath, package_dir)
 					if relpath.startswith('..'):
@@ -232,7 +236,7 @@ class Compiler(object):
 
 		print("done")
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, doc = None, release = False, verbose = False, jobs = 1):
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1):
 		self.cache = Cache()
 		self.root = root
 		self.output_dir = output_dir
@@ -245,6 +249,7 @@ class Compiler(object):
 		self.verbose = verbose
 		self.jobs = int(jobs) if jobs is not None else cpu_count()
 		self.component_path_map = {}
+		self.platforms = platforms
 
 		if self.verbose:
 			print('running using %d jobs' %self.jobs)
@@ -255,7 +260,7 @@ class Compiler(object):
 		self.documentation = compiler.doc.json.Documentation(doc) if doc else None
 
 
-def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, doc = None, release = False, verbose = False, jobs = 1):
+def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = set(), wait = False, doc = None, release = False, verbose = False, jobs = 1):
 	if wait:
 		try:
 			import pyinotify
@@ -288,7 +293,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 		except:
 			raise Exception("it seems you don't have pyinotify module installed, please install it to run build with -d option")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, release=release, verbose=verbose, jobs=jobs)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
 

@@ -310,7 +310,11 @@ ElementPrototype.style = function(name, style) {
 }
 
 ElementPrototype.setAttribute = function(name, value) {
-	this.dom.setAttribute(name, value)
+	return this.dom.setAttribute(name, value)
+}
+
+ElementPrototype.getAttribute = function(name) {
+	return this.dom.getAttribute(name)
 }
 
 /** @const */
@@ -403,6 +407,16 @@ ElementPrototype.remove = function() {
 	var dom = this.dom
 	if (dom.parentNode)
 		dom.parentNode.removeChild(dom)
+}
+
+ElementPrototype.focus = function() {
+	var dom = this.dom
+	dom.focus()
+	dom.select()
+}
+
+ElementPrototype.blur = function() {
+	this.dom.blur()
 }
 
 exports.Document = function(context, dom) {

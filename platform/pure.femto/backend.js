@@ -14,6 +14,9 @@ exports.init = function(ctx) {
 	ctx.width = nativeContext.width
 	ctx.height = nativeContext.height
 	nativeContext.on('resize', function(w, h) {
+		log("resizing context to " + w + 'x' + h)
+		ctx.system.resolutionWidth = w
+		ctx.system.resolutionHeight = h
 		ctx.width = w
 		ctx.height = h
 	})

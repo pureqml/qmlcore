@@ -5,6 +5,7 @@
 		"cssAutoClassificator": false,
 		"cssDisableTransitions": false,
 		"cssDisableTransformations": false,
-		"expectRunContextEvent": false
+		"expectRunContextEvent": false,
+		"requireExplicitRecursiveVisibilityStyle": false
 	}
 }

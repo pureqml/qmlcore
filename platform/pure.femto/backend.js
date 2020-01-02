@@ -106,3 +106,7 @@ exports.cancelAnimationFrame = function (timer) {
 
 exports.tick = function(ctx) {
 }
+
+exports.ajax = function(request) {
+	return fd.httpRequest(request)
+}

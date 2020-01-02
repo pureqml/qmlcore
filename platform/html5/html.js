@@ -869,7 +869,7 @@ exports.enterFullscreenMode = function(el) { return Modernizr.prefixed('requestF
 exports.exitFullscreenMode = function() { return window.Modernizr.prefixed('exitFullscreen', document)() }
 exports.inFullscreenMode = function () { return !!window.Modernizr.prefixed('fullscreenElement', document) }
 
-exports.ajax = function(request) {
+exports.ajax = function(ui, request) {
 	var url = request.url
 	var error = request.error,
 		headers = request.headers,
@@ -878,13 +878,11 @@ exports.ajax = function(request) {
 
 	var xhr = new XMLHttpRequest()
 
-	var self = this
-	var ctx = this._context
 	if (error)
-		xhr.addEventListener('error', ctx.wrapNativeCallback(function(event) { self.loading = false; log("Error"); error(event); }))
+		xhr.addEventListener('error', error)
 
 	if (done)
-		xhr.addEventListener('load', ctx.wrapNativeCallback(function(event) { self.loading = false; done(event); }))
+		xhr.addEventListener('load', done)
 
 	xhr.open(request.method || 'GET', url);
 
@@ -894,7 +892,6 @@ exports.ajax = function(request) {
 	for (var i in headers)
 		xhr.setRequestHeader(i, headers[i])
 
-	this.loading = true
 	if (request.data)
 		xhr.send(request.data)
 	else

@@ -4,7 +4,7 @@ Object {
 
 	/**@param request:Object request object
 	send request using 'XMLHttpRequest' object*/
-	ajax(request): {
-		this._context.backend.ajax(request)
+	function ajax(request) {
+		this._context.backend.ajax(this, request)
 	}
 }

@@ -107,6 +107,14 @@ exports.cancelAnimationFrame = function (timer) {
 exports.tick = function(ctx) {
 }
 
-exports.ajax = function(request) {
+exports.ajax = function(ui, request) {
+	var error = request.error, done = request.done
+	var ctx = ui._context
+	if (error)
+		request.error = ctx.wrapNativeCallback(function(event) { ui.loading = false; log("Error", event); error(event); })
+	if (done)
+		request.done = ctx.wrapNativeCallback(function(event) { ui.loading = false; done(event); })
+
+	ui.loading = true
 	return fd.httpRequest(request)
 }

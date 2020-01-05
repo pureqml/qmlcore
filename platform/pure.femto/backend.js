@@ -85,6 +85,7 @@ exports.setText = function(text, html) {
 exports.layoutText = function(text) {
 	var wrap = text.wrapMode !== _globals.core.Text.NoWrap
 	text.element.layoutText({
+		element: text.element,
 		wrap: wrap
 	}, function(metrics) {
 		if (metrics !== null) {

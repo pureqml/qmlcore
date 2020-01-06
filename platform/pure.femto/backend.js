@@ -24,7 +24,7 @@ exports.init = function(ctx) {
 		var event = {
 			timestamp: new Date().getTime()
 		}
-		ctx.processKey(key, event)
+		return ctx.processKey(key, event)
 	}))
 	log('window size', ctx.width, ctx.height)
 }

@@ -15,27 +15,26 @@ exports.createPlayer = function(ui) {
 		log('VideoPlayer: stateChanged ' + state)
 		switch(state) {
 			case 1:
-				log("STATE_IDLE")
+				log("VideoPlayer: STATE_IDLE")
 				resetState()
 				break;
 			case 2:
-				log("STATE_BUFFERING")
+				log("VideoPlayer: STATE_BUFFERING")
 				ui.waiting = true
 				break;
 			case 3:
-				log("STATE_READY")
+				log("VideoPlayer: STATE_READY")
 				ui.waiting = false
 				ui.ready = true
 				break;
 			case 4:
-				log("STATE_ENDED")
+				log("VideoPlayer: STATE_ENDED")
 				ui.finished()
 				resetState()
 				break;
 			default:
-				log("unhandled state", typeof state, state)
+				log("VideoPlayer: unhandled state", typeof state, state)
 		}
-		log('VideoPlayer: stateChanged ' + state + ' exited')
 	})
 
 	player.on('seeked', function() {

@@ -1,6 +1,54 @@
 exports.createPlayer = function(ui) {
 	log('video.createPlayer')
-	return new fd.VideoPlayer()
+
+	var player = new fd.VideoPlayer()
+
+	var resetState = function() {
+		ui.ready = false
+		ui.paused = false
+		ui.waiting = false
+		ui.seeking = false
+		ui.stalled = false
+	}
+
+	player.on('stateChanged', function(state) {
+		log('VideoPlayer: stateChanged ' + state)
+		switch(state) {
+			case 1:
+				log("STATE_IDLE")
+				resetState()
+				break;
+			case 2:
+				log("STATE_BUFFERING")
+				ui.waiting = true
+				break;
+			case 3:
+				log("STATE_READY")
+				ui.waiting = false
+				ui.ready = true
+				break;
+			case 4:
+				log("STATE_ENDED")
+				ui.finished()
+				resetState()
+				break;
+			default:
+				log("unhandled state", typeof state, state)
+		}
+		log('VideoPlayer: stateChanged ' + state + ' exited')
+	})
+
+	player.on('seeked', function() {
+		ui.waiting = false
+		ui.seeking = false
+	})
+
+	player.on('error', function(err) {
+		log('VideoPlayer: error: ', err)
+		ui.error()
+	})
+
+	return player
 }
 
 exports.probeUrl = function(url) {

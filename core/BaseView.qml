@@ -335,7 +335,7 @@ BaseLayout {
 	onCompleted: {
 		var self = this
 		this.element.on('scroll', function(event) {
-			self._updateScrollPositions(self.element.dom.scrollLeft, self.element.dom.scrollTop)
+			self._updateScrollPositions(self.element.getScrollX(), self.element.getScrollY())
 		}.bind(this))
 	}
 }

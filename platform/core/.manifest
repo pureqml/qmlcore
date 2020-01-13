@@ -8,6 +8,7 @@
 
 		"disableAnimations": false,
 		"requireExplicitRecursiveVisibilityStyle": true,
+		"nativeScrollingDefault": false,
 
 		"html5.prefix": "",
 

@@ -9,7 +9,7 @@ BaseLayout {
 	property int animationDuration: 0;
 	property string animationEasing: "ease";
 	property bool contentFollowsCurrentItem: true;	///< auto-scroll content to current focused item
-	property bool nativeScrolling;	///< allows native scrolling on mobile targets and shows native scrollbars
+	property bool nativeScrolling: manifest.nativeScrollingDefault;	///< allows native scrolling on mobile targets and shows native scrollbars
 	property real prerender: 0.5;	///< allocate additional delegates by viewport (prerender * horizontal/vertical view size) px
 	property enum positionMode		{ Contain, Beginning, Center, End, Visible, Page }; ///< position mode for auto-scrolling/position methods
 	property string visibilityProperty; ///< if this property is false, delegate is not created at all

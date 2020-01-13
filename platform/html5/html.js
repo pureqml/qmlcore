@@ -419,6 +419,14 @@ ElementPrototype.blur = function() {
 	this.dom.blur()
 }
 
+ElementPrototype.getScrollX = function() {
+	return this.dom.scrollLeft
+}
+
+ElementPrototype.getScrollY = function() {
+	return this.dom.scrollTop
+}
+
 exports.Document = function(context, dom) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context

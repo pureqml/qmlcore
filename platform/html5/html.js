@@ -317,6 +317,14 @@ ElementPrototype.getAttribute = function(name) {
 	return this.dom.getAttribute(name)
 }
 
+ElementPrototype.setProperty = function(name, value) {
+	return this.dom[name] = value
+}
+
+ElementPrototype.getProperty = function(name) {
+	return this.dom[name]
+}
+
 /** @const */
 var cssUnits = {
 	'left': 'px',

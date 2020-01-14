@@ -6,7 +6,6 @@
 		"style.font" : {
 			"family": "Roboto Medium",
 			"pixelSize": 12
-		},
-		"nativeScrollingDefault": true
+		}
 	}
 }

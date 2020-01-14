@@ -4,6 +4,8 @@ from past.builtins import basestring
 
 import re
 
+trivial_value_re = re.compile(r'\$\{manifest\.[a-zA-Z0-9\$\.]+\}')
+
 def value_is_trivial(value):
 	if isinstance(value, bool):
 		return True
@@ -19,7 +21,7 @@ def value_is_trivial(value):
 	if value == 'true' or value == 'false' or value == 'null':
 		return True
 
-	if value.startswith('${manifest.'):
+	if trivial_value_re.fullmatch(value):
 		return True
 
 	try:

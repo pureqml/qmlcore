@@ -17,7 +17,7 @@ def scan(text, file = ''):
 		args = m.group(2)
 		m = q1_re.match(args) or q2_re.match(args)
 		if m:
-			locs.append((type, m.group(1).decode('utf-8'), m.pos))
+			locs.append((type, m.group(1), m.pos))
 	return locs
 
 class Location(object):

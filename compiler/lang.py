@@ -4,7 +4,7 @@ from past.builtins import basestring
 
 import re
 
-trivial_value_re = re.compile(r'\$\{manifest\.[a-zA-Z0-9\$\.]+\}')
+trivial_value_re = re.compile(r'\$\{manifest\.[a-zA-Z0-9\$\.]+\}\Z')
 
 def value_is_trivial(value):
 	if isinstance(value, bool):
@@ -21,7 +21,7 @@ def value_is_trivial(value):
 	if value == 'true' or value == 'false' or value == 'null':
 		return True
 
-	if trivial_value_re.fullmatch(value):
+	if trivial_value_re.match(value):
 		return True
 
 	try:

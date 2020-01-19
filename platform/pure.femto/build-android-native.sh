@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 if [ -z "$ANDROID_HOME" ]; then
 	echo "environment variable ANDROID_HOME=~/location/to/your/android/sdk required"
@@ -46,7 +47,7 @@ pushd ${ASSETS_DIR}
 popd
 
 echo "building"
-pushd ${APP_DIR}
+pushd ${DST_DIR}
 TERM=xterm-color ./gradlew build #workaround grandle bug
 popd
 

@@ -20,6 +20,7 @@ Object {
 	property int resolutionHeight;					///< app screen height from manifest
 	property enum device { Desktop, Tv, Mobile };	///< device type enumeration, values: Desktop, Tv or Mobile
 	property enum layoutType { MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL, Laptop4K };	///< layout type enumeration, values: MobileS, MobileM, MobileL, Tablet, Laptop, LaptopL and Laptop4K
+	property bool virtualKeyboard: device === System.Tv || device === System.Mobile; ///< used to tweak components which use on-screen keyboard
 
 	/// @private
 	onContextWidthChanged: { this._updateLayoutType() }

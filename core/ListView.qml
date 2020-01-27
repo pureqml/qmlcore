@@ -2,6 +2,10 @@
 BaseView {
 	property enum orientation { Vertical, Horizontal };	///< orientation direction
 
+	constructor: {
+		this._sizes = []
+	}
+
 	///@private
 	function move(dx, dy) {
 		var horizontal = this.orientation === this.Horizontal
@@ -168,6 +172,7 @@ BaseView {
 		var horizontal = this.orientation === this.Horizontal
 
 		var items = this._items
+		var sizes = this._sizes
 		var n = items.length
 		var w = this.width, h = this.height
 		var created = false
@@ -176,7 +181,7 @@ BaseView {
 		var size = horizontal? w: h
 		var maxW = 0, maxH = 0
 
-		var itemsCount = 0
+		var currentIndex = this.currentIndex
 		var prerender = noPrerender? 0: this.prerender * size
 		var leftMargin = -prerender
 		var rightMargin = size + prerender
@@ -184,47 +189,90 @@ BaseView {
 		if (this.trace)
 			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y + ", prerender: " + prerender + ", range: " + leftMargin + ":" + rightMargin)
 
-		for(var i = 0; i < n && (itemsCount === 0 || p + c < rightMargin); ++i) {
+		var getItemSize = horizontal?
+			function(item) { return item.width }:
+			function(item) { return item.height }
+
+		var itemsCount = 0
+		var refSize
+		for(var i = 0; i < n && (refSize === undefined || p + c < rightMargin); ++i, ++itemsCount) {
 			var item = items[i]
+			var viewPos = p + c
+
+			var s = sizes[i] || refSize
+			if (refSize === undefined && s !== undefined)
+				refSize = s
+
+			var renderable = (viewPos + (s !== undefined? s: 0) >= leftMargin && viewPos < rightMargin) || currentIndex === i
 
 			if (!item) {
-				if (p + c >= rightMargin && itemsCount > 0)
-					break
-				item = this._createDelegate(i)
-				created = true
+				//we can render, or no sizes available
+				if (renderable || s === undefined) {
+					item = this._createDelegate(i)
+					created = true
+				}
 			}
 
-			++itemsCount
+			if (item)
+				s = refSize = sizes[i] = getItemSize(item)
 
-			var s = (horizontal? item.width: item.height)
-			var visible = (p + c + s >= 0 && p + c < size) //checking real delegate visibility, without prerender margin
+			if (item) {
+				var visible = (viewPos + s >= 0 && viewPos < size) //checking real delegate visibility, without prerender margin
 
-			if (item.x + item.width > maxW)
-				maxW = item.width + item.x
-			if (item.y + item.height > maxH)
-				maxH = item.height + item.y
+				if (item.x + item.width > maxW)
+					maxW = item.width + item.x
+				if (item.y + item.height > maxH)
+					maxH = item.height + item.y
 
-			if (horizontal)
-				item.viewX = p
-			else
-				item.viewY = p
+				if (horizontal)
+					item.viewX = p
+				else
+					item.viewY = p
 
-			if (this.currentIndex === i && !item.focused) {
-				this.focusChild(item)
-				if (this.contentFollowsCurrentItem && this.size)
-					this.positionViewAtIndex(i)
+				if (currentIndex === i && !item.focused) {
+					this.focusChild(item)
+					if (this.contentFollowsCurrentItem && this.size)
+						this.positionViewAtIndex(i)
+				}
+
+				item.visibleInView = visible
+
+				if (!renderable) {
+					if (this.trace)
+						log('discarding delegate', i)
+					this._discardItem(item)
+					items[i] = null
+					created = true
+				}
+			} else {
+				var nextP = p + refSize
+				if (horizontal) {
+					if (nextP > maxW)
+						maxW = nextP
+				} else {
+					if (nextP > maxH)
+						maxH = nextP
+				}
 			}
 
-			item.visibleInView = visible
 			p += s + this.spacing
 		}
 		for( ;i < n; ++i) {
 			var item = items[i]
-			if (item)
+			if (item) {
 				item.visibleInView = false
+				this._discardItem(item)
+				items[i] = null
+				created = true
+			}
 		}
 		if (p > 0)
 			p -= this.spacing;
+
+		if (sizes.length > items.length) {
+			///fixme: override model update api to make sizes stable
+			sizes = sizes.slice(0, items.length)
+		}
 
 		if (itemsCount)
 			p *= items.length / itemsCount
@@ -276,6 +324,7 @@ BaseView {
 	onOrientationChanged: {
 		this._updateOverflow()
 		this._scheduleLayout()
+		this._sizes = []
 	}
 
 	onCompleted: {

@@ -44,6 +44,8 @@ Object {
 	function _updateAll() {
 		var anchors = this
 		var item = anchors.parent
+		if (item === null) //disposed
+			return
 		var parent = item.parent
 
 		var parent_box = parent.toScreen()

@@ -148,9 +148,9 @@ Item {
 		}
 
 		if (delay > 0) {
-			setTimeout(callback, delay)
+			setTimeout(this.wrapNativeCallback(callback), delay)
 		} else if (delay === 0) {
-			this.backend.requestAnimationFrame(callback)
+			this.backend.requestAnimationFrame(this.wrapNativeCallback(callback))
 		} else {
 			this.scheduleAction(callback)
 		}

@@ -192,7 +192,7 @@ Object {
 			this.parent._tryFocus()
 
 		if ($manifest$requireExplicitRecursiveVisibilityStyle) {
-			this.style("recursive-visibility", value)
+			this.style("-pure-recursive-visibility", value)
 		}
 	}
 

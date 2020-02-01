@@ -1,4 +1,7 @@
 exports.capabilities = {}
+_globals.closeApp = function() {
+	log("closeApp: stub")
+}
 
 exports.init = function(ctx) {
 	log('backend initialization...')

@@ -49,6 +49,8 @@ Object {
 		this._borderYAdjust = 0
 		this._borderWidthAdjust = 0
 		this._borderHeightAdjust = 0
+		this._borderInnerWidthAdjust = 0
+		this._borderInnerHeightAdjust = 0
 		if (parent) {
 			if (this.element)
 				throw new Error('double ctor call')
@@ -111,10 +113,10 @@ Object {
 	function toScreen() {
 		var item = this
 		var x = 0, y = 0
-		var w = this.width, h = this.height
+		var w = this.width + this._borderWidthAdjust + this._borderInnerWidthAdjust, h = this.height + this._borderHeightAdjust + this._borderInnerHeightAdjust
 		while(item) {
-			x += item.x + item.viewX
-			y += item.y + item.viewY
+			x += item.x + item.viewX + this._borderXAdjust
+			y += item.y + item.viewY + this._borderYAdjust
 			if (item.hasOwnProperty('view')) {
 				var content = item.view.content
 				x += content.x

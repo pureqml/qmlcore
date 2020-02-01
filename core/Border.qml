@@ -13,16 +13,28 @@ Object {
 	onWidthChanged: {
 		var parent = this.parent
 		parent.style('border-width', value)
-		if (this.type === this.Outer) {
+		switch(this.type) {
+		case this.Inner:
+			parent._borderXAdjust = 0
+			parent._borderYAdjust = 0
+			parent._borderInnerWidthAdjust = -2 * value
+			parent._borderInnerHeightAdjust = -2 * value
+			parent._setSizeAdjust()
+			break
+		case this.Outer:
 			parent._borderXAdjust = -value
 			parent._borderYAdjust = -value
+			parent._borderWidthAdjust = 0
+			parent._borderHeightAdjust = 0
 			parent._setSizeAdjust()
-		} else if (this.type === this.Center) {
+			break
+		case this.Center:
 			parent._borderXAdjust = -value / 2
 			parent._borderYAdjust = -value / 2
 			parent._borderWidthAdjust = -value
 			parent._borderHeightAdjust = -value
 			parent._setSizeAdjust()
+			break
 		}
 	}
 

@@ -109,6 +109,7 @@ exports.cancelAnimationFrame = function (timer) {
 }
 
 exports.tick = function(ctx) {
+	fd.paint()
 }
 
 exports.ajax = function(ui, request) {

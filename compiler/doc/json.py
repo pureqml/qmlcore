@@ -6,6 +6,8 @@ import re
 import os
 import os.path
 
+def escape(str):
+	return str.replace('\n', ' ').replace('\t', '    ').strip()
 
 class Component(object):
 	def __init__(self, package, name, component):
@@ -25,7 +27,7 @@ class Component(object):
 			localComma = "" if last == value.name else ","
 			docText = value.doc.text if value.doc is not None else ""
 			docLines = docText.splitlines()
-			docText = docText.replace("\n", " ")
+			docText = escape(docText)
 
 			category = value.__class__.__name__
 
@@ -48,12 +50,12 @@ class Component(object):
 				descriptionAtLastLine = True
 				for line in docLines:
 					m = re.match(r'^.*@param\s+(?P<b>{)?(?P<t1>\w+)(?(b)} |:)(?P<t2>\w+)(?(b)\s*-\s*|\s*)(?P<text>.*)$',
-								 line.strip())
+								 escape(line))
 					if not m:
 						continue
 					descriptionAtLastLine = descriptionAtLastLine and not m.group('b')
 					paramName, paramType = (m.group('t2'), m.group('t1')) if m.group('b') else (m.group('t1'), m.group('t2'))
-					paramText = m.group('text').strip()
+					paramText = escape(m.group('text'))
 
 					argText += '{ "name": "' + paramName + '", "type": "' + paramType + '", "text": "' + paramText + '" }'
 					argText += ", "
@@ -62,7 +64,7 @@ class Component(object):
 					argText = argText[0:-2]
 				argText += "], "
 
-				docText = (docLines[-1] if descriptionAtLastLine else docLines[0]).strip(' *').lstrip()
+				docText = escape((docLines[-1] if descriptionAtLastLine else docLines[0]).strip(' *'))
 				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name[0], docText, argText, internal, localComma))
 			else:
 				itemName = value.name if isinstance(value.name, (str, basestring)) else value.name[0]
@@ -138,7 +140,7 @@ class Component(object):
 		r.append('{' )
 		r.append('\t"name": "%s.%s",' %(package, name))
 		comp = self.component
-		r.append('\t"text": "%s",' %(comp.doc.text.replace("\n", " ") if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""))
+		r.append('\t"text": "%s",' %(escape(comp.doc.text) if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""))
 		r.append('')
 		r.append('\t"content": {')
 		self.process_children(r, component_path_map)

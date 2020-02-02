@@ -45,12 +45,6 @@ Object {
 	constructor: {
 		this._pressedHandlers = {}
 		this._topPadding = 0
-		this._borderXAdjust = 0
-		this._borderYAdjust = 0
-		this._borderWidthAdjust = 0
-		this._borderHeightAdjust = 0
-		this._borderInnerWidthAdjust = 0
-		this._borderInnerHeightAdjust = 0
 		if (parent) {
 			if (this.element)
 				throw new Error('double ctor call')
@@ -113,10 +107,12 @@ Object {
 	function toScreen() {
 		var item = this
 		var x = 0, y = 0
-		var w = this.width + this._borderWidthAdjust + this._borderInnerWidthAdjust, h = this.height + this._borderHeightAdjust + this._borderInnerHeightAdjust
+		var w = this.width + (this._borderWidthAdjust || 0) + (this._borderInnerWidthAdjust || 0)
+		var h = this.height + (this._borderHeightAdjust || 0) + (this._borderInnerHeightAdjust || 0)
+
 		while(item) {
-			x += item.x + item.viewX + this._borderXAdjust
-			y += item.y + item.viewY + this._borderYAdjust
+			x += item.x + item.viewX + (item._borderXAdjust || 0)
+			y += item.y + item.viewY + (item._borderYAdjust || 0)
 			if (item.hasOwnProperty('view')) {
 				var content = item.view.content
 				x += content.x
@@ -171,8 +167,8 @@ Object {
 
 	///@private
 	function _setSizeAdjust() {
-		var x = this.x + this.viewX + this._borderXAdjust
-		var y = this.y + this.viewY + this._borderYAdjust
+		var x = this.x + this.viewX + (this._borderXAdjust || 0)
+		var y = this.y + this.viewY + (this._borderYAdjust || 0)
 
 		if (this.cssTranslatePositioning && !$manifest$cssDisableTransformations) {
 			this.transform.translateX = x
@@ -181,6 +177,7 @@ Object {
 			this.style('left', x)
 			this.style('top', y)
 		}
+		this.newBoundingBox()
 	}
 
 	onRecursiveVisibleChanged: {
@@ -206,8 +203,15 @@ Object {
 	onVisibleChanged:		{ this._updateVisibility() }
 	onVisibleInViewChanged:	{ this._updateVisibility() }
 
-	onWidthChanged: 	{ this.style('width', value + this._borderWidthAdjust); this.newBoundingBox() }
-	onHeightChanged:	{ this.style('height', value - this._topPadding + this._borderHeightAdjust); this.newBoundingBox() }
+	onWidthChanged: {
+		this.style('width', value + (this._borderWidthAdjust || 0))
+		this.newBoundingBox()
+	}
+
+	onHeightChanged: {
+		this.style('height', value - this._topPadding + (this._borderHeightAdjust || 0))
+		this.newBoundingBox()
+	}
 
 	onXChanged,
 	onViewXChanged: {

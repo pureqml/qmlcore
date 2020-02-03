@@ -8,6 +8,7 @@
 
 		"disableAnimations": false,
 		"requireExplicitRecursiveVisibilityStyle": true,
+		"requireVerticalTextAlignmentStyle": true,
 
 		"html5.prefix": "",
 

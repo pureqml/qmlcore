@@ -104,10 +104,12 @@ Item {
 
 	onVerticalAlignmentChanged: {
 		this._enableSizeUpdate()
-		switch(value) {
-		case this.AlignTop:		this.style('-pure-text-vertical-align', 'top'); break
-		case this.AlignVCenter:	this.style('-pure-text-vertical-align', 'middle'); break
-		case this.AlignBottom:	this.style('-pure-text-vertical-align', 'bottom'); break
+		if ($manifest$requireVerticalTextAlignmentStyle) {
+			switch(value) {
+				case this.AlignTop:		this.style('-pure-text-vertical-align', 'top'); break
+				case this.AlignVCenter:	this.style('-pure-text-vertical-align', 'middle'); break
+				case this.AlignBottom:	this.style('-pure-text-vertical-align', 'bottom'); break
+			}
 		}
 	}
 

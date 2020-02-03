@@ -223,7 +223,6 @@ exports.Element = function(context, tag, cls) {
 	this._context = context
 	this._transitions = {}
 	this._class = ''
-	this._widthAdjust = 0
 	this._uniqueId = (++lastId).toString(36)
 	this._firstChildIndex = 0
 
@@ -266,7 +265,6 @@ ElementPrototype.removeChildren = function(ui) {
 
 
 ElementPrototype.setHtml = function(html, component) {
-	this._widthAdjust = 0 //reset any text related rounding corrections
 	var dom = this.dom
 	var children
 	if (component !== undefined)
@@ -279,7 +277,7 @@ ElementPrototype.setHtml = function(html, component) {
 
 ElementPrototype.width = function() {
 	this.updateStyle()
-	return this.dom.clientWidth - this._widthAdjust
+	return this.dom.clientWidth
 }
 
 ElementPrototype.height = function() {
@@ -289,7 +287,7 @@ ElementPrototype.height = function() {
 
 ElementPrototype.fullWidth = function() {
 	this.updateStyle()
-	return this.dom.scrollWidth - this._widthAdjust
+	return this.dom.scrollWidth
 }
 
 ElementPrototype.fullHeight = function() {
@@ -378,8 +376,6 @@ ElementPrototype.updateStyle = function(updated) {
 			value = value.join(',')
 
 		if (typeof value === 'number') {
-			if (name === 'width')
-				value += this._widthAdjust
 			var unit = cssUnits[name]
 			if (unit !== undefined) {
 				value += unit
@@ -769,11 +765,8 @@ exports.layoutText = function(text) {
 		text.style({ 'height': 'auto', 'padding-top': 0})
 
 	//this is the source of rounding error. For instance you have 186.3px wide text, this sets width to 186px and causes wrapping
-	text.paintedWidth = element.fullWidth()
-	text.paintedHeight = element.fullHeight()
-
-	//this makes style to adjust width (by adding this value), and return back _widthAdjust less
-	element._widthAdjust = 1
+	text.paintedWidth = element.fullWidth() + 1
+	text.paintedHeight = element.fullHeight() + 1
 
 	var style
 	if (!wrap)

@@ -101,6 +101,7 @@ Item {
 	onTextChanged:				{ this._setText(value); this._updateSize() }
 	onColorChanged: 			{ this.style('color', $core.Color.normalize(value)) }
 	onWidthChanged:				{ this._updateSize() }
+	onHeightChanged:			{ this._updateSize() }
 
 	onVerticalAlignmentChanged: {
 		this._enableSizeUpdate()

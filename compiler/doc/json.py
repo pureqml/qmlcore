@@ -7,7 +7,7 @@ import os
 import os.path
 
 def escape(str):
-	return str.replace('\n', ' ').replace('\t', '    ').strip()
+	return str.replace('\n', ' ').replace('\t', '    ').replace('\\', '\\\\').strip()
 
 class Component(object):
 	def __init__(self, package, name, component):

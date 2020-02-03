@@ -6,6 +6,7 @@
 		"cssDisableTransitions": false,
 		"cssDisableTransformations": false,
 		"expectRunContextEvent": false,
-		"requireExplicitRecursiveVisibilityStyle": false
+		"requireExplicitRecursiveVisibilityStyle": false,
+		"requireVerticalTextAlignmentStyle": false
 	}
 }

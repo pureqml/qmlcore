@@ -777,9 +777,10 @@ exports.layoutText = function(text) {
 
 	var style
 	if (!wrap)
-		style = { width: text.width, height: text.height } //restore original width value (see 'if' above)
+		//restore original width value (see 'if' above), we're not passing 'height' as it's explicitly set by layoutTextSetStyles
+		style = { 'width': text.width }
 	else
-		style = {'height': text.height }
+		style = { }
 
 	layoutTextSetStyle(text, style)
 	element.appendChildren(removedChildren)

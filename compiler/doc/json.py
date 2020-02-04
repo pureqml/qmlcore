@@ -1,13 +1,11 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 from builtins import object, str
 from past.builtins import basestring
 
+import json
 import re
 import os
 import os.path
-
-def escape(str):
-	return str.replace('\n', ' ').replace('\t', '    ').replace('\\', '\\\\').strip()
 
 class Component(object):
 	def __init__(self, package, name, component):
@@ -16,18 +14,15 @@ class Component(object):
 		self.component = component
 
 
-	def generate_section(self, r, title, values, comma):
+	def generate_section(self, values):
 		if not hasattr(values[-1], "name"):
 			return
 
-		last = values[-1].name
-		r.append('\t\t"%s": {' % title)
+		r = {}
 
 		for value in values:
-			localComma = "" if last == value.name else ","
 			docText = value.doc.text if value.doc is not None else ""
 			docLines = docText.splitlines()
-			docText = escape(docText)
 
 			category = value.__class__.__name__
 
@@ -36,50 +31,40 @@ class Component(object):
 													  value.name[0] == "constructor")
 
 			internal = bool(forceInternal) or ((value.doc is not None) and ("@private" in value.doc.text or "@internal" in value.doc.text))
-			internal = str(internal).lower()
-
-			ref = '"ref": "' + value.ref + '", ' if hasattr(value, 'ref') else ""
 
 			if category == 'Property':
-				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s, "type": "%s", "defaultValue": "%s" }%s' %
-						 (value.name, docText, ref, internal, value.type, value.defaultValue, localComma))
+				p = { "text": docText, "internal": internal, "type": value.type, "defaultValue": value.defaultValue }
+				if hasattr(value, 'ref'):
+					p['ref'] = value.ref
+				r[value.name] = p
 			elif category == 'Method' and docText:
-				argText = ""
-				argText += '"params": ['
-				paramCount = 0
+				params = []
 				descriptionAtLastLine = True
 				for line in docLines:
 					m = re.match(r'^.*@param\s+(?P<b>{)?(?P<t1>\w+)(?(b)} |:)(?P<t2>\w+)(?(b)\s*-\s*|\s*)(?P<text>.*)$',
-								 escape(line))
+								 line)
 					if not m:
 						continue
 					descriptionAtLastLine = descriptionAtLastLine and not m.group('b')
 					paramName, paramType = (m.group('t2'), m.group('t1')) if m.group('b') else (m.group('t1'), m.group('t2'))
-					paramText = escape(m.group('text'))
+					paramText = m.group('text')
 
-					argText += '{ "name": "' + paramName + '", "type": "' + paramType + '", "text": "' + paramText + '" }'
-					argText += ", "
-					paramCount += 1
-				if paramCount > 0:
-					argText = argText[0:-2]
-				argText += "], "
+					params.append({ "name": paramName, "type": paramType, "text": paramText })
 
-				docText = escape((docLines[-1] if descriptionAtLastLine else docLines[0]).strip(' *'))
-				r.append('\t\t\t"%s": { "text": "%s", %s"internal": %s }%s' %(value.name[0], docText, argText, internal, localComma))
+				docText = (docLines[-1] if descriptionAtLastLine else docLines[0]).strip(' *')
+				m = { "text": docText, "internal": internal, "params": params }
+				r[value.name[0]] = m
 			else:
 				itemName = value.name if isinstance(value.name, (str, basestring)) else value.name[0]
-				r.append('\t\t\t"%s": { "text": "%s", "internal": %s }%s' %(itemName, docText, internal, localComma))
+				r[itemName] = { "text": docText, "internal": internal }
 
-		if comma:
-			r.append('\t\t},')
-			r.append('')
-		else:
-			r.append('\t\t}')
+		return r
 
 
-	def process_children(self, r, component_path_map):
+	def process_children(self, component_path_map):
 		component = self.component
 
+		r = {}
 		children = {}
 
 		for child in component.children:
@@ -125,28 +110,22 @@ class Component(object):
 
 		lastName = data[-1][0]
 		for d in data:
-			self.generate_section(r, d[1], children[d[0]], False if lastName == d[0] else True)
+			r[d[1]] = self.generate_section(children[d[0]])
 
 		return r
 
 	def document(self, r, component):
-		print(component.name, component.doc)
 		if component.doc:
 			r.append(component.doc)
 
 	def generate(self, documentation, package, component_path_map):
-		r = []
+		r = {}
 		package, name = self.package, self.name
-		r.append('{' )
-		r.append('\t"name": "%s.%s",' %(package, name))
+		r['name'] = '%s.%s' %(package, name)
 		comp = self.component
-		r.append('\t"text": "%s",' %(escape(comp.doc.text) if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""))
-		r.append('')
-		r.append('\t"content": {')
-		self.process_children(r, component_path_map)
-		r.append('\t}')
-		r.append('}')
-		return '\n'.join(r)
+		r['text'] = comp.doc.text if hasattr(comp, "doc") and hasattr(comp.doc, "text") else ""
+		r['content'] = self.process_children(component_path_map)
+		return r
 
 class Documentation(object):
 	def __init__(self, root):
@@ -166,7 +145,9 @@ class Documentation(object):
 	def generate_component(self, package, name, component):
 		#print package, name, component
 		with open(os.path.join(self.jsonroot, package, name + '.json'), 'wt') as f:
-			f.write(component.generate(self, package, self.component_path_map))
+			r = component.generate(self, package, self.component_path_map)
+			#print(r)
+			json.dump(r, f, sort_keys = True, indent=4)
 
 	def generate(self, component_path_map):
 		self.component_path_map = component_path_map
@@ -177,49 +158,43 @@ class Documentation(object):
 		with open(os.path.join(self.root, '.nocompile'), 'wt') as f:
 			pass
 
-		toc = []
+		toc = {}
 
-		toc.append('{')
-		toc.append('\t"site_name": "QML Documentation",')
-		toc.append('\t"use_directory_urls": false,')
-		toc.append('\t"docs_dir": ".",')
-		toc.append('\t"site_dir": "../html",')
-		toc.append('\t"repo_url": "https://github.com/pureqml/qmlcore/",')
-		toc.append('\t"pages": {')
+		toc["site_name"] = "QML Documentation"
+		toc["use_directory_urls"] = False
+		toc["docs_dir"] = "."
+		toc["site_dir"] = "../html"
+		toc["repo_url"] = "https://github.com/pureqml/qmlcore/"
+
+		pages = {}
+		toc["pages"] = pages
 
 		pack = sorted(self.packages.items())
-		lastPack = pack[-1][0]
 		for package, components in pack:
-			toc.append('\t\t"%s": {' %package)
-			toc.append('\t\t\t"file": "%s.json",' %package)
-			toc.append('\t\t\t"content": {')
+			p = {}
+			pages[package] = p
 
-			package_toc = ['{']
-			package_toc.append('\t"%s": {' %package)
 			path = os.path.join(self.jsonroot, package)
 			if not os.path.exists(path):
 				os.mkdir(path)
 
-			lastComp = list(components.keys())[-1]
+			p["file"] = "%s.json" %package
+			content = {}
+			p["content"] = content
+
+			package_toc = {}
+			package_data = {}
+			package_toc[package] = package_data
+
 			for name, component in components.items():
-				comma = "" if lastComp == name else ","
-				package_toc.append('\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
-				toc.append('\t\t\t\t"%s": "%s/%s.json"%s' %(name, package, name, comma))
+				package_data[name] = "%s/%s.json" %(package, name)
+				content[name] = "%s/%s.json" %(package, name)
 
 				self.add(name, component)
 				self.generate_component(package, name, component)
-			package_toc.append('\t}')
-			toc.append('\t\t\t}')
 
 			with open(os.path.join(self.jsonroot, package + '.json'), 'wt') as f:
-				f.write('\n'.join(package_toc))
-				f.write('\n}\n')
-
-			comma = "" if lastPack == package else ","
-			toc.append('\t\t}%s' %comma)
-
-		toc.append('\t}')
-		toc.append('}')
+				json.dump(package_toc, f, sort_keys = True, indent=4)
 
 		with open(os.path.join(self.jsonroot, 'mkdocs.json'), 'wt') as f:
-			f.write('\n'.join(toc))
+			json.dump(toc, f, sort_keys=True, indent=4)

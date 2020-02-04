@@ -134,8 +134,7 @@ class generator(object):
 		for i, pi in enumerate(context_gen.properties):
 			for j, nv in enumerate(pi.properties):
 				if nv[0] == 'buildIdentifier':
-					bid = '"' + self.bid + '"'
-					pi.properties[j] = (nv[0], bid.encode('utf-8'))
+					pi.properties[j] = (nv[0], self.bid)
 					break
 
 		queue = ['core.Context']

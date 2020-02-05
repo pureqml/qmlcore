@@ -51,5 +51,6 @@ Layout {
 		child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
 		child.onChanged('width', this._scheduleLayout.bind(this))
 		child.on('anchorsMarginsUpdated', this._scheduleLayout.bind(this))
+		this._scheduleLayout()
 	}
 }

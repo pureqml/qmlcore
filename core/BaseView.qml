@@ -181,7 +181,7 @@ BaseLayout {
 	}
 
 	/// @private creates delegate in given item slot
-	function _createDelegate(idx) {
+	function _createDelegate(idx, callback) {
 		var items = this._items
 		var item = items[idx]
 		if (item !== null && item !== undefined)
@@ -201,7 +201,11 @@ BaseLayout {
 		items[idx] = item
 		item.view = this
 		item.element.remove()
-		this.content.element.append(item.element)
+
+		if (callback === undefined)
+			this.content.element.append(item.element)
+		else
+			callback.call(this, item)
 
 		item.recursiveVisible = this.recursiveVisible && item.visible && item.visibleInView
 

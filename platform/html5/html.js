@@ -716,7 +716,7 @@ exports.initText = function(text) {
 var layoutTextSetStyle = function(text, style) {
 	switch(text.verticalAlignment) {
 		case text.AlignTop:		text._topPadding = 0; break
-		case text.AlignBottom:	text._topPadding = text.height - text.paintedHeight - 1; break
+		case text.AlignBottom:	text._topPadding = text.height - text.paintedHeight; break
 		case text.AlignVCenter:	text._topPadding = (text.height - text.paintedHeight) / 2; break
 	}
 	style['padding-top'] = text._topPadding

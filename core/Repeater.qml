@@ -1,9 +1,13 @@
 ///The simplest view implementation, creates elements without positioning
 BaseView {
 
+	constructor: {
+		this.element.remove()
+		this.element = this.parent.element
+	}
+
 	///@private
 	function positionViewAtIndex() { }
-
 
 	///@private
 	function _layout() {
@@ -32,4 +36,14 @@ BaseView {
 		if (created)
 			this._context.scheduleComplete()
 	}
+
+	/// @private creates delegate in given item slot
+	function _createDelegate(idx) {
+		var delegate = $core.BaseView.prototype._createDelegate.call(this, idx, function(delegate) {
+			this.parent.element.append(delegate.element)
+			this.parent.addChild(delegate)
+		})
+		return delegate
+	}
+
 }

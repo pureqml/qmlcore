@@ -212,6 +212,12 @@ def handle_string_unquote(s, l, t):
 	t = handle_string(s, l, t)
 	return unquote(str(t[0])[1:-1])
 
+def handle_expression_array(s, l, t):
+	return json.dumps(list(t))
+
+def handle_index_declaration(s, l, t):
+	return '(%s[%s])' %(t[0], t[1])
+
 unquoted_string_value.setParseAction(handle_string_unquote)
 
 quoted_string_value = \
@@ -245,9 +251,6 @@ json_array.setParseAction(handle_json_array)
 json_value << (null_value | bool_value | number | unquoted_string_value | json_array | json_object)
 
 expression_array = Suppress("[") - Optional(delimitedList(json_value, ",")) + Suppress("]")
-def handle_expression_array(s, l, t):
-	return json.dumps(list(t))
-
 expression_array.setParseAction(handle_expression_array)
 
 signal_declaration = Keyword("signal").suppress() - identifier - expression_end
@@ -259,6 +262,9 @@ id_declaration.setParseAction(handle_id_declaration)
 
 assign_declaration = nested_identifier_lvalue + Suppress(":") + expression + expression_end
 assign_declaration.setParseAction(handle_assignment)
+
+index_declaration = nested_identifier_rvalue + Suppress('[') + expression + Suppress(']')
+index_declaration.setParseAction(handle_index_declaration)
 
 assign_component_declaration = nested_identifier_lvalue + Suppress(":") + component_declaration
 assign_component_declaration.setParseAction(handle_assignment)
@@ -328,7 +334,10 @@ percent_number.setParseAction(handle_percent_number)
 scale_number = number + 's'
 scale_number.setParseAction(handle_scale_number)
 
-expression_definition = null_value | bool_value | percent_number | scale_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
+expression_definition = null_value | bool_value | \
+	percent_number | scale_number | number | quoted_string_value | \
+	function_call | index_declaration | enum_value | \
+	expression_array | nested_identifier_rvalue
 
 expression_ops = infixNotation(expression_definition, [
 	(oneOf('! ~ + - typeof'),	1, opAssoc.RIGHT, handle_unary_op),

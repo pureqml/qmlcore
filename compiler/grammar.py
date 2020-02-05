@@ -237,6 +237,19 @@ nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
 
 expression_end = Suppress(";")
 
+json_value = Forward()
+json_object = Suppress("{") + delimitedList(Group((unquoted_string_value | identifier) + Suppress(":") + json_value) | empty, Suppress(";") | Suppress(",")) + Suppress('}')
+json_object.setParseAction(handle_json_object)
+json_array = Suppress("[") + delimitedList(json_value) + Suppress("]")
+json_array.setParseAction(handle_json_array)
+json_value << (null_value | bool_value | number | unquoted_string_value | json_array | json_object)
+
+expression_array = Suppress("[") - Optional(delimitedList(json_value, ",")) + Suppress("]")
+def handle_expression_array(s, l, t):
+	return json.dumps(list(t))
+
+expression_array.setParseAction(handle_expression_array)
+
 signal_declaration = Keyword("signal").suppress() - identifier - expression_end
 signal_declaration.setParseAction(handle_signal_declaration)
 
@@ -279,13 +292,6 @@ method_declaration_qml.setParseAction(handle_method_declaration)
 behavior_declaration = Keyword("Behavior").suppress() - Keyword("on").suppress() - Group(delimitedList(nested_identifier_lvalue, ',')) - Suppress("{") - component_declaration - Suppress("}")
 behavior_declaration.setParseAction(handle_behavior_declaration)
 
-json_value = Forward()
-json_object = Suppress("{") + delimitedList(Group((unquoted_string_value | identifier) + Suppress(":") + json_value) | empty, Suppress(";") | Suppress(",")) + Suppress('}')
-json_object.setParseAction(handle_json_object)
-json_array = Suppress("[") + delimitedList(json_value) + Suppress("]")
-json_array.setParseAction(handle_json_array)
-json_value << (null_value | bool_value | number | unquoted_string_value | json_array | json_object)
-
 list_element_declaration = Keyword("ListElement").suppress() - json_object
 list_element_declaration.setParseAction(handle_list_element)
 
@@ -321,12 +327,6 @@ percent_number = number + '%'
 percent_number.setParseAction(handle_percent_number)
 scale_number = number + 's'
 scale_number.setParseAction(handle_scale_number)
-
-expression_array = Suppress("[") + Optional(delimitedList(json_value, ",")) + Suppress("]")
-def handle_expression_array(s, l, t):
-	return json.dumps(list(t))
-
-expression_array.setParseAction(handle_expression_array)
 
 expression_definition = null_value | bool_value | percent_number | scale_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
 

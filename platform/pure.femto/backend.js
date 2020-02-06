@@ -86,7 +86,6 @@ exports.setText = function(text, html) {
 }
 
 exports.layoutText = function(text) {
-	var wrap = text.wrapMode !== _globals.core.Text.NoWrap
 	text.element.layoutText(function(metrics) {
 		if (metrics !== null) {
 			text.paintedWidth = metrics.width

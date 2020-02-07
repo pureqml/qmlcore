@@ -44,7 +44,6 @@ def document(text, line, prev):
 		doc_next = lang.DocumentationString(text)
 
 def handle_component_declaration(s, l, t):
-	#print "component>", t
 	type = t[0]
 	idx = type.rfind('.')
 	if idx >= 0:
@@ -54,11 +53,9 @@ def handle_component_declaration(s, l, t):
 	return component(lang.Component(t[0], t[1]))
 
 def handle_assignment(s, l, t):
-	#print "assignment>", t
 	return component(lang.Assignment(t[0], t[1]))
 
 def handle_property_declaration(s, l, t):
-	#print "property>", t
 	properties = [(x[0], None) if len(x) < 2 else (x[0], x[1]) for x in t[1]]
 	return component(lang.Property(t[0], properties))
 
@@ -81,30 +78,24 @@ def handle_method_declaration(s, l, t):
 	return component(lang.Method(names, args, code, event_handler, async_method))
 
 def handle_assignment_scope(s, l, t):
-	#print "assignment-scope>", t
 	return component(lang.AssignmentScope(t[0], t[1]))
 
 def handle_nested_identifier_rvalue(s, l, t):
-	#print "nested-id>", t
 	return lang.handle_property_path(t[0])
 
 def handle_enum_value(s, l, t):
-	#print "enum>", t
 	return "".join(t)
 
 def handle_id_declaration(s, l, t):
-	#print "id>", t
 	return component(lang.IdAssignment(t[0]))
 
 def handle_behavior_declaration(s, l, t):
-	#print "behavior>", t
 	return component(lang.Behavior(t[0], t[1]))
 
 def handle_signal_declaration(s, l, t):
 	return component(lang.Signal(t[0]))
 
 def handle_function_call(s, l, t):
-	#print "func> ", t
 	name = t[0]
 	if name[0].islower():
 		if '.' in name:
@@ -310,13 +301,10 @@ component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
 
 def handle_unary_op(s, l, t):
-	#print "EXPR", t
 	return " ".join(map(str, t[0]))
 def handle_binary_op(s, l, t):
-	#print "EXPR", t
 	return " ".join(map(str, t[0]))
 def handle_ternary_op(s, l, t):
-	#print "EXPR", t
 	return " ".join(map(str, t[0]))
 
 def handle_percent_number(s, l, t):

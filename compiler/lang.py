@@ -70,6 +70,11 @@ class Property(Entity):
 		self.type = type
 		self.properties = properties
 
+class Const(Entity):
+	def __init__(self, type, name, value):
+		super(Const, self).__init__()
+		self.type, self.name, self.value = type, name, value
+
 class AliasProperty(Entity):
 	def __init__(self, name, target):
 		super(AliasProperty, self).__init__()

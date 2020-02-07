@@ -59,6 +59,9 @@ def handle_property_declaration(s, l, t):
 	properties = [(x[0], None) if len(x) < 2 else (x[0], x[1]) for x in t[1]]
 	return component(lang.Property(t[0], properties))
 
+def handle_static_declaration(s, l, t):
+	return component(lang.Const(t[0], t[1], t[2]))
+
 def handle_alias_property_declaration(s, l, t):
 	return component(lang.AliasProperty(t[0], t[1]))
 
@@ -148,6 +151,7 @@ component_declaration = Forward()
 
 type = Word(alphas, alphanums)
 component_type = Word(alphas.upper(), alphanums + "._")
+const_identifier = Word(alphas.upper(), alphanums + "_")
 identifier = Word(srange("[a-z_]"), alphanums + "_")
 null_value = Keyword("null")
 bool_value = Keyword("true") | Keyword("false")
@@ -268,6 +272,9 @@ property_declaration = ((Keyword("property").suppress() + type + Group(delimited
 	(Keyword("property").suppress() + type + Group(Group(identifier + Suppress(":") + component_declaration))))
 property_declaration.setParseAction(handle_property_declaration)
 
+static_const_declaration = Keyword("const").suppress() - identifier - const_identifier - Suppress(":") - json_value - expression_end
+static_const_declaration.setParseAction(handle_static_declaration)
+
 alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() - identifier - Suppress(":") - nested_identifier_lvalue - expression_end
 alias_property_declaration.setParseAction(handle_alias_property_declaration)
 
@@ -294,7 +301,7 @@ list_element_declaration.setParseAction(handle_list_element)
 
 import_statement = Keyword("import") - restOfLine
 
-scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
+scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope | static_const_declaration
 component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
 
 component_declaration << (component_type + component_scope)

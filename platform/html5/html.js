@@ -792,6 +792,10 @@ exports.layoutText = function(text) {
 }
 
 exports.run = function(ctx, onloadCallback) {
+	ctx.window.on('message', function(event) {
+		log('Context: received message from ' + event.origin, event)
+		ctx.message(event)
+	})
 	ctx.window.on($manifest$expectRunContextEvent ? 'runContext' : 'load', function() {
 		onloadCallback()
 	})

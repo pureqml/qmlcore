@@ -150,7 +150,7 @@ expression_list = delimitedList(expression, ",")
 component_declaration = Forward()
 
 type = Word(alphas, alphanums)
-component_type = Word(alphas.upper(), alphanums + "._")
+component_type = Word(srange("[A-Za-z_]"), alphanums + "._")
 const_identifier = Word(alphas.upper(), alphanums + "_")
 identifier = Word(srange("[a-z_]"), alphanums + "_")
 null_value = Keyword("null")

@@ -90,7 +90,7 @@ class component_generator(object):
 			self.properties.append(child)
 			for name, default_value in child.properties:
 				if self.has_property(name):
-					raise Exception("duplicate property " + name)
+					raise Exception("duplicate property %s.%s" %(self.name, name))
 
 				#print self.name, name, default_value, lang.value_is_trivial(default_value)
 				if child.lazy:

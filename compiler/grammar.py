@@ -60,7 +60,7 @@ def handle_property_declaration(s, l, t):
 	return component(lang.Property(t[0], properties))
 
 def handle_static_declaration(s, l, t):
-	return component(lang.Const(t[0], t[1], t[2]))
+	return component(lang.Property(t[0], [(t[1], t[2] if len(t) >= 3 else None)], static = True))
 
 def handle_alias_property_declaration(s, l, t):
 	return component(lang.AliasProperty(t[0], t[1]))
@@ -272,7 +272,7 @@ property_declaration = ((Keyword("property").suppress() + type + Group(delimited
 	(Keyword("property").suppress() + type + Group(Group(identifier + Suppress(":") + component_declaration))))
 property_declaration.setParseAction(handle_property_declaration)
 
-static_const_declaration = Keyword("const").suppress() - identifier - const_identifier - Suppress(":") - json_value - expression_end
+static_const_declaration = Keyword("static").suppress() + type + const_identifier + Optional(Suppress(":") + expression) + expression_end
 static_const_declaration.setParseAction(handle_static_declaration)
 
 alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() - identifier - Suppress(":") - nested_identifier_lvalue - expression_end

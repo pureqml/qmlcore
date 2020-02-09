@@ -548,34 +548,60 @@ PropertyStoragePrototype.removeOnChanged = function(callback) {
 		return handlers.splice(idx, 1)
 }
 
-exports.addProperty = function(proto, type, name, defaultValue) {
-	var convert
-	var animable = false
+var getDefaultValueForType = exports.getDefaultValueForType = function(type) {
+	switch(type) {
+		case 'enum': //fixme: add default value here
+		case 'int':		return 0
+		case 'bool':	return false
+		case 'real':	return 0.0
+		case 'string':	return ""
+		case 'array':	return []
+		case 'Color':	return '#0000'
+		default:		return (type[0].toUpperCase() === type[0])? null: undefined
+	}
+}
+
+var convertTo = exports.convertTo = function(type, value) {
 	switch(type) {
 		case 'enum':
-		case 'int':		convert = function(value) { return ~~value }; animable = true; break
-		case 'bool':	convert = function(value) { return value? true: false }; break
-		case 'real':	convert = function(value) { return +value }; animable = true; break
-		case 'string':	convert = function(value) { return String(value) }; break
-
-		case 'Color':	animable = true; //fallthrough
-		default:		convert = function(value) { return value }; break
+		case 'int':		return ~~value
+		case 'bool':	return value? true: false
+		case 'real':	return +value
+		case 'string':	return String(value)
+		default:		return value
 	}
+}
+
+var getConvertFunction = exports.getConvertFunction = function(type) {
+	switch(type) {
+		case 'enum':
+		case 'int':		return function(value) { return ~~value }
+		case 'bool':	return function(value) { return value? true: false }
+		case 'real':	return function(value) { return +value }
+		case 'string':	return function(value) { return String(value) }
+		default:		return function(value) { return value }
+	}
+}
+
+var isTypeAnimable = function(type) {
+	switch(type) {
+		case 'int':
+		case 'real':
+		case 'Color':
+			return true;
+		default:
+			return false;
+	}
+}
+
+exports.addProperty = function(proto, type, name, defaultValue) {
+	var convert = getConvertFunction(type)
+	var animable = isTypeAnimable(type)
 
 	if (defaultValue !== undefined) {
 		defaultValue = convert(defaultValue)
 	} else {
-		switch(type) {
-			case 'enum': //fixme: add default value here
-			case 'int':		defaultValue = 0; break
-			case 'bool':	defaultValue = false; break
-			case 'real':	defaultValue = 0.0; break
-			case 'string':	defaultValue = ""; break
-			case 'array':	defaultValue = []; break
-			case 'Color':	defaultValue = '#0000'; break
-			default:
-				defaultValue = (type[0].toUpperCase() === type[0])? null: undefined
-		}
+		defaultValue = getDefaultValueForType(type)
 	}
 
 	var createStorage = function(newValue) {

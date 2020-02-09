@@ -63,13 +63,17 @@ class Component(Entity):
 		self.children = children
 
 class Property(Entity):
-	def __init__(self, type, properties, static=False):
+	def __init__(self, type, properties):
 		super(Property, self).__init__()
 		self.lazy = type == 'lazy'
-		self.type = type
 		self.const = type == 'const'
-		self.static = static
+		self.type = type
 		self.properties = properties
+
+class Const(Entity):
+	def __init__(self, type, name, value):
+		super(Const, self).__init__()
+		self.type, self.name, self.value = type, name, value
 
 class AliasProperty(Entity):
 	def __init__(self, name, target):

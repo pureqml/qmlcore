@@ -160,6 +160,8 @@ class component_generator(object):
 		elif t is lang.AssignmentScope:
 			for assign in child.values:
 				self.assign(child.target + '.' + assign.target, assign.value)
+		elif t is lang.Const:
+			print("skipping const %s %s: %s" %(child.type, child.name, child.value))
 		else:
 			raise Exception("unhandled element: %s" %child)
 

@@ -272,7 +272,7 @@ property_declaration = ((Keyword("property").suppress() + type + Group(delimited
 	(Keyword("property").suppress() + type + Group(Group(identifier + Suppress(":") + component_declaration))))
 property_declaration.setParseAction(handle_property_declaration)
 
-static_const_declaration = Keyword("static").suppress() + type + const_identifier + Suppress(":") + json_value + expression_end
+static_const_declaration = Keyword("const").suppress() + type + const_identifier + Suppress(":") + json_value + expression_end
 static_const_declaration.setParseAction(handle_static_declaration)
 
 alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() - identifier - Suppress(":") - nested_identifier_lvalue - expression_end

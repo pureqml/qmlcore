@@ -18,6 +18,7 @@ class component_generator(object):
 		self.const_properties = {}
 		self.properties = []
 		self.enums = {}
+		self.consts = {}
 		self.assignments = {}
 		self.animations = {}
 		self.package = get_package(name)
@@ -287,7 +288,6 @@ class component_generator(object):
 
 	def generate_const_property(self, registry, proto, name, code, ident_n = 1):
 		ident = "\t" * ident_n
-		var = 'const$' + name
 		return "%score.addConstProperty(%s, '%s', function() %s)" %(ident, proto, name, code)
 
 	def transform_handlers(self, registry, blocks):
@@ -307,8 +307,6 @@ class component_generator(object):
 
 		r = []
 		ident = "\t" * ident_n
-
-		base_type = self.get_base_type(registry)
 
 		r.append("%svar %s = %s.prototype = Object.create(%s)\n" %(ident, self.proto_name, self.local_name, self.base_proto_name))
 		if self.prototype_ctor:
@@ -503,7 +501,7 @@ class component_generator(object):
 			r.append("%s%s.%s = %s" %(ident, closure, var, var))
 			code = self.call_create(registry, ident_n, var, gen, closure)
 			r.append(code)
-			r.append("%s%s.addChild(%s)" %(ident, parent, var));
+			r.append("%s%s.addChild(%s)" %(ident, parent, var))
 
 		for target, value in self.assignments.items():
 			if target == "id":

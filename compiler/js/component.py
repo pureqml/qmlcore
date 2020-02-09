@@ -162,7 +162,9 @@ class component_generator(object):
 			for assign in child.values:
 				self.assign(child.target + '.' + assign.target, assign.value)
 		elif t is lang.Const:
-			print("skipping const %s %s: %s" %(child.type, child.name, child.value))
+			if child.name in self.consts:
+				raise Exception("duplicate static property " + child.name)
+			self.consts[child.name] = child
 		else:
 			raise Exception("unhandled element: %s" %child)
 
@@ -348,6 +350,10 @@ class component_generator(object):
 				args.append("%s.%s" %(self.local_name, prop.default))
 			r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
+		for name, prop in self.consts.items():
+			r.append("/** @const */")
+			r.append("%s%s.%s = %s.%s = $core.core.convertTo('%s', %s)" %(ident, self.proto_name, name, self.local_name, name, prop.type, json.dumps(prop.value)))
+
 		def next_codevar(lines, code, index):
 			var = "$code$%d" %index
 			code = '%svar %s = %s' %(ident, var, code)
@@ -492,7 +498,9 @@ class component_generator(object):
 						r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 			for name, prop in self.enums.items():
-				raise Exception('adding enums in runtime is unsupported, consider putting this property (%s) in prototype' %name)
+				raise Exception('adding enums without prototype is not supported, consider putting this property (%s) in prototype' %name)
+			for name, prop in self.consts.items():
+				raise Exception('adding consts without prototype is not unsupported, consider putting this property (%s) in prototype' %name)
 
 		for idx, gen in enumerate(self.children):
 			var = "%s$child%d" %(escape(parent), idx)

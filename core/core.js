@@ -522,10 +522,8 @@ PropertyStoragePrototype.set = function(object, name, newValue, defaultValue, ca
 		this.callOnChanged(object, name, newValue, oldValue)
 }
 
-PropertyStoragePrototype.callOnChanged = function(object, name, value) {
+var _callOnChanged = function(object, name, value, handlers) {
 	var protoCallbacks = object['__changed__' + name]
-	var handlers = this.onChanged
-
 	var hasProtoCallbacks = protoCallbacks !== undefined
 	var hasHandlers = handlers !== undefined
 
@@ -539,6 +537,10 @@ PropertyStoragePrototype.callOnChanged = function(object, name, value) {
 
 	if (hasHandlers)
 		handlers.forEach(invoker)
+}
+
+PropertyStoragePrototype.callOnChanged = function(object, name, value) {
+	_callOnChanged(object, name, value, this.onChanged)
 }
 
 PropertyStoragePrototype.removeOnChanged = function(callback) {
@@ -704,6 +706,8 @@ exports.addAliasProperty = function(object, name, getObject, srcProperty) {
 		var storage = object.__properties[name]
 		if (storage !== undefined)
 			storage.callOnChanged(object, name, value)
+		else
+			_callOnChanged(object, name, value) //call prototype handlers
 	})
 
 	Object.defineProperty(object, name, {

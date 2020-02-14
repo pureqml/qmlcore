@@ -17,6 +17,10 @@ if [ ! -d ${APP_DIR} ]; then
 	pushd ${BUILD_DIR}
 	git clone https://github.com/pureqml/qmlcore-android.git
 	popd
+else
+	pushd ${BUILD_DIR}
+	git pull
+	popd
 fi
 
 echo "compiling app..."

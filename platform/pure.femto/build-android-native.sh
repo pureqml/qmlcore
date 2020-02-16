@@ -19,7 +19,7 @@ if [ ! -d ${APP_DIR} ]; then
 	popd
 else
 	pushd ${BUILD_DIR}
-	git pull
+	git -C qmlcore-android pull
 	popd
 fi
 

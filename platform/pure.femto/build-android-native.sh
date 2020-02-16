@@ -44,10 +44,10 @@ rm "${ASSETS_DIR}/.keep"
 
 pushd ${ASSETS_DIR}
 	cp -a ${SRC_DIR}/* .
-	if [ -e icon.png ];then
+	if [ -e icon.png ]; then
 		mv icon.png ../ic_launcher-web.png
-		mv qml.*.js main.js
 	fi
+	mv qml.*.js main.js
 popd
 
 echo "building"

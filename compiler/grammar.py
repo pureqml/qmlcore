@@ -308,11 +308,11 @@ component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)
 
 def handle_unary_op(s, l, t):
-	return " ".join(map(str, t[0]))
+	return " ".join(map(lang.to_string, t[0]))
 def handle_binary_op(s, l, t):
-	return " ".join(map(str, t[0]))
+	return " ".join(map(lang.to_string, t[0]))
 def handle_ternary_op(s, l, t):
-	return " ".join(map(str, t[0]))
+	return " ".join(map(lang.to_string, t[0]))
 
 def handle_percent_number(s, l, t):
 	value = t[0]

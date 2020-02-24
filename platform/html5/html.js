@@ -318,13 +318,24 @@ ElementPrototype.fullHeight = function() {
 	return this.dom.scrollHeight
 }
 
+var overflowStyles = ['overflow', 'overflow-x', 'overflow-y']
+
 ElementPrototype.style = function(name, style) {
 	var cache = this._context._styleCache
 	if (style !== undefined) {
 		cache.update(this, name, style)
+		if (overflowStyles.indexOf(name) >= 0) {
+			cache.update(this, 'pointer-events', 'auto')
+			cache.update(this, 'touch-action', 'auto')
+		}
 	} else if (typeof name === 'object') { //style({ }) assignment
-		for(var k in name)
+		for(var k in name) {
+			if (overflowStyles.indexOf(name) >= 0) {
+				cache.update(this, 'pointer-events', 'auto')
+				cache.update(this, 'touch-action', 'auto')
+			}
 			cache.update(this, k, name[k])
+		}
 	}
 	else
 		throw new Error('cache is write-only')

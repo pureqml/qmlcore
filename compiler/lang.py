@@ -35,12 +35,16 @@ def value_is_trivial(value):
 	#print "?trivial", value
 	return False
 
+class Entity(object):
+	def __init__(self):
+		self.doc = None
+
 def to_string(value):
 	if isinstance(value, (str, basestring)):
 		return value
 	elif isinstance(value, bool):
 		return 'true' if value else 'false'
-	elif isinstance(value, object):
+	elif isinstance(value, Entity):
 		return value
 	else:
 		return str(value)
@@ -51,10 +55,6 @@ def handle_property_path(t):
 class DocumentationString(object):
 	def __init__(self, text):
 		self.text = text
-
-class Entity(object):
-	def __init__(self):
-		self.doc = None
 
 class Component(Entity):
 	def __init__(self, name, children):

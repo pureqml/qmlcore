@@ -150,6 +150,8 @@ exports.getPrefixedName = getPrefixedName
 
 var passiveListeners = ['touchstart', 'touchmove', 'touchend', 'wheel', 'mousewheel', 'scroll']
 var passiveArg = Modernizr.passiveeventlisteners ? {passive: true} : false
+var mouseEvents = ['mousedown', 'mouseup', 'click', 'dblclick', 'mousemove', 'mouseover', 'mousewheel', 'mouseout', 'contextmenu']
+var touchEvents = ['touchstart', 'touchmove', 'touchend', 'touchcancel']
 
 var registerGenericListener = function(target) {
 	var storage = target.__domEventListeners
@@ -167,10 +169,31 @@ var registerGenericListener = function(target) {
 			if (passiveListeners.indexOf(name) >= 0)
 				args.push(passiveArg)
 
+			if (mouseEvents.indexOf(name) >= 0) {
+				var n = target.__mouseHandlerCount = ~~target.__mouseHandlerCount + 1
+				if (n === 1)
+					target.style('pointer-events', 'auto')
+			}
+			if (touchEvents.indexOf(name) >= 0) {
+				var n = target.__touchHandlerCount = ~~target.__touchHandlerCount + 1
+				if (n === 1)
+					target.style('touch-action', 'auto')
+			}
+
 			target.dom.addEventListener.apply(target.dom, args)
 		},
 		function(name) {
 			//log('removing generic event', name)
+			if (mouseEvents.indexOf(name) >= 0) {
+				var n = target.__mouseHandlerCount = ~~target.__mouseHandlerCount - 1
+				if (n <= 0)
+					target.style('pointer-events', 'none')
+			}
+			if (touchEvents.indexOf(name) >= 0) {
+				var n = target.__touchHandlerCount = ~~target.__touchHandlerCount - 1
+				if (n <= 0)
+					target.style('touch-action', 'none')
+			}
 			target.dom.removeEventListener(name, storage[name])
 		}
 	)
@@ -464,6 +487,8 @@ WindowPrototype.height = function() {
 WindowPrototype.scrollY = function() {
 	return this.dom.scrollY
 }
+
+WindowPrototype.style = function() { /* ignoring style on window */ }
 
 exports.getElement = function(ctx, tag) {
 	var tags = document.getElementsByTagName(tag)

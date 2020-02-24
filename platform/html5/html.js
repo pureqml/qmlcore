@@ -148,7 +148,7 @@ var getPrefixedName = function(name) {
 
 exports.getPrefixedName = getPrefixedName
 
-var passiveListeners = ['touchstart', 'touchend', 'wheel', 'scroll']
+var passiveListeners = ['touchstart', 'touchmove', 'touchend', 'wheel', 'mousewheel', 'scroll']
 var passiveArg = Modernizr.passiveeventlisteners ? {passive: true} : false
 
 var registerGenericListener = function(target) {

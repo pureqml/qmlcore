@@ -41,11 +41,9 @@ Item {
 				throw new Error('unknown component used: ' + source)
 		}
 		var item = new ctor(this)
-		item.__init()
-		this.item = item
-		this._context.scheduleComplete()
-		this._updateVisibilityForChild(this.item, this.recursiveVisible)
-		this._tryFocus()
+
+		this.item = new ctor(this)
+		$core.core.createObject(this.item)
 		this.loaded()
 	}
 

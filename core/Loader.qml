@@ -40,7 +40,6 @@ Item {
 			if (ctor === undefined)
 				throw new Error('unknown component used: ' + source)
 		}
-		var item = new ctor(this)
 
 		this.item = new ctor(this)
 		$core.core.createObject(this.item)

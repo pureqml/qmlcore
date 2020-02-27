@@ -42,11 +42,10 @@ git -C ${APP_DIR} checkout-index -a --prefix=${DST_DIR}/
 ASSETS_DIR="${DST_DIR}/app/src/main/assets"
 rm "${ASSETS_DIR}/.keep"
 
-DIST_DIR=${PWD}/dist.platform.pure.femto
 pushd ${ASSETS_DIR}
 	cp -a ${SRC_DIR}/* .
-	if [ -e ${DIST_DIR}/icon.png ]; then
-		cp ${DIST_DIR}/icon.png ../ic_launcher-web.png
+	if [ -e icon.png ]; then
+		mv icon.png ../ic_launcher-web.png
 	fi
 	mv qml.*.js main.js
 popd

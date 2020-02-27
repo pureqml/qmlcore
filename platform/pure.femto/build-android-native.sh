@@ -6,7 +6,6 @@ MAIN=$0
 
 die() { echo "$*" 1>&2 ; exit 1; }
 
-
 if [ -z "$ANDROID_HOME" ]; then
 	die "environment variable ANDROID_HOME=~/location/to/your/android/sdk required"
 fi
@@ -65,6 +64,10 @@ else
 	echo "using top-level build dir..."
 fi
 
+APP_TITLE=$(./qmlcore/build -j -p pure.femto -P title ${APP_NAME} 2>/dev/null) || die "you have to specify application title in .manifest/properties.title"
+APP_DOMAIN=$(./qmlcore/build -j -p pure.femto -P domain ${APP_NAME} 2>/dev/null) || die "you have to specify application domain/package in .manifest/properties.domain"
+echo "app domain: ${APP_DOMAIN}, title: ${APP_TITLE}"
+
 echo "bundling..."
 DST_DIR=${BUILD_DIR}/app
 
@@ -82,6 +85,15 @@ pushd ${ASSETS_DIR}
 	if [ -e ${SRC_DIR}/icon.png ]; then
 		mv ${SRC_DIR}/icon.png ../ic_launcher-web.png
 	fi
+popd
+
+pushd ${DST_DIR}
+	P="s/\\/\\* import \\\${manifest\\.domain}\\.R;.*\$/import ${APP_DOMAIN}.R;/"
+	sed -i "${P}" app/src/main/java/com/pureqml/android/MainActivity.java
+	P="s/package=\"com.pureqml.android\"/package=\"${APP_DOMAIN}\"/"
+	sed -i "${P}" app/src/main/AndroidManifest.xml
+	P="s/<string name=\"app_name\">QMLCoreAndroidRuntime<\\/string>/<string name=\"app_name\">${APP_TITLE}<\\/string>/"
+	sed -i "${P}" app/src/main/res/values/strings.xml
 popd
 
 echo "building"

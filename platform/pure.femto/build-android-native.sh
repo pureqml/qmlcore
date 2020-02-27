@@ -1,15 +1,41 @@
 #!/bin/bash
+
 set -euo pipefail
 
+MAIN=$0
+
+die() { echo "$*" 1>&2 ; exit 1; }
+
+
 if [ -z "$ANDROID_HOME" ]; then
-	echo "environment variable ANDROID_HOME=~/location/to/your/android/sdk required"
-	exit 1
+	die "environment variable ANDROID_HOME=~/location/to/your/android/sdk required"
 fi
+
+BUILD_DIR=${PWD}/build.pure.femto.app
+APP_NAME=''
+
+while getopts ":a:" OPTNAME; do
+	case ${OPTNAME} in
+		a)
+			APP_NAME="${OPTARG}"
+			;;
+		:)
+			die "Error: -${OPTARG} requires an argument."
+			;;
+		?)
+			die "${MAIN} -a <app> specify app to bundle"
+			exit 0
+			;;
+		*)
+			echo "Invalid option ${OPTNAME}"
+			exit 1
+			;;
+	esac
+done
 
 export PATH=$PATH:$ANDROID_HOME/tools/
 export PATH=$PATH:$ANDROID_HOME/platform-tools/
 
-BUILD_DIR=${PWD}/build.pure.femto.app
 APP_DIR=${BUILD_DIR}/qmlcore-android
 if [ ! -d ${APP_DIR} ]; then
 	echo "installing android runtime..."
@@ -26,10 +52,17 @@ fi
 echo "compiling app..."
 SRC_DIR=${PWD}/build.pure.femto
 rm -rf ${SRC_DIR}
-./qmlcore/build -j -p pure.femto
+./qmlcore/build -j -p pure.femto ${APP_NAME}
 if [ ! -d ${SRC_DIR} ]; then
 	echo "could not find project in ${SRC_DIR}"
 	exit 1
+fi
+
+if [ -n "${APP_NAME}" ]; then
+	echo "using app name ${APP_NAME}..."
+	SRC_DIR="${SRC_DIR}/${APP_NAME}"
+else
+	echo "using top-level build dir..."
 fi
 
 echo "bundling..."
@@ -43,11 +76,12 @@ ASSETS_DIR="${DST_DIR}/app/src/main/assets"
 rm "${ASSETS_DIR}/.keep"
 
 pushd ${ASSETS_DIR}
+	echo "using ${SRC_DIR} as source directory"
 	cp -a ${SRC_DIR}/* .
-	if [ -e icon.png ]; then
-		mv icon.png ../ic_launcher-web.png
+	mv qml.*.js main.js 2>/dev/null || die "Could not find qml.*.js in build directory, in case your project has multiple app, specify the name with -a, e.g -a <appname>"
+	if [ -e ${SRC_DIR}/icon.png ]; then
+		mv ${SRC_DIR}/icon.png ../ic_launcher-web.png
 	fi
-	mv qml.*.js main.js
 popd
 
 echo "building"

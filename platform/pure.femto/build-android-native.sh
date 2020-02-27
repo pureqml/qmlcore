@@ -89,12 +89,20 @@ pushd ${ASSETS_DIR}
 popd
 
 pushd ${DST_DIR}
-	P="s/\\/\\* import \\\${manifest\\.domain}\\.R;.*\$/import ${APP_DOMAIN}.R;/"
-	sed -i "${P}" app/src/main/java/com/pureqml/android/MainActivity.java
 	P="s/package=\"com.pureqml.android\"/package=\"${APP_DOMAIN}\"/"
 	sed -i "${P}" app/src/main/AndroidManifest.xml
 	P="s/<string name=\"app_name\">QMLCoreAndroidRuntime<\\/string>/<string name=\"app_name\">${APP_TITLE}<\\/string>/"
 	sed -i "${P}" app/src/main/res/values/strings.xml
+	JAVA_SRC=app/src/main/java/$(echo "${APP_DOMAIN}" | tr '.' '/')
+	mkdir -p ${JAVA_SRC}
+	mv app/src/main/java/com/pureqml/android/* ${JAVA_SRC}/
+	rm -rf app/src/main/java/com/pureqml/android
+	rmdir -p app/src/main/java/com/pureqml || true
+	for J in $(find -name '*.java'); do
+		sed -i "s/package com\\.pureqml\\.android/package ${APP_DOMAIN}/" $J
+		sed -i "s/import com\\.pureqml\\.android/import ${APP_DOMAIN}/g" $J
+		sed -i "s/import static com\\.pureqml\\.android/import static ${APP_DOMAIN}/g" $J
+	done
 popd
 
 echo "building"

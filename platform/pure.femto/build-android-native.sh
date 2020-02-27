@@ -82,8 +82,8 @@ pushd ${ASSETS_DIR}
 	echo "using ${SRC_DIR} as source directory"
 	cp -a ${SRC_DIR}/* .
 	mv qml.*.js main.js 2>/dev/null || die "Could not find qml.*.js in build directory, in case your project has multiple app, specify the name with -a, e.g -a <appname>"
-	if [ -e ${SRC_DIR}/icon.png ]; then
-		mv ${SRC_DIR}/icon.png ../ic_launcher-web.png
+	if [ -e ${SRC_DIR}/icons ]; then
+		cp -r ${SRC_DIR}/icons/* ../res/.
 	fi
 popd
 

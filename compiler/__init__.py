@@ -61,7 +61,7 @@ def parse_qml_file(cache, com, path):
 	if cached:
 		return cached, data
 	else:
-		print("parsing", path, "...", com)
+		print("parsing", path, "...", com, file=sys.stderr)
 		try:
 			tree = compiler.grammar.parse(data)
 			cache.write(com, h, tree)
@@ -81,7 +81,7 @@ class Compiler(object):
 		if ext == ".qml":
 			if name[0].islower():
 				if self.app != name:
-					#print "skipping", name
+					#print("skipping", name, file=sys.stderr)
 					return
 
 			if pool is not None:
@@ -93,7 +93,7 @@ class Compiler(object):
 			with open(path) as f:
 				data = f.read()
 			if self.verbose:
-				print("including js file...", path)
+				print("including js file...", path, file=sys.stderr)
 			generator.add_js(com, data)
 		elif ext == '.ts':
 			generator.add_ts(path)
@@ -176,7 +176,7 @@ class Compiler(object):
 			init_path = os.path.join(project_dir, '.core.js')
 			if os.path.exists(init_path):
 				if self.verbose:
-					print('including platform initialisation file at %s' %init_path)
+					print('including platform initialisation file at %s' %init_path, file=sys.stderr)
 				with open(init_path) as f:
 					init_js += f.read()
 
@@ -203,7 +203,7 @@ class Compiler(object):
 		merge_properties(self.root_manifest_props, self.root_manifest.properties)
 
 		if self.verbose:
-			print("generating sources...")
+			print("generating sources...", file=sys.stderr)
 
 		appcode = ""
 		if self.strict:
@@ -234,7 +234,7 @@ class Compiler(object):
 		if self.documentation:
 			self.documentation.generate(self.component_path_map)
 
-		print("done")
+		print("done", file=sys.stderr)
 
 	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1):
 		self.cache = Cache()
@@ -252,7 +252,7 @@ class Compiler(object):
 		self.platforms = platforms
 
 		if self.verbose:
-			print('running using %d jobs' %self.jobs)
+			print('running using %d jobs' %self.jobs, file=sys.stderr)
 
 		with open(os.path.join(root, 'partners.json')) as f:
 			self.partners = json.load(f)
@@ -322,7 +322,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = 
 				msg = '%serror: %s' %(loc, ex)
 				if hasattr(ex, 'line'):
 					msg += '\n' + ex.line
-				print(msg)
+				print(msg, file=sys.stderr)
 				if verbose:
 					raise
 				sys.exit(1)

@@ -51,7 +51,7 @@ verbose = args.verbose
 
 if args.boilerplate:
 	if path.exists('.manifest') or path.exists('src/app.qml'):
-		print('error: will not overwrite any file, you already have your project set up, run %s' %sys.argv[0])
+		print('error: will not overwrite any file, you already have your project set up, run %s' %sys.argv[0], file=sys.stderr)
 		sys.exit(1)
 	with open('.manifest', 'w') as f:
 		f.write("{ }\n")
@@ -63,12 +63,12 @@ if args.boilerplate:
 	with open('src/app.qml', 'w') as app:
 		with open(path.join(root, 'app.qml')) as template:
 			app.write(template.read())
-	print('finished, run %s now' %sys.argv[0])
+	print('finished, run %s now' %sys.argv[0], file=sys.stderr)
 	sys.exit(0)
 
 def call(*args, **kw):
 	if verbose:
-		print('calling', args, kw)
+		print('calling', args, kw, file=sys.stderr)
 	if os.name == 'nt':
 		cmd = ['cmd', '/c'] +  list(args)[0]
 		code = subprocess.call(cmd)
@@ -102,7 +102,7 @@ def minify(root, target, app, platform, manifest):
 			try:
 				minify_uglify(out, src, root, app, platform, manifest)
 			except:
-				print("WARNING: you don't seem to have uglifyjs installed. please run `sudo npm install -g uglify-js`, falling back to gcc")
+				print("WARNING: you don't seem to have uglifyjs installed. please run `sudo npm install -g uglify-js`, falling back to gcc", file=sys.stderr)
 				tool = 'gcc'
 
 		if tool == 'gcc':
@@ -135,7 +135,7 @@ def process_template_jinja2(destination, source, context):
 			self.next_index = {}
 
 		def get_source(self, env, template, updateIndex = False):
-			#print 'get', template, self.paths
+			#print('get', template, self.paths, file=sys.stderr)
 			paths = self.paths
 			for i in range(self.next_index.get(template, 0), len(paths)):
 				path = paths[i]
@@ -144,9 +144,9 @@ def process_template_jinja2(destination, source, context):
 					with open(src, 'r') as f:
 						text = f.read()
 						if updateIndex:
-							#print 'updated index for', template, 'to', i + 1
+							#print('updated index for', template, 'to', i + 1, file=sys.stderr)
 							self.next_index[template] = i + 1
-					#print 'returning', src
+					#print('returning', src, file=sys.stderr)
 					return (text, src, lambda: True) #always up-to-date, fixme
 			raise TemplateNotFound(template)
 
@@ -182,12 +182,12 @@ def copy(source, destination, context, templates):
 		return
 
 	if verbose:
-		print('copying from', source, 'to', destination)
+		print('copying from', source, 'to', destination, file=sys.stderr)
 	files = [path.join(source, file_) for file_ in os.listdir(source)]
 	copytree(source, destination)
 	for src in files:
 		if verbose:
-			print('+', src)
+			print('+', src, file=sys.stderr)
 		_path, name = path.split(src)
 		name, ext = path.splitext(name)
 		apply_templates(src, destination, context, templates)
@@ -218,7 +218,7 @@ def listdirs(path):
 	return list(filter(os.path.isdir, [os.path.join(path, x) for x in os.listdir(path)]))
 
 def build(root, platform, apps, app, manifest):
-	print("building %s for %s..." %(app, platform))
+	print("building %s for %s..." %(app, platform), file=sys.stderr)
 	if len(apps) > 1:
 		target = path.join('build.' + platform, app)
 	else:
@@ -290,7 +290,7 @@ def build(root, platform, apps, app, manifest):
 	platform_dirs = []
 	platforms = []
 	while subplatform_deps:
-		#print subplatform_deps
+		#print(subplatform_deps, file=sys.stderr)
 		for subplatform, deps in list(subplatform_deps.items()):
 			if subplatform not in platforms:
 				platforms.append(subplatform)
@@ -335,7 +335,7 @@ def build(root, platform, apps, app, manifest):
 	templater = manifest.templater
 
 	if verbose:
-		print("copying resources...")
+		print("copying resources...", file=sys.stderr)
 
 	context = { 'id': app, 'app': script, 'templater': templater }
 	for sm in subplatforms_manifests:
@@ -377,7 +377,7 @@ try:
 		manifest = mf.load(f)
 		manifest_path = '.manifest'
 except IOError:
-	print('warning: could not find .manifest, using empty fallback')
+	print('warning: could not find .manifest, using empty fallback', file=sys.stderr)
 	manifest = mf.Manifest()
 
 if args.properties:
@@ -395,7 +395,7 @@ def proc_source_dir(source_dir):
 	if args.update_translation:
 		languages = manifest.languages
 		for language in languages:
-			print('updating translation for language', language)
+			print('updating translation for language', language, file=sys.stderr)
 			ts = Ts(os.path.join(source_dir, language + '.ts'), language)
 			ts.scan([source_dir])
 			ts.save()
@@ -426,7 +426,7 @@ try:
 				continue
 			build(root, platform, apps, app, manifest)
 except Exception as ex:
-	print("error:", ex)
+	print("error:", ex, file=sys.stderr)
 	if verbose:
 		raise
 	else:

@@ -57,15 +57,16 @@ if [ ! -d ${SRC_DIR} ]; then
 	exit 1
 fi
 
+APP_TITLE=$(./qmlcore/build -j -p pure.femto -P title ${APP_NAME} 2>/dev/null) || die "you have to specify application title in .manifest/properties.title"
+APP_DOMAIN=$(./qmlcore/build -j -p pure.femto -P domain ${APP_NAME} 2>/dev/null) || die "you have to specify application domain/package in .manifest/properties.domain"
+
 if [ -n "${APP_NAME}" ]; then
 	echo "using app name ${APP_NAME}..."
+	APP_DOMAIN="${APP_DOMAIN}.${APP_NAME}"
 	SRC_DIR="${SRC_DIR}/${APP_NAME}"
 else
 	echo "using top-level build dir..."
 fi
-
-APP_TITLE=$(./qmlcore/build -j -p pure.femto -P title ${APP_NAME} 2>/dev/null) || die "you have to specify application title in .manifest/properties.title"
-APP_DOMAIN=$(./qmlcore/build -j -p pure.femto -P domain ${APP_NAME} 2>/dev/null) || die "you have to specify application domain/package in .manifest/properties.domain"
 echo "app domain: ${APP_DOMAIN}, title: ${APP_TITLE}"
 
 echo "bundling..."

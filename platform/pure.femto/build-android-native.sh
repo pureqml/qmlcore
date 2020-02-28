@@ -93,6 +93,9 @@ pushd ${DST_DIR}
 	sed -i "${P}" app/src/main/AndroidManifest.xml
 	P="s/<string name=\"app_name\">QMLCoreAndroidRuntime<\\/string>/<string name=\"app_name\">${APP_TITLE}<\\/string>/"
 	sed -i "${P}" app/src/main/res/values/strings.xml
+	P="s/-keep public com\\.pureqml\\.android\\./-keep public ${APP_DOMAIN}./g"
+	sed -i "${P}" app/proguard-rules.pro
+
 	JAVA_SRC=app/src/main/java/$(echo "${APP_DOMAIN}" | tr '.' '/')
 	mkdir -p ${JAVA_SRC}
 	mv app/src/main/java/com/pureqml/android/* ${JAVA_SRC}/

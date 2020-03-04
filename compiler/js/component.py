@@ -244,7 +244,7 @@ class component_generator(object):
 			oname = name
 			fullname = path, name
 
-			is_on = event and len(name) > 2 and name != 'onCompleted' and name != "onChanged" and name.startswith("on") and name[2].isupper() #onXyzzy
+			is_on = event and len(name) > 2 and name != 'onCompleted' and name != "onChanged" and name.startswith("on") and (name[2].isupper() or name[2].isdigit) #onXyzzy
 			if is_on:
 				signal_name = name[2].lower() + name[3:] #check that there's no signal with that name
 			is_pressed = is_on and name.endswith("Pressed") and len(name) > (2 + 7) #skipping onPressed

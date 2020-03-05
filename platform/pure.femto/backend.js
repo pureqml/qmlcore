@@ -71,6 +71,7 @@ exports.loadImage = function(image) {
 			image.sourceHeight = metrics.height
 			image.paintedWidth = metrics.width
 			image.paintedHeight = metrics.height
+			image.status = ImageStatusLoaded
 		}
 		else
 			image._onError()

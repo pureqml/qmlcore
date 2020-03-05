@@ -9,4 +9,8 @@ exports.createDevice = function(ui) {
 	ui.keepScreenOn = function(enable) {
 		fd.setDeviceFeature('keep-screen-on', enable)
 	}
+
+	ui.setFullScreen = function(enable) {
+		fd.setDeviceFeature('fullscreen', enable)
+	}
 }

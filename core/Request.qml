@@ -5,6 +5,10 @@ Object {
 	/**@param request:Object request object
 	send request using 'XMLHttpRequest' object*/
 	function ajax(request) {
+		if (request.done)
+			request.done = this._context.wrapNativeCallback(request.done)
+		if (request.error)
+			request.error = this._context.wrapNativeCallback(request.error)
 		this._context.backend.ajax(this, request)
 	}
 }

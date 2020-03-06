@@ -1,6 +1,7 @@
 ///base class for all views, holds content, creates delegates and provides common api
 BaseLayout {
 	signal layoutFinished;
+	signal scrollEvent;
 	property Object model;			///< model object to attach to
 	property Item delegate;			///< delegate - template object, filled with model row
 	property int contentX;			///< x offset to visible part of the content surface
@@ -339,7 +340,9 @@ BaseLayout {
 	onCompleted: {
 		var self = this
 		this.element.on('scroll', function() {
-			self._updateScrollPositions(self.element.getScrollX(), self.element.getScrollY())
+			var x = self.element.getScrollX(), y = self.element.getScrollY()
+			self._updateScrollPositions(x, y)
+			self.scrollEvent(x, y)
 		}.bind(this))
 	}
 }

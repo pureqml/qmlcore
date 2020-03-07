@@ -10,6 +10,7 @@ exports.core.keyCodes = {
 	32: 'Space',
 	33: 'PageUp',
 	34: 'PageDown',
+	36: 'Menu',
 	38: 'Up',
 	39: 'Right',
 	40: 'Down',

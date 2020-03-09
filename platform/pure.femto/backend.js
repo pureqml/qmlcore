@@ -65,6 +65,7 @@ var ImageStatusError		= 3
 
 
 exports.loadImage = function(image) {
+	image.status = ImageStatusNull
 	image.element.load(image.source, function(metrics) {
 		if (metrics) {
 			image.sourceWidth = metrics.width
@@ -72,9 +73,10 @@ exports.loadImage = function(image) {
 			image.paintedWidth = metrics.width
 			image.paintedHeight = metrics.height
 			image.status = ImageStatusLoaded
-		}
-		else
+		} else {
+			image.status = ImageStatusError
 			image._onError()
+		}
 	})
 }
 

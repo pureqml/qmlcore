@@ -43,7 +43,9 @@ Item {
 			return
 
 		this.status = this.Loading
-		this._context.backend.loadImage(this)
+		var ctx = this._context
+		var callback = this._imageLoaded.bind(this)
+		ctx.backend.loadImage(this, ctx.wrapNativeCallback(callback))
 	}
 
 	onPreloadChanged,
@@ -57,5 +59,97 @@ Item {
 	onSourceChanged: {
 		this.status = this.Null
 		this._scheduleLoad()
+	}
+
+	///@private
+	function _imageLoaded(metrics) {
+		if (!metrics) {
+			this.status = ImageComponent.Error
+			return
+		}
+
+		var style = { 'background-image': 'url("' + this.source + '")' }
+
+		var natW = metrics.width, natH = metrics.height
+		this.sourceWidth = natW
+		this.sourceHeight = natH
+
+		if (this.fillMode !== ImageComponent.PreserveAspectFit) {
+			this.paintedWidth = this.width
+			this.paintedHeight = this.height
+		}
+
+		switch(this.horizontalAlignment) {
+			case ImageComponent.AlignHCenter:
+				style['background-position-x'] = 'center'
+				break;
+			case ImageComponent.AlignLeft:
+				style['background-position-x'] = 'left'
+				break;
+			case ImageComponent.AlignRight:
+				style['background-position-x'] = 'right'
+				break;
+		}
+
+		switch(this.verticalAlignment) {
+			case ImageComponent.AlignVCenter:
+				style['background-position-y'] = 'center'
+				break;
+			case ImageComponent.AlignTop:
+				style['background-position-y'] = 'top'
+				break;
+			case ImageComponent.AlignBottom:
+				style['background-position-y'] = 'bottom'
+				break;
+		}
+
+		switch(this.fillMode) {
+			case ImageComponent.Stretch:
+				style['background-repeat'] = 'no-repeat'
+				style['background-size'] = '100% 100%'
+				break;
+			case ImageComponent.TileVertically:
+				style['background-repeat'] = 'repeat-y'
+				style['background-size'] = '100% ' + natH + 'px'
+				break;
+			case ImageComponent.TileHorizontally:
+				style['background-repeat'] = 'repeat-x'
+				style['background-size'] = natW + 'px 100%'
+				break;
+			case ImageComponent.Tile:
+				style['background-repeat'] = 'repeat-y repeat-x'
+				style['background-size'] = 'auto'
+				break;
+			case ImageComponent.PreserveAspectCrop:
+				style['background-repeat'] = 'no-repeat'
+				style['background-size'] = 'cover'
+				break;
+			case ImageComponent.Pad:
+				style['background-repeat'] = 'no-repeat'
+				style['background-position'] = '0% 0%'
+				style['background-size'] = 'auto'
+				break;
+			case ImageComponent.PreserveAspectFit:
+				style['background-repeat'] = 'no-repeat'
+				style['background-size'] = 'contain'
+				var w = this.width, h = this.height
+				var targetRatio = 0, srcRatio = natW / natH
+
+				if (w && h)
+					targetRatio = w / h
+
+				if (srcRatio > targetRatio && w) { // img width aligned with target width
+					this.paintedWidth = w;
+					this.paintedHeight = w / srcRatio;
+				} else {
+					this.paintedHeight = h;
+					this.paintedWidth = h * srcRatio;
+				}
+				break;
+		}
+		style['image-rendering'] = this.smooth? 'auto': 'pixelated'
+		this.style(style)
+
+		this.status = ImageComponent.Ready
 	}
 }

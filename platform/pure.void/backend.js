@@ -65,26 +65,11 @@ var ImageStatusUnloaded		= 2
 var ImageStatusError		= 3
 
 
-exports.loadImage = function(image) {
+exports.loadImage = function(image, callback) {
 	log('loading image ' + image.source)
 	var Image = _globals.core.Image
 	var element = image.element
-	image.status = Image.Loading
-	element._image.load(image.source, function(status) {
-		log('image ' + image.source + ' status: ' + status + ' ' + element._image.width + ' ' + element._image.height)
-		image.paintedWidth = element._image.width
-		image.paintedHeight = element._image.height
-		if (!image.width)
-			image.width = image.paintedWidth
-		if (!image.height)
-			image.height = image.paintedHeight
-		switch(status) {
-			case ImageStatusNull:	image.status = Image.Null; break
-			case ImageStatusLoaded:	image.status = Image.Ready; break
-			case ImageStatusError:	image.status = Image.Error; break
-		}
-		element.update()
-	})
+	element._image.load(image.source, callback)
 }
 
 Element.prototype.setHtml = function(html) {

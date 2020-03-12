@@ -64,20 +64,9 @@ var ImageStatusUnloaded		= 2
 var ImageStatusError		= 3
 
 
-exports.loadImage = function(image) {
+exports.loadImage = function(image, callback) {
 	image.status = ImageStatusNull
-	image.element.load(image.source, function(metrics) {
-		if (metrics) {
-			image.sourceWidth = metrics.width
-			image.sourceHeight = metrics.height
-			image.paintedWidth = metrics.width
-			image.paintedHeight = metrics.height
-			image.status = ImageStatusLoaded
-		} else {
-			image.status = ImageStatusError
-			image._onError()
-		}
-	})
+	image.element.load(image.source, callback)
 }
 
 exports.initText = function(text) {

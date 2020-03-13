@@ -9,6 +9,8 @@ Object {
 		this.element = this.parent.element;
 		this.parent.style('cursor', this.cursor)
 		this._bindHover(this.enabled)
+		this.element.style('pointer-events', 'auto')
+		this.element.style('touch-action', 'auto')
 	}
 
 	///@private

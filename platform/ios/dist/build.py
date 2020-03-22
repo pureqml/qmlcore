@@ -12,19 +12,24 @@ def build(app, title):
 	if res != 0:
 		print("Failed to create ios app")
 		return
-	# os.system('cp -r `ls -A | grep -v "%s"` %s/www' %(app,app))
 	os.system('rsync -a ./ %s/www --exclude=%s ' %(app,app))
-	os.system('cp icon.png %s' %(app))
+	# os.system('cp icon.png %s' %(app))
 	os.chdir(app)
 
 	os.system('cordova platform add ios')
 	{% block commands %}{% endblock %}
+
 	os.system('cordova plugin add cordova-plugin-streaming-media')
 	os.system('cordova plugin add cordova-plugin-device')
 	os.system('cordova plugin add cordova-plugin-screen-orientation')
 	{% block plugins %}{% endblock %}
 
 	os.system('cordova build ios')
+
+	os.system('cp -r ../icons/* ./platforms/ios/%s/Images.xcassets/AppIcon.appiconset' %(title))
+	os.system('cp -r ../screen/* ./platforms/ios/%s/Images.xcassets/LaunchImage.launchimage' %(title))
+
+	os.system('cordova run --ios')
 	os.chdir('..')
 
 

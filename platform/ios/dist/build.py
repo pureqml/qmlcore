@@ -14,12 +14,12 @@ def build(app, title):
 		return
 	os.system('rsync -a ./ %s/www --exclude=%s ' %(app,app))
 	# os.system('cp icon.png %s' %(app))
+	os.system('cp config.xml %s' %(app))
 	os.chdir(app)
 
 	os.system('cordova platform add ios')
 	{% block commands %}{% endblock %}
 
-	os.system('cordova plugin add cordova-plugin-streaming-media')
 	os.system('cordova plugin add cordova-plugin-device')
 	os.system('cordova plugin add cordova-plugin-screen-orientation')
 	{% block plugins %}{% endblock %}

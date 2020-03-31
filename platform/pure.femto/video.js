@@ -20,7 +20,8 @@ exports.createPlayer = function(ui) {
 				break;
 			case 2:
 				log("VideoPlayer: STATE_BUFFERING")
-				ui.waiting = true
+				if (!ui.paused)
+					ui.waiting = true
 				break;
 			case 3:
 				log("VideoPlayer: STATE_READY")
@@ -46,6 +47,12 @@ exports.createPlayer = function(ui) {
 		log('VideoPlayer: error: ', err)
 		ui.error()
 	})
+
+	player.on('pause', function(isPaused) {
+		ui.paused = isPaused
+		log('VideoPlayer: paused: ', isPaused)
+	})
+
 
 	return player
 }

@@ -95,6 +95,8 @@ pushd ${DST_DIR}
 	sed -i "${P}" app/src/main/res/values/strings.xml
 	P="s/-keep public com\\.pureqml\\.android\\./-keep public ${APP_DOMAIN}./g"
 	sed -i "${P}" app/proguard-rules.pro
+	P="s/applicationId \"com\\.pureqml\\.qmlcore\\.runtime\\.android\"/applicationId \"${APP_DOMAIN}\"/"
+	sed -i "${P}" app/build.gradle
 
 	JAVA_SRC=app/src/main/java/$(echo "${APP_DOMAIN}" | tr '.' '/')
 	mkdir -p ${JAVA_SRC}

@@ -17,11 +17,12 @@ def build(app, title):
 	os.system('cp config.xml %s' %(app))
 	os.chdir(app)
 
-	os.system('cordova platform add ios')
+	os.system('cordova platform add ios@5.1.0')
 	{% block commands %}{% endblock %}
 
 	os.system('cordova plugin add cordova-plugin-device')
 	os.system('cordova plugin add cordova-plugin-screen-orientation')
+	os.system('cordova plugin add cordova-plugin-wkwebview-engine')
 	{% block plugins %}{% endblock %}
 
 	os.system('cordova build ios')

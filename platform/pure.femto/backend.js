@@ -45,6 +45,8 @@ exports.createElement = function(ctx, tag, cls) {
 	switch(tag) {
 		case 'input':
 			return new fd.Input()
+		case 'spinner':
+			return new fd.Spinner()
 		default:
 			return new fd.Element()
 	}

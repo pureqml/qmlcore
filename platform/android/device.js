@@ -3,6 +3,7 @@ var Device = function(ui) {
 		ui.deviceId = device.uuid
 		ui.modelName = device.model
 		ui.firmware = device.version
+		ui.runtime = 'cordova'
 	}
 	ui._context.document.on('deviceready', onDeviceReady);
 

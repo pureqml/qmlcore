@@ -45,7 +45,7 @@ exports.createPlayer = function(ui) {
 
 	player.on('error', function(err) {
 		log('VideoPlayer: error: ', err)
-		ui.error()
+		ui.error({ message: err })
 	})
 
 	player.on('pause', function(isPaused) {

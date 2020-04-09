@@ -53,6 +53,17 @@ exports.createPlayer = function(ui) {
 		log('VideoPlayer: paused: ', isPaused)
 	})
 
+	player.on('timeupdate', function(position) {
+		ui.waiting = false
+		ui.stalled = false
+		if (!ui.seeking)
+			ui.progress = position;
+	}.bind(ui))
+
+	player.on('durationchange', function(duration) {
+		ui.duration = duration
+	}.bind(ui))
+
 
 	return player
 }

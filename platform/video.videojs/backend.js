@@ -51,6 +51,8 @@ Player.prototype.setSource = function(url) {
 			media.type = 'application/dash+xml'
 	}
 	this.videojs.src(media, { html5: { hls: { withCredentials: true } }, fluid: true, preload: 'none', techOrder: ["html5"] })
+	if (this.ui.autoPlay)
+		this.play()
 }
 
 Player.prototype.play = function() {

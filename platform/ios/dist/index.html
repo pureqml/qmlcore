@@ -1,5 +1,16 @@
-{% extends "index.html" %}
-{% block head %}
-	<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no' />
-	{{ super() }}
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{{ title }}{% endblock %}</title>
+	<meta charset="utf-8">
+	{% block head %}{% endblock %}
+	<script src="{{ baseurl }}modernizr-custom.js"></script>
+</head>
+<body>
+	{% block content %}{% endblock %}
+	{% block mainscript %}
+	<script src="{{ baseurl }}{{ app }}"></script>
+	{% endblock %}
+	{% block footer %}{% endblock %}
+</body>
+</html>

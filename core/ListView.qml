@@ -182,6 +182,7 @@ BaseView {
 		var maxW = 0, maxH = 0
 
 		var currentIndex = this.currentIndex
+		var discardDelegates = !noPrerender
 		var prerender = noPrerender? 0: this.prerender * size
 		var leftMargin = -prerender
 		var rightMargin = size + prerender
@@ -237,7 +238,7 @@ BaseView {
 
 				item.visibleInView = visible
 
-				if (!renderable) {
+				if (!renderable && discardDelegates) {
 					if (this.trace)
 						log('discarding delegate', i)
 					this._discardItem(item)
@@ -261,9 +262,11 @@ BaseView {
 			var item = items[i]
 			if (item) {
 				item.visibleInView = false
-				this._discardItem(item)
-				items[i] = null
-				created = true
+				if (discardDelegates) {
+					this._discardItem(item)
+					items[i] = null
+					created = true
+				}
 			}
 		}
 		if (p > 0)

@@ -34,6 +34,21 @@ var Player = function(ui) {
 			videojsSpinner[index].style.display = 'none'
 		}
 	}
+
+	var videojsControllButton = document.getElementsByClassName("vjs-control-bar")
+	if (videojsControllButton && videojsControllButton.length) {
+		for (var index = 0; index < videojsControllButton.length; ++index) {
+			videojsControllButton[index].style.display = 'none'
+		}
+	}
+
+	var videojsBigPlayButton = document.getElementsByClassName("vjs-big-play-button")
+	if (videojsBigPlayButton && videojsBigPlayButton.length) {
+		for (var index = 0; index < videojsBigPlayButton.length; ++index) {
+			videojsBigPlayButton[index].style.display = 'none'
+		}
+	}
+
 	this.videojsContaner = document.getElementById(uniqueId)
 	this.videojsContaner.style.zindex = -1
 }

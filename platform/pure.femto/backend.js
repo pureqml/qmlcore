@@ -101,9 +101,7 @@ exports.cancelAnimationFrame = function (timer) {
 	clearTimeout(timer)
 }
 
-exports.tick = function(ctx) {
-	fd.paint()
-}
+exports.tick = function(ctx) { }
 
 exports.ajax = function(ui, request) {
 	var error = request.error, done = request.done

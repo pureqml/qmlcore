@@ -22,12 +22,32 @@ var Player = function(ui) {
 	this.videojs.height = 'auto'
 
 	var errorDisplay = document.getElementsByClassName("vjs-error-display")
-	if (errorDisplay && errorDisplay.length)
-		errorDisplay[0].style.display = 'none'
+	if (errorDisplay && errorDisplay.length) {
+		for (var index = 0; index < errorDisplay.length; ++index) {
+			errorDisplay[index].style.display = 'none'
+		}
+	}
 
 	var videojsSpinner = document.getElementsByClassName("vjs-loading-spinner")
-	if (videojsSpinner && videojsSpinner.length)
-		videojsSpinner[0].style.display = 'none'
+	if (videojsSpinner && videojsSpinner.length) {
+		for (var index = 0; index < videojsSpinner.length; ++index) {
+			videojsSpinner[index].style.display = 'none'
+		}
+	}
+
+	var videojsControllButton = document.getElementsByClassName("vjs-control-bar")
+	if (videojsControllButton && videojsControllButton.length) {
+		for (var index = 0; index < videojsControllButton.length; ++index) {
+			videojsControllButton[index].style.display = 'none'
+		}
+	}
+
+	var videojsBigPlayButton = document.getElementsByClassName("vjs-big-play-button")
+	if (videojsBigPlayButton && videojsBigPlayButton.length) {
+		for (var index = 0; index < videojsBigPlayButton.length; ++index) {
+			videojsBigPlayButton[index].style.display = 'none'
+		}
+	}
 
 	this.videojsContaner = document.getElementById(uniqueId)
 	this.videojsContaner.style.zindex = -1

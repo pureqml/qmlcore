@@ -24,7 +24,7 @@ $ pip install -r requirements.txt
 Please find the resulting files in build.web/*
 
 ## How it works
-The QML compiler scans source directories for QML files and parses each one. Filename starting with uppercase letter considered component, lowercase instantiated. Project-wide options are stored in the ```.manifest``` file. The result of the compilation is a single Javascript file with minimum dependencies (modernizr only), ready to use in mobile and desktop environment and accompanied by sample .html launcher and flash video player.
+The QML compiler scans source directories for QML files and parses each one. Filename starting with uppercase letter considered component, lowercase instantiated. Project-wide options are stored in the ```.manifest``` file. The result of the compilation is a single Javascript file with minimum dependencies (modernizr only), ready to use in mobile and desktop environment and accompanied by sample .html launcher.
 
 ## Manifest options
 Manifest is a collection of project-wide hacks we used to botch various projects. Some of them may or may not be useful.

@@ -43,6 +43,35 @@ Manifest is a collection of project-wide hacks we used to botch various projects
 * ```-j, --jobs``` run N jobs in parallel
 * ```--boilerplate``` initialises bare minimum for quicker kick-off in current directory.
 
+# Supported Platforms
+We support many different platforms and video integration variants.
+
+Most notable platforms are:
+- HTML5 Web Browser (Obviously) with different addons:
+	- Shaka
+	- Dash.js
+	- Video.js
+Web Extension
+- ElectronJS
+- Android (Native engine and Cordova)
+- IOS (Cordova)
+- SmartTV Platorms:
+	- Any Android TV via native Android support.
+	- LG (Netcast and WebOS)
+	- Samsung SmartTv (Orsay and Tizen)
+	- OperaTV
+- Many STB platforms (privately)
+- Native C++ engine with minimal requirements (EGL or LinuxFB) (privately)
+
+For the full list of supported platform see [here](https://github.com/pureqml/qmlcore/tree/master/platform) and [here](https://github.com/pureqml/qmlcore-tv/tree/master/platform). Or alternatively just ask us.
+
+## Native Android support
+Main repo for Pureqml native Android implementation is https://github.com/pureqml/qmlcore-android.
+
+In order to build native android app you need to:
+- Install Android SDK and set `ANDROID_HOME` environment variable
+- Run `./qmlcore/platform/pure.femto/build-android-native.sh` script.
+
 # Localisation
 QmlCore uses Qt-approach to localisation. You write the code in your default language, then generate/update (build -u) .ts translation files, translate them with qt linguist and compile your project. QmlCore recognizes tr, qsTr, qsTranslate function, as well as QT_TR_NOOP/QT_TRANSLATE_NOOP macros.
 

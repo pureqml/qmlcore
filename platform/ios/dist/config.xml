@@ -22,6 +22,14 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <splash src="www/icons/splash/Default@2x~iphone~anyany.png" />
+        <splash src="www/icons/splash/Default@2x~iphone~comany.png" />
+        <splash src="www/icons/splash/Default@2x~iphone~comcom.png" />
+        <splash src="www/icons/splash/Default@3x~iphone~anyany.png" />
+        <splash src="www/icons/splash/Default@3x~iphone~anycom.png" />
+        <splash src="www/icons/splash/Default@3x~iphone~comany.png" />
+        <splash src="www/icons/splash/Default@2x~ipad~anyany.png" />
+        <splash src="www/icons/splash/Default@2x~ipad~comany.png" />
         <preference name="Orientation" value="landscape" />
         <preference name="EnableViewportScale" value="true"/>
         <preference name="AllowInlineMediaPlayback" value="true"/>

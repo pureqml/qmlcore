@@ -28,7 +28,6 @@ def build(app, title):
 	os.system('cordova build ios')
 
 	os.system('cp -r ../icons/* ./platforms/ios/%s/Images.xcassets/AppIcon.appiconset' %(title))
-	os.system('cp -r ../screen/* ./platforms/ios/%s/Images.xcassets/LaunchImage.launchimage' %(title))
 
 	os.system('cordova run --ios')
 	os.chdir('..')

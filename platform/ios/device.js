@@ -4,6 +4,8 @@ var Device = function(ui) {
 		ui.modelName = device.model
 		ui.firmware = device.version
 		ui.sdk = device.version
+		if (clientInformation && clientInformation.language)
+			ui.language = device.version
 	}
 	ui._context.document.on('deviceready', onDeviceReady);
 

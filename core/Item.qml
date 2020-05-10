@@ -87,7 +87,6 @@ Object {
 		if (this.element)
 			this.element.discard()
 
-		element._item = this
 		this.element = element
 		var parent = this.parent
 		if (parent)

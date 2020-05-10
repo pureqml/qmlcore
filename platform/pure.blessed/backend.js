@@ -72,6 +72,10 @@ ElementPrototype._style = function(name, value) {
 		case 'top':
 			this.impl.top = value
 			break
+		case 'opacity':
+			if (value < 0.75)
+				this.impl.transparent = true
+			break
 		default:
 			log("ignoring style", name, value)
 	}

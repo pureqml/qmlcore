@@ -2,7 +2,7 @@
 /*** @using { core.Text } **/
 /*** @using { core.Image } **/
 
-var blessed = require('blessed')
+var blessed = require('neo-blessed')
 
 exports.capabilities = {}
 

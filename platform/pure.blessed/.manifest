@@ -1,0 +1,6 @@
+{
+	"requires": ["pure"],
+	"properties": {
+		"requireExplicitRecursiveVisibilityStyle": false
+	}
+}

@@ -45,6 +45,7 @@ exports.createPlayer = function(ui) {
 
 	player.on('error', function(err) {
 		log('VideoPlayer: error: ', err)
+		resetState(ui);
 		ui.error({ message: err })
 	})
 

@@ -340,9 +340,9 @@ Color.interpolate = function(dst, src, t) {
 
 Color.normalize = function(spec) {
 	if (spec instanceof Color)
-		return spec.rgba()
+		return spec
 	else
-		return (new Color(spec)).rgba()
+		return (new Color(spec))
 }
 
 var ColorPrototype = Color.prototype

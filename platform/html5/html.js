@@ -406,7 +406,9 @@ ElementPrototype.updateStyle = function(updated) {
 
 		var prefixedName = getPrefixedName(name)
 		var ruleName = prefixedName !== false? prefixedName: name
-		if (Array.isArray(value))
+		if (value instanceof _globals.core.Color)
+			value = value.rgba()
+		else if (Array.isArray(value))
 			value = value.join(',')
 
 		if (typeof value === 'number') {

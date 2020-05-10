@@ -6,7 +6,8 @@ var blessed = require('neo-blessed')
 
 exports.capabilities = {}
 
-var Element = function(tag, cls) {
+var Element = function(ctx, tag, cls) {
+	this._context = ctx
 	this._styleCache = {}
 	var impl = null
 	switch(tag) {
@@ -35,19 +36,15 @@ var Element = function(tag, cls) {
 
 var ElementPrototype = Element.prototype
 ElementPrototype.append = function(child) {
-	var impl = this.impl
-	impl.children.push(child.impl)
-	child.impl.parent = impl
+	this.impl.append(child.impl)
 }
 
-ElementPrototype.remove = function(child) {
-	var children = this.impl.children
-	var idx = children.indexOf(child)
-	if (idx >= 0)
-		children.splice(idx, 1)
+ElementPrototype.remove = function() {
+	this.impl.parent.remove(this.impl)
 }
 
 ElementPrototype.style = function(name, value) {
+	this._context._updated.add(this)
 	if (typeof name === 'object') {
 		for(var k in name) {
 			this._styleCache[k] = name[k]
@@ -109,10 +106,14 @@ exports.init = function(ctx) {
 		smartCSR: true
 	});
 
-	ctx.element = new Element('div', '')
 	ctx.__screen = screen
-	ctx.element.impl.parent = screen
 
+	var root = new Element(null, 'div', 'core-item')
+	root._context = root
+	root._updated = new Set()
+	ctx.element = root
+
+	screen.append(root.impl)
 	screen.key(['C-c'], function(ch, key) {
 		return process.exit(0);
 	});
@@ -128,7 +129,7 @@ exports.run = function(ctx, callback) {
 }
 
 exports.createElement = function(ctx, tag, cls) {
-	return new Element(tag, cls)
+	return new Element(ctx.element, tag, cls)
 }
 
 exports.initImage = function(image) {
@@ -179,6 +180,9 @@ exports.cancelAnimationFrame = function (timer) {
 }
 
 exports.tick = function(ctx) {
+	var updated = ctx.element._updated
+	updated.forEach(function(el) { el.updateStyle() })
+	updated.clear()
 	ctx.__screen.render()
 }
 

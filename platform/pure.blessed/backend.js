@@ -156,9 +156,9 @@ exports.initText = function(text) {
 
 exports.layoutText = function(text) {
 	var impl = text.element.impl
-	impl.setContent(text.text)
-	text.paintedWidth = impl.width
-	text.paintedHeight = impl.height
+
+	text.paintedWidth = impl.strWidth(text.text)
+	text.paintedHeight = 1
 	log('layout text', text.text, text.paintedWidth, text.paintedHeight)
 }
 

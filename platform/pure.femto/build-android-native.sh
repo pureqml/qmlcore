@@ -40,11 +40,11 @@ if [ ! -d ${APP_DIR} ]; then
 	echo "installing android runtime..."
 	mkdir -p ${BUILD_DIR}
 	pushd ${BUILD_DIR}
-	git clone https://github.com/pureqml/qmlcore-android.git
+	git clone --depth=1 https://github.com/pureqml/qmlcore-android.git
 	popd
 else
 	pushd ${BUILD_DIR}
-	git -C qmlcore-android pull
+	git -C qmlcore-android pull --depth=1
 	popd
 fi
 

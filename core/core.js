@@ -349,7 +349,7 @@ var ColorPrototype = Color.prototype
 ColorPrototype.constructor = $core.Color
 /** @const */
 
-ColorPrototype.rgba = function() {
+ColorPrototype.rgba = ColorPrototype.toString = function() {
 	return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
 }
 

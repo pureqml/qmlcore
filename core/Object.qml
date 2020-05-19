@@ -102,6 +102,15 @@ EventEmitter {
 		this.children.push(child);
 	}
 
+	/**@param child:Object object to remove
+	removes child object from children*/
+	function removeChild(child) {
+		var children = this.children
+		var idx = children.indexOf(child)
+		if (idx >= 0)
+			children.splice(idx, 1)
+	}
+
 	/// @private sets id
 	function _setId(name) {
 		var p = this;

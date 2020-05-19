@@ -660,8 +660,10 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			var self = this
 
 			var complete = function() {
-				backend.cancelAnimationFrame(storage.frameRequest)
-				storage.frameRequest = undefined
+				if (storage.frameRequest) {
+					backend.cancelAnimationFrame(storage.frameRequest)
+					storage.frameRequest = undefined
+				}
 				animation.complete = function() { }
 				storage.interpolatedValue = undefined
 				storage.started = undefined

@@ -48,9 +48,10 @@ Layout {
 		if (!('width' in child))
 			return
 
-		child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
-		child.onChanged('width', this._scheduleLayout.bind(this))
-		child.on('anchorsMarginsUpdated', this._scheduleLayout.bind(this))
+		var update = this._scheduleLayout.bind(this)
+		child.onChanged('recursiveVisible', update)
+		child.onChanged('width', update)
+		child.on('anchorsMarginsUpdated', update)
 		this._scheduleLayout()
 	}
 }

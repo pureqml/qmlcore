@@ -247,10 +247,11 @@ Layout {
 	function addChild(child) {
 		$core.Item.prototype.addChild.apply(this, arguments)
 		if (child instanceof $core.Item) {
-			child.onChanged('height', this._scheduleLayout.bind(this))
-			child.onChanged('width', this._scheduleLayout.bind(this))
-			child.onChanged('recursiveVisible', this._scheduleLayout.bind(this))
-			child.on('anchorsMarginsUpdated', this._scheduleLayout.bind(this))
+			var update = this._scheduleLayout.bind(this)
+			child.onChanged('height', update)
+			child.onChanged('width', update)
+			child.onChanged('recursiveVisible', update)
+			child.on('anchorsMarginsUpdated', update)
 		}
 	}
 

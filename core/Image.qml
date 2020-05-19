@@ -39,8 +39,10 @@ Item {
 		if (this.status === this.Ready || (!this.preload && !this.recursiveVisible))
 			return
 
-		if (!this.source)
+		if (!this.source) {
+			this._resetImage()
 			return
+		}
 
 		this.status = this.Loading
 		var ctx = this._context
@@ -59,6 +61,11 @@ Item {
 	onSourceChanged: {
 		this.status = this.Null
 		this._scheduleLoad()
+	}
+
+	///@private
+	function _resetImage() {
+		this.style('background-image', '')
 	}
 
 	///@private

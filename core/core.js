@@ -487,7 +487,10 @@ PropertyStoragePrototype.forwardSet = function(object, name, newValue, defaultVa
 }
 
 PropertyStoragePrototype.discard = function() {
-
+	var animation = this.getAnimation()
+	if (animation)
+		animation.complete()
+	this.onChanged = []
 }
 
 PropertyStoragePrototype.getSimpleValue = function(defaultValue) {

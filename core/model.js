@@ -55,7 +55,7 @@ exports.ModelUpdate.prototype._merge = function() {
 		var nextRange = ranges[index]
 		if (range.type === nextRange.type) {
 			if (range.type === ModelUpdateInsert && range.length < 0 && nextRange.length > 0) {
-				//removed + inserted rows reappers as updated
+				//removed + inserted rows reappears as updated
 				var updated = Math.min(-range.length, nextRange.length)
 				range.type = ModelUpdateUpdate
 				nextRange.length += range.length

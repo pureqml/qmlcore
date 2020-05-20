@@ -10,6 +10,6 @@ Object {
 
 	///@private
 	function _getDeclaration() {
-		return $core.Color.normalize(this.color) + " " + Math.floor(100 * this.position) + "%"
+		return new $core.gradient.GradientStop(this.color, this.position)
 	}
 }

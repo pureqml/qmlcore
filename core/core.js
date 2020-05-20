@@ -350,7 +350,10 @@ ColorPrototype.constructor = $core.Color
 /** @const */
 
 ColorPrototype.rgba = ColorPrototype.toString = function() {
-	return "rgba(" + this.r + "," + this.g + "," + this.b + "," + (this.a / 255) + ")";
+	var a = this.a
+	return a == 255?
+		"rgb(" + this.r + "," + this.g + "," + this.b + ")":
+		"rgba(" + this.r + "," + this.g + "," + this.b + "," + (a / 255) + ")";
 }
 
 var hexByte = function(v) {

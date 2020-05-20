@@ -22,7 +22,7 @@ Object {
 	function _updateStyle() {
 		var decl = this._getDeclaration()
 		if (decl)
-			this.parent.style({ 'background-color': '', 'background': 'linear-gradient(' + decl + ')' })
+			this.parent.style({ 'background-color': '', 'background': decl })
 	}
 
 	///@private
@@ -32,24 +32,24 @@ Object {
 		if (n < 2)
 			return
 
-		var decl = []
-		var orientation = this.orientation === this.Vertical? 'bottom': 'left'
-
+		var orientation
 		switch(this.orientation) {
-				case this.Vertical:	orientation = 'to bottom'; break
-				case this.Horizontal:	orientation = 'to left'; break
-				case this.BottomRight:	orientation = 'to bottom right'; break
-				case this.TopRight:	orientation = 'to top right'; break
-				case this.Custom:	orientation = this.angle + 'deg'; break
+			default:
+			case this.Vertical:	orientation = 'to bottom'; break
+			case this.Horizontal:	orientation = 'to left'; break
+			case this.BottomRight:	orientation = 'to bottom right'; break
+			case this.TopRight:	orientation = 'to top right'; break
+			case this.Custom:	orientation = this.angle + 'deg'; break
 		}
 
-		decl.push(orientation)
+		var grad = new $core.gradient.Gradient(orientation)
 
 		for(var i = 0; i < n; ++i) {
 			var stop = stops[i]
-			decl.push(stop._getDeclaration())
+			grad.add(stop._getDeclaration())
 		}
-		return decl.join()
+
+		return grad
 	}
 
 	///@private

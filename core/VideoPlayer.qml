@@ -7,7 +7,7 @@ Item {
 	signal finished;	///< video finished signal
 	property string	source;	///< video source URL
 	property string backgroundImage; ///< background image (poster) source URL
-	property Color	backgroundColor: "#000";	///< default background color
+	property color	backgroundColor: "#000";	///< default background color
 	property float	volume: 1.0;		///< video volume value [0:1]
 	property bool	loop;		///< video loop flag
 	property bool	ready;		///< read only property becomes 'true' when video is ready to play, 'false' otherwise

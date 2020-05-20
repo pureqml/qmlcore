@@ -2,7 +2,7 @@
 Object {
 	property real x;	///< x coordinate
 	property real y;	///< y coordinate
-	property Color color: "black";	///< color of the shadow
+	property color color: "black";	///< color of the shadow
 	property real blur;				///< applies a blur effect on the shadow
 	property real spread;			///< adjusts a spread distance of the shadow
 

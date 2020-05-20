@@ -561,6 +561,7 @@ var getDefaultValueForType = exports.getDefaultValueForType = function(type) {
 		case 'real':	return 0.0
 		case 'string':	return ""
 		case 'array':	return []
+		case 'color':
 		case 'Color':	return '#0000'
 		default:		return (type[0].toUpperCase() === type[0])? null: undefined
 	}
@@ -592,6 +593,7 @@ var isTypeAnimable = function(type) {
 	switch(type) {
 		case 'int':
 		case 'real':
+		case 'color':
 		case 'Color':
 			return true;
 		default:

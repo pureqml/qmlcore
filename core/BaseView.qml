@@ -336,6 +336,11 @@ BaseLayout {
 			this.contentY = y + ih - h
 	}
 
+	function itemAtIndex(idx) {
+		var item = this._items[idx]
+		return item? item: null
+	}
+
 
 	onCompleted: {
 		var self = this

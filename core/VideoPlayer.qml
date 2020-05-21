@@ -139,7 +139,7 @@ Item {
 	function _doLayout() {
 		var player = this._getPlayer()
 		if (player)
-			player.setRect.apply(player, this.toScreen())
+			player.setRect.apply(player, this.toScreen().slice(0, 4))
 	}
 
 	///stop video

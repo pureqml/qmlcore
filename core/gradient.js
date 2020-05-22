@@ -23,7 +23,6 @@ GradientPrototype.add = function(stop) {
 }
 
 GradientPrototype.toString = function() {
-	log('TOSTRING', 'linear-gradient(' + this.orientation + ' ' + this.stops.join() + ')')
 	return 'linear-gradient(' + this.orientation + ',' + this.stops.join() + ')'
 }
 

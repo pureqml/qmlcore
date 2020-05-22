@@ -14,27 +14,22 @@ Object {
 	property real skewY;		///< vertical skew
 
 	///@private
-	constructor: { this._transforms = {} }
+	constructor: { this._transforms = new $core.transform.Transform() }
 
-	onPerspectiveChanged:	{ this._transforms['perspective'] = value + 'px'; this._updateTransform() }
-	onTranslateXChanged:	{ this._transforms['translateX'] = value + 'px'; this._updateTransform() }
-	onTranslateYChanged:	{ this._transforms['translateY'] = value + 'px'; this._updateTransform() }
-	onTranslateZChanged:	{ this._transforms['translateZ'] = value + 'px'; this._updateTransform() }
-	onRotateXChanged:		{ this._transforms['rotateX'] = value + 'deg'; this._updateTransform() }
-	onRotateYChanged:		{ this._transforms['rotateY'] = value + 'deg'; this._updateTransform() }
-	onRotateZChanged:		{ this._transforms['rotateZ'] = value + 'deg'; this._updateTransform() }
-	onRotateChanged:		{ this._transforms['rotate'] = value + 'deg'; this._updateTransform() }
-	onScaleXChanged:		{ this._transforms['scaleX'] = value; this._updateTransform() }
-	onScaleYChanged:		{ this._transforms['scaleY'] = value; this._updateTransform() }
-	onSkewXChanged:			{ this._transforms['skewX'] = value + 'deg'; this._updateTransform() }
-	onSkewYChanged:			{ this._transforms['skewY'] = value + 'deg'; this._updateTransform() }
+	onPerspectiveChanged:	{ this._transforms.add('perspective', value, 'px'); this._updateTransform() }
+	onTranslateXChanged:	{ this._transforms.add('translateX', value, 'px'); this._updateTransform() }
+	onTranslateYChanged:	{ this._transforms.add('translateY', value, 'px'); this._updateTransform() }
+	onTranslateZChanged:	{ this._transforms.add('translateZ', value, 'px'); this._updateTransform() }
+	onRotateXChanged:		{ this._transforms.add('rotateX', value, 'deg'); this._updateTransform() }
+	onRotateYChanged:		{ this._transforms.add('rotateY', value, 'deg'); this._updateTransform() }
+	onRotateZChanged:		{ this._transforms.add('rotateZ', value, 'deg'); this._updateTransform() }
+	onRotateChanged:		{ this._transforms.add('rotate', value, 'deg'); this._updateTransform() }
+	onScaleXChanged:		{ this._transforms.add('scaleX', value); this._updateTransform() }
+	onScaleYChanged:		{ this._transforms.add('scaleY', value); this._updateTransform() }
+	onSkewXChanged:			{ this._transforms.add('skewX', value, 'deg'); this._updateTransform() }
+	onSkewYChanged:			{ this._transforms.add('skewY', value, 'deg'); this._updateTransform() }
 
 	function _updateTransform() {
-		var str = ""
-		for (var i in this._transforms) {
-			str += i
-			str += "(" + this._transforms[i] + ") "
-		}
-		this.parent.style('transform', str)
+		this.parent.style('transform', this._transforms)
 	}
 }

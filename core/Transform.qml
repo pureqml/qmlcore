@@ -32,4 +32,30 @@ Object {
 	function _updateTransform() {
 		this.parent.style('transform', this._transforms)
 	}
+
+	///@private instead of animating transform property in Item, animate each property in Transform object
+	///unfortunately animations are not const, though it's a good idea to make them so (and save on animation instances)
+	///this function is meant to be called from non-html backends to animate transformations.
+	///see backend.js in platform/pure.femto for details
+	function _animateAll(animation) {
+		var transform = this
+		var transform_properties = [
+			'perspective',
+			'translateX', 'translateY', 'translateZ',
+			'rotateX', 'rotateY', 'rotateZ', 'rotate',
+			'scaleX', 'scaleY',
+			'skewX', 'skewY'
+		]
+		transform_properties.forEach(function(transform_property) {
+			var property_animation = new $core.Animation(transform)
+			$core.core.createObject(property_animation)
+			property_animation.delay = animation.delay
+			property_animation.duration = animation.duration
+			property_animation.cssTransition = false
+			property_animation.easing = animation.easing
+
+			transform.setAnimation(transform_property, property_animation)
+		})
+		this._context._processActions()
+	}
 }

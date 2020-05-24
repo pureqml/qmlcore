@@ -18,7 +18,8 @@ exports.createAddRule = function(style) {
 			try {
 				sheet.addRule(name, rules)
 			} catch(e) {
-				log("AddRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules)
+				//log("AddRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules) //trace?
+				log("addRule failed on rule " + name)
 			}
 		}
 	}
@@ -28,7 +29,8 @@ exports.createAddRule = function(style) {
 			try {
 				sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length)
 			} catch(e) {
-				log("InsertRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules)
+				//log("InsertRule failed:", e, ", sheet:", sheet, ", name:", name, ", rules:", rules) //trace?
+				log("insertRule failed on rule " + name)
 			}
 		}
 	}

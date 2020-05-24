@@ -150,7 +150,8 @@ exports.getPrefixedName = getPrefixedName
 
 var passiveListeners = ['touchstart', 'touchmove', 'touchend', 'wheel', 'mousewheel', 'scroll']
 var passiveArg = Modernizr.passiveeventlisteners ? {passive: true} : false
-var mouseEvents = ['mousedown', 'mouseup', 'click', 'dblclick', 'mousemove', 'mouseover', 'mousewheel', 'mouseout', 'contextmenu']
+var mouseEvents = ['mousedown', 'mouseup', 'click', 'dblclick', 'mousemove',
+	'mouseover', 'mousewheel', 'mouseout', 'contextmenu', 'mouseenter', 'mouseleave']
 var touchEvents = ['touchstart', 'touchmove', 'touchend', 'touchcancel']
 
 var registerGenericListener = function(target) {

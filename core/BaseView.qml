@@ -70,6 +70,12 @@ BaseLayout {
 			this.positionViewAtIndex(idx)
 	}
 
+	onNativeScrollingChanged: {
+		var styleValue = value ? 'auto' : 'none'
+		this.element.style('pointer-events', styleValue)
+		this.element.style('touch-action', styleValue)
+	}
+
 	onFocusedChildChanged: {
 		var idx = this._items.indexOf(this.focusedChild)
 		if (idx >= 0)

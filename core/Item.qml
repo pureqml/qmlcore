@@ -24,6 +24,7 @@ Object {
 	property bool cssTranslatePositioning;
 	property bool cssNullTranslate3D;
 	property bool cssDelegateAlwaysVisibleOnAcceleratedSurfaces: true;
+	property bool cssPointerTouchEvents: false;
 
 	property const left: 	{ return [this, 0]; }
 	property const top: 	{ return [this, 1]; }
@@ -398,6 +399,12 @@ Object {
 			this._pressedHandlers[name].push(wrapper);
 		else
 			this._pressedHandlers[name] = [wrapper];
+	}
+
+	onPointerTouchEventsChanged: {
+		var style = value? 'auto': 'none'
+		this.style('pointer-events', style)
+		this.style('touch-action', style)
 	}
 
 	/// focus this item

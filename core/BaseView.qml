@@ -19,10 +19,12 @@ BaseLayout {
 	keyNavigationWraps: true;		///< key navigation wraps from end to beginning and vise versa
 	handleNavigationKeys: true;		///< handle navigation keys
 
+	cssPointerTouchEvents: nativeScrolling; // enable touch/pointer events for natively scrollable surfaces
+
 	/// @internal
 	property BaseViewContent content: BaseViewContent {
 		cssTranslatePositioning: parent.cssTranslatePositioning;
-		nativeScrolling: parent.nativeScrolling;
+		cssPointerTouchEvents: parent.cssPointerTouchEvents;
 
 		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
 	}
@@ -69,12 +71,6 @@ BaseLayout {
 			this.focusChild(item)
 		if (this.contentFollowsCurrentItem)
 			this.positionViewAtIndex(idx)
-	}
-
-	onNativeScrollingChanged: {
-		var styleValue = value ? 'auto' : 'none'
-		this.element.style('pointer-events', styleValue)
-		this.element.style('touch-action', styleValue)
 	}
 
 	onFocusedChildChanged: {

@@ -6,6 +6,7 @@ from compiler.js.code import process, parse_deps, generate_accessors, replace_en
 from compiler import lang
 import json
 from functools import partial
+import re
 
 class component_generator(object):
 	def __init__(self, ns, name, component, prototype = False):
@@ -564,6 +565,21 @@ class component_generator(object):
 		path = target_owner + [path[-1]]
 		return ("%s" %".".join(target_owner), "%s" %".".join(path), path[-1])
 
+	re_name = re.compile('<property-name>')
+	re_scale_name = re.compile('<scale-property-name>')
+
+	@staticmethod
+	def replace_template_values(target, value):
+		dot = target.rfind('.')
+		property_name = target[dot + 1:] if dot >= 0 else target
+		if property_name == 'x':
+			property_name = 'width'
+		elif property_name == 'y':
+			property_name = 'height'
+
+		value = component_generator.re_name.sub(property_name, value)
+		return component_generator.re_scale_name.sub('virtualScale', value)
+
 	def generate_setup_code(self, registry, parent, closure, ident_n = 1):
 		r = []
 		ident = "\t" * ident_n
@@ -576,6 +592,7 @@ class component_generator(object):
 			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
 			if isinstance(value, (str, basestring)):
 				value = replace_enums(value, self, registry)
+				value = component_generator.replace_template_values(target_prop, value)
 				r.append('//assigning %s to %s' %(target, value))
 				value, deps = parse_deps(parent, value, partial(self.transform_root, registry, None))
 				if deps:

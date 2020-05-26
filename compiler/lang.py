@@ -103,29 +103,12 @@ class IdAssignment(Entity):
 		self.name = name
 
 class Assignment(Entity):
-	re_name = re.compile('<property-name>')
-	re_scale_name = re.compile('<scale-property-name>')
-
 	def __init__(self, target, value):
 		super(Assignment, self).__init__()
 		self.target = target
-
-		dot = target.rfind('.')
-		property_name = target[dot + 1:] if dot >= 0 else target
-		if property_name == 'x':
-			property_name = 'width'
-		elif property_name == 'y':
-			property_name = 'height'
-
-		value = self.replace(Assignment.re_name, property_name, value)
-		property_name = 'virtualScale'
-		self.value = self.replace(Assignment.re_scale_name, property_name, value)
-
-	def replace(self, rex, property_name, value):
-		if isinstance(value, (str, basestring)):
-			return rex.sub(property_name, value)
-		else:
-			return to_string(value)
+		if not isinstance(value, (str, basestring)):
+			value = to_string(value)
+		self.value = value
 
 	def is_trivial(self):
 		return value_is_trivial(self.value)

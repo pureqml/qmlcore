@@ -401,7 +401,7 @@ Object {
 			this._pressedHandlers[name] = [wrapper];
 	}
 
-	onPointerTouchEventsChanged: {
+	onCssPointerTouchEventsChanged: {
 		var style = value? 'auto': 'none'
 		this.style('pointer-events', style)
 		this.style('touch-action', style)

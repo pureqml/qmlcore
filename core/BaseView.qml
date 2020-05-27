@@ -2,6 +2,7 @@
 BaseLayout {
 	signal layoutFinished;
 	signal scrollEvent;
+	property Item highlight;		///< an object that follows currentIndex and placed below other elements
 	property Object model;			///< model object to attach to
 	property Item delegate;			///< delegate - template object, filled with model row
 	property int contentX;			///< x offset to visible part of the content surface
@@ -71,6 +72,12 @@ BaseLayout {
 			this.focusChild(item)
 		if (this.contentFollowsCurrentItem)
 			this.positionViewAtIndex(idx)
+		if (this.highlight) {
+			this.highlight.x = item.viewX
+			this.highlight.y = item.viewY
+			this.highlight.width = item.width
+			this.highlight.height = item.height
+		}
 	}
 
 	onFocusedChildChanged: {
@@ -346,6 +353,11 @@ BaseLayout {
 
 
 	onCompleted: {
+		if (this.highlight) {
+			this.highlight.element.remove()
+			this.content.element.prepend(this.highlight.element)
+		}
+
 		var self = this
 		this.element.on('scroll', function() {
 			var x = self.element.getScrollX(), y = self.element.getScrollY()

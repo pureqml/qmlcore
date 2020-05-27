@@ -441,6 +441,10 @@ ElementPrototype.append = function(el) {
 	this.dom.appendChild((el instanceof exports.Element)? el.dom: el)
 }
 
+ElementPrototype.prepend = function(el) {
+	this.dom.insertBefore((el instanceof exports.Element)? el.dom: el, this.dom.childNodes[0])
+}
+
 ElementPrototype.discard = function() {
 	_globals.core.RAIIEventEmitter.prototype.discard.apply(this)
 	this.remove()

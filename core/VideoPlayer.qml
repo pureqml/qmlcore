@@ -22,8 +22,6 @@ Item {
 	property real	buffered;	///< how much content to buffer in seconds
 	property real	startPosition;	///< second at which the video should start playback
 
-	PropertyStorage { id: volumeStorage; name: "volume"; defaultValue: 1.0; }
-
 	///@private
 	constructor: {
 		this.impl = null
@@ -124,7 +122,6 @@ Item {
 		else if (this.volume < 0.0)
 			this.volume = 0.0;
 
-		volumeStorage.value = this.volume
 		var player = this._getPlayer()
 		if (player)
 			player.setVolume(this.volume)
@@ -281,8 +278,6 @@ Item {
 
 	///@private
 	onCompleted: {
-		this.volume = +(volumeStorage.value)
-
 		var player = this._getPlayer()
 		if (player)
 			player.setBackgroundColor(this.backgroundColor)

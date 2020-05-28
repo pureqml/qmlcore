@@ -301,6 +301,9 @@ BaseLayout {
 				view._updateVisibilityForChild(child, value)
 		})
 		this._updateVisibilityForChild(this.content, value)
+		var highlight = this.highlight
+		if (highlight)
+			this._updateVisibilityForChild(highlight, value)
 	}
 
 	onWidthChanged:				{ this._scheduleLayout() }

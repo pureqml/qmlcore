@@ -52,6 +52,17 @@ BaseLayout {
 		return idx >= 0? this._items[idx]: null
 	}
 
+	/// @private updates highlight
+	function _updateHighlight(item) {
+		var highlight = this.highlight
+		if (highlight) {
+			highlight.viewX = item.viewX
+			highlight.viewY = item.viewY
+			highlight.width = item.width
+			highlight.height = item.height
+		}
+	}
+
 	/// @private focuses current item
 	function focusCurrent() {
 		var n = this.count
@@ -66,19 +77,14 @@ BaseLayout {
 				this.currentIndex = idx < 0? 0: n - 1
 			return
 		}
-		var item = this._items[idx]
+		var item = this.itemAtIndex(idx)
 
 		if (item)
 			this.focusChild(item)
 		if (this.contentFollowsCurrentItem)
 			this.positionViewAtIndex(idx)
-		var highlight = this.highlight
-		if (highlight) {
-			highlight.viewX = item.viewX
-			highlight.viewY = item.viewY
-			highlight.width = item.width
-			highlight.height = item.height
-		}
+
+		this._updateHighlight(item)
 	}
 
 	onFocusedChildChanged: {
@@ -355,6 +361,11 @@ BaseLayout {
 		return item? item: null
 	}
 
+	onLayoutFinished: {
+		var item = this.itemAtIndex(this.currentIndex)
+		if (item)
+			this._updateHighlight(item)
+	}
 
 	onCompleted: {
 		var highlight = this.highlight

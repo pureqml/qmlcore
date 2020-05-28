@@ -72,11 +72,12 @@ BaseLayout {
 			this.focusChild(item)
 		if (this.contentFollowsCurrentItem)
 			this.positionViewAtIndex(idx)
-		if (this.highlight) {
-			this.highlight.x = item.viewX
-			this.highlight.y = item.viewY
-			this.highlight.width = item.width
-			this.highlight.height = item.height
+		var highlight = this.highlight
+		if (highlight) {
+			highlight.viewX = item.viewX
+			highlight.viewY = item.viewY
+			highlight.width = item.width
+			highlight.height = item.height
 		}
 	}
 
@@ -353,9 +354,10 @@ BaseLayout {
 
 
 	onCompleted: {
-		if (this.highlight) {
-			this.highlight.element.remove()
-			this.content.element.prepend(this.highlight.element)
+		var highlight = this.highlight
+		if (highlight) {
+			highlight.element.remove()
+			this.content.element.prepend(highlight.element)
 		}
 
 		var self = this

@@ -367,13 +367,15 @@ BaseLayout {
 			this._updateHighlight(item)
 	}
 
-	onCompleted: {
-		var highlight = this.highlight
+	onHighlightChanged: {
+		var highlight = value
 		if (highlight) {
 			highlight.element.remove()
 			this.content.element.prepend(highlight.element)
 		}
+	}
 
+	onCompleted: {
 		var self = this
 		this.element.on('scroll', function() {
 			var x = self.element.getScrollX(), y = self.element.getScrollY()

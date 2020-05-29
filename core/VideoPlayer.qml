@@ -255,8 +255,11 @@ Item {
 	///@private
 	onSourceChanged: {
 		var player = this._getPlayer()
-		if (player)
+		if (player) {
+			log('setting source to', value)
 			player.setSource(value)
+		} else
+			log('WARNING: skipping VideoPlayer.setSource')
 	}
 
 	onBackgroundImageChanged: { this.setOption('poster', value) }

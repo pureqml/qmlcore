@@ -284,6 +284,7 @@ Item {
 
 	///@private
 	onCompleted: {
+		this._scheduleLayout()
 		var player = this._getPlayer()
 		if (player)
 			player.setBackgroundColor(this.backgroundColor)

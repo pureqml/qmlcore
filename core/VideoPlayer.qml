@@ -270,11 +270,14 @@ Item {
 	}
 
 	onNewBoundingBox: {
+		log('VideoPlayer: new bounding box, requesting layout')
 		this._scheduleLayout()
 	}
 
 	onRecursiveVisibleChanged: {
 		var player = this._getPlayer()
+		if (value)
+			this._scheduleLayout()
 		if (player)
 			player.setVisibility(value)
 	}

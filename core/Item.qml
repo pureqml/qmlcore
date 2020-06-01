@@ -7,6 +7,7 @@ Object {
 	property int height;					///< height of visible area
 	property bool clip;						///< clip all children outside rectangular area defined by x, y, width, height
 	property lazy radius: Radius { }		///< round corner radius(es), allow forwarding, e.g. item.radius: 5;
+	property bool fullscreen;				///< fullscreen mode enabled / disabled
 
 	property bool focus;					///< this item can be focused
 	property bool focused; ///< this item is focused among its siblings
@@ -232,6 +233,18 @@ Object {
 		else
 			this.style('top', y)
 		this.newBoundingBox()
+	}
+
+	onFullscreenChanged: {
+		var backend = this._context.backend
+		if (!('enterFullscreenMode' in backend)) {
+			log('enterFullscreenMode is not available in current backend, fullscreen: ' + value)
+			return
+		}
+		if (value)
+			backend.enterFullscreenMode(this.element);
+		else
+			backend.exitFullscreenMode();
 	}
 
 	onCssNullTranslate3DChanged: {

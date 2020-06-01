@@ -2,7 +2,6 @@
 Item {
 	property int scrollY;		///< scrolled page vertical offset value
 	property int keyProcessDelay; ///< key pressed handling delay timeout in millisecnods
-	property bool fullscreen;	///< fullscreen mode enabled / disabled
 	property string language;	///< localisation language
 	property System system: System { }					///< system info object
 	property Location location: Location { }			///< web-page location object
@@ -72,8 +71,6 @@ Item {
 	function __onCompleted(object) {
 		this._completedObjects.push(object)
 	}
-
-	onFullscreenChanged: { if (value) this.backend.enterFullscreenMode(this.element); else this.backend.exitFullscreenMode(); }
 
 	///@internal
 	function scheduleComplete() {

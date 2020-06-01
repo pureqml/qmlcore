@@ -838,8 +838,20 @@ exports.setAnimation = function (component, name, animation) {
 exports.requestAnimationFrame = Modernizr.prefixed('requestAnimationFrame', window)	|| function(callback) { return setTimeout(callback, 0) }
 exports.cancelAnimationFrame = Modernizr.prefixed('cancelAnimationFrame', window)	|| function(id) { return clearTimeout(id) }
 
-exports.enterFullscreenMode = function(el) { return Modernizr.prefixed('requestFullscreen', el.dom)() }
-exports.exitFullscreenMode = function() { return window.Modernizr.prefixed('exitFullscreen', document)() }
+exports.enterFullscreenMode = function(el) {
+	try {
+		return Modernizr.prefixed('requestFullscreen', el.dom)()
+	} catch(ex) {
+		log('enterFullscreenMode failed', ex)
+	}
+}
+exports.exitFullscreenMode = function() {
+	try {
+		return window.Modernizr.prefixed('exitFullscreen', document)()
+	} catch(ex) {
+		log('exitFullscreenMode failed', ex)
+	}
+}
 exports.inFullscreenMode = function () { return !!window.Modernizr.prefixed('fullscreenElement', document) }
 
 exports.ajax = function(ui, request) {

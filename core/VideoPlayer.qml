@@ -270,7 +270,6 @@ Item {
 	}
 
 	onNewBoundingBox: {
-		log('VideoPlayer: new bounding box, requesting layout')
 		this._scheduleLayout()
 	}
 

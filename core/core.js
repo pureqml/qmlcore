@@ -672,6 +672,10 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					backend.cancelAnimationFrame(storage.frameRequest)
 					storage.frameRequest = undefined
 				}
+				if (storage.frameRequestDelayed) {
+					clearTimeout(storage.frameRequestDelayed)
+					storage.frameRequestDelayed = undefined
+				}
 				animation.complete = function() { }
 				storage.interpolatedValue = undefined
 				storage.started = undefined
@@ -693,7 +697,11 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 				}
 			})
 
-			storage.frameRequest = backend.requestAnimationFrame(nextFrame)
+			if (animation.delay <= 0)
+				storage.frameRequest = backend.requestAnimationFrame(nextFrame)
+			else {
+				storage.frameRequestDelayed = setTimeout(nextFrame, animation.delay)
+			}
 
 			animation.running = true
 			animation.complete = complete

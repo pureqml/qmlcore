@@ -90,11 +90,6 @@ exports.layoutText = function(text) {
 }
 
 exports.setAnimation = function (component, name, animation) {
-	if (name === 'transform') {
-		var transform = component[name]
-		if (transform instanceof $core.Transform)
-			transform._animateAll(animation)
-	}
 	return false
 }
 

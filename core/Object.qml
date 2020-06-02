@@ -198,8 +198,17 @@ EventEmitter {
 		animation.property = name
 		var storage = this._createPropertyStorage(name)
 		storage.animation = animation
-		if (backend.setAnimation(this, name, animation))
+		if (backend.setAnimation(this, name, animation)) {
 			animation._native = true
+		} else {
+			var target = this[name]
+			//this is special fallback for combined css animation, e.g transform
+			//if native backend refuse to animate, we call _animateAll()
+			//see Transform._animateAll for details
+			if (target && (typeof target === 'object') && ('_animateAll' in target)) {
+				target._animateAll(animation)
+			}
+		}
 	}
 
 	function resetAnimation(name) {

@@ -55,12 +55,13 @@ BaseLayout {
 	/// @private updates highlight
 	function _updateHighlight(item) {
 		var highlight = this.highlight
-		if (highlight) {
-			highlight.viewX = item.viewX
-			highlight.viewY = item.viewY
-			highlight.width = item.width
-			highlight.height = item.height
-		}
+		if (!highlight || !item)
+			return
+
+		highlight.viewX = item.viewX
+		highlight.viewY = item.viewY
+		highlight.width = item.width
+		highlight.height = item.height
 	}
 
 	/// @private focuses current item
@@ -362,9 +363,7 @@ BaseLayout {
 	}
 
 	onLayoutFinished: {
-		var item = this.itemAtIndex(this.currentIndex)
-		if (item)
-			this._updateHighlight(item)
+		this._updateHighlight(this.itemAtIndex(this.currentIndex))
 	}
 
 	onHighlightChanged: {

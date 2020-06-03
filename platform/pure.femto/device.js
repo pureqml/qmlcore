@@ -1,7 +1,7 @@
 exports.createDevice = function(ui) {
-	var info = fd.getDeviceInfo()
+	var info = ui._context.backend._deviceInfo
 	Object.assign(ui, info)
-	ui._context.system.device = info.device
+
 	ui.lockOrientation = function(orientation) {
 		fd.setDeviceFeature('orientation', orientation)
 	}

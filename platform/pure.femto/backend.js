@@ -1,4 +1,6 @@
 exports.capabilities = {}
+exports._deviceInfo = {}
+
 _globals.closeApp = function() {
 	log("closeApp: stub")
 }
@@ -30,10 +32,12 @@ exports.init = function(ctx) {
 		return ctx.processKey(key, event)
 	}))
 	log('window size', ctx.width, ctx.height)
+	exports._deviceInfo = fd.getDeviceInfo()
 }
 
 
 exports.run = function(ctx, callback) {
+	ctx.system.device = exports._deviceInfo.device
 	//schedule onload event
 	callback()
 }

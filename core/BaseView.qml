@@ -62,6 +62,8 @@ BaseLayout {
 		highlight.viewY = item.viewY
 		highlight.width = item.width
 		highlight.height = item.height
+		//see explanations in onHighlightChanged
+		highlight.newBoundingBox()
 	}
 
 	function _updateHighlightForCurrentItem() {
@@ -373,6 +375,14 @@ BaseLayout {
 	onHighlightChanged: {
 		var highlight = value
 		if (highlight) {
+			/*
+			* FIXME: highlight is a child of BaseView in QML hierarchy, at the same time
+			* it's a child of content in element hierarchy.
+			* This results in toScreen() return coordinates relative to BaseView. It renders
+			* impossible to follow natively scrollable surfaces with something like VideoPlayer
+			*/
+			highlight.view = this //this makes toScreen adjust position according to scroll position
+
 			highlight.element.remove()
 			this.content.element.prepend(highlight.element)
 		}

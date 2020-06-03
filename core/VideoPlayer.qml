@@ -26,6 +26,14 @@ Item {
 	constructor: {
 		this.impl = null
 		this._createPlayer()
+
+		//see explanations in BaseView.onHighlightChanged:
+		var p = parent
+		var handler = this._scheduleLayout.bind(this)
+		while(p) {
+			this.connectOn(p, 'scrollEvent', handler)
+			p = p.parent
+		}
 	}
 
 	///@private

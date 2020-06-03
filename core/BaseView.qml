@@ -64,6 +64,10 @@ BaseLayout {
 		highlight.height = item.height
 	}
 
+	function _updateHighlightForCurrentItem() {
+		this._updateHighlight(this.itemAtIndex(this.currentIndex))
+	}
+
 	/// @private focuses current item
 	function focusCurrent() {
 		var n = this.count
@@ -363,7 +367,7 @@ BaseLayout {
 	}
 
 	onLayoutFinished: {
-		this._updateHighlight(this.itemAtIndex(this.currentIndex))
+		this._updateHighlightForCurrentItem()
 	}
 
 	onHighlightChanged: {

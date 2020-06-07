@@ -206,12 +206,16 @@ BaseView {
 		var horizontal = this.flow === this.FlowLeftToRight
 
 		var items = this._items
+		var padding = this._padding
+		var paddingLeft = padding.left || 0, paddingTop = padding.top || 0
+
 		var n = items.length
-		var w = this.width, h = this.height
+		var w = this.width - paddingLeft - (padding.right || 0), h = this.height - paddingTop - (padding.bottom || 0)
 		if (this.trace)
 			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y)
+
 		var created = false
-		var x = 0, y = 0
+		var x = padding.left || 0, y = padding.top || 0
 		var cx = this.content.x, cy = this.content.y
 
 		var atEnd = horizontal? function() { return cy + y >= h }: function() { return cx + x >= w }
@@ -249,13 +253,13 @@ BaseView {
 			if (horizontal) {
 				x += stepX
 				if (x > 0 && x + cellWidth > w) {
-					x = 0
+					x = paddingLeft
 					y += stepY
 				}
 			} else {
 				y += stepY
 				if (y > 0 && y + cellHeight > h) {
-					y = 0
+					y = paddingTop
 					x += stepX
 				}
 			}

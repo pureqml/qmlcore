@@ -12,10 +12,12 @@ Item {
 	property int layoutDelay: -1;			///< <0 - end of the tick (default), 0 - request animation frame, >0 - delay in ms
 	property int prerenderDelay: -1;		///< <0 - end of the tick (default), 0 - request animation frame, >0 - delay in ms
 	property bool offlineLayout;			///< layout delegates even if view's invisible
+	property lazy padding: BaseLayoutContentPadding { } //< padding for content
 
 	///@private
 	constructor: {
 		this.count = 0
+		this._padding = {}
 	}
 
 	/// @private

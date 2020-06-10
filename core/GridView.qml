@@ -208,9 +208,10 @@ BaseView {
 		var items = this._items
 		var padding = this._padding
 		var paddingLeft = padding.left || 0, paddingTop = padding.top || 0
+		var paddingRight = padding.right || 0, paddingBottom = padding.bottom || 0
 
 		var n = items.length
-		var w = this.width - paddingLeft - (padding.right || 0), h = this.height - paddingTop - (padding.bottom || 0)
+		var w = this.width - paddingLeft - paddingTop, h = this.height - paddingTop - paddingBottom
 		if (this.trace)
 			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y)
 
@@ -273,13 +274,13 @@ BaseView {
 		if (!horizontal) {
 			this.rows = Math.floor((h + this.spacing) / (this.cellHeight + this.spacing))
 			this.columns = Math.floor((n + this.rows - 1) / this.rows)
-			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing
-			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing
+			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing + paddingLeft + paddingRight
+			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing + paddingTop + paddingBottom
 		} else {
 			this.columns = Math.floor((w + this.spacing ) / (this.cellWidth + this.spacing))
 			this.rows = Math.floor((n + this.columns - 1) / this.columns)
-			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing
-			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing
+			this.contentWidth = this.content.width = this.columns * (this.cellWidth + this.spacing) - this.spacing + paddingLeft + paddingRight
+			this.contentHeight = this.content.height = this.rows * (this.cellHeight + this.spacing) - this.spacing + paddingTop + paddingBottom
 		}
 		//log(horizontal, w, h, this.rows, this.columns, this.currentIndex, this.contentWidth + "x" + this.contentHeight)
 		this.layoutFinished()

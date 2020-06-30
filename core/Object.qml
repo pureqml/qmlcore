@@ -84,8 +84,6 @@ EventEmitter {
 		}
 
 		this.children = []
-
-		this.parent = null
 		this._local = {}
 
 		var properties = this.__properties

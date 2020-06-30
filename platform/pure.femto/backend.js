@@ -2,7 +2,8 @@ exports.capabilities = {}
 exports._deviceInfo = {}
 
 _globals.closeApp = function() {
-	log("closeApp: stub")
+	log("closeApp")
+	fd.closeApp()
 }
 
 exports.init = function(ctx) {

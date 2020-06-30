@@ -369,6 +369,7 @@ BaseLayout {
 	}
 
 	onLayoutFinished: {
+		this.focusCurrent()
 		this._updateHighlightForCurrentItem()
 	}
 

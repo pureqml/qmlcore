@@ -211,7 +211,7 @@ BaseView {
 		var paddingRight = padding.right || 0, paddingBottom = padding.bottom || 0
 
 		var n = items.length
-		var w = this.width - paddingLeft - paddingTop, h = this.height - paddingTop - paddingBottom
+		var w = this.width - paddingLeft - paddingRight, h = this.height - paddingTop - paddingBottom
 		if (this.trace)
 			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y)
 

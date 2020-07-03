@@ -51,11 +51,9 @@ Object {
 			$core.core.createObject(property_animation)
 			property_animation.delay = animation.delay
 			property_animation.duration = animation.duration
-			property_animation.cssTransition = false
 			property_animation.easing = animation.easing
 
 			transform.setAnimation(transform_property, property_animation)
 		})
-		this._context._processActions()
 	}
 }

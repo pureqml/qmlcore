@@ -424,7 +424,7 @@ var PropertyStoragePrototype = PropertyStorage.prototype
 
 PropertyStoragePrototype.getAnimation = function(name, animation) {
 	var a = this.animation
-	return a && a.enabled() && !a._native && a._context._completed? a: null
+	return (a && a.enabled() && a.duration > 0 && !a._native && a._context._completed)? a: null
 }
 
 PropertyStoragePrototype.__removeUpdater = function(callback) {

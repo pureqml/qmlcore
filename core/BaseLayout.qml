@@ -28,7 +28,7 @@ Item {
 		if (!this.recursiveVisible && !this.offlineLayout)
 			return
 
-		if (this.prerenderDelay >= 0) {
+		if (this.prerenderDelay >= 0 && this.layoutDelay >= 0 && this.layoutDelay < this.prerenderDelay) {
 			this._context.delayedAction('layout', this, this._doLayoutNP, this.layoutDelay)
 			this._context.delayedAction('prerender', this, this._doLayout, this.prerenderDelay)
 		} else

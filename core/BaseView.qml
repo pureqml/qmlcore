@@ -27,7 +27,12 @@ BaseLayout {
 		cssTranslatePositioning: parent.cssTranslatePositioning;
 		cssPointerTouchEvents: parent.cssPointerTouchEvents;
 
-		Behavior on x, y, transform { Animation { duration: parent.parent.animationDuration; easing: parent.parent.animationEasing; } }
+		Behavior on x, y, transform {
+			Animation {
+				duration: parent.parent.nativeScrolling? 0: parent.parent.animationDuration;
+				easing: parent.parent.animationEasing;
+			}
+		}
 	}
 
 	onContentXChanged: { this.content.x = -value; }

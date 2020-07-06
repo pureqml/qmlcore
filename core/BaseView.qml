@@ -35,8 +35,18 @@ BaseLayout {
 		}
 	}
 
-	onContentXChanged: { this.content.x = -value; }
-	onContentYChanged: { this.content.y = -value; }
+	onContentXChanged: {
+		if (this.nativeScrolling && !this._context.backend.capabilities.simpleScrolling)
+			this.element.setScrollX(value)
+		else
+			this.content.x = -value
+	}
+	onContentYChanged: {
+		if (this.nativeScrolling && !this._context.backend.capabilities.simpleScrolling)
+			this.element.setScrollY(value)
+		else
+			this.content.y = -value
+	}
 
 	/// @private
 	constructor: {

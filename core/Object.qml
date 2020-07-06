@@ -179,6 +179,12 @@ EventEmitter {
 		this._context.backend.setAnimation(this, name, animation)
 	}
 
+	///@private gets animation on given property
+	function getAnimation (name) {
+		var storage = this.__properties[name]
+		return storage? storage.animation: null
+	}
+
 	///@private sets animation on given property
 	function setAnimation (name, animation) {
 		if ($manifest$disableAnimations)

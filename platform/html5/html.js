@@ -474,6 +474,16 @@ ElementPrototype.getScrollY = function() {
 	return this.dom.scrollTop
 }
 
+ElementPrototype.setScrollX = function(x) {
+	var dom = this.dom
+	setTimeout(function() { dom.scrollLeft = x }, 1)
+}
+
+ElementPrototype.setScrollY = function(y) {
+	var dom = this.dom
+	setTimeout(function() { dom.scrollTop = y }, 1)
+}
+
 exports.Document = function(context, dom) {
 	_globals.core.RAIIEventEmitter.apply(this)
 	this._context = context

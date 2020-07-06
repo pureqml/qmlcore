@@ -1,4 +1,4 @@
-exports.capabilities = {}
+exports.capabilities = { simpleScrolling: true}
 exports._deviceInfo = {}
 
 _globals.closeApp = function() {

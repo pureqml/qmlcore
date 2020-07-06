@@ -162,14 +162,14 @@ EventEmitter {
 		return this.__properties[name] = new $core.core.PropertyStorage(value)
 	}
 
-	///@private patch property storage directly without signalling.
-	function _setProperty(name, value) {
+	///@internal update property storage directly without animation and with or without signalling.
+	function _setProperty(name, value, callUpdate) {
 		//cancel any running software animations
 		var storage = this._createPropertyStorage(name, value)
 		var animation = storage.animation
 		if (animation !== undefined)
 			animation.disable()
-		storage.setCurrentValue(this, null, value)
+		storage.setCurrentValue(this, name, value, callUpdate)
 		if (animation !== undefined)
 			animation.enable()
 	}

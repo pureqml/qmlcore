@@ -174,18 +174,18 @@ EventEmitter {
 			animation.enable()
 	}
 
-	///@private updates animation properties on given property
+	///updates animation properties on given property
 	function updateAnimation (name, animation) {
 		this._context.backend.setAnimation(this, name, animation)
 	}
 
-	///@private gets animation on given property
+	///gets animation on given property
 	function getAnimation (name) {
 		var storage = this.__properties[name]
 		return storage? storage.animation: null
 	}
 
-	///@private sets animation on given property
+	///sets animation on given property
 	function setAnimation (name, animation) {
 		if ($manifest$disableAnimations)
 			return
@@ -215,6 +215,7 @@ EventEmitter {
 		}
 	}
 
+	/// resets current animation if any
 	function resetAnimation(name) {
 		var storage = this.__properties[name]
 		if (storage !== undefined && storage.animation) {

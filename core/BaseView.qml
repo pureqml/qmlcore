@@ -36,13 +36,13 @@ BaseLayout {
 	}
 
 	onContentXChanged: {
-		if (this.nativeScrolling && !this._context.backend.capabilities.simpleScrolling)
+		if (this.nativeScrolling)
 			this.element.setScrollX(value)
 		else
 			this.content.x = -value
 	}
 	onContentYChanged: {
-		if (this.nativeScrolling && !this._context.backend.capabilities.simpleScrolling)
+		if (this.nativeScrolling)
 			this.element.setScrollY(value)
 		else
 			this.content.y = -value

@@ -56,4 +56,13 @@ Object {
 			transform.setAnimation(transform_property, property_animation)
 		})
 	}
+
+	///@private
+	function getAnimation(name) {
+		var animation = $core.Object.prototype.getAnimation.call(this, name)
+		if (!animation) {
+			animation = $core.Object.prototype.getAnimation.call(this.parent, 'transform')
+		}
+		return animation
+	}
 }

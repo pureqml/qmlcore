@@ -4,6 +4,7 @@ BaseView {
 
 	constructor: {
 		this._sizes = []
+		this._scrollDelta = 0
 	}
 
 	///@private
@@ -156,7 +157,7 @@ BaseView {
 
 	///@private
 	function _layout(noPrerender) {
-		var model = this._attached;
+		var model = this._attached
 		if (!model) {
 			this.layoutFinished()
 			return
@@ -189,6 +190,15 @@ BaseView {
 		var prerender = noPrerender? 0: this.prerender * size
 		var leftMargin = -prerender
 		var rightMargin = size + prerender
+		if (this._scrollDelta != 0) {
+			if (this.nativeScrolling) {
+				if (horizontal)
+					this.element.setScrollX(this.element.getScrollX() - this._scrollDelta)
+				else
+					this.element.setScrollY(this.element.getScrollY() - this._scrollDelta)
+			}
+			this._scrollDelta = 0
+		}
 
 		if (this.trace)
 			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y + ", prerender: " + prerender + ", range: " + leftMargin + ":" + rightMargin)
@@ -305,9 +315,22 @@ BaseView {
 	function _createDelegate(idx) {
 		var item = $core.BaseView.prototype._createDelegate.apply(this, arguments)
 		//connect both dimensions, because we calculate maxWidth/maxHeight in contentWidth/contentHeight
-		var update = this._scheduleLayout.bind(this)
-		item.onChanged('width', update)
-		item.onChanged('height', update)
+		var update = function(horizontal) {
+			this._scheduleLayout()
+			var viewHorizontal = this.orientation === this.Horizontal
+			if (this.nativeScrolling && viewHorizontal == horizontal) {
+				//if delegate updates its width and it's on the left/top of scrolling position
+				//it will cause annoying jumps
+				var itemPos = viewHorizontal? item.viewX: item.viewY
+				var itemSize = viewHorizontal? item.width: item.height
+				var scrollPos = viewHorizontal? this.element.getScrollX(): this.element.getScrollY()
+				if (itemPos < scrollPos) {
+					this._scrollDelta += itemSize - this._sizes[idx]
+				}
+			}
+		}
+		this.connectOnChanged(item, 'width', update.bind(this, true))
+		this.connectOnChanged(item, 'height', update.bind(this, false))
 		return item
 	}
 

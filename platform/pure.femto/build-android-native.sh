@@ -59,6 +59,7 @@ fi
 
 APP_TITLE=$(./qmlcore/build -j -p pure.femto -P title ${APP_NAME} 2>/dev/null) || die "you have to specify application title in .manifest/properties.title"
 APP_DOMAIN=$(./qmlcore/build -j -p pure.femto -P domain ${APP_NAME} 2>/dev/null) || die "you have to specify application domain/package in .manifest/properties.domain"
+APP_ICON_COLOR=$(./qmlcore/build -j -p pure.femto -P iconColor ${APP_NAME} 2>/dev/null) || APP_ICON_COLOR=""
 
 if [ -n "${APP_NAME}" ]; then
 	echo "using app name ${APP_NAME}..."
@@ -97,6 +98,11 @@ pushd ${DST_DIR}
 	sed -i "${P}" app/proguard-rules.pro
 	P="s/applicationId \"com\\.pureqml\\.qmlcore\\.runtime\\.android\"/applicationId \"${APP_DOMAIN}\"/"
 	sed -i "${P}" app/build.gradle
+
+	if [ ! -z "$APP_ICON_COLOR" ]; then
+		P="s/#FFFFFF/${APP_ICON_COLOR}/"
+		sed -i "${P}" app/src/main/res/values/ic_launcher_background.xml
+	fi
 
 	JAVA_SRC=app/src/main/java/$(echo "${APP_DOMAIN}" | tr '.' '/')
 	mkdir -p ${JAVA_SRC}

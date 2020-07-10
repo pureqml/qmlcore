@@ -42,7 +42,4 @@ Object {
 		return t * (dst - src) + src;
 	}
 
-	/// @private
-	function complete() { }
-
 }

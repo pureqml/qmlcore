@@ -422,6 +422,35 @@ exports.PropertyStorage = PropertyStorage
 
 var PropertyStoragePrototype = PropertyStorage.prototype
 
+PropertyStoragePrototype.cancelAnimationFrame = function(animation) {
+	var context = animation._context
+	if (this.frameRequest) {
+		context.backend.cancelAnimationFrame(this.frameRequest)
+		this.frameRequest = undefined
+	}
+	if (this.frameRequestDelayed) {
+		clearTimeout(this.frameRequestDelayed)
+		this.frameRequestDelayed = undefined
+	}
+}
+
+PropertyStoragePrototype.completeAnimation = function(animation) {
+	this.cancelAnimationFrame(animation)
+
+	var interpolatedValue = this.interpolatedValue
+	this.interpolatedValue = undefined
+
+	var destinationValue = this.destinationValue
+	this.destinationValue = undefined
+
+	this.started = undefined
+	animation.running = false
+
+	if (interpolatedValue !== undefined && destinationValue != undefined) {
+		this.callOnChanged(animation.target, animation.property, destinationValue, interpolatedValue)
+	}
+}
+
 PropertyStoragePrototype.getAnimation = function(name, animation) {
 	var a = this.animation
 	return (a && a.enabled() && a.duration > 0 && !a._native && a._context._completed)? a: null
@@ -492,7 +521,7 @@ PropertyStoragePrototype.forwardSet = function(object, name, newValue, defaultVa
 PropertyStoragePrototype.discard = function() {
 	var animation = this.getAnimation()
 	if (animation)
-		animation.complete()
+		this.cancelAnimationFrame(animation)
 	this.onChanged = []
 }
 
@@ -657,39 +686,21 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		if (animation && storage.value !== newValue) {
 			var context = this._context
 			var backend = context.backend
-			if (storage.frameRequest)
-				backend.cancelAnimationFrame(storage.frameRequest)
+			storage.cancelAnimationFrame(animation)
 
 			storage.started = Date.now()
 
 			var src = storage.getCurrentValue(defaultValue)
-			var dst = newValue
+			var dst = storage.destinationValue = newValue
 
 			var self = this
-
-			var complete = function() {
-				if (storage.frameRequest) {
-					backend.cancelAnimationFrame(storage.frameRequest)
-					storage.frameRequest = undefined
-				}
-				if (storage.frameRequestDelayed) {
-					clearTimeout(storage.frameRequestDelayed)
-					storage.frameRequestDelayed = undefined
-				}
-				animation.complete = function() { }
-				storage.interpolatedValue = undefined
-				storage.started = undefined
-				animation.running = false
-				storage.callOnChanged(self, name, dst, src)
-			}
-
 			var duration = animation.duration
 
 			var nextFrame = context.wrapNativeCallback(function() {
 				var now = Date.now()
 				var t = 1.0 * (now - storage.started) / duration
 				if (t >= 1 || !animation.active()) {
-					complete()
+					storage.completeAnimation(animation)
 				} else {
 					storage.interpolatedValue = convert(animation.interpolate(dst, src, t))
 					storage.callOnChanged(self, name, storage.getCurrentValue(defaultValue), src)
@@ -704,7 +715,6 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			}
 
 			animation.running = true
-			animation.complete = complete
 		}
 		storage.set(this, name, newValue, defaultValue, !animation)
 		// if ((!animation || !animation.running) && newValue === defaultValue)

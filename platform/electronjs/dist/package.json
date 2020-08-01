@@ -1,7 +1,7 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "{{ title | default('pureqml') }}",
+  "version": "{{ version | default('1.0.0') }}",
+  "description": "{{ description | default('') }}",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -14,8 +14,8 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "{{ author.name | default('Jhon Doe') if author is defined else 'Jhon Doe' }}",
+  "license": "{{ license | default('MIT') }}",
   "devDependencies": {
     "electron": "^7.1.3"
   }

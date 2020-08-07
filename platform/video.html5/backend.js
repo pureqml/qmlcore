@@ -11,7 +11,7 @@ var Player = function(ui) {
 	ui.parent.element.append(ui.element)
 
 	this._xhr = new XMLHttpRequest()
-	this._xhr.addEventListener('load', this.parseManifest.bind(this))
+	this._xhr.addEventListener('load', ui._context.wrapNativeCallback(this.parseManifest).bind(this))
 }
 
 Player.prototype.setEventListeners = function() {

@@ -35,6 +35,8 @@ BaseLayout {
 		}
 	}
 
+	property ContentMargin contentMargin: ContentMargin { }
+
 	onContentXChanged: {
 		if (this.nativeScrolling)
 			this.element.setScrollX(value)
@@ -366,16 +368,20 @@ BaseLayout {
 		var x = itemBox[0], y = itemBox[1]
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height
+		var cmt = this.contentMargin.top
+		var cmb = this.contentMargin.bottom
 
 		var atCenter = y - h / 2 + ih / 2
 		if (ih > h)
 			this.contentY = centerOversized? atCenter: y
 		else if (center && this.contentHeight > h)
-			this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 - ih / 2 ? this.contentHeight - h : atCenter
+			this.contentY = atCenter < -cmt ? -cmt : y > this.contentHeight - h / 2 - ih / 2 + cmb ? this.contentHeight - h + cmb : atCenter
+		else if (y <= cmt)
+			this.contentY = -cmt
 		else if (y - cy <= 0)
 			this.contentY = y
-		else if (y - cy + ih > h)
-			this.contentY = y + ih - h
+		else if (y - cy + ih + cmb > h)
+			this.contentY = y + ih - h + cmb
 	}
 
 	function itemAtIndex(idx) {

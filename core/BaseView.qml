@@ -35,6 +35,8 @@ BaseLayout {
 		}
 	}
 
+	property ContentMargin contentMargin: ContentMargin { }
+
 	onContentXChanged: {
 		if (this.nativeScrolling)
 			this.element.setScrollX(value)
@@ -349,16 +351,20 @@ BaseLayout {
 		var x = itemBox[0], y = itemBox[1]
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height
+		var cmr = this.contentMargin.right
+		var cml = this.contentMargin.left
 
 		var atCenter = x - w / 2 + iw / 2
 		if (iw > w)
 			this.contentX = centerOversized? atCenter: x
 		else if (center && this.contentWidth > w)
-			this.contentX = atCenter < 0 ? 0 : x > this.contentWidth - w / 2 - iw / 2 ? this.contentWidth - w : atCenter
+			this.contentX = atCenter < -cml ? -cml : x > this.contentWidth - w / 2 - iw / 2 + cmr ? this.contentWidth - w + cmr : atCenter
+		else if (x <= cml)
+			this.contentX = -cml
 		else if (x - cx <= 0)
 			this.contentX = x
 		else if (x - cx + iw > w)
-			this.contentX = x + iw - w
+			this.contentX = x + iw - w + cmr
 	}
 
 	function positionViewAtItemVertically(itemBox, center, centerOversized) {
@@ -366,16 +372,20 @@ BaseLayout {
 		var x = itemBox[0], y = itemBox[1]
 		var iw = itemBox[2], ih = itemBox[3]
 		var w = this.width, h = this.height
+		var cmt = this.contentMargin.top
+		var cmb = this.contentMargin.bottom
 
 		var atCenter = y - h / 2 + ih / 2
 		if (ih > h)
 			this.contentY = centerOversized? atCenter: y
 		else if (center && this.contentHeight > h)
-			this.contentY = atCenter < 0 ? 0 : y > this.contentHeight - h / 2 - ih / 2 ? this.contentHeight - h : atCenter
+			this.contentY = atCenter < -cmt ? -cmt : y > this.contentHeight - h / 2 - ih / 2 + cmb ? this.contentHeight - h + cmb : atCenter
+		else if (y <= cmt)
+			this.contentY = -cmt
 		else if (y - cy <= 0)
 			this.contentY = y
-		else if (y - cy + ih > h)
-			this.contentY = y + ih - h
+		else if (y - cy + ih + cmb > h)
+			this.contentY = y + ih - h + cmb
 	}
 
 	function itemAtIndex(idx) {

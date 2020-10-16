@@ -37,26 +37,28 @@ Player.prototype.setEventListeners = function() {
 		if (!dom.error || !ui.source)
 			return
 
-		ui.error(dom.error)
-
-		log("player.error", dom.error)
+		var msg = ""
 		switch (dom.error.code) {
 		case 1:
-			log("MEDIA_ERR_ABORTED error occurred")
+			msg = "MEDIA_ERR_ABORTED error occurred"
 			break;
 		case 2:
-			log("MEDIA_ERR_NETWORK error occurred")
+			msg = "MEDIA_ERR_NETWORK error occurred"
 			break;
 		case 3:
-			log("MEDIA_ERR_DECODE error occurred")
+			msg = "MEDIA_ERR_DECODE error occurred"
 			break;
 		case 4:
-			log("MEDIA_ERR_SRC_NOT_SUPPORTED error occurred")
+			msg = "MEDIA_ERR_SRC_NOT_SUPPORTED error occurred"
 			break;
 		default:
-			log("UNDEFINED error occurred")
+			msg = "UNDEFINED error occurred"
 			break;
 		}
+		log("Error", msg)
+		if (!dom.error.message)
+			dom.error.message = msg
+		ui.error(dom.error)
 	}.bind(ui))
 
 	player.on('timeupdate', function() {

@@ -16,6 +16,7 @@ import pickle
 import json
 from multiprocessing import Pool, cpu_count
 import sys
+from io import open
 
 try:
 	import inspect
@@ -53,7 +54,7 @@ class Cache(object):
 			pickle.dump(data, f)
 
 def parse_qml_file(cache, com, path):
-	with open(path) as f:
+	with open(path, encoding='utf-8') as f:
 		data = f.read()
 		h = hashlib.sha1((grammar_digest + data).encode('utf-8')).hexdigest()
 
@@ -90,7 +91,7 @@ class Compiler(object):
 				tree, data = parse_qml_file(self.cache, com, path)
 				self.finalize_qml_file(generator, com, name[0].isupper(), tree, data)
 		elif ext == ".js":
-			with open(path) as f:
+			with open(path, encoding='utf-8') as f:
 				data = f.read()
 			if self.verbose:
 				print("including js file...", path, file=sys.stderr)
@@ -123,7 +124,7 @@ class Compiler(object):
 					continue
 
 				if '.manifest' in filenames:
-					with open(os.path.join(dirpath, '.manifest')) as f:
+					with open(os.path.join(dirpath, '.manifest'), encoding='utf-8') as f:
 						manifest = compiler.manifest.load(f)
 					if manifest.package:
 						package_name = manifest.package
@@ -177,7 +178,7 @@ class Compiler(object):
 			if os.path.exists(init_path):
 				if self.verbose:
 					print('including platform initialisation file at %s' %init_path, file=sys.stderr)
-				with open(init_path) as f:
+				with open(init_path, encoding='utf-8') as f:
 					init_js += f.read()
 
 		init_js = generator.replace_args(init_js)
@@ -228,7 +229,7 @@ class Compiler(object):
 		appcode += generator.generate_startup(namespace, self.app)
 		appcode = appcode.replace('/* ${init.js} */', init_js)
 
-		with open(os.path.join(self.output_dir, namespace + "." + self.app + ".js"), "wt") as f:
+		with open(os.path.join(self.output_dir, namespace + "." + self.app + ".js"), "wt", encoding='utf-8') as f:
 			f.write(appcode)
 
 		if self.documentation:
@@ -254,7 +255,7 @@ class Compiler(object):
 		if self.verbose:
 			print('running using %d jobs' %self.jobs, file=sys.stderr)
 
-		with open(os.path.join(root, 'partners.json')) as f:
+		with open(os.path.join(root, 'partners.json'), encoding='utf-8') as f:
 			self.partners = json.load(f)
 
 		self.documentation = compiler.doc.json.Documentation(doc) if doc else None

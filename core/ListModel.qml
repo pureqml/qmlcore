@@ -24,6 +24,8 @@ Model {
 	function append(row) {
 		var l = this._rows.length
 		if (Array.isArray(row)) {
+			if (row.length === 0)
+				return
 			Array.prototype.push.apply(this._rows, row)
 			this.count = this._rows.length
 			this.rowsInserted(l, l + row.length)

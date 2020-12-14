@@ -32,7 +32,6 @@ Model {
 		if (this._filter) {
 			for (var i = 0; i < targetRows.length; ++i)
 				if (this._filter(targetRows[i])) {
-					var last = this._indexes.length
 					this._indexes.push(i)
 				}
 		} else {

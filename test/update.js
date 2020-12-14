@@ -417,4 +417,38 @@ describe('ModelUpdate', function() {
 			sinon.assert.callCount(view._removeItems, 0)
 		})
 	})
+
+	describe('reset + insert + reset + insert', function() {
+		it('should call update/insert once', function() {
+			model = new Model()
+			view = new View()
+
+			model.reset(4)
+			model.apply(view)
+
+			model.reset(0)
+			model.reset(0)
+			model.insert(0, 5)
+
+			model.reset(0)
+			model.reset(0)
+			model.insert(0, 6)
+
+			model.reset(0)
+			model.reset(0)
+			model.insert(0, 8)
+
+			sinon.spy(view, '_insertItems')
+			sinon.spy(view, '_removeItems')
+			sinon.spy(view, '_updateItems')
+
+			model.apply(view)
+
+			sinon.assert.calledOnce(view._insertItems)
+			sinon.assert.calledWith(view._insertItems, 4, 8)
+			sinon.assert.callCount(view._removeItems, 0)
+			sinon.assert.callCount(view._updateItems, 1)
+			sinon.assert.calledWith(view._updateItems, 0, 4)
+		})
+	})
 })

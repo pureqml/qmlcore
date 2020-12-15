@@ -140,12 +140,27 @@ exports.ModelUpdate.prototype.remove = function(model, begin, end) {
 		var index = this._split(res.index, res.offset, ModelUpdateInsert, -d)
 		while(d > 0) {
 			var range = ranges[index]
-			if (range.length <= d) {
-				ranges.splice(index, 1)
-				d -= range.length
-			} else {
-				range.length -= d
-				d = 0
+			switch(range.type) {
+				case ModelUpdateNothing:
+					if (range.length == 1) {
+						ranges.splice(index, 1)
+						--d
+					} else {
+						d = 0;
+					}
+					break
+				case ModelUpdateInsert:
+					d = 0
+					break
+				case ModelUpdateUpdate:
+					if (range.length <= d) {
+						ranges.splice(index, 1)
+						d -= range.length
+					} else {
+						range.length -= d
+						d = 0
+					}
+					break
 			}
 		}
 	}

@@ -57,7 +57,6 @@ Model {
 		var row = targetRows[this._indexes[idx]]
 		if (!(row instanceof Object))
 			throw new Error('row is non-object')
-		row = Object.assign({}, row) //shallow copy to avoid overwriting index in original model.
 		row.index = idx
 		return row
 	}

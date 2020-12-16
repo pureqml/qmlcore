@@ -23,7 +23,9 @@ Model {
 
 	/// @private
 	function _buildIndexMap() {
-		this.clear()
+		this.count = 0
+		this._indexes = []
+		this.reset()
 		var targetRows = this.target._rows
 		if (!targetRows) {
 			log("Bad target model")
@@ -66,7 +68,7 @@ Model {
 	function clear() {
 		this._indexes = []
 		this.count = 0
-		this.reset()
+		this.target.clear()
 	}
 
 	///append row to the model

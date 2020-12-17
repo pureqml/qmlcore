@@ -110,4 +110,21 @@ Model {
 	function forEach(callback) {
 		return this._rows.forEach(callback)
 	}
+
+	function move(_from, _to) {
+		while(_from < 0) {
+			_from += this._rows.length;
+		}
+		while(_to < 0) {
+			_to += this._rows.length;
+		}
+		if(_to >= this._rows.length) {
+			var k = _to - this._rows.length;
+			while((k--) + 1) {
+				this._rows.push(undefined);
+			}
+		}
+		this._rows.splice(_to, 0, this._rows.splice(_from, 1)[0]);
+		this.reset();
+	}
 }

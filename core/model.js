@@ -112,9 +112,16 @@ exports.ModelUpdate.prototype.apply = function(view, skipCheck, size) {
 			offset += -d
 		} else { //dst < src
 			var d = src - dst
-			offset += d
-			src += d
-			apply(ModelUpdateInsert, dst + d, d)
+			if (currentRange === ModelUpdateUpdate && d == currentRangeSize) {
+				//check here if we have an equivalent range of update,
+				//signal insert first instead of update (on the next loop iteration)
+				offset += d
+				currentRange = ModelUpdateInsert
+			} else {
+				offset += d
+				src += d
+				apply(ModelUpdateInsert, dst + d, d)
+			}
 		}
 	}
 	apply(ModelUpdateFinish, dst_n)

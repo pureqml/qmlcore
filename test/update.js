@@ -28,9 +28,9 @@ describe('ModelUpdate', function() {
 			model.remove(0, 10)
 			model.apply(view)
 
-			sinon.assert.callCount(view._insertItems, 0)
-			sinon.assert.callCount(view._updateItems, 0)
-			sinon.assert.callCount(view._removeItems, 0)
+			sinon.assert.notCalled(view._insertItems)
+			sinon.assert.notCalled(view._updateItems)
+			sinon.assert.notCalled(view._removeItems)
 		})
 	})
 
@@ -262,8 +262,8 @@ describe('ModelUpdate', function() {
 			model.apply(view)
 
 			sinon.assert.calledWith(view._insertItems, 0, 20)
-			sinon.assert.callCount(view._updateItems, 0)
-			sinon.assert.callCount(view._removeItems, 0)
+			sinon.assert.notCalled(view._updateItems)
+			sinon.assert.notCalled(view._removeItems)
 
 			model.reset(20)
 			model.update(0, 1)
@@ -273,7 +273,7 @@ describe('ModelUpdate', function() {
 			sinon.assert.callCount(view._insertItems, 1)
 			sinon.assert.calledWith(view._updateItems, 0, 20)
 			sinon.assert.callCount(view._updateItems, 1)
-			sinon.assert.callCount(view._removeItems, 0)
+			sinon.assert.notCalled(view._removeItems)
 		})
 	})
 
@@ -366,7 +366,7 @@ describe('ModelUpdate', function() {
 			sinon.assert.calledWith(view._removeItems, 0, 1)
 			sinon.assert.calledOnce(view._insertItems)
 			sinon.assert.calledWith(view._insertItems, 9, 10)
-			sinon.assert.callCount(view._updateItems, 0)
+			sinon.assert.notCalled(view._updateItems)
 		})
 	})
 
@@ -387,11 +387,10 @@ describe('ModelUpdate', function() {
 			model.apply(view)
 
 			sinon.assert.calledOnce(view._insertItems)
-			sinon.assert.calledWith(view._insertItems, 1, 2)
+			sinon.assert.calledWith(view._insertItems, 0, 1)
 			sinon.assert.calledOnce(view._removeItems)
 			sinon.assert.calledWith(view._removeItems, 10, 11)
-			sinon.assert.calledOnce(view._updateItems)
-			sinon.assert.calledWith(view._updateItems, 0, 1)
+			sinon.assert.notCalled(view._updateItems)
 		})
 	})
 
@@ -414,8 +413,8 @@ describe('ModelUpdate', function() {
 
 			sinon.assert.calledOnce(view._updateItems)
 			sinon.assert.calledWith(view._updateItems, 0, 10)
-			sinon.assert.callCount(view._insertItems, 0)
-			sinon.assert.callCount(view._removeItems, 0)
+			sinon.assert.notCalled(view._insertItems)
+			sinon.assert.notCalled(view._removeItems)
 		})
 	})
 
@@ -447,7 +446,7 @@ describe('ModelUpdate', function() {
 
 			sinon.assert.calledOnce(view._insertItems)
 			sinon.assert.calledWith(view._insertItems, 4, 8)
-			sinon.assert.callCount(view._removeItems, 0)
+			sinon.assert.notCalled(view._removeItems)
 			sinon.assert.callCount(view._updateItems, 1)
 			sinon.assert.calledWith(view._updateItems, 0, 4)
 		})

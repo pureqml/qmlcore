@@ -1,253 +1,138 @@
 var ModelUpdateNothing = 0
 var ModelUpdateInsert = 1
-var ModelUpdateUpdate = 2
-
-var ModelUpdateRange = function(type, length) {
-	this.type = type
-	this.length = length
-}
+var ModelUpdateRemove = 2
+var ModelUpdateUpdate = 3
+var ModelUpdateFinish = 4
 
 exports.ModelUpdate = function() {
-	this.count = 0
-	this._reset()
+	this.rows = []
 }
 exports.ModelUpdate.prototype.constructor = exports.ModelUpdate
 
-exports.ModelUpdate.prototype._reset = function() {
-	this._ranges = [new ModelUpdateRange(ModelUpdateNothing, this.count)]
-	this._updateIndex = this.count
-}
-
-exports.ModelUpdate.prototype._setUpdateIndex = function(begin) {
-	if (begin < this._updateIndex)
-		this._updateIndex = begin
-}
-
-exports.ModelUpdate.prototype._find = function(index) {
-	var ranges = this._ranges
-	var i
-	for(i = 0; i < ranges.length; ++i) {
-		var range = ranges[i]
-		if (index < range.length)
-			return { index: i, offset: index }
-		if (range.length > 0)
-			index -= range.length
-	}
-	if (index != 0)
-		throw new Error('invalid index ' + index)
-
-	return { index: i - 1, offset: range.length }
-}
-
 exports.ModelUpdate.prototype.reset = function(model) {
-	this.update(model, 0, Math.min(model.count, this.count))
-	if (this.count < model.count) {
-		this.insert(model, this.count, model.count)
-	} else {
-		this.remove(model, model.count, this.count)
-	}
-}
-
-exports.ModelUpdate.prototype._merge = function() {
-	var ranges = this._ranges
-	for(var index = 1; index < ranges.length; ) {
-		var range = ranges[index - 1]
-		var nextRange = ranges[index]
-		if (range.type === nextRange.type) {
-			if (range.type === ModelUpdateInsert && range.length < 0 && nextRange.length > 0) {
-				//removed + inserted rows reappears as updated
-				var updated = Math.min(-range.length, nextRange.length)
-				range.type = ModelUpdateUpdate
-				nextRange.length += range.length
-				range.length = updated
-				if (index > 1)
-					--index
-			} else {
-				range.length += nextRange.length
-				ranges.splice(index, 1)
-			}
-		} else if (range.type === ModelUpdateInsert && range.length === 0) {
-			ranges.splice(index, 1)
-		} else
-			++index
-	}
-}
-
-exports.ModelUpdate.prototype._split = function(index, offset, type, length) {
-	var ranges = this._ranges
-	if (offset === 0) {
-		ranges.splice(index, 0, new ModelUpdateRange(type, length))
-		return index + 1
-	} else {
-		var range = ranges[index]
-		var right = range.length - offset
-		range.length = offset
-		if (right != 0) {
-			ranges.splice(index + 1, 0,
-				new ModelUpdateRange(type, length),
-				new ModelUpdateRange(range.type, right))
-			return index + 2
-		} else {
-			ranges.splice(index + 1, 0,
-				new ModelUpdateRange(type, length))
-			return index + 2
-		}
-	}
+	var n = model.count
+	var rows = this.rows = new Array(n)
+	for (var i = 0; i < n; ++i)
+		rows[i] = [i, true]
 }
 
 exports.ModelUpdate.prototype.insert = function(model, begin, end) {
 	if (begin >= end)
 		return
 
-	this._setUpdateIndex(begin)
-	var ranges = this._ranges
 	var d = end - begin
-	this.count += d
-	if (this.count != model.count)
-		throw new Error('unbalanced insert ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
-
-	var res = this._find(begin)
-	var range = ranges[res.index]
-	if (range.length === 0) { //first insert
-		range.type = ModelUpdateInsert
-		range.length += d
-	} else {
-		if (res.offset >= 0)
-			this._split(res.index, res.offset, ModelUpdateInsert, d)
-		else
-			this._split(res.index + 1, 0, ModelUpdateInsert, d)
-	}
-	this._merge()
+	var rows = this.rows
+	var args = [begin, 0]
+	for(var i = 0; i < d; ++i)
+		args.push([begin + i, true])
+	rows.splice.apply(rows, args)
+	if (rows.length != model.count)
+		throw new Error('unbalanced insert ' + rows.length + ' + [' + begin + '-' + end + '], model reported ' + model.count)
 }
 
 exports.ModelUpdate.prototype.remove = function(model, begin, end) {
 	if (begin >= end)
 		return
 
-	this._setUpdateIndex(begin)
-	var ranges = this._ranges
 	var d = end - begin
-	this.count -= d
-	if (this.count != model.count)
-		throw new Error('unbalanced remove ' + this.count + ' + [' + begin + '-' + end + '], model reported ' + model.count)
-
-	var res = this._find(begin)
-	var range = ranges[res.index]
-
-	if (range.type === ModelUpdateInsert) {
-		range.length -= d
-	} else {
-		var index = this._split(res.index, res.offset, ModelUpdateInsert, -d)
-		while(d > 0) {
-			var range = ranges[index]
-			switch(range.type) {
-				case ModelUpdateNothing:
-					if (range.length == 1) {
-						ranges.splice(index, 1)
-						--d
-					} else {
-						d = 0;
-					}
-					break
-				case ModelUpdateInsert:
-					d = 0
-					break
-				case ModelUpdateUpdate:
-					if (range.length <= d) {
-						ranges.splice(index, 1)
-						d -= range.length
-					} else {
-						range.length -= d
-						d = 0
-					}
-					break
-			}
-		}
-	}
-	this._merge()
+	var rows = this.rows
+	rows.splice(begin, d)
+	if (rows.length != model.count)
+		throw new Error('unbalanced remove ' + rows.length + ' + [' + begin + '-' + end + '], model reported ' + model.count)
 }
 
 exports.ModelUpdate.prototype.update = function(model, begin, end) {
 	if (begin >= end)
 		return
 
-	var ranges = this._ranges
-	var n = end - begin
-	var res = this._find(begin)
-	var index = res.index
-
-	var range = ranges[index]
-	if (res.offset > 0) {
-		ranges.splice(index + 1, 0, new ModelUpdateRange(range.type, range.length - res.offset))
-		range.length = res.offset
-		++index
-		if (range.length === 0)
-			throw new Error('invalid offset')
-	}
-
-	while(n > 0) {
-		var range = ranges[index]
-		var length = range.length
-		switch(range.type) {
-			case ModelUpdateNothing:
-				if (length > n) {
-					//range larger than needed
-					range.length -= n
-					ranges.splice(index, 0, new ModelUpdateRange(ModelUpdateUpdate, n))
-					n -= length
-				} else { //length <= n
-					range.type = ModelUpdateUpdate
-					n -= length
-				}
-				break
-			case ModelUpdateInsert:
-				if (length > 0)
-					n -= length
-				++index
-				break
-			case ModelUpdateUpdate:
-				n -= length
-				++index
-				break
-		}
-	}
-	this._merge()
+	var rows = this.rows;
+	for(var i = begin; i < end; ++i)
+		rows[i][1] = true
 }
 
 exports.ModelUpdate.prototype.clear = function() {
-	this.count = 0
-	this._reset()
+	this.rows = []
 }
 
-exports.ModelUpdate.prototype.apply = function(view, skipCheck) {
-	var index = 0
-	this._ranges.forEach(
-		function(range) {
-			var n = range.length
-			switch(range.type) {
-				case ModelUpdateInsert:
-					if (n > 0) {
-						view._insertItems(index, index + n)
-						index += n
-					} else if (n < 0) {
-						view._removeItems(index, index - n)
-					}
+exports.ModelUpdate.prototype.apply = function(view, skipCheck, size) {
+	var rows = this.rows
+	var currentRange = ModelUpdateNothing
+	var currentRangeStartedAt = 0
+	var currentRangeSize = 0
+
+	//log("APPLY ", rows)
+
+	var apply = function(range, index, size) {
+		if (size === undefined)
+			size = 1
+
+		if (currentRange === range) {
+			currentRangeSize += size
+			return
+		}
+
+		if (currentRangeSize > 0) {
+			switch(currentRange) {
+				case ModelUpdateNothing:
 					break
 				case ModelUpdateUpdate:
-					view._updateItems(index, index + n)
-					index += n
+					view._updateItems(currentRangeStartedAt, currentRangeStartedAt + currentRangeSize)
 					break
-				default:
-					index += range.length
+				case ModelUpdateInsert:
+					view._insertItems(currentRangeStartedAt, currentRangeStartedAt + currentRangeSize)
+					break
+				case ModelUpdateRemove:
+					view._removeItems(currentRangeStartedAt, currentRangeStartedAt + currentRangeSize)
+					break
 			}
 		}
-	)
-	if (!skipCheck && view._items.length != this.count)
-		throw new Error('unbalanced items update, view: ' + view._items.length + ', update:' + this.count)
 
-	for(var i = this._updateIndex; i < this.count; ++i)
-		view._updateDelegateIndex(i)
-	this._reset()
+		currentRange = range
+		currentRangeStartedAt = index
+		currentRangeSize = size
+	}
+
+	var src_n = rows.length
+	var dst_n = view._items.length
+	var offset = 0
+	for(var src = 0; src < src_n; ) {
+		var row = rows[src]
+		var dst = row[0] + offset
+		if (src >= dst_n) {
+			apply(ModelUpdateInsert, src, src_n - dst_n)
+			break
+		} else if (dst === src) {
+			apply(row[1]? ModelUpdateUpdate: ModelUpdateNothing, src)
+			++src
+			++dst
+		} else if (dst > src) {
+			//removing gap
+			var d = dst - src
+			apply(ModelUpdateRemove, src, d)
+			offset += -d
+		} else { //dst < src
+			var d = src - dst
+			offset += d
+			src += d
+			apply(ModelUpdateInsert, dst + d, d)
+		}
+	}
+	apply(ModelUpdateFinish, dst_n)
+
+	dst_n = view._items.length //update length
+	if (dst_n > src_n) {
+		view._removeItems(src_n, dst_n)
+	} else if (src_n > dst_n) {
+		view._insertItems(dst_n, src_n)
+	}
+	if (!skipCheck && view._items.length != src_n )
+		throw new Error('unbalanced items update, view: ' + view._items.length + ', update:' + src_n)
+
+	for(var i = 0; i < src_n; ++i) {
+		var row = rows[i]
+		row[0] = i
+		row[1] = false
+	}
 }
 
 var ArrayModelWrapper = exports.ArrayModelWrapper = function (data) { this.data = data; this.count = data.length }

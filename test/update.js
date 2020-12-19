@@ -387,10 +387,11 @@ describe('ModelUpdate', function() {
 			model.apply(view)
 
 			sinon.assert.calledOnce(view._insertItems)
-			sinon.assert.calledWith(view._insertItems, 0, 1)
+			sinon.assert.calledWith(view._insertItems, 1, 2)
 			sinon.assert.calledOnce(view._removeItems)
 			sinon.assert.calledWith(view._removeItems, 10, 11)
-			sinon.assert.callCount(view._updateItems, 0)
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 0, 1)
 		})
 	})
 

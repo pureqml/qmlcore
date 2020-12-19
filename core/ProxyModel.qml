@@ -4,7 +4,7 @@ Model {
 
 	/// @private
 	constructor: {
-		this._indexes = []
+		this._indices = []
 	}
 
 	rebuild: { this._buildIndexMap() }
@@ -24,29 +24,120 @@ Model {
 	/// @private
 	function _buildIndexMap() {
 		this.count = 0
-		this._indexes = []
+		this._indices = []
 		this.reset()
 		var targetRows = this.target._rows
 		if (!targetRows) {
 			log("Bad target model")
 			return
 		}
+		var indices = []
+		var targetSize = targetRows.length
 		if (this._filter) {
-			for (var i = 0; i < targetRows.length; ++i)
+			for (var i = 0; i < targetSize; ++i)
 				if (this._filter(targetRows[i])) {
-					this._indexes.push(i)
+					indices.push(i)
 				}
 		} else {
-			for (var i = 0; i < targetRows.length; ++i) {
-				this._indexes.push(i)
+			for (var i = 0; i < targetSize; ++i) {
+				indices.push(i)
 			}
 		}
 		if (this._cmp) {
 			var self = this
-			this._indexes = this._indexes.sort(function(a, b) { return self._cmp(targetRows[a], targetRows[b]) })
+			indices.sort(function(a, b) { return self._cmp(targetRows[a], targetRows[b]) })
 		}
-		this.count = this._indexes.length
+
+		this._indices = indices
+		this.count = this._indices.length
 		this.rowsInserted(0, this.count)
+	}
+
+	///@private
+	function _findIndex(row) {
+		var rows = this.target._rows
+		var indices = this._indices
+		var cmp = this._cmp
+		var l = 0
+		var h = indices.length
+		while(l < h) {
+			var m = (l + h) >> 1
+			var targetIndex = indices[m]
+			var r = cmp(row, rows[targetIndex])
+			if (r > 0) {
+				l = m + 1
+			} else if (r < 0) {
+				h = m
+			} else {
+				return m
+			}
+		}
+		return h
+	}
+
+	///@private
+	function _insertRows(begin, end, update) {
+		var rows = this.target._rows
+		var indices = this._indices
+		var filter = this._filter
+		var cmp = this._cmp
+		var insert = []
+
+		var rangeSize = update? 0: end - begin
+		for(var i = 0, n = indices.length; i < n; ++i) {
+			if (indices[i] >= begin)
+				indices[i] += rangeSize
+		}
+
+		for(var i = begin; i < end; ++i) {
+			var row = rows[i]
+			if (filter && !filter(row))
+				continue
+
+			var insertPos
+			if (cmp) {
+				insertPos = this._findIndex(row)
+			} else {
+				insertPos = begin
+			}
+			insert.push([insertPos, i])
+		}
+
+		for(var i = 0, n = insert.length; i < n; ++i) {
+			var el = insert[i]
+			var pos = el[0]
+			indices.splice(pos, 0, el[1])
+			++this.count
+			this.rowsInserted(pos, pos + 1)
+		}
+	}
+
+	///@private
+	function _updateRows(begin, end) {
+		this._removeRows(begin, end, true)
+		this._insertRows(begin, end, true)
+	}
+
+	///@private
+	function _removeRows(begin, end, update) {
+		var indices = this._indices
+		var remove = []
+		var rangeSize = update? 0: end - begin
+		for(var i = 0; i < indices.length; ++i) {
+			if (indices[i] >= begin) {
+				if (indices[i] < end) {
+					indices.splice(i, 1)
+					remove.push(i)
+					--i
+				} else
+					indices[i] -= rangeSize
+			}
+		}
+		for (var i = 0; i < remove.length; ++i) {
+			var index = remove[i]
+			--this.count
+			this.rowsRemoved(index, index + 1)
+		}
 	}
 
 	///returns a model's row by index, throw exception if index is out of range or if requested row is non-object
@@ -54,9 +145,9 @@ Model {
 		var targetRows = this.target._rows
 		if (!targetRows)
 			throw new Error('Bad target model')
-		if (idx < 0 || idx >= this._indexes.length)
+		if (idx < 0 || idx >= this._indices.length)
 			throw new Error('index ' + idx + ' out of bounds')
-		var row = targetRows[this._indexes[idx]]
+		var row = targetRows[this._indices[idx]]
 		if (!(row instanceof Object))
 			throw new Error('row is non-object')
 		row = Object.assign({}, row) //shallow copy to avoid overwriting index in original model.
@@ -66,7 +157,7 @@ Model {
 
 	///remove all rows
 	function clear() {
-		this._indexes = []
+		this._indices = []
 		this.count = 0
 		this.target.clear()
 	}
@@ -76,38 +167,29 @@ Model {
 		this.target.append(row)
 	}
 
-	///place row at requested index, throws exception when index is out of range
-	function insert(idx, row) {
-		if (idx < 0 || idx > this._indexes.length)
-			throw new Error('index ' + idx + ' out of bounds')
-
-		var targetIdx = this._indexes[idx]
-		this.target.set(targetIdx, row)
-	}
-
 	///replace row at 'idx' position by 'row' argument, throws exception if index is out of range or if 'row' isn't Object
 	function set(idx, row) {
-		if (idx < 0 || idx >= this._indexes.length)
+		if (idx < 0 || idx >= this._indices.length)
 			throw new Error('index ' + idx + ' out of bounds')
 		if (!(row instanceof Object))
 			throw new Error('row is non-object')
-		var targetIdx = this._indexes[idx]
+		var targetIdx = this._indices[idx]
 		this.target.set(targetIdx, row)
 	}
 
 	///replace a row's property, throws exception if index is out of range or if 'row' isn't Object
 	function setProperty(idx, name, value) {
-		if (idx < 0 || idx >= this._indexes.length)
+		if (idx < 0 || idx >= this._indices.length)
 			throw new Error('index ' + idx + ' out of bounds')
-		var targetIdx = this._indexes[idx]
+		var targetIdx = this._indices[idx]
 		this.target.setProperty(targetIdx, name, value)
 	}
 
 	///remove rows from model from 'idx' to 'idx' + 'n' position
 	function remove(idx, n) {
-		if (idx < 0 || idx >= this._indexes.length)
+		if (idx < 0 || idx >= this._indices.length)
 			throw new Error('index ' + idx + ' out of bounds')
-		this.target.remove(this._indexes[idx], n)
+		this.target.remove(this._indices[idx], n)
 	}
 
 	///this method is alias for 'append' method
@@ -120,9 +202,9 @@ Model {
 		var target = this.target
 
 		this.connectOn(target, 'reset', this._buildIndexMap.bind(this))
-		this.connectOn(target, 'rowsInserted', this._buildIndexMap.bind(this))
-		this.connectOn(target, 'rowsChanged', this._buildIndexMap.bind(this))
-		this.connectOn(target, 'rowsRemoved', this._buildIndexMap.bind(this))
+		this.connectOn(target, 'rowsInserted', this._insertRows.bind(this))
+		this.connectOn(target, 'rowsChanged', this._updateRows.bind(this))
+		this.connectOn(target, 'rowsRemoved', this._removeRows.bind(this))
 
 		this._buildIndexMap()
 	}

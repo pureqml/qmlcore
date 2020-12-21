@@ -310,6 +310,10 @@ BaseView {
 		this._scheduleLayout()
 	}
 
+	onNativeScrollingChanged: {
+		this._updateOverflow()
+	}
+
 	onCellWidthChanged,
 	onCellHeightChanged: {
 		this._scheduleLayout()

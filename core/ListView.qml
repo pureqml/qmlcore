@@ -350,11 +350,14 @@ BaseView {
 		this.style(style)
 	}
 
-	///@private
 	onOrientationChanged: {
 		this._updateOverflow()
 		this._scheduleLayout()
 		this._sizes = []
+	}
+
+	onNativeScrollingChanged: {
+		this._updateOverflow()
 	}
 
 	onCompleted: {

@@ -177,7 +177,7 @@ BaseView {
 		var items = this._items
 		var sizes = this._sizes
 		var n = items.length
-		var w = this.width - paddingLeft - (padding.right || 0), h = this.height - (padding.bottom || 0)
+		var w = this.width - paddingLeft - (padding.right || 0), h = this.height - paddingTop - (padding.bottom || 0)
 		var created = false
 		var startPos = horizontal? paddingLeft: paddingTop
 		var p = startPos

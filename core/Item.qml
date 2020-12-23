@@ -254,7 +254,16 @@ Object {
 
 	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }
 	onZChanged:			{ this.style('z-index', value) }
-	onClipChanged:		{ this.style('overflow', value? 'hidden': 'visible') }
+	onClipChanged:		{ this._updateOverflow() }
+
+	///@private
+	function _updateOverflow() {
+		this.style({
+			'overflow-x': '',
+			'overflow-y': '',
+			'overflow': this.clip? 'hidden': 'visible'
+		})
+	}
 
 	///@private sets current global focus to component
 	function forceActiveFocus() {

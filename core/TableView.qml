@@ -365,8 +365,10 @@ BaseView {
 
 	///@private
 	function _updateOverflow() {
-		if (!this.nativeScrolling)
+		if (!this.nativeScrolling) {
+			$core.Item.prototype._updateOverflow.apply(this, arguments)
 			return
+		}
 
 		var style = {}
 		style['overflow'] = 'auto'

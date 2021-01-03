@@ -32,6 +32,10 @@ BaseView {
 	function positionViewAtIndex(idx) {
 		if (this.trace)
 			log('positionViewAtIndex ' + idx)
+
+		if (this.positionMode === this.Beginning || this.positionMode === this.End)
+			return
+
 		var horizontal = this.orientation === this.Horizontal
 		var itemBox = this.getItemPosition(idx)
 		var center = this.positionMode === this.Center

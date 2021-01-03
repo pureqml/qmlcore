@@ -40,6 +40,7 @@ Item {
 		this._attach()
 		this._processUpdates()
 		this._layout()
+		this._positionAfterLayout()
 	}
 
 	///@private
@@ -47,10 +48,14 @@ Item {
 		this._attach()
 		this._processUpdates()
 		this._layout(true)
+		this._positionAfterLayout()
 	}
 
 	///@private
 	function _processUpdates() { }
+
+	///@private
+	function _positionAfterLayout() { }
 
 	onSpacingChanged,
 	onRecursiveVisibleChanged: {

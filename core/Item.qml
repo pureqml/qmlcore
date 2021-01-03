@@ -259,8 +259,6 @@ Object {
 	///@private
 	function _updateOverflow() {
 		this.style({
-			'overflow-x': '',
-			'overflow-y': '',
 			'overflow': this.clip? 'hidden': 'visible'
 		})
 	}

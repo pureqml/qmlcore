@@ -48,6 +48,31 @@ BaseView {
 	}
 
 	///@private
+	function _positionAfterLayout() {
+		var horizontal = this.orientation === this.Horizontal
+		switch (this.positionMode) {
+			case this.Beginning:
+				if (horizontal)
+					this.contentX = 0
+				else
+					this.contentY = 0
+				break
+
+			case this.End:
+				if (horizontal) {
+					var cw = this.contentWidth, w = this.width
+					if (cw > w)
+						this.contentX = cw - w
+				} else {
+					var ch = this.contentHeight, h = this.height
+					if (ch > h)
+						this.contentY = ch - h
+				}
+				break
+		}
+	}
+
+	///@private
 	onKeyPressed: {
 		if (!this.handleNavigationKeys) {
 			event.accepted = false;

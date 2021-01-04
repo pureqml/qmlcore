@@ -2,6 +2,7 @@
 BaseLayout {
 	signal layoutFinished;
 	signal scrollEvent;
+	signal modelUpdated;
 	property Item highlight;		///< an object that follows currentIndex and placed below other elements
 	property Object model;			///< model object to attach to
 	property Item delegate;			///< delegate - template object, filled with model row
@@ -316,9 +317,12 @@ BaseLayout {
 
 	/// @private
 	function _processUpdates() {
-		this._modelUpdate.apply(this)
+		var updated = this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._processUpdates.apply(this)
 		this.count = this._items.length
+
+		if (updated)
+			this.modelUpdated()
 	}
 
 	onRecursiveVisibleChanged: {

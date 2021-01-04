@@ -54,11 +54,12 @@ exports.ModelUpdate.prototype.clear = function() {
 	this.rows = []
 }
 
-exports.ModelUpdate.prototype.apply = function(view, skipCheck, size) {
+exports.ModelUpdate.prototype.apply = function(view, skipCheck) {
 	var rows = this.rows
 	var currentRange = ModelUpdateNothing
 	var currentRangeStartedAt = 0
 	var currentRangeSize = 0
+	var updated = false
 
 	//log("APPLY ", rows)
 
@@ -76,12 +77,15 @@ exports.ModelUpdate.prototype.apply = function(view, skipCheck, size) {
 				case ModelUpdateNothing:
 					break
 				case ModelUpdateUpdate:
+					updated = true
 					view._updateItems(currentRangeStartedAt, currentRangeStartedAt + currentRangeSize)
 					break
 				case ModelUpdateInsert:
+					updated = true
 					view._insertItems(currentRangeStartedAt, currentRangeStartedAt + currentRangeSize)
 					break
 				case ModelUpdateRemove:
+					updated = true
 					view._removeItems(currentRangeStartedAt, currentRangeStartedAt + currentRangeSize)
 					break
 			}
@@ -140,6 +144,7 @@ exports.ModelUpdate.prototype.apply = function(view, skipCheck, size) {
 		row[0] = i
 		row[1] = false
 	}
+	return updated
 }
 
 var ArrayModelWrapper = exports.ArrayModelWrapper = function (data) { this.data = data; this.count = data.length }

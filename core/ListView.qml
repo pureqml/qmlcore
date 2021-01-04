@@ -30,11 +30,13 @@ BaseView {
 
 	///@private
 	function positionViewAtIndex(idx) {
+		if (this.positionMode === this.Beginning)
+			idx = 0
+		else if (this.positionMode === this.End && this.count > 0)
+			idx = this.count - 1
+
 		if (this.trace)
 			log('positionViewAtIndex ' + idx)
-
-		if (this.positionMode === this.Beginning || this.positionMode === this.End)
-			return
 
 		var horizontal = this.orientation === this.Horizontal
 		var itemBox = this.getItemPosition(idx)
@@ -44,31 +46,6 @@ BaseView {
 			this.positionViewAtItemHorizontally(itemBox, center, true)
 		} else {
 			this.positionViewAtItemVertically(itemBox, center, true)
-		}
-	}
-
-	///@private
-	function _positionAfterLayout() {
-		var horizontal = this.orientation === this.Horizontal
-		switch (this.positionMode) {
-			case this.Beginning:
-				if (horizontal)
-					this.contentX = 0
-				else
-					this.contentY = 0
-				break
-
-			case this.End:
-				if (horizontal) {
-					var cw = this.contentWidth, w = this.width
-					if (cw > w)
-						this.contentX = cw - w
-				} else {
-					var ch = this.contentHeight, h = this.height
-					if (ch > h)
-						this.contentY = ch - h
-				}
-				break
 		}
 	}
 

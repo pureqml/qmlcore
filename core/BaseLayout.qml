@@ -16,7 +16,6 @@ Item {
 
 	///@private
 	constructor: {
-		this.count = 0
 		this._padding = {}
 	}
 

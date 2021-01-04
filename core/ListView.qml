@@ -30,11 +30,6 @@ BaseView {
 
 	///@private
 	function positionViewAtIndex(idx) {
-		if (this.positionMode === this.Beginning)
-			idx = 0
-		else if (this.positionMode === this.End && this.count > 0)
-			idx = this.count - 1
-
 		if (this.trace)
 			log('positionViewAtIndex ' + idx)
 

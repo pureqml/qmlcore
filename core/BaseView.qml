@@ -106,7 +106,7 @@ BaseLayout {
 
 		if (item)
 			this.focusChild(item)
-		if (this.contentFollowsCurrentItem)
+		if (this.contentFollowsCurrentItem && !this._skipPositioning)
 			this.positionViewAtIndex(idx)
 
 		this._updateHighlight(item)

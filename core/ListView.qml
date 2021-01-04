@@ -251,8 +251,6 @@ BaseView {
 
 				if (currentIndex === i && !item.focused) {
 					this.focusChild(item)
-					if (this.contentFollowsCurrentItem && this.size)
-						this.positionViewAtIndex(i)
 				}
 
 				item.visibleInView = visible

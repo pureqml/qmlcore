@@ -55,7 +55,7 @@ Item {
 		var results = []
 		if (preferred && backends[preferred]) {
 			var backend = backends[preferred]()
-			return this.impl = backend.createPlayer(this)
+			this.impl = backend.createPlayer(this)
 		} else {
 			for (var i in backends) {
 				var backend = backends[i]()
@@ -66,8 +66,11 @@ Item {
 			results.sort(function(a, b) { return b.score - a.score })
 			if (results.length === 0)
 				throw new Error('no backends for source ' + source)
-			return this.impl = results[0].backend.createPlayer(this)
+			this.impl = results[0].backend.createPlayer(this)
 		}
+		if (this.source)
+			this.impl.setSource(this.source)
+		return this.impl
 	}
 
 	onLoopChanged: {
@@ -273,7 +276,16 @@ Item {
 	onBackgroundImageChanged: { this.setOption('poster', value) }
 
 	onBackendChanged: {
-		this.impl = null
+		log('backend changed to', value)
+		if (this.impl) {
+			log('disposing old player...')
+			try {
+				this.impl.dispose()
+			} catch(ex) {
+				log('player.dispose failed', ex)
+			}
+			this.impl = null
+		}
 		this._createPlayer()
 	}
 

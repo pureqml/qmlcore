@@ -13,7 +13,8 @@ var Player = function(ui) {
 	var uniqueId = 'videojs' + this.element._uniqueId
 	player.setAttribute('id', uniqueId)
 
-	ui.element.remove()
+	if (ui.element)
+		ui.element.remove()
 	ui.element = player
 	ui.parent.element.append(ui.element)
 
@@ -54,6 +55,13 @@ var Player = function(ui) {
 }
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
+
+Player.prototype.dispose = function() {
+	window.videojs(this.videojsContaner).dispose()
+	this.videojs.dispose()
+	this.videojs = null
+	_globals.video.html5.backend.Player.prototype.dispose.apply(this)
+}
 
 Player.prototype.setSource = function(url) {
 	var media = { 'src': url }

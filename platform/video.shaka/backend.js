@@ -27,7 +27,8 @@ var Player = function(ui) {
 	this.ui = ui
 	this.setEventListeners()
 
-	ui.element.remove()
+	if (ui.element)
+		ui.element.remove()
 	ui.element = player
 	ui.parent.element.append(ui.element)
 }
@@ -200,6 +201,14 @@ exports.createPlayer = function(ui) {
 
 exports.probeUrl = function(url) {
 	return 150
+}
+
+Player.prototype.dispose = function() {
+	_globals.video.html5.backend.Player.prototype.dispose.apply(this)
+	if (this.shakaPlayer) {
+		this.shakaPlayer.destroy()
+		this.shakaPlayer = null
+	}
 }
 
 exports.Player = Player

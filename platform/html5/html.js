@@ -869,6 +869,11 @@ exports.ajax = function(ui, request) {
 
 	var xhr = new XMLHttpRequest()
 
+	if (request.responseType != undefined)
+		xhr.responseType = request.responseType
+	if (request.withCredentials !== undefined)
+		xhr.withCredentials = request.withCredentials
+
 	if (error)
 		xhr.addEventListener('error', error)
 

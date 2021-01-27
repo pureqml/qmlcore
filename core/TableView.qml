@@ -37,7 +37,7 @@ BaseView {
 		var item = $core.BaseView.prototype._createDelegate.apply(this, arguments)
 
 		var updateX = function() {
-			this._invalidateSizes(idx)
+			this._invalidateSize(idx)
 			if (this.nativeScrolling) {
 				//if delegate updates its width and it's on the left/top of scrolling position
 				//it will cause annoying jumps
@@ -48,7 +48,7 @@ BaseView {
 		}
 
 		var updateY = function() {
-			this._invalidateSizes(idx)
+			this._invalidateSize(idx)
 			if (this.nativeScrolling) {
 				if (item.viewY < this.element.getScrollY()) {
 					this._scrollDeltaY += item.height - (this._vsizes[idx] || this.referenceHeight)

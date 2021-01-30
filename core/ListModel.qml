@@ -85,7 +85,10 @@ Model {
 		if (row[name] !== value) {
 			row[name] = value
 			this.rowsChanged(idx, idx + 1)
+			return true
 		}
+		else
+			return false
 	}
 
 	/**@param idx:int row's position to replace

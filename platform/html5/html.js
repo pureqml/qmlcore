@@ -455,7 +455,6 @@ ElementPrototype.remove = function() {
 ElementPrototype.focus = function() {
 	var dom = this.dom
 	dom.focus()
-	dom.select()
 }
 
 ElementPrototype.blur = function() {

@@ -263,7 +263,7 @@ BaseLayout {
 			row.index = idx
 			item._local.model = row
 			var _row = item._createPropertyStorage('_row')
-			_row.callOnChanged(item, '_row')
+			_row.callOnChanged(item, '_row', row, {})
 		}
 	}
 

@@ -347,7 +347,7 @@ describe('ModelUpdate', function() {
 	})
 
 	describe('remove from front + insert to back', function() {
-		it('should call to remove/insert', function() {
+		it('should call to remove/update/insert because it changes model.index', function() {
 			model = new Model()
 			view = new View()
 
@@ -364,14 +364,15 @@ describe('ModelUpdate', function() {
 
 			sinon.assert.calledOnce(view._removeItems)
 			sinon.assert.calledWith(view._removeItems, 0, 1)
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 0, 9)
 			sinon.assert.calledOnce(view._insertItems)
 			sinon.assert.calledWith(view._insertItems, 9, 10)
-			sinon.assert.notCalled(view._updateItems)
 		})
 	})
 
 	describe('insert to front + remove from back', function() {
-		it('should call to remove/insert', function() {
+		it('should call to remove/update/insert because it changes model.index', function() {
 			model = new Model()
 			view = new View()
 
@@ -388,9 +389,10 @@ describe('ModelUpdate', function() {
 
 			sinon.assert.calledOnce(view._insertItems)
 			sinon.assert.calledWith(view._insertItems, 0, 1)
+			sinon.assert.calledOnce(view._updateItems)
+			sinon.assert.calledWith(view._updateItems, 1, 10)
 			sinon.assert.calledOnce(view._removeItems)
 			sinon.assert.calledWith(view._removeItems, 10, 11)
-			sinon.assert.notCalled(view._updateItems)
 		})
 	})
 

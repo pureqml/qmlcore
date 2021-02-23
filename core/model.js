@@ -106,7 +106,7 @@ exports.ModelUpdate.prototype.apply = function(view, skipCheck) {
 			apply(ModelUpdateInsert, src, src_n - dst_n)
 			break
 		} else if (dst === src) {
-			apply(row[1]? ModelUpdateUpdate: ModelUpdateNothing, src)
+			apply(row[1] || offset !== 0? ModelUpdateUpdate: ModelUpdateNothing, src)
 			++src
 			++dst
 		} else if (dst > src) {

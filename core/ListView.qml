@@ -32,6 +32,7 @@ BaseView {
 	function positionViewAtIndex(idx) {
 		if (this.trace)
 			log('positionViewAtIndex ' + idx)
+
 		var horizontal = this.orientation === this.Horizontal
 		var itemBox = this.getItemPosition(idx)
 		var center = this.positionMode === this.Center
@@ -177,7 +178,7 @@ BaseView {
 		var items = this._items
 		var sizes = this._sizes
 		var n = items.length
-		var w = this.width - paddingLeft - (padding.right || 0), h = this.height - (padding.bottom || 0)
+		var w = this.width - paddingLeft - (padding.right || 0), h = this.height - paddingTop - (padding.bottom || 0)
 		var created = false
 		var startPos = horizontal? paddingLeft: paddingTop
 		var p = startPos
@@ -245,8 +246,6 @@ BaseView {
 
 				if (currentIndex === i && !item.focused) {
 					this.focusChild(item)
-					if (this.contentFollowsCurrentItem && this.size)
-						this.positionViewAtIndex(i)
 				}
 
 				item.visibleInView = visible
@@ -336,8 +335,10 @@ BaseView {
 
 	///@private
 	function _updateOverflow() {
-		if (!this.nativeScrolling)
+		if (!this.nativeScrolling) {
+			$core.Item.prototype._updateOverflow.apply(this, arguments)
 			return
+		}
 		var horizontal = this.orientation === this.Horizontal
 		var style = {}
 		if (horizontal) {
@@ -350,11 +351,14 @@ BaseView {
 		this.style(style)
 	}
 
-	///@private
 	onOrientationChanged: {
 		this._updateOverflow()
 		this._scheduleLayout()
 		this._sizes = []
+	}
+
+	onNativeScrollingChanged: {
+		this._updateOverflow()
 	}
 
 	onCompleted: {

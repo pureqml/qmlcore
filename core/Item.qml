@@ -254,7 +254,14 @@ Object {
 
 	onOpacityChanged:	{ if (this.element) this.style('opacity', value); }
 	onZChanged:			{ this.style('z-index', value) }
-	onClipChanged:		{ this.style('overflow', value? 'hidden': 'visible') }
+	onClipChanged:		{ this._updateOverflow() }
+
+	///@private
+	function _updateOverflow() {
+		this.style({
+			'overflow': this.clip? 'hidden': 'visible'
+		})
+	}
 
 	///@private sets current global focus to component
 	function forceActiveFocus() {
@@ -418,6 +425,13 @@ Object {
 		var style = value? 'auto': 'none'
 		this.style('pointer-events', style)
 		this.style('touch-action', style)
+	}
+
+	function stopEvent(event) {
+		if ('preventDefault' in event)
+			event.preventDefault()
+		if ('stopImmediatePropagation' in event)
+			event.stopImmediatePropagation()
 	}
 
 	/// focus this item

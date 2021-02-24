@@ -455,7 +455,6 @@ ElementPrototype.remove = function() {
 ElementPrototype.focus = function() {
 	var dom = this.dom
 	dom.focus()
-	dom.select()
 }
 
 ElementPrototype.blur = function() {
@@ -868,6 +867,11 @@ exports.ajax = function(ui, request) {
 		settings = request.settings
 
 	var xhr = new XMLHttpRequest()
+
+	if (request.responseType != undefined)
+		xhr.responseType = request.responseType
+	if (request.withCredentials !== undefined)
+		xhr.withCredentials = request.withCredentials
 
 	if (error)
 		xhr.addEventListener('error', error)

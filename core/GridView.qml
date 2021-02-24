@@ -290,8 +290,10 @@ BaseView {
 
 	///@private
 	function _updateOverflow() {
-		if (!this.nativeScrolling)
+		if (!this.nativeScrolling) {
+			$core.Item.prototype._updateOverflow.apply(this, arguments)
 			return
+		}
 
 		var horizontal = this.flow !== this.FlowLeftToRight
 		var style = {}
@@ -308,6 +310,10 @@ BaseView {
 	onFlowChanged: {
 		this._updateOverflow()
 		this._scheduleLayout()
+	}
+
+	onNativeScrollingChanged: {
+		this._updateOverflow()
 	}
 
 	onCellWidthChanged,

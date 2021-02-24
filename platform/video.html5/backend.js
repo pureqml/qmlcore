@@ -14,6 +14,18 @@ var Player = function(ui) {
 	this._xhr.addEventListener('load', ui._context.wrapNativeCallback(this.parseManifest).bind(this))
 }
 
+Player.prototype.dispose = function() {
+	var ui = this.ui
+	if (!ui)
+		return
+
+	var element = ui.element
+	if (element) {
+		element.remove()
+		ui.element = null
+	}
+}
+
 Player.prototype.setEventListeners = function() {
 	var player = this.element
 	var dom = player.dom

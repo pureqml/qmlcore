@@ -3,6 +3,7 @@ Item {
 	signal loaded;				///< when requested component it loaded event signal
 	property string source;		///< component's URL
 	property Object item;		///< item for storing requested component
+	property bool trace;		///< log loading objects
 
 	///@private
 	function discardItem() {
@@ -31,7 +32,8 @@ Item {
 		if (!source)
 			return
 
-		log('loading ' + source + '…')
+		if (this.trace)
+			log('loading ' + source + '…')
 		var path = source.split('.')
 		var ctor = _globals
 		while(path.length) {

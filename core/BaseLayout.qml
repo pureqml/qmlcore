@@ -16,7 +16,7 @@ Item {
 
 	///@private
 	constructor: {
-		this.count = 0
+		this._skipPositioning = false
 		this._padding = {}
 	}
 
@@ -24,9 +24,12 @@ Item {
 	function _attach() { }
 
 	///@private
-	function _scheduleLayout() {
+	function _scheduleLayout(skipPositioning) {
 		if (!this.recursiveVisible && !this.offlineLayout)
 			return
+
+		if (skipPositioning)
+			this._skipPositioning = true
 
 		if (this.prerenderDelay >= 0 && this.layoutDelay >= 0 && this.layoutDelay < this.prerenderDelay) {
 			this._context.delayedAction('layout', this, this._doLayoutNP, this.layoutDelay)
@@ -40,6 +43,7 @@ Item {
 		this._attach()
 		this._processUpdates()
 		this._layout()
+		this._skipPositioning = false
 	}
 
 	///@private
@@ -47,6 +51,7 @@ Item {
 		this._attach()
 		this._processUpdates()
 		this._layout(true)
+		this._skipPositioning = false
 	}
 
 	///@private

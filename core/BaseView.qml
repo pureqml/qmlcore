@@ -2,6 +2,7 @@
 BaseLayout {
 	signal layoutFinished;
 	signal scrollEvent;
+	signal modelUpdated;
 	property Item highlight;		///< an object that follows currentIndex and placed below other elements
 	property Object model;			///< model object to attach to
 	property Item delegate;			///< delegate - template object, filled with model row
@@ -13,7 +14,7 @@ BaseLayout {
 	property bool contentFollowsCurrentItem: !nativeScrolling;	///< auto-scroll content to current focused item
 	property bool nativeScrolling: context.system.device === context.system.Mobile; ///< allows native scrolling on mobile targets and shows native scrollbars
 	property real prerender: 0.5;	///< allocate additional delegates by viewport (prerender * horizontal/vertical view size) px
-	property enum positionMode		{ Contain, Beginning, Center, End, Visible, Page }; ///< position mode for auto-scrolling/position methods
+	property enum positionMode		{ Contain, Center, Visible, Page }; ///< position mode for auto-scrolling/position methods
 	property string visibilityProperty; ///< if this property is false, delegate is not created at all
 	contentWidth: 1;				///< content width
 	contentHeight: 1;				///< content height
@@ -105,7 +106,7 @@ BaseLayout {
 
 		if (item)
 			this.focusChild(item)
-		if (this.contentFollowsCurrentItem)
+		if (this.contentFollowsCurrentItem && !this._skipPositioning)
 			this.positionViewAtIndex(idx)
 
 		this._updateHighlight(item)
@@ -262,7 +263,7 @@ BaseLayout {
 			row.index = idx
 			item._local.model = row
 			var _row = item._createPropertyStorage('_row')
-			_row.callOnChanged(item, '_row')
+			_row.callOnChanged(item, '_row', row, {})
 		}
 	}
 
@@ -316,9 +317,12 @@ BaseLayout {
 
 	/// @private
 	function _processUpdates() {
-		this._modelUpdate.apply(this)
+		var updated = this._modelUpdate.apply(this)
 		qml.core.BaseLayout.prototype._processUpdates.apply(this)
 		this.count = this._items.length
+
+		if (updated)
+			this.modelUpdated()
 	}
 
 	onRecursiveVisibleChanged: {

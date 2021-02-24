@@ -20,7 +20,8 @@ Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 Player.prototype.setSource = function(url) {
 	var ui = this.ui
 	this.ui.ready = false
-	this.ui.dash.attachSource(url)
+	var startUrl = ui.startPosition ? url + "#t=" + ui.startPosition : url
+	this.ui.dash.attachSource(startUrl)
 
 	if (!this._drmType)
 		return

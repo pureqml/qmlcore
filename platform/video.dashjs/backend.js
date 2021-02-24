@@ -18,17 +18,37 @@ var Player = function(ui) {
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
 Player.prototype.setSource = function(url) {
+	var ui = this.ui
 	this.ui.ready = false
 	this.ui.dash.attachSource(url)
+
+	if (!this._drmType)
+		return
+
+	var type = this._drmType
+	var selectedDrm = ""
+	if (type === "widevine")
+		selectedDrm = "com.widevine.alpha"
+	else if (type === "playready")
+		selectedDrm = "com.microsoft.playready"
+
+	this.ui.dash.setProtectionData({ selectedDrm: { "serverURL": this._options.laServer } });
 }
 
+Player.prototype.setupDrm = function(type, options, callback, error) {
+	var ui = this.ui
+	this._drmType = type
+	this._options = options
+	if (callback)
+		callback()
+}
 
 exports.createPlayer = function(ui) {
 	return new Player(ui)
 }
 
 exports.probeUrl = function(url) {
-	return 10
+	return 1005000
 }
 
 exports.Player = Player

@@ -113,4 +113,21 @@ Model {
 	function forEach(callback) {
 		return this._rows.forEach(callback)
 	}
+
+	function move(from, to) {
+		while(from < 0) {
+			from += this._rows.length;
+		}
+		while(to < 0) {
+			to += this._rows.length;
+		}
+		if(to >= this._rows.length) {
+			var k = to - this._rows.length;
+			while((k--) + 1) {
+				this._rows.push(undefined);
+			}
+		}
+		this._rows.splice(to, 0, this._rows.splice(from, 1)[0]);
+		this.reset();
+	}
 }

@@ -427,13 +427,6 @@ Object {
 		this.style('touch-action', style)
 	}
 
-	function stopEvent(event) {
-		if ('preventDefault' in event)
-			event.preventDefault()
-		if ('stopImmediatePropagation' in event)
-			event.stopImmediatePropagation()
-	}
-
 	/// focus this item
 	function setFocus() {
 		this.forceActiveFocus()

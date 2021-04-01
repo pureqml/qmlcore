@@ -1,6 +1,5 @@
 /// this mixin provides mouse press events handling
-Object {
-	property bool enabled: true;	///< enable/disable mixin
+BaseMouseMixin {
 	property int mouseX;
 	property int mouseY;
 	signal mouseMove;

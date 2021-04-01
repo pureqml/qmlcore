@@ -1,19 +1,12 @@
 /// this mixin provides mouse hover events handling
-Object {
+BaseMouseMixin {
 	property bool value;			///< is 'true' if item if hovered, 'false' otherwise
-	property bool enabled: true;	///< enable/disable mixin
-	property string cursor;			///< mouse cursor
 
 	///@private
 	constructor: {
 		this.element = this.parent.element;
 		this.parent.style('cursor', this.cursor)
 		this._bindHover(this.enabled)
-	}
-
-	///@private
-	onCursorChanged: {
-		this.parent.style('cursor', value)
 	}
 
 	///@private

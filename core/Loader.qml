@@ -45,12 +45,11 @@ Item {
 		}
 
 		var item = this.item = new ctor(this)
-		$core.core.createObject(item)
-		this.loaded()
-		var oldComplete = item.__complete
+		var overrideComplete = oldComplete !== $core.CoreObject.prototype.__complete
 
-		if (oldComplete !== $core.CoreObject.prototype.__complete) {
-			var itemCompleted = this.itemCompleted.bind(this)
+		if (overrideComplete) {
+			var oldComplete = item.__complete
+			var itemCompleted = this.itemCompleted.bind(this, item)
 			item.__complete = function() {
 				try {
 					oldComplete.call(this)
@@ -59,9 +58,13 @@ Item {
 				}
 				itemCompleted()
 			}
-		} else {
-			this.itemCompleted()
 		}
+
+		$core.core.createObject(item)
+		this.loaded(item)
+
+		if (!overrideComplete)
+			this.itemCompleted()
 	}
 
 	onRecursiveVisibleChanged: {

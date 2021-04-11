@@ -48,14 +48,14 @@ Item {
 		$core.core.createObject(item)
 		this.loaded()
 		var oldComplete = item.__complete
-		var itemCompleted = this.itemCompleted.bind(this)
 
 		if (oldComplete !== $core.CoreObject.prototype.__complete) {
+			var itemCompleted = this.itemCompleted.bind(this)
 			item.__complete = function() {
 				try {
-					oldComplete()
+					oldComplete.call(this)
 				} catch(ex) {
-					log("onComplete", ex)
+					log("onComplete failed:", ex)
 				}
 				itemCompleted()
 			}

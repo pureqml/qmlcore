@@ -7,6 +7,7 @@ BaseMouseMixin {
 		this.element = this.parent.element;
 		this.parent.style('cursor', this.cursor)
 		this._bindHover(this.enabled)
+		exports.addProperty(parent, "bool", "hovered", false)
 	}
 
 	///@private
@@ -26,6 +27,6 @@ BaseMouseMixin {
 			this._hmHoverBinder.enable(value)
 	}
 
-	///@private
+	onValueChanged: { this.parent.hovered = value }
 	onEnabledChanged: { this._bindHover(value) }
 }

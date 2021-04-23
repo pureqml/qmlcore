@@ -50,7 +50,7 @@ Object {
 			this._timeout = undefined;
 		}
 		if (this._interval) {
-			clearTimeout(this._interval);
+			clearInterval(this._interval);
 			this._interval = undefined;
 		}
 

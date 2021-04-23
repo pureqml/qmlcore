@@ -1,6 +1,7 @@
 /// object that helps loading components dynamically
 Item {
 	signal loaded;				///< when requested component it loaded event signal
+	signal itemCompleted;		///< fires after item onCompleted has been fired and item is fully constructed
 	property string source;		///< component's URL
 	property Object item;		///< item for storing requested component
 	property bool trace;		///< log loading objects
@@ -43,9 +44,27 @@ Item {
 				throw new Error('unknown component used: ' + source)
 		}
 
-		this.item = new ctor(this)
-		$core.core.createObject(this.item)
-		this.loaded()
+		var item = this.item = new ctor(this)
+		var overrideComplete = oldComplete !== $core.CoreObject.prototype.__complete
+
+		if (overrideComplete) {
+			var oldComplete = item.__complete
+			var itemCompleted = this.itemCompleted.bind(this, item)
+			item.__complete = function() {
+				try {
+					oldComplete.call(this)
+				} catch(ex) {
+					log("onComplete failed:", ex)
+				}
+				itemCompleted()
+			}
+		}
+
+		$core.core.createObject(item)
+		this.loaded(item)
+
+		if (!overrideComplete)
+			this.itemCompleted()
 	}
 
 	onRecursiveVisibleChanged: {

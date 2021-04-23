@@ -81,6 +81,24 @@ class Message(object):
 		src.text = self.source
 		self.translation.save(msg)
 
+	def __eq__(self, other):
+		return (self.source == other.source)
+
+	def __ne__(self, other):
+		return (self.source != other.source)
+
+	def __lt__(self, other):
+		return (self.source < other.source)
+
+	def __le__(self, other):
+		return (self.source <= other.source)
+
+	def __gt__(self, other):
+		return (self.source > other.source)
+
+	def __ge__(self, other):
+		return (self.source >= other.source)
+
 class Context(object):
 	def __init__(self, name = None):
 		self.name = name
@@ -120,6 +138,24 @@ class Context(object):
 		name.text = self.name
 		for msg in sorted(self.__messages.values()):
 			msg.save(ctx)
+
+	def __eq__(self, other):
+		return (self.name == other.name)
+
+	def __ne__(self, other):
+		return (self.name != other.name)
+
+	def __lt__(self, other):
+		return (self.name < other.name)
+
+	def __le__(self, other):
+		return (self.name <= other.name)
+
+	def __gt__(self, other):
+		return (self.name > other.name)
+
+	def __ge__(self, other):
+		return (self.name >= other.name)
 
 class Ts(object):
 	def __init__(self, path = '', lang = None):

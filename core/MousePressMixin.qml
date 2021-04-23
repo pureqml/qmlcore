@@ -1,6 +1,5 @@
 /// this mixin provides mouse press events handling
-Object {
-	property bool enabled: true;	///< enable/disable mixin
+BaseMouseMixin {
 	property bool pressed;			///< true if any buttons pressed
 
 	///@private

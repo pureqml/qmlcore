@@ -348,6 +348,11 @@ ElementPrototype.getAttribute = function(name) {
 	return this.dom.getAttribute(name)
 }
 
+ElementPrototype.removeAttribute = function(name, value) {
+	return this.dom.removeAttribute(name, value)
+}
+
+
 ElementPrototype.setProperty = function(name, value) {
 	return this.dom[name] = value
 }

@@ -2,6 +2,10 @@
 BaseMouseMixin {
 	property int mouseX;
 	property int mouseY;
+	property int clientX;
+	property int clientY;
+	property int screenX;
+	property int screenY;
 	signal mouseMove;
 
 	///@private
@@ -13,6 +17,10 @@ BaseMouseMixin {
 	/// @private
 	function _updatePosition(event) {
 		var parent = this.parent
+		this.screenX = event.screenX;
+		this.screenY = event.screenY;
+		this.clientX = event.clientX;
+		this.clientY = event.clientY;
 		var x = event.offsetX
 		var y = event.offsetY
 		if (x >= 0 && y >= 0 && x < parent.width && y < parent.height) {

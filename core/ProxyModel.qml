@@ -175,6 +175,7 @@ Model {
 			throw new Error('row is non-object')
 		var targetIdx = this._indices[idx]
 		this.target.set(targetIdx, row)
+		this.rowsChanged(idx, idx+1);
 	}
 
 	///replace a row's property, throws exception if index is out of range or if 'row' isn't Object
@@ -183,6 +184,7 @@ Model {
 			throw new Error('index ' + idx + ' out of bounds')
 		var targetIdx = this._indices[idx]
 		this.target.setProperty(targetIdx, name, value)
+		this.rowsChanged(idx, idx+1);
 	}
 
 	///remove rows from model from 'idx' to 'idx' + 'n' position

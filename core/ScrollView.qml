@@ -1,6 +1,7 @@
 Item {
 	property enum horizontalScrollBarPolicy	{ ScrollBarAsNeeded, ScrollBarAlwaysOff, ScrollBarAlwaysOn}: ScrollBarAlwaysOff;
 	property enum verticalScrollBarPolicy	{ ScrollBarAsNeeded, ScrollBarAlwaysOff, ScrollBarAlwaysOn};
+	cssPointerTouchEvents: true;
 
 	constructor: {
 		this.style({ 'overflow-x': 'hidden', 'overflow-y': 'auto' })

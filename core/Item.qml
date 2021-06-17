@@ -77,7 +77,7 @@ Object {
 		rules += 'white-space: nowrap; transform: none;'
 		rules += 'left: 0px; top: 0px; width: 0px; height: 0px;'
 		rules += 'font-family: ' + $manifest$style$font$family + '; line-height: ' + $manifest$style$font$lineHeight + '; '
-		rules += 'pointer-events: none; touch-action: none; '
+		rules += 'pointer-events: inherit; touch-action: inherit; '
 		if ($manifest$style$font$pixelSize)
 			rules += 'font-size: ' + $manifest$style$font$pixelSize + 'px; '
 		else if ($manifest$style$font$pointSize)

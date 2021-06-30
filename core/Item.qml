@@ -76,7 +76,9 @@ Object {
 		rules += 'border-style: solid; border-width: 0px; border-radius: 0px; box-sizing: border-box; border-color: rgba(0,0,0,1);'
 		rules += 'white-space: nowrap; transform: none;'
 		rules += 'left: 0px; top: 0px; width: 0px; height: 0px;'
-		rules += 'font-family: ' + $manifest$style$font$family + '; line-height: ' + $manifest$style$font$lineHeight + '; '
+		rules += 'font-family: ' + $manifest$style$font$family + '; '
+		rules += 'line-height: ' + $manifest$style$font$lineHeight + '; '
+		rules += 'font-weight: ' + $manifest$style$font$weight + '; '
 		rules += 'pointer-events: inherit; touch-action: inherit; '
 		if ($manifest$style$font$pixelSize)
 			rules += 'font-size: ' + $manifest$style$font$pixelSize + 'px; '

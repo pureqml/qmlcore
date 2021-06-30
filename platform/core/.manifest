@@ -16,7 +16,8 @@
 			"family": "Arial",
 			"pixelSize": 16,
 			"pointSize": 0,
-			"lineHeight": 1.2
+			"lineHeight": 1.2,
+			"weight": 400
 		},
 
 		"trace" : {

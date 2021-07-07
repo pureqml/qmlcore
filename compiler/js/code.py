@@ -35,8 +35,8 @@ def process(text, generator, registry, args):
 	#print text
 	return text
 
-def mangle_path(path, transform):
-	path = [transform(path[0])] + path[1:]
+def mangle_path(path, transform, lookup_parent=False):
+	path = [transform(path[0], lookup_parent=lookup_parent)] + path[1:]
 	return '.'.join(path)
 
 def path_or_parent(path, parent, transform):
@@ -57,6 +57,16 @@ def parse_deps(parent, text, transform):
 		path = m.group(1).split('.')
 		target = path[-1]
 		gets = path[:-1]
+
+		#if the path is only a single component, try hierarchical scoping
+		if len(path) == 1:
+			tpath = mangle_path(path, transform, lookup_parent=True)
+			tpath_v = tpath.split('.')
+			if target != 'parent':
+				tdep = parent + "." + '.'.join(tpath_v[:-1]) if len(tpath_v)>1 else parent
+				deps.add((tdep, target))
+			return parent + '.' + tpath
+		
 		if len(path) > 1 and path[0] == 'manifest':
 			return '$' + '$'.join(path)
 		if len(path) > 1 and path[0] == 'model':

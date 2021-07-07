@@ -14,7 +14,7 @@ Object {
 
 		var userSelect = window.Modernizr.prefixedCSS('user-select') + ": none; "
 		var os = _globals.core.os
-		var tapHighlightedPlatform = (os === "android" || os === "androidttk" || os === "hisense")
+		var tapHighlightedPlatform = (os === "android" || os === "androidttk" || os === "hisense" || os == "ekt")
 
 		//var textAdjust = window.Modernizr.prefixedCSS('text-size-adjust') + ": 100%; "
 		style.setHtml(

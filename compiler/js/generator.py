@@ -15,13 +15,13 @@ class generator(object):
 	def __init__(self, ns, bid):
 		self.module = False
 		self.ns, self.bid = ns, bid
-		self.components = {}
-		self.used_packages = set()
-		self.used_components = set()
+		self.components = OrderedDict()
+		self.used_packages = OrderedDict()
+		self.used_components = OrderedDict()
 		self.imports = OrderedDict()
-		self.packages = {}
+		self.packages = OrderedDict()
 		self.startup = []
-		self.l10n = {}
+		self.l10n = OrderedDict()
 		self.id_set = set(['context', 'model'])
 
 	def add_component(self, name, component, declaration):
@@ -33,8 +33,8 @@ class generator(object):
 
 		if not declaration:
 			name = "%s.Ui%s" %(package, component_name[0].upper() + escape(component_name[1:]))
-			self.used_components.add(name)
-			self.used_packages.add(package)
+			self.used_components[name] = None
+			self.used_packages[package] = None
 			self.startup.append("\tcontext.start(new qml.%s(context))" %name)
 			self.startup.append("\tcontext.run()")
 		else:
@@ -94,7 +94,7 @@ class generator(object):
 			package_name = candidates[0]
 
 		if register_used:
-			self.used_components.add(package_name + '.' + name)
+			self.used_components[package_name + '.' + name] = None
 
 		if mangle:
 			package_name = mangle_package(package_name)
@@ -105,7 +105,7 @@ class generator(object):
 	def generate_component(self, gen):
 		name = gen.name
 
-		self.used_packages.add(gen.package)
+		self.used_packages[gen.package] = None
 
 		code = ''
 		code += "\n\n//=====[component %s]=====================\n\n" %name
@@ -119,10 +119,10 @@ class generator(object):
 	def scan_using(self, code):
 		for m in generator.used_re.finditer(code):
 			name = m.group(1).strip()
-			package, component_name = split_name(name)
+			package, _ = split_name(name)
 			package = escape_package(package)
-			self.used_components.add(name)
-			self.used_packages.add(package)
+			self.used_components[name] = None
+			self.used_packages[package] = None
 
 	def generate_components(self):
 		#finding explicit @using declarations in code
@@ -145,10 +145,10 @@ class generator(object):
 			gen.pregenerate(self)
 
 		while queue or self.used_components:
-			for component in self.used_components:
+			for component in self.used_components.keys():
 				if component not in code:
 					queue.append(component)
-			self.used_components = set()
+			self.used_components = OrderedDict()
 
 			if queue:
 				name = queue.pop(0)
@@ -179,11 +179,11 @@ class generator(object):
 
 	def generate_prologue(self):
 		for name in self.imports.keys():
-			self.used_packages.add(get_package(name))
+			self.used_packages[get_package(name)] = None
 
 		r = []
 		packages = {}
-		for package in sorted(self.used_packages):
+		for package in self.used_packages.keys():
 			path = package.split(".")
 			ns = packages
 			for p in path:

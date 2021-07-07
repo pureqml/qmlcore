@@ -1,5 +1,6 @@
 from builtins import filter, object, range, str
 from past.builtins import basestring
+from collections import OrderedDict
 
 from compiler.js import get_package, split_name, escape, mangle_package
 from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, path_or_parent, mangle_path
@@ -13,20 +14,20 @@ class component_generator(object):
 		self.ns = ns
 		self.name = name
 		self.component = component
-		self.aliases = {}
-		self.declared_properties = {}
-		self.lazy_properties = {}
-		self.const_properties = {}
+		self.aliases = OrderedDict()
+		self.declared_properties = OrderedDict()
+		self.lazy_properties = OrderedDict()
+		self.const_properties = OrderedDict()
 		self.properties = []
-		self.enums = {}
-		self.consts = {}
-		self.assignments = {}
-		self.animations = {}
+		self.enums = OrderedDict()
+		self.consts = OrderedDict()
+		self.assignments = OrderedDict()
+		self.animations = OrderedDict()
 		self.package = get_package(name)
 		self.base_type = None
 		self.children = []
-		self.methods = {}
-		self.signals = set()
+		self.methods = OrderedDict()
+		self.signals = OrderedDict()
 		self.elements = []
 		self.generators = []
 		self.id = None
@@ -156,7 +157,7 @@ class component_generator(object):
 			name = child.name
 			if name in self.signals:
 				raise Exception("duplicate signal " + name)
-			self.signals.add(name)
+			self.signals[name] = None
 		elif t is lang.ListElement:
 			self.elements.append(child.data)
 		elif t is lang.AssignmentScope:
@@ -233,10 +234,10 @@ class component_generator(object):
 			gen.pregenerate(registry)
 
 		methods = self.methods
-		self.methods = {}
-		self.changed_handlers = {}
-		self.signal_handlers = {}
-		self.key_handlers = {}
+		self.methods = OrderedDict()
+		self.changed_handlers = OrderedDict()
+		self.signal_handlers = OrderedDict()
+		self.key_handlers = OrderedDict()
 		#print 'pregenerate', self.name
 		base_type = self.get_base_type(registry, register_used = False)
 		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
@@ -294,7 +295,7 @@ class component_generator(object):
 		return "%score.addConstProperty(%s, '%s', function() %s)" %(ident, proto, name, code)
 
 	def transform_handlers(self, registry, blocks):
-		result = {}
+		result = OrderedDict()
 		for (path, name), (args, code, async_) in blocks.items():
 			if name == '__complete':
 				code = code.strip()
@@ -318,7 +319,7 @@ class component_generator(object):
 
 		r.append("%s%s.componentName = '%s'" %(ident, self.proto_name, self.name))
 
-		for name in self.signals:
+		for name in self.signals.keys():
 			r.append("%s%s.%s = $core.createSignal('%s')" %(ident, self.proto_name, name, name))
 
 		for prop in self.properties:
@@ -479,7 +480,7 @@ class component_generator(object):
 		ident = "\t" * ident_n
 
 		if not self.prototype:
-			for name in self.signals:
+			for name in self.signals.keys():
 				r.append("%s%s.%s = $core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
 
 			for prop in self.properties:

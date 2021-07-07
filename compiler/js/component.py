@@ -10,9 +10,10 @@ from functools import partial
 import re
 
 class component_generator(object):
-	def __init__(self, ns, name, component, prototype = False):
+	def __init__(self, ns, parent, name, component, prototype = False):
 		self.ns = ns
 		self.name = name
+		self.parent = parent
 		self.component = component
 		self.aliases = OrderedDict()
 		self.declared_properties = OrderedDict()
@@ -70,7 +71,7 @@ class component_generator(object):
 			g.collect_id(id_set)
 
 	def create_component_generator(self, component, suffix = '<anonymous>'):
-		value = component_generator(self.ns, self.package + "." + suffix, component)
+		value = component_generator(self.ns, self, self.package + "." + suffix, component)
 		self.generators.append(value)
 		return value
 
@@ -78,6 +79,7 @@ class component_generator(object):
 		t = type(value)
 		if t is lang.Component:
 			value = self.create_component_generator(value)
+			#print("dep %s:%s.%s -> %s:%s" % (hex(id(self)),self.component.name, target, hex(id(value)),value.component.name))
 		if isinstance(value, (str, basestring)): #and value[0] == '"' and value[-1] == '"':
 			value = str(value.replace("\\\n", "")) #multiline continuation \<NEWLINE>
 		if target in self.assignments:
@@ -101,7 +103,9 @@ class component_generator(object):
 						raise Exception("lazy property must be declared with component as value")
 					if len(child.properties) != 1:
 						raise Exception("property %s is lazy, hence should be declared alone" %name)
-					self.lazy_properties[name] = self.create_component_generator(default_value, '<lazy:%s>' %name)
+					value = self.create_component_generator(default_value, '<lazy:%s>' %name)
+					#print("dep %s:%s.%s -> %s:%s" % (hex(id(self)),self.component.name, name, hex(id(value)),value.component.name))
+					self.lazy_properties[name] = value
 
 				if child.const:
 					if len(child.properties) != 1:
@@ -129,12 +133,14 @@ class component_generator(object):
 			self.assign("id", child.name)
 		elif t is lang.Component:
 			value = self.create_component_generator(child)
+			#print("dep %s:%s.<anonymous> -> %s:%s" % (hex(id(self)), self.component.name, hex(id(value)),value.component.name))
 			self.children.append(value)
 		elif t is lang.Behavior:
 			for target in child.target:
 				if target in self.animations:
 					raise Exception("duplicate animation on property " + target)
 				value = self.create_component_generator(child.animation, "<anonymous-animation>")
+				#print("dep %s:%s.%s -> %s:%s" % (hex(id(self)), self.component.name, target, hex(id(value)),value.component.name))
 				self.animations[target] = value
 		elif t is lang.Method:
 			for name in child.name:
@@ -543,7 +549,7 @@ class component_generator(object):
 
 		return "\n".join(r)
 
-	def transform_root(self, registry, parent, property):
+	def transform_root(self, registry, parent, property, lookup_parent=False):
 		if property == 'context':
 			return ("%s._get('%s')" %(parent, property)) if parent else '_context'
 		elif property == 'parent':
@@ -553,6 +559,17 @@ class component_generator(object):
 			if prop:
 				return property
 			else:
+				if lookup_parent:
+					#try to find property in parent generators
+					g = self.parent
+					prefix = "parent."
+					while g:
+						prop = g.find_property(registry, property)
+						if prop:
+							return prefix + property
+						prefix += "parent."
+						g = g.parent
+				
 				#replace first id (not a property with parent object reference)
 				return ("%s._get('%s')" %(parent, property)) if parent else ("_get('%s')" %property)
 

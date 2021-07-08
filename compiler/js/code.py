@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import re
 
 enum_re = re.compile(r'([A-Z]\w*)\.([A-Z]\w*)')
@@ -18,16 +19,16 @@ id_re = re.compile(r'(\w+\s*)(\.\s*\w+\s*)*', re.I | re.M)
 def process(text, generator, registry, args):
 	args = set(args)
 	id_set = registry.id_set
-	used_ids = set()
+	used_ids = OrderedDict()
 	for m in id_re.finditer(text):
 		found = m.group(1)
 		if found in id_set and found not in args:
-			used_ids.add(found)
+			used_ids[found] = None
 
 	if used_ids:
 		scope_pos = text.index('{') #raise exception, should be 0 actually
 		scope_pos += 1
-		prologue = ["%s = this._get('%s', true)" %(x, x) for x in used_ids]
+		prologue = ["%s = this._get('%s', true)" %(x, x) for x in used_ids.keys()]
 		prologue = '\n\tvar ' + ', '.join(prologue) + '\n'
 		text = text[:scope_pos] + prologue + text[scope_pos:]
 
@@ -48,10 +49,10 @@ gets_re = re.compile(r'\${(.*?)}')
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
 
 def parse_deps(parent, text, transform):
-	deps = set()
+	deps = OrderedDict()
 
 	for m in tr_re.finditer(text):
-		deps.add((parent + '._context', 'language'))
+		deps[(parent + '._context', 'language')] = None
 
 	def sub(m):
 		path = m.group(1).split('.')
@@ -64,23 +65,23 @@ def parse_deps(parent, text, transform):
 			tpath_v = tpath.split('.')
 			if target != 'parent':
 				tdep = parent + "." + '.'.join(tpath_v[:-1]) if len(tpath_v)>1 else parent
-				deps.add((tdep, target))
+				deps[(tdep, target)] = None
 			return parent + '.' + tpath
-		
+
 		if len(path) > 1 and path[0] == 'manifest':
 			return '$' + '$'.join(path)
 		if len(path) > 1 and path[0] == 'model':
 			signal = '_row' if path[1] != 'index' else '_rowIndex'
-			deps.add(("%s._get('_delegate')" %parent, signal))
+			deps[("%s._get('_delegate')" %parent, signal)] = None
 		else:
 			dep_parent = parent + '.' + mangle_path(gets, transform) if gets else parent
 			if target != 'parent': #parent property is special - it's not property per se, and is not allowed to change
-				deps.add((dep_parent, target))
+				deps[(dep_parent, target)] = None
 
 		return parent + '.' + mangle_path(path, transform)
 
 	text = gets_re.sub(sub, text)
-	return text, deps
+	return text, deps.keys()
 
 def generate_accessors(parent, target, transform):
 	path = target.split('.')

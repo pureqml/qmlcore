@@ -558,12 +558,12 @@ exports.init = function(ctx) {
 		log('Context: found element by id, size: ' + w + 'x' + h)
 		win.on('resize', function() { ctx.width = div.width(); ctx.height = div.height(); });
 	} else {
-		w = win.width();
-		h = win.height();
+		w = win.width() + 1;
+		h = win.height() + 1;
 		log("Context: window size: " + w + "x" + h);
 		div = html.createElement(ctx, tag)
 		div.dom.id = divId
-		win.on('resize', function() { ctx.width = win.width(); ctx.height = win.height(); });
+		win.on('resize', function() { ctx.width = win.width() + 1; ctx.height = win.height() + 1; });
 		var body = html.getElement(ctx, 'body')
 		body.append(div);
 	}

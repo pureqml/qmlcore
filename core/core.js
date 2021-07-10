@@ -203,6 +203,7 @@ exports.core.safeCall = function(self, args, onError) {
 	return function(callback) { return safeCallImpl(callback, self, args, onError) }
 }
 
+/// assign compound properties starting from given target object, e.g. assign(context, 'system.os', value)
 exports.core.assign = function(target, path, value) {
 	var path = path.split('.')
 	var n = path.length - 1

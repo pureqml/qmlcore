@@ -92,8 +92,8 @@ def handle_enum_value(s, l, t):
 def handle_id_declaration(s, l, t):
 	return component(lang.IdAssignment(t[0]))
 
-def handle_behavior_declaration(s, l, t):
-	return component(lang.Behavior(t[0], t[1]))
+def handle_on_declaration(s, l, t):
+	return component(lang.On(t[0], t[1], t[2]))
 
 def handle_signal_declaration(s, l, t):
 	return component(lang.Signal(t[0]))
@@ -293,16 +293,17 @@ method_declaration.setParseAction(handle_method_declaration)
 method_declaration_qml = Optional(Keyword("async")) + Keyword("function") - Group(nested_identifier_lvalue) - Group(Suppress("(") - Optional(delimitedList(identifier, ",")) - Suppress(")") ) - code
 method_declaration_qml.setParseAction(handle_method_declaration)
 
-behavior_declaration = Keyword("Behavior").suppress() - Keyword("on").suppress() - Group(delimitedList(nested_identifier_lvalue, ',')) - Suppress("{") - component_declaration - Suppress("}")
-behavior_declaration.setParseAction(handle_behavior_declaration)
+component_scope = Forward()
+on_declaration = component_type + Keyword("on").suppress() + Group(delimitedList(nested_identifier_lvalue, ',')) - component_scope
+on_declaration.setParseAction(handle_on_declaration)
 
 list_element_declaration = Keyword("ListElement").suppress() - json_object
 list_element_declaration.setParseAction(handle_list_element)
 
 import_statement = Keyword("import") - restOfLine
 
-scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope | static_const_declaration
-component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
+scope_declaration = list_element_declaration | on_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope | static_const_declaration
+component_scope << (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
 
 component_declaration << (component_type + component_scope)
 component_declaration.setParseAction(handle_component_declaration)

@@ -23,7 +23,6 @@ class component_generator(object):
 		self.enums = OrderedDict()
 		self.consts = OrderedDict()
 		self.assignments = OrderedDict()
-		self.animations = OrderedDict()
 		self.package = get_package(name)
 		self.base_type = None
 		self.children = []
@@ -135,13 +134,14 @@ class component_generator(object):
 			value = self.create_component_generator(child)
 			#print("dep %s:%s.<anonymous> -> %s:%s" % (hex(id(self)), self.component.name, hex(id(value)),value.component.name))
 			self.children.append(value)
-		elif t is lang.Behavior:
+		elif t is lang.On:
 			for target in child.target:
-				if target in self.animations:
-					raise Exception("duplicate animation on property " + target)
-				value = self.create_component_generator(child.animation, "<anonymous-animation>")
-				#print("dep %s:%s.%s -> %s:%s" % (hex(id(self)), self.component.name, target, hex(id(value)),value.component.name))
-				self.animations[target] = value
+				if '.' in target:
+					raise Exception("target property can't contain dots (implement me)")
+				component = child.component
+				value = self.create_component_generator(component, component.name + " on " + target)
+				value.assign('property', "\"%s\"" %lang.quote(target))
+				self.children.append(value)
 		elif t is lang.Method:
 			for name in child.name:
 				if name == 'constructor':
@@ -214,22 +214,6 @@ class component_generator(object):
 		r.append(self.ctor)
 		r.append("\t}")
 		r.append("")
-		return "\n".join(r)
-
-	def generate_animations(self, registry, parent):
-		r = []
-		for name, animation in self.animations.items():
-			var = "behavior_%s_on_%s" %(escape(parent), escape(name))
-			r.append("\tvar %s = new %s(%s)" %(var, registry.find_component(self.package, animation.component.name, mangle = True), parent))
-			r.append("\tvar %s$c = { %s: %s }" %(var, var, var))
-			r.append(self.call_create(registry, 1, var, animation, var + '$c'))
-			r.append(self.call_setup(registry, 1, var, animation, var + '$c'))
-			target_parent, target = split_name(name)
-			if not target_parent:
-				target_parent = parent
-			else:
-				target_parent = self.get_rvalue(registry, parent, target_parent)
-			r.append("\t%s.setAnimation('%s', %s);\n" %(target_parent, target, var))
 		return "\n".join(r)
 
 	#no cross-component access here
@@ -569,7 +553,7 @@ class component_generator(object):
 							return prefix + property
 						prefix += "parent."
 						g = g.parent
-				
+
 				#replace first id (not a property with parent object reference)
 				return ("%s._get('%s')" %(parent, property)) if parent else ("_get('%s')" %property)
 
@@ -707,7 +691,6 @@ class component_generator(object):
 		if self.elements:
 			r.append("%s%s.assign(%s)" %(ident, parent, json.dumps(self.elements, sort_keys=True)))
 
-		r.append(self.generate_animations(registry, parent))
 		r.append('%s%s.completed()' %(ident, parent))
 
 		return "\n".join(r)

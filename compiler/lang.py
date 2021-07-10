@@ -39,6 +39,14 @@ class Entity(object):
 	def __init__(self):
 		self.doc = None
 
+def quote(value):
+	value = value.replace('\t', '\\t')
+	value = value.replace('\r', '\\r')
+	value = value.replace('\n', '\\n')
+	value = value.replace('\v', '\\v')
+	value = value.replace('\f', '\\f')
+	return value
+
 def to_string(value):
 	if isinstance(value, (str, basestring)):
 		return value
@@ -119,11 +127,11 @@ class AssignmentScope(Entity):
 		self.target = target
 		self.values = values
 
-class Behavior(Entity):
-	def __init__(self, target, animation):
-		super(Behavior, self).__init__()
+class On(Entity):
+	def __init__(self, name, target, children):
+		super(On, self).__init__()
 		self.target = target
-		self.animation = animation
+		self.component = Component(name, children)
 
 class Signal(Entity):
 	def __init__(self, name):

@@ -32,7 +32,7 @@ except:
 	grammar_digest = '0000000000000000000000000000000000000000'
 
 class Cache(object):
-	def __init__(self, dir = '.cache'):
+	def __init__(self, dir):
 		self.dir = dir
 		try:
 			os.mkdir(dir)
@@ -240,8 +240,8 @@ class Compiler(object):
 
 		print("done", file=sys.stderr)
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1):
-		self.cache = Cache()
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache"):
+		self.cache = Cache(cache_dir)
 		self.root = root
 		self.output_dir = output_dir
 		self.project_dirs = project_dirs
@@ -264,7 +264,7 @@ class Compiler(object):
 		self.documentation = compiler.doc.json.Documentation(doc) if doc else None
 
 
-def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = set(), wait = False, doc = None, release = False, verbose = False, jobs = 1):
+def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = set(), wait = False, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache"):
 	if wait:
 		try:
 			import pyinotify
@@ -297,7 +297,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = 
 		except:
 			raise Exception("it seems you don't have pyinotify module installed, please install it to run build with -d option")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs, cache_dir=cache_dir)
 
 	notifier = None
 

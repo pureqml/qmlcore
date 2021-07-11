@@ -51,6 +51,10 @@ class Manifest(object):
 		return self.data.get('sources', 'src')
 
 	@property
+	def apps(self):
+		return self.data.get('apps', [])
+
+	@property
 	def web_prefix(self):
 		return self.data.get('web-prefix', '')
 

@@ -18,9 +18,12 @@ var Player = function(ui) {
 	ui.element = player
 	ui.parent.element.append(ui.element)
 
-	this.videojs = window.videojs(uniqueId)
+	this.videojs = window.videojs(uniqueId, { "textTrackSettings": false })
+
 	this.videojs.width = 'auto'
 	this.videojs.height = 'auto'
+	// this.videojs.userActive(false)
+	// this.videojs.controls(false)
 
 	var errorDisplay = document.getElementsByClassName("vjs-error-display")
 	if (errorDisplay && errorDisplay.length) {

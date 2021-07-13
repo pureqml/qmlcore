@@ -22,8 +22,6 @@ var Player = function(ui) {
 
 	this.videojs.width = 'auto'
 	this.videojs.height = 'auto'
-	// this.videojs.userActive(false)
-	// this.videojs.controls(false)
 
 	var errorDisplay = document.getElementsByClassName("vjs-error-display")
 	if (errorDisplay && errorDisplay.length) {

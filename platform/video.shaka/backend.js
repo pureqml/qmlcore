@@ -12,8 +12,9 @@ var shakaSignalError = function(ui, err) {
 }
 
 var Player = function(ui) {
-	var player = ui._context.createElement('video')
+	shaka.polyfill.installAll();
 
+	var player = ui._context.createElement('video')
 	this._player = player
 
 	if (!shaka.Player.isBrowserSupported()) {
@@ -54,11 +55,7 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 Player.prototype.stop = function() {
 	log("stop player")
 	var self = this
-	if (this._loaded) {
-		this.shakaPlayer.unload()
-	} else {
-		this.pause()
-	}
+	this.shakaPlayer.unload()
 }
 
 Player.prototype.setSource = function(url) {
@@ -66,30 +63,14 @@ Player.prototype.setSource = function(url) {
 	this._language = null
 	this._videoTrackHeight = null
 	if (url) {
-		var urlLower = url.toLowerCase()
-		var querryIndex = url.indexOf("?")
-		if (querryIndex >= 0)
-			urlLower = urlLower.substring(0, querryIndex)
-		var extIndex = urlLower.lastIndexOf(".")
-		var extension = urlLower.substring(extIndex, urlLower.length)
-		var player = this._player
-		//fixme: shall we check content type here?
-		if (extension === ".mpd" || extension == ".m3u8" || extension == '.m3u') {
-			this._loaded = true
-			var self = this
-			this.shakaPlayer.load(url)
-				.then(function() {
-					console.log('The video has now been loaded!');
-					if (ui.autoPlay)
-						self.play()
-				})
-				.catch(ui._context.wrapNativeCallback(function(err) { log("Failed to load manifest", err); shakaSignalError(ui, err) }));
-		} else {
-			this._loaded = false
-			this._player.dom.src = url
-			if (ui.autoPlay)
-				this.play()
-		}
+		var self = this
+		this.shakaPlayer.load(url)
+			.then(function() {
+				console.log('The video has now been loaded!');
+				if (ui.autoPlay)
+					self.play()
+			})
+			.catch(ui._context.wrapNativeCallback(function(err) { log("Failed to load manifest", err); shakaSignalError(ui, err) }));
 	}
 }
 

@@ -605,6 +605,10 @@ var isTypeAnimable = function(type) {
 	}
 }
 
+exports.hasProperty = function(proto, name) {
+	return name in proto
+}
+
 exports.addProperty = function(proto, type, name, defaultValue) {
 	var convert = getConvertFunction(type)
 	var animable = isTypeAnimable(type)

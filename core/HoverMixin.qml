@@ -7,7 +7,8 @@ BaseMouseMixin {
 		this.element = this.parent.element;
 		this.parent.style('cursor', this.cursor)
 		this._bindHover(this.enabled)
-		exports.addProperty(parent, "bool", "hovered", false)
+		if (!exports.hasProperty(parent, "hovered"))
+			exports.addProperty(parent, "bool", "hovered", false)
 	}
 
 	///@private

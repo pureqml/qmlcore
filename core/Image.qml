@@ -36,7 +36,12 @@ Item {
 
 	///@private
 	function _load() {
-		if (this.status === this.Ready || (!this.preload && !this.recursiveVisible))
+		if (this.status === this.Ready) {
+			this._updatePaintedSize()
+			return
+		}
+
+		if (!this.preload && !this.recursiveVisible)
 			return
 
 		if (!this.source) {
@@ -68,6 +73,42 @@ Item {
 		this.style('background-image', '')
 	}
 
+	function _updatePaintedSize() {
+		var natW = this.sourceWidth, natH = this.sourceHeight
+		var w = this.width, h = this.height
+
+		if (natW <= 0 || natH <= 0 || w <= 0 || h <= 0) {
+			this.paintedWidth = 0
+			this.paintedHeight = 0
+			return
+		}
+
+		var crop
+		switch(this.fillMode) {
+			case ImageComponent.PreserveAspectFit:
+				crop = false
+				break
+			case ImageComponent.PreserveAspectCrop:
+				crop = true
+				break
+			default:
+				this.paintedWidth = w
+				this.paintedHeight = h
+				return
+		}
+
+		var targetRatio = w / h, srcRatio = natW / natH
+
+		var useWidth = crop? srcRatio < targetRatio: srcRatio > targetRatio
+		if (useWidth) { // img width aligned with target width
+			this.paintedWidth = w;
+			this.paintedHeight = w / srcRatio;
+		} else {
+			this.paintedHeight = h;
+			this.paintedWidth = h * srcRatio;
+		}
+	}
+
 	///@private
 	function _imageLoaded(metrics) {
 		if (!metrics) {
@@ -80,11 +121,6 @@ Item {
 		var natW = metrics.width, natH = metrics.height
 		this.sourceWidth = natW
 		this.sourceHeight = natH
-
-		if (this.fillMode !== ImageComponent.PreserveAspectFit) {
-			this.paintedWidth = this.width
-			this.paintedHeight = this.height
-		}
 
 		switch(this.horizontalAlignment) {
 			case ImageComponent.AlignHCenter:
@@ -139,24 +175,12 @@ Item {
 			case ImageComponent.PreserveAspectFit:
 				style['background-repeat'] = 'no-repeat'
 				style['background-size'] = 'contain'
-				var w = this.width, h = this.height
-				var targetRatio = 0, srcRatio = natW / natH
-
-				if (w && h)
-					targetRatio = w / h
-
-				if (srcRatio > targetRatio && w) { // img width aligned with target width
-					this.paintedWidth = w;
-					this.paintedHeight = w / srcRatio;
-				} else {
-					this.paintedHeight = h;
-					this.paintedWidth = h * srcRatio;
-				}
 				break;
 		}
 		style['image-rendering'] = this.smooth? 'auto': 'pixelated'
 		this.style(style)
 
 		this.status = ImageComponent.Ready
+		this._updatePaintedSize()
 	}
 }

@@ -11,6 +11,7 @@ Object {
 	property string ip;				///< device IP address if its available
 	property string runtime;		///< pureqml specific runtime provider, cordova/native
 
+	property bool standByMode;		///< Stand by mode flag (if its supported)
 	property bool supportingUhd;	///< UHD (4K) supporting flag
 	property bool supportingHdr;	///< HDR supporting flag
 	property bool supporting3d;		///< 3D Video supporting flag
@@ -20,7 +21,7 @@ Object {
 		if (!backend)
 			throw new Error('no backend found')
 
-		backend().createDevice(this)
+		this.impl = backend().createDevice(this)
 	}
 
 	onSdkChanged,
@@ -30,4 +31,13 @@ Object {
 	onModelNameChanged,
 	onSupporting3dChanged,
 	onSupportingUhdChanged: { this.propertyUpdated() }
+
+	onStandByModeChanged: {
+		if (!this.impl) {
+			throw new Error('toggleStandByMode: no backend found')
+			return
+		}
+
+		this.impl.toggleStandByMode()
+	}
 }

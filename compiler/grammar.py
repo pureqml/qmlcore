@@ -156,7 +156,10 @@ identifier = Word(srange("[a-z_]"), alphanums + "_")
 null_value = Keyword("null")
 bool_value = Keyword("true") | Keyword("false")
 bool_value.setParseAction(handle_bool_value)
-number = Combine(Optional('0x') + Word("01234567890+-."))
+real_number = Regex(r"\d+\.\d+(e[+-]?\d+)?", re.I)
+hex_number = Regex(r"0x[\da-f]", re.I)
+int_number = Regex(r"\d+")
+number = real_number | hex_number | int_number
 number.setParseAction(handle_number)
 
 def handle_string(s, l, t):

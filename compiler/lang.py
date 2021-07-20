@@ -36,6 +36,7 @@ def value_is_trivial(value):
 	return False
 
 class Entity(object):
+	__slots__ = 'doc'
 	def __init__(self):
 		self.doc = None
 
@@ -53,16 +54,19 @@ def handle_property_path(t):
 	return '${%s}' %t
 
 class DocumentationString(object):
+	__slots__ = 'text'
 	def __init__(self, text):
 		self.text = text
 
 class Component(Entity):
+	__slots__ = 'name', 'children'
 	def __init__(self, name, children):
 		super(Component, self).__init__()
 		self.name = name
 		self.children = children
 
 class Property(Entity):
+	__slots__ = 'lazy', 'const', 'type', 'properties'
 	def __init__(self, type, properties):
 		super(Property, self).__init__()
 		self.lazy = type == 'lazy'
@@ -71,17 +75,20 @@ class Property(Entity):
 		self.properties = properties
 
 class Const(Entity):
+	__slots__ = 'type', 'name', 'value'
 	def __init__(self, type, name, value):
 		super(Const, self).__init__()
 		self.type, self.name, self.value = type, name, value
 
 class AliasProperty(Entity):
+	__slots__ = 'name', 'target'
 	def __init__(self, name, target):
 		super(AliasProperty, self).__init__()
 		self.name = name
 		self.target = target
 
 class EnumProperty(Entity):
+	__slots__ = 'name', 'values', 'default'
 	def __init__(self, name, values, default):
 		super(EnumProperty, self).__init__()
 		self.name = name
@@ -89,6 +96,7 @@ class EnumProperty(Entity):
 		self.default = default
 
 class Method(Entity):
+	__slots__ = 'name', 'args', 'code', 'event', 'async_'
 	def __init__(self, name, args, code, event, async_):
 		super(Method, self).__init__()
 		self.name = name
@@ -98,11 +106,13 @@ class Method(Entity):
 		self.async_ = async_
 
 class IdAssignment(Entity):
+	__slots__ = 'name'
 	def __init__(self, name):
 		super(IdAssignment, self).__init__()
 		self.name = name
 
 class Assignment(Entity):
+	__slots__ = 'target', 'value'
 	def __init__(self, target, value):
 		super(Assignment, self).__init__()
 		self.target = target
@@ -114,23 +124,27 @@ class Assignment(Entity):
 		return value_is_trivial(self.value)
 
 class AssignmentScope(Entity):
+	__slots__ = 'target', 'values'
 	def __init__(self, target, values):
 		super(AssignmentScope, self).__init__()
 		self.target = target
 		self.values = values
 
 class Behavior(Entity):
+	__slots__ = 'target', 'animation'
 	def __init__(self, target, animation):
 		super(Behavior, self).__init__()
 		self.target = target
 		self.animation = animation
 
 class Signal(Entity):
+	__slots__ = 'name'
 	def __init__(self, name):
 		super(Signal, self).__init__()
 		self.name = name
 
 class ListElement(Entity):
+	__slots__ = 'data'
 	def __init__(self, data):
 		super(ListElement, self).__init__()
 		self.data = data

@@ -258,14 +258,11 @@ id_declaration = Keyword("id").suppress() - Suppress(":") - identifier - express
 id_declaration.setParseAction(handle_id_declaration)
 
 
-assign_declaration = nested_identifier_lvalue + Suppress(":") + expression + expression_end
+assign_declaration = nested_identifier_lvalue + Suppress(":") + ((expression + expression_end) | component_declaration)
 assign_declaration.setParseAction(handle_assignment)
 
 index_declaration = nested_identifier_rvalue + Suppress('[') + expression + Suppress(']')
 index_declaration.setParseAction(handle_index_declaration)
-
-assign_component_declaration = nested_identifier_lvalue + Suppress(":") + component_declaration
-assign_component_declaration.setParseAction(handle_assignment)
 
 const_property_declaration = Keyword("property").suppress() + Keyword("const") - Group(Group(identifier - Suppress(":") - code))
 const_property_declaration.setParseAction(handle_property_declaration)
@@ -304,7 +301,7 @@ list_element_declaration.setParseAction(handle_list_element)
 
 import_statement = Keyword("import") - restOfLine
 
-scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope | static_const_declaration
+scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope | static_const_declaration
 component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
 
 component_declaration << (component_type + component_scope)

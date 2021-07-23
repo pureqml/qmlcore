@@ -51,7 +51,7 @@ class Cache(object):
 		cached_path = os.path.join(self.dir, name)
 		with open(cached_path, "wb") as f:
 			f.write((hashkey + "\n").encode('utf-8'))
-			pickle.dump(data, f)
+			pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
 
 def parse_qml_file(cache, com, path):
 	with open(path, encoding='utf-8') as f:

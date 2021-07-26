@@ -12,30 +12,31 @@ var Player = function(ui) {
 	ui.element = player
 	ui.parent.element.append(ui.element)
 
-	ui.dash = dashjs.MediaPlayer().create();
-	ui.dash.initialize(player.dom)
+	this.dash = dashjs.MediaPlayer().create();
+	this.dash.initialize(player.dom)
 }
 
 Player.prototype = Object.create(_globals.video.html5.backend.Player.prototype)
 
 Player.prototype.setSource = function(url) {
 	this.ui.ready = false
-	this.ui.dash.attachSource(url)
+	this.dash.attachSource(url)
+	if (this.ui.autoPlay)
+		this.play()
 }
-
 
 exports.createPlayer = function(ui) {
 	return new Player(ui)
 }
 
 exports.probeUrl = function(url) {
-	return 10
+	return 100500
 }
 
 Player.prototype.dispose = function() {
 	_globals.video.html5.backend.Player.prototype.dispose.apply(this)
-	ui.dash.reset()
-	ui.dash = null
+	this.dash.reset()
+	this.dash = null
 }
 
 exports.Player = Player

@@ -367,7 +367,7 @@ source.parseWithTabs()
 def parse(data):
 	global doc_root_component
 	doc_root_component = None
-	tree = source.parseString(data, parseAll = True)
+	tree = source.parseString(data, parseAll = True).asList()
 	if len(tree) > 0:
 		tree[0].doc = doc_root_component
 	return tree

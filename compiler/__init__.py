@@ -12,11 +12,14 @@ import compiler.js
 import compiler.lang
 import os, os.path
 import hashlib
-import pickle
 import json
 from multiprocessing import Pool, cpu_count
 import sys
 from io import open
+if PY2:
+	import cPickle as pickle
+else:
+	import pickle
 
 try:
 	import inspect

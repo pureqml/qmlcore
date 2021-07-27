@@ -50,7 +50,7 @@ def handle_component_declaration(s, l, t):
 		type = type[idx + 1:]
 	if type[0].islower():
 		raise ParseException(s, l, 'lowercase component name')
-	return component(lang.Component(t[0], t[1]))
+	return component(lang.Component(t[0], t[1].asList()))
 
 def handle_assignment(s, l, t):
 	return component(lang.Assignment(t[0], t[1]))
@@ -66,7 +66,7 @@ def handle_alias_property_declaration(s, l, t):
 	return component(lang.AliasProperty(t[0], t[1]))
 
 def handle_enum_property_declaration(s, l, t):
-	return component(lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None))
+	return component(lang.EnumProperty(t[0], t[1].asList(), t[2] if len(t) > 2 else None))
 
 def handle_method_declaration(s, l, t):
 	async_method = t[0] == 'async'
@@ -78,10 +78,10 @@ def handle_method_declaration(s, l, t):
 	else:
 		names, args, code = t[1], t[2], t[3]
 
-	return component(lang.Method(names, args, code, event_handler, async_method))
+	return component(lang.Method(names.asList(), args.asList(), code, event_handler, async_method))
 
 def handle_assignment_scope(s, l, t):
-	return component(lang.AssignmentScope(t[0], t[1]))
+	return component(lang.AssignmentScope(t[0], t[1].asList()))
 
 def handle_nested_identifier_rvalue(s, l, t):
 	return lang.handle_property_path(t[0])
@@ -93,7 +93,7 @@ def handle_id_declaration(s, l, t):
 	return component(lang.IdAssignment(t[0]))
 
 def handle_behavior_declaration(s, l, t):
-	return component(lang.Behavior(t[0], t[1]))
+	return component(lang.Behavior(t[0].asList(), t[1]))
 
 def handle_signal_declaration(s, l, t):
 	return component(lang.Signal(t[0]))

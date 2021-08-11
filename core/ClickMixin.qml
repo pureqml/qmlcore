@@ -1,10 +1,7 @@
 /// This mixin provides mouse click event detecting
-Object {
-	property bool enabled: true;	///< turn mixin on
-
+BaseMixin {
 	///@private
 	constructor: {
-		this.element = this.parent.element;
 		this._bindClick(this.enabled)
 	}
 

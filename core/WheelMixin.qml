@@ -1,10 +1,7 @@
 /// mixin for wheel events
-Object {
-	property bool enabled: true;	///< enable mixin
-
+BaseMixin {
 	///@private
 	constructor: {
-		this.element = this.parent.element;
 		this._bindWheel(this.enabled)
 	}
 

@@ -10,7 +10,6 @@ BaseMouseMixin {
 
 	///@private
 	constructor: {
-		this.element = this.parent.element;
 		this._bindMove(this.enabled)
 	}
 

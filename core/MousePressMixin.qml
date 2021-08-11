@@ -4,7 +4,6 @@ BaseMouseMixin {
 
 	///@private
 	constructor: {
-		this.element = this.parent.element;
 		this._bindPress(this.enabled)
 	}
 

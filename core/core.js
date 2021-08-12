@@ -808,6 +808,16 @@ $core._protoOnChanged = function(proto, name, callback)
 $core._protoOnKey = function(proto, name, callback)
 { protoEvent('__key__', proto, name, callback) }
 
+$core.callMethod = function(obj, name) {
+	if (!obj)
+		return
+
+	COPY_ARGS(args, 1)
+	if (name in obj) {
+		obj[name].apply(obj, args)
+	}
+}
+
 var ObjectEnumerator = function(callback) {
 	this._callback = callback
 	this._queue = []

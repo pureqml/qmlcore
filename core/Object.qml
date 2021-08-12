@@ -248,10 +248,8 @@ EventEmitter {
 
 	/// stops event propagation
 	function stopEvent(event) {
-		if ('preventDefault' in event)
-			event.preventDefault()
-		if ('stopImmediatePropagation' in event)
-			event.stopImmediatePropagation()
+		$core.callMethod(event, 'preventDefault')
+		$core.callMethod(event, 'stopImmediatePropagation')
 	}
 
 	///@private called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy

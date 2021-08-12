@@ -108,7 +108,7 @@ Item {
 			this._hoverBinder = new $core.EventBinder(this.element)
 			this._hoverBinder.on('mouseenter', function() { this.hover = true }.bind(this))
 			this._hoverBinder.on('mouseleave', function() { this.hover = false }.bind(this))
-			this._hoverBinder.on('mousemove', function(event) { if (this.updatePosition(event)) event.preventDefault() }.bind(this))
+			this._hoverBinder.on('mousemove', function(event) { if (this.updatePosition(event)) $core.callMethod(event, 'preventDefault')}.bind(this))
 		}
 		if (this._hoverBinder)
 			this._hoverBinder.enable(value)

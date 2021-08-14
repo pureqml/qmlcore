@@ -5,7 +5,6 @@ from future import standard_library
 from future.utils import PY2
 standard_library.install_aliases()
 from builtins import filter, range
-from io import StringIO
 
 from compiler import manifest as mf
 from compiler import compile_qml
@@ -24,7 +23,6 @@ if PY2:
     sys.setdefaultencoding('utf8')
 
 from os import path
-from io import StringIO
 from distutils import dir_util
 from compiler.ts import Ts
 
@@ -46,7 +44,7 @@ parser.add_argument('--print-property', '-P', help = 'get manifest property', na
 parser.add_argument('--manifest', default = '.manifest', help = 'app manifest path')
 parser.add_argument('--inline-manifest', default = None, help = 'manifest given in the option value')
 parser.add_argument('--cache-dir', default = '.cache', help = 'cache directory')
-parser.add_argument('--build-dir', default = 'build.%%platform', help = 'build output directory')
+parser.add_argument('--build-dir', default = 'build.{{platform}}', help = 'build output directory')
 parser.add_argument('targets', nargs='*', help='targets to build')
 args = parser.parse_args()
 
@@ -222,13 +220,17 @@ def copytree(src, dst, symlinks=False, ignore=None):
 def listdirs(path):
 	return list(filter(os.path.isdir, [os.path.join(path, x) for x in os.listdir(path)]))
 
+def replace_vars_in_path(path, vars):
+	for k,v in vars.items():
+		path = path.replace("{{%s}}" % k, v)
+	return path
+		
 def build(root, platform, apps, app, manifest):
 	print("building %s for %s..." %(app, platform), file=sys.stderr)
-	build_dir = args.build_dir.replace("%%platform", platform)
 	if len(apps) > 1:
-		target = path.join(build_dir, platform, app)
+		target = path.join(replace_vars_in_path(args.build_dir, {"platform": platform}), app)
 	else:
-		target = path.join(build_dir, platform)
+		target = path.join(replace_vars_in_path(args.build_dir, {"platform": platform}))
 
 	try:
 		os.makedirs(target)
@@ -393,7 +395,7 @@ try:
 			manifest = mf.load(f)
 			manifest_path = '.manifest'
 	else:
-		manifest = mf.load(StringIO(args.inline_manifest))
+		manifest = mf.loads(args.inline_manifest)
 except IOError:
 	print('warning: could not find .manifest, using empty fallback', file=sys.stderr)
 	manifest = mf.Manifest()

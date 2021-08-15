@@ -1,7 +1,7 @@
 
 .PHONY: check
 check:
-	@./lit.py .
+	@./lit.py -va .
 
 .PHONY: clean
 clean:

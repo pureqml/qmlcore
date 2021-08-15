@@ -569,9 +569,12 @@ class component_generator(object):
 							return prefix + property
 						prefix += "parent."
 						g = g.parent
-				
-				#replace first id (not a property with parent object reference)
-				return ("%s._get('%s')" %(parent, property)) if parent else ("_get('%s')" %property)
+
+				if property in registry.id_set:
+					return ("%s._get('%s')" %(parent, property)) if parent else ("_get('%s')" %property)
+				else:
+					raise Exception("Property %s.%s could not be resolved" %(self.name, property))
+
 
 	def get_rvalue(self, registry, parent, target):
 		path = target.split(".")

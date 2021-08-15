@@ -27,4 +27,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run lit tests
-        run: make -C test
+        run: |
+          pip install -r requirements.txt
+          make -C test

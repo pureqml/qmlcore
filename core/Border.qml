@@ -10,8 +10,9 @@ Object {
 	property lazy top:		BorderSide	{ name: "top"; }		///< top border side
 	property lazy bottom:	BorderSide	{ name: "bottom"; }		///< bottom border side
 
-	onWidthChanged: {
+	function _update() {
 		var parent = this.parent
+		var value = this.width
 		parent.style('border-width', value)
 		switch(this.type) {
 		case this.Inner:
@@ -38,6 +39,10 @@ Object {
 		}
 	}
 
+	onWidthChanged: {
+		this._update()
+	}
+
 	onTypeChanged: {
 		var style
 		switch(value) {
@@ -48,6 +53,7 @@ Object {
 				style = 'content-box'; break;
 		}
 		this.parent.style('box-sizing', style)
+		this._update()
 	}
 
 	onColorChanged: {

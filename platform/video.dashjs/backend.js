@@ -25,6 +25,20 @@ Player.prototype.setSource = function(url) {
 		this.play()
 }
 
+Player.prototype.setupDrm = function(type, options, callback, error) {
+	var drmData = {}
+	if (type === "widevine") {
+		drmData["com.widevine.alpha"] = { "serverURL": options.laServer }
+		drmData["priority"] = 1
+	} else {
+		error ? error(new Error("Unknown or not supported DRM type " + type)) : log("Unknown or not supported DRM type " + type)
+	}
+
+	log("setupDrm", drmData)
+	this.dash.setProtectionData(drmData);
+	callback()
+}
+
 exports.createPlayer = function(ui) {
 	return new Player(ui)
 }

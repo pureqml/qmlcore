@@ -28,6 +28,10 @@ Location.prototype.changeHref = function(href) {
 	this.updateActualValues()
 }
 
+Location.prototype.reload = function() {
+	this._ui._context.window.dom.location.reload()
+}
+
 Location.prototype.pushState = function(state, title, url) {
 	var ui = this._ui
 	var windowContext = ui._context.window.dom

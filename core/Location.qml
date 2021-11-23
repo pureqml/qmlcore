@@ -26,4 +26,8 @@ Object {
 	changeHref(href): {
 		this.impl.changeHref(href)
 	}
+
+	function reload() {
+		this.impl.reload()
+	}
 }

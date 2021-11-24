@@ -158,7 +158,7 @@ BaseView {
 
 	///@private
 	function _layout(noPrerender) {
-		var model = this._attached
+		var model = this._modelAttached
 		if (!model) {
 			this.layoutFinished()
 			return

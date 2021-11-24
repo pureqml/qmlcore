@@ -65,7 +65,7 @@ BaseView {
 		if (!this.recursiveVisible && !this.offlineLayout)
 			return
 
-		var model = this._attached;
+		var model = this._modelAttached;
 		if (!model) {
 			this.layoutFinished()
 			return

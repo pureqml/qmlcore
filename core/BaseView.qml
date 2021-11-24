@@ -55,13 +55,6 @@ BaseLayout {
 	constructor: {
 		this._items = []
 		this._modelUpdate = new $core.model.ModelUpdate()
-		this._attached = null
-
-		//callback instances for dynamic model subscriptions
-		this._modelReset = this._onReset.bind(this)
-		this._modelRowsInserted = this._onRowsInserted.bind(this)
-		this._modelRowsChanged = this._onRowsChanged.bind(this)
-		this._modelRowsRemoved =  this._onRowsRemoved.bind(this)
 	}
 
 	/// returns index of item by x,y coordinates
@@ -135,7 +128,7 @@ BaseLayout {
 
 	/// @private
 	function _onReset() {
-		var model = this._attached
+		var model = this._modelAttached
 		if (this.trace)
 			log("reset", this._items.length, model.count)
 
@@ -148,7 +141,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows inserted", begin, end)
 
-		this._modelUpdate.insert(this._attached, begin, end)
+		this._modelUpdate.insert(this._modelAttached, begin, end)
 		this._scheduleLayout()
 	}
 
@@ -157,7 +150,7 @@ BaseLayout {
 		if (this.trace)
 			log("rows changed", begin, end)
 
-		this._modelUpdate.update(this._attached, begin, end)
+		this._modelUpdate.update(this._modelAttached, begin, end)
 		this._scheduleLayout()
 	}
 
@@ -166,56 +159,31 @@ BaseLayout {
 		if (this.trace)
 			log("rows removed", begin, end)
 
-		this._modelUpdate.remove(this._attached, begin, end)
+		this._modelUpdate.remove(this._modelAttached, begin, end)
 		this._scheduleLayout()
 	}
 
 	/// @private
 	function _attach() {
-		if (this._attached || !this.model || !this.delegate)
+		if (this._modelAttached || !this.model || !this.delegate)
 			return
 
 		if (this.trace)
 			log('attaching model...')
 
-		var Model = $core.Model
-		var model = this.model
-		var modelType = typeof model
-		if ((Model !== undefined) && (model instanceof Model)) {
-		} else if (Array.isArray(model)) {
-			model = new $core.model.ArrayModelWrapper(model)
-		} else if (modelType === 'number') {
-			var data = []
-			for(var i = 0; i < model; ++i)
-				data.push({})
-			model = new $core.model.ArrayModelWrapper(data)
-		} else
-			throw new Error("unknown value of type '" + (typeof model) + "', attached to model property: " + model + ((modelType === 'object') && ('componentName' in model)? ', component name: ' + model.componentName: ''))
-
-		model.on('reset', this._modelReset)
-		model.on('rowsInserted', this._modelRowsInserted)
-		model.on('rowsChanged', this._modelRowsChanged)
-		model.on('rowsRemoved', this._modelRowsRemoved)
-
-		this._attached = model
-		this._onReset()
+		this.model.attachTo(this)
 	}
 
 	/// @private
 	function _detach() {
-		var model = this._attached
+		var model = this._modelAttached
 		if (!model)
 			return
 
 		if (this.trace)
 			log('detaching model...')
 
-		this._attached = null
-
-		model.removeListener('reset', this._modelReset)
-		model.removeListener('rowsInserted', this._modelRowsInserted)
-		model.removeListener('rowsChanged', this._modelRowsChanged)
-		model.removeListener('rowsRemoved', this._modelRowsRemoved)
+		model.detachFrom(this)
 	}
 
 	onDelegateChanged: {
@@ -231,7 +199,7 @@ BaseLayout {
 			return item
 
 		var visibilityProperty = this.visibilityProperty
-		var row = this._attached.get(idx)
+		var row = this._modelAttached.get(idx)
 
 		if (this.trace)
 			log('createDelegate', idx, row)
@@ -259,7 +227,7 @@ BaseLayout {
 	function _updateDelegate(idx) {
 		var item = this._items[idx]
 		if (item) {
-			var row = this._attached.get(idx)
+			var row = this._modelAttached.get(idx)
 			row.index = idx
 			item._local.model = row
 			var _row = item._createPropertyStorage('_row')

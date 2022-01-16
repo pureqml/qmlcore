@@ -6,6 +6,7 @@ from builtins import object, str
 
 import compiler.doc.json
 import compiler.grammar
+import compiler.grammar2
 import compiler.manifest
 from compiler.manifest import merge_properties
 import compiler.js
@@ -24,7 +25,7 @@ else:
 try:
 	import inspect
 	data = ""
-	data += inspect.getsource(compiler.grammar)
+	data += inspect.getsource(compiler.grammar2)
 	data += inspect.getsource(compiler.lang)
 	grammar_digest = hashlib.sha1(data.encode('utf-8')).hexdigest()
 	del data
@@ -67,7 +68,7 @@ def parse_qml_file(cache, com, path):
 	else:
 		print("parsing", path, "...", com, file=sys.stderr)
 		try:
-			tree = compiler.grammar.parse(data)
+			tree = compiler.grammar2.parse(data)
 			cache.write(com, h, tree)
 			return tree, data
 		except Exception as ex:

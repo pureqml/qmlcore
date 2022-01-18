@@ -45,8 +45,9 @@ class StringParser(CustomParser):
 ws_re = re.compile(r'\s+', re.DOTALL)
 ws_comment_c = re.compile(r'/\*.*?\*/', re.DOTALL)
 ws_comment_cpp = re.compile(r'//.*')
-component_name = re.compile(r'[A-Z][A-Za-z0-9]*')
-component_name_lookahead = re.compile(r'[A-Z][A-Za-z0-9]*\s*{')
+COMPONENT_NAME = r'(?:[a-z][a-zA-Z0-9._]*\.)?[A-Z][A-Za-z0-9]*'
+component_name = re.compile(COMPONENT_NAME)
+component_name_lookahead = re.compile(COMPONENT_NAME + r'\s*{')
 identifier_re = re.compile(r'[a-z_][A-Za-z0-9_]*')
 property_type_re = re.compile(r'[a-z][a-z0-9]*', re.IGNORECASE)
 nested_identifier_re = re.compile(r'[a-z_][A-Za-z0-9_\.]*')

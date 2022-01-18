@@ -504,7 +504,7 @@ class Parser(object):
 			return value
 		value = self.maybe(string_re)
 		if value is not None:
-			return value
+			return lang.unescape_string(value[1:-1])
 		if self.lookahead('{'):
 			return self.__read_json_object()
 		if self.lookahead('['):

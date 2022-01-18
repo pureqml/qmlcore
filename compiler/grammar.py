@@ -179,36 +179,9 @@ unquoted_string_value = \
 	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True) | \
 	QuotedString("`", escChar='\\', unquoteResults = False, multiline=True)
 
-re_x = re.compile(r'\\x([0-9a-f]{2})', re.I)
-re_u = re.compile(r'\\u([0-9a-f]{4})', re.I)
-re_o = re.compile(r'\\([0-7]{3})')
-re_u2 = re.compile(r'\\([0-9][0-9a-f]{0,3})', re.I) #old js unicode stuff, try \07f
-re_esc = re.compile(r'\\(.)')
-
-def unquote(value):
-	value = re_x.sub(lambda m: chr(int(m.group(1), 16)), value)
-	value = re_u.sub(lambda m: chr(int(m.group(1), 16)), value)
-	value = re_o.sub(lambda m: chr(int(m.group(1), 8)), value)
-	value = re_u2.sub(lambda m: chr(int(m.group(1), 16)), value)
-
-	def unescape(m):
-		c = m.group(1)
-		return {
-			'0': '\0',
-			'n': '\n',
-			'r': '\r',
-			'v': '\v',
-			't': '\t',
-			'b': '\b',
-			'f': '\f',
-		}.get(c, c)
-
-	value = re_esc.sub(unescape, value)
-	return value
-
 def handle_string_unquote(s, l, t):
 	t = handle_string(s, l, t)
-	return unquote(str(t[0])[1:-1])
+	return lang.unescape_string(str(t[0])[1:-1])
 
 def handle_expression_array(s, l, t):
 	return json.dumps(list(t))

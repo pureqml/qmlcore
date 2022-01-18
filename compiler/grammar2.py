@@ -349,7 +349,7 @@ class Parser(object):
 
 	def error(self, msg):
 		lineno, col, line = self.__lineno, self.__colno, self.current_line
-		pointer = re.sub(r'\S', ' ', line)[:col] + '^-- ' + msg
+		pointer = re.sub(r'\S', ' ', line)[:col - 1] + '^-- ' + msg
 		raise Exception("at line %d:%d:\n%s\n%s" %(lineno, col, self.current_line, pointer))
 
 	def lookahead(self, exp):

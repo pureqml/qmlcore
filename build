@@ -45,6 +45,7 @@ parser.add_argument('--manifest', default = '.manifest', help = 'app manifest pa
 parser.add_argument('--inline-manifest', default = None, help = 'manifest given in the option value')
 parser.add_argument('--cache-dir', default = '.cache', help = 'cache directory')
 parser.add_argument('--build-dir', default = 'build.{{platform}}', help = 'build output directory')
+parser.add_argument('--experimental-parser', '-E', action='store_true', help = 'new experimental parser (super fast, verbose error messages)')
 parser.add_argument('targets', nargs='*', help='targets to build')
 args = parser.parse_args()
 
@@ -224,7 +225,7 @@ def replace_vars_in_path(path, vars):
 	for k,v in vars.items():
 		path = path.replace("{{%s}}" % k, v)
 	return path
-		
+
 def build(root, platform, apps, app, manifest):
 	print("building %s for %s..." %(app, platform), file=sys.stderr)
 	if len(apps) > 1:
@@ -334,6 +335,7 @@ def build(root, platform, apps, app, manifest):
 
 	kw['platforms'] = set(platforms)
 	kw['cache_dir'] = args.cache_dir
+	kw['experimental_parser'] = args.experimental_parser
 
 	compile_qml(target, root, project_dirs, manifest, app, **kw)
 

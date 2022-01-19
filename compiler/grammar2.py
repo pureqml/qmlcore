@@ -42,9 +42,7 @@ class StringParser(CustomParser):
 				raise Exception("Unexpected EOF while parsing string")
 		return next[:pos + 1]
 
-ws_re = re.compile(r'\s+', re.DOTALL)
-ws_comment_c = re.compile(r'/\*.*?\*/', re.DOTALL)
-ws_comment_cpp = re.compile(r'//.*')
+skip_re = re.compile(r'(?:\s+|/\*.*?\*/|//[^\n]*(?:$|\n))', re.DOTALL)
 COMPONENT_NAME = r'(?:[a-z][a-zA-Z0-9._]*\.)?[A-Z][A-Za-z0-9]*'
 component_name = re.compile(COMPONENT_NAME)
 component_name_lookahead = re.compile(COMPONENT_NAME + r'\s*{')
@@ -301,7 +299,6 @@ class Parser(object):
 		self.__pos = 0
 		self.__lineno = 1
 		self.__colno = 1
-		self.__skip_re = [ws_comment_c, ws_comment_cpp, ws_re]
 
 	@property
 	def at_end(self):
@@ -339,14 +336,12 @@ class Parser(object):
 		self.__pos = pos
 
 	def _skip(self):
-		matched = True
-		while matched:
-			matched = False
-			for r in self.__skip_re:
-				m = r.match(self.next)
-				if m is not None:
-					self.advance(m.end())
-					matched = True
+		while True:
+			m = skip_re.match(self.next)
+			if m is not None:
+				self.advance(m.end())
+			else:
+				break
 
 	def error(self, msg):
 		lineno, col, line = self.__lineno, self.__colno, self.current_line

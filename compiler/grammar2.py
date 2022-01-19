@@ -470,7 +470,7 @@ class Parser(object):
 				return lang.Method(identifiers, args, code, True, False)
 
 			if len(identifiers) > 1:
-				self.error("multiple identifiers are not allowed in assignment")
+				self.error("Multiple identifiers are not allowed in assignment")
 
 			if self.lookahead(component_name_lookahead):
 				return lang.Assignment(identifiers[0], self.__read_comp())
@@ -478,7 +478,16 @@ class Parser(object):
 			value = self.__read_expression()
 			return lang.Assignment(identifiers[0], value)
 		elif self.maybe('{'):
-			self.error("identifier {assign scope} fixme")
+			if len(identifiers) > 1:
+				self.error("Multiple identifiers are not allowed in assignment scope")
+			values = []
+			while not self.maybe('}'):
+				name = self.read(nested_identifier_re, "Expected identifier in assignment scope")
+				self.read(':', "Expected : after identifier in assignment scope")
+				value = self.__read_expression()
+				values.append(lang.Assignment(name, value))
+			return lang.AssignmentScope(identifiers[0], values)
+
 
 	def __read_function(self):
 		name = self.read(identifier_re, "Expected identifier")

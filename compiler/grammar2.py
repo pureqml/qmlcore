@@ -489,7 +489,7 @@ class Parser(object):
 			return lang.AssignmentScope(identifiers[0], values)
 
 
-	def __read_function(self):
+	def __read_function(self, async_f = False):
 		name = self.read(identifier_re, "Expected identifier")
 		args = []
 		self.read('(', "Expected (argument-list) in function declaration")
@@ -497,7 +497,7 @@ class Parser(object):
 			args = self.__read_list(identifier_re, ',', "Expected argument list")
 			self.read(')', "Expected ) at the end of argument list")
 		code = self.__read_code()
-		return lang.Method([name], args, code, False, False)
+		return lang.Method([name], args, code, False, async_f)
 
 
 	def __read_json_value(self):
@@ -574,6 +574,9 @@ class Parser(object):
 			self.error("async fixme")
 		elif self.maybe('function'):
 			return self.__read_function()
+		elif self.maybe('async'):
+			self.read('function', "Expected function after async")
+			return self.__read_function(async_f = True)
 		elif self.lookahead(component_name_lookahead):
 			return self.__read_comp()
 		else:

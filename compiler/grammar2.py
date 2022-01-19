@@ -1,5 +1,5 @@
 import re
-from typing import OrderedDict
+from collections import OrderedDict
 import compiler.lang as lang
 
 doc_next = None

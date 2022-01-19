@@ -22,34 +22,50 @@ if PY2:
 else:
 	import pickle
 
-try:
-	import inspect
-	data = ""
-	data += inspect.getsource(compiler.grammar2)
-	data += inspect.getsource(compiler.lang)
-	grammar_digest = hashlib.sha1(data.encode('utf-8')).hexdigest()
-	del data
-except:
-	grammar_digest = '0000000000000000000000000000000000000000'
-
 class Cache(object):
-	def __init__(self, dir):
+	def __init__(self, dir, experimental_parser):
 		self.dir = dir
+		self.experimental_parser = experimental_parser
 		try:
 			os.mkdir(dir)
 		except:
 			pass
+		try:
+			import inspect
+			data = ""
+			if experimental_parser:
+				data += inspect.getsource(compiler.grammar2)
+			else:
+				data += inspect.getsource(compiler.grammar)
+			data += inspect.getsource(compiler.lang)
+			self.grammar_digest = hashlib.sha1(data.encode('utf-8')).hexdigest()
+		except:
+			self.grammar_digest = ''
 
-	def read(self, name, hashkey):
+	def read(self, name, path):
+		with open(path, encoding='utf-8') as f:
+			data = f.read()
+			hashkey = hashlib.sha1((self.grammar_digest + data).encode('utf-8')).hexdigest()
+
 		cached_path = os.path.join(self.dir, name)
 		try:
 			with open(cached_path, 'rb') as f:
 				cached_hashkey = f.readline().strip().decode('utf-8')
 				if cached_hashkey != hashkey:
 					raise Exception("invalid hash")
-				return pickle.load(f)
+				return pickle.load(f), data
 		except:
-			return
+			print("parsing", path, "...", name, file=sys.stderr)
+			try:
+				if self.experimental_parser:
+					tree = compiler.grammar2.parse(data)
+				else:
+					tree = compiler.grammar.parse(data)
+				self.write(name, hashkey, tree)
+				return tree, data
+			except Exception as ex:
+				ex.filename = path
+				raise
 
 	def write(self, name, hashkey, data):
 		cached_path = os.path.join(self.dir, name)
@@ -58,22 +74,7 @@ class Cache(object):
 			pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
 
 def parse_qml_file(cache, com, path):
-	with open(path, encoding='utf-8') as f:
-		data = f.read()
-		h = hashlib.sha1((grammar_digest + data).encode('utf-8')).hexdigest()
-
-	cached = cache.read(com, h)
-	if cached:
-		return cached, data
-	else:
-		print("parsing", path, "...", com, file=sys.stderr)
-		try:
-			tree = compiler.grammar2.parse(data)
-			cache.write(com, h, tree)
-			return tree, data
-		except Exception as ex:
-			ex.filename = path
-			raise
+	return cache.read(com, path)
 
 class Compiler(object):
 	def process_file(self, pool, generator, package, dirpath, filename):
@@ -241,8 +242,8 @@ class Compiler(object):
 
 		print("done", file=sys.stderr)
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache"):
-		self.cache = Cache(cache_dir)
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", experimental_parser = False):
+		self.cache = Cache(cache_dir, experimental_parser)
 		self.root = root
 		self.output_dir = output_dir
 		self.project_dirs = project_dirs
@@ -265,7 +266,8 @@ class Compiler(object):
 		self.documentation = compiler.doc.json.Documentation(doc) if doc else None
 
 
-def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = set(), wait = False, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache"):
+def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = set(),
+		wait = False, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", experimental_parser=False):
 	if wait:
 		try:
 			import pyinotify
@@ -298,7 +300,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = 
 		except:
 			raise Exception("it seems you don't have pyinotify module installed, please install it to run build with -d option")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs, cache_dir=cache_dir)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs, cache_dir=cache_dir, experimental_parser=experimental_parser)
 
 	notifier = None
 

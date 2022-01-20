@@ -16,5 +16,5 @@ Object {
 	property int e: ~~0;
 	property int f: 1 + 1 << 2 + 1;
 	property int g: 1 + 2 * (1 + 1);
-	property array h: [1 ** 2, a, b]
+	property array h: [1 ** 2, a, b];
 }

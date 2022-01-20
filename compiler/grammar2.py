@@ -425,6 +425,8 @@ class Parser(object):
 				if self.maybe(']'):
 					break
 				self.read(',', "Expected ',' as an array delimiter")
+			if terminate:
+				self.__read_statement_end()
 			return "[%s]" % (",".join(map(str, values)))
 		else:
 			value = infix_parser.parse(self)

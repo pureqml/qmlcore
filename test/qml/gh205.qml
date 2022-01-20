@@ -1,5 +1,5 @@
 // RUN: %build
-// RUN: grep "delegate.width = (delegate.parent.parent.w0)" %out/qml.gh205.js
+// RUN: grep "delegate.width = delegate.parent.parent.w0" %out/qml.gh205.js
 
 Item {
     anchors.fill: context;

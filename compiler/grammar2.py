@@ -252,6 +252,7 @@ infix_parser = PrattParser([
 	LeftParenthesis(19),
 
 	Operator('!', None, 16),
+	Operator('~', None, 16),
 	Operator('+', 13, 16),
 	Operator('-', 13, 16),
 

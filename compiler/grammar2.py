@@ -161,19 +161,21 @@ class PrattParser(object):
 		next = parser.maybe(string_re)
 		if next:
 			return Literal(next, string=True)
-		parser.error("Unexpected expression: %s" %parser.next[:20])
+		return None
 
 	def advance(self, state, expect = None):
-		if expect is not None and state.token.term != expect:
-			state.parser.error("Expected '%s', got '%s'" %(expect, state.token.term))
+		if expect is not None:
+			state.parser.read(expect, "Expected %s in expression" %expect)
 		state.token = self.next(state.parser)
 
 	def expression(self, state, rbp = 0):
 		parser = state.parser
 		t = state.token
 		state.token = self.next(parser)
+		if state.token is None:
+			return t
 		left = t.nud(state)
-		while rbp < state.token.lbp:
+		while state.token is not None and rbp < state.token.lbp:
 			t = state.token
 			self.advance(state)
 			left = t.led(state, left)
@@ -181,6 +183,8 @@ class PrattParser(object):
 
 	def parse(self, parser):
 		token = self.next(parser)
+		if token is None:
+			parser.error("Unexpected expression")
 		state = PrattParserState(self, parser, token)
 		return self.expression(state)
 
@@ -237,9 +241,11 @@ class LeftParenthesis(object):
 		if next.term != ')':
 			while True:
 				args.append(state.parent.expression(state))
-				if state.token.term != ',':
+				if state.token is not None:
+					state.parser.error("Unexpected token %s" %state.token)
+				if not state.parser.maybe(','):
 					break
-				state.parent.advance(state, ',')
+				state.parent.advance(state)
 			state.parent.advance(state, ')')
 
 		return Call(left, args)
@@ -286,12 +292,6 @@ infix_parser = PrattParser([
 	Operator('||', 5),
 
 	Conditional(4),
-
-	Operator(',', 0),
-	Operator(':', 0),
-	Operator(')', 0),
-
-	Operator(';') #End token
 ])
 
 class Parser(object):
@@ -417,9 +417,20 @@ class Parser(object):
 	def __read_code(self):
 		return self.__read_nested('{', '}', "Expected code block")
 
-	def __read_expression(self):
-		value = infix_parser.parse(self)
-		return str(value)
+	def __read_expression(self, terminate = True):
+		if self.maybe('['):
+			values = []
+			while not self.maybe(']'):
+				values.append(self.__read_expression(terminate = False))
+				if self.maybe(']'):
+					break
+				self.read(',', "Expected ',' as an array delimiter")
+			return "[%s]" % (",".join(map(str, values)))
+		else:
+			value = infix_parser.parse(self)
+			if terminate:
+				self.__read_statement_end()
+			return str(value)
 
 	def __read_property(self):
 		if self.lookahead(':'):

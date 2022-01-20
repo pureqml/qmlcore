@@ -6,6 +6,7 @@
 // RUN: grep "this.e = (~(~0))" %out/qml.expr.js
 // RUN: grep "this.f = ((1+1)<<(2+1))" %out/qml.expr.js
 // RUN: grep "this.g = (1+(2\*(1+1)))" %out/qml.expr.js
+// RUN: grep "this.h = \[(1\*\*2),\$this.a,\$this.b\]" %out/qml.expr.js
 
 Object {
 	property int a: 2 + 2 * 2 % 3 / 4;
@@ -15,4 +16,5 @@ Object {
 	property int e: ~~0;
 	property int f: 1 + 1 << 2 + 1;
 	property int g: 1 + 2 * (1 + 1);
+	property array h: [1 ** 2, a, b]
 }

@@ -195,6 +195,22 @@ class PrattParser(object):
 		state = PrattParserState(self, parser, token)
 		return self.expression(state)
 
+class UnsupportedOperator(object):
+	__slots__ = ('term', 'lbp', 'rbp')
+
+	def __init__(self, term, lbp = 0, rbp = 0):
+		self.term, self.lbp, self.rbp = term, lbp, rbp
+
+	def nud(self, state):
+		state.parser.error("Unsupported prefix operator %s" %self.term)
+
+	def led(self, state, left):
+		state.parser.error("Unsupported postfix operator %s" %self.term)
+
+	def __repr__(self):
+		return "UnsupportedOperator { %s %s }" %(self.term, self.lbp)
+
+
 class Operator(object):
 	__slots__ = ('term', 'lbp', 'rbp')
 	def __init__(self, term, lbp = 0, rbp = None):
@@ -265,6 +281,13 @@ class LeftParenthesis(object):
 infix_parser = PrattParser([
 	Operator('.', 19),
 	LeftParenthesis(19),
+
+	UnsupportedOperator('++', 17, 16),
+	UnsupportedOperator('--', 17, 16),
+	UnsupportedOperator('typeof', None, 16),
+	UnsupportedOperator('void', None, 16),
+	UnsupportedOperator('delete', None, 16),
+	UnsupportedOperator('await', None, 16),
 
 	Operator('!', None, 16),
 	Operator('~', None, 16),

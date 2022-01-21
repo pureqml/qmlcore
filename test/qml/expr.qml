@@ -7,6 +7,8 @@
 // RUN: grep "this.f = ((1+1)<<(2+1))" %out/qml.expr.js
 // RUN: grep "this.g = (1+(2\*(1+1)))" %out/qml.expr.js
 // RUN: grep "this.h = \[(1\*\*2),\$this.a,\$this.b\]" %out/qml.expr.js
+// RUN: grep "this.i = ((\$this.h\[0\])+((\$this.h\[1\])\*(\$this.h\[2\])))" %out/qml.expr.js
+// RUN: grep "this.j = (123.456.toFixed)(2)" %out/qml.expr.js
 
 Object {
 	property int a: 2 + 2 * 2 % 3 / 4;

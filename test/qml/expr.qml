@@ -17,4 +17,5 @@ Object {
 	property int f: 1 + 1 << 2 + 1;
 	property int g: 1 + 2 * (1 + 1);
 	property array h: [1 ** 2, a, b];
+	property string j: (123.456).toFixed(2);
 }

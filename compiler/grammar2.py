@@ -58,6 +58,7 @@ percent_number_re = re.compile(NUMBER_RE + r'%', re.IGNORECASE)
 scale_number_re = re.compile(NUMBER_RE + r's', re.IGNORECASE)
 rest_of_the_line_re = re.compile(r".*$", re.MULTILINE)
 json_object_value_delimiter_re = re.compile(r"[,;]")
+dep_var = re.compile(r"\${(.*?)}")
 
 class Expression(object):
 	__slots__ = ('op', 'args')
@@ -90,12 +91,18 @@ class Call(object):
 		return "Call %s { %s }" %(self.func, self.args)
 
 	def __str__(self):
-		name = self.func.term
-		if name[0].islower():
-			if '.' in name:
-				name = '${%s}' %name
-			else:
-				name = '$this._context.%s' %name
+		if isinstance(self.func, Literal):
+			name = self.func.term
+			if name[0].islower():
+				if '.' in name:
+					name = '${%s}' %name
+				else:
+					name = '$this._context.%s' %name
+		else:
+			name = str(self.func)
+			#if lhs is not an literal, than we can't process deps, removing ${xxx}
+			name = dep_var.sub(lambda m: m.group(1), name)
+
 		return "%s(%s)" %(name, ",".join(map(str, self.args)))
 
 class Literal(object):
@@ -226,6 +233,7 @@ class Conditional(object):
 		return "Conditional { }"
 
 class LeftParenthesis(object):
+	__slots__ = ('term', 'lbp')
 	def __init__(self, lbp):
 		self.term = '('
 		self.lbp = lbp
@@ -255,6 +263,7 @@ class LeftParenthesis(object):
 
 
 infix_parser = PrattParser([
+	Operator('.', 19),
 	LeftParenthesis(19),
 
 	Operator('!', None, 16),

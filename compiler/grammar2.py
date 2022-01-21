@@ -105,6 +105,15 @@ class Call(object):
 
 		return "%s(%s)" %(name, ",".join(map(str, self.args)))
 
+class Dereference(object):
+	__slots__ = ('array', 'index')
+	def __init__(self, array, index):
+		self.array = array
+		self.index = index
+
+	def __str__(self):
+		return "(%s[%s])" %(self.array, self.index)
+
 class Literal(object):
 	__slots__ = ('lbp', 'term', 'identifier')
 	def __init__(self, term, string = False, identifier = False):
@@ -277,10 +286,30 @@ class LeftParenthesis(object):
 	def __repr__(self):
 		return "LeftParenthesis { %d }" %self.lbp
 
+class LeftSquareBracket(object):
+	__slots__ = ('term', 'lbp')
+	def __init__(self, lbp):
+		self.term = '['
+		self.lbp = lbp
+
+	def nud(self, state):
+		state.parser.error("Invalid [] expression")
+
+	def led(self, state, left):
+		arg = state.parent.expression(state)
+		if state.token is not None:
+			state.parser.error("Unexpected token %s" %state.token)
+		state.parent.advance(state, ']')
+		return Dereference(left, arg)
+
+	def __repr__(self):
+		return "LeftSquareBracket { %d }" %self.lbp
+
 
 infix_parser = PrattParser([
 	Operator('.', 19),
 	LeftParenthesis(19),
+	LeftSquareBracket(19),
 
 	UnsupportedOperator('++', 17, 16),
 	UnsupportedOperator('--', 17, 16),

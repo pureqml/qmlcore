@@ -72,12 +72,12 @@ class Expression(object):
 		args = self.args
 		n = len(args)
 		if n == 1:
-			return "(%s%s)" %(self.op, args[0])
+			return "(%s %s)" %(self.op, args[0])
 		elif n == 2:
-			return "(%s%s%s)" %(args[0], self.op, args[1])
+			return "(%s %s %s)" %(args[0], self.op, args[1])
 		elif n == 3:
 			op = self.op
-			return "(%s%s%s%s%s)" %(args[0], op[0], args[1], op[1], args[2])
+			return "(%s %s %s %s %s)" %(args[0], op[0], args[1], op[1], args[2])
 		else:
 			raise Exception("invalid argument counter")
 
@@ -313,10 +313,10 @@ infix_parser = PrattParser([
 
 	UnsupportedOperator('++', 17, 16),
 	UnsupportedOperator('--', 17, 16),
-	UnsupportedOperator('typeof', None, 16),
 	UnsupportedOperator('void', None, 16),
 	UnsupportedOperator('delete', None, 16),
 	UnsupportedOperator('await', None, 16),
+	Operator('typeof', None, 16),
 
 	Operator('!', None, 16),
 	Operator('~', None, 16),

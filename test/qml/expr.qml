@@ -1,14 +1,15 @@
 // RUN: %build
-// RUN: grep "this.a = (2+(((2\*2)\%3)/4))" %out/qml.expr.js
-// RUN: grep "this.b = ((~1)-(~2))" %out/qml.expr.js
-// RUN: grep "this.c = ((2\*\*2)+2)" %out/qml.expr.js
-// RUN: grep "this.d = ((+3)+(-2))" %out/qml.expr.js
-// RUN: grep "this.e = (~(~0))" %out/qml.expr.js
-// RUN: grep "this.f = ((1+1)<<(2+1))" %out/qml.expr.js
-// RUN: grep "this.g = (1+(2\*(1+1)))" %out/qml.expr.js
-// RUN: grep "this.h = \[(1\*\*2),\$this.a,\$this.b\]" %out/qml.expr.js
-// RUN: grep "this.i = ((\$this.h\[0\])+((\$this.h\[1\])\*(\$this.h\[2\])))" %out/qml.expr.js
-// RUN: grep "this.j = (123.456.toFixed)(2)" %out/qml.expr.js
+// RUN: grep "this.a = (2 + (((2 \* 2) \% 3) / 4))" %out/qml.expr.js
+// RUN: grep "this.b = ((~ 1) - (~ 2))" %out/qml.expr.js
+// RUN: grep "this.c = ((2 \*\* 2) + 2)" %out/qml.expr.js
+// RUN: grep "this.d = ((+ 3) + (- 2))" %out/qml.expr.js
+// RUN: grep "this.e = (~ (~ 0))" %out/qml.expr.js
+// RUN: grep "this.f = ((1 + 1) << (2 + 1))" %out/qml.expr.js
+// RUN: grep "this.g = (1 + (2 \* (1 + 1)))" %out/qml.expr.js
+// RUN: grep "this.h = \[(1 \*\* 2),\$this.a,\$this.b\]" %out/qml.expr.js
+// RUN: grep "this.i = ((\$this.h\[0\]) + ((\$this.h\[1\]) \* (\$this.h\[2\])))" %out/qml.expr.js
+// RUN: grep "this.j = (123.456 . toFixed)(2)" %out/qml.expr.js
+// RUN: grep "this.k = ((typeof \$this.i) === 'number')" %out/qml.expr.js
 
 Object {
 	property int a: 2 + 2 * 2 % 3 / 4;
@@ -21,4 +22,5 @@ Object {
 	property array h: [1 ** 2, a, b];
 	property int i: h[0] + h[1] * h[2];
 	property string j: (123.456).toFixed(2);
+	property bool k: typeof i === 'number';
 }

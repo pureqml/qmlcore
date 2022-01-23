@@ -1,0 +1,5 @@
+{
+	"requires": ["web"],
+	"templates": ["*.html", "sw.js"]
+}
+

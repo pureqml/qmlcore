@@ -644,8 +644,6 @@ class Parser(object):
 			value = self.__read_json_value()
 			self.__read_statement_end()
 			return lang.Const(type, name, value)
-		elif self.maybe('property'):
-			return self.__read_property(self)
 		elif self.maybe('async'):
 			self.error("async fixme")
 		elif self.maybe('function'):

@@ -516,6 +516,12 @@ class Parser(object):
 			self.read(':', "Expected : before const property code")
 			code = self.__read_code()
 			return lang.Property("const", [(name, code)])
+		if type == 'alias':
+			name = self.read(identifier_re, "Expected alias property name")
+			self.read(':', "Expected : before alias target")
+			target = self.read(nested_identifier_re, "Expected identifier as an alias target")
+			self.__read_statement_end()
+			return lang.AliasProperty(name, target)
 		names = self.__read_list(identifier_re, ',', "Expected identifier in property list")
 		if len(names) == 1:
 			#Allow initialisation for the single property

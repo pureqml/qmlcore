@@ -224,14 +224,15 @@ BaseView {
 
 			var renderable = (viewPos + (s !== undefined? s: 0) >= leftMargin && viewPos < rightMargin) || currentIndex === i
 
+			var visibleInModel = true
 			if (visibilityProperty) {
-				if (!model.getProperty(i, visibilityProperty)) {
-					s = sizes[i] = 0
+				visibleInModel = model.getProperty(i, visibilityProperty)
+				if (!visibleInModel) {
 					renderable = false
 				}
 			}
 
-			if (!item) {
+			if (!item && visibleInModel) {
 				//we can render, or no sizes available
 				if (renderable || s === undefined) {
 					item = this._createDelegate(i)
@@ -240,11 +241,13 @@ BaseView {
 				}
 			}
 
-			if (item)
+			if (item && visibleInModel)
 				s = refSize = sizes[i] = getItemSize(item)
+			else if (!visibleInModel)
+				s = sizes[i] = 0
 
 			if (item) {
-				var visible = (viewPos + s >= 0 && viewPos < size) //checking real delegate visibility, without prerender margin
+				var visible = visibleInModel && (viewPos + s >= 0 && viewPos < size) //checking real delegate visibility, without prerender margin
 
 				if (item.x + item.width > maxW)
 					maxW = item.width + item.x

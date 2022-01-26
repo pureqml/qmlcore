@@ -227,7 +227,7 @@ BaseView {
 			} else
 				s = refSize
 
-			var renderable = (viewPos + (s !== undefined? s: 0) >= leftMargin && viewPos < rightMargin) || currentIndex === i
+			var renderable = viewPos + (s !== undefined? s: 0) >= leftMargin && viewPos < rightMargin
 
 			var visibleInModel = true
 			if (visibilityProperty) {

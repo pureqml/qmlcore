@@ -201,11 +201,12 @@ BaseLayout {
 		var visibilityProperty = this.visibilityProperty
 		var row = this._modelAttached.get(idx)
 
+		if (visibilityProperty && !row[visibilityProperty])
+			return null;
+
 		if (this.trace)
 			log('createDelegate', idx, row)
 
-		if (visibilityProperty && !row[visibilityProperty])
-			return null;
 		row.index = idx
 
 		item = this.delegate(this, row)

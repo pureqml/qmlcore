@@ -251,11 +251,13 @@ BaseView {
 				item.visibleInView = visible
 
 				if (!renderable && discardDelegates) {
-					if (this.trace)
-						log('discarding delegate', i)
-					this._discardItem(item)
-					items[i] = null
-					created = true
+					if (items[i]) {
+						if (this.trace)
+							log('discarding delegate', i)
+						this._discardItem(item)
+						items[i] = null
+						created = true
+					}
 				}
 			} else {
 				var nextP = p + refSize

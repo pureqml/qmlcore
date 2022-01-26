@@ -214,9 +214,12 @@ BaseView {
 			var item = items[i]
 			var viewPos = p + c
 
-			var s = sizes[i] || refSize
-			if (refSize === undefined && s !== undefined)
-				refSize = s
+			var s = sizes[i]
+			if (s !== undefined) {
+				if (refSize === undefined)
+					refSize = s
+			} else
+				s = refSize
 
 			var renderable = (viewPos + (s !== undefined? s: 0) >= leftMargin && viewPos < rightMargin) || currentIndex === i
 

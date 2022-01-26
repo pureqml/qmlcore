@@ -59,7 +59,7 @@ Model {
 		this.rowsChanged(idx, idx + 1)
 	}
 
-	/**@param idx:int row's position to replace
+	/**@param idx:int row's position to get
 	get row ad 'idx' position*/
 	function get(idx) {
 		if (idx < 0 || idx >= this._rows.length)
@@ -69,6 +69,21 @@ Model {
 			throw new Error('row is non-object')
 		row.index = idx
 		return row
+	}
+
+	/**@param idx:int row's position to get
+	@param name:string property to get
+	get property from row at 'idx' position*/
+	function getProperty(idx, name) {
+		if (name === 'index')
+			return idx
+
+		if (idx < 0 || idx >= this._rows.length)
+			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
+		var row = this._rows[idx]
+		if (!(row instanceof Object))
+			throw new Error('row is non-object')
+		return row[name]
 	}
 
 	/**@param idx:int row's position to replace

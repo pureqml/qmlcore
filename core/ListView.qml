@@ -315,6 +315,8 @@ BaseView {
 	/// @private creates delegate in given item slot
 	function _createDelegate(idx) {
 		var item = $core.BaseView.prototype._createDelegate.apply(this, arguments)
+		if (!item)
+			return item
 		//connect both dimensions, because we calculate maxWidth/maxHeight in contentWidth/contentHeight
 		var update = function(horizontal) {
 			this._scheduleLayout()

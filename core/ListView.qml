@@ -171,6 +171,7 @@ BaseView {
 			return
 		}
 
+		var visibilityProperty = this.visibilityProperty
 		var horizontal = this.orientation === this.Horizontal
 
 		var padding = this._padding
@@ -222,6 +223,13 @@ BaseView {
 				s = refSize
 
 			var renderable = (viewPos + (s !== undefined? s: 0) >= leftMargin && viewPos < rightMargin) || currentIndex === i
+
+			if (visibilityProperty) {
+				if (!model.getProperty(i, visibilityProperty)) {
+					s = sizes[i] = 0
+					renderable = false
+				}
+			}
 
 			if (!item) {
 				//we can render, or no sizes available

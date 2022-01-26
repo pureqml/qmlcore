@@ -227,7 +227,8 @@ BaseView {
 				//we can render, or no sizes available
 				if (renderable || s === undefined) {
 					item = this._createDelegate(i)
-					created = true
+					if (item)
+						created = true
 				}
 			}
 

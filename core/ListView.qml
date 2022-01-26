@@ -192,6 +192,12 @@ BaseView {
 		var prerender = noPrerender? 0: this.prerender * size
 		var leftMargin = -prerender
 		var rightMargin = size + prerender
+
+		if (sizes.length > items.length) {
+			///fixme: override model update api to make sizes stable
+			sizes = sizes.slice(0, items.length)
+		}
+
 		if (this._scrollDelta != 0) {
 			if (this.nativeScrolling) {
 				if (horizontal)
@@ -209,9 +215,8 @@ BaseView {
 			function(item) { return item.width }:
 			function(item) { return item.height }
 
-		var itemsCount = 0
 		var refSize
-		for(var i = 0; i < n && (refSize === undefined || p + c < rightMargin); ++i, ++itemsCount) {
+		for(var i = 0; i < n; ++i) {
 			var item = items[i]
 			var viewPos = p + c
 
@@ -232,13 +237,10 @@ BaseView {
 				}
 			}
 
-			if (!item && visibleInModel) {
-				//we can render, or no sizes available
-				if (renderable || s === undefined) {
-					item = this._createDelegate(i)
-					if (item)
-						created = true
-				}
+			if (!item && visibleInModel && (renderable || s === undefined)) {
+				item = this._createDelegate(i)
+				if (item)
+					created = true
 			}
 
 			if (item && visibleInModel)
@@ -275,7 +277,7 @@ BaseView {
 					}
 				}
 			} else {
-				var nextP = p + refSize
+				var nextP = p + s
 				if (horizontal) {
 					if (nextP > maxW)
 						maxW = nextP
@@ -287,27 +289,8 @@ BaseView {
 
 			p += s + this.spacing
 		}
-		for( ;i < n; ++i) {
-			var item = items[i]
-			if (item) {
-				item.visibleInView = false
-				if (discardDelegates) {
-					this._discardItem(item)
-					items[i] = null
-					created = true
-				}
-			}
-		}
 		if (p > startPos)
 			p -= this.spacing;
-
-		if (sizes.length > items.length) {
-			///fixme: override model update api to make sizes stable
-			sizes = sizes.slice(0, items.length)
-		}
-
-		if (itemsCount)
-			p *= items.length / itemsCount
 
 		if (this.trace)
 			log('result: ' + p + ', max: ' + maxW + 'x' + maxH)

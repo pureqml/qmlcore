@@ -361,6 +361,28 @@ BaseLayout {
 			this.contentY = y + ih - h + cmb
 	}
 
+	function positionViewAtEndHorizontally() {
+		var w = this.width
+		var cmr = this.contentMargin.right
+		var cml = this.contentMargin.left
+
+		var end = this.contentWidth + cmr
+		var pos = end - w
+		if (pos > -cml)
+			this.contentX = pos
+	}
+
+	function positionViewAtEndVertically() {
+		var h = this.height
+		var cmb = this.contentMargin.bottom
+		var cmt = this.contentMargin.top
+
+		var end = this.contentHeight + cmb
+		var pos = end - h
+		if (pos > -cmt)
+			this.contentY = pos
+	}
+
 	function itemAtIndex(idx) {
 		var item = this._items[idx]
 		return item? item: null

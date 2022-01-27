@@ -28,7 +28,6 @@ BaseView {
 		}
 	}
 
-	///@private
 	function positionViewAtIndex(idx) {
 		if (this.trace)
 			log('positionViewAtIndex ' + idx)
@@ -42,6 +41,13 @@ BaseView {
 		} else {
 			this.positionViewAtItemVertically(itemBox, center, true)
 		}
+	}
+
+	function positionViewAtEnd() {
+		if (this.orientation === this.Horizontal)
+			this.positionViewAtEndHorizontally()
+		else
+			this.positionViewAtEndVertically()
 	}
 
 	///@private

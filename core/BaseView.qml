@@ -320,10 +320,10 @@ BaseLayout {
 	}
 
 	function positionViewAtItemHorizontally(itemBox, center, centerOversized) {
-		var cx = this.contentX, cy = this.contentY
-		var x = itemBox[0], y = itemBox[1]
-		var iw = itemBox[2], ih = itemBox[3]
-		var w = this.width, h = this.height
+		var cx = this.contentX
+		var x = itemBox[0]
+		var iw = itemBox[2]
+		var w = this.width
 		var cmr = this.contentMargin.right
 		var cml = this.contentMargin.left
 
@@ -341,10 +341,10 @@ BaseLayout {
 	}
 
 	function positionViewAtItemVertically(itemBox, center, centerOversized) {
-		var cx = this.contentX, cy = this.contentY
-		var x = itemBox[0], y = itemBox[1]
-		var iw = itemBox[2], ih = itemBox[3]
-		var w = this.width, h = this.height
+		var cy = this.contentY
+		var y = itemBox[1]
+		var ih = itemBox[3]
+		var h = this.height
 		var cmt = this.contentMargin.top
 		var cmb = this.contentMargin.bottom
 

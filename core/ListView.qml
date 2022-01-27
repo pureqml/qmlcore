@@ -311,6 +311,9 @@ BaseView {
 			this.contentWidth = maxW
 			this.contentHeight = p
 		}
+		if (this.positionMode == this.End && !this._skipPositioning) {
+			this.positionViewAtEnd()
+		}
 		this.layoutFinished()
 		if (created)
 			this._context.scheduleComplete()

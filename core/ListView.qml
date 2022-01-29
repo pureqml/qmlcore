@@ -221,13 +221,18 @@ BaseView {
 		for(var i = 0; i < n; ++i) {
 			var item = items[i]
 			var viewPos = p + c
+			var s
 
-			var s = sizes[i]
-			if (s !== undefined) {
-				if (refSize === undefined)
-					refSize = s
-			} else
-				s = refSize
+			if (item) {
+				s = refSize = sizes[i] = (horizontal? item.width: item.height)
+			} else {
+				s = sizes[i]
+				if (s !== undefined) {
+					if (refSize === undefined)
+						refSize = s
+				} else
+					s = refSize
+			}
 
 			var renderable = viewPos + (s !== undefined? s: 0) >= leftMargin && viewPos < rightMargin
 
@@ -236,20 +241,17 @@ BaseView {
 				visibleInModel = model.getProperty(i, visibilityProperty)
 				if (!visibleInModel) {
 					renderable = false
+					s = sizes[i] = 0
 				}
 			}
 
 			if (!item && visibleInModel && (renderable || s === undefined)) {
 				item = this._createDelegate(i)
-				if (item)
+				if (item) {
+					s = refSize = sizes[i] = (horizontal? item.width: item.height)
 					created = true
+				}
 			}
-
-			if (item && visibleInModel)
-				s = refSize = sizes[i] = (horizontal? item.width: item.height)
-
-			else if (!visibleInModel)
-				s = sizes[i] = 0
 
 			if (item) {
 				var visible = visibleInModel && (viewPos + s >= 0 && viewPos < size) //checking real delegate visibility, without prerender margin

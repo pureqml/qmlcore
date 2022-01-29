@@ -201,7 +201,7 @@ BaseView {
 
 		if (sizes.length > items.length) {
 			///fixme: override model update api to make sizes stable
-			sizes = sizes.slice(0, items.length)
+			sizes.splice(items.length, sizes.length - items.length)
 		}
 
 		if (this._scrollDelta != 0) {

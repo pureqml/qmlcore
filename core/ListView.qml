@@ -217,10 +217,6 @@ BaseView {
 		if (this.trace)
 			log("layout " + n + " into " + w + "x" + h + " @ " + this.content.x + "," + this.content.y + ", prerender: " + prerender + ", range: " + leftMargin + ":" + rightMargin)
 
-		var getItemSize = horizontal?
-			function(item) { return item.width }:
-			function(item) { return item.height }
-
 		var refSize
 		for(var i = 0; i < n; ++i) {
 			var item = items[i]
@@ -250,7 +246,8 @@ BaseView {
 			}
 
 			if (item && visibleInModel)
-				s = refSize = sizes[i] = getItemSize(item)
+				s = refSize = sizes[i] = (horizontal? item.width: item.height)
+
 			else if (!visibleInModel)
 				s = sizes[i] = 0
 

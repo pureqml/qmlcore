@@ -209,7 +209,7 @@ def find_platform_path(root, plugins_path, platform):
 	raise Exception("no platform '%s' found" %platform)
 
 
-def copytree(src, dst, symlinks=False, ignore=None):
+def copytree(src, dst):
 	for item in os.listdir(src):
 		s = os.path.join(src, item)
 		d = os.path.join(dst, item)

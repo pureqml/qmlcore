@@ -131,7 +131,7 @@ def process_template_simple(destination, source, context):
 def process_template_jinja2(destination, source, context):
 	from jinja2 import Environment, FileSystemLoader, BaseLoader, TemplateNotFound
 
-	src, name = os.path.split(source)
+	_, name = os.path.split(source)
 
 	class Loader(BaseLoader):
 		def __init__(self, paths):
@@ -176,7 +176,7 @@ def process_template(destination, source, context):
 		raise Exception('unknown templater: %s' %t)
 
 def apply_templates(src, dst, context, templates):
-	_path, name = path.split(src)
+	_, name = path.split(src)
 	for pattern in templates:
 		if fnmatch.fnmatch(name, pattern):
 			process_template(dst, src, context)
@@ -192,8 +192,8 @@ def copy(source, destination, context, templates):
 	for src in files:
 		if verbose:
 			print('+', src, file=sys.stderr)
-		_path, name = path.split(src)
-		name, ext = path.splitext(name)
+		_, name = path.split(src)
+		name, _ = path.splitext(name)
 		apply_templates(src, destination, context, templates)
 
 def find_platform_path(root, plugins_path, platform):

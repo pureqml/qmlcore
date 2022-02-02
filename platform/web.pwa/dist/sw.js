@@ -1,5 +1,6 @@
 var CACHE_NAME = 'pureqml-cache-v1';
-var urlsToCache = ["/"] + {{ installed_files | tojson }};
+var urlsToCache = {{ installed_files | tojson }};
+urlsToCache.push('/')
 
 self.addEventListener('install', function(event) {
 	event.waitUntil(

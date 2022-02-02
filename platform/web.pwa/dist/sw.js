@@ -1,16 +1,11 @@
 var CACHE_NAME = 'pureqml-cache-v1';
-var urlsToCache = [
-	'/',
-	'modernizr-custom.js',
-	'{{app}}'
-];
+var urlsToCache = ["/"] + {{ installed_files | tojson }};
 
 self.addEventListener('install', function(event) {
-	// Perform install steps
 	event.waitUntil(
 	caches.open(CACHE_NAME)
 		.then(function(cache) {
-		console.log('Opened cache');
+		console.log('Opened cache, adding cached urls: ' + urlsToCache.length);
 		return cache.addAll(urlsToCache);
 		})
 	);
@@ -27,7 +22,7 @@ self.addEventListener('fetch', function(event) {
 			return fetch(event.request, {credentials: 'include'}).then(
 			function(response) {
 				if(!response || response.status !== 200 || response.type !== 'basic') {
-				return response;
+					return response;
 				}
 
 				var responseToCache = response.clone();
@@ -38,8 +33,7 @@ self.addEventListener('fetch', function(event) {
 				});
 
 				return response;
-			}
-			);
+			});
 		})
 	);
 });

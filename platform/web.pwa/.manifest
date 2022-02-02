@@ -1,5 +1,6 @@
 {
 	"requires": ["web"],
-	"templates": ["*.html", "sw.js"]
+	"templates": ["*.html", "sw.js"],
+	"templater": "jinja2"
 }
 

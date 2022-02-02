@@ -196,6 +196,14 @@ def copy(source, destination, context, templates):
 		name, _ = path.splitext(name)
 		apply_templates(src, destination, context, templates)
 
+def collect(source, destination):
+	r = []
+	for root, _, files in os.walk(source):
+		for file in files:
+			rel = os.path.relpath(os.path.join(root, file), source)
+			r.append((rel, os.path.join(root, file), os.path.join(destination, rel)))
+	return r
+
 def find_platform_path(root, plugins_path, platform):
 	platform_path = path.join(root, 'platform', platform)
 	if path.exists(platform_path):
@@ -364,6 +372,7 @@ def build(root, platform, apps, app, manifest):
 			print(value)
 		sys.exit(0)
 
+	files = collect(path.join(root, 'dist'), target)
 	copy(path.join(root, 'dist'), target, context, templates)
 
 	template_path = []
@@ -387,6 +396,13 @@ def build(root, platform, apps, app, manifest):
 			template_path.append(platform_dist)
 
 	n = len(template_path)
+	for i in range(n):
+		idx = n - 1 - i
+		dist = template_path[idx]
+		files += collect(dist, target)
+
+	context["installed_files"] = list(map(lambda x: x[0], files))
+
 	for i in range(n):
 		idx = n - 1 - i
 		dist = template_path[idx]

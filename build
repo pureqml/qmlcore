@@ -351,6 +351,9 @@ def build(root, platform, apps, app, manifest):
 	context = { 'id': app, 'app': script, 'templater': templater }
 	for sm in subplatforms_manifests:
 		context.update(sm.properties)
+		if sm.templater != 'simple':
+			context['templater'] = sm.templater
+			templater = sm.templater
 	context.update(manifest.properties)
 
 	if args.print_property:

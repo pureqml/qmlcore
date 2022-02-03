@@ -157,7 +157,11 @@ class generator(object):
 				base_class[name] = base_type
 
 				if name not in code:
-					code[name] = self.generate_component(component)
+					try:
+						code[name] = self.generate_component(component)
+					except Exception as ex:
+						ex.filename = name
+						raise
 
 		r = ''
 		order = []

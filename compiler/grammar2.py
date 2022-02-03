@@ -671,11 +671,16 @@ class Parser(object):
 			children.append(self.__read_scope_decl())
 		return lang.Component(comp_name, children)
 
-	def parse(self):
+	def parse(self, parse_all = True):
 		while self.maybe('import'):
 			self.read(rest_of_the_line_re, "Skip to the end of the line failed")
 
-		return [self.__read_comp()]
+		r = [self.__read_comp()]
+		self._skip()
+		if parse_all:
+			if self.__pos < len(self.__text):
+				self.error("Extra text after component declaration")
+		return r
 
 def parse(data):
 	global doc_root_component

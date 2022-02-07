@@ -73,24 +73,25 @@ class Component(object):
 			if (category == "Assignment"):
 				continue
 			values = children.setdefault(category, [])
+			doc = {}
 			if (category == "Property"):
-				child.name = child.properties[0][0]
+				doc['name'] = child.properties[0][0]
 				if hasattr(child.properties[0][1], "children"):
 					component_file_name = child.type + ".qml"
 					if component_file_name in component_path_map:
 						component_dir = component_path_map[component_file_name][2:]
 						component_dir = component_dir.replace("/", ".")
-						child.ref = component_dir + "/" + component_file_name[:-4]
-					child.defaultValue = child.properties[0][1].name
+						doc['ref'] = component_dir + "/" + component_file_name[:-4]
+					doc['defaultValue'] = child.properties[0][1].name
 				else:
-					child.defaultValue = child.properties[0][1][1:-1] if child.properties[0][1] is not None else ""
-					if child.defaultValue is not None and len(child.defaultValue) > 1:
-						if child.defaultValue[0] == '"':
-							child.defaultValue = child.defaultValue[1:]
-						if child.defaultValue[-1] == '"':
-							child.defaultValue = child.defaultValue[:-1]
+					doc['defaultValue'] = child.properties[0][1][1:-1] if child.properties[0][1] is not None else ""
+					if doc['defaultValue'] is not None and len(doc['defaultValue']) > 1:
+						if doc['defaultValue'][0] == '"':
+							doc['defaultValue'] = doc['defaultValue'][1:]
+						if doc['defaultValue'][-1] == '"':
+							doc['defaultValue'] = doc['defaultValue'][:-1]
 
-			values.append(child)
+			values.append(doc)
 
 		data = []
 		if 'Property' in children:

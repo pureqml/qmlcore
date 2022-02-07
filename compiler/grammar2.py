@@ -569,6 +569,8 @@ class Parser(object):
 				value = self.__read_expression()
 				values.append(lang.Assignment(name, value))
 			return lang.AssignmentScope(identifiers[0], values)
+		else:
+			self.error("Unexpected identifier(s): %s" %",".join(identifiers))
 
 
 	def __read_function(self, async_f = False):

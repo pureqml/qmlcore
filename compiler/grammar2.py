@@ -362,6 +362,8 @@ class Parser(object):
 		self.__pos = 0
 		self.__lineno = 1
 		self.__colno = 1
+		self.__last_object = None
+		self.__next_doc = None
 
 	@property
 	def at_end(self):
@@ -398,10 +400,40 @@ class Parser(object):
 
 		self.__pos = pos
 
+	def __docstring(self, text, prev):
+		if prev:
+			if self.__last_object:
+				if self.__last_object.doc is not None:
+					self.__last_object.doc = lang.DocumentationString(self.__last_object.doc.text + " " + text)
+				else:
+					self.__last_object.doc = lang.DocumentationString(text)
+			else:
+				self.error("Found docstring without previous object")
+		else:
+			if self.__next_doc is not None:
+				self.__next_doc += " " + text
+			else:
+				self.__next_doc = text
+
+	def __return(self, object):
+		if self.__next_doc is not None:
+			object.doc = lang.DocumentationString(self.__next_doc)
+			self.__next_doc = None
+		self.__last_object = object
+		return object
+
 	def _skip(self):
 		while True:
 			m = skip_re.match(self.next)
 			if m is not None:
+				text = m.group(0).strip()
+				if text.startswith('///<'):
+					self.__docstring(text[4:], True)
+				elif text.startswith('///'):
+					self.__docstring(text[3:], False)
+				elif text.startswith('/**'):
+					end = text.rfind('*/')
+					self.__docstring(text[3:end], False)
 				self.advance(m.end())
 			else:
 				break
@@ -510,18 +542,18 @@ class Parser(object):
 			else:
 				def_value = None
 			self.__read_statement_end()
-			return lang.EnumProperty(type, values, def_value)
+			return self.__return(lang.EnumProperty(type, values, def_value))
 		if type == 'const':
 			name = self.read(identifier_re, "Expected const property name")
 			self.read(':', "Expected : before const property code")
 			code = self.__read_code()
-			return lang.Property("const", [(name, code)])
+			return self.__return(lang.Property("const", [(name, code)]))
 		if type == 'alias':
 			name = self.read(identifier_re, "Expected alias property name")
 			self.read(':', "Expected : before alias target")
 			target = self.read(nested_identifier_re, "Expected identifier as an alias target")
 			self.__read_statement_end()
-			return lang.AliasProperty(name, target)
+			return self.__return(lang.AliasProperty(name, target))
 		names = self.__read_list(identifier_re, ',', "Expected identifier in property list")
 		if len(names) == 1:
 			#Allow initialisation for the single property
@@ -534,10 +566,10 @@ class Parser(object):
 			else:
 				self.__read_statement_end()
 			name = names[0]
-			return lang.Property(type, [(name, def_value)])
+			return self.__return(lang.Property(type, [(name, def_value)]))
 		else:
 			self.read(';', 'Expected ; at the end of property declaration')
-			return lang.Property(type, map(lambda name: (name, None), names))
+			return self.__return(lang.Property(type, map(lambda name: (name, None), names)))
 
 	def __read_rules_with_id(self, identifiers):
 		args = []
@@ -549,16 +581,16 @@ class Parser(object):
 		if self.maybe(':'):
 			if self.lookahead('{'):
 				code = self.__read_code()
-				return lang.Method(identifiers, args, code, True, False)
+				return self.__return(lang.Method(identifiers, args, code, True, False))
 
 			if len(identifiers) > 1:
 				self.error("Multiple identifiers are not allowed in assignment")
 
 			if self.lookahead(component_name_lookahead):
-				return lang.Assignment(identifiers[0], self.__read_comp())
+				return self.__return(lang.Assignment(identifiers[0], self.__read_comp()))
 
 			value = self.__read_expression()
-			return lang.Assignment(identifiers[0], value)
+			return self.__return(lang.Assignment(identifiers[0], value))
 		elif self.maybe('{'):
 			if len(identifiers) > 1:
 				self.error("Multiple identifiers are not allowed in assignment scope")
@@ -567,8 +599,8 @@ class Parser(object):
 				name = self.read(nested_identifier_re, "Expected identifier in assignment scope")
 				self.read(':', "Expected : after identifier in assignment scope")
 				value = self.__read_expression()
-				values.append(lang.Assignment(name, value))
-			return lang.AssignmentScope(identifiers[0], values)
+				values.append(self.__return(lang.Assignment(name, value)))
+			return self.__return(lang.AssignmentScope(identifiers[0], values))
 		else:
 			self.error("Unexpected identifier(s): %s" %",".join(identifiers))
 
@@ -581,7 +613,7 @@ class Parser(object):
 			args = self.__read_list(identifier_re, ',', "Expected argument list")
 			self.read(')', "Expected ) at the end of argument list")
 		code = self.__read_code()
-		return lang.Method([name], args, code, False, async_f)
+		return self.__return(lang.Method([name], args, code, False, async_f))
 
 
 	def __read_json_value(self):
@@ -626,32 +658,32 @@ class Parser(object):
 
 	def __read_scope_decl(self):
 		if self.maybe('ListElement'):
-			return lang.ListElement(self.__read_json_object())
+			return self.__return(lang.ListElement(self.__read_json_object()))
 		elif self.maybe('Behavior'):
 			self.read("on", "Expected on keyword after Behavior declaration")
 			targets = self.__read_list(nested_identifier_re, ",", "Expected identifier list after on keyword")
 			self.read("{", "Expected { after identifier list in behavior declaration")
 			comp = self.__read_comp()
 			self.read("}", "Expected } after behavior animation declaration")
-			return lang.Behavior(targets, comp)
+			return self.__return(lang.Behavior(targets, comp))
 		elif self.maybe('signal'):
 			name = self.read(identifier_re, "Expected identifier in signal declaration")
 			self.__read_statement_end()
-			return lang.Signal(name)
+			return self.__return(lang.Signal(name))
 		elif self.maybe('property'):
 			return self.__read_property()
 		elif self.maybe('id'):
 			self.read(':', "Expected : after id keyword")
 			name = self.read(identifier_re, "Expected identifier in id assignment")
 			self.__read_statement_end()
-			return lang.IdAssignment(name)
+			return self.__return(lang.IdAssignment(name))
 		elif self.maybe('const'):
 			type = self.read(property_type_re, "Expected type after const keyword")
 			name = self.read(component_name, "Expected Capitalised const name")
 			self.read(':', "Expected : after const identifier")
 			value = self.__read_json_value()
 			self.__read_statement_end()
-			return lang.Const(type, name, value)
+			return self.__return(lang.Const(type, name, value))
 		elif self.maybe('async'):
 			self.error("async fixme")
 		elif self.maybe('function'):
@@ -671,7 +703,7 @@ class Parser(object):
 		children = []
 		while not self.maybe('}'):
 			children.append(self.__read_scope_decl())
-		return lang.Component(comp_name, children)
+		return self.__return(lang.Component(comp_name, children))
 
 	def parse(self, parse_all = True):
 		while self.maybe('import'):

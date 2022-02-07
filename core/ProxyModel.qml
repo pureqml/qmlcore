@@ -155,6 +155,21 @@ Model {
 		return row
 	}
 
+	///returns a model's property by index, throw exception if index is out of range or if requested row is non-object
+	function getProperty(idx, name) {
+		var targetRows = this.target._rows
+		if (!targetRows)
+			throw new Error('Bad target model')
+		if (idx < 0 || idx >= this._indices.length)
+			throw new Error('index ' + idx + ' out of bounds')
+		if (name === 'index')
+			return idx
+		var row = targetRows[this._indices[idx]]
+		if (!(row instanceof Object))
+			throw new Error('row is non-object')
+		return row[name]
+	}
+
 	///remove all rows
 	function clear() {
 		this._indices = []

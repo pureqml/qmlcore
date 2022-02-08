@@ -45,7 +45,7 @@ class Component(object):
 
 			if category == 'Property':
 				p = { "text": docText, "internal": internal, "type": value.target.type, "defaultValue": value.defaultValue }
-				if hasattr(value, 'ref'):
+				if value.ref:
 					p['ref'] = value.ref
 				r[value.name] = p
 			elif category == 'Method' and docText:
@@ -91,6 +91,8 @@ class Component(object):
 					component_file_name = child.type + ".qml"
 					if component_file_name in component_path_map:
 						component_dir = component_path_map[component_file_name][2:]
+						if component_dir.startswith("qmlcore/"):
+							component_dir = component_dir[8:]
 						component_dir = component_dir.replace("/", ".")
 						doc.ref = component_dir + "/" + component_file_name[:-4]
 					doc.defaultValue = child.properties[0][1].name

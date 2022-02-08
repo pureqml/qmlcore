@@ -35,7 +35,7 @@ class Component(object):
 			docText = value.doc.text if value.doc is not None else ""
 			docLines = docText.splitlines()
 
-			category = value.__class__.__name__
+			category = value.target.__class__.__name__
 
 			forceInternal = category == 'Method' and (re.match("^on.*Changed$", value.name[0]) or \
 													  value.name[0] == "onCompleted" or \
@@ -44,7 +44,7 @@ class Component(object):
 			internal = bool(forceInternal) or ((value.doc is not None) and ("@private" in value.doc.text or "@internal" in value.doc.text))
 
 			if category == 'Property':
-				p = { "text": docText, "internal": internal, "type": value.type, "defaultValue": value.defaultValue }
+				p = { "text": docText, "internal": internal, "type": value.target.type, "defaultValue": value.defaultValue }
 				if hasattr(value, 'ref'):
 					p['ref'] = value.ref
 				r[value.name] = p

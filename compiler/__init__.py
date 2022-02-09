@@ -23,9 +23,9 @@ else:
 	import pickle
 
 class Cache(object):
-	def __init__(self, dir, experimental_parser):
+	def __init__(self, dir, old_parser):
 		self.dir = dir
-		self.experimental_parser = experimental_parser
+		self.old_parser = old_parser
 		try:
 			os.mkdir(dir)
 		except:
@@ -33,7 +33,7 @@ class Cache(object):
 		try:
 			import inspect
 			data = ""
-			if experimental_parser:
+			if old_parser:
 				data += inspect.getsource(compiler.grammar2)
 			else:
 				data += inspect.getsource(compiler.grammar)
@@ -57,7 +57,7 @@ class Cache(object):
 		except:
 			print("parsing", path, "...", name, file=sys.stderr)
 			try:
-				if self.experimental_parser:
+				if not self.old_parser:
 					tree = compiler.grammar2.parse(data)
 				else:
 					tree = compiler.grammar.parse(data)
@@ -242,8 +242,8 @@ class Compiler(object):
 
 		print("done", file=sys.stderr)
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", experimental_parser = False):
-		self.cache = Cache(cache_dir, experimental_parser)
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", old_parser = False):
+		self.cache = Cache(cache_dir, old_parser)
 		self.root = root
 		self.output_dir = output_dir
 		self.project_dirs = project_dirs
@@ -267,7 +267,7 @@ class Compiler(object):
 
 
 def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = set(),
-		wait = False, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", experimental_parser=False):
+		wait = False, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", old_parser=False):
 	if wait:
 		try:
 			import pyinotify
@@ -300,7 +300,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = 
 		except:
 			raise Exception("it seems you don't have pyinotify module installed, please install it to run build with -d option")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs, cache_dir=cache_dir, experimental_parser=experimental_parser)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs, cache_dir=cache_dir, old_parser=old_parser)
 
 	notifier = None
 

@@ -54,7 +54,7 @@ Model {
 	}
 
 	///@private
-	function _findIndex(row) {
+	function _findIndex(row, rowTargetIndex) {
 		var rows = this.target._rows
 		var indices = this._indices
 		var cmp = this._cmp
@@ -63,7 +63,7 @@ Model {
 		while(l < h) {
 			var m = (l + h) >> 1
 			var targetIndex = indices[m]
-			var r = cmp(row, rows[targetIndex])
+			var r = cmp? cmp(row, rows[targetIndex]): rowTargetIndex - targetIndex
 			if (r > 0) {
 				l = m + 1
 			} else if (r < 0) {
@@ -94,12 +94,7 @@ Model {
 			if (filter && !filter(row))
 				continue
 
-			var insertPos
-			if (cmp) {
-				insertPos = this._findIndex(row)
-			} else {
-				insertPos = begin
-			}
+			var insertPos = this._findIndex(row, i)
 			insert.push([insertPos, i])
 		}
 
@@ -124,8 +119,9 @@ Model {
 		var remove = []
 		var rangeSize = update? 0: end - begin
 		for(var i = 0; i < indices.length; ++i) {
-			if (indices[i] >= begin) {
-				if (indices[i] < end) {
+			var targetIdx = indices[i]
+			if (targetIdx >= begin) {
+				if (targetIdx < end) {
 					indices.splice(i, 1)
 					remove.push(i)
 					--i

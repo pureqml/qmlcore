@@ -86,6 +86,7 @@ Item {
 		return instance;
 	}
 
+	///You must wrap your callback with this function if you pass callback to native function.
 	function wrapNativeCallback(callback) {
 		var ctx = this
 		return function() {

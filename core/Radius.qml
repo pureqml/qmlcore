@@ -9,14 +9,7 @@ Object {
 		RadiusPrototype.defaultProperty = 'radius';
 	}
 
-	onRadiusUpdate,
-	onTopLeftUpdate,
-	onTopRightUpdate,
-	onBottomLeftUpdate,
-	onBottomRightUpdate: {
-		log('updating border')
-	}
-	onCompleted: {
+	_updateValue: {
 		var radius = this.radius
 		var tl = this.topLeft || radius
 		var tr = this.topRight || radius
@@ -26,5 +19,13 @@ Object {
 			this.parent.style('border-radius', tl)
 		else
 			this.parent.style('border-radius', tl + 'px ' + tr + 'px ' + br + 'px ' + bl + 'px')
+	}
+
+	onRadiusChanged,
+	onTopLeftChanged,
+	onTopRightChanged,
+	onBottomLeftChanged,
+	onBottomRightChanged: {
+		this._updateValue()
 	}
 }

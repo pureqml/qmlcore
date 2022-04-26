@@ -52,7 +52,7 @@ nested_identifier_re = re.compile(r'[a-z_][A-Za-z0-9_\.]*')
 function_name_re = re.compile(r'[a-z_][a-z0-9_\.]*', re.IGNORECASE)
 string_re = StringParser()
 kw_re = re.compile(r'(?:true|false|null)')
-NUMBER_RE = r"(?:\d+\.\d+(e[+-]?\d+)?|(?:0x)?[0-9]+)"
+NUMBER_RE = r"(?:(?:(?:\d*\.\d+)|(?:\d+\.?))(?:e[+-]?\d+)?|(?:0x)?[0-9]+)"
 number_re = re.compile(NUMBER_RE, re.IGNORECASE)
 percent_number_re = re.compile(NUMBER_RE + r'%', re.IGNORECASE)
 scale_number_re = re.compile(NUMBER_RE + r's', re.IGNORECASE)
@@ -143,19 +143,6 @@ class PrattParser(object):
 
 	def next(self, parser):
 		parser._skip()
-		next = parser.next
-		next_n = len(next)
-		for term, sym in self.symbols:
-			n = len(term)
-			if n > next_n:
-				continue
-
-			keyword = term[-1].isalnum()
-			if next.startswith(term):
-				if keyword and n < next_n and next[n].isalnum():
-					continue
-				parser.advance(len(term))
-				return sym
 
 		next = parser.maybe(kw_re)
 		if next:
@@ -171,6 +158,21 @@ class PrattParser(object):
 		next = parser.maybe(number_re)
 		if next:
 			return Literal(next)
+
+		next = parser.next
+		next_n = len(next)
+		for term, sym in self.symbols:
+			n = len(term)
+			if n > next_n:
+				continue
+
+			keyword = term[-1].isalnum()
+			if next.startswith(term):
+				if keyword and n < next_n and next[n].isalnum():
+					continue
+				parser.advance(len(term))
+				return sym
+
 		next = parser.maybe(function_name_re)
 		if next:
 			return Literal(next, identifier=True)

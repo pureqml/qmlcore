@@ -41,7 +41,7 @@ Player.prototype.setEventListeners = function() {
 	player.on('emptied', function() { log("Was emptied", dom.networkState); }.bind(ui))
 	player.on('volumechange', function() { ui.muted = dom.muted }.bind(ui))
 	player.on('canplaythrough', function() { log("ready to play"); ui.paused = dom.paused }.bind(ui))
-	player.on('suspend', function() { log('suspended'); ui.paused = true })
+	player.on('suspend', function() { log('suspended') })
 
 	player.on('error', function() {
 		log("Player error occurred", dom.error, "src", ui.source)

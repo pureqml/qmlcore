@@ -33,7 +33,7 @@ class Cache(object):
 		try:
 			import inspect
 			data = ""
-			if old_parser:
+			if not old_parser:
 				data += inspect.getsource(compiler.grammar2)
 			else:
 				data += inspect.getsource(compiler.grammar)

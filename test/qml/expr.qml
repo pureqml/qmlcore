@@ -10,6 +10,7 @@
 // RUN: grep "this.i = ((\$this.h\[0\]) + ((\$this.h\[1\]) \* (\$this.h\[2\])))" %out/qml.expr.js
 // RUN: grep "this.j = (123.456 . toFixed)(2)" %out/qml.expr.js
 // RUN: grep "this.k = ((typeof \$this.i) === 'number')" %out/qml.expr.js
+// RUN: grep "this.l = (\$this.k !== undefined)" %out/qml.expr.js
 
 Object {
 	property int a: 2 + 2 * 2 % 3 / 4;
@@ -23,4 +24,5 @@ Object {
 	property int i: h[0] + h[1] * h[2];
 	property string j: (123.456).toFixed(2);
 	property bool k: typeof i === 'number';
+	property bool l: k !== undefined;
 }

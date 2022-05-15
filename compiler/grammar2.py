@@ -144,6 +144,9 @@ class PrattParser(object):
 	def next(self, parser):
 		parser._skip()
 
+		next = parser.maybe('undefined')
+		if next:
+			return Literal(next)
 		next = parser.maybe(kw_re)
 		if next:
 			return Literal(next)

@@ -52,6 +52,7 @@ nested_identifier_re = re.compile(r'[a-z_][A-Za-z0-9_\.]*')
 function_name_re = re.compile(r'[a-z_][a-z0-9_\.]*', re.IGNORECASE)
 string_re = StringParser()
 kw_re = re.compile(r'(?:true|false|null)')
+expr_kw_re = re.compile(r'(?:true|false|null|undefined)')
 NUMBER_RE = r"(?:(?:(?:\d*\.\d+)|(?:\d+\.?))(?:e[+-]?\d+)?|(?:0x)?[0-9]+)"
 number_re = re.compile(NUMBER_RE, re.IGNORECASE)
 percent_number_re = re.compile(NUMBER_RE + r'%', re.IGNORECASE)
@@ -144,10 +145,7 @@ class PrattParser(object):
 	def next(self, parser):
 		parser._skip()
 
-		next = parser.maybe('undefined')
-		if next:
-			return Literal(next)
-		next = parser.maybe(kw_re)
+		next = parser.maybe(expr_kw_re)
 		if next:
 			return Literal(next)
 		next = parser.maybe(percent_number_re)

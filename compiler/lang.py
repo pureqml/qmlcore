@@ -18,7 +18,7 @@ def value_is_trivial(value):
 	if value[0] == '(' and value[-1] == ')':
 		value = value[1:-1]
 
-	if value == 'true' or value == 'false' or value == 'null':
+	if value == 'true' or value == 'false' or value == 'null' or value == 'undefined' or value == 'this':
 		return True
 
 	if trivial_value_re.match(value):

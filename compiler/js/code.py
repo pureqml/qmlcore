@@ -53,6 +53,7 @@ def parse_deps(parent, text, transform):
 
 	for m in tr_re.finditer(text):
 		deps[(parent + '._context', 'language')] = None
+		break
 
 	def sub(m):
 		path = m.group(1).split('.')

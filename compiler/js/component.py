@@ -554,6 +554,8 @@ class component_generator(object):
 			return ("%s._get('%s')" %(parent, property)) if parent else '_context'
 		elif property == 'parent':
 			return 'parent'
+		elif property == 'this':
+			return 'this'
 		else:
 			prop = self.find_property(registry, property)
 			if prop:

@@ -75,6 +75,8 @@ def parse_deps(parent, text, transform):
 			signal = '_row' if path[1] != 'index' else '_rowIndex'
 			deps[("%s._get('_delegate')" %parent, signal)] = None
 		else:
+			if len(path) > 1 and path[0] == 'this':
+				return '.'.join([parent] + path[1:])
 			dep_parent = parent + '.' + mangle_path(gets, transform) if gets else parent
 			if target != 'parent': #parent property is special - it's not property per se, and is not allowed to change
 				deps[(dep_parent, target)] = None

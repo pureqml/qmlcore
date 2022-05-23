@@ -48,39 +48,85 @@ BaseView {
 	}
 
 	moveUp: {
+		var items = this._items
+		var count = this.count
+		var ci = this.currentIndex
 		if (this.flow === this.FlowLeftToRight) {
-			if (!this.keyNavigationWraps && this.currentIndex < this.columns)
+			var columns = this.columns
+			if (!this.keyNavigationWraps && ci < columns)
 				return false
 
-			if (this.keyNavigationWraps && this.currentIndex - this.columns < 0)
-				this.currentIndex = this.count - 1
-			else if (this.currentIndex - this.columns < 0)
-				this.currentIndex = 0
-			else
-				this.currentIndex -= this.columns
+			if (this.keyNavigationWraps && ci - columns < 0) {
+				for (var i = count - 1; i >= 0; i -= columns) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			} else if (ci - columns < 0) {
+				for (var i = 0; i < count; i += columns) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			} else {
+				for (var i = ci - columns; i >= 0; i -= columns) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			}
 		} else {
-			if (!this.keyNavigationWraps && this.currentIndex === 0)
+			if (!this.keyNavigationWraps && ci === 0)
 				return false
-			--this.currentIndex
+			for (var i = ci - 1; i >= 0; --i) {
+				if (items[i].focus) {
+					this.currentIndex = i
+					break
+				}
+			}
 		}
 		return true
 	}
 
 	moveDown: {
+		var items = this._items
+		var count = this.count
+		var ci = this.currentIndex
+		var columns = this.columns
 		if (this.flow === this.FlowLeftToRight) {
-			var row = Math.floor(this.currentIndex / (this.columns))
-			var rowsCount = Math.floor(this.count / (this.columns))
+			var row = Math.floor(ci / columns)
+			var rowsCount = Math.floor(count / columns)
 			if (!this.keyNavigationWraps && row >= rowsCount)
 				return false
 
-			if (this.keyNavigationWraps && this.currentIndex + this.columns >= this.count)
-				this.currentIndex = 0
-			else if (this.currentIndex + this.columns >= this.count)
-				this.currentIndex = this.count - 1
-			else
-				this.currentIndex += this.columns
+			if (this.keyNavigationWraps && ci + columns >= count) {
+				for (var i = 0; i < count; i += columns) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+
+			} else if (ci + columns >= count) {
+				for (var i = count - 1; i >= 0; i -= columns) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			} else {
+				for (var i = ci + columns; i < count; i += columns) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			}
 		} else {
-			if (!this.keyNavigationWraps && this.currentIndex === this.columns - 1)
+			if (!this.keyNavigationWraps && ci === columns - 1)
 				return false
 			++this.currentIndex
 		}
@@ -88,39 +134,93 @@ BaseView {
 	}
 
 	moveLeft: {
+		var items = this._items
+		var count = this.count
+		var ci = this.currentIndex
 		if (this.flow === this.FlowLeftToRight) {
-			if (this.keyNavigationWraps && this.currentIndex === 0)
-				this.currentIndex = this.count - 1
-			else if (!this.keyNavigationWraps && this.currentIndex === 0)
+			if (this.keyNavigationWraps && ci === 0) {
+				for (var i = count - 1; i >= 0; --i) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			} else if (!this.keyNavigationWraps && ci === 0) {
 				return false
-			else
-				--this.currentIndex
+			} else {
+				for (var i = ci - 1; i >= 0; --i) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			}
 		} else {
-			if (!this.keyNavigationWraps && this.currentIndex < this.rows)
+			var rows = this.rows
+			if (!this.keyNavigationWraps && ci < rows)
 				return false
-			if (this.currentIndex - this.rows < 0)
-				this.currentIndex = 0
-			else
-				this.currentIndex -= this.rows
+
+			if (ci - rows < 0) {
+				for (var i = 0; i < count; i += rows) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			} else {
+				for (var i = ci - rows; i >= 0; i -= rows) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			}
 		}
 		return true
 	}
 
 	moveRight: {
+		var items = this._items
+		var count = this.count
+		var ci = this.currentIndex
 		if (this.flow === this.FlowLeftToRight) {
-			if (this.keyNavigationWraps && this.currentIndex === this.count - 1)
-				this.currentIndex = 0
-			else if (!this.keyNavigationWraps && this.currentIndex === this.count - 1)
+			if (this.keyNavigationWraps && ci === count - 1) {
+				for (var i = count - 1; i >= 0; --i) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			} else if (!this.keyNavigationWraps && ci === count - 1) {
 				return false
-			else
-				++this.currentIndex
+			} else {
+				for (var i = ci + 1; i < count; ++i) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			}
 		} else {
-			if (!this.keyNavigationWraps && this.currentIndex > this.count - this.rows + 1)
+			var rows = this.rows
+			if (!this.keyNavigationWraps && ci > count - rows + 1)
 				return false
-			if (this.currentIndex + this.rows >= this.count)
-				this.currentIndex = this.count - 1
-			else
-				this.currentIndex += this.rows
+
+			if (ci + rows >= count) {
+				for (var i = count - 1; i >= 0; i -= rows) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			} else {
+				for (var i = ci + rows; i < this.count; i += rows) {
+					if (items[i].focus) {
+						this.currentIndex = i
+						break
+					}
+				}
+			}
 		}
 		return true
 	}

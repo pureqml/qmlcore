@@ -252,6 +252,20 @@ Player.prototype.getAudioTracks = function() {
 	return []
 }
 
+Player.prototype.getSubtitles = function() {
+	var textTracks = this.element.dom.textTracks
+	var result = []
+	for (var i = 0; i < textTracks.length; ++i) {
+		var track = textTracks[i]
+		result.push({
+			"id": track.id,
+			"label": track.label,
+			"language": track.language
+		})
+	}
+	return result
+}
+
 Player.prototype.getVideoTracks = function() {
 	return this._videoTracks || []
 }

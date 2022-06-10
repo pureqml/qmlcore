@@ -317,6 +317,8 @@ infix_parser = PrattParser([
 	LeftParenthesis(19),
 	LeftSquareBracket(19),
 
+	Operator('new', None, 18),
+
 	UnsupportedOperator('++', 17, 16),
 	UnsupportedOperator('--', 17, 16),
 	UnsupportedOperator('void', None, 16),

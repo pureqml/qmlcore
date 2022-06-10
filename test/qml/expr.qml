@@ -12,6 +12,7 @@
 // RUN: grep "this.k = ((typeof \$this.i) === 'number')" %out/qml.expr.js
 // RUN: grep "this.l = \$this.func((\$this.k !== undefined));" %out/qml.expr.js
 // RUN: grep "this.m = Date.now();" %out/qml.expr.js
+// RUN: grep "this.n = (new Date());" %out/qml.expr.js
 
 Object {
 	property int a: 2 + 2 * 2 % 3 / 4;
@@ -27,4 +28,5 @@ Object {
 	property bool k: typeof i === 'number';
 	property bool l: this.func(this.k !== undefined);
 	property int m: Date.now();
+	property Date n: new Date();
 }

@@ -567,6 +567,8 @@ var getDefaultValueForType = exports.getDefaultValueForType = function(type) {
 		case 'array':	return []
 		case 'color':
 		case 'Color':	return '#0000'
+		case 'date':
+		case 'Date':	return new Date()
 		default:		return (type[0].toUpperCase() === type[0])? null: undefined
 	}
 }
@@ -578,6 +580,8 @@ var convertTo = exports.convertTo = function(type, value) {
 		case 'bool':	return value? true: false
 		case 'real':	return +value
 		case 'string':	return String(value)
+		case 'date':
+		case 'Date':	return Date(value)
 		default:		return value
 	}
 }
@@ -589,6 +593,8 @@ var getConvertFunction = exports.getConvertFunction = function(type) {
 		case 'bool':	return function(value) { return value? true: false }
 		case 'real':	return function(value) { return +value }
 		case 'string':	return function(value) { return String(value) }
+		case 'date':
+		case 'Date':	return function(value) { return new Date(value) }
 		default:		return function(value) { return value }
 	}
 }

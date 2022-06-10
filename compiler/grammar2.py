@@ -273,17 +273,20 @@ class LeftParenthesis(object):
 
 	def led(self, state, left):
 		args = []
-		next = state.token
-		if next.term != ')':
-			while True:
-				args.append(state.parent.expression(state))
-				if state.token is not None:
-					state.parser.error("Unexpected token %s" %state.token)
-				if not state.parser.maybe(','):
-					break
-				state.parent.advance(state)
-			state.parent.advance(state, ')')
-
+		while True:
+			next = state.token
+			if next is None or next == ')':
+				break
+			expr = state.parent.expression(state)
+			if expr is None:
+				break
+			args.append(expr)
+			if state.token is not None:
+				state.parser.error("Unexpected token %s" %state.token)
+			if not state.parser.maybe(','):
+				break
+			state.parent.advance(state)
+		state.parent.advance(state, ')')
 		return Call(left, args)
 
 	def __repr__(self):

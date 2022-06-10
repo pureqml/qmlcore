@@ -11,6 +11,7 @@
 // RUN: grep "this.j = (123.456 . toFixed)(2)" %out/qml.expr.js
 // RUN: grep "this.k = ((typeof \$this.i) === 'number')" %out/qml.expr.js
 // RUN: grep "this.l = \$this.func((\$this.k !== undefined));" %out/qml.expr.js
+// RUN: grep "this.m = Date.now();" %out/qml.expr.js
 
 Object {
 	property int a: 2 + 2 * 2 % 3 / 4;
@@ -25,4 +26,5 @@ Object {
 	property string j: (123.456).toFixed(2);
 	property bool k: typeof i === 'number';
 	property bool l: this.func(this.k !== undefined);
+	property int m: Date.now();
 }

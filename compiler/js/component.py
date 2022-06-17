@@ -276,21 +276,21 @@ class component_generator(object):
 					name = name[0].upper() + name[1:-7]
 					fullname = path, name
 					if fullname in self.key_handlers:
-						raise Exception("duplicate key handler " + oname)
+						raise Error("duplicate key handler " + oname, self.loc)
 					self.key_handlers[fullname] = ('key', 'event'), code, False
 				elif is_changed:
 					name = name[:-7]
 					fullname = path, name
 					if fullname in self.changed_handlers:
-						raise Exception("duplicate signal handler " + oname)
+						raise Error("duplicate signal handler " + oname, self.loc)
 					self.changed_handlers[fullname] = ('value', ), code, False
 				else:
 					if fullname in self.signal_handlers:
-						raise Exception("duplicate signal handler " + oname)
+						raise Error("duplicate signal handler " + oname, self.loc)
 					self.signal_handlers[fullname] = args, code, False
 			else:
 				if fullname in self.methods:
-					raise Exception("duplicate method " + oname)
+					raise Error("duplicate method " + oname, self.loc)
 				if name == 'onCompleted':
 					fullname = path, '__complete'
 				self.methods[fullname] = args, code, async_
@@ -345,7 +345,7 @@ class component_generator(object):
 					if lang.value_is_trivial(default_value):
 						default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry, None))
 						if deps:
-							raise Exception('trivial value emits dependencies %s (default: %s)' %(deps, default_value))
+							raise Error('trivial value emits dependencies %s (default: %s)' %(deps, default_value), self.loc)
 						args.append(default_value)
 					r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
@@ -386,7 +386,7 @@ class component_generator(object):
 
 			for path, name in methods:
 				if path:
-					raise Exception('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name))
+					raise Error('no <id> qualifiers (%s) allowed in prototypes %s (%s)' %(path, name, self.name), self.loc)
 				code = code.replace('@super.', self.base_proto_name + '.')
 				r.append("%s%s.%s = %s" %(ident, self.proto_name, name, code))
 
@@ -472,10 +472,10 @@ class component_generator(object):
 				return
 
 			if not self.find_property(registry, path[0]):
-				raise Exception('unknown property %s in %s (%s)' %(path[0], self.name, self.component.name))
+				raise Error('unknown property %s in %s (%s)' %(path[0], self.name, self.component.name), self.loc)
 		else: #len(path) == 1
 			if not self.find_property(registry, target):
-				raise Exception('unknown property %s in %s (%s)' %(target, self.name, self.component.name))
+				raise Error('unknown property %s in %s (%s)' %(target, self.name, self.component.name), self.loc)
 
 	def generate_creator_function(self, registry, name, value, ident_n = 1):
 		ident = "\t" * ident_n
@@ -506,14 +506,14 @@ class component_generator(object):
 						if lang.value_is_trivial(default_value):
 							default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry, None))
 							if deps:
-								raise Exception('trivial value emits dependencies %s (default: %s)' %(deps, default_value))
+								raise Error('trivial value emits dependencies %s (default: %s)' %(deps, default_value), self.loc)
 							args.append(default_value)
 						r.append("\tcore.addProperty(%s)" %(", ".join(args)))
 
 			for name, prop in self.enums.items():
-				raise Exception('adding enums without prototype is not supported, consider putting this property (%s) in prototype' %name)
+				raise Error('adding enums without prototype is not supported, consider putting this property (%s) in prototype' %name, self.loc)
 			for name, prop in self.consts.items():
-				raise Exception('adding consts without prototype is not unsupported, consider putting this property (%s) in prototype' %name)
+				raise Error('adding consts without prototype is not unsupported, consider putting this property (%s) in prototype' %name, self.loc)
 
 		for idx, gen in enumerate(self.children):
 			var = "%s$child%d" %(escape(parent), idx)
@@ -527,10 +527,10 @@ class component_generator(object):
 		for target, value in self.assignments.items():
 			if target == "id":
 				if "." in value:
-					raise Exception("expected identifier, not expression")
+					raise Error("expected identifier, not expression", self.loc)
 				r.append("%s%s._setId('%s')" %(ident, parent, value))
 			elif target.endswith(".id"):
-				raise Exception("setting id of the remote object is prohibited")
+				raise Error("setting id of the remote object is prohibited", self.loc)
 			else:
 				self.check_target_property(registry, target)
 
@@ -580,7 +580,7 @@ class component_generator(object):
 				if property in registry.id_set:
 					return ("%s._get('%s')" %(parent, property)) if parent else ("_get('%s')" %property)
 				else:
-					raise Exception("Property %s.%s could not be resolved" %(self.name, property))
+					raise Error("Property %s.%s could not be resolved" %(self.name, property), self.loc)
 
 
 	def get_rvalue(self, registry, parent, target):
@@ -639,7 +639,7 @@ class component_generator(object):
 				var = "%s$%s" %(escape(parent), escape(target))
 				r.append(self.call_setup(registry, ident_n, var, value, closure))
 			else:
-				raise Exception("skip assignment %s = %s" %(target, value))
+				raise Error("skip assignment %s = %s" %(target, value), self.loc)
 
 		def put_in_instance(handler):
 			path, name = handler

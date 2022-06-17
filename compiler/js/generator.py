@@ -3,7 +3,7 @@ from builtins import object
 
 import json
 import re
-from compiler.js import split_name, escape_package, get_package, mangle_package, escape
+from compiler.js import split_name, escape_package, get_package, mangle_package, escape, Error
 from compiler.js.component import component_generator
 from collections import OrderedDict
 
@@ -26,7 +26,7 @@ class generator(object):
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:
-			raise Exception("duplicate component " + name)
+			raise Error("duplicate component " + name, component.loc)
 
 		package, component_name = split_name(name)
 		package = escape_package(package)
@@ -55,7 +55,7 @@ class generator(object):
 	def wrap(self, code, use_globals = False):
 		return "(function() {/** @const */\nvar exports = %s;\n%s\nreturn exports;\n} )" %("_globals" if use_globals else "{}", code)
 
-	def find_component(self, package, name, register_used = True, mangle = False, use_globals = False):
+	def find_component(self, package, name, register_used = True, mangle = False, use_globals = False, loc = None):
 		if name == root_type_name:
 			package = root_type_package
 			#fixme: copypasted
@@ -78,7 +78,7 @@ class generator(object):
 				candidates.append(package_name)
 
 		if not candidates:
-			raise Exception("component %s was not found" %(original_name))
+			raise Error("component %s was not found" %(original_name), loc)
 
 		if len(candidates) > 1:
 			if name_package in candidates: #specified in name, e.g. core.Text
@@ -88,8 +88,8 @@ class generator(object):
 			elif 'core' in candidates: #implicit core lookup
 				package_name = 'core'
 			else:
-				raise Exception("ambiguous component %s, you have to specify one of the packages explicitly: %s" \
-					%(name, " ".join(["%s.%s" %(p, name) for p in candidates])))
+				raise Error("ambiguous component %s, you have to specify one of the packages explicitly: %s" \
+					%(name, " ".join(["%s.%s" %(p, name) for p in candidates])), loc)
 		else:
 			package_name = candidates[0]
 
@@ -200,8 +200,7 @@ class generator(object):
 		path = "_globals"
 		def check(path, packages):
 			for ns in packages.keys():
-				if not ns:
-					raise Exception('internal bug, empty name in packages')
+				assert ns
 				package = escape_package(path + "." + ns)
 				r.append("if (!%s) /** @const */ %s = {}" %(package, package))
 				r.append("var %s = %s" %(mangle_package(package), package))

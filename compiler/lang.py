@@ -36,9 +36,9 @@ def value_is_trivial(value):
 	return False
 
 class Entity(object):
-	__slots__ = 'doc'
-	def __init__(self):
-		self.doc = None
+	__slots__ = ('doc', 'loc')
+	def __init__(self, doc = None, loc = None):
+		self.doc, self.loc = doc, loc
 
 def to_string(value):
 	if isinstance(value, (str, basestring)):
@@ -87,15 +87,15 @@ class DocumentationString(object):
 
 class Component(Entity):
 	__slots__ = 'name', 'children'
-	def __init__(self, name, children):
-		super(Component, self).__init__()
+	def __init__(self, name, children, **kw):
+		super(Component, self).__init__(**kw)
 		self.name = name
 		self.children = children
 
 class Property(Entity):
 	__slots__ = 'lazy', 'const', 'type', 'properties'
-	def __init__(self, type, properties):
-		super(Property, self).__init__()
+	def __init__(self, type, properties, **kw):
+		super(Property, self).__init__(**kw)
 		self.lazy = type == 'lazy'
 		self.const = type == 'const'
 		self.type = type
@@ -103,29 +103,29 @@ class Property(Entity):
 
 class Const(Entity):
 	__slots__ = 'type', 'name', 'value'
-	def __init__(self, type, name, value):
-		super(Const, self).__init__()
+	def __init__(self, type, name, value, **kw):
+		super(Const, self).__init__(**kw)
 		self.type, self.name, self.value = type, name, value
 
 class AliasProperty(Entity):
 	__slots__ = 'name', 'target'
-	def __init__(self, name, target):
-		super(AliasProperty, self).__init__()
+	def __init__(self, name, target, **kw):
+		super(AliasProperty, self).__init__(**kw)
 		self.name = name
 		self.target = target
 
 class EnumProperty(Entity):
 	__slots__ = 'name', 'values', 'default'
-	def __init__(self, name, values, default):
-		super(EnumProperty, self).__init__()
+	def __init__(self, name, values, default, **kw):
+		super(EnumProperty, self).__init__(**kw)
 		self.name = name
 		self.values = values
 		self.default = default
 
 class Method(Entity):
 	__slots__ = 'name', 'args', 'code', 'event', 'async_'
-	def __init__(self, name, args, code, event, async_):
-		super(Method, self).__init__()
+	def __init__(self, name, args, code, event, async_, **kw):
+		super(Method, self).__init__(**kw)
 		self.name = name
 		self.args = args
 		self.code = code
@@ -134,14 +134,14 @@ class Method(Entity):
 
 class IdAssignment(Entity):
 	__slots__ = 'name'
-	def __init__(self, name):
-		super(IdAssignment, self).__init__()
+	def __init__(self, name, **kw):
+		super(IdAssignment, self).__init__(**kw)
 		self.name = name
 
 class Assignment(Entity):
 	__slots__ = 'target', 'value'
-	def __init__(self, target, value):
-		super(Assignment, self).__init__()
+	def __init__(self, target, value, **kw):
+		super(Assignment, self).__init__(**kw)
 		self.target = target
 		if not isinstance(value, (str, basestring)):
 			value = to_string(value)
@@ -152,26 +152,26 @@ class Assignment(Entity):
 
 class AssignmentScope(Entity):
 	__slots__ = 'target', 'values'
-	def __init__(self, target, values):
-		super(AssignmentScope, self).__init__()
+	def __init__(self, target, values, **kw):
+		super(AssignmentScope, self).__init__(**kw)
 		self.target = target
 		self.values = values
 
 class Behavior(Entity):
 	__slots__ = 'target', 'animation'
-	def __init__(self, target, animation):
-		super(Behavior, self).__init__()
+	def __init__(self, target, animation, **kw):
+		super(Behavior, self).__init__(**kw)
 		self.target = target
 		self.animation = animation
 
 class Signal(Entity):
 	__slots__ = 'name'
-	def __init__(self, name):
-		super(Signal, self).__init__()
+	def __init__(self, name, **kw):
+		super(Signal, self).__init__(**kw)
 		self.name = name
 
 class ListElement(Entity):
 	__slots__ = 'data'
-	def __init__(self, data):
-		super(ListElement, self).__init__()
+	def __init__(self, data, **kw):
+		super(ListElement, self).__init__(**kw)
 		self.data = data

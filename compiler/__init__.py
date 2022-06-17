@@ -58,7 +58,7 @@ class Cache(object):
 			print("parsing", path, "...", name, file=sys.stderr)
 			try:
 				if not self.old_parser:
-					tree = compiler.grammar2.parse(data)
+					tree = compiler.grammar2.parse(data, path=path)
 				else:
 					tree = compiler.grammar.parse(data)
 				self.write(name, hashkey, tree)

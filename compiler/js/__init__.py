@@ -33,5 +33,12 @@ def mangle_package(name):
 	package = [''] + package
 	return "$".join(package)
 
+class Error(Exception):
+	def __init__(self, message, loc):
+		if loc:
+			super().__init__("{}: {}".format(loc, message))
+		else:
+			super().__init__(message)
+
 from compiler.js.component import component_generator
 from compiler.js.generator import generator

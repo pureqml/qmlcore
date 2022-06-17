@@ -363,14 +363,35 @@ infix_parser = PrattParser([
 	Conditional(4),
 ])
 
+class Location(object):
+	__slots__ = ('path', 'begin', 'end')
+	def __init__(self, path, begin, end = None):
+		self.path, self.begin, self.end = path, begin, end
+
+	def __str__(self):
+		bl, bc = self.begin
+		el, ec = self.end if self.end else (bl, bc)
+		l = "{}-{}".format(bl, el) if bl != el else "{}".format(bl)
+		c = "{}-{}".format(bc, ec) if bc != ec else "{}".format(bc)
+		return "{}: on line {} column {}".format(self.path, l, c)
+
 class Parser(object):
-	def __init__(self, text):
+	def __init__(self, path, text):
+		self.__path = path
 		self.__text = text
 		self.__pos = 0
 		self.__lineno = 1
 		self.__colno = 1
 		self.__last_object = None
 		self.__next_doc = None
+
+	@property
+	def loc(self):
+		return Location(self.__path, (self.__lineno, self.__colno))
+
+	def location_end(self, loc):
+		loc.end = (self.__lineno, self.__colno)
+		return loc
 
 	@property
 	def at_end(self):
@@ -429,13 +450,14 @@ class Parser(object):
 		self.__next_doc = None
 		return doc
 
-	def __return(self, object, doc):
+	def __return(self, object, doc, loc):
 		if doc:
 			if object.doc:
 				object.doc = lang.DocumentationString(object.doc.text + " " + doc.text)
 			else:
 				object.doc = doc
 		self.__last_object = object
+		object.loc = self.location_end(loc)
 		return object
 
 	def _skip(self):
@@ -548,6 +570,7 @@ class Parser(object):
 		if self.lookahead(':'):
 			return self.__read_rules_with_id(["property"])
 		doc = self.__get_next_doc()
+		loc = self.loc
 		type = self.read(property_type_re, "Expected type after property keyword")
 		if type == 'enum':
 			type = self.read(identifier_re, "Expected type after enum keyword")
@@ -559,18 +582,19 @@ class Parser(object):
 			else:
 				def_value = None
 			self.__read_statement_end()
-			return self.__return(lang.EnumProperty(type, values, def_value), doc)
+			return self.__return(lang.EnumProperty(type, values, def_value), doc, loc)
 		if type == 'const':
 			name = self.read(identifier_re, "Expected const property name")
 			self.read(':', "Expected : before const property code")
 			code = self.__read_code()
-			return self.__return(lang.Property("const", [(name, code)]), doc)
+			return self.__return(lang.Property("const", [(name, code)]), doc, loc)
 		if type == 'alias':
 			name = self.read(identifier_re, "Expected alias property name")
 			self.read(':', "Expected : before alias target")
 			target = self.read(nested_identifier_re, "Expected identifier as an alias target")
 			self.__read_statement_end()
-			return self.__return(lang.AliasProperty(name, target), doc)
+			return self.__return(lang.AliasProperty(name, target), doc, loc)
+
 		names = self.__read_list(identifier_re, ',', "Expected identifier in property list")
 		if len(names) == 1:
 			#Allow initialisation for the single property
@@ -583,14 +607,15 @@ class Parser(object):
 			else:
 				self.__read_statement_end()
 			name = names[0]
-			return self.__return(lang.Property(type, [(name, def_value)]), doc)
+			return self.__return(lang.Property(type, [(name, def_value)]), doc, loc)
 		else:
 			self.read(';', 'Expected ; at the end of property declaration')
-			return self.__return(lang.Property(type, map(lambda name: (name, None), names)), doc)
+			return self.__return(lang.Property(type, map(lambda name: (name, None), names)), doc, loc)
 
 	def __read_rules_with_id(self, identifiers):
 		args = []
 		doc = self.__get_next_doc()
+		loc = self.loc
 		if self.maybe('('):
 			if not self.maybe(')'):
 				args = self.__read_list(identifier_re, ',', "Expected argument list")
@@ -599,16 +624,16 @@ class Parser(object):
 		if self.maybe(':'):
 			if self.lookahead('{'):
 				code = self.__read_code()
-				return self.__return(lang.Method(identifiers, args, code, True, False), doc)
+				return self.__return(lang.Method(identifiers, args, code, True, False), doc, loc)
 
 			if len(identifiers) > 1:
 				self.error("Multiple identifiers are not allowed in assignment")
 
 			if self.lookahead(component_name_lookahead):
-				return self.__return(lang.Assignment(identifiers[0], self.__read_comp()), doc)
+				return self.__return(lang.Assignment(identifiers[0], self.__read_comp()), doc, loc)
 
 			value = self.__read_expression()
-			return self.__return(lang.Assignment(identifiers[0], value), doc)
+			return self.__return(lang.Assignment(identifiers[0], value), doc, loc)
 		elif self.maybe('{'):
 			if len(identifiers) > 1:
 				self.error("Multiple identifiers are not allowed in assignment scope")
@@ -618,13 +643,14 @@ class Parser(object):
 				self.read(':', "Expected : after identifier in assignment scope")
 				value = self.__read_expression()
 				values.append(lang.Assignment(name, value))
-			return self.__return(lang.AssignmentScope(identifiers[0], values), doc)
+			return self.__return(lang.AssignmentScope(identifiers[0], values), doc, loc)
 		else:
 			self.error("Unexpected identifier(s): %s" %",".join(identifiers))
 
 
 	def __read_function(self, async_f = False):
 		doc = self.__get_next_doc()
+		loc = self.loc
 		name = self.read(identifier_re, "Expected identifier")
 		args = []
 		self.read('(', "Expected (argument-list) in function declaration")
@@ -632,7 +658,7 @@ class Parser(object):
 			args = self.__read_list(identifier_re, ',', "Expected argument list")
 			self.read(')', "Expected ) at the end of argument list")
 		code = self.__read_code()
-		return self.__return(lang.Method([name], args, code, False, async_f), doc)
+		return self.__return(lang.Method([name], args, code, False, async_f), doc, loc)
 
 
 	def __read_json_value(self):
@@ -676,9 +702,10 @@ class Parser(object):
 
 
 	def __read_scope_decl(self):
+		loc = self.loc
 		if self.maybe('ListElement'):
 			doc = self.__get_next_doc()
-			return self.__return(lang.ListElement(self.__read_json_object()), doc)
+			return self.__return(lang.ListElement(self.__read_json_object()), doc, loc)
 		elif self.maybe('Behavior'):
 			self.read("on", "Expected on keyword after Behavior declaration")
 			doc = self.__get_next_doc()
@@ -686,12 +713,12 @@ class Parser(object):
 			self.read("{", "Expected { after identifier list in behavior declaration")
 			comp = self.__read_comp()
 			self.read("}", "Expected } after behavior animation declaration")
-			return self.__return(lang.Behavior(targets, comp), doc)
+			return self.__return(lang.Behavior(targets, comp), doc, loc)
 		elif self.maybe('signal'):
 			doc = self.__get_next_doc()
 			name = self.read(identifier_re, "Expected identifier in signal declaration")
 			self.__read_statement_end()
-			return self.__return(lang.Signal(name), doc)
+			return self.__return(lang.Signal(name), doc, loc)
 		elif self.maybe('property'):
 			return self.__read_property()
 		elif self.maybe('id'):
@@ -699,7 +726,7 @@ class Parser(object):
 			self.read(':', "Expected : after id keyword")
 			name = self.read(identifier_re, "Expected identifier in id assignment")
 			self.__read_statement_end()
-			return self.__return(lang.IdAssignment(name), doc)
+			return self.__return(lang.IdAssignment(name), doc, loc)
 		elif self.maybe('const'):
 			doc = self.__get_next_doc()
 			type = self.read(property_type_re, "Expected type after const keyword")
@@ -707,7 +734,7 @@ class Parser(object):
 			self.read(':', "Expected : after const identifier")
 			value = self.__read_json_value()
 			self.__read_statement_end()
-			return self.__return(lang.Const(type, name, value), doc)
+			return self.__return(lang.Const(type, name, value), doc, loc)
 		elif self.maybe('async'):
 			self.error("async fixme")
 		elif self.maybe('function'):
@@ -723,12 +750,13 @@ class Parser(object):
 
 	def __read_comp(self):
 		doc = self.__get_next_doc()
+		loc = self.loc
 		comp_name = self.read(component_name, "Expected component name")
 		self.read(r'{', "Expected {")
 		children = []
 		while not self.maybe('}'):
 			children.append(self.__read_scope_decl())
-		return self.__return(lang.Component(comp_name, children), doc)
+		return self.__return(lang.Component(comp_name, children), doc, loc)
 
 	def parse(self, parse_all = True):
 		while self.maybe('import'):
@@ -741,9 +769,9 @@ class Parser(object):
 				self.error("Extra text after component declaration")
 		return r
 
-def parse(data):
+def parse(data, path = None):
 	global doc_root_component
 	doc_root_component = None
-	parser = Parser(data)
+	parser = Parser(path, data)
 	return parser.parse()
 

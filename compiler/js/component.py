@@ -64,6 +64,10 @@ class component_generator(object):
 	def base_proto_name(self):
 		return self.class_name + 'BasePrototype'
 
+	@property
+	def loc(self):
+		return self.component.loc
+
 	def collect_id(self, id_set):
 		if self.id is not None:
 			id_set.add(self.id)
@@ -198,6 +202,7 @@ class component_generator(object):
 		return code
 
 	def get_base_type(self, registry, *args, **kw):
+		kw['loc'] = self.loc
 		return registry.find_component(self.package, self.component.name, *args, **kw)
 
 	def generate(self, registry):

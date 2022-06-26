@@ -3,7 +3,7 @@ from past.builtins import basestring
 from collections import OrderedDict
 
 from compiler.js import get_package, split_name, escape, mangle_package, Error
-from compiler.js.code import process, parse_deps, generate_accessors, replace_enums, path_or_parent, mangle_path
+from compiler.js.code import process, parse_deps, generate_accessors, get_enum_prologue, path_or_parent, mangle_path
 from compiler import lang
 import json
 from functools import partial
@@ -609,7 +609,7 @@ class component_generator(object):
 		return component_generator.re_scale_name.sub('virtualScale', value)
 
 	def generate_setup_code(self, registry, parent, closure, ident_n = 1):
-		r = []
+		prologue, r = [], []
 		ident = "\t" * ident_n
 
 		for target, value in self.assignments.items():
@@ -619,7 +619,7 @@ class component_generator(object):
 			#print self.name, target, value
 			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
 			if isinstance(value, (str, basestring)):
-				value = replace_enums(value, self, registry)
+				prologue += get_enum_prologue(value, self, registry)
 				value = component_generator.replace_template_values(target_prop, value)
 				r.append('//assigning %s to %s' %(target, value))
 				value, deps = parse_deps(parent, value, partial(self.transform_root, registry, None))
@@ -719,5 +719,6 @@ class component_generator(object):
 
 		r.append(self.generate_animations(registry, parent))
 		r.append('%s%s.completed()' %(ident, parent))
-
-		return "\n".join(r)
+		if prologue:
+			prologue = ["%svar %s;" %(ident, ", ".join(prologue))]
+		return "\n".join(prologue + r)

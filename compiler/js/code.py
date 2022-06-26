@@ -2,18 +2,18 @@ from collections import OrderedDict
 import re
 
 enum_re = re.compile(r'([A-Z]\w*)\.([A-Z]\w*)')
-def replace_enums(text, generator, registry):
-	def replace_enum(m):
+def get_enum_prologue(text, generator, registry):
+	prologue = []
+	found_comps = OrderedDict()
+	for m in enum_re.finditer(text):
+		found_comps[m.group(1)] = None
+	for comp in found_comps.keys():
 		try:
-			component = registry.find_component(generator.package, m.group(1))
-			return "_globals.%s.prototype.%s" %(component, m.group(2))
-		except:
-			return m.group(0)
-
-	text = enum_re.sub(replace_enum, text)
-	#print text
-	return text
-
+			component = registry.find_component(generator.package, comp)
+			prologue.append("%s = _globals.%s.prototype" %(comp, component))
+		except Exception as ex:
+			pass
+	return prologue
 
 id_re = re.compile(r'(\w+\s*)(\.\s*\w+\s*)*', re.I | re.M)
 def process(text, generator, registry, args):
@@ -25,14 +25,18 @@ def process(text, generator, registry, args):
 		if found in id_set and found not in args:
 			used_ids[found] = None
 
+	scope_pos = text.index('{') #raise exception, should be 0 actually
+	scope_pos += 1
+	prologue = []
 	if used_ids:
-		scope_pos = text.index('{') #raise exception, should be 0 actually
-		scope_pos += 1
-		prologue = ["%s = this._get('%s', true)" %(x, x) for x in used_ids.keys()]
+		prologue += ["%s = this._get('%s', true)" %(x, x) for x in used_ids.keys()]
+
+	prologue += get_enum_prologue(text, generator, registry)
+
+	if prologue:
 		prologue = '\n\tvar ' + ', '.join(prologue) + '\n'
 		text = text[:scope_pos] + prologue + text[scope_pos:]
 
-	text = replace_enums(text, generator, registry)
 	#print text
 	return text
 

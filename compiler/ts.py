@@ -1,5 +1,11 @@
 from builtins import object, str
 from past.builtins import cmp
+from future.utils import PY2
+
+import sys
+if PY2:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 
 import os
 import re
@@ -33,7 +39,7 @@ class Location(object):
 	def save(self, parent):
 		loc = ET.SubElement(parent, 'location')
 		loc.attrib['filename'] = self.filename
-		loc.attrib['line'] = unicode(self.line)
+		loc.attrib['line'] = str(self.line)
 
 class Translation(object):
 	def __init__(self, type = None, text = None):

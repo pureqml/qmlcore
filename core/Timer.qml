@@ -44,7 +44,13 @@ Object {
 	onRepeatChanged: { this._restart() }
 
 	/// @private
-	function _restart() {
+	function discard() {
+		this._clear()
+		$core.Object.prototype.discard.apply(this)
+	}
+
+	/// @private
+	function _clear() {
 		if (this._timeout) {
 			clearTimeout(this._timeout);
 			this._timeout = undefined;
@@ -53,6 +59,11 @@ Object {
 			clearInterval(this._interval);
 			this._interval = undefined;
 		}
+	}
+
+	/// @private
+	function _restart() {
+		this._clear()
 
 		if (!this.running)
 			return;

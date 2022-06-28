@@ -755,6 +755,8 @@ class Parser(object):
 		self.read(r'{', "Expected {")
 		children = []
 		while not self.maybe('}'):
+			if self.maybe(';'):
+				continue
 			children.append(self.__read_scope_decl())
 		return self.__return(lang.Component(comp_name, children), doc, loc)
 

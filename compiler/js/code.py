@@ -65,7 +65,7 @@ def parse_deps(parent, text, transform):
 		gets = path[:-1]
 
 		#if the path is only a single component, try hierarchical scoping
-		if len(path) == 1:
+		if len(path) == 1 and path[0] != 'model':
 			tpath = mangle_path(path, transform, lookup_parent=True)
 			tpath_v = tpath.split('.')
 			if target != 'parent':

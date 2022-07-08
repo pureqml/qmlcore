@@ -8,14 +8,23 @@ Object {
 	}
 
 	/// @private
-	function _reconnect() {
-		//disconnect
+	function _disconnect() {
 		this.removeAllOn()
 		this.removeAllOnChanged()
+	}
+
+	/// @private
+	function _reconnect() {
+		this._disconnect()
+
+		var target = this.target
+		if((typeof target) !== 'object' || !(target instanceof _globals.core.CoreObject))
+			throw new Error("You can only assign qml objects to target, got: " + target + " of type " + typeof target)
+
 		//reconnect onTargetChanged
 		this.connectOnChanged(this, 'target', this._scheduleReconnect.bind(this)) //restore target connection
 
-		if (!this.target)
+		if (!target)
 			return
 
 		var ons = this._declaredOnConnections

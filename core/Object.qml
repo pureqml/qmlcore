@@ -126,7 +126,7 @@ EventEmitter {
 
 	///@private
 	function connectOnChanged(target, name, callback) {
-		if (!('onChanged' in target)) //could be plain js object, can't connect
+		if (!target || !('onChanged' in target)) //could be plain js object, can't connect
 			return
 		target.onChanged(name, callback)
 		this._changedConnections.push(target, name, callback)

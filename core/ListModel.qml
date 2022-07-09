@@ -1,10 +1,12 @@
 ///simple model implementation
 Model {
-	property array data;	///< declarative way of assigning data
+	property array data;				///< declarative way of assigning data
+	property array localizedFields; 	///< fields which would be localised automatically (passed to tr function before return)
 
 	///@private
 	constructor: {
 		this._rows = []
+		this.connectOnChanged(this._context, 'language', this._languageChanged.bind(this))
 	}
 
 	/**@param rows:Object raw rows array object
@@ -64,11 +66,28 @@ Model {
 	function get(idx) {
 		if (idx < 0 || idx >= this._rows.length)
 			throw new Error('index ' + idx + ' out of bounds (' + this._rows.length + ')')
+
 		var row = this._rows[idx]
 		if (!(row instanceof Object))
 			throw new Error('row is non-object')
-		row.index = idx
-		return row
+
+		var localizedFields = this.localizedFields
+		var n = localizedFields.length;
+		if (n <= 0) {
+			row.index = idx
+			return row
+		}
+
+		var res = Object.assign({}, row)
+		res.index = idx
+		var context = this._context
+		for(var i = 0; i < n; ++i) {
+			var name = localizedFields[i]
+			if (name in res) {
+				res[name] = context.tr(res[name])
+			}
+		}
+		return res
 	}
 
 	/**@param idx:int row's position to get
@@ -144,5 +163,11 @@ Model {
 		}
 		this._rows.splice(to, 0, this._rows.splice(from, 1)[0]);
 		this.reset();
+	}
+
+	function _languageChanged() {
+		if (this.localizedFields.length > 0) {
+			this.reset()
+		}
 	}
 }

@@ -18,7 +18,7 @@ Object {
 		this._disconnect()
 
 		var target = this.target
-		if((typeof target) !== 'object' || !(target instanceof _globals.core.CoreObject))
+		if((typeof target) !== 'object' || !(target instanceof $core.CoreObject))
 			throw new Error("You can only assign qml objects to target, got: " + target + " of type " + typeof target + " to " + this.getComponentPath())
 
 		//reconnect onTargetChanged

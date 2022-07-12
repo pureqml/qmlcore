@@ -19,7 +19,7 @@ Object {
 
 		var target = this.target
 		if((typeof target) !== 'object' || !(target instanceof _globals.core.CoreObject))
-			throw new Error("You can only assign qml objects to target, got: " + target + " of type " + typeof target)
+			throw new Error("You can only assign qml objects to target, got: " + target + " of type " + typeof target + " to " + this.getComponentPath())
 
 		//reconnect onTargetChanged
 		this.connectOnChanged(this, 'target', this._scheduleReconnect.bind(this)) //restore target connection

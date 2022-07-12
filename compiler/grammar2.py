@@ -62,6 +62,23 @@ rest_of_the_line_re = re.compile(r".*$", re.MULTILINE)
 json_object_value_delimiter_re = re.compile(r"[,;]")
 dep_var = re.compile(r"\${(.*?)}")
 
+class Literal(object):
+	__slots__ = ('lbp', 'term', 'identifier', 'resolve')
+	def __init__(self, term, string = False, identifier = False):
+		self.term = escape(term) if string else term
+		self.lbp = 0
+		self.identifier = identifier
+		self.resolve = self.identifier and self.term[0].islower()
+
+	def nud(self, state):
+		return self
+
+	def __repr__(self):
+		return "Literal { %s }" %self.term
+
+	def __str__(self):
+		return "${%s}" %self.term if self.resolve else self.term
+
 class Expression(object):
 	__slots__ = ('op', 'args')
 	def __init__(self, op, *args):
@@ -76,6 +93,8 @@ class Expression(object):
 		if n == 1:
 			return "(%s %s)" %(self.op, args[0])
 		elif n == 2:
+			if self.op == '.' and isinstance(args[1], Literal):
+				args[1].resolve = False
 			return "(%s %s %s)" %(args[0], self.op, args[1])
 		elif n == 3:
 			op = self.op
@@ -115,22 +134,6 @@ class Dereference(object):
 
 	def __str__(self):
 		return "(%s[%s])" %(self.array, self.index)
-
-class Literal(object):
-	__slots__ = ('lbp', 'term', 'identifier')
-	def __init__(self, term, string = False, identifier = False):
-		self.term = escape(term) if string else term
-		self.lbp = 0
-		self.identifier = identifier
-
-	def nud(self, state):
-		return self
-
-	def __repr__(self):
-		return "Literal { %s }" %self.term
-
-	def __str__(self):
-		return "${%s}" %self.term if self.identifier and self.term[0].islower() else self.term
 
 class PrattParserState(object):
 	def __init__(self, parent, parser, token):

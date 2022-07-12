@@ -3,6 +3,7 @@ Item {
 	signal loaded;				///< when requested component it loaded event signal
 	signal itemCompleted;		///< fires after item onCompleted has been fired and item is fully constructed
 	property string source;		///< component's URL
+	property Component sourceComponent; ///< loads delegate from component.
 	property Object item;		///< item for storing requested component
 	property bool trace;		///< log loading objects
 
@@ -26,13 +27,13 @@ Item {
 		this.discardItem()
 		this._load()
 	}
+	onSourceComponentChanged: {
+		this.discardItem()
+		this._load()
+	}
 
-	///@internal
-	function _load() {
+	function _loadSource() {
 		var source = this.source
-		if (!source)
-			return
-
 		if (this.trace)
 			log('loading ' + source + '…')
 		var path = source.split('.')
@@ -43,8 +44,24 @@ Item {
 			if (ctor === undefined)
 				throw new Error('unknown component used: ' + source)
 		}
+		return new ctor(this)
+	}
 
-		var item = this.item = new ctor(this)
+	///@internal
+	function _load() {
+		var item
+		if (this.source) {
+			item = this._loadSource()
+		} else if (this.sourceComponent) {
+			if (!(this.sourceComponent instanceof $core.Component))
+				throw new Error("sourceComponent assigned to Loader " + this.getComponentPath() + " is not an instance of Component")
+			if (this.trace)
+				log('loading component ' + this.sourceComponent.getComponentPath())
+			item = this.sourceComponent.delegate(this, {})
+		} else
+			throw new Error("Loader._load got neither source nor sourceComponent " + this.getComponentPath())
+
+		this.item = item
 		var overrideComplete = oldComplete !== $core.CoreObject.prototype.__complete
 
 		if (overrideComplete) {
@@ -74,7 +91,7 @@ Item {
 
 	///@internal
 	onCompleted: {
-		if (!this.item && this.source)
+		if (!this.item && (this.source || this.sourceComponent))
 			this._load()
 	}
 }

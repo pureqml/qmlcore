@@ -57,7 +57,8 @@ Item {
 				throw new Error("sourceComponent assigned to Loader " + this.getComponentPath() + " is not an instance of Component")
 			if (this.trace)
 				log('loading component ' + this.sourceComponent.getComponentPath())
-			item = this.sourceComponent.delegate(this, {})
+			var row = this.parent._get('model', true)
+			item = this.sourceComponent.delegate(this, row? row: {})
 		} else
 			throw new Error("Loader._load got neither source nor sourceComponent " + this.getComponentPath())
 

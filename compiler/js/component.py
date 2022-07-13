@@ -438,7 +438,7 @@ class component_generator(object):
 			%(ident, self.proto_name, b, code, ident)
 
 		setup_code = self.generate_setup_code(registry, '$this', '$c', ident_n + 2).strip()
-		b = '%s%s.$s.call(this, $c.$b); delete $c.$b' %(ident, self.base_proto_name)
+		b = '%s%s.$s.call($this, $c.$b); delete $c.$b' %(ident, self.base_proto_name)
 		if setup_code:
 			generate = True
 		setup_code = '%s%s.$s = function($c) {\n\t\tvar $this = this;\n%s\n%s\n}' \

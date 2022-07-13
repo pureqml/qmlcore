@@ -65,7 +65,7 @@ def parse_deps(parent, text, transform):
 		gets = path[:-1]
 
 		#if the path is only a single component, try hierarchical scoping
-		if len(path) == 1 and path[0] != 'model':
+		if len(path) == 1 and path[0] != 'model' and path[0] != 'modelData':
 			tpath = mangle_path(path, transform, lookup_parent=True)
 			tpath_v = tpath.split('.')
 			if target != 'parent':
@@ -75,7 +75,7 @@ def parse_deps(parent, text, transform):
 
 		if len(path) > 1 and path[0] == 'manifest':
 			return '$' + '$'.join(path)
-		if len(path) > 1 and path[0] == 'model':
+		if len(path) > 1 and (path[0] == 'model' or path[0] == 'modelData'):
 			signal = '_row' if path[1] != 'index' else '_rowIndex'
 			deps[("%s._get('_delegate')" %parent, signal)] = None
 		else:

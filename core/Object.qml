@@ -12,6 +12,7 @@ EventEmitter {
 		if (row) {
 			var local = this._local
 			local.model = row
+			local.modelData = row
 			local._delegate = this
 		}
 		this._changedConnections = []

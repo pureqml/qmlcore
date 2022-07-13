@@ -22,7 +22,7 @@ class generator(object):
 		self.packages = OrderedDict()
 		self.startup = []
 		self.l10n = OrderedDict()
-		self.id_set = set(['context', 'model'])
+		self.id_set = set(['context', 'model', 'modelData'])
 
 	def add_component(self, name, component, declaration):
 		if name in self.components:

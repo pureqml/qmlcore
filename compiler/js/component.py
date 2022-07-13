@@ -137,6 +137,8 @@ class component_generator(object):
 		elif t is lang.IdAssignment:
 			if child.name == "modelData":
 				raise Error("modelData property is reserved for model row disambiguation and cannot be an id of the component", child.loc)
+			if child.name == "model":
+				raise Error("id: model breaks model/delegate relationship and overrides current model row", child.loc)
 			self.id = child.name
 			self.assign("id", child.name, child.loc)
 		elif t is lang.Component:

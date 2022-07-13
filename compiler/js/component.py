@@ -618,35 +618,6 @@ class component_generator(object):
 		prologue, r = [], []
 		ident = "\t" * ident_n
 
-		for target, value in self.assignments.items():
-			if target == "id":
-				continue
-			t = type(value)
-			#print self.name, target, value
-			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
-			if isinstance(value, (str, basestring)):
-				prologue += get_enum_prologue(value, self, registry)
-				value = component_generator.replace_template_values(target_prop, value)
-				r.append('//assigning %s to %s' %(target, value))
-				value, deps = parse_deps(parent, value, partial(self.transform_root, registry, None))
-				if deps:
-					undep = []
-					for idx, _dep in enumerate(deps):
-						path, dep = _dep
-						undep.append(path)
-						undep.append("'%s'" %dep)
-					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
-				else:
-					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
-
-			elif t is component_generator:
-				if target == "delegate":
-					continue
-				var = "%s$%s" %(escape(parent), escape(target))
-				r.append(self.call_setup(registry, ident_n, var, value, closure))
-			else:
-				raise Error("skip assignment %s = %s" %(target, value), self.loc)
-
 		def put_in_instance(handler):
 			path, name = handler
 			return path or not self.prototype
@@ -715,6 +686,35 @@ class component_generator(object):
 			for path, name in sorted(handlers):
 				path = path_or_parent(path, parent, partial(self.transform_root, registry, parent))
 				r.append("%s%s.onPressed('%s', %s.bind(%s))" %(ident, path, name, code, parent))
+
+		for target, value in self.assignments.items():
+			if target == "id":
+				continue
+			t = type(value)
+			#print self.name, target, value
+			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
+			if isinstance(value, (str, basestring)):
+				prologue += get_enum_prologue(value, self, registry)
+				value = component_generator.replace_template_values(target_prop, value)
+				r.append('//assigning %s to %s' %(target, value))
+				value, deps = parse_deps(parent, value, partial(self.transform_root, registry, None))
+				if deps:
+					undep = []
+					for idx, _dep in enumerate(deps):
+						path, dep = _dep
+						undep.append(path)
+						undep.append("'%s'" %dep)
+					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
+				else:
+					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
+
+			elif t is component_generator:
+				if target == "delegate":
+					continue
+				var = "%s$%s" %(escape(parent), escape(target))
+				r.append(self.call_setup(registry, ident_n, var, value, closure))
+			else:
+				raise Error("skip assignment %s = %s" %(target, value), self.loc)
 
 		for idx, value in enumerate(self.children):
 			var = '%s$child%d' %(escape(parent), idx)

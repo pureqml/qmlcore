@@ -1,11 +1,6 @@
 ///The simplest view implementation, creates elements without positioning
 BaseView {
 
-	constructor: {
-		this.element.remove()
-		this.element = this.parent.element
-	}
-
 	///@private
 	function positionViewAtIndex() { }
 
@@ -43,7 +38,7 @@ BaseView {
 			var parent = this.parent
 			parent.element.append(delegate.element)
 			parent.addChild(delegate)
-		})
+		}.bind(this))
 		return delegate
 	}
 

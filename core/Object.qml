@@ -120,17 +120,24 @@ EventEmitter {
 	}
 
 	///@private register callback on property's value changed
-	function onChanged(name, callback) {
+	function onChanged(name, callback, skip) {
 		var storage = this._createPropertyStorage(name)
 		storage.onChanged.push(callback)
+		if (!skip)
+			storage.callOnChangedWithCurrentValue(this, name, callback)
 	}
 
 	///@private
-	function connectOnChanged(target, name, callback) {
+	function connectOnChanged(target, name, callback, skip) {
 		if (!target || !('onChanged' in target)) //could be plain js object, can't connect
 			return false
-		target.onChanged(name, callback)
+		target.onChanged(name, callback, true)
 		this._changedConnections.push(target, name, callback)
+		if (!skip)
+		{
+			var storage = target._createPropertyStorage(name)
+			storage.callOnChangedWithCurrentValue(target, name, callback)
+		}
 		return true
 	}
 

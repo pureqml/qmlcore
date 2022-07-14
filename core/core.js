@@ -456,7 +456,7 @@ PropertyStoragePrototype.replaceUpdater = function(parent, callback, deps) {
 	for(var i = 0, n = deps.length; i < n; i += 2) {
 		var object = deps[i]
 		var name = deps[i + 1]
-		connectOnChanged.call(parent, object, name, callback)
+		connectOnChanged.call(parent, object, name, callback, true)
 	}
 	callback()
 }
@@ -548,6 +548,19 @@ var _callOnChanged = function(object, name, value, handlers) {
 
 PropertyStoragePrototype.callOnChanged = function(object, name, value) {
 	_callOnChanged(object, name, value, this.onChanged)
+}
+
+PropertyStoragePrototype.callOnChangedWithCurrentValue = function(object, name, callback) {
+	var handlers = this.onChanged
+	if (handlers.length === 0)
+		return
+
+	var value = this.value
+	if (value === undefined) //default - nothing changed since storage was created.
+		return
+
+	var invoker = $core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
+	invoker(callback)
 }
 
 PropertyStoragePrototype.removeOnChanged = function(callback) {
@@ -731,18 +744,17 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 exports.addAliasProperty = function(object, name, getObject, srcProperty) {
 	var target = getObject()
+	Object.defineProperty(object, name, {
+		get: function() { return target[srcProperty] },
+		set: function(value) { target[srcProperty] = value },
+		enumerable: true
+	})
 	object.connectOnChanged(target, srcProperty, function(value) {
 		var storage = object.__properties[name]
 		if (storage !== undefined)
 			storage.callOnChanged(object, name, value)
 		else
 			_callOnChanged(object, name, value) //call prototype handlers
-	})
-
-	Object.defineProperty(object, name, {
-		get: function() { return target[srcProperty] },
-		set: function(value) { target[srcProperty] = value },
-		enumerable: true
 	})
 }
 

@@ -265,4 +265,14 @@ EventEmitter {
 
 	///@private called to test if the component can have focus, generic object cannot be focused, so return false, override it to implement default focus policy
 	function _tryFocus () { return false }
+
+	function tr() {
+		var context = this._context
+		return context.tr.apply(context, arguments)
+	}
+
+	function qsTr() {
+		var context = this._context
+		return context.tr.apply(context, arguments)
+	}
 }

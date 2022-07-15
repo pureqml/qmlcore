@@ -157,7 +157,7 @@ Item {
 
 	/**@param text:string text that must be translated
 	Returns input text translation*/
-	function qsTr(text) {
+	function tr(text) {
 		var args = arguments
 		var lang = this.language
 		var messages = this.l10n[lang] || {}
@@ -169,8 +169,9 @@ Item {
 		return text.replace(/%(\d+)/, function(text, index) { return args[index] })
 	}
 
-	function tr()
-	{ return this.qsTr.apply(this, arguments) }
+	function qsTr() {
+		return this.tr.apply(this, arguments)
+	}
 
 	function updateL10n(lang, data) {
 		this.l10n[lang] = data

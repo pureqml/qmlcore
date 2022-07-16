@@ -3,6 +3,7 @@ from past.builtins import basestring
 from collections import OrderedDict
 
 from compiler.js import get_package, split_name, escape, mangle_package, Error
+from compiler.js.code import ParseDepsContext
 from compiler.js.code import process, parse_deps, generate_accessors, get_enum_prologue, path_or_parent, mangle_path
 from compiler import lang
 import json
@@ -339,6 +340,8 @@ class component_generator(object):
 		for name in self.signals.keys():
 			r.append("%s%s.%s = $core.createSignal('%s')" %(ident, self.proto_name, name, name))
 
+		parse_deps_ctx = ParseDepsContext(registry, self)
+
 		for prop in self.properties:
 			for name, default_value in prop.properties:
 				if prop.lazy:
@@ -349,7 +352,7 @@ class component_generator(object):
 				else:
 					args = ["%s" %self.proto_name, "'%s'" %prop.type, "'%s'" %name]
 					if lang.value_is_trivial(default_value):
-						default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry, None))
+						default_value, deps = parse_deps('@error', default_value, parse_deps_ctx)
 						if deps:
 							raise Error('trivial value emits dependencies %s (default: %s)' %(deps, default_value), self.loc)
 						args.append(default_value)
@@ -497,6 +500,7 @@ class component_generator(object):
 		ident = "\t" * ident_n
 
 		if not self.prototype:
+			parse_deps_ctx = ParseDepsContext(registry, self)
 			for name in self.signals.keys():
 				r.append("%s%s.%s = $core.createSignal('%s').bind(%s)" %(ident, parent, name, name, parent))
 
@@ -510,7 +514,7 @@ class component_generator(object):
 					else:
 						args = [parent, "'%s'" %prop.type, "'%s'" %name]
 						if lang.value_is_trivial(default_value):
-							default_value, deps = parse_deps('@error', default_value, partial(self.transform_root, registry, None))
+							default_value, deps = parse_deps('@error', default_value, parse_deps_ctx)
 							if deps:
 								raise Error('trivial value emits dependencies %s (default: %s)' %(deps, default_value), self.loc)
 							args.append(default_value)
@@ -620,6 +624,8 @@ class component_generator(object):
 		prologue, r = [], []
 		ident = "\t" * ident_n
 
+		parse_deps_ctx = ParseDepsContext(registry, self)
+
 		for target, value in self.assignments.items():
 			if target == "id":
 				continue
@@ -630,7 +636,7 @@ class component_generator(object):
 				prologue += get_enum_prologue(value, self, registry)
 				value = component_generator.replace_template_values(target_prop, value)
 				r.append('//assigning %s to %s' %(target, value))
-				value, deps = parse_deps(parent, value, partial(self.transform_root, registry, None))
+				value, deps = parse_deps(parent, value, parse_deps_ctx)
 				if deps:
 					undep = []
 					for idx, _dep in enumerate(deps):

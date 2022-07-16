@@ -50,6 +50,7 @@ def path_or_parent(path, parent, transform):
 	return mangle_path(path.split('.'), transform) if path else parent
 
 gets_re = re.compile(r'\${(.*?)}')
+func_re = re.compile(r'\$\((.*?)\)')
 tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
 
 class ParseDepsContext:
@@ -59,6 +60,10 @@ class ParseDepsContext:
 
 	def transform(self, path, lookup_parent = False):
 		return self.component.transform_root(self.registry, None, path, lookup_parent=lookup_parent)
+
+	def find_method(self, name):
+		return self.component.find_method(self.registry, name)
+
 
 def parse_deps(parent, text, parse_ctx):
 	deps = OrderedDict()
@@ -95,7 +100,17 @@ def parse_deps(parent, text, parse_ctx):
 
 		return parent + '.' + mangle_path(path, parse_ctx.transform)
 
+	def func(m):
+		path = m.group(1).split('.')
+		target, path = path[0], path[1:]
+		if target == 'this':
+			target = parent
+		if not path and parse_ctx.find_method(target):
+			return ".".join([parent, target])
+		return ".".join([target] + path)
+
 	text = gets_re.sub(sub, text)
+	text = func_re.sub(func, text)
 	return text, deps.keys()
 
 def generate_accessors(parent, target, transform):

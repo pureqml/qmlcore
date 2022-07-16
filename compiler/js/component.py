@@ -461,6 +461,15 @@ class component_generator(object):
 
 		return "\n".join(r)
 
+	def find_method(self, registry, name):
+		key = ('', name)
+		method = self.methods.get(key, None)
+		if method:
+			return method
+		base = self.get_base_type(registry)
+		if base != 'core.CoreObject':
+			return registry.components[base].find_method(registry, name)
+
 	def find_property(self, registry, property):
 		if property in self.declared_properties:
 			return self.declared_properties[property]

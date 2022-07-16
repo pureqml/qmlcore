@@ -114,14 +114,10 @@ class Call(object):
 	def __str__(self):
 		if isinstance(self.func, Literal):
 			name = self.func.term
-			if name[0].islower():
-				if '.' in name:
-					name = '${%s}' %name
-				else:
-					name = '$this._context.%s' %name
+			name = '$(%s)' %name
 		else:
 			name = str(self.func)
-			#if lhs is not an literal, than we can't process deps, removing ${xxx}
+			#if lhs is not an literal, than we can't process deps, removing $(xxx)
 			name = dep_var.sub(lambda m: m.group(1), name)
 
 		return "%s(%s)" %(name, ",".join(map(str, self.args)))

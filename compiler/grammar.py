@@ -100,11 +100,7 @@ def handle_signal_declaration(s, l, t):
 
 def handle_function_call(s, l, t):
 	name = t[0]
-	if name[0].islower():
-		if '.' in name:
-			name = '${%s}' %name
-		else:
-			name = '$this._context.%s' %name
+	name = '$(%s)' %name
 	return "%s(%s)" % (name, ",".join(t[1:]))
 
 def handle_documentation_string(s, l, t):

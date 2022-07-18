@@ -105,6 +105,8 @@ def parse_deps(parent, text, parse_ctx):
 		target, path = path[0], path[1:]
 		if target == 'this':
 			target = parent
+		elif target == 'parent':
+			return ".".join([parent, "parent"] + path)
 		if not path and parse_ctx.find_method(target):
 			return ".".join([parent, target])
 		return ".".join([target] + path)

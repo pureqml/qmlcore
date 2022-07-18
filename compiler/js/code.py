@@ -16,21 +16,26 @@ def get_enum_prologue(text, generator, registry):
 	return prologue
 
 id_re = re.compile(r'(\w+\s*)(\.\s*\w+\s*)*', re.I | re.M)
-def process(text, generator, registry, args):
-	args = set(args)
+
+def get_ids_prologue(text, registry, args):
+	prologue = []
 	id_set = registry.id_set
 	used_ids = OrderedDict()
 	for m in id_re.finditer(text):
 		found = m.group(1)
 		if found in id_set and found not in args:
 			used_ids[found] = None
+	if used_ids:
+		prologue += ["%s = this._get('%s', true)" %(x, x) for x in used_ids.keys()]
+	return prologue
+
+def process(text, generator, registry, args):
+	args = set(args)
 
 	scope_pos = text.index('{') #raise exception, should be 0 actually
 	scope_pos += 1
-	prologue = []
-	if used_ids:
-		prologue += ["%s = this._get('%s', true)" %(x, x) for x in used_ids.keys()]
 
+	prologue = get_ids_prologue(text, registry, args)
 	prologue += get_enum_prologue(text, generator, registry)
 
 	if prologue:

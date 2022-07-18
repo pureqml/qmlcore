@@ -74,11 +74,11 @@ Item {
 	/// @private
 	function _bindWheel(value) {
 		if (value && !this._wheelBinder) {
-			this._clickBinder = new $core.EventBinder(this.element)
-			this._clickBinder.on('mousewheel', function(event) { this.wheelEvent(event.wheelDelta / 120) }.bind(this))
+			this._wheelBinder = new $core.EventBinder(this.element)
+			this._wheelBinder.on('mousewheel', function(event) { this.wheelEvent(event.wheelDelta / 120) }.bind(this))
 		}
-		if (this._clickBinder)
-			this._clickBinder.enable(value)
+		if (this._wheelBinder)
+			this._wheelBinder.enable(value)
 	}
 
 	/// @private

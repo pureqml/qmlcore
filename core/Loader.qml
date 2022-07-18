@@ -60,7 +60,7 @@ Item {
 			var row = this.parent._get('model', true)
 			item = this.sourceComponent.delegate(this, row? row: {})
 		} else
-			throw new Error("Loader._load got neither source nor sourceComponent " + this.getComponentPath())
+			return
 
 		this.item = item
 		var overrideComplete = oldComplete !== $core.CoreObject.prototype.__complete

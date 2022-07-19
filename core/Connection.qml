@@ -45,6 +45,9 @@ Object {
 
 	/// @private
 	function on (name, callback) {
+		if (name === 'target')
+			return
+
 		if (name === '')
 			throw new Error('empty listener name')
 
@@ -56,6 +59,9 @@ Object {
 
 	/// @private
 	function onChanged (name, callback) {
+		if (name === 'target')
+			return
+
 		if (name === '')
 			throw new Error('empty listener name')
 

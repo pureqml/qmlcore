@@ -88,8 +88,9 @@ def parse_deps(parent, text, parse_ctx):
 			tpath = mangle_path(path, parse_ctx.transform, lookup_parent=True)
 			tpath_v = tpath.split('.')
 			if target != 'parent':
-				tdep = parent + "." + '.'.join(tpath_v[:-1]) if len(tpath_v)>1 else parent
-				deps[(tdep, target)] = None
+				if path[0] not in parse_ctx.registry.id_set:
+					tdep = parent + "." + '.'.join(tpath_v[:-1]) if len(tpath_v)>1 else parent
+					deps[(tdep, target)] = None
 			return parent + '.' + tpath
 
 		if len(path) > 1 and path[0] == 'manifest':

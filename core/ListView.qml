@@ -338,8 +338,8 @@ BaseView {
 				}
 			}
 		}
-		this.connectOnChanged(item, 'width', update.bind(this, true))
-		this.connectOnChanged(item, 'height', update.bind(this, false))
+		this.connectOnChanged(item, 'width', update.bind(this, true), true) //skip initial update
+		this.connectOnChanged(item, 'height', update.bind(this, false), true) //skip initial update
 		return item
 	}
 

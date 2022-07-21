@@ -422,10 +422,6 @@ exports.addConstProperty = function(proto, name, getter) {
 	})
 }
 
-exports.getPropertyStorage = function(object, name) {
-	return object.__properties[name]
-}
-
 var PropertyStorage = function(value) {
 	this.value = value
 	this.onChanged = []

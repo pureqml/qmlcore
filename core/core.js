@@ -392,18 +392,11 @@ exports.addLazyProperty = function(proto, name, creator) {
 		},
 
 		set: function(newValue) {
-			var properties = this.__properties
-			var set = true
-			if (properties[name] === undefined) {
-				properties[name] = new PropertyStorage(newValue)
-				set = false
-			}
 			var storage = get(this)
 			if (storage.forwardSet(this, name, newValue, null))
 				return
 
-			if (set)
-				storage.set(this, name, newValue, null, true)
+			throw new Error('could not set lazy property ' + name + ' in ' + proto.componentName)
 		},
 		enumerable: true
 	})
@@ -470,7 +463,7 @@ PropertyStoragePrototype.replaceUpdater = function(parent, callback, deps) {
 
 PropertyStoragePrototype.forwardSet = function(object, name, newValue, defaultValue) {
 	var oldValue = this.getCurrentValue(defaultValue)
-	if (oldValue !== null && oldValue !== undefined && (oldValue instanceof Object)) {
+	if (oldValue !== null && (oldValue instanceof Object)) {
 		//forward property update for mixins
 		var forwardTarget = oldValue.defaultProperty
 		if (forwardTarget === undefined)

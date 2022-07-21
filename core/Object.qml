@@ -164,6 +164,11 @@ EventEmitter {
 		this._createPropertyStorage(name).replaceUpdater(this, callback, deps)
 	}
 
+	///@private gets property storage
+	function _getPropertyStorage(name) {
+		return this.__properties[name]
+	}
+
 	///@private creates property storage
 	function _createPropertyStorage(name, value) {
 		var storage = this.__properties[name]

@@ -15,36 +15,60 @@ Object {
 	property int weight;		///< font weight value
 	property enum capitalization { MixedCase, AllUppercase, AllLowercase, SmallCaps, Capitalize };
 
-	///@private
-	function _updateTextDecoration() {
-		var decoration = (this.underline ? ' underline' : '')
-			+ (this.overline ? ' overline' : '')
-			+ (this.strike || this.strikeout ? ' line-through' : '')
-		this.parent.style('text-decoration', decoration)
-		this.parent._updateSize()
+	signal updated; ///< font style was updated and we need to relayout
+
+	/// get style dictionary - normally you can just pass it to this.element.style(font.getStyle)
+	function getStyle() {
+		var style = {
+			'text-decoration': (this.underline ? ' underline' : '')
+				+ (this.overline ? ' overline' : '')
+				+ (this.strike || this.strikeout ? ' line-through' : ''),
+			'font-family': this.family,
+			'font-style': this.italic? 'italic': 'normal',
+			'font-weight': this.bold? 'bold': (this.weight > 0? this.weight: 'normal'),
+			'line-height': this.lineHeight > 0? this.lineHeight: '',
+			'letter-spacing': this.letterSpacing > 0? this.letterSpacing + 'px': '',
+			'word-spacing': this.wordSpacing > 0? this.wordSpacing + 'px': '',
+			'text-transform': 'none',
+			'font-variant': 'normal'
+		}
+		switch(this.capitalization) {
+		case this.AllUppercase: style['text-transform']	= 'uppercase'; break
+		case this.AllLowercase: style['text-transform']	= 'lowercase'; break
+		case this.SmallCaps: 	style['font-variant']	= 'small-caps'; break
+		case this.Capitalize: 	style['text-transform']	= 'capitalize'; break
+		}
+
+		if (this.pixelSize > 0)
+			style['font-size'] = this.pixelSize + 'px'
+		else if (this.pointSize > 0)
+			style['font-size'] = this.pointSize + 'pt'
+		else
+			style['font-size'] = ''
+
+		return style
 	}
 
-	onFamilyChanged:		{ this.parent.style('font-family', value); this.parent._updateSize() }
-	onPointSizeChanged:		{ if (value > 0) this.pixelSize = 0; this.parent.style('font-size', value > 0? value + 'pt': ''); this.parent._updateSize() }
-	onPixelSizeChanged:		{ if (value > 0) this.pointSize = 0; this.parent.style('font-size', value > 0? value + 'px': ''); this.parent._updateSize() }
-	onItalicChanged: 		{ this.parent.style('font-style', value? 'italic': 'normal'); this.parent._updateSize() }
-	onBoldChanged: 			{ this.parent.style('font-weight', value? 'bold': 'normal'); this.parent._updateSize() }
-	onUnderlineChanged:		{ this._updateTextDecoration() }
-	onOverlineChanged:		{ this._updateTextDecoration() }
+	/// @private schedule update
+	function _update() {
+		this._context.delayedAction('font:update', this, this.updated)
+	}
+
+	onPointSizeChanged:		{ if (value > 0) this.pixelSize = 0; this._update() }
+	onPixelSizeChanged:		{ if (value > 0) this.pointSize = 0; this._update() }
+
+	onFamilyChanged,
+	onItalicChanged,
+	onBoldChanged,
+	onUnderlineChanged,
+	onOverlineChanged,
 	onStrikeChanged,
-	onStrikeoutChanged:		{ this._updateTextDecoration() }
-	onLineHeightChanged:	{ this.parent.style('line-height', value); this.parent._updateSize() }
-	onWeightChanged:		{ this.parent.style('font-weight', value); this.parent._updateSize() }
-	onLetterSpacingChanged:	{ this.parent.style('letter-spacing', value + "px"); this.parent._updateSize() }
-	onWordSpacingChanged:	{ this.parent.style('word-spacing', value + "px"); this.parent._updateSize() }
-	onCapitalizationChanged:	{
-		this.parent.style('text-transform', 'none');
-		this.parent.style('font-variant', 'normal');
-		switch(value) {
- 		case this.AllUppercase: this.parent.style('text-transform', 'uppercase'); break
- 		case this.AllLowercase: this.parent.style('text-transform', 'lowercase'); break
- 		case this.SmallCaps: this.parent.style('font-variant', 'small-caps'); break
- 		case this.Capitalize: this.parent.style('text-transform', 'capitalize'); break
- 		}
+	onStrikeoutChanged,
+	onLineHeightChanged,
+	onWeightChanged,
+	onLetterSpacingChanged,
+	onWordSpacingChanged,
+	onCapitalizationChanged: {
+		this._update()
 	}
 }

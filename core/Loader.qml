@@ -1,6 +1,6 @@
 /// object that helps loading components dynamically
 Item {
-	signal loaded;				///< when requested component it loaded event signal
+	signal loaded;				///< signals loaded component (first argument)
 	signal itemCompleted;		///< fires after item onCompleted has been fired and item is fully constructed
 	property string source;		///< component's URL
 	property Component sourceComponent; ///< loads delegate from component.

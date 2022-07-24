@@ -57,7 +57,7 @@ def path_or_parent(path, parent, transform):
 
 gets_re = re.compile(r'\${(.*?)}')
 func_re = re.compile(r'\$\((.*?)\)')
-tr_re = re.compile(r'\W(qsTr|qsTranslate|tr)\(')
+tr_re = re.compile(r'\$\(qsTr|qsTranslate|tr\)\(')
 
 class ParseDepsContext:
 	def __init__(self, registry, component):

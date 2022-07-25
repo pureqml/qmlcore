@@ -378,8 +378,13 @@ exports.addLazyProperty = function(proto, name, creator) {
 		var properties = object.__properties
 		var storage = properties[name]
 		if (storage !== undefined) {
-			if (storage.value === undefined)
+			if (storage.value === undefined) {
 				storage.value = creator(object)
+				var onChanged = storage.onChanged
+				for(var i = 0; i < onChanged.length; ++i) {
+					storage.callOnChangedWithCurrentValue(object, name, onChanged[i])
+				}
+			}
 			return storage
 		}
 

@@ -678,7 +678,7 @@ var layoutTextSetStyle = function(text, style) {
 	}
 	style['padding-top'] = text._topPadding
 	style['height'] = text.height - text._topPadding
-	text.style(style)
+	text.element.style(style)
 }
 
 exports.setText = function(text, html) {
@@ -717,9 +717,9 @@ exports.layoutText = function(text) {
 	var removedChildren = element.removeChildren(text)
 
 	if (!wrap)
-		text.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
+		text.element.style({ width: 'auto', height: 'auto', 'padding-top': 0 }) //no need to reset it to width, it's already there
 	else
-		text.style({ 'height': 'auto', 'padding-top': 0})
+		text.element.style({ 'height': 'auto', 'padding-top': 0})
 
 	//this is the source of rounding error. For instance you have 186.3px wide text, this sets width to 186px and causes wrapping
 	/*

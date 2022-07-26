@@ -37,12 +37,43 @@ Item {
 	}
 
 	///@private
+	function onChanged (name, callback) {
+		if (!this._updateSizeNeeded) {
+			switch(name) {
+				case "right":
+				case "width":
+				case "bottom":
+				case "height":
+				case "verticalCenter":
+				case "horizontalCenter":
+					this._enableSizeUpdate()
+			}
+		}
+		$core.Item.prototype.onChanged.apply(this, arguments);
+	}
+
+	///@private
+	function on(name, callback) {
+		if (!this._updateSizeNeeded) {
+			if (name === 'newBoundingBox')
+				this._enableSizeUpdate()
+		}
+		$core.Item.prototype.on.apply(this, arguments)
+	}
+
+	///@private
 	function _updateStyle() {
 		if (this.shadow && !this.shadow._empty())
 			this.style('text-shadow', this.shadow._getFilterStyle())
 		else
 			this.style('text-shadow', '')
 		$core.Item.prototype._updateStyle.apply(this, arguments)
+	}
+
+	///@private
+	function _enableSizeUpdate() {
+		this._updateSizeNeeded = true
+		this._updateSize()
 	}
 
 	onRecursiveVisibleChanged: {
@@ -52,7 +83,7 @@ Item {
 
 	///@private
 	function _updateSize() {
-		if (this.recursiveVisible)
+		if (this.recursiveVisible && (this._updateSizeNeeded || this.clip))
 			this._scheduleUpdateSize()
 	}
 
@@ -64,10 +95,6 @@ Item {
 			return
 		}
 
-		if (this._getPropertyStorage('font')) {
-			var style = this.font.getStyle()
-			this.element.style(style)
-		}
 		this._context.backend.layoutText(this)
 	}
 
@@ -77,6 +104,7 @@ Item {
 	onHeightChanged:			{ this._updateSize() }
 
 	onVerticalAlignmentChanged: {
+		this._enableSizeUpdate()
 		if ($manifest$requireVerticalTextAlignmentStyle) {
 			switch(value) {
 				case this.AlignTop:		this.style('-pure-text-vertical-align', 'top'); break
@@ -118,16 +146,5 @@ Item {
 
 	onWrapModeChanged: {
 		this._updateWSHandling()
-	}
-
-	onFontChanged: {
-		var updateSizeCallback = this._updateSizeCallback
-		if (updateSizeCallback === undefined) {
-			updateSizeCallback = this._updateSizeCallback = this._scheduleUpdateSize.bind(this)
-		}
-		if (value) {
-			value.on('updated', updateSizeCallback)
-			updateSizeCallback()
-		}
 	}
 }

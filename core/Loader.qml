@@ -52,6 +52,7 @@ Item {
 		var item
 		if (this.source) {
 			item = this._loadSource()
+			$core.core.createObject(item)
 		} else if (this.sourceComponent) {
 			if (!(this.sourceComponent instanceof $core.Component))
 				throw new Error("sourceComponent assigned to Loader " + this.getComponentPath() + " is not an instance of Component")
@@ -59,6 +60,8 @@ Item {
 				log('loading component ' + this.sourceComponent.getComponentPath())
 			var row = this.parent._get('model', true)
 			item = this.sourceComponent.delegate(this, row? row: {})
+			this._updateVisibilityForChild(item, this.recursiveVisible)
+			this._tryFocus()
 		} else
 			return
 
@@ -78,7 +81,6 @@ Item {
 			}
 		}
 
-		$core.core.createObject(item)
 		this.loaded(item)
 
 		if (!overrideComplete)

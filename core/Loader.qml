@@ -12,7 +12,7 @@ Item {
 		var item = this.item
 		if (item) {
 			item.discard()
-			item = null
+			this.item = null
 		}
 	}
 

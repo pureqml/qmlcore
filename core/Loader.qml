@@ -88,6 +88,14 @@ Item {
 			this._updateVisibilityForChild(this.item, value)
 	}
 
+	/// @private
+	function on (name, callback) {
+		$core.Item.prototype.on.apply(this, arguments)
+		if (name === 'loaded' || name == 'itemCompleted') {
+			callback(this.item)
+		}
+	}
+
 	///@internal
 	onCompleted: {
 		if (!this.item && (this.source || this.sourceComponent))

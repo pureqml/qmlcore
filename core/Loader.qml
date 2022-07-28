@@ -66,24 +66,20 @@ Item {
 			return
 
 		this.item = item
-		var oldComplete = item.__complete
-		var overrideComplete = oldComplete !== $core.CoreObject.prototype.__complete
 
-		if (overrideComplete) {
+		var hasOnCompleted = item.__complete !== $core.CoreObject.prototype.__complete
+		if (hasOnCompleted) {
 			var itemCompleted = this.itemCompleted.bind(this, item)
-			item.__complete = function() {
-				try {
-					oldComplete.call(this)
-				} catch(ex) {
-					log("onComplete failed:", ex)
-				}
-				itemCompleted()
-			}
+			// Schedule dummy object which calls itemCompleted(item)
+			// It's guaranteed to execute after possibly delayed item.onComplete handler.
+			this._context.__onCompleted({
+				__complete: itemCompleted
+			})
 		}
 
 		this.loaded(item)
 
-		if (!overrideComplete)
+		if (!hasOnCompleted)
 			this.itemCompleted()
 	}
 

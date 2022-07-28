@@ -66,10 +66,10 @@ Item {
 			return
 
 		this.item = item
+		var oldComplete = item.__complete
 		var overrideComplete = oldComplete !== $core.CoreObject.prototype.__complete
 
 		if (overrideComplete) {
-			var oldComplete = item.__complete
 			var itemCompleted = this.itemCompleted.bind(this, item)
 			item.__complete = function() {
 				try {

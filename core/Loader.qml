@@ -80,7 +80,7 @@ Item {
 		this.loaded(item)
 
 		if (!hasOnCompleted)
-			this.itemCompleted()
+			this.itemCompleted(item)
 	}
 
 	onRecursiveVisibleChanged: {

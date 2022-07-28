@@ -9,6 +9,7 @@ Item {
 
 	///@private
 	function discardItem() {
+		this._itemCompleted = false
 		var item = this.item
 		if (item) {
 			item.discard()
@@ -67,20 +68,27 @@ Item {
 
 		this.item = item
 
-		var hasOnCompleted = item.__complete !== $core.CoreObject.prototype.__complete
-		if (hasOnCompleted) {
-			var itemCompleted = this.itemCompleted.bind(this, item)
-			// Schedule dummy object which calls itemCompleted(item)
-			// It's guaranteed to execute after possibly delayed item.onComplete handler.
-			this._context.__onCompleted({
-				__complete: itemCompleted
-			})
-		}
-
 		this.loaded(item)
 
-		if (!hasOnCompleted)
+		var hasOnCompleted = item.__complete !== $core.CoreObject.prototype.__complete
+		if (hasOnCompleted) {
+			// Schedule dummy object which calls itemCompleted(item)
+			// It's guaranteed to execute after possibly delayed item.onComplete handler.
+			var complete = function() {
+				//check that item hasn't been changed.
+				if (this.item === item) {
+					this._itemCompleted = true
+					this.itemCompleted(item)
+				}
+			}.bind(this)
+
+			this._context.__onCompleted({
+				__complete: complete
+			})
+		} else {
+			this._itemCompleted = true
 			this.itemCompleted(item)
+		}
 	}
 
 	onRecursiveVisibleChanged: {
@@ -91,8 +99,13 @@ Item {
 	/// @private
 	function on (name, callback) {
 		$core.Item.prototype.on.apply(this, arguments)
-		if (name === 'loaded' || name == 'itemCompleted') {
-			callback(this.item)
+		if (name === 'loaded') {
+			if (this.item)
+				callback(this.item)
+		}
+		if (name === 'itemCompleted') {
+			if (this._itemCompleted)
+				callback(this.item)
 		}
 	}
 

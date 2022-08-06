@@ -93,6 +93,8 @@ def parse_deps(parent, text, parse_ctx):
 					deps[(tdep, target)] = None
 			return parent + '.' + tpath
 
+		if path[0] == "window":
+			return ".".join(path)
 		if len(path) > 1 and path[0] == 'manifest':
 			return '$' + '$'.join(path)
 		if len(path) > 1 and (path[0] == 'model' or path[0] == 'modelData'):

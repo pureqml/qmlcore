@@ -580,6 +580,8 @@ class component_generator(object):
 			return 'parent'
 		elif property == 'this':
 			return 'this'
+		elif property == 'window':
+			return 'window'
 		elif property == 'modelData':
 			return "%s_get('_delegate')._local.modelData" %(parent + '.' if parent else '')
 		else:

@@ -185,7 +185,7 @@ Object {
 	}
 
 	onRecursiveVisibleChanged: {
-		var children = this.children
+		var children = this.__attachedObjects
 		for(var i = 0, n = children.length; i < n; ++i) {
 			var child = children[i]
 			this._updateVisibilityForChild(child, value)

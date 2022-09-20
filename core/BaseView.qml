@@ -297,16 +297,6 @@ BaseLayout {
 	onRecursiveVisibleChanged: {
 		if (value)
 			this._scheduleLayout();
-
-		var view = this
-		this._items.forEach(function(child) {
-			if (child !== null)
-				view._updateVisibilityForChild(child, value)
-		})
-		this._updateVisibilityForChild(this.content, value)
-		var highlight = this.highlight
-		if (highlight)
-			this._updateVisibilityForChild(highlight, value)
 	}
 
 	onWidthChanged:				{ this._scheduleLayout() }

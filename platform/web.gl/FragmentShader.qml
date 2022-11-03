@@ -1,0 +1,3 @@
+Shader {
+	type: Type.Fragment;
+}

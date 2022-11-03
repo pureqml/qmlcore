@@ -15,7 +15,7 @@ def get_enum_prologue(text, generator, registry):
 			pass
 	return prologue
 
-id_re = re.compile(r'(\w+\s*)(\.\s*\w+\s*)*', re.I | re.M)
+id_re = re.compile(r'(\w+)\s*(?:\.\s*\w+\s*)*', re.I | re.M)
 
 def get_ids_candidates(text, registry, args):
 	id_set = registry.id_set

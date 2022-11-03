@@ -1,8 +1,8 @@
 Object {
-    property Object glContext: localGlContext;
+	property Object glContext: localGlContext;
 
-    /// @internal
-    function getGlContext() {
-        return this.glContext.gl
-    }
+	/// @internal
+	function getGlContext() {
+		return this.glContext.gl
+	}
 }

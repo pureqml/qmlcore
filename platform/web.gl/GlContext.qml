@@ -16,6 +16,7 @@ Canvas {
 				break;
 		}
 		this.gl = gl
+		this.__render = this.render.bind(this)
 	}
 
 	/// @private
@@ -30,13 +31,13 @@ Canvas {
 			this.then = now
 		}
 		this.drawScene(deltaTime)
-		requestAnimationFrame(this.render.bind(this))
+		requestAnimationFrame(this.__render)
 	}
 
 	/// @private
 	function startRender() {
 		this.then = null
-		requestAnimationFrame(this.render.bind(this))
+		requestAnimationFrame(this.__render)
 	}
 
 	onWidthChanged,

@@ -170,9 +170,6 @@ Item {
 	///decrease current volume
 	volumeDown: { this.volume -= 0.1 }
 
-	///toggle volume mute on\off
-	toggleMute: { var player = this._getPlayer(); if (player) player.setMute(!this.muted) }
-
 	///@private
 	onVolumeChanged: { this.applyVolume() }
 
@@ -180,6 +177,13 @@ Item {
 
 	///@private
 	onReadyChanged: { log("ReadyState: " + this.ready) }
+
+	///@private
+	onMutedChanged: {
+		var player = this._getPlayer()
+		if (player)
+			player.setMute(this.muted)
+	}
 
 	/**
 	 * Setup DRM configuration

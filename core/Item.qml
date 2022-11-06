@@ -14,6 +14,8 @@ Object {
 	property bool activeFocus;				///< this item can receive events and really focused at this moment
 	property Item focusedChild;				///< current focused item (this item only)
 
+	property bool selectByMouse: context.system.selectByMouse;	///< selectable by mouse
+
 	property bool visible: true;			///< this item and its children are visible
 	property bool visibleInView: true;		///< this item is visible inside view content area
 	property bool recursiveVisible: false;	///< this item is actually visible on screen (all parents are visible as well)
@@ -427,6 +429,10 @@ Object {
 		var style = value? 'auto': 'none'
 		this.style('pointer-events', style)
 		this.style('touch-action', style)
+	}
+
+	onSelectByMouseChanged: {
+		this.style('user-select', value? '': 'none')
 	}
 
 	/// focus this item

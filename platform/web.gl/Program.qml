@@ -20,7 +20,7 @@ GlObject {
 			var loc = gl.getAttribLocation(program, desc.name)
 			Object.defineProperty(attrObject, desc.name, {
 				get: function() {
-					return desc
+					return { loc: loc, desc: desc}
 				},
 				set: function(value) {
 					value.attachAttr(loc, desc)

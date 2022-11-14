@@ -110,12 +110,10 @@ GlTrPrototype.renderNode = function(ctx, node) {
 		matrix = node.matrix
 	} else {
 		matrix = mat4.create()
-		mat4.multiply(matrix, matrix, mat4.fromTranslation(mat4.create(), translation))
-		mat4.multiply(matrix, matrix, mat4.fromQuat(mat4.create(), rotation))
-		mat4.multiply(matrix, matrix, mat4.fromScaling(mat4.create(), scale))
+		mat4.fromRotationTranslationScale(matrix, rotation, translation, scale)
 	}
-	ctx.matrix = mat4.create()
-	mat4.multiply(ctx.matrix, oldMatrix, matrix)
+
+	ctx.matrix = mat4.multiply(mat4.create(), oldMatrix, matrix)
 
 	var mesh = node.mesh
 	if (mesh !== undefined) {

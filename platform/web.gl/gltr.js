@@ -93,9 +93,9 @@ GlTrPrototype.renderMesh = function(ctx, mesh) {
 	if (primitives === undefined)
 		return
 
-	for(var i = 0; i != primitives.length; ++i) {
-		this.renderPrimitive(ctx, primitives[i])
-	}
+	primitives.forEach(function (primitive) {
+		this.renderPrimitive(ctx, primitive)
+	}.bind(this))
 }
 
 GlTrPrototype.renderNode = function(ctx, node) {
@@ -124,9 +124,9 @@ GlTrPrototype.renderNode = function(ctx, node) {
 
 	var children = node.children
 	if (children !== undefined) {
-		for(var i = 0; i != children.length; ++i) {
-			this.renderNode(ctx, this.data.nodes[children[i]])
-		}
+		children.forEach(function(child) {
+			this.renderNode(ctx, this.data.nodes[child])
+		}.bind(this))
 	}
 	ctx.matrix = oldMatrix
 }
@@ -140,9 +140,9 @@ GlTrPrototype.render = function(gl) {
 		matrix: mat4.create()
 	}
 	var nodes = this.data.scenes[this.data.scene].nodes
-	for(var i = 0; i != nodes.length; ++i) {
-		this.renderNode(ctx, this.data.nodes[nodes[i]])
-	}
+	nodes.forEach(function(node) {
+		this.renderNode(ctx, this.data.nodes[node])
+	}.bind(this))
 
 	var queue = ctx.queue
 	return function(runCtx) {

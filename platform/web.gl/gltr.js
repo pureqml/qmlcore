@@ -34,7 +34,7 @@ GlTrPrototype.loadAccessor = function(idx) {
 		default:
 			throw new Error("invalid accessor type: " + accessor.componentType + "/" + accessor.type)
 	}
-	return buffer
+	return { buffer: buffer, type: accessor.componentType, count: accessor.count }
 }
 
 GlTrPrototype.renderPrimitive = function(ctx, primitive) {
@@ -45,17 +45,17 @@ GlTrPrototype.renderPrimitive = function(ctx, primitive) {
 	var pos = this.loadAccessor(attrs.POSITION)
 	var bufferPos = gl.createBuffer()
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferPos)
-	gl.bufferData(gl.ARRAY_BUFFER, pos, gl.STATIC_DRAW)
+	gl.bufferData(gl.ARRAY_BUFFER, pos.buffer, gl.STATIC_DRAW)
 
 	var posIndices = this.loadAccessor(primitive.indices)
 	var bufferPosIndices = gl.createBuffer()
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferPosIndices)
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, posIndices, gl.STATIC_DRAW)
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, posIndices.buffer, gl.STATIC_DRAW)
 
 	// var normal = this.loadAccessor(attrs.NORMAL)
 	// var bufferNorm = gl.createBuffer()
 	// gl.bindBuffer(gl.ARRAY_BUFFER, bufferNorm)
-	// gl.bufferData(gl.ARRAY_BUFFER, normal, gl.STATIC_DRAW)
+	// gl.bufferData(gl.ARRAY_BUFFER, normal.buffer, gl.STATIC_DRAW)
 
 	if (primitive.material !== undefined) {
 		material = this.data.materials[primitive.material]
@@ -84,8 +84,7 @@ GlTrPrototype.renderPrimitive = function(ctx, primitive) {
 			0,
 			0);
 		gl.enableVertexAttribArray(pos.loc)
-		//fixme: get type from accessor?
-		gl.drawElements(gl.TRIANGLES, posIndices.length, gl.UNSIGNED_INT, 0)
+		gl.drawElements(gl.TRIANGLES, posIndices.count, posIndices.type, 0)
 	})
 }
 

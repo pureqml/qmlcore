@@ -47,7 +47,6 @@ GlObject {
 						case gl.FLOAT_VEC4:
 							gl.uniform4fv(loc, value);
 							break
-
 						default:
 							throw new Error("Unhandled type " + desc.type + " for uniform " + desc.name)
 					}

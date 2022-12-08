@@ -701,7 +701,7 @@ class component_generator(object):
 				has_path = bool(path)
 				path = path_or_parent(path, parent, partial(self.transform_root, registry, parent))
 				if has_path:
-					r.append("%sif (%s) %s.on('%s', %s.bind(%s))" %(ident, path, path, name, code, parent)) #fixme: remove me?
+					r.append("%s%s.connectOn(%s, '%s', %s.bind(%s))" %(ident, parent, path, name, code, parent))
 				else:
 					r.append("%s%s.on('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 
@@ -718,7 +718,7 @@ class component_generator(object):
 				has_path = bool(path)
 				path = path_or_parent(path, parent, partial(self.transform_root, registry, parent))
 				if has_path:
-					r.append("%sif (%s) %s.onChanged('%s', %s.bind(%s))" %(ident, path, path, name, code, parent)) #fixme: remove me?
+					r.append("%s%s.connectOnChanged(%s, '%s', %s.bind(%s))" %(ident, parent, path, name, code, parent))
 				else:
 					r.append("%s%s.onChanged('%s', %s.bind(%s))" %(ident, path, name, code, parent))
 

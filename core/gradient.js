@@ -10,9 +10,10 @@ GradientStopPrototype.toString = function() {
 	return this.color + " " + Math.floor(100 * this.position) + "%"
 }
 
-var Gradient = function(orientation) {
+var Gradient = function(orientation, type) {
 	this.orientation = orientation
 	this.stops = []
+	this.type = type
 }
 
 var GradientPrototype = Gradient.prototype
@@ -23,7 +24,21 @@ GradientPrototype.add = function(stop) {
 }
 
 GradientPrototype.toString = function() {
-	return 'linear-gradient(' + this.orientation + ',' + this.stops.join() + ')'
+	if (this.type === $core.Gradient.Linear) {
+		return 'linear-gradient(' + this.orientation + ',' + this.stops.join() + ')'
+	}
+	else if (this.type === $core.Gradient.Conical) {
+		let gradientString = 'conic-gradient(from ' + this.orientation
+		for(let i = 0; i < this.stops.length; ++i) {
+			let stop = this.stops[i]
+			gradientString += ', ' + stop.color.hex() + ' '  + 2 * Math.PI * stop.position + 'rad'
+		}
+		gradientString += ')'
+		return gradientString;
+	}
+
+	throw new Error("Gradient Type " + this.type + " is not supported")
+	return "";
 }
 
 exports.GradientStop = GradientStop

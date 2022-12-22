@@ -2,6 +2,7 @@
 Object {
 	property enum orientation { Vertical, Horizontal, BottomRight, TopRight, Custom };	///< gradient direction enumaration
 	property real angle;	///< angle for custom orientated gradient
+	property enum type { Linear, Conical }: Linear; /// < Linear by default to preserve backward compatibility
 
 	///@private
 	constructor: {
@@ -33,16 +34,21 @@ Object {
 			return
 
 		var orientation
-		switch(this.orientation) {
-			default:
-			case this.Vertical:	orientation = 'to bottom'; break
-			case this.Horizontal:	orientation = 'to left'; break
-			case this.BottomRight:	orientation = 'to bottom right'; break
-			case this.TopRight:	orientation = 'to top right'; break
-			case this.Custom:	orientation = this.angle + 'deg'; break
+		if (this.type == this.Linear) {
+			switch(this.orientation) {
+				default:
+				case this.Vertical: orientation = 'to bottom'; break
+				case this.Horizontal:	orientation = 'to left'; break
+				case this.BottomRight:	orientation = 'to bottom right'; break
+				case this.TopRight: orientation = 'to top right'; break
+				case this.Custom:	orientation = this.angle + 'deg'; break
+			}
+		}
+		else if (this.type == this.Conical) {
+			orientation = this.angle + 'deg at 50% 50%'; // TODO parameterize the center
 		}
 
-		var grad = new $core.gradient.Gradient(orientation)
+		var grad = new $core.gradient.Gradient(orientation, this.type)
 
 		for(var i = 0; i < n; ++i) {
 			var stop = stops[i]

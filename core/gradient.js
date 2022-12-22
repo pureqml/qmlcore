@@ -37,7 +37,7 @@ GradientPrototype.toString = function() {
 		return gradientString;
 	}
 
-	console.error("Type is not supported for gradient:", this.type);
+	throw new Error("Gradient Type " + this.type + " is not supported")
 	return "";
 }
 

@@ -3,7 +3,6 @@ Object {
 	property enum orientation { Vertical, Horizontal, BottomRight, TopRight, Custom };	///< gradient direction enumaration
 	property real angle;	///< angle for custom orientated gradient
 	property enum type { Linear, Conical }: Linear; /// < Linear by default to preserve backward compatibility
-	property bool visible: true;
 
 	///@private
 	constructor: {
@@ -22,11 +21,9 @@ Object {
 
 	///@private
 	function _updateStyle() {
-		if (this.visible) {
-			var decl = this._getDeclaration()
-			if (decl)
-				this.parent.style({ 'background-color': '', 'background': decl })
-		}
+		var decl = this._getDeclaration()
+		if (decl)
+			this.parent.style({ 'background-color': '', 'background': decl })
 	}
 
 	///@private

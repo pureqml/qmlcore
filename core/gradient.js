@@ -28,9 +28,9 @@ GradientPrototype.toString = function() {
 		return 'linear-gradient(' + this.orientation + ',' + this.stops.join() + ')'
 	}
 	else if (this.type === $core.Gradient.Conical) {
-		let gradientString = 'conic-gradient(from ' + this.orientation
-		for(let i = 0; i < this.stops.length; ++i) {
-			let stop = this.stops[i]
+		var gradientString = 'conic-gradient(from ' + this.orientation
+		for(var i = 0; i < this.stops.length; ++i) {
+			var stop = this.stops[i]
 			gradientString += ', ' + stop.color.hex() + ' '  + 2 * Math.PI * stop.position + 'rad'
 		}
 		gradientString += ')'

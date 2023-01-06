@@ -4,10 +4,12 @@ Component aimed to adjust individual preferences of each border side
 */
 
 Object {
+	// property enum type { Inner, Outer, Center }; ///< whether box is inside bounding rect or not
 	property string name;
 	property int width: parent.width;
 	property color color: parent.color;
 	property int style: parent.style;
+	property int type: parent.type;
 
 	///@private
 	function _updateStyle() {

@@ -273,6 +273,7 @@ Item {
 		if (player) {
 			log('setting source to', value)
 			player.setSource(value)
+			this.__autoPlay()
 		} else
 			log('WARNING: skipping VideoPlayer.setSource')
 	}
@@ -305,14 +306,16 @@ Item {
 			player.setVisibility(value)
 	}
 
-	///@private
+	function __autoPlay() {
+		if (this.autoPlay && this.source)
+			this.play()
+	}
+
 	onCompleted: {
 		this._scheduleLayout()
 		var player = this._getPlayer()
 		if (player)
 			player.setBackgroundColor(this.backgroundColor)
-
-		if (this.autoPlay && this.source)
-			this.play()
+		this.__autoPlay()
 	}
 }

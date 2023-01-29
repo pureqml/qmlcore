@@ -58,21 +58,24 @@ BaseView {
 
 			if (this.keyNavigationWraps && ci - columns < 0) {
 				for (var i = count - 1; i >= 0; i -= columns) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
 				}
 			} else if (ci - columns < 0) {
 				for (var i = 0; i < count; i += columns) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
 				}
 			} else {
 				for (var i = ci - columns; i >= 0; i -= columns) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -82,7 +85,8 @@ BaseView {
 			if (!this.keyNavigationWraps && ci === 0)
 				return false
 			for (var i = ci - 1; i >= 0; --i) {
-				if (items[i].focus) {
+				var item = items[i]
+				if (item && item.focus) {
 					this.currentIndex = i
 					break
 				}
@@ -104,7 +108,8 @@ BaseView {
 
 			if (this.keyNavigationWraps && ci + columns >= count) {
 				for (var i = 0; i < count; i += columns) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -112,14 +117,16 @@ BaseView {
 
 			} else if (ci + columns >= count) {
 				for (var i = count - 1; i >= 0; i -= columns) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
 				}
 			} else {
 				for (var i = ci + columns; i < count; i += columns) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -140,7 +147,8 @@ BaseView {
 		if (this.flow === this.FlowLeftToRight) {
 			if (this.keyNavigationWraps && ci === 0) {
 				for (var i = count - 1; i >= 0; --i) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -149,7 +157,8 @@ BaseView {
 				return false
 			} else {
 				for (var i = ci - 1; i >= 0; --i) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -162,14 +171,16 @@ BaseView {
 
 			if (ci - rows < 0) {
 				for (var i = 0; i < count; i += rows) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
 				}
 			} else {
 				for (var i = ci - rows; i >= 0; i -= rows) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -186,7 +197,8 @@ BaseView {
 		if (this.flow === this.FlowLeftToRight) {
 			if (this.keyNavigationWraps && ci === count - 1) {
 				for (var i = count - 1; i >= 0; --i) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -195,7 +207,8 @@ BaseView {
 				return false
 			} else {
 				for (var i = ci + 1; i < count; ++i) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
@@ -208,14 +221,16 @@ BaseView {
 
 			if (ci + rows >= count) {
 				for (var i = count - 1; i >= 0; i -= rows) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}
 				}
 			} else {
 				for (var i = ci + rows; i < this.count; i += rows) {
-					if (items[i].focus) {
+					var item = items[i]
+					if (item && item.focus) {
 						this.currentIndex = i
 						break
 					}

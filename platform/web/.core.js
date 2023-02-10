@@ -1,6 +1,6 @@
 _globals.core.__deviceBackend = function() { return _globals.web.device }
 
-exports.core.keyCodes = {
+var keyCodes = {
 	13: 'Select',
 	16: 'Shift',
 	17: 'Ctrl',
@@ -50,18 +50,6 @@ exports.core.keyCodes = {
 	88: 'X',
 	89: 'Y',
 	90: 'Z',
-	112: 'Red',
-	113: 'Green',
-	114: 'Yellow',
-	115: 'Blue',
-	219: 'Red',     // [
-	221: 'Green',   // ]
-	186: 'Yellow',  // ;
-	222: 'Blue',    // '
-	230: 'RightAlt',
-	187: 'VolumeUp',
-	189: 'VolumeDown',
-	191: 'Mute',
 	// NumPad
 	96: '0',
 	97: '1',
@@ -73,10 +61,33 @@ exports.core.keyCodes = {
 	103: '7',
 	104: '8',
 	105: '9',
-	107: 'VolumeUp',
-	109: 'VolumeDown',
-	111: 'Mute',
 }
+
+if ($manifest$emulateRemoteKeys) {
+	var emulatedKeys = {
+		112: 'Red',
+		113: 'Green',
+		114: 'Yellow',
+		115: 'Blue',
+		219: 'Red',     // [
+		221: 'Green',   // ]
+		186: 'Yellow',  // ;
+		222: 'Blue',    // '
+		230: 'RightAlt',
+		187: 'VolumeUp',
+		189: 'VolumeDown',
+		191: 'Mute',
+		// NumPad
+		107: 'VolumeUp',
+		109: 'VolumeDown',
+		111: 'Mute',
+	}
+	for(var code in emulatedKeys) {
+		keyCodes[code] = emulatedKeys[code]
+	}
+}
+
+exports.core.keyCodes = keyCodes
 
 exports.closeApp = function() {
 	window.close()

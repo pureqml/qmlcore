@@ -3,6 +3,7 @@
 	"properties": {
 		"resolutionWidth": 0,
 		"resolutionHeight": 0,
-		"useNativeFocusForInput": true
+		"useNativeFocusForInput": true,
+		"emulateRemoteKeys": false
 	}
 }

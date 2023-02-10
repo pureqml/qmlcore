@@ -597,6 +597,9 @@ exports.init = function(ctx) {
 	win.on('keydown', ctx.wrapNativeCallback(function(event) {
 		var keyCode = event.which || event.keyCode
 		var key = $core.keyCodes[keyCode]
+		if (key === undefined && event.code) {
+			key = event.code
+		}
 
 		if (key !== undefined) {
 			if (ctx.processKey(key, event))

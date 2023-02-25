@@ -594,21 +594,33 @@ exports.init = function(ctx) {
 		div.on(name, onFullscreenChanged, true)
 	})
 
-	win.on('keydown', ctx.wrapNativeCallback(function(event) {
+	var translateKey = function(event) {
 		var keyCode = event.which || event.keyCode
 		var key = $core.keyCodes[keyCode]
 		if (key === undefined && event.code) {
 			key = event.code
 		}
+		return key
+	}
 
+	win.on('keydown', ctx.wrapNativeCallback(function(event) {
+		var key = translateKey(event)
 		if (key !== undefined) {
+			ctx.keyDown(key)
 			if (ctx.processKey(key, event))
 				event.preventDefault()
 		} else {
 			log("unhandled keycode " + keyCode + ": [" + event.charCode + " " + event.keyCode + " " + event.which + " " + event.key + " " + event.code + " " + event.location + "]")
 		}
 
-	})) //fixme: add html.Document instead
+	}))
+	win.on('keyup', ctx.wrapNativeCallback(function(event) {
+		var key = translateKey(event)
+		if (key !== undefined) {
+			ctx.keyUp(key)
+		}
+	}))
+	//fixme: add html.Document instead
 	win.on('orientationchange', ctx.wrapNativeCallback(function() {
 		log('orientation changed event')
 		ctx.system.screenWidth = window.screen.width

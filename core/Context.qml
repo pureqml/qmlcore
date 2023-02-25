@@ -11,7 +11,11 @@ Item {
 	property int virtualWidth: manifest.virtual.width;	///< virtual viewport width
 	property int virtualHeight: manifest.virtual.height;///< virtual viewport height
 	property real virtualScale: Math.min((system.resolutionWidth || width) / virtualWidth, (system.resolutionHeight || height) / virtualHeight);	///< @private
+
 	signal message;	///< incoming postMessage
+
+	signal keyDown; ///< key pressed
+	signal keyUp; ///< key released
 
 	visibleInView: false; //startup
 

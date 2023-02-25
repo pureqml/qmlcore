@@ -556,14 +556,14 @@ exports.init = function(ctx) {
 		w = div.width()
 		h = div.height()
 		log('Context: found element by id, size: ' + w + 'x' + h)
-		win.on('resize', function() { ctx.width = div.width(); ctx.height = div.height(); });
+		win.on('resize', ctx.wrapNativeCallback(function() { ctx.width = div.width(); ctx.height = div.height(); }));
 	} else {
 		w = win.width() + 1;
 		h = win.height() + 1;
 		log("Context: window size: " + w + "x" + h);
 		div = html.createElement(ctx, tag)
 		div.dom.id = divId
-		win.on('resize', function() { ctx.width = win.width() + 1; ctx.height = win.height() + 1; });
+		win.on('resize', ctx.wrapNativeCallback(function() { ctx.width = win.width() + 1; ctx.height = win.height() + 1; }));
 		var body = html.getElement(ctx, 'body')
 		body.append(div);
 	}
@@ -582,7 +582,7 @@ exports.init = function(ctx) {
 	ctx.width = w
 	ctx.height = h
 
-	win.on('scroll', function(event) { ctx.scrollY = win.scrollY(); });
+	win.on('scroll', ctx.wrapNativeCallback(function() { ctx.scrollY = win.scrollY(); }));
 
 	var onFullscreenChanged = function(e) {
 		var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
@@ -609,11 +609,11 @@ exports.init = function(ctx) {
 		}
 
 	})) //fixme: add html.Document instead
-	win.on('orientationchange', function(event) {
+	win.on('orientationchange', ctx.wrapNativeCallback(function() {
 		log('orientation changed event')
 		ctx.system.screenWidth = window.screen.width
 		ctx.system.screenHeight = window.screen.height
-	})
+	}))
 
 	ctx._styleClassifier = $manifest$cssAutoClassificator? new StyleClassifier(ctx._prefix): null; //broken beyond repair
 }
@@ -621,10 +621,11 @@ exports.init = function(ctx) {
 
 //fixme: this is sorta hack, generalize that across other backends
 exports.initSystem = function(system) {
-	var win = system._context.window
+	var context = system._context
+	var win = context.window
 
-	win.on('focus', function() { system.pageActive = true })
-	win.on('blur', function() { system.pageActive = false })
+	win.on('focus', context.wrapNativeCallback(function() { system.pageActive = true }))
+	win.on('blur', context.wrapNativeCallback(function() { system.pageActive = false }))
 
 	system.screenWidth = window.screen.width
 	system.screenHeight = window.screen.height

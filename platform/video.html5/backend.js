@@ -247,11 +247,6 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 	log('Not implemented')
 }
 
-Player.prototype.getAudioTracks = function() {
-	log('Not implemented')
-	return []
-}
-
 Player.prototype.getSubtitles = function() {
 	var textTracks = this.element.dom.textTracks
 	var result = []
@@ -271,7 +266,7 @@ Player.prototype.getVideoTracks = function() {
 }
 
 Player.prototype.getAudioTracks = function() {
-	var audioTracks = this.element.dom.audioTracks
+	var audioTracks = this.element.dom.audioTracks || []
 	var result = []
 	for (var i = 0; i < audioTracks.length; ++i) {
 		var track = audioTracks[i]

@@ -55,6 +55,7 @@ BaseLayout {
 	constructor: {
 		this._items = []
 		this._modelUpdate = new $core.model.ModelUpdate()
+		this.__moveDir = 0
 	}
 
 	/// returns index of item by x,y coordinates
@@ -109,6 +110,24 @@ BaseLayout {
 		var idx = this._items.indexOf(this.focusedChild)
 		if (idx >= 0)
 			this.currentIndex = idx
+	}
+
+	function moveCurrentIndex(dir) {
+		var ci = this.currentIndex
+		var wrap = this.keyNavigationWraps
+		var count = this.count
+		this.__moveDir = dir
+		ci += dir
+		if (wrap) {
+			ci %= count
+			if (ci < 0)
+				ci += count
+		}
+		if (ci < 0 || ci >= count)
+			return false
+
+		this.currentIndex = ci
+		return true
 	}
 
 	onCurrentIndexChanged: {

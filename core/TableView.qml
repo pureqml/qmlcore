@@ -231,14 +231,12 @@ BaseView {
 
 	onKeyPressed: {
 		if (!this.handleNavigationKeys) {
-			event.accepted = false
 			return false
 		}
 
 		var columns = this.columns
 		var count = this.count
 		if (columns <= 0 || count <= 0) {
-			event.accepted = false
 			return false
 		}
 
@@ -257,7 +255,6 @@ BaseView {
 				if (column > 0)
 					--this.currentIndex
 			}
-			event.accepted = true
 			return true
 		} else if (key === 'Right') {
 			if (this.keyNavigationWraps) {
@@ -269,7 +266,6 @@ BaseView {
 				if (column < columns - 1)
 					++this.currentIndex
 			}
-			event.accepted = true
 			return true
 		} else if (key === 'Up') {
 			if (this.keyNavigationWraps) {
@@ -281,7 +277,6 @@ BaseView {
 				if (row > 0)
 					this.currentIndex -= columns
 			}
-			event.accepted = true
 			return true
 		} else if (key === 'Down') {
 			if (this.keyNavigationWraps) {
@@ -293,11 +288,7 @@ BaseView {
 				if (row < rows - 1)
 					this.currentIndex += columns
 			}
-			event.accepted = true
 			return true
-		} else {
-			event.accepted = false
-			return false
 		}
 	}
 

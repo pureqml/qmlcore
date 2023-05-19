@@ -122,6 +122,11 @@ BaseLayout {
 			ci %= count
 			if (ci < 0)
 				ci += count
+		} else {
+			if (ci < 0)
+				ci = 0
+			if (ci >= count)
+				ci = count - 1
 		}
 		if (ci < 0 || ci >= count)
 			return false

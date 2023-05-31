@@ -561,10 +561,19 @@ class Parser(object):
 			if terminate:
 				self.__read_statement_end()
 			return "[%s]" % (",".join(map(str, values)))
-		if self.lookahead('{'):
-			# FIXME: support dynamic properties here
-			value = self.__read_json_object()
-			return json.dumps(value)
+		if self.maybe('{'):
+			values = OrderedDict()
+			while not self.maybe('}'):
+				if self.lookahead(identifier_re):
+					name = self.read(identifier_re, "Expected identifier")
+				elif self.lookahead(string_re):
+					name = self.read(string_re, "Expected string")
+				else:
+					self.error("Expected string or identifier as object key")
+				self.read(':', "Expected : after object property")
+				values[name] = self.__read_expression(terminate=False)
+			values = map(lambda item: "%s:%s" %(item[0], item[1]), values.items())
+			return "{%s}" %",".join(values)
 		else:
 			value = infix_parser.parse(self)
 			if terminate:

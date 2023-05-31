@@ -5,7 +5,6 @@ import compiler.lang as lang
 doc_next = None
 doc_prev_component = None
 doc_root_component = None
-import json
 
 class CustomParser(object):
 	def match(self, next):

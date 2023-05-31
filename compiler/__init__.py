@@ -5,7 +5,7 @@ standard_library.install_aliases()
 from builtins import object, str
 
 import compiler.doc.json
-import compiler.grammar2
+import compiler.grammar
 import compiler.manifest
 from compiler.manifest import merge_properties
 import compiler.js
@@ -31,7 +31,7 @@ class Cache(object):
 		try:
 			import inspect
 			data = ""
-			data += inspect.getsource(compiler.grammar2)
+			data += inspect.getsource(compiler.grammar)
 			data += inspect.getsource(compiler.lang)
 			self.grammar_digest = hashlib.sha1(data.encode('utf-8')).hexdigest()
 		except:
@@ -52,7 +52,7 @@ class Cache(object):
 		except:
 			print("parsing", path, "...", name, file=sys.stderr)
 			try:
-				tree = compiler.grammar2.parse(data, path=path)
+				tree = compiler.grammar.parse(data, path=path)
 				self.write(name, hashkey, tree)
 				return tree, data
 			except Exception as ex:

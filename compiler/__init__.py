@@ -5,7 +5,6 @@ standard_library.install_aliases()
 from builtins import object, str
 
 import compiler.doc.json
-import compiler.grammar
 import compiler.grammar2
 import compiler.manifest
 from compiler.manifest import merge_properties
@@ -23,9 +22,8 @@ else:
 	import pickle
 
 class Cache(object):
-	def __init__(self, dir, old_parser):
+	def __init__(self, dir):
 		self.dir = dir
-		self.old_parser = old_parser
 		try:
 			os.mkdir(dir)
 		except:
@@ -33,10 +31,7 @@ class Cache(object):
 		try:
 			import inspect
 			data = ""
-			if not old_parser:
-				data += inspect.getsource(compiler.grammar2)
-			else:
-				data += inspect.getsource(compiler.grammar)
+			data += inspect.getsource(compiler.grammar2)
 			data += inspect.getsource(compiler.lang)
 			self.grammar_digest = hashlib.sha1(data.encode('utf-8')).hexdigest()
 		except:
@@ -57,10 +52,7 @@ class Cache(object):
 		except:
 			print("parsing", path, "...", name, file=sys.stderr)
 			try:
-				if not self.old_parser:
-					tree = compiler.grammar2.parse(data, path=path)
-				else:
-					tree = compiler.grammar.parse(data)
+				tree = compiler.grammar2.parse(data, path=path)
 				self.write(name, hashkey, tree)
 				return tree, data
 			except Exception as ex:
@@ -242,8 +234,8 @@ class Compiler(object):
 
 		print("done", file=sys.stderr)
 
-	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", old_parser = False):
-		self.cache = Cache(cache_dir, old_parser)
+	def __init__(self, output_dir, root, project_dirs, root_manifest, app, platforms, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache"):
+		self.cache = Cache(cache_dir)
 		self.root = root
 		self.output_dir = output_dir
 		self.project_dirs = project_dirs
@@ -267,7 +259,7 @@ class Compiler(object):
 
 
 def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = set(),
-		wait = False, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache", old_parser=False):
+		wait = False, doc = None, release = False, verbose = False, jobs = 1, cache_dir = ".cache"):
 	if wait:
 		try:
 			import pyinotify
@@ -300,7 +292,7 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, platforms = 
 		except:
 			raise Exception("it seems you don't have pyinotify module installed, please install it to run build with -d option")
 
-	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs, cache_dir=cache_dir, old_parser=old_parser)
+	c = Compiler(output_dir, root, project_dirs, root_manifest, app, platforms, doc=doc, release=release, verbose=verbose, jobs=jobs, cache_dir=cache_dir)
 
 	notifier = None
 

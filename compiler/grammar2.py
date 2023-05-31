@@ -5,6 +5,7 @@ import compiler.lang as lang
 doc_next = None
 doc_prev_component = None
 doc_root_component = None
+import json
 
 class CustomParser(object):
 	def match(self, next):
@@ -560,6 +561,10 @@ class Parser(object):
 			if terminate:
 				self.__read_statement_end()
 			return "[%s]" % (",".join(map(str, values)))
+		if self.lookahead('{'):
+			# FIXME: support dynamic properties here
+			value = self.__read_json_object()
+			return json.dumps(value)
 		else:
 			value = infix_parser.parse(self)
 			if terminate:

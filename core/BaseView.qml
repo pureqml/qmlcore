@@ -116,6 +116,7 @@ BaseLayout {
 		var ci = this.currentIndex
 		var wrap = this.keyNavigationWraps
 		var count = this.count
+		var outOfRange = false
 		this.__moveDir = dir
 		ci += dir
 		if (wrap) {
@@ -123,12 +124,16 @@ BaseLayout {
 			if (ci < 0)
 				ci += count
 		} else {
-			if (ci < 0)
+			if (ci < 0) {
 				ci = 0
-			if (ci >= count)
+				outOfRange = true
+			}
+			if (ci >= count) {
 				ci = count - 1
+				outOfRange = true
+			}
 		}
-		if (ci < 0 || ci >= count)
+		if (outOfRange || ci < 0 || ci >= count)
 			return false
 
 		this.currentIndex = ci

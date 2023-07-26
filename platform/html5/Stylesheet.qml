@@ -1,13 +1,11 @@
 Object {
 	constructor: {
 		var context = this._context
-		var options = context.options
 
 		var style = this.style = context.createElement('style')
 		style.dom.type = 'text/css'
 
-		this.prefix = options.prefix
-		var divId = options.id
+		var divId = context.options.id
 
 		var div = document.getElementById(context, divId)
 		var topLevel = div === null
@@ -32,12 +30,12 @@ Object {
 	}
 
 	function allocateClass(prefix) {
-		var globalPrefix = this.prefix
+		var globalPrefix = $manifest$html5$prefix
 		return (globalPrefix? globalPrefix: '') + prefix + '-' + this._lastId++
 	}
 
 	function mangleSelector(selector) {
-		var prefix = this.prefix
+		var prefix = $manifest$html5$prefix
 		if (prefix)
 			return selector + '.' + prefix + 'core-item'
 		else

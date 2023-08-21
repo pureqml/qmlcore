@@ -643,20 +643,27 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		defaultValue = getDefaultValueForType(type)
 	}
 
+	var protoDefault = '__default__' + name
+	var getDefaultValue = function(parent) {
+		if (protoDefault in parent)
+			return parent[protoDefault]
+		return defaultValue
+	}
+
 	var createStorage = function(newValue) {
 		var properties = this.__properties
 		var storage = properties[name]
 		if (storage === undefined) { //no storage
-			if (newValue === defaultValue) //value === defaultValue, no storage allocation
+			if (newValue === getDefaultValue(this)) //value === defaultValue, no storage allocation
 				return
-			storage = properties[name] = new PropertyStorage(defaultValue)
+			storage = properties[name] = new PropertyStorage(getDefaultValue(this))
 		}
 		return storage
 	}
 
 	var simpleGet = function() {
 		var storage = this.__properties[name]
-		return storage !== undefined? storage.getSimpleValue(defaultValue): defaultValue
+		return storage !== undefined? storage.getSimpleValue(getDefaultValue(this)): getDefaultValue(this)
 	}
 
 	var simpleSet = function(newValue) {
@@ -665,14 +672,14 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 		if (storage === undefined)
 			return
 
-		storage.set(this, name, newValue, defaultValue, true)
+		storage.set(this, name, newValue, getDefaultValue(this), true)
 	}
 
 	var animatedGet = function() {
 		var storage = this.__properties[name]
 		return storage !== undefined?
-			storage.getCurrentValue(defaultValue):
-			defaultValue
+			storage.getCurrentValue(getDefaultValue(this)):
+			getDefaultValue(this)
 	}
 
 	var animatedSet = function(newValue) {
@@ -691,7 +698,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 
 			storage.started = Date.now()
 
-			var src = storage.getCurrentValue(defaultValue)
+			var src = storage.getCurrentValue(getDefaultValue(this))
 			var dst = newValue
 
 			var self = this
@@ -721,7 +728,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					complete()
 				} else {
 					storage.interpolatedValue = convert(animation.interpolate(dst, src, t))
-					storage.callOnChanged(self, name, storage.getCurrentValue(defaultValue), src)
+					storage.callOnChanged(self, name, storage.getCurrentValue(getDefaultValue(this)), src)
 					storage.frameRequest = backend.requestAnimationFrame(nextFrame)
 				}
 			})
@@ -735,7 +742,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 			animation.running = true
 			animation.complete = complete
 		}
-		storage.set(this, name, newValue, defaultValue, !animation)
+		storage.set(this, name, newValue, getDefaultValue(this), !animation)
 		// if ((!animation || !animation.running) && newValue === defaultValue)
 		// 	this.__properties[name] = undefined
 	}
@@ -830,6 +837,21 @@ $core._protoOnChanged = function(proto, name, callback)
 
 $core._protoOnKey = function(proto, name, callback)
 { protoEvent('__key__', proto, name, callback) }
+
+$core._protoDefault = function(proto, name, value)
+{ proto['__default__' + name] = value }
+
+$core._setProtoDefault = function(object, name) {
+	if (!('__properties' in object))
+		return
+
+	var value = object['__default__' + name]
+	if (value === undefined)
+		return
+
+	var storage = object.__properties[name]
+	_callOnChanged(object, name, value, storage? storage.onChanged: undefined)
+}
 
 $core.callMethod = function(obj, name) {
 	if (!obj)

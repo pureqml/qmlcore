@@ -21,7 +21,7 @@ Item {
 		this._scheduleLoad()
 	}
 
-	function getClass() { return 'core-image' }
+	htmlClass: "core-image";
 
 	///@private
 	function _scheduleLoad() {

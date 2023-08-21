@@ -20,7 +20,7 @@ Item {
 			this._setText(this.text)
 	}
 
-	function getClass() { return 'core-text' }
+	htmlClass: "core-text";
 
 	function registerStyle(style, tag) {
 		style.addRule(tag, 'width: auto; height: auto;')

@@ -40,6 +40,10 @@ Layout {
 	/// @private
 	function addChild(child) {
 		$core.Layout.prototype.addChild.apply(this, arguments)
+		var children = this.children
+		var index = children.length - 1
+		var lastChild = children[index]
+		lastChild.visibleInView = (index === this.currentIndex)
 		var update = this._scheduleLayout.bind(this)
 		child.onChanged('height', update)
 		child.onChanged('recursiveVisible', update)

@@ -1,5 +1,5 @@
 {
 	"requires": ["html5", "web", "video.html5"],
-	"templates": ["*.html", "config.xml", "build.py"],
+	"templates": ["*.html", "config.xml"],
 	"strict": false
 }

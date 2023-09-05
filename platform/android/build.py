@@ -18,19 +18,14 @@ def build(app, title, release):
 	os.chdir(app)
 
 	os.system('cordova platform add android')
-	{% block commands %}{% endblock %}
 	os.system('cordova plugin add cordova-plugin-streaming-media')
 	os.system('cordova plugin add cordova-plugin-device')
 	os.system('cordova plugin add cordova-plugin-screen-orientation')
-	{% block plugins %}{% endblock %}
 
 	if release:
-		{% if androidBuild %}
 		build = 'cordova build android --release -- '
-		os.system(build + '--keystore={{androidBuild.keystore}} --storePassword={{androidBuild.storePassword}} --alias={{androidBuild.alias}} --password={{androidBuild.password}}')
-		{% else %}
-		print("Failed to build release apk androidBuild property is undefined")
-		{% endif %}
+		# TODO: pass release parameters
+		# os.system(build + '--keystore={{androidBuild.keystore}} --storePassword={{androidBuild.storePassword}} --alias={{androidBuild.alias}} --password={{androidBuild.password}}')
 	else:
 		os.system('cordova build android')
 

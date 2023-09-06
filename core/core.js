@@ -728,7 +728,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 					complete()
 				} else {
 					storage.interpolatedValue = convert(animation.interpolate(dst, src, t))
-					storage.callOnChanged(self, name, storage.getCurrentValue(getDefaultValue(this)), src)
+					storage.callOnChanged(self, name, storage.getCurrentValue(getDefaultValue(self)), src)
 					storage.frameRequest = backend.requestAnimationFrame(nextFrame)
 				}
 			})

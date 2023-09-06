@@ -16,16 +16,29 @@ BaseMouseMixin {
 	/// @private
 	function _updatePosition(event) {
 		var parent = this.parent
-		this.screenX = event.screenX;
-		this.screenY = event.screenY;
-		this.clientX = event.clientX;
-		this.clientY = event.clientY;
-		var x = event.offsetX
-		var y = event.offsetY
+		var touchEvent = event.type === 'touchmove'
+		var x, y
+		if (touchEvent) {
+			var touch = event.touches[0]
+			this.screenX = touch.screenX;
+			this.screenY = touch.screenY;
+			this.clientX = touch.clientX;
+			this.clientY = touch.clientY;
+			var screenPos = this.parent.toScreen()
+			x = touch.screenX - screenPos[0]
+			y = touch.screenY - screenPos[1]
+		} else {
+			this.screenX = event.screenX;
+			this.screenY = event.screenY;
+			this.clientX = event.clientX;
+			this.clientY = event.clientY;
+			x = event.offsetX
+			y = event.offsetY
+		}
 		if (x >= 0 && y >= 0 && x < parent.width && y < parent.height) {
 			this.mouseX = x
 			this.mouseY = y
-			this.mouseMove(x, y)
+			this.mouseMove(x, y, event)
 			return true
 		}
 		else
@@ -36,10 +49,12 @@ BaseMouseMixin {
 	function _bindMove(value) {
 		if (value && !this._mouseMoveBinder) {
 			this._mouseMoveBinder = new $core.EventBinder(this.element)
-			this._mouseMoveBinder.on('mousemove', function(event) {
-				if (!this._updatePosition(event))
+			var handler = function(event) {
+				if (this._updatePosition(event) && event.type !== 'touchmove')
 					$core.callMethod(event, 'preventDefault')
-			}.bind(this))
+			}.bind(this)
+			this._mouseMoveBinder.on('mousemove', handler)
+			this._mouseMoveBinder.on('touchmove', handler)
 		}
 		if (this._mouseMoveBinder)
 			this._mouseMoveBinder.enable(value)

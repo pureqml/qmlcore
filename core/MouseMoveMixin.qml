@@ -25,8 +25,8 @@ BaseMouseMixin {
 			this.clientX = touch.clientX;
 			this.clientY = touch.clientY;
 			var screenPos = this.parent.toScreen()
-			x = touch.screenX - screenPos[0]
-			y = touch.screenY - screenPos[1]
+			x = touch.clientX - screenPos[0]
+			y = touch.clientY - screenPos[1]
 		} else {
 			this.screenX = event.screenX;
 			this.screenY = event.screenY;

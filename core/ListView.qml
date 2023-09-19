@@ -188,7 +188,9 @@ BaseView {
 			var s
 
 			if (item) {
-				s = refSize = sizes[i] = (horizontal? item.width: item.height)
+				s = sizes[i] = (horizontal? item.width: item.height)
+				if (refSize === undefined || s > 0)
+					refSize = s
 			} else {
 				s = sizes[i]
 				if (s !== undefined) {
@@ -212,7 +214,9 @@ BaseView {
 			if (!item && visibleInModel && (renderable || s === undefined)) {
 				item = this._createDelegate(i)
 				if (item) {
-					s = refSize = sizes[i] = (horizontal? item.width: item.height)
+					s = sizes[i] = (horizontal? item.width: item.height)
+					if (refSize === undefined || s > 0)
+						refSize = s
 					created = true
 				}
 			}

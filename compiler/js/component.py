@@ -358,16 +358,6 @@ class component_generator(object):
 						args.append(default_value)
 					r.append("%score.addProperty(%s)" %(ident, ", ".join(args)))
 
-		setup_on_changed = []
-
-		for target, value in self.assignments.items():
-			if target == "id" or target.endswith(".id"):
-				continue
-			else:
-				if "." not in target and lang.value_is_trivial(value):
-					r.append("%s$core._protoDefault(%s, '%s', %s)" %(ident, self.proto_name, target, value))
-					setup_on_changed.append("%s$core._setProtoDefault($this, '%s')" %(ident, target	))
-
 		for name, prop in self.enums.items():
 			values = prop.values
 
@@ -421,7 +411,6 @@ class component_generator(object):
 			for (path, name) in handlers:
 				assert not path
 				r.append("%s$core._protoOnChanged(%s, '%s', %s)" %(ident, self.proto_name, name, code))
-				setup_on_changed.append("%s$core._setProtoDefault($this, '%s')" %(ident, name))
 
 		for code, handlers in self.transform_handlers(registry, self.signal_handlers):
 			handlers = list(filter(put_in_prototype, handlers))
@@ -459,10 +448,10 @@ class component_generator(object):
 
 		setup_code = self.generate_setup_code(registry, '$this', '$c', ident_n + 2).strip()
 		b = '%s%s.$s.call($this, $c.$b); delete $c.$b' %(ident, self.base_proto_name)
-		if setup_code or setup_on_changed:
+		if setup_code:
 			generate = True
-		setup_code = '%s%s.$s = function($c) {\n\t\tvar $this = this;\n%s\n%s\n%s\n}' \
-			%(ident, self.proto_name, b, "\n".join(setup_on_changed), setup_code)
+		setup_code = '%s%s.$s = function($c) {\n\t\tvar $this = this;\n%s\n%s\n}' \
+			%(ident, self.proto_name, b, setup_code)
 
 		if generate:
 			r.append('')
@@ -650,8 +639,6 @@ class component_generator(object):
 
 		for target, value in self.assignments.items():
 			if target == "id":
-				continue
-			if self.prototype and "." not in target and lang.value_is_trivial(value):
 				continue
 			t = type(value)
 			#print self.name, target, value

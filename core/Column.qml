@@ -32,7 +32,7 @@ Layout {
 			if (r > w)
 				w = r
 			c.viewY = p + tm
-			if (c.recursiveVisible)
+			if (c.visible)
 				p += c.height + tm + bm + this.spacing
 		}
 		if (p > 0)

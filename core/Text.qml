@@ -12,6 +12,7 @@ Item {
 	property int paintedHeight;		///< real height of this text without any layout applied
 	width: paintedWidth;
 	height: paintedHeight;
+	property bool offlineLayout;
 
 	///@private
 	constructor: {
@@ -77,13 +78,13 @@ Item {
 	}
 
 	onRecursiveVisibleChanged: {
-		if (value)
+		if (value && !this.offlineLayout)
 			this._updateSize()
 	}
 
 	///@private
 	function _updateSize() {
-		if (this.recursiveVisible && (this._updateSizeNeeded || this.clip))
+		if ((this.offlineLayout || this.recursiveVisible) && (this._updateSizeNeeded || this.clip))
 			this._scheduleUpdateSize()
 	}
 
@@ -146,5 +147,10 @@ Item {
 
 	onWrapModeChanged: {
 		this._updateWSHandling()
+	}
+
+	onOfflineLayoutChanged: {
+		if (value)
+			this._enableSizeUpdate()
 	}
 }

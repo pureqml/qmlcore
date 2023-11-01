@@ -85,9 +85,12 @@ Player.prototype.getVideoTracks = function() {
 			video.push({
 				id: track.id,
 				width: track.width,
+				height: track.height,
+				active: track.active,
 				framerate: track.frameRate,
 				bandwidth: track.videoBandwidth,
-				height: track.height
+				audiocodec: track.audioCodec,
+				videocodec: track.codecs
 			})
 		}
 	}

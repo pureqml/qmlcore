@@ -49,12 +49,13 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 	var ui = this.ui
 	log("DefaultBand", ui.maxBandwidth)
 	if (ui.maxBandwidth || ui.minBandwidth) {
-		var abr = {}
+		var restrictions = {}
 		if (ui.maxBandwidth)
-			abr.maxBandwidth = ui.maxBandwidth
+			restrictions.maxBandwidth = ui.maxBandwidth
 		if (ui.minBandwidth)
-			abr.minBandwidth = ui.minBandwidth
-		config.abr = abr
+			restrictions.minBandwidth = ui.minBandwidth
+
+		config.abr = { restrictions: restrictions }
 	}
 
 	log("SetupDRM", config)
@@ -153,18 +154,19 @@ Player.prototype.setAudioTrack = function(trackId) {
 
 		var abr = {
 			enabled: false,
-			switchInterval: 0
+			switchInterval: 0,
+			restrictions: { }
 		}
 
 		var ui = this.ui
 		if (ui.defaultBandwidth)
-			abr.defaultBandwidthEstimate = ui.defaultBandwidth
+			abr.restrictions.defaultBandwidthEstimate = ui.defaultBandwidth
 
 		if (ui.maxBandwidth)
-			abr.maxBandwidth = ui.maxBandwidth
+			abr.restrictions.maxBandwidth = ui.maxBandwidth
 
 		if (ui.minBandwidth)
-			abr.minBandwidth = ui.minBandwidth
+			abr.restrictions.minBandwidth = ui.minBandwidth
 
 		this.shakaPlayer.configure({
 			abr: abr,
@@ -196,18 +198,17 @@ Player.prototype.setVideoTrack = function(trackId) {
 
 		var abr = {
 			enabled: false,
-			switchInterval: 0
+			switchInterval: 0,
+			restrictions: { }
 		}
 
 		var ui = this.ui
-		if (ui.defaultBandwidth)
-			abr.defaultBandwidthEstimate = ui.defaultBandwidth
 
 		if (ui.maxBandwidth)
-			abr.maxBandwidth = ui.maxBandwidth
+			abr.restrictions.maxBandwidth = ui.maxBandwidth
 
 		if (ui.minBandwidth)
-			abr.minBandwidth = ui.minBandwidth
+			abr.restrictions.minBandwidth = ui.minBandwidth
 
 		this.shakaPlayer.configure({ abr: abr });
 		this._videoTrackHeight = video.height

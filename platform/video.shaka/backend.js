@@ -46,6 +46,17 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 		error ? error(new Error("Unknown or not supported DRM type " + type)) : log("Unknown or not supported DRM type " + type)
 
 	var config = { drm: { servers: laServer } }
+	var ui = this.ui
+	log("DefaultBand", ui.maxBandwidth)
+	if (ui.maxBandwidth || ui.minBandwidth) {
+		var abr = {}
+		if (ui.maxBandwidth)
+			abr.maxBandwidth = ui.maxBandwidth
+		if (ui.minBandwidth)
+			abr.minBandwidth = ui.minBandwidth
+		config.abr = abr
+	}
+
 	log("SetupDRM", config)
 	this.shakaPlayer.configure(config);
 	if (callback)
@@ -139,11 +150,25 @@ Player.prototype.setAudioTrack = function(trackId) {
 			if (foundHeight && foundHeight.length)
 				video = foundHeight[0]
 		}
+
+		var abr = {
+			enabled: false,
+			switchInterval: 0
+		}
+
+		var ui = this.ui
+		if (ui.defaultBandwidth)
+			abr.defaultBandwidthEstimate = ui.defaultBandwidth
+
+		if (ui.maxBandwidth)
+			abr.maxBandwidth = ui.maxBandwidth
+
+		if (ui.minBandwidth)
+			abr.minBandwidth = ui.minBandwidth
+
 		this.shakaPlayer.configure({
-			abr: {
-				enabled: false,
-				switchInterval: 0
-			}
+			abr: abr,
+			streaming: { bufferingGoal : 15, rebufferingGoal: 4 }
 		});
 		this._language = found[0].language
 		this.shakaPlayer.selectVariantTrack(video)
@@ -168,15 +193,30 @@ Player.prototype.setVideoTrack = function(trackId) {
 			if (foundLang && foundLang.length)
 				video = foundLang[0]
 		}
-		this.shakaPlayer.configure({
-			abr: {
-				enabled: false,
-				switchInterval: 0
-			}
-		});
+
+		var abr = {
+			enabled: false,
+			switchInterval: 0
+		}
+
+		var ui = this.ui
+		if (ui.defaultBandwidth)
+			abr.defaultBandwidthEstimate = ui.defaultBandwidth
+
+		if (ui.maxBandwidth)
+			abr.maxBandwidth = ui.maxBandwidth
+
+		if (ui.minBandwidth)
+			abr.minBandwidth = ui.minBandwidth
+
+		this.shakaPlayer.configure({ abr: abr });
 		this._videoTrackHeight = video.height
 		this.shakaPlayer.selectVariantTrack(video)
 	}
+}
+
+Player.prototype.getSubtitles = function() {
+	return []
 }
 
 exports.createPlayer = function(ui) {

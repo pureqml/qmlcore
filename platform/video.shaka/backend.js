@@ -217,7 +217,36 @@ Player.prototype.setVideoTrack = function(trackId) {
 }
 
 Player.prototype.getSubtitles = function() {
-	return []
+	var tracks = this.shakaPlayer.getTextTracks()
+	var subsTracks = []
+	for (var i = 0; i < tracks.length; ++i) {
+		var track = tracks[i]
+		subsTracks.push({
+			id: track.id,
+			active: track.active,
+			language: track.language
+		})
+	}
+	return subsTracks
+}
+
+Player.prototype.setSubtitles = function(trackId) {
+	if (!trackId) {
+		this.shakaPlayer.setTextTrackVisibility(false)
+		return
+	}
+
+	var tracks = this.shakaPlayer.getTextTracks()
+
+	var found = tracks.filter(function(element) {
+		return element.id === trackId
+	})
+
+	if (found && found.length) {
+		var subtitles = found[0]
+		this.shakaPlayer.selectTextTrack(subtitles)
+		this.shakaPlayer.setTextTrackVisibility(true)
+	}
 }
 
 exports.createPlayer = function(ui) {

@@ -234,11 +234,6 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 	log('Not implemented')
 }
 
-Player.prototype.getAudioTracks = function() {
-	log('Not implemented')
-	return []
-}
-
 Player.prototype.getVideoTracks = function() {
 	return this._videoTracks || []
 }

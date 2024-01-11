@@ -239,20 +239,18 @@ Player.prototype.getVideoTracks = function() {
 }
 
 Player.prototype.getAudioTracks = function() {
-	log("PlayerBackend::getAudioTracks")
 	var audioTracks = this.element.dom.audioTracks
-	log("PlayerBackend::getAudioTracks:", audioTracks)
 	var result = []
-	log("PlayerBackend::getAudioTracks.length:", audioTracks.length)
+	var tracksInfo = this._audioTracksInfo
+	log("TrackInfo", tracksInfo)
 	for (var i = 0; i < audioTracks.length; ++i) {
-		log("PlayerBackend::iteration", i)
 		var track = audioTracks[i]
-		log("PlayerBackend::iteration track", track)
-		var info = this._audioTracksInfo[i]
+		var info = i < tracksInfo.length ? tracksInfo[i] : null
+		log(i, "info", info, "Track", track)
 		result.push({
 			"id": i,
-			"name": track.label ? track.label : info.name,
-			"language": track.language ? track.language : info.language
+			"name": track.label ? track.label : (info ? info.name : ""),
+			"language": track.language ? track.language : (info ? info.language : "")
 		})
 	}
 	log("getAudioTracks", result)

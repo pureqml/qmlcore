@@ -242,10 +242,10 @@ Player.prototype.getAudioTracks = function() {
 	var audioTracks = this.element.dom.audioTracks
 	var result = []
 	var tracksInfo = this._audioTracksInfo
-	log("TrackInfo", tracksInfo)
+	log("audioTracks", audioTracks, "TrackInfo", tracksInfo)
 	for (var i = 0; i < audioTracks.length; ++i) {
 		var track = audioTracks[i]
-		var info = i < tracksInfo.length ? tracksInfo[i] : null
+		var info = tracksInfo && i < tracksInfo.length ? tracksInfo[i] : null
 		log(i, "info", info, "Track", track)
 		result.push({
 			"id": i,

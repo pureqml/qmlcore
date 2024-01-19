@@ -235,7 +235,16 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 }
 
 Player.prototype.getVideoTracks = function() {
-	return this._videoTracks || []
+	var videoTracks = this.element.dom.videoTracks
+	var result = []
+	log("videoTracks", videoTracks)
+	for (var i = 0; i < videoTracks.length; ++i) {
+		var track = videoTracks[i]
+		log(i, "vTrack", track)
+		result.push(track)
+	}
+	log("getVideoTracks", result)
+	return result
 }
 
 Player.prototype.getAudioTracks = function() {

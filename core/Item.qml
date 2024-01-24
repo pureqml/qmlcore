@@ -24,9 +24,6 @@ Object {
 	property lazy anchors: Anchors { }
 	property lazy effects: Effects { }
 	property lazy transform: Transform { }
-
-	property string htmlTag: "div";
-	property string htmlClass;
 	property bool cssTranslatePositioning;
 	property bool cssNullTranslate3D;
 	property bool cssDelegateAlwaysVisibleOnAcceleratedSurfaces: true;
@@ -70,10 +67,10 @@ Object {
 	}
 
 	/// returns tag for corresponding element
-	function getTag() { return this.htmlTag }
+	function getTag() { return 'div' }
 
 	/// returns tag for corresponding element
-	function getClass() { return this.htmlClass }
+	function getClass() { return '' }
 
 	///@private
 	function registerStyle(style, tag) {

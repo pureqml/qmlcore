@@ -173,7 +173,7 @@ Player.prototype.setAudioTrack = function(trackId) {
 			streaming: { bufferingGoal : 15, rebufferingGoal: 4 }
 		});
 		this._language = found[0].language
-		this.shakaPlayer.selectVariantTrack(video)
+		this.shakaPlayer.selectVariantTrack(video, true)
 	}
 }
 

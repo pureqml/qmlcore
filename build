@@ -10,7 +10,7 @@ from compiler import manifest as mf
 from compiler import compile_qml
 
 import subprocess
-import distutils
+import shutil
 import argparse
 import shutil
 import fnmatch
@@ -23,7 +23,6 @@ if PY2:
     sys.setdefaultencoding('utf8')
 
 from os import path
-from distutils import dir_util
 from compiler.ts import Ts
 
 parser = argparse.ArgumentParser('qmlcore build tool')
@@ -221,7 +220,7 @@ def copytree(src, dst):
 		s = os.path.join(src, item)
 		d = os.path.join(dst, item)
 		if os.path.isdir(s):
-			distutils.dir_util.copy_tree(s, d)
+			shutil.copytree(s, d, dirs_exist_ok=True)
 		else:
 			shutil.copy2(s, d)
 

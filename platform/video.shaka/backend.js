@@ -74,6 +74,7 @@ Player.prototype.setSource = function(url) {
 	var ui = this.ui
 	this._language = null
 	this._videoTrackHeight = null
+	this.ui.ready = false
 	if (url) {
 		var self = this
 		this.shakaPlayer.load(url)

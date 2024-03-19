@@ -39,7 +39,7 @@ class Location(object):
 	def save(self, parent):
 		loc = ET.SubElement(parent, 'location')
 		loc.attrib['filename'] = self.filename
-		loc.attrib['line'] = unicode(self.line)
+		loc.attrib['line'] = str(self.line)
 
 class Translation(object):
 	def __init__(self, type = None, text = None):

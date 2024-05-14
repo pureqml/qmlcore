@@ -107,7 +107,10 @@ BaseLayout {
 	}
 
 	onFocusedChildChanged: {
-		var idx = this._items.indexOf(this.focusedChild)
+		if (value === null)
+			return
+
+		var idx = this._items.indexOf(value)
 		if (idx >= 0)
 			this.currentIndex = idx
 	}
@@ -141,6 +144,8 @@ BaseLayout {
 	}
 
 	onCurrentIndexChanged: {
+		if (this.trace)
+			log("onCurrentIndexChanged", value)
 		this.focusCurrent()
 	}
 

@@ -76,22 +76,35 @@ BaseView {
 	function getItemPosition(idx) {
 		var items = this._items
 		var item = items[idx]
+		var sizes = this._sizes
+		var horizontal = this.orientation === this.Horizontal
+		var spacing = this.spacing
+
 		if (!item) {
+			var refSize
 			var x = 0, y = 0, w = 0, h = 0
-			for(var i = idx; i >= 0; --i) {
-				if (items[i]) {
+			for(var i = 0; i < idx; ++i)
+			{
+				if (!item)
 					item = items[i]
-					x = item.viewX + item.x
-					y = item.viewY + item.y
+
+				if (item) {
 					w = item.width
 					h = item.height
-					break
 				}
-			}
-			var missing = idx - i
-			if (missing > 0) {
-				x += missing * (w + this.spacing)
-				y += missing * (h + this.spacing)
+				var s = sizes[i]
+				if (refSize === undefined || s > 0)
+					refSize = s
+				if (s === undefined)
+					s = refSize
+				if (s === undefined)
+					 s = 0
+
+				if (horizontal) {
+					x += s + spacing
+				} else {
+					y += s + spacing
+				}
 			}
 			return [x, y, w, h]
 		}

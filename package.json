@@ -30,7 +30,7 @@
   "author": "PureQML team",
   "license": "MIT",
   "dependencies": {
-    "mocha": "^9.1.4",
+    "mocha": "^9.2.2",
     "sinon": "^12.0.1"
   }
 }

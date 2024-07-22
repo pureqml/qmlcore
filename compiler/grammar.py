@@ -53,7 +53,7 @@ function_name_re = re.compile(r'[a-z_][a-z0-9_\.]*', re.IGNORECASE)
 string_re = StringParser()
 kw_re = re.compile(r'(?:true|false|null)')
 expr_kw_re = re.compile(r'(?:true|false|null|undefined)')
-NUMBER_RE = r"(?:(?:(?:\d*\.\d+)|(?:\d+\.?))(?:e[+-]?\d+)?|(?:0x)?[0-9]+)"
+NUMBER_RE = r"0x[0-9a-f]+|(?:\d+([.]\d*)?(?:e[+-]?\d+)?|[.]\d+(?:e[+-]?\d+)?)"
 tr_re = re.compile(r"(?:qsTr|qsTranslate|tr|)\(")
 number_re = re.compile(NUMBER_RE, re.IGNORECASE)
 percent_number_re = re.compile(NUMBER_RE + r'%', re.IGNORECASE)
@@ -680,7 +680,12 @@ class Parser(object):
 			return value
 		value = self.maybe(number_re)
 		if value is not None:
-			return value
+			if value.startswith("0x"):
+				return int(value[2:], 16)
+			elif "." in value or "e" in value or "E" in value:
+				return float(value)
+			else:
+				return int(value)
 		if self.maybe(tr_re):
 			value = self.read(string_re, "Expect tr argument be a string")
 			self.read(')', "Expect ) after string in tr")

@@ -103,6 +103,8 @@ pushd ${DST_DIR}
 	sed -i "${P}" app/build.gradle
 	P="s/compileSdkVersion 29/compileSdkVersion ${APP_SDK_VERSION}/"
 	sed -i "${P}" app/build.gradle
+	P="s/namespace 'com.pureqml.android'/namespace '${APP_DOMAIN}'/"
+	sed -i "${P}" app/build.gradle
 
 
 	if [ ! -z "$APP_ICON_COLOR" ]; then

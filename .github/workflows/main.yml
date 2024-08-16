@@ -30,3 +30,8 @@ jobs:
         run: |
           pip install -r requirements.txt
           make -C test
+
+      - name: Run mocha tests
+        run: |
+          npm install
+          npm test

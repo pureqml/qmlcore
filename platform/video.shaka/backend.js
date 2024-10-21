@@ -48,6 +48,7 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 	var config = { drm: { servers: laServer } }
 	var ui = this.ui
 	log("DefaultBand", ui.maxBandwidth)
+	config.abr = { switchInterval: 1 }
 	if (ui.maxBandwidth || ui.minBandwidth) {
 		var restrictions = {}
 		if (ui.maxBandwidth)
@@ -55,8 +56,10 @@ Player.prototype.setupDrm = function(type, options, callback, error) {
 		if (ui.minBandwidth)
 			restrictions.minBandwidth = ui.minBandwidth
 
-		config.abr = { restrictions: restrictions }
+		config.abr.restrictions = restrictions
 	}
+
+	config.streaming = { bufferingGoal: 1, rebufferingGoal: 1 }
 
 	log("SetupDRM", config)
 	this.shakaPlayer.configure(config);
@@ -171,7 +174,7 @@ Player.prototype.setAudioTrack = function(trackId) {
 
 		this.shakaPlayer.configure({
 			abr: abr,
-			streaming: { bufferingGoal : 15, rebufferingGoal: 4 }
+			streaming: { bufferingGoal: 1, rebufferingGoal: 1 }
 		});
 		this._language = found[0].language
 		this.shakaPlayer.selectVariantTrack(video, true)
@@ -211,7 +214,10 @@ Player.prototype.setVideoTrack = function(trackId) {
 		if (ui.minBandwidth)
 			abr.restrictions.minBandwidth = ui.minBandwidth
 
-		this.shakaPlayer.configure({ abr: abr });
+		this.shakaPlayer.configure({
+			abr: abr,
+			streaming: { bufferingGoal: 1, rebufferingGoal: 1 }
+		});
 		this._videoTrackHeight = video.height
 		this.shakaPlayer.selectVariantTrack(video)
 	}

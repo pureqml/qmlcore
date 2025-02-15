@@ -294,21 +294,6 @@ Player.prototype.setAudioTrack = function(trackId) {
 		audioTracks[i].enabled = i === trackId
 }
 
-Player.prototype.setVideoTrack = function(trackId) {
-	if (!this._videoTracks || this._videoTracks.length <= 0) {
-		log("There is no available video track", this._videoTracks)
-		return
-	}
-	if (trackId < 0 || trackId >= this._videoTracks.length) {
-		log("Track with id", trackId, "not found")
-		return
-	}
-	this.ui.waiting = true
-	var progress = this.ui.progress
-	log("Set video", this._videoTracks[trackId])
-	this.element.dom.src = this._videoTracks[trackId].url
-	this.seekTo(progress)
-}
 
 Player.prototype.setVideoTrack = function(trackId) {
 	if (!this._videoTracks || this._videoTracks.length <= 0) {

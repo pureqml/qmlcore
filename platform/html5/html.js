@@ -894,8 +894,10 @@ exports.ajax = function(ui, request) {
 	if (request.withCredentials !== undefined)
 		xhr.withCredentials = request.withCredentials
 
-	if (error)
+	if (error) {
 		xhr.addEventListener('error', error)
+		xhr.addEventListener('timeout', error)
+	}
 
 	if (done)
 		xhr.addEventListener('load', done)

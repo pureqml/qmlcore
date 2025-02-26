@@ -101,9 +101,11 @@ BaseView {
 					 s = 0
 
 				if (horizontal) {
-					x += s + spacing
+					if (s > 0)
+						x += s + spacing
 				} else {
-					y += s + spacing
+					if (s > 0)
+						y += s + spacing
 				}
 			}
 			return [x, y, w, h]
@@ -273,7 +275,8 @@ BaseView {
 				}
 			}
 
-			p += s + this.spacing
+			if (s > 0)
+				p += s + this.spacing
 		}
 		if (p > startPos)
 			p -= this.spacing;

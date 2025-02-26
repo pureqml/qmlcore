@@ -20,6 +20,7 @@ Layout {
 		var p = 0
 		var w = 0
 		this.count = children.length
+
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
 			if (!('height' in c))
@@ -32,7 +33,7 @@ Layout {
 			if (r > w)
 				w = r
 			c.viewY = p + tm
-			if (c.visible)
+			if (c.visible && c.height > 0)
 				p += c.height + tm + bm + this.spacing
 		}
 		if (p > 0)

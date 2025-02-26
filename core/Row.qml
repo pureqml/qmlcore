@@ -22,7 +22,7 @@ Layout {
 		this.count = children.length
 		for(var i = 0; i < children.length; ++i) {
 			var c = children[i]
-			if (!('height' in c))
+			if (!('width' in c))
 				continue
 
 			var rm = c.anchors.rightMargin || c.anchors.margins

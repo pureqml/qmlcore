@@ -52,7 +52,7 @@ Item {
 	function _load() {
 		var item
 		if (this.source) {
-			item = this._loadSource()
+			item = this.item = this._loadSource()
 			$core.core.createObject(item)
 		} else if (this.sourceComponent) {
 			if (!(this.sourceComponent instanceof $core.Component))
@@ -60,33 +60,16 @@ Item {
 			if (this.trace)
 				log('loading component ' + this.sourceComponent.getComponentPath())
 			var row = this.parent._get('model', true)
-			item = this.sourceComponent.delegate(this, row? row: {})
+			item = this.item = this.sourceComponent.delegate(this, row? row: {})
 			this._updateVisibilityForChild(item, this.recursiveVisible)
 			this._tryFocus()
 		} else
 			return
 
-		this.item = item
-
-		this.loaded(item)
-
-		var hasOnCompleted = item.__complete !== $core.CoreObject.prototype.__complete
-		if (hasOnCompleted) {
-			// Schedule dummy object which calls itemCompleted(item)
-			// It's guaranteed to execute after possibly delayed item.onComplete handler.
-			var complete = function() {
-				//check that item hasn't been changed.
-				if (this.item === item) {
-					this._itemCompleted = true
-					this.itemCompleted(item)
-				}
-			}.bind(this)
-
-			this._context.__onCompleted({
-				__complete: complete
-			})
-		} else {
+		// onCompleted may trigger another load recursively via createObject
+		if (item == this.item) {
 			this._itemCompleted = true
+			this.loaded(item)
 			this.itemCompleted(item)
 		}
 	}

@@ -225,8 +225,6 @@ BaseView {
 			log("content size", this.contentWidth, this.contentHeight)
 
 		this.layoutFinished()
-		if (created)
-			this._context.scheduleComplete()
 	}
 
 	onKeyPressed: {

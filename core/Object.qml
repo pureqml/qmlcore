@@ -20,8 +20,7 @@ EventEmitter {
 	}
 
 	function completed() {
-		if (this.__complete !== $core.CoreObject.prototype.__complete && this._registerDelayedAction('complete'))
-			this._context.__onCompleted(this)
+		this._context.__completed(this)
 	}
 
 	/// @private

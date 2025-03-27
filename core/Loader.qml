@@ -69,26 +69,6 @@ Item {
 		this.item = item
 
 		this.loaded(item)
-
-		var hasOnCompleted = item.__complete !== $core.CoreObject.prototype.__complete
-		if (hasOnCompleted) {
-			// Schedule dummy object which calls itemCompleted(item)
-			// It's guaranteed to execute after possibly delayed item.onComplete handler.
-			var complete = function() {
-				//check that item hasn't been changed.
-				if (this.item === item) {
-					this._itemCompleted = true
-					this.itemCompleted(item)
-				}
-			}.bind(this)
-
-			this._context.__onCompleted({
-				__complete: complete
-			})
-		} else {
-			this._itemCompleted = true
-			this.itemCompleted(item)
-		}
 	}
 
 	onRecursiveVisibleChanged: {

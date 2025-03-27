@@ -880,11 +880,13 @@ exports.forEach = function(root, callback, arg) {
 }
 
 exports.createObject = function(item) {
+	var ctx = this._context
+	var completedCheckpoint = ctx.__completedCheckpoint()
 	item.__init()
 	var parent = item.parent
 	if ('_updateVisibilityForChild' in parent)
 		parent._updateVisibilityForChild(item, parent.recursiveVisible)
 	if ('_tryFocus' in parent)
 		parent._tryFocus()
-	item._context.scheduleComplete()
+	ctx.__processCompleted(completedCheckpoint)
 }

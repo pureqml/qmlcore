@@ -72,21 +72,10 @@ Item {
 	}
 
 	///@private
-	function __onCompleted(object) {
-		this._completedObjects.push(object)
-	}
-
-	///@internal
-	function scheduleComplete() {
-		this.delayedAction('context:completed', this, this._processActions)
-	}
-
-	///@private
 	function start(instance) {
 		this.children.push(instance)
 		instance.__init()
 		log('Context: created instance')
-		// log('Context: calling on completed')
 		return instance;
 	}
 
@@ -117,17 +106,13 @@ Item {
 		var invoker = this._asyncInvoker
 
 		while (this._delayedActions.length || this._completedObjects.length) {
-			var actions = this._delayedActions
-			this._delayedActions = []
-			for(var i = 0, n = actions.length; i < n; ++i)
-				invoker(actions[i])
+			this.__processCompleted()
 
-			var objects = this._completedObjects
-			this._completedObjects = []
-			for(var i = 0, n = objects.length; i < n; ++i) {
-				var object = objects[i]
-				try { object.__complete() }
-				catch(ex) { log('onCompleted failed', ex, ex.stack)}
+			var actions = this._delayedActions
+			if (actions.length) {
+				this._delayedActions = []
+				for(var i = 0, n = actions.length; i < n; ++i)
+					invoker(actions[i])
 			}
 		}
 
@@ -200,11 +185,33 @@ Item {
 	}
 
 	///@private
+	function __completed(obj) {
+		var hasOnCompleted = obj.__complete !== $core.CoreObject.prototype.__complete
+		if (hasOnCompleted)
+			this._completedObjects.push(obj)
+	}
+
+	///@private
+	function __completedCheckpoint(obj) {
+		return this._completedObjects.length
+	}
+
+	///@private
+	function __processCompleted(level) {
+		level = level || 0
+		var objects = this._completedObjects
+		while(objects.length > level) {
+			var object = objects.pop()
+			object.__complete()
+		}
+	}
+
+	///@private
 	function _run() {
 		log('Context: signalling layout')
 		this.visibleInView = true
 		this.newBoundingBox()
-		log('Context: calling completed()')
+		log('Context: executing deferred actions')
 		this._started = true
 		this._processActions()
 		this._completed = true

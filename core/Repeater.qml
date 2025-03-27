@@ -28,8 +28,6 @@ BaseView {
 			}
 		}
 		this.layoutFinished()
-		if (created)
-			this._context.scheduleComplete()
 	}
 
 	/// @private creates delegate in given item slot

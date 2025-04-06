@@ -52,7 +52,7 @@ Item {
 	function _load() {
 		var item
 		if (this.source) {
-			item = this._loadSource()
+			item = this.item = this._loadSource()
 			$core.core.createObject(item)
 		} else if (this.sourceComponent) {
 			if (!(this.sourceComponent instanceof $core.Component))
@@ -60,15 +60,18 @@ Item {
 			if (this.trace)
 				log('loading component ' + this.sourceComponent.getComponentPath())
 			var row = this.parent._get('model', true)
-			item = this.sourceComponent.delegate(this, row? row: {})
+			item = this.item = this.sourceComponent.delegate(this, row? row: {})
 			this._updateVisibilityForChild(item, this.recursiveVisible)
 			this._tryFocus()
 		} else
 			return
 
-		this.item = item
-
-		this.loaded(item)
+		// onCompleted may trigger another load recursively via createObject
+		if (item == this.item) {
+			this._itemCompleted = true
+			this.loaded(item)
+			this.itemCompleted(item)
+		}
 	}
 
 	onRecursiveVisibleChanged: {

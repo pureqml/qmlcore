@@ -577,7 +577,7 @@ class component_generator(object):
 		if property == 'context':
 			return ("%s._get('%s')" %(parent, property)) if parent else '_context'
 		elif property == 'parent':
-			return 'parent'
+			return "%s.parent" %parent if parent else 'parent'
 		elif property == 'this':
 			return 'this'
 		elif property == 'window':

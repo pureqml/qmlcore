@@ -1,5 +1,5 @@
 /// This mixin provides mouse click event detecting
-BaseMixin {
+BaseMouseMixin {
 	///@private
 	constructor: {
 		this._bindClick(this.enabled)

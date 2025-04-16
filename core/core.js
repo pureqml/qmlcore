@@ -561,8 +561,12 @@ PropertyStoragePrototype.callOnChangedWithCurrentValue = function(object, name, 
 		return
 
 	var value = this.value
-	if (value === undefined) //default - nothing changed since storage was created.
+	if (value === undefined)
+	{
+		var defaultValue = object["__default_" + name]
+		callback(defaultValue)
 		return
+	}
 
 	var invoker = $core.safeCall(object, [value], function(ex) { log("on " + name + " changed callback failed: ", ex, ex.stack) })
 	invoker(callback)
@@ -642,6 +646,7 @@ exports.addProperty = function(proto, type, name, defaultValue) {
 	} else {
 		defaultValue = getDefaultValueForType(type)
 	}
+	proto["__default_" + name] = defaultValue
 
 	var createStorage = function(newValue) {
 		var properties = this.__properties

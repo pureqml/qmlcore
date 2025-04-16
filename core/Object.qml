@@ -175,6 +175,9 @@ EventEmitter {
 		if (storage !== undefined)
 			return storage
 
+		if (value === undefined)
+			value = this["__default_" + name]
+
 		return this.__properties[name] = new $core.core.PropertyStorage(value)
 	}
 

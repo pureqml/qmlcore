@@ -186,9 +186,7 @@ Item {
 
 	///@private
 	function __completed(obj) {
-		var hasOnCompleted = obj.__complete !== $core.CoreObject.prototype.__complete
-		if (hasOnCompleted)
-			this._completedObjects.push(obj)
+		this._completedObjects.push(obj)
 	}
 
 	///@private
@@ -200,9 +198,13 @@ Item {
 	function __processCompleted(level) {
 		level = level || 0
 		var objects = this._completedObjects
+		var emptyComplete = $core.CoreObject.prototype.__complete
+
 		while(objects.length > level) {
 			var object = objects.pop()
-			object.__complete()
+			var complete = object.__complete
+			if (complete !== emptyComplete)
+				complete.call(object)
 		}
 	}
 

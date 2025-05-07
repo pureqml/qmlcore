@@ -12,7 +12,7 @@ def split_name(name):
 def get_package(name):
 	return split_name(name)[0]
 
-_escape_re = re.compile('\W')
+_escape_re = re.compile(r'\W')
 def escape(name):
 	return _escape_re.sub('_', name)
 

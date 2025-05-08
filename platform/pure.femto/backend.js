@@ -47,14 +47,18 @@ exports.initSystem = function(system) {
 }
 
 exports.createElement = function(ctx, tag, cls) {
+	var el
 	switch(tag) {
 		case 'input':
-			return new fd.Input()
+			el = new fd.Input()
 		case 'spinner':
-			return new fd.Spinner()
+			el = new fd.Spinner()
 		default:
-			return new fd.Element()
+			el = new fd.Element()
 	}
+	if (cls)
+		el.addClass(cls)
+	return el
 }
 
 exports.initRectangle = function(rect) {

@@ -119,3 +119,13 @@ exports.ajax = function(ui, request) {
 	ui.loading = true
 	return fd.httpRequest(request)
 }
+
+exports.addRule = function(selector, rules) {
+	var type = typeof rules
+	if (type !== 'object') {
+		log("WARNING: Stylesheet.addRule uses text based rules, it's unsupported in native clients, selector: " + selector + ", rules: " + rules)
+		return
+	}
+	if ('style' in fd)
+		fd.style(selector, rules)
+}

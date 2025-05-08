@@ -3,12 +3,10 @@ Object {
 	}
 
 	function addRule(selector, rule) {
-	}
-
-	function _addRule(selector, rule) {
+		$pure.femto.backend.addRule(selector, rule)
 	}
 
 	function allocateClass(prefix) {
-		return 'cls-' + prefix
+		return prefix
 	}
 }

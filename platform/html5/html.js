@@ -11,10 +11,25 @@ exports.capabilities = {
 
 var imageCache = null
 
+var rulesToStylesheet = function(rules) {
+	var type = typeof rules;
+	if (type === 'string') {
+		return rules
+	} else if (type === 'object') {
+		var res = []
+		for(var name in rules)
+			res.push(name + ': ' + rules[name].toString())
+		return res.join(";\n")
+	} else
+		rules = rules.toString()
+	return rules
+}
+
 exports.createAddRule = function(style) {
 	if(! (style.sheet || {}).insertRule) {
 		var sheet = (style.styleSheet || style.sheet)
 		return function(name, rules) {
+			rules = rulesToStylesheet(rules)
 			try {
 				sheet.addRule(name, rules)
 			} catch(e) {
@@ -26,6 +41,7 @@ exports.createAddRule = function(style) {
 	else {
 		var sheet = style.sheet
 		return function(name, rules) {
+			rules = rulesToStylesheet(rules)
 			try {
 				sheet.insertRule(name + '{' + rules + '}', sheet.cssRules.length)
 			} catch(e) {

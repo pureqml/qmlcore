@@ -74,18 +74,31 @@ Object {
 
 	///@private
 	function registerStyle(style, tag) {
-		var rules = 'position: absolute; visibility: inherit; opacity: 1.0;'
-		rules += 'border-style: solid; border-width: 0px; border-radius: 0px; box-sizing: border-box; border-color: rgba(0,0,0,1);'
-		rules += 'white-space: nowrap; transform: none;'
-		rules += 'left: 0px; top: 0px; width: 0px; height: 0px;'
-		rules += 'font-family: ' + $manifest$style$font$family + '; '
-		rules += 'line-height: ' + $manifest$style$font$lineHeight + '; '
-		rules += 'font-weight: ' + $manifest$style$font$weight + '; '
-		rules += 'pointer-events: inherit; touch-action: inherit; '
+		var rules = {
+			'position': 'absolute',
+			'visibility': 'inherit',
+			'opacity': 1.0,
+			'border-style': 'solid',
+			'border-width': '0px',
+			'border-radius': '0px',
+			'box-sizing': 'border-box',
+			'border-color': 'rgba(0,0,0,1)',
+			'white-space': 'nowrap',
+			'transform': 'none',
+			'left': '0px',
+			'top': '0px',
+			'width': '0px',
+			'height': '0px',
+			'font-family': $manifest$style$font$family,
+			'line-height': $manifest$style$font$lineHeight,
+			'font-weight': $manifest$style$font$weight,
+			'pointer-events': 'inherit',
+			'touch-action': 'inherit'
+		}
 		if ($manifest$style$font$pixelSize)
-			rules += 'font-size: ' + $manifest$style$font$pixelSize + 'px; '
+			rules['font-size'] = $manifest$style$font$pixelSize + 'px'
 		else if ($manifest$style$font$pointSize)
-			rules += 'font-size: ' + $manifest$style$font$pointSize + 'pt; '
+			rules['font-size'] = $manifest$style$font$pointSize + 'pt'
 		style.addRule(tag, rules)
 	}
 

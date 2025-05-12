@@ -51,10 +51,13 @@ exports.createElement = function(ctx, tag, cls) {
 	switch(tag) {
 		case 'input':
 			el = new fd.Input()
+			break
 		case 'spinner':
 			el = new fd.Spinner()
+			break
 		default:
 			el = new fd.Element()
+			break
 	}
 	if (cls)
 		el.addClass(cls)

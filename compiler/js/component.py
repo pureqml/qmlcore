@@ -244,6 +244,18 @@ class component_generator(object):
 			r.append("\t%s.setAnimation('%s', %s);\n" %(target_parent, target, var))
 		return "\n".join(r)
 
+	def has_signal(self, registry, signal_name):
+		gen = self
+		while True:
+			if signal_name in gen.signals:
+				return True
+			base_type = gen.get_base_type(registry, register_used = False)
+			base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
+			if base_gen is None:
+				break
+			gen = base_gen
+		return False
+
 	#no cross-component access here
 	def pregenerate(self, registry):
 		self.collect_id(registry.id_set)
@@ -257,8 +269,6 @@ class component_generator(object):
 		self.signal_handlers = OrderedDict()
 		self.key_handlers = OrderedDict()
 		#print 'pregenerate', self.name
-		base_type = self.get_base_type(registry, register_used = False)
-		base_gen = registry.components[base_type] if base_type != 'core.CoreObject' else None
 
 		for (path, name), (args, code, event, async_) in methods.items():
 			oname = name
@@ -269,12 +279,10 @@ class component_generator(object):
 				signal_name = name[2].lower() + name[3:] #check that there's no signal with that name
 			is_pressed = is_on and name.endswith("Pressed") and len(name) > (2 + 7) #skipping onPressed
 			is_changed = is_on and name.endswith("Changed")
-			if is_changed:
-				if signal_name in base_gen.signals:
-					is_changed = False
-			if is_pressed:
-				if signal_name in base_gen.signals:
-					is_pressed = False
+			if is_changed and self.has_signal(registry, signal_name):
+				is_changed = False
+			if is_pressed and self.has_signal(registry, signal_name):
+				is_pressed = False
 
 			if is_on:
 				name = name[2].lower() + name[3:]

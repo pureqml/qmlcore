@@ -7,6 +7,7 @@ app/qml.min.js
 .cache/*
 node_modules
 .idea/
+.vscode
 test/qml/Output
 test/build.*
 test/.cache

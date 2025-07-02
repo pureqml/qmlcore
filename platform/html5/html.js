@@ -523,11 +523,19 @@ var WindowPrototype = exports.Window.prototype = Object.create(_globals.core.RAI
 WindowPrototype.constructor = exports.Window
 
 WindowPrototype.width = function() {
-	return this.dom.innerWidth
+	if (navigator.userAgent.toLocaleLowerCase().match('android')) {
+		return Math.floor(this.dom.innerWidth * this.dom.devicePixelRatio);
+	} else {
+		return this.dom.innerWidth;
+	}
 }
 
 WindowPrototype.height = function() {
-	return this.dom.innerHeight
+	if (navigator.userAgent.toLocaleLowerCase().match('android')) {
+		return Math.floor(this.dom.innerHeight * this.dom.devicePixelRatio);
+	} else {
+		return this.dom.innerHeight;
+	}
 }
 
 WindowPrototype.scrollY = function() {

@@ -51,6 +51,15 @@ var Player = function(ui) {
 		}
 	}
 
+	var subtitleContainer = document.querySelector('.vjs-text-track-display');
+	if (subtitleContainer) {
+		subtitleContainer.style.top = '90%';
+		subtitleContainer.style.left = '10%';
+		subtitleContainer.style.width = '80%';
+		subtitleContainer.style.fontSize = '28px';
+		subtitleContainer.style.textAlign = 'center';
+	}
+
 	this.videojsContaner = document.getElementById(uniqueId)
 	this.videojsContaner.style.zindex = -1
 }
@@ -82,6 +91,37 @@ Player.prototype.setSource = function(url) {
 	this.videojs.src(media, { html5: { hls: { withCredentials: true } }, fluid: true, preload: 'none', techOrder: ["html5"] })
 	if (this.ui.autoPlay)
 		this.play()
+}
+
+Player.prototype.getSubtitles = function() {
+	var tracks = this.videojs.textTracks()
+	var subsTracks = []
+	for (var i = 0; i < tracks.tracks_.length; ++i) {
+		var track = tracks.tracks_[i]
+		subsTracks.push({
+			id: track.id,
+			active: track.mode == 'showing',
+			language: track.language,
+			label: track.label
+		})
+	}
+	return subsTracks
+}
+
+Player.prototype.setSubtitles = function(trackId) {
+	var tracks = this.videojs.textTracks().tracks_
+
+	var subTrack = tracks.find(function(track) {
+		return track.id === trackId
+	})
+
+	tracks.map(function(track) {
+		if (subTrack && track.id === subTrack.id) {
+			track.mode = 'showing'
+		} else {
+			track.mode = 'disabled'
+		}
+	})
 }
 
 Player.prototype.play = function() {

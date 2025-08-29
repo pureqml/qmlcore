@@ -2,6 +2,7 @@ exports.createPlayer = function(ui) {
 	log('video.createPlayer')
 
 	var player = new fd.VideoPlayer()
+	var context = ui._context
 
 	var resetState = function() {
 		ui.ready = false
@@ -11,7 +12,7 @@ exports.createPlayer = function(ui) {
 		ui.stalled = false
 	}
 
-	player.on('stateChanged', function(state) {
+	player.on('stateChanged', context.wrapNativeCallback(function(state) {
 		log('VideoPlayer: stateChanged ' + state)
 		switch(state) {
 			case 1:
@@ -36,35 +37,34 @@ exports.createPlayer = function(ui) {
 			default:
 				log("VideoPlayer: unhandled state", typeof state, state)
 		}
-	})
+	}))
 
-	player.on('seeked', function() {
+	player.on('seeked', context.wrapNativeCallback(function() {
 		ui.waiting = false
 		ui.seeking = false
-	})
+	}))
 
-	player.on('error', function(err) {
+	player.on('error', context.wrapNativeCallback(function(err) {
 		log('VideoPlayer: error: ', err)
 		resetState(ui);
 		ui.error({ message: err })
-	})
+	}))
 
-	player.on('pause', function(isPaused) {
+	player.on('pause', context.wrapNativeCallback(function(isPaused) {
 		ui.paused = isPaused
 		log('VideoPlayer: paused: ', isPaused)
-	})
+	}))
 
-	player.on('timeupdate', function(position) {
+	player.on('timeupdate', context.wrapNativeCallback(function(position) {
 		ui.waiting = false
 		ui.stalled = false
 		if (!ui.seeking)
 			ui.progress = position;
-	}.bind(ui))
+	}))
 
-	player.on('durationchange', function(duration) {
+	player.on('durationchange', context.wrapNativeCallback(function(duration) {
 		ui.duration = duration
-	}.bind(ui))
-
+	}))
 
 	return player
 }

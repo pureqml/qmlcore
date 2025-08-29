@@ -1,7 +1,7 @@
 exports.createPlayer = function(ui) {
 	log('video.createPlayer')
 
-	var player = new fd.VideoPlayer()
+	var player = new fd.VideoPlayer(ui.element)
 	var context = ui._context
 
 	var resetState = function() {

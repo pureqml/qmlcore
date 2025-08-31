@@ -11,4 +11,4 @@ node_modules
 test/qml/Output
 test/build.*
 test/.cache
-
+.DS_Store

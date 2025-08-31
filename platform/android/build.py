@@ -13,7 +13,7 @@ def build(app, title, release):
 		print("Failed to create android app")
 		return
 	os.system('rsync -a ./ %s/www --exclude=%s ' %(app,app))
-	os.system('cp androidIcon.png %s' %(app))
+	os.system('cp icon.png %s' %(app))
 	os.system('cp config.xml %s' %(app))
 	os.chdir(app)
 

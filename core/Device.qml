@@ -10,6 +10,7 @@ Object {
 	property string sdk;			///< SDK version
 	property string ip;				///< device IP address if its available
 	property string runtime;		///< pureqml specific runtime provider, cordova/native
+	property string vendor;			///< device vendor name
 
 	property bool standByMode;		///< Stand by mode flag (if its supported)
 	property bool supportingUhd;	///< UHD (4K) supporting flag

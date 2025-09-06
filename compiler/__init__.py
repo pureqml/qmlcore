@@ -1,7 +1,9 @@
 from __future__ import print_function
-from future import standard_library
 from future.utils import PY2
-standard_library.install_aliases()
+if PY2:
+	from future import standard_library
+	standard_library.install_aliases()
+
 from builtins import object, str
 
 import compiler.doc.json

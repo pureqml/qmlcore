@@ -32,6 +32,10 @@ exports.init = function(ctx) {
 		}
 		return ctx.processKey(key, event)
 	}))
+	nativeContext.on('activeChanged', ctx.wrapNativeCallback(function(active) {
+		log("activeChanged " + active)
+		ctx.system.pageActive = active
+	}))
 	log('window size', ctx.width, ctx.height)
 	exports._deviceInfo = fd.getDeviceInfo()
 }

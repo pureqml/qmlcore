@@ -465,6 +465,7 @@ ElementPrototype.prepend = function(el) {
 ElementPrototype.discard = function() {
 	_globals.core.RAIIEventEmitter.prototype.discard.apply(this)
 	this.remove()
+	this.dom = null
 }
 
 ElementPrototype.remove = function() {

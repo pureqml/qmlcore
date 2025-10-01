@@ -463,6 +463,7 @@ ElementPrototype.prepend = function(el) {
 }
 
 ElementPrototype.discard = function() {
+	this._context._styleCache.pop(this)
 	_globals.core.RAIIEventEmitter.prototype.discard.apply(this)
 	this.remove()
 	this.dom = null

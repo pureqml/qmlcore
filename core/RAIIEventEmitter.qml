@@ -5,6 +5,14 @@ EventEmitter {
 		this._onListener = {}
 	}
 
+	function discard() {
+		var listeners = this._onListener
+		for(var name in listeners) {
+			this.removeAllListeners(name)
+		}
+		$core.EventEmitter.prototype.discard.call(this)
+	}
+
 	///@private
 	function on (name, callback) {
 		if (!(name in this._eventHandlers)) {

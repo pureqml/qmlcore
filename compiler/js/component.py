@@ -2,7 +2,7 @@ from builtins import filter, object, range, str
 from past.builtins import basestring
 from collections import OrderedDict
 
-from compiler.js import get_package, split_name, escape, mangle_package, Error
+from compiler.js import get_package, split_name, escape, mangle_package, escape_id, Error
 from compiler.js.code import ParseDepsContext
 from compiler.js.code import process, parse_deps, generate_accessors, get_enum_prologue, path_or_parent, mangle_path
 from compiler import lang
@@ -332,6 +332,9 @@ class component_generator(object):
 			result.setdefault(code, []).append((path, name))
 		return sorted(result.items())
 
+	def mangle_updater(self, prop):
+		return "__updater_%s__%s" %(self.proto_name, escape_id(prop))
+
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
 
@@ -383,6 +386,22 @@ class component_generator(object):
 		for name, prop in self.consts.items():
 			r.append("/** @const */")
 			r.append("%s%s.%s = %s.%s = $core.core.convertTo('%s', %s)" %(ident, self.proto_name, name, self.local_name, name, prop.type, json.dumps(prop.value)))
+
+		parent = "this"
+		for target, value in self.assignments.items():
+			if target == "id":
+				continue
+			t = type(value)
+			#print self.name, target, value
+			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
+			if isinstance(value, (str, basestring)):
+				prologue = get_enum_prologue(value, self, registry, var=True)
+				value = component_generator.replace_template_values(target_prop, value)
+				r.append('//assigning %s to %s' %(target, value))
+				value, deps = parse_deps(parent, value, parse_deps_ctx)
+				if deps:
+					prologue.append("%s = %s" %(target_lvalue, value))
+					r.append("%s%s.%s = function() { %s }" %(ident, self.proto_name, self.mangle_updater(target_prop), "\n".join(prologue)))
 
 		def next_codevar(lines, code, index):
 			var = "$code$%d" %index
@@ -662,7 +681,10 @@ class component_generator(object):
 						path, dep = _dep
 						undep.append(path)
 						undep.append("'%s'" %dep)
-					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
+					if self.prototype:
+						r.append("%s%s._replaceUpdater('%s', %s.%s.bind(%s), [%s])" %(ident, target_owner, target_prop, self.proto_name, self.mangle_updater(target_prop), parent, ",".join(undep)))
+					else:
+						r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
 				else:
 					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
 

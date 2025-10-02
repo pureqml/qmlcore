@@ -2,7 +2,7 @@ from collections import OrderedDict
 import re
 
 enum_re = re.compile(r'([A-Z]\w*)\.([A-Z]\w*)')
-def get_enum_prologue(text, generator, registry):
+def get_enum_prologue(text, generator, registry, var=False):
 	prologue = []
 	found_comps = OrderedDict()
 	for m in enum_re.finditer(text):
@@ -10,7 +10,7 @@ def get_enum_prologue(text, generator, registry):
 	for comp in found_comps.keys():
 		try:
 			component = registry.find_component(generator.package, comp)
-			prologue.append("%s = _globals.%s.prototype" %(comp, component))
+			prologue.append("%s%s = _globals.%s.prototype" %("var " if var else "", comp, component))
 		except Exception as ex:
 			pass
 	return prologue

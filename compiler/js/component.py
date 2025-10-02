@@ -2,7 +2,7 @@ from builtins import filter, object, range, str
 from past.builtins import basestring
 from collections import OrderedDict
 
-from compiler.js import get_package, split_name, escape, mangle_package, Error
+from compiler.js import get_package, split_name, escape, mangle_package, escape_id, Error
 from compiler.js.code import ParseDepsContext
 from compiler.js.code import process, parse_deps, generate_accessors, get_enum_prologue, path_or_parent, mangle_path
 from compiler import lang
@@ -88,13 +88,16 @@ class component_generator(object):
 			raise Error("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name), loc)
 
 		t = type(value)
+		fullname = split_name(target)
+		if fullname in self.assignments:
+			raise Error("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name), loc)
 		if t is lang.Component:
 			value = self.create_component_generator(value)
 			#print("dep %s:%s.%s -> %s:%s" % (hex(id(self)),self.component.name, target, hex(id(value)),value.component.name))
-			self.comp_assignments[target] = value
+			self.comp_assignments[fullname] = value
 		else:
 			value = str(value.replace("\\\n", "")) #multiline continuation \<NEWLINE>
-			self.assignments[target] = value
+			self.assignments[fullname] = (), value, False
 
 	def has_property(self, name):
 		return (name in self.declared_properties) or (name in self.aliases) or (name in self.enums)
@@ -338,6 +341,9 @@ class component_generator(object):
 			result.setdefault(code, []).append((path, name))
 		return sorted(result.items())
 
+	def mangle_updater(self, prop):
+		return "__updater_%s__%s" %(self.proto_name, escape_id(prop))
+
 	def generate_prototype(self, registry, ident_n = 1):
 		assert self.prototype == True
 
@@ -390,15 +396,31 @@ class component_generator(object):
 			r.append("/** @const */")
 			r.append("%s%s.%s = %s.%s = $core.core.convertTo('%s', %s)" %(ident, self.proto_name, name, self.local_name, name, prop.type, json.dumps(prop.value)))
 
+		def put_in_prototype(handler):
+			path, name = handler
+			return not path and self.prototype
+
+		for code, handlers in self.transform_handlers(registry, self.assignments):
+			handlers = list(filter(put_in_prototype, handlers))
+			print("PROTO", code, handlers)
+			# print(self.name, path, target, value)
+
+		# parent = "this"
+		# for (path, target), value in self.assignments.items():
+		# 	target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
+		# 	prologue = get_enum_prologue(value, self, registry, var=True)
+		# 	value = component_generator.replace_template_values(target_prop, value)
+		# 	r.append('//assigning %s to %s' %(target, value))
+		# 	value, deps = parse_deps(parent, value, parse_deps_ctx)
+		# 	if deps:
+		# 		prologue.append("%s = %s" %(target_lvalue, value))
+		# 		r.append("%s%s.%s = function() { %s }" %(ident, self.proto_name, self.mangle_updater(target_prop), "\n".join(prologue)))
+
 		def next_codevar(lines, code, index):
 			var = "$code$%d" %index
 			code = '%svar %s = %s' %(ident, var, code)
 			lines.append(code)
 			return var
-
-		def put_in_prototype(handler):
-			path, name = handler
-			return not path and self.prototype
 
 		code_index = 0
 
@@ -560,8 +582,12 @@ class component_generator(object):
 			r.append(code)
 			r.append("%s%s.addChild(%s)" %(ident, parent, var))
 
+		if self.id is not None:
+			if "." in self.id:
+				raise Error("expected identifier, not expression", self.loc)
+			r.append("%s%s._setId('%s')" %(ident, parent, value))
+
 		for target, value in self.comp_assignments.items():
-			self.check_target_property(registry, target)
 			if target != "delegate":
 				var = "%s$%s" %(escape(parent), escape(target))
 				r.append("//creating component %s" %value.name)
@@ -657,22 +683,22 @@ class component_generator(object):
 		for target, value in self.assignments.items():
 			#print self.name, target, value
 			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
-			if isinstance(value, (str, basestring)):
-				prologue += get_enum_prologue(value, self, registry)
-				value = component_generator.replace_template_values(target_prop, value)
-				r.append('//assigning %s to %s' %(target, value))
-				value, deps = parse_deps(parent, value, parse_deps_ctx)
-				if deps:
-					undep = []
-					for idx, _dep in enumerate(deps):
-						path, dep = _dep
-						undep.append(path)
-						undep.append("'%s'" %dep)
-					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
+			prologue += get_enum_prologue(value, self, registry)
+			value = component_generator.replace_template_values(target_prop, value)
+			r.append('//assigning %s to %s' %(target, value))
+			value, deps = parse_deps(parent, value, parse_deps_ctx)
+			if deps:
+				undep = []
+				for idx, _dep in enumerate(deps):
+					path, dep = _dep
+					undep.append(path)
+					undep.append("'%s'" %dep)
+				if self.prototype:
+					r.append("%s%s._replaceUpdater('%s', %s.%s.bind(%s), [%s])" %(ident, target_owner, target_prop, self.proto_name, self.mangle_updater(target_prop), parent, ",".join(undep)))
 				else:
-					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
+					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
 			else:
-				raise Error("skip assignment %s = %s" %(target, value), self.loc)
+				r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
 
 		def put_in_instance(handler):
 			path, name = handler

@@ -71,6 +71,7 @@ EventEmitter {
 
 	/// discard object
 	function discard() {
+		this.__discardId()
 		this.removeAllOnChanged()
 
 		var attached = this.__attachedObjects
@@ -112,9 +113,23 @@ EventEmitter {
 
 	/// @private sets id
 	function _setId(name) {
+		this.__qmlid = name
 		var p = this;
 		while(p) {
 			p._local[name] = this;
+			p = p.parent;
+		}
+	}
+	function __discardId() {
+		var name = this.__qmlid
+		if (name === undefined)
+			return
+
+		var p = this
+		while(p) {
+			var local = p._local
+			if (name in local && local[name] === this)
+				local[name] = null;
 			p = p.parent;
 		}
 	}

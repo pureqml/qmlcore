@@ -14,6 +14,7 @@ CoreObject {
 	}
 
 	function discard() {
+		this.__discarded = true
 		this.removeAllOn()
 		for(var name in this._eventHandlers)
 			this.removeAllListeners(name)

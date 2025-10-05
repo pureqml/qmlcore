@@ -142,11 +142,13 @@ Item {
 
 	///@private
 	function delayedAction(name, self, method, delay) {
-		if (!self._registerDelayedAction(name))
+		if (self.__discarded || !self._registerDelayedAction(name))
 			return
 
 		var callback = function() {
 			self._cancelDelayedAction(name)
+			if (self.__discarded)
+				return
 			method.call(self)
 		}
 

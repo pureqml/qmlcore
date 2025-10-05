@@ -23,6 +23,7 @@ class component_generator(object):
 		self.properties = []
 		self.enums = OrderedDict()
 		self.consts = OrderedDict()
+		self.comp_assignments = OrderedDict()
 		self.assignments = OrderedDict()
 		self.animations = OrderedDict()
 		self.package = get_package(name)
@@ -81,15 +82,19 @@ class component_generator(object):
 		return value
 
 	def assign(self, target, value, loc):
+		assert target != "id"
+
+		if target in self.assignments or target in self.comp_assignments:
+			raise Error("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name), loc)
+
 		t = type(value)
 		if t is lang.Component:
 			value = self.create_component_generator(value)
 			#print("dep %s:%s.%s -> %s:%s" % (hex(id(self)),self.component.name, target, hex(id(value)),value.component.name))
-		if isinstance(value, (str, basestring)): #and value[0] == '"' and value[-1] == '"':
+			self.comp_assignments[target] = value
+		else:
 			value = str(value.replace("\\\n", "")) #multiline continuation \<NEWLINE>
-		if target in self.assignments:
-			raise Error("double assignment to '%s' in %s of type %s" %(target, self.name, self.component.name), loc)
-		self.assignments[target] = value
+			self.assignments[target] = value
 
 	def has_property(self, name):
 		return (name in self.declared_properties) or (name in self.aliases) or (name in self.enums)
@@ -140,8 +145,9 @@ class component_generator(object):
 				raise Error("modelData property is reserved for model row disambiguation and cannot be an id of the component", child.loc)
 			if child.name == "model":
 				raise Error("id: model breaks model/delegate relationship and overrides current model row", child.loc)
+			if "." in child.name:
+				raise Error("expected identifier, not expression", self.loc)
 			self.id = child.name
-			self.assign("id", child.name, child.loc)
 		elif t is lang.Component:
 			value = self.create_component_generator(child)
 			#print("dep %s:%s.<anonymous> -> %s:%s" % (hex(id(self)), self.component.name, hex(id(value)),value.component.name))
@@ -542,6 +548,9 @@ class component_generator(object):
 			for name, prop in self.consts.items():
 				raise Error('adding consts without prototype is not unsupported, consider putting this property (%s) in prototype' %name, self.loc)
 
+		if self.id is not None:
+			r.append("%s%s._setId('%s')" %(ident, parent, self.id))
+
 		for idx, gen in enumerate(self.children):
 			var = "%s$child%d" %(escape(parent), idx)
 			component = registry.find_component(self.package, gen.component.name, mangle = True)
@@ -551,28 +560,22 @@ class component_generator(object):
 			r.append(code)
 			r.append("%s%s.addChild(%s)" %(ident, parent, var))
 
-		for target, value in self.assignments.items():
-			if target == "id":
-				if "." in value:
-					raise Error("expected identifier, not expression", self.loc)
-				r.append("%s%s._setId('%s')" %(ident, parent, value))
-			elif target.endswith(".id"):
-				raise Error("setting id of the remote object is prohibited", self.loc)
+		for target, value in self.comp_assignments.items():
+			self.check_target_property(registry, target)
+			if target != "delegate":
+				var = "%s$%s" %(escape(parent), escape(target))
+				r.append("//creating component %s" %value.name)
+				r.append("%svar %s = new %s(%s)" %(ident, var, registry.find_component(value.package, value.component.name, mangle = True), parent))
+				r.append("%s%s.%s = %s" %(ident, closure, var, var))
+				code = self.call_create(registry, ident_n, var, value, closure)
+				r.append(code)
+				r.append('%s%s.%s = %s' %(ident, parent, target, var))
 			else:
-				self.check_target_property(registry, target)
+				code = self.generate_creator_function(registry, 'delegate', value, ident_n)
+				r.append("%s%s.%s = %s" %(ident, parent, target, code))
 
-			if isinstance(value, component_generator):
-				if target != "delegate":
-					var = "%s$%s" %(escape(parent), escape(target))
-					r.append("//creating component %s" %value.name)
-					r.append("%svar %s = new %s(%s)" %(ident, var, registry.find_component(value.package, value.component.name, mangle = True), parent))
-					r.append("%s%s.%s = %s" %(ident, closure, var, var))
-					code = self.call_create(registry, ident_n, var, value, closure)
-					r.append(code)
-					r.append('%s%s.%s = %s' %(ident, parent, target, var))
-				else:
-					code = self.generate_creator_function(registry, 'delegate', value, ident_n)
-					r.append("%s%s.%s = %s" %(ident, parent, target, code))
+		for target, value in self.assignments.items():
+			self.check_target_property(registry, target)
 
 		for name, target in self.aliases.items():
 			get, pname = generate_accessors(parent, target, partial(self.transform_root, registry, None))
@@ -645,10 +648,13 @@ class component_generator(object):
 
 		parse_deps_ctx = ParseDepsContext(registry, self)
 
-		for target, value in self.assignments.items():
-			if target == "id":
+		for target, value in self.comp_assignments.items():
+			if target == "delegate":
 				continue
-			t = type(value)
+			var = "%s$%s" %(escape(parent), escape(target))
+			r.append(self.call_setup(registry, ident_n, var, value, closure))
+
+		for target, value in self.assignments.items():
 			#print self.name, target, value
 			target_owner, target_lvalue, target_prop = self.get_lvalue(registry, parent, target)
 			if isinstance(value, (str, basestring)):
@@ -665,12 +671,6 @@ class component_generator(object):
 					r.append("%s%s._replaceUpdater('%s', function() { %s = %s }, [%s])" %(ident, target_owner, target_prop, target_lvalue, value, ",".join(undep)))
 				else:
 					r.append("%s%s._removeUpdater('%s'); %s = %s;" %(ident, target_owner, target_prop, target_lvalue, value))
-
-			elif t is component_generator:
-				if target == "delegate":
-					continue
-				var = "%s$%s" %(escape(parent), escape(target))
-				r.append(self.call_setup(registry, ident_n, var, value, closure))
 			else:
 				raise Error("skip assignment %s = %s" %(target, value), self.loc)
 

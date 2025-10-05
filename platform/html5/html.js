@@ -471,7 +471,7 @@ ElementPrototype.discard = function() {
 
 ElementPrototype.remove = function() {
 	var dom = this.dom
-	if (dom.parentNode)
+	if (dom && dom.parentNode)
 		dom.parentNode.removeChild(dom)
 }
 

@@ -93,6 +93,10 @@ popd
 pushd ${DST_DIR}
 	P="s/package=\"com.pureqml.android\"/package=\"${APP_DOMAIN}\"/"
 	sed -i "${P}" app/src/main/AndroidManifest.xml
+	INTENT_FILE=${SRC_DIR}/AndroidManifestIntent.xml
+	if [ -e ${INTENT_FILE} ]; then
+		sed -i -e '/<!-- Application specific intent -->/ {' -e "r ${INTENT_FILE}" -e 'd' -e '}' -i app/src/main/AndroidManifest.xml
+	fi
 	P="s/<string name=\"app_name\">QMLCoreAndroidRuntime<\\/string>/<string name=\"app_name\">${APP_TITLE}<\\/string>/"
 	sed -i "${P}" app/src/main/res/values/strings.xml
 	P="s/-keep public com\\.pureqml\\.android\\./-keep public ${APP_DOMAIN}./g"

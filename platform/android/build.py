@@ -23,9 +23,14 @@ def build(app, title, release):
 	os.system('cordova plugin add cordova-plugin-screen-orientation')
 
 	if release:
-		build = 'cordova build android --release -- '
-		# TODO: pass release parameters
-		# os.system(build + '--keystore={{androidBuild.keystore}} --storePassword={{androidBuild.storePassword}} --alias={{androidBuild.alias}} --password={{androidBuild.password}}')
+		{% if androidBuild %}
+		pt = '--packageType={{androidBuild.packageType}} ' if "{{ androidBuild.packageType }}" else ''
+		build_cmd = 'cordova build android --release -- %s' %pt
+		build_cert_params = '--keystore={{androidBuild.keystore}} --storePassword={{androidBuild.storePassword}} --alias={{androidBuild.alias}} --password={{androidBuild.password}}'
+		os.system(build_cmd + build_cert_params)
+		{% else %}
+		print("Failed to build release apk androidBuild property is undefined")
+		{% endif %}
 	else:
 		os.system('cordova build android')
 
@@ -35,7 +40,7 @@ def build(app, title, release):
 parser = argparse.ArgumentParser('pureqml cordova android build tool')
 parser.add_argument('--app', '-a', help='application name', default="app")
 parser.add_argument('--title', '-t', help='application title', default="App")
-parser.add_argument('--release', '-r', help='build release apk', default=False)
+parser.add_argument('--release', '-r', help='generate release code (no logs)', action='store_true', dest='release')
 args = parser.parse_args()
 
 

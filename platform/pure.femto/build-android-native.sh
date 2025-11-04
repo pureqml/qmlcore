@@ -61,6 +61,8 @@ APP_TITLE=$(./qmlcore/build -j -p pure.femto -P title ${APP_NAME} 2>/dev/null) |
 APP_DOMAIN=$(./qmlcore/build -j -p pure.femto -P domain ${APP_NAME} 2>/dev/null) || die "you have to specify application domain/package in .manifest/properties.domain"
 APP_ICON_COLOR=$(./qmlcore/build -j -p pure.femto -P iconColor ${APP_NAME} 2>/dev/null) || APP_ICON_COLOR=""
 APP_SDK_VERSION=$(./qmlcore/build -j -p pure.femto -P androidtargetSdkVersion ${APP_NAME} 2>/dev/null) || APP_SDK_VERSION="29"
+APP_VERSION=$(./qmlcore/build -j -p pure.femto -P version ${APP_NAME} 2>/dev/null) || APP_VERSION="1.0.0"
+APP_VERSION_CODE=$(./qmlcore/build -j -p pure.femto -P versionCode ${APP_NAME} 2>/dev/null) || APP_VERSION_CODE="1"
 
 if [ -n "${APP_NAME}" ]; then
 	echo "using app name ${APP_NAME}..."
@@ -108,6 +110,10 @@ pushd ${DST_DIR}
 	P="s/compileSdkVersion 29/compileSdkVersion ${APP_SDK_VERSION}/"
 	sed -i "${P}" app/build.gradle
 	P="s/namespace 'com.pureqml.android'/namespace '${APP_DOMAIN}'/"
+	sed -i "${P}" app/build.gradle
+	P="s/versionName \"1.0\"/versionName \"${APP_VERSION}\"/"
+	sed -i "${P}" app/build.gradle
+	P="s/versionCode 1/versionCode ${APP_VERSION_CODE}/"
 	sed -i "${P}" app/build.gradle
 
 

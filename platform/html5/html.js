@@ -524,8 +524,12 @@ exports.Window = function(context, dom) {
 var WindowPrototype = exports.Window.prototype = Object.create(_globals.core.RAIIEventEmitter.prototype)
 WindowPrototype.constructor = exports.Window
 
+var useDevicePixelRatio = function() {
+	return !!window.cordova
+}
+
 WindowPrototype.width = function() {
-	if (navigator.userAgent.toLocaleLowerCase().match('android')) {
+	if (useDevicePixelRatio()) {
 		return Math.floor(this.dom.innerWidth * this.dom.devicePixelRatio);
 	} else {
 		return this.dom.innerWidth;
@@ -533,7 +537,7 @@ WindowPrototype.width = function() {
 }
 
 WindowPrototype.height = function() {
-	if (navigator.userAgent.toLocaleLowerCase().match('android')) {
+	if (useDevicePixelRatio()) {
 		return Math.floor(this.dom.innerHeight * this.dom.devicePixelRatio);
 	} else {
 		return this.dom.innerHeight;

@@ -13,4 +13,8 @@ exports.createDevice = function(ui) {
 	ui.setFullScreen = function(enable) {
 		fd.setDeviceFeature('fullscreen', enable)
 	}
+
+	ui.getIntentParams = function(name) {
+		return fd.getIntentParam(name)
+	}
 }

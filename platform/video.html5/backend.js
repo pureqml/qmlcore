@@ -180,6 +180,7 @@ Player.prototype.getFileExtension = function(filePath) {
 Player.prototype.setSource = function(url) {
 	this.ui.ready = false
 	this._extension = this.getFileExtension(url)
+	this._storedSrc = ""
 	if (url && this._xhr && (this._extension === ".m3u8" || this._extension === ".m3u")) {
 		this._xhr.open('GET', url);
 		this._xhr.send()
@@ -188,10 +189,15 @@ Player.prototype.setSource = function(url) {
 	var source = url
 	if (this.ui.startPosition)
 		source += "#t=" + this.ui.startPosition
+
 	this.element.dom.src = source
 }
 
 Player.prototype.play = function() {
+	if (this._storedSrc) {
+		this.element.dom.src = this._storedSrc
+		this._storedSrc = ""
+	}
 	this.element.dom.play()
 }
 
@@ -200,8 +206,11 @@ Player.prototype.pause = function() {
 }
 
 Player.prototype.stop = function() {
-	//where is no 'stop' method in html5 video player just pause instead
-	this.pause()
+	this._storedSrc = this.element.dom.src
+	this.element.dom.pause()
+	this.element.dom.src = ""
+	this.element.dom.load()
+	this.ui.ready = false
 }
 
 Player.prototype.seek = function(delta) {

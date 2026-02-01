@@ -43,8 +43,10 @@ Item {
 			switch(name) {
 				case "right":
 				case "width":
+				case "paintedWidth":
 				case "bottom":
 				case "height":
+				case "paintedHeight":
 				case "verticalCenter":
 				case "horizontalCenter":
 					this._enableSizeUpdate()

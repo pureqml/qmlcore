@@ -180,7 +180,6 @@ Player.prototype.getFileExtension = function(filePath) {
 Player.prototype.setSource = function(url) {
 	this.ui.ready = false
 	this._extension = this.getFileExtension(url)
-	this._storedSrc = ""
 	if (url && this._xhr && (this._extension === ".m3u8" || this._extension === ".m3u")) {
 		this._xhr.open('GET', url);
 		this._xhr.send()
@@ -194,7 +193,7 @@ Player.prototype.setSource = function(url) {
 }
 
 Player.prototype.play = function() {
-	if (this._storedSrc) {
+	if (this._storedSrc && !this.element.dom.src) {
 		this.element.dom.src = this._storedSrc
 		this._storedSrc = ""
 	}

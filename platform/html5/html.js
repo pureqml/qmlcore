@@ -944,6 +944,8 @@ exports.ajax = function(ui, request) {
 		xhr.send(request.data)
 	else
 		xhr.send()
+
+	return xhr
 }
 
 exports.fingerprint = function(ctx, fingerprint) {

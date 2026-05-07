@@ -9,6 +9,22 @@ Object {
 			request.done = this._context.wrapNativeCallback(request.done)
 		if (request.error)
 			request.error = this._context.wrapNativeCallback(request.error)
-		this._context.backend.ajax(this, request)
+		var xhr = this._context.backend.ajax(this, request)
+		if (xhr)
+			(this._activeXhrs || (this._activeXhrs = [])).push(xhr)
+		return xhr
+	}
+
+	/**abort all in-flight requests created by this Request instance*/
+	function abortAll() {
+		var xhrs = this._activeXhrs
+		if (!xhrs) return
+		this._activeXhrs = []
+		for (var i = 0; i < xhrs.length; i++) {
+			var xhr = xhrs[i]
+			if (xhr && xhr.readyState !== 4) {
+				try { xhr.abort() } catch (e) {}
+			}
+		}
 	}
 }

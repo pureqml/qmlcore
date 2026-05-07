@@ -122,6 +122,14 @@ Object {
 		this._attachElement(context.createElement(tag, cls))
 	}
 
+	function _itemX() {
+		return this.x + this.viewX + (this._borderXAdjust || 0)
+	}
+
+	function _itemY() {
+		return this.y + this.viewY + (this._borderYAdjust || 0)
+	}
+
 	/// map relative component coordinates to absolute screen ones
 	function toScreen() {
 		var item = this
@@ -130,8 +138,8 @@ Object {
 		var h = this.height + (this._borderHeightAdjust || 0) + (this._borderInnerHeightAdjust || 0)
 
 		while(item) {
-			x += item.x + item.viewX + (item._borderXAdjust || 0)
-			y += item.y + item.viewY + (item._borderYAdjust || 0)
+			x += item._itemX()
+			y += item._itemY()
 			if (item.hasOwnProperty('view')) {
 				var content = item.view.content
 				x += content.x
@@ -234,7 +242,7 @@ Object {
 
 	onXChanged,
 	onViewXChanged: {
-		var x = this.x + this.viewX
+		var x = this._itemX()
 		if (this.cssTranslatePositioning && !$manifest$cssDisableTransformations)
 			this.transform.translateX = x
 		else
@@ -244,7 +252,7 @@ Object {
 
 	onYChanged,
 	onViewYChanged: {
-		var y = this.y + this.viewY
+		var y = this._itemY()
 		if (this.cssTranslatePositioning && !$manifest$cssDisableTransformations)
 			this.transform.translateY = y
 		else

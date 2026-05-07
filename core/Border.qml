@@ -27,6 +27,8 @@ Object {
 			parent._borderYAdjust = -value
 			parent._borderWidthAdjust = 0
 			parent._borderHeightAdjust = 0
+			parent._borderInnerWidthAdjust = 0
+			parent._borderInnerHeightAdjust = 0
 			parent._setSizeAdjust()
 			break
 		case this.Center:
@@ -34,6 +36,8 @@ Object {
 			parent._borderYAdjust = -value / 2
 			parent._borderWidthAdjust = -value
 			parent._borderHeightAdjust = -value
+			parent._borderInnerWidthAdjust = 0
+			parent._borderInnerHeightAdjust = 0
 			parent._setSizeAdjust()
 			break
 		}

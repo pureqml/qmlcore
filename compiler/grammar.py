@@ -1,362 +1,800 @@
-from __future__ import absolute_import, print_function
-from builtins import chr, map, str
-
-from pyparsing import *
-from . import lang
 import re
-import json
-import sys
-sys.setrecursionlimit(15000)
-
-#source.setDefaultWhitespaceChars(" \t\r\f")
-ParserElement.enablePackrat()
+from collections import OrderedDict
+import compiler.lang as lang
 
 doc_next = None
 doc_prev_component = None
 doc_root_component = None
 
-def component(com):
-	global doc_next, doc_prev_component, doc_root_component
+class CustomParser(object):
+	def match(self, next):
+		raise Exception("Expression should implement match method")
 
-	if not doc_root_component:
-		doc_root_component = doc_next
+escape_re = re.compile(r"[\0\n\r\v\t\b\f]")
+escape_map = {
+	'\0': '\\0',
+	'\n': '\\n',
+	'\r': '\\r',
+	'\v': '\\v',
+	'\t': '\\t',
+	'\b': '\\b',
+	'\f': '\\f'
+}
+def escape(str):
+	return escape_re.sub(lambda m: escape_map[m.group(0)], str)
 
-	if doc_next:
-		com.doc = doc_next
-		doc_next = None
-	doc_prev_component = com
-	return com
+class StringParser(CustomParser):
+	def match(self, next):
+		n = len(next)
+		if n < 2:
+			return
 
+		quote = next[0]
+		if quote != "'" and quote != "\"":
+			return
+		pos = 1
+		while next[pos] != quote:
+			if next[pos] == "\\":
+				pos += 2
+			else:
+				pos += 1
+			if pos >= n:
+				raise Exception("Unexpected EOF while parsing string")
+		return next[:pos + 1]
 
-def document(text, line, prev):
-	text = text.strip()
-	if not text:
-		print('WARNING: empty documentation string at line %d' %line)
-		return
+skip_re = re.compile(r'(?:\s+|/\*.*?\*/|//[^\n]*(?:$|\n))', re.DOTALL)
+COMPONENT_NAME = r'(?:[a-z][a-zA-Z0-9._]*\.)?[A-Z][A-Za-z0-9]*'
+component_name = re.compile(COMPONENT_NAME)
+component_name_lookahead = re.compile(COMPONENT_NAME + r'\s*{')
+identifier_re = re.compile(r'[a-z_][A-Za-z0-9_]*')
+property_type_re = re.compile(r'[a-z_][a-z0-9_]*', re.IGNORECASE)
+nested_identifier_re = re.compile(r'[a-z_][A-Za-z0-9_\.]*')
+function_name_re = re.compile(r'[a-z_][a-z0-9_\.]*', re.IGNORECASE)
+string_re = StringParser()
+kw_re = re.compile(r'(?:true|false|null)')
+expr_kw_re = re.compile(r'(?:true|false|null|undefined)')
+NUMBER_RE = r"0x[0-9a-f]+|(?:\d+([.]\d*)?(?:e[+-]?\d+)?|[.]\d+(?:e[+-]?\d+)?)"
+tr_re = re.compile(r"(?:qsTr|qsTranslate|tr|)\(")
+number_re = re.compile(NUMBER_RE, re.IGNORECASE)
+percent_number_re = re.compile(NUMBER_RE + r'%', re.IGNORECASE)
+scale_number_re = re.compile(NUMBER_RE + r's', re.IGNORECASE)
+rest_of_the_line_re = re.compile(r".*$", re.MULTILINE)
+json_object_value_delimiter_re = re.compile(r"[,;]")
+dep_var = re.compile(r"\${(.*?)}")
 
-	global doc_next, doc_prev_component
-	if prev:
-		if doc_prev_component:
-			doc_prev_component.doc = lang.DocumentationString(text)
+class Literal(object):
+	__slots__ = ('lbp', 'term', 'identifier', 'resolve')
+	def __init__(self, term, string = False, identifier = False):
+		self.term = escape(term) if string else term
+		self.lbp = 0
+		self.identifier = identifier
+		self.resolve = self.identifier and self.term[0].islower()
+
+	def nud(self, state):
+		return self
+
+	def __repr__(self):
+		return "Literal { %s }" %self.term
+
+	def __str__(self):
+		return "${%s}" %self.term if self.resolve else self.term
+
+class Expression(object):
+	__slots__ = ('op', 'args')
+	def __init__(self, op, *args):
+		self.op, self.args = op, args
+
+	def __repr__(self):
+		return "Expression %s { %s }" %(self.op, ", ".join(map(repr, self.args)))
+
+	def __str__(self):
+		args = self.args
+		n = len(args)
+		if n == 1:
+			return "(%s %s)" %(self.op, args[0])
+		elif n == 2:
+			if self.op == '.' and isinstance(args[1], Literal):
+				args[1].resolve = False
+			return "(%s %s %s)" %(args[0], self.op, args[1])
+		elif n == 3:
+			op = self.op
+			return "(%s %s %s %s %s)" %(args[0], op[0], args[1], op[1], args[2])
 		else:
-			print('WARNING: unused documentation string %s at line %d' %(text, line))
-	else:
-		doc_next = lang.DocumentationString(text)
+			raise Exception("invalid argument counter")
 
-def handle_component_declaration(s, l, t):
-	#print "component>", t
-	type = t[0]
-	idx = type.rfind('.')
-	if idx >= 0:
-		type = type[idx + 1:]
-	if type[0].islower():
-		raise ParseException(s, l, 'lowercase component name')
-	return component(lang.Component(t[0], t[1]))
+class Call(object):
+	__slots__ = ('func', 'args')
+	def __init__(self, func, args):
+		self.func = func
+		self.args = args
 
-def handle_assignment(s, l, t):
-	#print "assignment>", t
-	return component(lang.Assignment(t[0], t[1]))
+	def __repr__(self):
+		return "Call %s { %s }" %(self.func, self.args)
 
-def handle_property_declaration(s, l, t):
-	#print "property>", t
-	properties = [(x[0], None) if len(x) < 2 else (x[0], x[1]) for x in t[1]]
-	return component(lang.Property(t[0], properties))
-
-def handle_alias_property_declaration(s, l, t):
-	return component(lang.AliasProperty(t[0], t[1]))
-
-def handle_enum_property_declaration(s, l, t):
-	return component(lang.EnumProperty(t[0], t[1], t[2] if len(t) > 2 else None))
-
-def handle_method_declaration(s, l, t):
-	async_method = t[0] == 'async'
-	if async_method:
-		t.pop(0)
-	event_handler = t[0] != 'function'
-	if event_handler:
-		names, args, code = t[0], t[1], t[2]
-	else:
-		names, args, code = t[1], t[2], t[3]
-
-	return component(lang.Method(names, args, code, event_handler, async_method))
-
-def handle_assignment_scope(s, l, t):
-	#print "assignment-scope>", t
-	return component(lang.AssignmentScope(t[0], t[1]))
-
-def handle_nested_identifier_rvalue(s, l, t):
-	#print "nested-id>", t
-	return lang.handle_property_path(t[0])
-
-def handle_enum_value(s, l, t):
-	#print "enum>", t
-	return "".join(t)
-
-def handle_id_declaration(s, l, t):
-	#print "id>", t
-	return component(lang.IdAssignment(t[0]))
-
-def handle_behavior_declaration(s, l, t):
-	#print "behavior>", t
-	return component(lang.Behavior(t[0], t[1]))
-
-def handle_signal_declaration(s, l, t):
-	return component(lang.Signal(t[0]))
-
-def handle_function_call(s, l, t):
-	#print "func> ", t
-	name = t[0]
-	if name[0].islower():
-		if '.' in name:
-			name = '${%s}' %name
+	def __str__(self):
+		if isinstance(self.func, Literal):
+			name = self.func.term
+			name = '$(%s)' %name
 		else:
-			name = '$this._context.%s' %name
-	return "%s(%s)" % (name, ",".join(t[1:]))
+			name = str(self.func)
+			#if lhs is not an literal, than we can't process deps, removing $(xxx)
+			name = dep_var.sub(lambda m: m.group(1), name)
 
-def handle_documentation_string(s, l, t):
-	text = t[0]
-	global doc_next, doc_root_component
-	if doc_next is not None and doc_root_component is None:
-		doc_root_component = doc_next
+		return "%s(%s)" %(name, ",".join(map(str, self.args)))
 
-	if text.startswith('///<'):
-		document(text[4:], l, True)
-	elif text.startswith('///'):
-		document(text[3:], l, False)
-	elif text.startswith('/**'):
-		end = text.rfind('*/')
-		document(text[3:end], l, False)
+class Dereference(object):
+	__slots__ = ('array', 'index')
+	def __init__(self, array, index):
+		self.array = array
+		self.index = index
 
-def handle_json_array(s, l, tokens):
-	return [list(tokens)]
+	def __str__(self):
+		return "(%s[%s])" %(self.array, self.index)
 
-def handle_json_object(s, l, tokens):
-	obj = {}
-	for key, value in tokens:
-		obj[key] = value
-	return obj
-
-def handle_list_element(s, l, t):
-	return lang.ListElement(t[0])
-
-def handle_number(s, l, t):
-	value = t[0]
-	if value.startswith('0x'):
-		return int(value[2:], 16)
-	else:
-		return float(value) if '.' in value else int(value)
-
-def handle_bool_value(s, l, t):
-	value = t[0] == "true"
-	return value
-
-expression = Forward()
-expression_list = delimitedList(expression, ",")
-
-component_declaration = Forward()
-
-type = Word(alphas, alphanums)
-component_type = Word(srange("[A-Za-z_]"), alphanums + "._")
-identifier = Word(srange("[a-z_]"), alphanums + "_")
-null_value = Keyword("null")
-bool_value = Keyword("true") | Keyword("false")
-bool_value.setParseAction(handle_bool_value)
-number = Combine(Optional('0x') + Word("01234567890+-."))
-number.setParseAction(handle_number)
-
-def handle_string(s, l, t):
-	value = t[0]
-	value = value.replace('\t', '\\t')
-	value = value.replace('\r', '\\r')
-	value = value.replace('\n', '\\n')
-	value = value.replace('\v', '\\v')
-	value = value.replace('\f', '\\f')
-	t[0] = value
-	return t
-
-#workaround #125
-#quoted/unquoted string has the same rules in grammar, but we unquote it manually later, see #125
-unquoted_string_value = \
-	QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
-	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True) | \
-	QuotedString("`", escChar='\\', unquoteResults = False, multiline=True)
-
-re_x = re.compile(r'\\x([0-9a-f]{2})', re.I)
-re_u = re.compile(r'\\u([0-9a-f]{4})', re.I)
-re_o = re.compile(r'\\([0-7]{3})')
-re_u2 = re.compile(r'\\([0-9][0-9a-f]{0,3})', re.I) #old js unicode stuff, try \07f
-re_esc = re.compile(r'\\(.)')
-
-def unquote(value):
-	value = re_x.sub(lambda m: chr(int(m.group(1), 16)), value)
-	value = re_u.sub(lambda m: chr(int(m.group(1), 16)), value)
-	value = re_o.sub(lambda m: chr(int(m.group(1), 8)), value)
-	value = re_u2.sub(lambda m: chr(int(m.group(1), 16)), value)
-
-	def unescape(m):
-		c = m.group(1)
-		return {
-			'0': '\0',
-			'n': '\n',
-			'r': '\r',
-			'v': '\v',
-			't': '\t',
-			'b': '\b',
-			'f': '\f',
-		}.get(c, c)
-
-	value = re_esc.sub(unescape, value)
-	return value
-
-def handle_string_unquote(s, l, t):
-	t = handle_string(s, l, t)
-	return unquote(str(t[0])[1:-1])
-
-unquoted_string_value.setParseAction(handle_string_unquote)
-
-quoted_string_value = \
-	QuotedString('"', escChar='\\', unquoteResults = False, multiline=True) | \
-	QuotedString("'", escChar='\\', unquoteResults = False, multiline=True) | \
-	QuotedString("`", escChar='\\', unquoteResults = False, multiline=True)
-quoted_string_value.setParseAction(handle_string)
-
-code = originalTextFor(nestedExpr("{", "}", ignoreExpr=(quoted_string_value | cStyleComment | cppStyleComment)))
-
-enum_element = Word(srange("[A-Z_]"), alphanums)
-enum_value = Word(srange("[A-Z_]"), alphanums) + Literal(".") + enum_element
-enum_value.setParseAction(handle_enum_value)
-
-function_call = Word(alphanums + '._') + Suppress("(") + Optional(expression_list) + Suppress(")") + \
-	ZeroOrMore(Suppress(".") + Suppress("arg") + Suppress("(") + expression + Suppress(")"))
-function_call.setParseAction(handle_function_call)
-
-nested_identifier_lvalue = Word(srange("[a-z_]"), alphanums + "._")
-
-nested_identifier_rvalue = Word(srange("[a-z_]"), alphanums + "._")
-nested_identifier_rvalue.setParseAction(handle_nested_identifier_rvalue)
-
-expression_end = Suppress(";")
-
-signal_declaration = Keyword("signal").suppress() - identifier - expression_end
-signal_declaration.setParseAction(handle_signal_declaration)
-
-id_declaration = Keyword("id").suppress() - Suppress(":") - identifier - expression_end
-id_declaration.setParseAction(handle_id_declaration)
+class PrattParserState(object):
+	def __init__(self, parent, parser, token):
+		self.parent, self.parser, self.token = parent, parser, token
 
 
-assign_declaration = nested_identifier_lvalue + Suppress(":") + expression + expression_end
-assign_declaration.setParseAction(handle_assignment)
+class PrattParser(object):
+	def __init__(self, ops):
+		symbols = [(x.term, x) for x in ops]
+		symbols.sort(key=lambda x: len(x[0]), reverse=True)
+		self.symbols = symbols
 
-assign_component_declaration = nested_identifier_lvalue + Suppress(":") + component_declaration
-assign_component_declaration.setParseAction(handle_assignment)
+	def next(self, parser):
+		parser._skip()
 
-const_property_declaration = Keyword("property").suppress() + Keyword("const") - Group(Group(identifier - Suppress(":") - code))
-const_property_declaration.setParseAction(handle_property_declaration)
+		next = parser.maybe(expr_kw_re)
+		if next:
+			return Literal(next)
+		next = parser.maybe(percent_number_re)
+		if next:
+			next = next[:-1]
+			return Literal("((%s) / 100 * ${parent.<property-name>})" %next) if next != 100 else "(${parent.<property-name>})"
+		next = parser.maybe(scale_number_re)
+		if next:
+			next = next[:-1]
+			return Literal("((%s) * ${context.<scale-property-name>})" %next)
+		next = parser.maybe(number_re)
+		if next:
+			return Literal(next)
 
-property_name_initializer_declaration = Group(identifier + Optional(Suppress(":") + expression))
-property_declaration = ((Keyword("property").suppress() + type + Group(delimitedList(property_name_initializer_declaration, ',')) + expression_end) | \
-	(Keyword("property").suppress() + type + Group(Group(identifier + Suppress(":") + component_declaration))))
-property_declaration.setParseAction(handle_property_declaration)
+		next = parser.next
+		next_n = len(next)
+		for term, sym in self.symbols:
+			n = len(term)
+			if n > next_n:
+				continue
 
-alias_property_declaration = Keyword("property").suppress() + Keyword("alias").suppress() - identifier - Suppress(":") - nested_identifier_lvalue - expression_end
-alias_property_declaration.setParseAction(handle_alias_property_declaration)
+			keyword = term[-1].isalnum()
+			if next.startswith(term):
+				if keyword and n < next_n and next[n].isalnum():
+					continue
+				parser.advance(len(term))
+				return sym
 
-enum_property_declaration = Keyword("property").suppress() + Keyword("enum").suppress() - identifier - \
-	Suppress("{") - Group(delimitedList(enum_element, ',')) - Suppress("}") - Optional(Literal(':').suppress() - enum_element) - expression_end
-enum_property_declaration.setParseAction(handle_enum_property_declaration)
+		next = parser.maybe(function_name_re)
+		if next:
+			return Literal(next, identifier=True)
+		next = parser.maybe(string_re)
+		if next:
+			return Literal(next, string=True)
+		return None
 
-assign_scope_declaration = identifier + Suppress(":") + expression + expression_end
-assign_scope_declaration.setParseAction(handle_assignment)
-assign_scope = nested_identifier_lvalue + Suppress("{") + Group(OneOrMore(assign_scope_declaration)) + Suppress("}")
-assign_scope.setParseAction(handle_assignment_scope)
+	def advance(self, state, expect = None):
+		if expect is not None:
+			state.parser.read(expect, "Expected %s in expression" %expect)
+		state.token = self.next(state.parser)
 
-method_declaration = Optional(Keyword("async")) + Group(delimitedList(nested_identifier_lvalue, ',')) + Group(Optional(Suppress("(") + delimitedList(identifier, ",") + Suppress(")") )) + Suppress(":") + code
-method_declaration.setParseAction(handle_method_declaration)
+	def expression(self, state, rbp = 0):
+		parser = state.parser
+		t = state.token
+		state.token = self.next(parser)
+		if state.token is None:
+			return t
+		left = t.nud(state)
+		while state.token is not None and rbp < state.token.lbp:
+			t = state.token
+			self.advance(state)
+			left = t.led(state, left)
+		return left
 
-method_declaration_qml = Optional(Keyword("async")) + Keyword("function") - Group(nested_identifier_lvalue) - Group(Suppress("(") - Optional(delimitedList(identifier, ",")) - Suppress(")") ) - code
-method_declaration_qml.setParseAction(handle_method_declaration)
+	def parse(self, parser):
+		token = self.next(parser)
+		if token is None:
+			parser.error("Unexpected expression")
+		state = PrattParserState(self, parser, token)
+		return self.expression(state)
 
-behavior_declaration = Keyword("Behavior").suppress() - Keyword("on").suppress() - Group(delimitedList(nested_identifier_lvalue, ',')) - Suppress("{") - component_declaration - Suppress("}")
-behavior_declaration.setParseAction(handle_behavior_declaration)
+class UnsupportedOperator(object):
+	__slots__ = ('term', 'lbp', 'rbp')
 
-json_value = Forward()
-json_object = Suppress("{") + delimitedList(Group((unquoted_string_value | identifier) + Suppress(":") + json_value) | empty, Suppress(";") | Suppress(",")) + Suppress('}')
-json_object.setParseAction(handle_json_object)
-json_array = Suppress("[") + delimitedList(json_value) + Suppress("]")
-json_array.setParseAction(handle_json_array)
-json_value << (null_value | bool_value | number | unquoted_string_value | json_array | json_object)
+	def __init__(self, term, lbp = 0, rbp = 0):
+		self.term, self.lbp, self.rbp = term, lbp, rbp
 
-list_element_declaration = Keyword("ListElement").suppress() - json_object
-list_element_declaration.setParseAction(handle_list_element)
+	def nud(self, state):
+		state.parser.error("Unsupported prefix operator %s" %self.term)
 
-import_statement = Keyword("import") - restOfLine
+	def led(self, state, left):
+		state.parser.error("Unsupported postfix operator %s" %self.term)
 
-scope_declaration = list_element_declaration | behavior_declaration | signal_declaration | alias_property_declaration | enum_property_declaration | const_property_declaration | property_declaration | id_declaration | assign_declaration | assign_component_declaration | component_declaration | method_declaration | method_declaration_qml | assign_scope
-component_scope = (Suppress("{") + Group(ZeroOrMore(scope_declaration)) + Suppress("}"))
+	def __repr__(self):
+		return "UnsupportedOperator { %s %s }" %(self.term, self.lbp)
 
-component_declaration << (component_type + component_scope)
-component_declaration.setParseAction(handle_component_declaration)
 
-def handle_unary_op(s, l, t):
-	#print "EXPR", t
-	return " ".join(map(str, t[0]))
-def handle_binary_op(s, l, t):
-	#print "EXPR", t
-	return " ".join(map(str, t[0]))
-def handle_ternary_op(s, l, t):
-	#print "EXPR", t
-	return " ".join(map(str, t[0]))
+class Operator(object):
+	__slots__ = ('term', 'lbp', 'rbp')
+	def __init__(self, term, lbp = 0, rbp = None):
+		self.term, self.lbp, self.rbp = term, lbp, rbp
 
-def handle_percent_number(s, l, t):
-	value = t[0]
-	strvalue = lang.to_string(value)
-	return ("((%s) / 100 * ${parent.<property-name>})" %strvalue) if value != 100 else "(${parent.<property-name>})"
+	def nud(self, state):
+		if self.rbp is not None:
+			return Expression(self.term, state.parent.expression(state, self.rbp))
+		state.parser.error("Unexpected token in infix expression: '%s'" %self.term)
 
-percent_number = number + '%'
-percent_number.setParseAction(handle_percent_number)
+	def led(self, state, left):
+		if self.lbp is not None:
+			return Expression(self.term, left, state.parent.expression(state, self.lbp))
+		else:
+			state.parser.error("No left-associative operator defined")
 
-expression_array = Suppress("[") + Optional(delimitedList(json_value, ",")) + Suppress("]")
-def handle_expression_array(s, l, t):
-	return json.dumps(list(t))
+	def __repr__(self):
+		return "Operator { %s %s %s }" %(self.term, self.lbp, self.rbp)
 
-expression_array.setParseAction(handle_expression_array)
+class Conditional(object):
+	__slots__ = ('term', 'lbp')
+	def __init__(self, lbp):
+		self.term = '?'
+		self.lbp = lbp
 
-expression_definition = null_value | bool_value | percent_number | number | quoted_string_value | function_call | nested_identifier_rvalue | enum_value | expression_array
+	def nud(self, state):
+		state.parser.error("Conditional operator can't be used as unary")
 
-expression_ops = infixNotation(expression_definition, [
-	(oneOf('! ~ + - typeof'),	1, opAssoc.RIGHT, handle_unary_op),
-	(oneOf('* / %'),	2, opAssoc.LEFT, handle_binary_op),
-	(oneOf('+ -'),		2, opAssoc.LEFT, handle_binary_op),
-	(oneOf('<< >>'),	2, opAssoc.LEFT, handle_binary_op),
+	def led(self, state, left):
+		true = state.parent.expression(state)
+		state.parent.advance(state, ':')
+		false = state.parent.expression(state)
+		return Expression(('?', ':'), left, true, false)
 
-	(oneOf('< <= > >= instanceof in'),	2, opAssoc.LEFT, handle_binary_op),
-	(oneOf('== != === !=='),		2, opAssoc.LEFT, handle_binary_op),
+	def __repr__(self):
+		return "Conditional { }"
 
-	('&', 2, opAssoc.LEFT, handle_binary_op),
-	('^', 2, opAssoc.LEFT, handle_binary_op),
-	('|', 2, opAssoc.LEFT, handle_binary_op),
+class LeftParenthesis(object):
+	__slots__ = ('term', 'lbp')
+	def __init__(self, lbp):
+		self.term = '('
+		self.lbp = lbp
 
-	('&&', 2, opAssoc.LEFT, handle_binary_op),
-	('||', 2, opAssoc.LEFT, handle_binary_op),
+	def nud(self, state):
+		expr = state.parent.expression(state)
+		state.parent.advance(state, ')')
+		return expr
 
-	(('?', ':'), 3, opAssoc.RIGHT, handle_ternary_op),
+	def led(self, state, left):
+		args = []
+		while True:
+			next = state.token
+			if next is None or next == ')':
+				break
+			expr = state.parent.expression(state)
+			if expr is None:
+				break
+			args.append(expr)
+			if state.token is not None:
+				state.parser.error("Unexpected token %s" %state.token)
+			if not state.parser.maybe(','):
+				break
+			state.parent.advance(state)
+		state.parent.advance(state, ')')
+		return Call(left, args)
+
+	def __repr__(self):
+		return "LeftParenthesis { %d }" %self.lbp
+
+class LeftSquareBracket(object):
+	__slots__ = ('term', 'lbp')
+	def __init__(self, lbp):
+		self.term = '['
+		self.lbp = lbp
+
+	def nud(self, state):
+		state.parser.error("Invalid [] expression")
+
+	def led(self, state, left):
+		arg = state.parent.expression(state)
+		if state.token is not None:
+			state.parser.error("Unexpected token %s" %state.token)
+		state.parent.advance(state, ']')
+		return Dereference(left, arg)
+
+	def __repr__(self):
+		return "LeftSquareBracket { %d }" %self.lbp
+
+
+infix_parser = PrattParser([
+	Operator('.', 19),
+	LeftParenthesis(19),
+	LeftSquareBracket(19),
+
+	Operator('new', None, 18),
+
+	UnsupportedOperator('++', 17, 16),
+	UnsupportedOperator('--', 17, 16),
+	UnsupportedOperator('void', None, 16),
+	UnsupportedOperator('delete', None, 16),
+	UnsupportedOperator('await', None, 16),
+
+	Operator('!', None, 16),
+	Operator('~', None, 16),
+	Operator('+', 13, 16),
+	Operator('-', 13, 16),
+	Operator('typeof', None, 16),
+
+	Operator('**', 15),
+
+	Operator('*', 14),
+	Operator('/', 14),
+	Operator('%', 14),
+
+	Operator('<<', 12),
+	Operator('>>', 12),
+	Operator('>>>', 12),
+
+	Operator('<', 11),
+	Operator('<=', 11),
+	Operator('>', 11),
+	Operator('>=', 11),
+	Operator('in', 11),
+	Operator('instanceof', 11),
+
+	Operator('==', 10),
+	Operator('!=', 10),
+	Operator('===', 10),
+	Operator('!==', 10),
+
+	Operator('&', 9),
+	Operator('^', 8),
+	Operator('|', 7),
+
+	Operator('&&', 6),
+	Operator('||', 5),
+
+	Conditional(4),
 ])
-expression_ops.setParseAction(lambda s, l, t: "(%s)" %lang.to_string(t[0]))
 
-expression << expression_ops
+class Location(object):
+	__slots__ = ('path', 'begin', 'end')
+	def __init__(self, path, begin, end = None):
+		self.path, self.begin, self.end = path, begin, end
 
-source = component_declaration
-cStyleComment.setParseAction(handle_documentation_string)
-source = source.ignore(cStyleComment)
-dblSlashComment.setParseAction(handle_documentation_string)
-source = source.ignore(dblSlashComment)
-source = source.ignore(import_statement)
-source.parseWithTabs()
+	def __str__(self):
+		bl, bc = self.begin
+		el, ec = self.end if self.end else (bl, bc)
+		l = "{}-{}".format(bl, el) if bl != el else "{}".format(bl)
+		c = "{}-{}".format(bc, ec) if bc != ec else "{}".format(bc)
+		return "{}: on line {} column {}".format(self.path, l, c)
 
-def parse(data):
+class Parser(object):
+	def __init__(self, path, text):
+		self.__path = path
+		self.__text = text
+		self.__pos = 0
+		self.__lineno = 1
+		self.__colno = 1
+		self.__last_object = None
+		self.__next_doc = None
+
+	@property
+	def loc(self):
+		return Location(self.__path, (self.__lineno, self.__colno))
+
+	def location_end(self, loc):
+		loc.end = (self.__lineno, self.__colno)
+		return loc
+
+	@property
+	def at_end(self):
+		return self.__pos >= len(self.__text)
+
+	@property
+	def next(self):
+		return self.__text[self.__pos:]
+
+	@property
+	def current_line(self):
+		text = self.__text
+		pos = self.__pos
+		begin = text.rfind('\n', 0, pos)
+		end = text.find('\n', pos)
+		if begin < 0:
+			begin = 0
+		else:
+			begin += 1
+		if end < 0:
+			end = len(text)
+		return text[begin:end]
+
+	def advance(self, n):
+		text = self.__text
+		pos = self.__pos
+		for i in range(n):
+			if text[pos] == '\n':
+				self.__lineno += 1
+				self.__colno = 1
+			else:
+				self.__colno += 1
+			pos += 1
+
+		self.__pos = pos
+
+	def __docstring(self, text, prev):
+		if prev:
+			if self.__last_object:
+				if self.__last_object.doc is not None:
+					self.__last_object.doc = lang.DocumentationString(self.__last_object.doc.text + " " + text)
+				else:
+					self.__last_object.doc = lang.DocumentationString(text)
+			else:
+				self.error("Found docstring without previous object")
+		else:
+			if self.__next_doc is not None:
+				self.__next_doc += " " + text
+			else:
+				self.__next_doc = text
+
+	def __get_next_doc(self):
+		if self.__next_doc is None:
+			return
+		doc = lang.DocumentationString(self.__next_doc)
+		self.__next_doc = None
+		return doc
+
+	def __return(self, object, doc, loc):
+		if doc:
+			if object.doc:
+				object.doc = lang.DocumentationString(object.doc.text + " " + doc.text)
+			else:
+				object.doc = doc
+		self.__last_object = object
+		object.loc = self.location_end(loc)
+		return object
+
+	def _skip(self):
+		while True:
+			m = skip_re.match(self.next)
+			if m is not None:
+				text = m.group(0).strip()
+				if text.startswith('///<'):
+					self.__docstring(text[4:], True)
+				elif text.startswith('///'):
+					self.__docstring(text[3:], False)
+				elif text.startswith('/**'):
+					end = text.rfind('*/')
+					self.__docstring(text[3:end], False)
+				self.advance(m.end())
+			else:
+				break
+
+	def error(self, msg):
+		lineno, col, line = self.__lineno, self.__colno, self.current_line
+		pointer = re.sub(r'\S', ' ', line)[:col - 1] + '^-- ' + msg
+		raise Exception("at line %d:%d:\n%s\n%s" %(lineno, col, self.current_line, pointer))
+
+	def lookahead(self, exp):
+		if self.at_end:
+			return
+
+		self._skip()
+		next = self.next
+
+		if isinstance(exp, str):
+			keyword = exp[-1].isalnum()
+			n, next_n = len(exp), len(next)
+			if n > next_n:
+				return
+
+			if next.startswith(exp):
+				#check that exp ends on word boundary
+				if keyword and n < next_n and next[n].isalnum():
+					return
+				else:
+					return exp
+		elif isinstance(exp, CustomParser):
+			return exp.match(next)
+		else:
+			m = exp.match(next)
+			if m:
+				return m.group(0)
+
+	def maybe(self, exp):
+		value = self.lookahead(exp)
+		if value is not None:
+			self.advance(len(value))
+			return value
+
+	def read(self, exp, error):
+		value = self.maybe(exp)
+		if value is None:
+			self.error(error)
+		return value
+
+	def __read_statement_end(self):
+		self.read(';', "Expected ; at the end of the statement")
+
+	def __read_list(self, exp, delimiter, error):
+		result = []
+		result.append(self.read(exp, error))
+		while self.maybe(delimiter):
+			result.append(self.read(exp, error))
+		return result
+
+	def __read_nested(self, begin, end, error):
+		begin_off = self.__pos
+		self.read(begin, error)
+		counter = 1
+		while not self.at_end:
+			if self.maybe(begin):
+				counter += 1
+			elif self.maybe(end):
+				counter -= 1
+				if counter == 0:
+					end_off = self.__pos
+					value = self.__text[begin_off: end_off]
+					return value
+			else:
+				if not self.maybe(string_re):
+					self.advance(1)
+
+	def __read_code(self):
+		return self.__read_nested('{', '}', "Expected code block")
+
+	def __read_expression(self, terminate = True):
+		if self.maybe('['):
+			values = []
+			while not self.maybe(']'):
+				values.append(self.__read_expression(terminate = False))
+				if self.maybe(']'):
+					break
+				self.read(',', "Expected ',' as an array delimiter")
+			if terminate:
+				self.__read_statement_end()
+			return "[%s]" % (",".join(map(str, values)))
+		if self.maybe('{'):
+			values = OrderedDict()
+			while not self.maybe('}'):
+				if self.lookahead(identifier_re):
+					name = self.read(identifier_re, "Expected identifier")
+				elif self.lookahead(string_re):
+					name = self.read(string_re, "Expected string")
+				else:
+					self.error("Expected string or identifier as object key")
+				self.read(':', "Expected : after object property")
+				values[name] = self.__read_expression(terminate=False)
+			values = map(lambda item: "%s:%s" %(item[0], item[1]), values.items())
+			return "{%s}" %",".join(values)
+		else:
+			value = infix_parser.parse(self)
+			if terminate:
+				self.__read_statement_end()
+			return str(value)
+
+	def __read_property(self):
+		if self.lookahead(':'):
+			return self.__read_rules_with_id(["property"])
+		doc = self.__get_next_doc()
+		loc = self.loc
+		type = self.read(property_type_re, "Expected type after property keyword")
+		if type == 'enum':
+			type = self.read(identifier_re, "Expected type after enum keyword")
+			self.read('{', "Expected { after property enum")
+			values = self.__read_list(component_name, ',', "Expected capitalised enum element")
+			self.read('}', "Expected } after enum element declaration")
+			if self.maybe(':'):
+				def_value = self.read(component_name, "Expected capitalised default enum value")
+			else:
+				def_value = None
+			self.__read_statement_end()
+			return self.__return(lang.EnumProperty(type, values, def_value), doc, loc)
+		if type == 'const':
+			name = self.read(identifier_re, "Expected const property name")
+			self.read(':', "Expected : before const property code")
+			code = self.__read_code()
+			return self.__return(lang.Property("const", [(name, code)]), doc, loc)
+		if type == 'alias':
+			name = self.read(identifier_re, "Expected alias property name")
+			self.read(':', "Expected : before alias target")
+			target = self.read(nested_identifier_re, "Expected identifier as an alias target")
+			self.__read_statement_end()
+			return self.__return(lang.AliasProperty(name, target), doc, loc)
+
+		names = self.__read_list(identifier_re, ',', "Expected identifier in property list")
+		if len(names) == 1:
+			#Allow initialisation for the single property
+			def_value = None
+			if self.maybe(':'):
+				if self.lookahead(component_name_lookahead):
+					def_value = self.__read_comp()
+				else:
+					def_value = self.__read_expression()
+			else:
+				self.__read_statement_end()
+			name = names[0]
+			return self.__return(lang.Property(type, [(name, def_value)]), doc, loc)
+		else:
+			self.read(';', 'Expected ; at the end of property declaration')
+			return self.__return(lang.Property(type, map(lambda name: (name, None), names)), doc, loc)
+
+	def __read_rules_with_id(self, identifiers):
+		args = []
+		doc = self.__get_next_doc()
+		loc = self.loc
+		if self.maybe('('):
+			if not self.maybe(')'):
+				args = self.__read_list(identifier_re, ',', "Expected argument list")
+			self.read(')', "Expected () as an argument list")
+
+		if self.maybe(':'):
+			if self.lookahead('{'):
+				code = self.__read_code()
+				return self.__return(lang.Method(identifiers, args, code, True, False), doc, loc)
+
+			if len(identifiers) > 1:
+				self.error("Multiple identifiers are not allowed in assignment")
+
+			if self.lookahead(component_name_lookahead):
+				return self.__return(lang.Assignment(identifiers[0], self.__read_comp()), doc, loc)
+
+			value = self.__read_expression()
+			return self.__return(lang.Assignment(identifiers[0], value), doc, loc)
+		elif self.maybe('{'):
+			if len(identifiers) > 1:
+				self.error("Multiple identifiers are not allowed in assignment scope")
+			values = []
+			while not self.maybe('}'):
+				name = self.read(nested_identifier_re, "Expected identifier in assignment scope")
+				self.read(':', "Expected : after identifier in assignment scope")
+				value = self.__read_expression()
+				values.append(lang.Assignment(name, value))
+			return self.__return(lang.AssignmentScope(identifiers[0], values), doc, loc)
+		else:
+			self.error("Unexpected identifier(s): %s" %",".join(identifiers))
+
+
+	def __read_function(self, async_f = False):
+		doc = self.__get_next_doc()
+		loc = self.loc
+		name = self.read(identifier_re, "Expected identifier")
+		args = []
+		self.read('(', "Expected (argument-list) in function declaration")
+		if not self.maybe(')'):
+			args = self.__read_list(identifier_re, ',', "Expected argument list")
+			self.read(')', "Expected ) at the end of argument list")
+		code = self.__read_code()
+		return self.__return(lang.Method([name], args, code, False, async_f), doc, loc)
+
+
+	def __read_json_value(self):
+		value = self.maybe(kw_re)
+		if value is not None:
+			return value
+		value = self.maybe(number_re)
+		if value is not None:
+			if value.startswith("0x"):
+				return int(value[2:], 16)
+			elif "." in value or "e" in value or "E" in value:
+				return float(value)
+			else:
+				return int(value)
+		if self.maybe(tr_re):
+			value = self.read(string_re, "Expect tr argument be a string")
+			self.read(')', "Expect ) after string in tr")
+			return lang.unescape_string(value[1:-1])
+		value = self.maybe(string_re)
+		if value is not None:
+			return lang.unescape_string(value[1:-1])
+		if self.lookahead('{'):
+			return self.__read_json_object()
+		if self.lookahead('['):
+			return self.__read_json_list
+
+	def __read_json_list(self):
+		self.read('[', "Expect JSON list starts with [")
+		result = []
+		while not self.maybe(']'):
+			result.append(self.__read_json_value)
+			if self.maybe(']'):
+				break
+			self.read(',', "Expected , as a JSON list delimiter")
+
+		return result
+
+	def __read_json_object(self):
+		self.read('{', "Expected JSON object starts with {")
+		object = OrderedDict()
+		while not self.maybe('}'):
+			name = self.maybe(identifier_re)
+			if not name:
+				name = self.read(string_re, "Expected string or identifier as property name")
+			self.read(':', "Expected : after property name")
+			value = self.__read_json_value()
+			object[name] = value
+			self.maybe(json_object_value_delimiter_re)
+		return object
+
+
+	def __read_scope_decl(self):
+		loc = self.loc
+		if self.maybe('ListElement'):
+			doc = self.__get_next_doc()
+			return self.__return(lang.ListElement(self.__read_json_object()), doc, loc)
+		elif self.maybe('Behavior'):
+			self.read("on", "Expected on keyword after Behavior declaration")
+			doc = self.__get_next_doc()
+			targets = self.__read_list(nested_identifier_re, ",", "Expected identifier list after on keyword")
+			self.read("{", "Expected { after identifier list in behavior declaration")
+			comp = self.__read_comp()
+			self.read("}", "Expected } after behavior animation declaration")
+			return self.__return(lang.Behavior(targets, comp), doc, loc)
+		elif self.maybe('signal'):
+			doc = self.__get_next_doc()
+			name = self.read(identifier_re, "Expected identifier in signal declaration")
+			self.__read_statement_end()
+			return self.__return(lang.Signal(name), doc, loc)
+		elif self.maybe('property'):
+			return self.__read_property()
+		elif self.maybe('id'):
+			doc = self.__get_next_doc()
+			self.read(':', "Expected : after id keyword")
+			name = self.read(identifier_re, "Expected identifier in id assignment")
+			self.__read_statement_end()
+			return self.__return(lang.IdAssignment(name), doc, loc)
+		elif self.maybe('const'):
+			doc = self.__get_next_doc()
+			type = self.read(property_type_re, "Expected type after const keyword")
+			name = self.read(component_name, "Expected Capitalised const name")
+			self.read(':', "Expected : after const identifier")
+			value = self.__read_json_value()
+			self.__read_statement_end()
+			return self.__return(lang.Const(type, name, value), doc, loc)
+		elif self.maybe('async'):
+			self.error("async fixme")
+		elif self.maybe('function'):
+			return self.__read_function()
+		elif self.maybe('async'):
+			self.read('function', "Expected function after async")
+			return self.__read_function(async_f = True)
+		elif self.lookahead(component_name_lookahead):
+			return self.__read_comp()
+		else:
+			identifiers = self.__read_list(nested_identifier_re, ",", "Expected identifier (or identifier list)")
+			return self.__read_rules_with_id(identifiers)
+
+	def __read_comp(self):
+		doc = self.__get_next_doc()
+		loc = self.loc
+		comp_name = self.read(component_name, "Expected component name")
+		self.read(r'{', "Expected {")
+		children = []
+		while not self.maybe('}'):
+			if self.maybe(';'):
+				continue
+			children.append(self.__read_scope_decl())
+		return self.__return(lang.Component(comp_name, children), doc, loc)
+
+	def parse(self, parse_all = True):
+		while self.maybe('import'):
+			self.read(rest_of_the_line_re, "Skip to the end of the line failed")
+
+		r = [self.__read_comp()]
+		self._skip()
+		if parse_all:
+			if self.__pos < len(self.__text):
+				self.error("Extra text after component declaration")
+		return r
+
+def parse(data, path = None):
 	global doc_root_component
 	doc_root_component = None
-	tree = source.parseString(data, parseAll = True)
-	if len(tree) > 0:
-		tree[0].doc = doc_root_component
-	return tree
+	parser = Parser(path, data)
+	return parser.parse()

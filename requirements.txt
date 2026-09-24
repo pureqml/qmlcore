@@ -1,2 +1,2 @@
 future>=0.17.1
-inotify>=0.2.10
+pyparsing>=2.2.0

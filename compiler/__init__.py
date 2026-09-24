@@ -258,18 +258,49 @@ class Compiler(object):
 def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False, doc = None, release = False, verbose = False, jobs = 1):
 	if wait:
 		try:
-			import inotify
+			import pyinotify
+
+			class EventHandler(pyinotify.ProcessEvent):
+				def __init__(self):
+					self.modified = False
+
+				def check_file(self, filename):
+					if not filename or filename[0] == '.':
+						return False
+					root, ext = os.path.splitext(filename)
+					return ext in set([".qml", ".js"])
+
+				def check_event(self, event):
+					if self.check_file(event.name):
+						self.modified = True
+
+				def process_IN_MODIFY(self, event):
+					self.check_event(event)
+				def process_IN_CREATE(self, event):
+					self.check_event(event)
+				def process_IN_DELETE(self, event):
+					self.check_event(event)
+
+				def pop(self):
+					r = self.modified
+					self.modified = False
+					return r
 		except:
-			raise Exception("it seems you don't have inotify module installed, please install it to run `build -d`")
+			raise Exception("it seems you don't have pyinotify module installed, please install it to run build with -d option")
 
 	c = Compiler(output_dir, root, project_dirs, root_manifest, app, doc=doc, release=release, verbose=verbose, jobs=jobs)
 
 	notifier = None
 
 	if wait:
-		import inotify.adapters
-		import inotify.constants
-		notifier = inotify.adapters.InotifyTrees(list(project_dirs), mask=inotify.constants.IN_MODIFY)
+		from pyinotify import WatchManager
+		wm = WatchManager()
+		mask = pyinotify.IN_MODIFY | pyinotify.IN_CREATE | pyinotify.IN_DELETE
+		for dir in project_dirs:
+			wm.add_watch(dir, mask)
+
+		event_handler = EventHandler()
+		notifier = pyinotify.Notifier(wm, event_handler)
 
 	while True:
 		try:
@@ -300,9 +331,11 @@ def compile_qml(output_dir, root, project_dirs, root_manifest, app, wait = False
 			break
 
 		while True:
-			modified = False
-			for _ in notifier.event_gen(yield_nones=False):
-				modified = True
-				break
-			if modified:
-				break
+			if notifier.check_events():
+				notifier.read_events()
+				notifier.process_events()
+				modified = event_handler.pop()
+				if not modified:
+					continue
+				else:
+					break

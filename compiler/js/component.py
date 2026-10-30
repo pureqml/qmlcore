@@ -549,7 +549,7 @@ class component_generator(object):
 				raise Error('adding consts without prototype is not unsupported, consider putting this property (%s) in prototype' %name, self.loc)
 
 		if self.id is not None:
-			r.append("%s%s._setId('%s')" %(ident, parent, self.id))
+			r.append("%s%s._setId('%s', $this)" %(ident, parent, self.id))
 
 		for idx, gen in enumerate(self.children):
 			var = "%s$child%d" %(escape(parent), idx)

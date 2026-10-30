@@ -112,13 +112,27 @@ EventEmitter {
 	}
 
 	/// @private sets id
-	function _setId(name) {
+	function _setId(name, scope) {
 		this.__qmlid = name
 		var p = this;
 		while(p) {
 			p._local[name] = this;
+			if (p === scope)
+				break;
 			p = p.parent;
 		}
+
+		if (!p)
+			return;
+
+		var has = Object.prototype.hasOwnProperty;
+		for (var q = p.parent; q; q = q.parent) {
+			if (has.call(q._local, name) && q._local[name] && q._local[name] !== this)
+				return;
+		}
+
+		for (p = p.parent; p; p = p.parent)
+			p._local[name] = this;
 	}
 	function __discardId() {
 		var name = this.__qmlid

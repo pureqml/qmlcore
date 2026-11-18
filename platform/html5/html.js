@@ -767,21 +767,13 @@ exports.layoutText = function(text) {
 	else
 		text.element.style({ 'height': 'auto', 'padding-top': 0})
 
-	//this is the source of rounding error. For instance you have 186.3px wide text, this sets width to 186px and causes wrapping
 	/*
+		Round up to the nearest integer.
+		For instance if you have 186.3px wide text, it sets width to 186px and causes wrapping
 		https://github.com/pureqml/qmlcore/issues/176
-
-		A few consequent text layouts may result in different results,
-		probably as a result of some randomisation and/or rounding errors.
-		This ends with +1 -1 +1 -1 infinite loop of updates.
-
-		Ignore all updates which subtract 1 from paintedWidth/Height
 	*/
-	var w = element.fullWidth() + 1, h = element.fullHeight() + 1
-	if (w + 1 !== text.paintedWidth)
-		text.paintedWidth = w
-	if (h + 1 !== text.paintedHeight)
-		text.paintedHeight = h
+	text.paintedWidth = Math.ceil(element.fullWidth())
+	text.paintedHeight = Math.ceil(element.fullHeight())
 
 	var style
 	if (!wrap)
